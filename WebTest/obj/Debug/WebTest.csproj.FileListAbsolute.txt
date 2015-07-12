@@ -1,0 +1,7 @@
+D:\工作\SqlSugar\WebTest\obj\Debug\ResolveAssemblyReference.cache
+D:\工作\SqlSugar\WebTest\bin\WebTest.dll
+D:\工作\SqlSugar\WebTest\bin\WebTest.pdb
+D:\工作\SqlSugar\WebTest\bin\SqlSugar.dll
+D:\工作\SqlSugar\WebTest\bin\SqlSugar.pdb
+D:\工作\SqlSugar\WebTest\obj\Debug\WebTest.dll
+D:\工作\SqlSugar\WebTest\obj\Debug\WebTest.pdb
