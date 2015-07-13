@@ -41,15 +41,17 @@ namespace SqlSugar
         }
         public static string SelectToSql(this Sqlable sqlable, string SelectField = "*")
         {
-            if (sqlable.MappingCurrentState.IsIn(MappingCurrentState.Select, MappingCurrentState.Where,MappingCurrentState.MappingTable))
-            {
-                string sql = "SELECT " + SelectField + sqlable.Sql;
-                sqlable = null;
-                return sql;
-            }
-            else {
-                throw new Exception(string.Format("{0}无法使用Where,Where必需在Select、SingleTable或Where后面使用", sqlable.MappingCurrentState));
-            }
+            string sql = "SELECT " + SelectField + sqlable.Sql;
+            sqlable = null;
+            return sql;
+        }
+        public static string SelectToPageSql(this Sqlable sqlable, int pageIndex, int pageSize,string orderFields, string SelectField = "*")
+        {
+            string sql = "SELECT " + SelectField + ",row_index=ROW_NUMBER() OVER(ORDER BY " + orderFields + " )" + sqlable.Sql;
+            sqlable = null;
+            int skip = (pageIndex - 1) * pageSize + 1;
+            int take = pageSize;
+            return string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {0} AND {1}", sql,skip,skip+take);
         }
     }
 }
