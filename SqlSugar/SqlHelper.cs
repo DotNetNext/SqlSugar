@@ -7,6 +7,13 @@ using System.Data;
 
 namespace SqlSugar
 {
+    /// <summary>
+    /// ** 描述：底层SQL辅助函数
+    /// ** 创始时间：2015-7-13
+    /// ** 修改时间：-
+    /// ** 作者：sunkaixuan
+    /// ** 使用说明：
+    /// </summary>
     public class SqlHelper : IDisposable
     {
         SqlConnection _sqlConnection;

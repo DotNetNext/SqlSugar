@@ -49,7 +49,9 @@ namespace SqlSugar
         /// </summary>
         public bool IsNoLock { get; set; }
     }
-
+    /// <summary>
+    /// 映射表操作的当前状态
+    /// </summary>
     public enum MappingCurrentState
     {
         MappingTable = 0,

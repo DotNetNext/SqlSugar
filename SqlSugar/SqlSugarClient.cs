@@ -8,6 +8,13 @@ using System.Data;
 
 namespace SqlSugar
 {
+    /// <summary>
+    /// ** 描述：SQL糖 ORM 核心类
+    /// ** 创始时间：2015-7-13
+    /// ** 修改时间：-
+    /// ** 作者：sunkaixuan
+    /// ** 使用说明：
+    /// </summary>
     public class SqlSugarClient : SqlHelper
     {
 

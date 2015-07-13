@@ -6,6 +6,13 @@ using System.Text;
 
 namespace SqlSugar
 {
+    /// <summary>
+    /// ** 描述：Queryable扩展函数
+    /// ** 创始时间：2015-7-13
+    /// ** 修改时间：-
+    /// ** 作者：sunkaixuan
+    /// ** 使用说明：
+    /// </summary>
     public static class QueryableExtensions
     {
         public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)

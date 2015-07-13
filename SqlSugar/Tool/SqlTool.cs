@@ -9,6 +9,13 @@ using System.Linq.Expressions;
 
 namespace SqlSugar
 {
+    /// <summary>
+    /// ** 描述：工具函数
+    /// ** 创始时间：2015-7-13
+    /// ** 修改时间：-
+    /// ** 作者：sunkaixuan
+    /// ** 使用说明：
+    /// </summary>
     internal class SqlTool
     {
         /// <summary>
