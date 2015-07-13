@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using SqlSugar;
 using Models;
 using System.Linq.Expressions;
+using System.Data.SqlClient;
 
 namespace WebTest
 {
@@ -28,6 +29,8 @@ namespace WebTest
 
                     //根据当前数据库生成所有表的实体类文件 （参数：SqlSugarClient ，文件目录，命名空间）
                     //db.ClassGenerating.CreateClassFiles(db,Server.MapPath("~/Models"),"Models");
+                    //根据表名生成实体类文件
+                    //db.ClassGenerating.CreateClassFilesByTableNames(db, Server.MapPath("~/Models"), "Models" , "student","school");
 
                     //根据表名生成class字符串
                     var str = db.ClassGenerating.TableNameToClass(db, "student");
@@ -56,10 +59,13 @@ namespace WebTest
                     //---------联表查询---------//
 
                     /*db.Sqlable是一个SQL语句生成帮助类*/
+                    string sql = db.Sqlable.TableToSql("Student");//sql1等于 select * from Student
+                    string sql1 = db.Sqlable.TableToSql<Student>();// sql1等于 select * from Student
+
 
                     //联表查询
-                    string sql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id?"/* 最后加?代表left join否则inner join  */).WhereAfter("sex='男' order by t2.id").SelectToSql("t1.*,t2.name as school_name");
-                    var studentView = db.SqlQuery<Student_View>(sql);
+                    string sql2 = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id?"/* 最后加?代表left join否则inner join  */).WhereAfter("sex='男' order by t2.id").SelectToSql("t1.*,t2.name as school_name");
+                    var studentView = db.SqlQuery<Student_View>(sql2);
 
                     //联表分页查询
                     string pageSql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id").SelectToPageSql(3,10,"t1.id asc","t1.*,t2.name as school_name");
@@ -100,7 +106,10 @@ namespace WebTest
                     db.GetString(sql);
                     db.GetInt(sql);
                     db.GetScalar(sql);
-                   // db.GetReader(StudentViewSql);
+                    using (SqlDataReader read = db.GetReader(sql))
+                    { 
+                    
+                    }
 
                 }
                 catch (Exception ex)

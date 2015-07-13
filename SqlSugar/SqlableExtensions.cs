@@ -14,25 +14,7 @@ namespace SqlSugar
     /// </summary>
     public static partial class SqlableExtensions
     {
-        private static string Remove(this string thisValue)
-        {
-            if (thisValue == null)
-                throw new ArgumentNullException("SqlSugarExtensions.Remove.thisValue");
-            return thisValue.TrimEnd('?');
-        }
-        private static string IsLeft(this string thisValue)
-        {
-            if (thisValue == null)
-                throw new ArgumentNullException("SqlSugarExtensions.IsLeft.thisValue");
-            return (thisValue.Last() == '?') ? "LEFT" : "INNER";
 
-        }
-        private static string IsNoLock(this bool thisValue)
-        {
-            if (thisValue) return " WITH(NOLOCK) ";
-            return "";
-
-        }
         /// <summary>
         /// sql语句Where以后的所有字符串
         /// </summary>
@@ -60,6 +42,9 @@ namespace SqlSugar
         /// <returns></returns>
         public static string SelectToSql(this Sqlable sqlable, string SelectField = "*")
         {
+            if (sqlable.MappingCurrentState == null) {
+                throw new Exception("SelectToSql必需在MappingTable后面使用");
+            }
             string sql = "SELECT " + SelectField + sqlable.Sql;
             sqlable = null;
             return sql;
@@ -73,13 +58,64 @@ namespace SqlSugar
         /// <param name="orderFields"></param>
         /// <param name="SelectField"></param>
         /// <returns></returns>
-        public static string SelectToPageSql(this Sqlable sqlable, int pageIndex, int pageSize,string orderFields, string SelectField = "*")
+        public static string SelectToPageSql(this Sqlable sqlable, int pageIndex, int pageSize, string orderFields, string SelectField = "*")
         {
+            if (sqlable.MappingCurrentState == null)
+            {
+                throw new Exception("SelectToSql必需在MappingTable后面使用");
+            }
             string sql = "SELECT " + SelectField + ",row_index=ROW_NUMBER() OVER(ORDER BY " + orderFields + " )" + sqlable.Sql;
             sqlable = null;
             int skip = (pageIndex - 1) * pageSize + 1;
             int take = pageSize;
-            return string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql,skip,skip+take-1);
+            return string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
         }
+        /// <summary>
+        /// 根据T生成查询字符串
+        /// </summary>
+        /// <typeparam name="T">实表类</typeparam>
+        /// <param name="sqlable"></param>
+        /// <returns> select * from T</returns>
+        public static string TableToSql<T>(this Sqlable sqlable)
+        {
+            if (sqlable.MappingCurrentState != null)
+                throw new Exception(".Table只能在Sqlable后面使用,正确用法：Sqlable.Table<T>() ");
+            return string.Format(" FROM {0} {1}", typeof(T).Name, sqlable.IsNoLock.IsNoLock());
+        }
+        /// <summary>
+        /// 根据tableName生成查询字符串
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="tableName"></param>
+        /// <returns>select * from tableName</returns>
+        public static string TableToSql(this Sqlable sqlable, string tableName)
+        {
+            if (sqlable.MappingCurrentState != null)
+                throw new Exception(".Table只能在Sqlable后面使用,正确用法：Sqlable.Table(”tableName“) ");
+            return string.Format(" FROM {0} {1}", tableName, sqlable.IsNoLock.IsNoLock());
+        }
+
+        #region helper methods
+        private static string Remove(this string thisValue)
+        {
+            if (thisValue == null)
+                throw new ArgumentNullException("SqlSugarExtensions.Remove.thisValue");
+            return thisValue.TrimEnd('?');
+        }
+        private static string IsLeft(this string thisValue)
+        {
+            if (thisValue == null)
+                throw new ArgumentNullException("SqlSugarExtensions.IsLeft.thisValue");
+            return (thisValue.Last() == '?') ? "LEFT" : "INNER";
+
+        }
+        private static string IsNoLock(this bool thisValue)
+        {
+            if (thisValue) return " WITH(NOLOCK) ";
+            return "";
+
+        } 
+        #endregion
+
     }
 }

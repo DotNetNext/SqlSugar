@@ -64,7 +64,7 @@ namespace SqlSugar
             return queryable;
         }
         /// <summary>
-        /// 从起始点向后取指定条件的数据
+        /// 从起始点向后取指定条数的数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
