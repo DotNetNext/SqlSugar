@@ -35,7 +35,8 @@ namespace SqlSugar
 
         public static SqlSugar.Queryable<T> Skip<T>(this SqlSugar.Queryable<T> queryable, int num)
         {
-            if (queryable.Order.IsNullOrEmpty()) {
+            if (queryable.Order.IsNullOrEmpty())
+            {
                 throw new Exception(".Skip必需使用.Order排序");
             }
             queryable.Skip = num;
@@ -57,10 +58,29 @@ namespace SqlSugar
             {
                 throw new Exception("分页必需使用.Order排序");
             }
-            queryable.Skip = (pageIndex - 1) * pageSize+1;
+            queryable.Skip = (pageIndex - 1) * pageSize + 1;
             queryable.Take = pageSize;
             return queryable.ToList();
         }
+
+        public static T Single<T>(this  SqlSugar.Queryable<T> queryable)
+        {
+            return queryable.ToList().Single();
+        }
+
+        public static T Single<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
+        {
+            var type = queryable.Type;
+            string whereStr = string.Empty;
+            if (expression.Body is BinaryExpression)
+            {
+                BinaryExpression be = ((BinaryExpression)expression.Body);
+                whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+            }
+            queryable.Where.Add(whereStr);
+            return queryable.ToList().Single();
+        }
+
         public static List<T> ToList<T>(this SqlSugar.Queryable<T> queryable)
         {
             StringBuilder sbSql = new StringBuilder();
@@ -81,7 +101,7 @@ namespace SqlSugar
             else if (queryable.Skip != null && queryable.Take != null)
             {
                 sbSql.Insert(0, "SELECT * FROM ( ");
-                sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip + "AND  " + (queryable.Skip + queryable.Take-1));
+                sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip + "AND  " + (queryable.Skip + queryable.Take - 1));
             }
 
             var dt = queryable.DB.GetDataTable(sbSql.ToString());
