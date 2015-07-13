@@ -43,17 +43,30 @@ namespace WebTest
                     var School = db.SqlQuery<school>("select * from School");
 
 
-                    //联表查询
-                    /*db.Sqlable是一个SQL语句生成帮助类*/
-                    string StudentViewSql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id?"/* 最后加?代表left join否则inner join  */).WhereAfter("sex='男' order by t2.id").SelectToSql("t1.*,t2.name as school_name");
-                    var studentView = db.SqlQuery<Student_View>(StudentViewSql);
 
                     //Queryable<T>查询扩展函数
-                    var student = db.Queryable<Student>().Where(it => it.name == "张三").Where(c=>c.id>10).ToList();
+                    var student = db.Queryable<Student>().Where(it => it.name == "张三").Where(c => c.id > 10).ToList();
                     var student2 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Skip(10).Take(20).ToList();//取10-20条
-                    var student22 = db.Queryable<Student>().Where(c => c.id > 10).Order("id asc").ToPageList(2,2);//分页
-                    var student3= db.Queryable<Student>().Where(c => c.id > 10).Order("id").Skip(2).ToList();//从第2条开始
+                    var student22 = db.Queryable<Student>().Where(c => c.id > 10).Order("id asc").ToPageList(2, 2);//分页
+                    var student3 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Skip(2).ToList();//从第2条开始
                     var student4 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Take(2).ToList();//top2
+
+
+
+                    //---------联表查询---------//
+
+                    /*db.Sqlable是一个SQL语句生成帮助类*/
+
+                    //联表查询
+                    string sql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id?"/* 最后加?代表left join否则inner join  */).WhereAfter("sex='男' order by t2.id").SelectToSql("t1.*,t2.name as school_name");
+                    var studentView = db.SqlQuery<Student_View>(sql);
+
+                    //联表分页查询
+                    string pageSql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id").SelectToPageSql(3,10,"t1.id asc","t1.*,t2.name as school_name");
+                    var studentView2 = db.SqlQuery<Student_View>(pageSql);
+
+            
+
                     /*********************************************3、添加****************************************************/
 
                     school s = new school()
@@ -82,11 +95,11 @@ namespace WebTest
 
                     /*********************************************6、基类****************************************************/
 
-                    db.ExecuteCommand(StudentViewSql);
-                    db.GetDataTable(StudentViewSql);
-                    db.GetString(StudentViewSql);
-                    db.GetInt(StudentViewSql);
-                    db.GetScalar(StudentViewSql);
+                    db.ExecuteCommand(sql);
+                    db.GetDataTable(sql);
+                    db.GetString(sql);
+                    db.GetInt(sql);
+                    db.GetScalar(sql);
                    // db.GetReader(StudentViewSql);
 
                 }

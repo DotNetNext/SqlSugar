@@ -51,7 +51,7 @@ namespace SqlSugar
             sqlable = null;
             int skip = (pageIndex - 1) * pageSize + 1;
             int take = pageSize;
-            return string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {0} AND {1}", sql,skip,skip+take);
+            return string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql,skip,skip+take-1);
         }
     }
 }

@@ -74,7 +74,7 @@ namespace SqlSugar
             else if (queryable.Skip != null && queryable.Take != null)
             {
                 sbSql.Insert(0, "SELECT * FROM ( ");
-                sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip + "AND  " + (queryable.Skip + queryable.Take));
+                sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip + "AND  " + (queryable.Skip + queryable.Take-1));
             }
 
             var dt = queryable.DB.GetDataTable(sbSql.ToString());
