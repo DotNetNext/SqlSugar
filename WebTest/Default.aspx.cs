@@ -12,7 +12,7 @@ namespace WebTest
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            string connStr = "server=.;uid=sa;password=sasa;database=nfd";
+            string connStr = @"Server=(LocalDB)\v11.0; Integrated Security=true ;AttachDbFileName=" + Server.MapPath("~/App_Data/SqlSugar.mdf");
             using (SqlSugarClient db = new SqlSugarClient(connStr))
             {
                 db.BeginTran();
@@ -21,11 +21,9 @@ namespace WebTest
 
                 try
                 {
-                    var sql = db.Sqlable.MappingTable<CutBill, CutBillShipment>("t1.c_id=t2.c_id").SelectToSql("t1.*");
-                    var dt = db.GetDataTable(sql);
-                    var id = db.Insert(new test() { name = "哈哈" + DateTime.Now });
-                    var del = db.Delete<test>(21);
-                    var update = db.Update<test>(new { name = "5555" + DateTime.Now }, new { id=1 });
+                   
+                    var dt = db.SqlQuery<School>("select * from School");
+                   
 
                 }
                 catch (Exception)
@@ -41,24 +39,15 @@ namespace WebTest
         }
     }
 
-    public class test
+    public class School
     {
         public int id { get; set; }
         public string name { get; set; }
     }
 
-    public class V_Student
+    public class  Student
     {
 
     }
-    public class CutBill
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-    }
-
-    public class CutBillShipment
-    {
-
-    }
+  
 }
