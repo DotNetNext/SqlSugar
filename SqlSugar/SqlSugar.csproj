@@ -41,15 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities.cs" />
+    <Compile Include="Tool\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryableExtensions.cs" />
-    <Compile Include="SqlableExtensions.cs" />
-    <Compile Include="SqlableExtensions2.cs" />
-    <Compile Include="SqlHelper.cs" />
+    <Compile Include="Queryable\Queryable.cs" />
+    <Compile Include="Queryable\QueryableExtensions.cs" />
+    <Compile Include="Sqlable\Sqlable.cs" />
+    <Compile Include="Sqlable\SqlableExtensions.cs" />
+    <Compile Include="Sqlable\SqlableExtensions2.cs" />
+    <Compile Include="Base\SqlHelper.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Tool\CacheManager.cs" />
-    <Compile Include="Tool\ClassGenerating.cs" />
+    <Compile Include="Generating\ClassGenerating.cs" />
     <Compile Include="Tool\FileSugar.cs" />
     <Compile Include="Tool\IHttpStorageObject.cs" />
     <Compile Include="Tool\IsWhatExtenions.cs" />

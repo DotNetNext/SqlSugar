@@ -29,6 +29,7 @@ namespace SqlSugar
         /// 创建sql的对象
         /// </summary>
         public Sqlable Sqlable = new Sqlable();
+
         /// <summary>
         /// 创建查询的对象
         /// </summary>
@@ -38,6 +39,7 @@ namespace SqlSugar
         {
             return new Queryable<T>() { DB = this };
         }
+
         /// <summary>
         /// 根据SQL语句将数据映射到List<T>
         /// </summary>
