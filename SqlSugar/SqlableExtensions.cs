@@ -33,6 +33,12 @@ namespace SqlSugar
             return "";
 
         }
+        /// <summary>
+        /// sql语句Where以后的所有字符串
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="whereStr">Where以后的所有字符串</param>
+        /// <returns></returns>
         public static Sqlable WhereAfter(this Sqlable sqlable, string whereStr)
         {
             if (sqlable.MappingCurrentState == MappingCurrentState.MappingTable)
@@ -46,12 +52,27 @@ namespace SqlSugar
                 throw new Exception(string.Format("{0}无法使用Where,Where必需在MappingTable后面使用", sqlable.MappingCurrentState));
             }
         }
+        /// <summary>
+        /// 查询列并且返回完整SQL符串
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="SelectField"></param>
+        /// <returns></returns>
         public static string SelectToSql(this Sqlable sqlable, string SelectField = "*")
         {
             string sql = "SELECT " + SelectField + sqlable.Sql;
             sqlable = null;
             return sql;
         }
+        /// <summary>
+        /// 查询列并且返回完整SQL分页符串
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="orderFields"></param>
+        /// <param name="SelectField"></param>
+        /// <returns></returns>
         public static string SelectToPageSql(this Sqlable sqlable, int pageIndex, int pageSize,string orderFields, string SelectField = "*")
         {
             string sql = "SELECT " + SelectField + ",row_index=ROW_NUMBER() OVER(ORDER BY " + orderFields + " )" + sqlable.Sql;
