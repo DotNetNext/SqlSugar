@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using Models;
+using System.Linq.Expressions;
 
 namespace WebTest
 {
@@ -19,6 +20,7 @@ namespace WebTest
                 db.BeginTran();//开启事务，可以不使用事务
                 //db.CommitTran using释放资源时自动执行
 
+                db.Sqlable.IsNoLock = true; //查询是允许脏读的 
 
                 try
                 {
@@ -43,11 +45,15 @@ namespace WebTest
 
                     //联表查询
                     /*db.Sqlable是一个SQL语句生成帮助类*/
-                    db.Sqlable.IsNoLock = true; //StudentViewSql语句中的表是允许脏读的 
                     string StudentViewSql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id?"/* 最后加?代表left join否则inner join  */).WhereAfter("sex='男' order by t2.id").SelectToSql("t1.*,t2.name as school_name");
                     var studentView = db.SqlQuery<Student_View>(StudentViewSql);
 
-
+                    //Queryable<T>查询扩展函数
+                    var student = db.Queryable<Student>().Where(it => it.name == "张三").Where(c=>c.id>10).ToList();
+                    var student2 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Skip(10).Take(20).ToList();//取10-20条
+                    var student22 = db.Queryable<Student>().Where(c => c.id > 10).Order("id asc").ToPageList(2,2);//分页
+                    var student3= db.Queryable<Student>().Where(c => c.id > 10).Order("id").Skip(2).ToList();//从第2条开始
+                    var student4 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Take(2).ToList();//top2
                     /*********************************************3、添加****************************************************/
 
                     school s = new school()
@@ -56,13 +62,23 @@ namespace WebTest
                     };
                     var id = db.Insert(s);
 
+
+
                     /*********************************************4、修改****************************************************/
 
                     db.Update<school>(new { name = "蓝翔2" }, new { id = id });
 
+
+
+
+
                     /*********************************************5、删除****************************************************/
 
                     db.Delete<school>(id);
+
+
+
+
 
                     /*********************************************6、基类****************************************************/
 
@@ -71,13 +87,14 @@ namespace WebTest
                     db.GetString(StudentViewSql);
                     db.GetInt(StudentViewSql);
                     db.GetScalar(StudentViewSql);
-                    db.GetReader(StudentViewSql);
+                   // db.GetReader(StudentViewSql);
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
                     db.RollbackTran();
+                    throw ex;
                 }
 
             }
@@ -87,10 +104,7 @@ namespace WebTest
         }
 
 
-        private void Write(string html)
-        {
-            Response.Write("<p>" + html + "</p>");
-        }
+
     }
 
 

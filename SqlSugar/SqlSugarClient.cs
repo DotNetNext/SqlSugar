@@ -23,6 +23,11 @@ namespace SqlSugar
         /// </summary>
         public Sqlable Sqlable = new Sqlable();
 
+        public Queryable<T> Queryable<T>() where T : new()
+        {
+            return new Queryable<T>() { DB = this };
+        }
+
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             DataTable dt = null;
