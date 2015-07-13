@@ -37,7 +37,14 @@ namespace SqlSugar
                 _tran = null;
             }
         }
-
+        public string GetString(string sql, params SqlParameter[] pars)
+        {
+            return Convert.ToString(GetScalar(sql, pars));
+        }
+        public int GetInt(string sql, params SqlParameter[] pars)
+        {
+            return Convert.ToInt32(GetScalar(sql, pars));
+        }
         public object GetScalar(string sql, params SqlParameter[] pars)
         {
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
@@ -78,11 +85,12 @@ namespace SqlSugar
             return sqlDataReader;
         }
 
-        public DataTable GetDataTable(string sql,params SqlParameter[] pars)
+        public DataTable GetDataTable(string sql, params SqlParameter[] pars)
         {
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
-            if (_tran != null) {
+            if (_tran != null)
+            {
                 _sqlDataAdapter.SelectCommand.Transaction = _tran;
             }
             DataTable dt = new DataTable();
@@ -104,7 +112,7 @@ namespace SqlSugar
             _sqlDataAdapter.SelectCommand.Parameters.Clear();
             return ds;
         }
-   
+
         public void Dispose()
         {
             if (_sqlConnection != null)

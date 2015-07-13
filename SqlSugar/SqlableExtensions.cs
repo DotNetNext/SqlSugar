@@ -26,7 +26,7 @@ namespace SqlSugar
             return "";
 
         }
-        public static Sqlable Where(this Sqlable sqlable, string whereStr)
+        public static Sqlable WhereAfter(this Sqlable sqlable, string whereStr)
         {
             if (sqlable.MappingCurrentState == MappingCurrentState.MappingTable)
             {

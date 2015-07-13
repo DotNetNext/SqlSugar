@@ -102,7 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
-      <Project>{46A17E67-7E3E-4369-9B1F-43BA34BBDAEF}</Project>
+      <Project>{46a17e67-7e3e-4369-9b1f-43ba34bbdaef}</Project>
       <Name>SqlSugar</Name>
     </ProjectReference>
   </ItemGroup>

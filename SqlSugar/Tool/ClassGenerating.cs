@@ -138,10 +138,6 @@ namespace SqlSugar
         /// <summary>
         ///  创建SQL实体文件
         /// </summary>
-        /// <param name="sql">SQL语句</param>
-        /// <param name="className">生成的类名</param>
-        /// <param name="connName">webconfig的connectionStrings name</param>
-        /// <returns></returns>
         public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null)
         {
             var tables = db.GetDataTable("select name from sysobjects where xtype='U'");
@@ -153,6 +149,27 @@ namespace SqlSugar
                     var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
                     var classCode = DataTableToClass(currentTable, tableName, nameSpace);
                     FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode);
+                }
+            }
+        }
+
+        /// <summary>
+        ///  创建SQL实体文件,指定表名
+        /// </summary>
+        public void CreateClassFilesByTableNames(SqlSugarClient db, string fileDirectory, string nameSpace,params string [] tableNames)
+        {
+            var tables = db.GetDataTable("select name from sysobjects where xtype='U'");
+            if (tables != null && tables.Rows.Count > 0)
+            {
+                foreach (DataRow dr in tables.Rows)
+                {
+                    string tableName = dr["name"].ToString().ToLower();
+                    if (tableNames.Any(it => it.ToLower() == tableName))
+                    {
+                        var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
+                        var classCode = DataTableToClass(currentTable, tableName, nameSpace);
+                        FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode);
+                    }
                 }
             }
         }
