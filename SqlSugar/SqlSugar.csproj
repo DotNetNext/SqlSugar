@@ -47,7 +47,6 @@
     <Compile Include="SqlableExtensions.cs" />
     <Compile Include="SqlableExtensions2.cs" />
     <Compile Include="SqlHelper.cs" />
-    <Compile Include="sqlSugar.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Tool\CacheManager.cs" />
     <Compile Include="Tool\ClassGenerating.cs" />
