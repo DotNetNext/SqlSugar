@@ -14,21 +14,24 @@ namespace SqlSugar
         public SqlSugarClient(string connectionString)
             : base(connectionString)
         {
+            ConnectionString = connectionString;
         }
+        public string ConnectionString { get; set; }
 
         /// <summary>
         /// 创建sql的对象
         /// </summary>
         public Sqlable Sqlable = new Sqlable();
 
-        public List<T> SqlQuery<T>(string sql,object whereObj=null)
+        public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             DataTable dt = null;
             if (whereObj != null)
             {
-                dt = GetDataTable(sql,SqlTool.GetObjectToParameters(whereObj));
+                dt = GetDataTable(sql, SqlTool.GetObjectToParameters(whereObj));
             }
-            else {
+            else
+            {
                 dt = GetDataTable(sql);
             }
             var reval = SqlTool.List<T>(dt);
@@ -207,6 +210,7 @@ namespace SqlSugar
             return isSuccess;
         }
 
+        public ClassGenerating ClassGenerating = new ClassGenerating();
 
         /// <summary>
         /// 清除所有缓存

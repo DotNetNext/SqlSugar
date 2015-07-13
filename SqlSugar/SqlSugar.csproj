@@ -48,6 +48,8 @@
     <Compile Include="SqlHelper.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Tool\CacheManager.cs" />
+    <Compile Include="Tool\ClassGenerating.cs" />
+    <Compile Include="Tool\FileSugar.cs" />
     <Compile Include="Tool\IHttpStorageObject.cs" />
     <Compile Include="Tool\IsWhatExtenions.cs" />
     <Compile Include="Tool\SqlTool.cs" />

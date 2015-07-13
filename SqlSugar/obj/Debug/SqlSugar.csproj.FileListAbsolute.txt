@@ -5,6 +5,5 @@ D:\工作\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
 D:\工作\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
 D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\bin\Debug\SqlSugar.dll
 D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\bin\Debug\SqlSugar.pdb
-D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
 D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\obj\Debug\SqlSugar.dll
 D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\obj\Debug\SqlSugar.pdb
