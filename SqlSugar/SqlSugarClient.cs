@@ -29,12 +29,22 @@ namespace SqlSugar
         /// 创建sql的对象
         /// </summary>
         public Sqlable Sqlable = new Sqlable();
-
+        /// <summary>
+        /// 创建查询的对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public Queryable<T> Queryable<T>() where T : new()
         {
             return new Queryable<T>() { DB = this };
         }
-
+        /// <summary>
+        /// 根据SQL语句将数据映射到List<T>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="whereObj"></param>
+        /// <returns></returns>
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             DataTable dt = null;
@@ -222,6 +232,9 @@ namespace SqlSugar
             return isSuccess;
         }
 
+        /// <summary>
+        /// 生成实体的对象
+        /// </summary>
         public ClassGenerating ClassGenerating = new ClassGenerating();
 
         /// <summary>
