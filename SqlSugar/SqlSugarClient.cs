@@ -47,11 +47,11 @@ namespace SqlSugar
         /// 插入
         /// 使用说明:sqlSugar.Insert(entity);
         /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <param name="entity">插入对象</param>
         /// <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
         /// <returns></returns>
-        public object Insert<TEntity>(TEntity entity, bool isIdentity = true) where TEntity : class
+        public object Insert<T>(T entity, bool isIdentity = true) where T : class
         {
 
             Type type = entity.GetType();
@@ -151,13 +151,13 @@ namespace SqlSugar
         /// <param name="rowObj">new {name="张三",sex="男"}</param>
         /// <param name="whereObj">new {id=100}</param>
         /// <returns></returns>
-        public bool Update<TEntity>(object rowObj, object whereObj) where TEntity : class
+        public bool Update<T>(object rowObj, object whereObj) where T : class
         {
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
             if (whereObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.whereObj"); }
 
 
-            Type type = typeof(TEntity);
+            Type type = typeof(T);
             string sql = string.Format(" update {0} set ", type.Name);
             Dictionary<string, string> rows = SqlTool.GetObjectToDictionary(rowObj);
             foreach (var r in rows)
@@ -180,7 +180,7 @@ namespace SqlSugar
 
         /// <summary>
         /// 批量删除(注意：where field 为class中的第一个属性)
-        /// 用法:
+        /// 使用说明::
         /// Delete<T>(new int[]{1,2,3})
         /// 或者
         /// Delete<T>(3)
@@ -188,9 +188,9 @@ namespace SqlSugar
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
         /// <param name="whereIn">主键为实体的第一个属性</param>
-        public bool Delete<TEntity>(params dynamic[] whereIn)
+        public bool Delete<T>(params dynamic[] whereIn)
         {
-            Type type = typeof(TEntity);
+            Type type = typeof(T);
             //属性缓存
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
