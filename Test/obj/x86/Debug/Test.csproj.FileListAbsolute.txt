@@ -1,1 +1,0 @@
-D:\工作\SqlSugar\Test\obj\x86\Debug\ResolveAssemblyReference.cache
