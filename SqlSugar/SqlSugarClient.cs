@@ -235,6 +235,43 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 批量删假除(注意：where field 为class中的第一个属性)
+        /// 使用说明::
+        /// Delete<T>(new int[]{1,2,3})
+        /// 或者
+        /// Delete<T>(3)
+        /// </summary>
+        /// <param name="oc"></param>
+        /// <param name="whereIn">in的集合</param>
+        /// <param name="whereIn">主键为实体的第一个属性</param>
+        public bool FalseDelete<T>(string field,params dynamic[] whereIn)
+        {
+            Type type = typeof(T);
+            //属性缓存
+            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = null;
+            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+            {
+                props = cachePropertiesManager[cachePropertiesKey];
+            }
+            else
+            {
+                props = type.GetProperties();
+                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+            }
+            string key = type.FullName;
+            bool isSuccess = false;
+            if (whereIn != null && whereIn.Length > 0)
+            {
+                string sql = string.Format("update  {0} set {3}=0 where {1} in ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn),field);
+                int deleteRowCount = ExecuteCommand(sql);
+                isSuccess = deleteRowCount > 0;
+            }
+            return isSuccess;
+        }
+
+        /// <summary>
         /// 生成实体的对象
         /// </summary>
         public ClassGenerating ClassGenerating = new ClassGenerating();
