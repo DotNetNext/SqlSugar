@@ -8,13 +8,14 @@ namespace SqlSugar
     
  
     /// <summary>
-    /// 映射表操作的当前状态
+    /// Sqlable执行状态
     /// </summary>
-    public enum MappingCurrentState
+    public enum SqlableCurrentState
     {
         MappingTable = 0,
         Where = 1,
         Select = 2,
-        SingleTable = 3
+        SingleTable = 3,
+        Table=4
     }
 }

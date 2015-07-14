@@ -23,30 +23,32 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable WhereAfter(this Sqlable sqlable, string whereStr)
         {
-            if (sqlable.MappingCurrentState == MappingCurrentState.MappingTable)
+            if (sqlable.SqlableCurrentState.IsIn(SqlableCurrentState.MappingTable,SqlableCurrentState.Table))
             {
-                sqlable.MappingCurrentState = MappingCurrentState.Where;
+                sqlable.SqlableCurrentState = SqlableCurrentState.Where;
                 sqlable.Sql.Append("WHERE  " + whereStr.Replace("where", "").Replace("WHERE", ""));
                 return sqlable;
             }
             else
             {
-                throw new Exception(string.Format("{0}无法使用Where,Where必需在MappingTable后面使用", sqlable.MappingCurrentState));
+                throw new Exception(string.Format("{0}无法使用Where,Where必需在MappingTable或者Table后面使用", sqlable.SqlableCurrentState));
             }
         }
         /// <summary>
         /// 查询列并且返回完整SQL符串
         /// </summary>
         /// <param name="sqlable"></param>
-        /// <param name="SelectField"></param>
+        /// <param name="SelectFields"></param>
         /// <returns></returns>
-        public static string SelectToSql(this Sqlable sqlable, string SelectField = "*")
+        public static string ToSql(this Sqlable sqlable, string SelectFields = "*")
         {
-            if (sqlable.MappingCurrentState == null) {
-                throw new Exception("SelectToSql必需在MappingTable后面使用");
+            if (sqlable.SqlableCurrentState == null)
+            {
+                throw new Exception("ToSql必需在MappingTable或者Table后面使用");
             }
-            string sql = "SELECT " + SelectField + sqlable.Sql;
-            sqlable = null;
+            string sql = "SELECT " + SelectFields + sqlable.Sql;
+            sqlable.SqlableCurrentState = null;
+            sqlable =null;
             return sql;
         }
         /// <summary>
@@ -56,19 +58,21 @@ namespace SqlSugar
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="orderFields"></param>
-        /// <param name="SelectField"></param>
+        /// <param name="SelectFields"></param>
         /// <returns></returns>
-        public static string SelectToPageSql(this Sqlable sqlable, int pageIndex, int pageSize, string orderFields, string SelectField = "*")
+        public static string ToPageSql(this Sqlable sqlable, int pageIndex, int pageSize, string orderFields, string SelectFields = "*")
         {
-            if (sqlable.MappingCurrentState == null)
+            if (sqlable.SqlableCurrentState == null)
             {
-                throw new Exception("SelectToSql必需在MappingTable后面使用");
+                throw new Exception("ToPageSql必需在MappingTable或者Table后面使用");
             }
-            string sql = "SELECT " + SelectField + ",row_index=ROW_NUMBER() OVER(ORDER BY " + orderFields + " )" + sqlable.Sql;
-            sqlable = null;
+            string sql = "SELECT " + SelectFields + ",row_index=ROW_NUMBER() OVER(ORDER BY " + orderFields + " )" + sqlable.Sql;
             int skip = (pageIndex - 1) * pageSize + 1;
             int take = pageSize;
-            return string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
+            sql = string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
+            sqlable.SqlableCurrentState = null;
+            sqlable = null;
+            return sql;
         }
         /// <summary>
         /// 根据T生成查询字符串
@@ -76,11 +80,14 @@ namespace SqlSugar
         /// <typeparam name="T">实表类</typeparam>
         /// <param name="sqlable"></param>
         /// <returns> select * from T</returns>
-        public static string TableToSql<T>(this Sqlable sqlable)
+        public static Sqlable Table<T>(this Sqlable sqlable)
         {
-            if (sqlable.MappingCurrentState != null)
+            if (sqlable.SqlableCurrentState != null)
                 throw new Exception(".Table只能在Sqlable后面使用,正确用法：Sqlable.Table<T>() ");
-            return string.Format(" FROM {0} {1}", typeof(T).Name, sqlable.IsNoLock.IsNoLock());
+            sqlable.Sql = new StringBuilder();
+            sqlable.Sql.Append(string.Format(" FROM {0} {1}", typeof(T).Name, sqlable.IsNoLock.IsNoLock()));
+            sqlable.SqlableCurrentState = SqlableCurrentState.Table;
+            return sqlable;
         }
         /// <summary>
         /// 根据tableName生成查询字符串
@@ -88,11 +95,14 @@ namespace SqlSugar
         /// <param name="sqlable"></param>
         /// <param name="tableName"></param>
         /// <returns>select * from tableName</returns>
-        public static string TableToSql(this Sqlable sqlable, string tableName)
+        public static Sqlable Table(this Sqlable sqlable, string tableName)
         {
-            if (sqlable.MappingCurrentState != null)
+            if (sqlable.SqlableCurrentState != null)
                 throw new Exception(".Table只能在Sqlable后面使用,正确用法：Sqlable.Table(”tableName“) ");
-            return string.Format(" FROM {0} {1}", tableName, sqlable.IsNoLock.IsNoLock());
+            sqlable.Sql = new StringBuilder();
+            sqlable.Sql.Append(string.Format(" FROM {0} {1}", tableName, sqlable.IsNoLock.IsNoLock()));
+            sqlable.SqlableCurrentState = SqlableCurrentState.Table;
+            return sqlable;
         }
 
         #region helper methods
@@ -114,7 +124,7 @@ namespace SqlSugar
             if (thisValue) return " WITH(NOLOCK) ";
             return "";
 
-        } 
+        }
         #endregion
 
     }

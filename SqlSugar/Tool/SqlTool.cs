@@ -28,11 +28,17 @@ namespace SqlSugar
             Func<int, string> GetMethodString = count =>
             {
                 string methodString = (@"  
+/// <summary>
+/// 根据T1到TN生成关联查询
+/// </summary>
+/// <returns></returns>
 public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
            {1}
         {{
+    if (sqlable.SqlableCurrentState != null)
+                throw new Exception("".MappingTable只能在Sqlable后面使用,正确用法：Sqlable.MappingTable "");
             {2};
-            sqlable.MappingCurrentState = MappingCurrentState.MappingTable;
+            sqlable.SqlableCurrentState = SqlableCurrentState.MappingTable;
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat(""{3}"",{4});
             sqlable.Sql = sb;

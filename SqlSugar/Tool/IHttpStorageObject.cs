@@ -1,7 +1,7 @@
 ﻿using System;
 namespace SqlSugar
 {
-    public abstract class IHttpStorageObject<V>
+    internal abstract class IHttpStorageObject<V>
     {
 
         public int Minutes = 60;

@@ -18,7 +18,7 @@ namespace SqlSugar
     /// ** 修改人：sunkaixuan
     /// ** 使用说明：
     /// </summary>
-    public class FileSugar
+    internal class FileSugar
     {
         #region 获取文件路并自动创建目录
         /// <summary>

@@ -87,9 +87,21 @@ namespace SqlSugar
                 sqlCommand.Transaction = _tran;
             }
             sqlCommand.Parameters.AddRange(pars);
-            SqlDataReader sqlDataReader = sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
+            SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
             sqlCommand.Parameters.Clear();
             return sqlDataReader;
+        }
+
+        public List<T> GetList<T>(string sql, params SqlParameter[] pars)
+        {
+            var reval = SqlTool.List<T>(GetDataTable(sql, pars));
+            return reval;
+        }
+
+        public T GetSingle<T>(string sql, params SqlParameter[] pars)
+        {
+            var reval = SqlTool.List<T>(GetDataTable(sql, pars)).Single();
+            return reval;
         }
 
         public DataTable GetDataTable(string sql, params SqlParameter[] pars)

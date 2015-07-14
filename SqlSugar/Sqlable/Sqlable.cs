@@ -17,7 +17,7 @@ namespace SqlSugar
         /// <summary>
         /// 当前状态
         /// </summary>
-        public MappingCurrentState? MappingCurrentState { get; set; }
+        public SqlableCurrentState? SqlableCurrentState { get; set; }
         /// <summary>
         /// 是否允许脏读
         /// </summary>

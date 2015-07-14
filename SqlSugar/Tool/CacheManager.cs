@@ -18,7 +18,7 @@ namespace SqlSugar
     /// </summary>
     /// <typeparam name="K">键</typeparam>
     /// <typeparam name="V">值</typeparam>
-    public class CacheManager<V> : IHttpStorageObject<V>
+    internal class CacheManager<V> : IHttpStorageObject<V>
     {
 
         #region 全局变量
