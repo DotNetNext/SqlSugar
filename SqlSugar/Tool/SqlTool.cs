@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
 
+
 namespace SqlSugar
 {
     /// <summary>
@@ -88,57 +89,22 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
         }
 
 
-
-        /// <summary>  
-        /// DataReader利用泛型填充实体类  
-        /// </summary>  
-        /// <typeparam name="T">实体类</typeparam>  
-        /// <param name="reader">DataReader</param>  
-        /// <returns></returns>  
-        public static List<T> DataReaderToList<T>(IDataReader reader)
+        /// <summary>
+        /// Reader转成List<T>
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="dr"></param>
+        /// <param name="isClose"></param>
+        /// <returns></returns>
+        public static  List<T> DataReaderToList<T>(IDataReader dr, bool isClose=true) 
         {
-            var type = typeof(T);
-            //实例化一个List<>泛型集合  
-            List<T> DataList = new List<T>();
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
-            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = null;
-            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
-            {
-                props = cachePropertiesManager[cachePropertiesKey];
-            }
-            else
-            {
-                props = type.GetProperties();
-                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
-            }
-            while (reader.Read())
-            {
-                T rowInstance = Activator.CreateInstance<T>();//动态创建数据实体对象  
-                //通过反射取得对象所有的Property  
-                foreach (PropertyInfo Property in props)
-                {
-                    try
-                    {
-                        //取得当前数据库字段的顺序  
-                        int Ordinal = reader.GetOrdinal(Property.Name);
-                        if (reader.GetValue(Ordinal) != DBNull.Value)
-                        {
-                            //将DataReader读取出来的数据填充到对象实体的属性里  
-                            Property.SetValue(rowInstance, Convert.ChangeType(reader.GetValue(Ordinal), Property.PropertyType), null);
-                        }
-                    }
-                    catch
-                    {
-                        break;
-                    }
-                }
-                DataList.Add(rowInstance);
-            }
-            reader.Dispose();
-            reader.Close();
-            return DataList;
-        }  
+            IDataReaderEntityBuilder<T> eblist = IDataReaderEntityBuilder<T>.CreateBuilder(dr);
+            List<T> list = new List<T>();
+            if (dr == null) return list;
+            while (dr.Read()) list.Add(eblist.Build(dr));
+            if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
+            return list;
+        }
 
         ///// <summary>
         ///// 将dataTable转成List<T>
