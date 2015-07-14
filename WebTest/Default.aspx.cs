@@ -18,7 +18,7 @@ namespace WebTest
             //连接字符串
             string connStr = @"Server=(LocalDB)\v11.0; Integrated Security=true ;AttachDbFileName=" + Server.MapPath("~/App_Data/SqlSugar.mdf");
 
-            using (SqlSugarClient db = new SqlSugarClient(connStr))
+            using (SqlSugarClient db = new SqlSugarClient(connStr))//开启数据库连接
             {
                 //开启事务，可以不使用事务,也可以使用多个事务
                 db.BeginTran();
@@ -118,7 +118,7 @@ namespace WebTest
                     /*************************************************5、删除****************************************************/
                     /************************************************************************************************************/
                     db.Delete<school>(id);
-
+                    db.Delete<school>(new string[] { "100", "101", "102" });
 
 
 
@@ -145,7 +145,7 @@ namespace WebTest
                     throw ex;
                 }
 
-            }
+            }//关闭数据库连接
             Console.Read();
         }
 
