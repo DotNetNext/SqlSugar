@@ -86,7 +86,8 @@ namespace SqlSugar
 
             if (nameSpace != null)
             {
-                return string.Format(@"namespace {1}
+                return string.Format(@"using System;
+namespace {1}
 {{
  {0}
 }}", reval.ToString(), nameSpace);
