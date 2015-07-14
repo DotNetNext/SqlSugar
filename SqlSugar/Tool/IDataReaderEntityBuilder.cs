@@ -28,36 +28,45 @@ namespace SqlSugar
         }
         public static IDataReaderEntityBuilder<T> CreateBuilder(IDataRecord dataRecord)
         {
-            IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
-            DynamicMethod method = new DynamicMethod("DynamicCreateEntity", typeof(T),
-                    new Type[] { typeof(IDataRecord) }, typeof(T), true);
-            ILGenerator generator = method.GetILGenerator();
-            LocalBuilder result = generator.DeclareLocal(typeof(T));
-            generator.Emit(OpCodes.Newobj, typeof(T).GetConstructor(Type.EmptyTypes));
-            generator.Emit(OpCodes.Stloc, result);
-            for (int i = 0; i < dataRecord.FieldCount; i++)
+            var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
+            var type = typeof(T);
+            string cacheKey = "CreateBuilder." + type.FullName;
+            if (cacheManager.ContainsKey(cacheKey))
+                return cacheManager[cacheKey];
+            else
             {
-                PropertyInfo propertyInfo = typeof(T).GetProperty(dataRecord.GetName(i));
-                Label endIfLabel = generator.DefineLabel();
-                if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
+                IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
+                DynamicMethod method = new DynamicMethod("DynamicCreateEntity", typeof(T),
+                        new Type[] { typeof(IDataRecord) }, typeof(T), true);
+                ILGenerator generator = method.GetILGenerator();
+                LocalBuilder result = generator.DeclareLocal(typeof(T));
+                generator.Emit(OpCodes.Newobj, typeof(T).GetConstructor(Type.EmptyTypes));
+                generator.Emit(OpCodes.Stloc, result);
+                for (int i = 0; i < dataRecord.FieldCount; i++)
                 {
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldc_I4, i);
-                    generator.Emit(OpCodes.Callvirt, isDBNullMethod);
-                    generator.Emit(OpCodes.Brtrue, endIfLabel);
-                    generator.Emit(OpCodes.Ldloc, result);
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldc_I4, i);
-                    generator.Emit(OpCodes.Callvirt, getValueMethod);
-                    generator.Emit(OpCodes.Unbox_Any, dataRecord.GetFieldType(i));
-                    generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
-                    generator.MarkLabel(endIfLabel);
+                    PropertyInfo propertyInfo = typeof(T).GetProperty(dataRecord.GetName(i));
+                    Label endIfLabel = generator.DefineLabel();
+                    if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
+                    {
+                        generator.Emit(OpCodes.Ldarg_0);
+                        generator.Emit(OpCodes.Ldc_I4, i);
+                        generator.Emit(OpCodes.Callvirt, isDBNullMethod);
+                        generator.Emit(OpCodes.Brtrue, endIfLabel);
+                        generator.Emit(OpCodes.Ldloc, result);
+                        generator.Emit(OpCodes.Ldarg_0);
+                        generator.Emit(OpCodes.Ldc_I4, i);
+                        generator.Emit(OpCodes.Callvirt, getValueMethod);
+                        generator.Emit(OpCodes.Unbox_Any, dataRecord.GetFieldType(i));
+                        generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
+                        generator.MarkLabel(endIfLabel);
+                    }
                 }
+                generator.Emit(OpCodes.Ldloc, result);
+                generator.Emit(OpCodes.Ret);
+                dynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
+                cacheManager.Add(cacheKey, dynamicBuilder, cacheManager.Day);
+                return dynamicBuilder;
             }
-            generator.Emit(OpCodes.Ldloc, result);
-            generator.Emit(OpCodes.Ret);
-            dynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
-            return dynamicBuilder;
         }
     }
 }
