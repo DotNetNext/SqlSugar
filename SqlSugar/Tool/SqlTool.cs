@@ -19,6 +19,9 @@ namespace SqlSugar
     /// </summary>
     internal class SqlTool
     {
+        public static Type StringType = typeof(string);
+        public static Type IntType = typeof(int);
+
         /// <summary>
         /// 生成MappingTable的内部函数
         /// </summary>
@@ -172,13 +175,15 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
         public static SqlParameter[] GetObjectToParameters(object obj)
         {
             List<SqlParameter> listParams = new List<SqlParameter>();
-            var propertiesObj = obj.GetType().GetProperties();
-            string replaceGuid = Guid.NewGuid().ToString();
-            foreach (PropertyInfo r in propertiesObj)
+            if (obj != null)
             {
-                listParams.Add(new SqlParameter("@" + r.Name, r.GetValue(obj, null).ToString()));
+                var propertiesObj = obj.GetType().GetProperties();
+                string replaceGuid = Guid.NewGuid().ToString();
+                foreach (PropertyInfo r in propertiesObj)
+                {
+                    listParams.Add(new SqlParameter("@" + r.Name, r.GetValue(obj, null).ToString()));
+                }
             }
-
             return listParams.ToArray();
         }
 

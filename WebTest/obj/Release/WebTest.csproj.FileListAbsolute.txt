@@ -5,3 +5,10 @@ D:\学习\sunkaixuan-SqlSugar-master\WebTest\bin\SqlSugar.pdb
 D:\学习\sunkaixuan-SqlSugar-master\WebTest\obj\Release\WebTest.csprojResolveAssemblyReference.cache
 D:\学习\sunkaixuan-SqlSugar-master\WebTest\obj\Release\WebTest.dll
 D:\学习\sunkaixuan-SqlSugar-master\WebTest\obj\Release\WebTest.pdb
+D:\工作\SqlSugar\WebTest\bin\WebTest.dll
+D:\工作\SqlSugar\WebTest\bin\WebTest.pdb
+D:\工作\SqlSugar\WebTest\bin\SqlSugar.dll
+D:\工作\SqlSugar\WebTest\bin\SqlSugar.pdb
+D:\工作\SqlSugar\WebTest\obj\Release\ResolveAssemblyReference.cache
+D:\工作\SqlSugar\WebTest\obj\Release\WebTest.dll
+D:\工作\SqlSugar\WebTest\obj\Release\WebTest.pdb

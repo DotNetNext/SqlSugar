@@ -50,13 +50,17 @@ namespace SqlSugar
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             SqlDataReader reader = null;
-            if (whereObj != null)
+            var pars = SqlTool.GetObjectToParameters(whereObj);
+            var type = typeof(T);
+            reader = GetReader(sql, pars);
+            if (type.IsIn(SqlTool.IntType,SqlTool.StringType))
             {
-                reader = GetReader(sql, SqlTool.GetObjectToParameters(whereObj));
-            }
-            else
-            {
-                reader = GetReader(sql);
+                List<T> strReval = new List<T>();
+                using (SqlDataReader re = reader)
+                {
+                    strReval.Add((T)re.GetSqlValue(0));
+                }
+                return strReval;
             }
             var reval = SqlTool.DataReaderToList<T>(reader);
             return reval;
@@ -244,7 +248,7 @@ namespace SqlSugar
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
         /// <param name="whereIn">主键为实体的第一个属性</param>
-        public bool FalseDelete<T>(string field,params dynamic[] whereIn)
+        public bool FalseDelete<T>(string field, params dynamic[] whereIn)
         {
             Type type = typeof(T);
             //属性缓存
@@ -264,7 +268,7 @@ namespace SqlSugar
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("update  {0} set {3}=0 where {1} in ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn),field);
+                string sql = string.Format("update  {0} set {3}=0 where {1} in ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn), field);
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }

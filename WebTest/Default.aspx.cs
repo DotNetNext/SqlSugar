@@ -66,7 +66,7 @@ namespace WebTest
 
                     //---------SqlQuery,根据SQL语句映射---------//
                     var School = db.SqlQuery<school>("select * from School");
-
+                    //var spResult = db.SqlQuery<school>("exec sp_school @p1,@p2", new { p1=1,p2=2 });
 
 
                     //---------Sqlable,创建SQL语句---------//
