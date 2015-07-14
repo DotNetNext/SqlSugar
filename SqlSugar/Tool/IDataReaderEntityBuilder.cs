@@ -10,6 +10,7 @@ namespace SqlSugar
 {
     /// <summary>
     /// 作者：网络
+    /// 修改：sunkaixuan
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class IDataReaderEntityBuilder<T>
@@ -36,15 +37,15 @@ namespace SqlSugar
             else
             {
                 IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
-                DynamicMethod method = new DynamicMethod("DynamicCreateEntity", typeof(T),
-                        new Type[] { typeof(IDataRecord) }, typeof(T), true);
+                DynamicMethod method = new DynamicMethod("DynamicCreateEntity", type,
+                        new Type[] { typeof(IDataRecord) }, type, true);
                 ILGenerator generator = method.GetILGenerator();
-                LocalBuilder result = generator.DeclareLocal(typeof(T));
-                generator.Emit(OpCodes.Newobj, typeof(T).GetConstructor(Type.EmptyTypes));
+                LocalBuilder result = generator.DeclareLocal(type);
+                generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
                 generator.Emit(OpCodes.Stloc, result);
                 for (int i = 0; i < dataRecord.FieldCount; i++)
                 {
-                    PropertyInfo propertyInfo = typeof(T).GetProperty(dataRecord.GetName(i));
+                    PropertyInfo propertyInfo = type.GetProperty(dataRecord.GetName(i));
                     Label endIfLabel = generator.DefineLabel();
                     if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                     {
