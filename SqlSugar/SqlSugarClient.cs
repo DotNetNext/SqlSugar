@@ -58,7 +58,10 @@ namespace SqlSugar
                 List<T> strReval = new List<T>();
                 using (SqlDataReader re = reader)
                 {
-                    strReval.Add((T)re.GetSqlValue(0));
+                    while (re.Read())
+                    {
+                        strReval.Add((T)Convert.ChangeType(re.GetValue(0),type));
+                    }
                 }
                 return strReval;
             }

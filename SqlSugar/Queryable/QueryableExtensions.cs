@@ -138,7 +138,7 @@ namespace SqlSugar
             string withNoLock = queryable.DB.Sqlable.IsNoLock ? "WITH(NOLOCK)" : null;
             var order = queryable.Order.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.Order + " )") : null;
 
-            sbSql.AppendFormat("SELECT * {2} FROM {0} {1} ", queryable.Name, withNoLock, order);
+            sbSql.AppendFormat("SELECT * {1} FROM {0} WHERE 1=1 {2} {3} ", queryable.Name, withNoLock,string.Join("",queryable.Where), order);
             if (queryable.Skip == null && queryable.Take != null)
             {
                 sbSql.Insert(0, "SELECT * FROM ( ");
