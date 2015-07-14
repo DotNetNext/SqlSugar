@@ -87,18 +87,19 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
             return reval;
         }
 
-        /// <summary>
-        /// 将dataTable转成List<T>
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="dt"></param>
-        /// <returns></returns>
-        public static List<T> List<T>(DataTable dt)
-        {
-            if (dt == null) return new List<T>();
-            var list = new List<T>();
-            Type type = typeof(T);
 
+
+        /// <summary>  
+        /// DataReader利用泛型填充实体类  
+        /// </summary>  
+        /// <typeparam name="T">实体类</typeparam>  
+        /// <param name="reader">DataReader</param>  
+        /// <returns></returns>  
+        public static List<T> DataReaderToList<T>(IDataReader reader)
+        {
+            var type = typeof(T);
+            //实例化一个List<>泛型集合  
+            List<T> DataList = new List<T>();
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
             PropertyInfo[] props = null;
@@ -111,27 +112,79 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
                 props = type.GetProperties();
                 cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
             }
-
-            var plist = new List<PropertyInfo>(props);
-
-            foreach (DataRow item in dt.Rows)
+            while (reader.Read())
             {
-                T s = System.Activator.CreateInstance<T>();
-                for (int i = 0; i < dt.Columns.Count; i++)
+                T rowInstance = Activator.CreateInstance<T>();//动态创建数据实体对象  
+                //通过反射取得对象所有的Property  
+                foreach (PropertyInfo Property in props)
                 {
-                    PropertyInfo info = plist.Find(p => p.Name == dt.Columns[i].ColumnName);
-                    if (info != null)
+                    try
                     {
-                        if (!Convert.IsDBNull(item[i]))
+                        //取得当前数据库字段的顺序  
+                        int Ordinal = reader.GetOrdinal(Property.Name);
+                        if (reader.GetValue(Ordinal) != DBNull.Value)
                         {
-                            info.SetValue(s, item[i], null);
+                            //将DataReader读取出来的数据填充到对象实体的属性里  
+                            Property.SetValue(rowInstance, Convert.ChangeType(reader.GetValue(Ordinal), Property.PropertyType), null);
                         }
                     }
+                    catch
+                    {
+                        break;
+                    }
                 }
-                list.Add(s);
+                DataList.Add(rowInstance);
             }
-            return list;
-        }
+            reader.Dispose();
+            reader.Close();
+            return DataList;
+        }  
+
+        ///// <summary>
+        ///// 将dataTable转成List<T>
+        ///// </summary>
+        ///// <typeparam name="T"></typeparam>
+        ///// <param name="dt"></param>
+        ///// <returns></returns>
+        //public static List<T> List<T>(DataTable dt)
+        //{
+        //    if (dt == null) return new List<T>();
+        //    var list = new List<T>();
+        //    Type type = typeof(T);
+
+        //    string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+        //    var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+        //    PropertyInfo[] props = null;
+        //    if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+        //    {
+        //        props = cachePropertiesManager[cachePropertiesKey];
+        //    }
+        //    else
+        //    {
+        //        props = type.GetProperties();
+        //        cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+        //    }
+
+        //    var plist = new List<PropertyInfo>(props);
+
+        //    foreach (DataRow item in dt.Rows)
+        //    {
+        //        T s = System.Activator.CreateInstance<T>();
+        //        for (int i = 0; i < dt.Columns.Count; i++)
+        //        {
+        //            PropertyInfo info = plist.Find(p => p.Name == dt.Columns[i].ColumnName);
+        //            if (info != null)
+        //            {
+        //                if (!Convert.IsDBNull(item[i]))
+        //                {
+        //                    info.SetValue(s, item[i], null);
+        //                }
+        //            }
+        //        }
+        //        list.Add(s);
+        //    }
+        //    return list;
+        //}
 
         /// <summary>
         /// 将数组转为 '1','2' 这种格式的字符串 用于 where id in(  )

@@ -155,8 +155,8 @@ namespace SqlSugar
                 sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip + "AND  " + (queryable.Skip + queryable.Take - 1));
             }
 
-            var dt = queryable.DB.GetDataTable(sbSql.ToString());
-            var reval = SqlTool.List<T>(dt);
+            var reader = queryable.DB.GetReader(sbSql.ToString());
+            var reval = SqlTool.DataReaderToList<T>(reader);
             queryable = null;
             return reval;
         }

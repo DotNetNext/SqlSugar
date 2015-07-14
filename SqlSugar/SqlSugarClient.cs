@@ -49,16 +49,16 @@ namespace SqlSugar
         /// <returns></returns>
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
-            DataTable dt = null;
+            SqlDataReader reader = null;
             if (whereObj != null)
             {
-                dt = GetDataTable(sql, SqlTool.GetObjectToParameters(whereObj));
+                reader = GetReader(sql, SqlTool.GetObjectToParameters(whereObj));
             }
             else
             {
-                dt = GetDataTable(sql);
+                reader = GetReader(sql);
             }
-            var reval = SqlTool.List<T>(dt);
+            var reval = SqlTool.DataReaderToList<T>(reader);
             return reval;
         }
 
