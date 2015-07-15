@@ -34,6 +34,7 @@ namespace SqlSugar
             queryable.Where.Add(whereStr);
             return queryable;
         }
+
         /// <summary>
         /// 排序
         /// </summary>
@@ -41,7 +42,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="orderFileds">如：id asc,name desc </param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Order<T>(this SqlSugar.Queryable<T> queryable, string orderFileds)
+        public static SqlSugar.Queryable<T> OrderBy<T>(this SqlSugar.Queryable<T> queryable, string orderFileds)
         {
             queryable.Order = orderFileds;
             return queryable;
@@ -63,6 +64,7 @@ namespace SqlSugar
             queryable.Skip = index;
             return queryable;
         }
+
         /// <summary>
         /// 从起始点向后取指定条数的数据
         /// </summary>
@@ -79,6 +81,7 @@ namespace SqlSugar
             queryable.Take = num;
             return queryable;
         }
+
         /// <summary>
         /// 返回分页List<T>集合
         /// </summary>
@@ -97,6 +100,7 @@ namespace SqlSugar
             queryable.Take = pageSize;
             return queryable.ToList();
         }
+
         /// <summary>
         ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
         /// </summary>
@@ -107,6 +111,7 @@ namespace SqlSugar
         {
             return queryable.ToList().Single();
         }
+
         /// <summary>
         ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
         /// </summary>
@@ -126,6 +131,21 @@ namespace SqlSugar
             queryable.Where.Add(whereStr);
             return queryable.ToList().Single();
         }
+
+        /// <summary>
+        /// 获取总条数
+        /// </summary>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static int Count<T>(this SqlSugar.Queryable<T> queryable)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            string withNoLock = queryable.DB.Sqlable.IsNoLock ? "WITH(NOLOCK)" : null;
+            sbSql.AppendFormat("SELECT COUNT(*)  FROM {0} {1} WHERE 1=1 {2}  ", queryable.Name, withNoLock, string.Join("", queryable.Where));
+            var count = queryable.DB.GetInt(sbSql.ToString());
+            return count;
+        }
+
         /// <summary>
         /// 转换为List<T>集合
         /// </summary>

@@ -57,12 +57,13 @@ namespace WebTest
 
                     //---------Queryable<T>,扩展函数查询---------//
                     var student = db.Queryable<Student>().Where(it => it.name == "张三").Where(c => c.id > 10).ToList();
-                    var student2 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Skip(10).Take(20).ToList();//取10-20条
-                    var student22 = db.Queryable<Student>().Where(c => c.id > 10).Order("id asc").ToPageList(2, 2);//分页
-                    var student3 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Skip(2).ToList();//从第2条开始
-                    var student4 = db.Queryable<Student>().Where(c => c.id > 10).Order("id").Take(2).ToList();//top2
+                    var student2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();//取10-20条
+                    var student2Count = db.Queryable<Student>().Where(c => c.id > 10).Count();//查询条数
+                    var student22 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id asc").ToPageList(2, 2);//分页
+                    var student3 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(2).ToList();//从第2条开始
+                    var student4 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Take(2).ToList();//top2
 
-
+ 
 
                     //---------SqlQuery,根据SQL语句映射---------//
                     var School = db.SqlQuery<school>("select * from School");
@@ -76,6 +77,7 @@ namespace WebTest
 
                     string sql1 = db.Sqlable.Table<Student>().ToPageSql(2, 10, "id asc");
                     //等于 SELECT * FROM (SELECT *,row_index=ROW_NUMBER() OVER(ORDER BY id asc ) FROM Student  WITH(NOLOCK) ) t WHERE  t.row_index BETWEEN 11 AND 20
+
 
 
                     //联表查询

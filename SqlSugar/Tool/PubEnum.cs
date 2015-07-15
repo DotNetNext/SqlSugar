@@ -5,8 +5,8 @@ using System.Text;
 
 namespace SqlSugar
 {
-    
- 
+
+
     /// <summary>
     /// Sqlable执行状态
     /// </summary>
@@ -16,6 +16,16 @@ namespace SqlSugar
         Where = 1,
         Select = 2,
         SingleTable = 3,
-        Table=4
+        Table = 4
+    }
+
+    /// <summary>
+    /// join类型
+    /// </summary>
+    public enum JoinType
+    {
+        INNER = 0,
+        LEFT = 1,
+        RIGHT = 2
     }
 }
