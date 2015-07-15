@@ -99,15 +99,30 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
         /// <param name="dr"></param>
         /// <param name="isClose"></param>
         /// <returns></returns>
-        public static  List<T> DataReaderToList<T>(IDataReader dr, bool isClose=true) 
+        public static List<T> DataReaderToList<T>(Type type,IDataReader dr, bool isClose = true)
         {
-            IDataReaderEntityBuilder<T> eblist = IDataReaderEntityBuilder<T>.CreateBuilder(dr);
+            var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
+            string key = "DataReaderToList." + type.FullName;
+            IDataReaderEntityBuilder<T> eblist = null;
+            if (cacheManager.ContainsKey(key))
+            {
+                eblist = cacheManager[key];
+            }
+            else
+            {
+                eblist = IDataReaderEntityBuilder<T>.CreateBuilder(type, dr);
+                cacheManager.Add(key, eblist, cacheManager.Day);
+            }
             List<T> list = new List<T>();
             if (dr == null) return list;
-            while (dr.Read()) list.Add(eblist.Build(dr));
+            while (dr.Read())
+            {
+                list.Add(eblist.Build(dr));
+            }
             if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
             return list;
         }
+        
 
         ///// <summary>
         ///// 将dataTable转成List<T>
@@ -217,7 +232,7 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
                     sb = sb.Substring(0, sb.Length - 2) + " is not null";
             }
             else
-                sb += "'"+tmpStr+"'";
+                sb += "'" + tmpStr + "'";
             return sb += ")";
         }
         //表达式路由计算 
@@ -238,7 +253,7 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
                 }
                 else
                 {
-                    return Expression.Lambda(exp).Compile().DynamicInvoke()+"";
+                    return Expression.Lambda(exp).Compile().DynamicInvoke() + "";
                 }
             }
             else if (exp is NewArrayExpression)

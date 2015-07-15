@@ -22,19 +22,14 @@ namespace SqlSugar
         private delegate T Load(IDataRecord dataRecord);
 
         private Load handler;
-        private IDataReaderEntityBuilder() { }
+
         public T Build(IDataRecord dataRecord)
         {
             return handler(dataRecord);
         }
-        public static IDataReaderEntityBuilder<T> CreateBuilder(IDataRecord dataRecord)
+        public static IDataReaderEntityBuilder<T> CreateBuilder(Type type,IDataRecord dataRecord)
         {
-            var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
-            var type = typeof(T);
-            string cacheKey = "CreateBuilder." + type.FullName;
-            if (cacheManager.ContainsKey(cacheKey))
-                return cacheManager[cacheKey];
-            else
+          
             {
                 IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
                 DynamicMethod method = new DynamicMethod("DynamicCreateEntity", type,
@@ -65,7 +60,6 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Ldloc, result);
                 generator.Emit(OpCodes.Ret);
                 dynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
-                cacheManager.Add(cacheKey, dynamicBuilder, cacheManager.Day);
                 return dynamicBuilder;
             }
         }

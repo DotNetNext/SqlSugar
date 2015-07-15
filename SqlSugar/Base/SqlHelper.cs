@@ -94,13 +94,13 @@ namespace SqlSugar
 
         public List<T> GetList<T>(string sql, params SqlParameter[] pars)
         {
-            var reval = SqlTool.DataReaderToList<T>(GetReader(sql, pars));
+            var reval = SqlTool.DataReaderToList<T>(typeof(T),GetReader(sql, pars));
             return reval;
         }
 
         public T GetSingle<T>(string sql, params SqlParameter[] pars)
         {
-            var reval = SqlTool.DataReaderToList<T>(GetReader(sql, pars)).Single();
+            var reval = SqlTool.DataReaderToList<T>(typeof(T), GetReader(sql, pars)).Single();
             return reval;
         }
 

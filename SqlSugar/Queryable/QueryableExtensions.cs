@@ -156,7 +156,7 @@ namespace SqlSugar
             }
 
             var reader = queryable.DB.GetReader(sbSql.ToString());
-            var reval = SqlTool.DataReaderToList<T>(reader);
+            var reval = SqlTool.DataReaderToList<T>(typeof(T), reader);
             queryable = null;
             return reval;
         }
