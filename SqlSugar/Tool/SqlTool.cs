@@ -216,6 +216,16 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
             return reval;
         }
 
+        public static string GetWhereByExpression<T>(Expression<Func<T, bool>> expression)
+        {
+            string whereStr = string.Empty;
+            if (expression.Body is BinaryExpression)
+            {
+                BinaryExpression be = ((BinaryExpression)expression.Body);
+                whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+            }
+            return whereStr;
+        }
         public static string BinarExpressionProvider(Expression left, Expression right, ExpressionType type)
         {
             string sb = "(";

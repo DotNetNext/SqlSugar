@@ -25,15 +25,12 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            string whereStr = string.Empty;
-            if (expression.Body is BinaryExpression)
-            {
-                BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
-            }
+            string whereStr = SqlTool.GetWhereByExpression<T>(expression);
             queryable.Where.Add(whereStr);
             return queryable;
         }
+
+
 
         /// <summary>
         /// 排序
