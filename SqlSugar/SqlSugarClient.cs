@@ -258,7 +258,7 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, props[0].Name, SqlTool.GetWhereByExpression<T>(expression));
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, SqlTool.GetWhereByExpression<T>(expression));
             int deleteRowCount = ExecuteCommand(sql);
             isSuccess = deleteRowCount > 0;
             return isSuccess;
@@ -361,7 +361,7 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            string sql = string.Format("update  {0} set {3}=0 where {1} in ({2})", type.Name, props[0].Name, SqlTool.GetWhereByExpression(expression), field);
+            string sql = string.Format("update  {0} set {1}=0 where  1=1 {2}", type.Name,field,SqlTool.GetWhereByExpression(expression));
             int deleteRowCount = ExecuteCommand(sql);
             isSuccess = deleteRowCount > 0;
             return isSuccess;
