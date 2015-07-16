@@ -361,7 +361,7 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            string sql = string.Format("update  {0} set {1}=0 where  1=1 {2}", type.Name,field,SqlTool.GetWhereByExpression(expression));
+            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name,field,SqlTool.GetWhereByExpression(expression));
             int deleteRowCount = ExecuteCommand(sql);
             isSuccess = deleteRowCount > 0;
             return isSuccess;
