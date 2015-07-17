@@ -23,7 +23,10 @@ namespace SqlSugar
             _sqlConnection = new SqlConnection(connectionString);
             _sqlConnection.Open();
         }
-
+        public SqlConnection GetConnection()
+        {
+            return _sqlConnection;
+        }
         public void BeginTran()
         {
             _tran = _sqlConnection.BeginTransaction();
@@ -94,7 +97,7 @@ namespace SqlSugar
 
         public List<T> GetList<T>(string sql, params SqlParameter[] pars)
         {
-            var reval = SqlTool.DataReaderToList<T>(typeof(T),GetReader(sql, pars));
+            var reval = SqlTool.DataReaderToList<T>(typeof(T), GetReader(sql, pars));
             return reval;
         }
 
