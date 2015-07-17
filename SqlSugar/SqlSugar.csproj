@@ -48,7 +48,6 @@
     <Compile Include="Queryable\QueryableExtensions.cs" />
     <Compile Include="Sqlable\Sqlable.cs" />
     <Compile Include="Sqlable\SqlableExtensions.cs" />
-    <Compile Include="Sqlable\SqlableExtensions2.cs" />
     <Compile Include="Base\SqlHelper.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Tool\CacheManager.cs" />

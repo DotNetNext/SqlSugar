@@ -29,6 +29,7 @@ namespace SqlSugar
             queryable.Where.Add(whereStr);
             return queryable;
         }
+
         /// <summary>
         /// 条件筛选
         /// </summary>
@@ -43,7 +44,6 @@ namespace SqlSugar
             queryable.Where.Add(whereStr);
             return queryable;
         }
-
 
         /// <summary>
         /// 排序
@@ -90,25 +90,6 @@ namespace SqlSugar
             }
             queryable.Take = num;
             return queryable;
-        }
-
-        /// <summary>
-        /// 返回分页List《T》集合
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="pageIndex">当前页码</param>
-        /// <param name="pageSize">每页显示数量</param>
-        /// <returns></returns>
-        public static List<T> ToPageList<T>(this SqlSugar.Queryable<T> queryable, int pageIndex, int pageSize)
-        {
-            if (queryable.Order.IsNullOrEmpty())
-            {
-                throw new Exception("分页必需使用.Order排序");
-            }
-            queryable.Skip = (pageIndex - 1) * pageSize + 1;
-            queryable.Take = pageSize;
-            return queryable.ToList();
         }
 
         /// <summary>
@@ -203,6 +184,26 @@ namespace SqlSugar
             }
 
         }
+
+        /// <summary>
+        /// 返回分页List《T》集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="pageIndex">当前页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <returns></returns>
+        public static List<T> ToPageList<T>(this SqlSugar.Queryable<T> queryable, int pageIndex, int pageSize)
+        {
+            if (queryable.Order.IsNullOrEmpty())
+            {
+                throw new Exception("分页必需使用.Order排序");
+            }
+            queryable.Skip = (pageIndex - 1) * pageSize + 1;
+            queryable.Take = pageSize;
+            return queryable.ToList();
+        }
+
 
     }
 }

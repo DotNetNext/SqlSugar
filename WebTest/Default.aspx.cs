@@ -56,6 +56,8 @@ namespace WebTest
 
 
                     //---------Queryable<T>,扩展函数查询---------//
+
+                    //针对单表或者视图查询
                     var student = db.Queryable<Student>().Where(it => it.name == "张三").Where(c => c.id > 10).ToList();
                     var student2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();//取10-20条
                     var student2Count = db.Queryable<Student>().Where(c => c.id > 10).Count();//查询条数
@@ -68,34 +70,29 @@ namespace WebTest
                     var student10 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();// 
                     var student11= db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();// 
                     var student12 = db.Queryable<Student>().Where(c => 1==1).ToList();// 
-                    //---------SqlQuery,根据SQL语句映射---------//
+
+
+
+
+                    //---------Sqlable,创建多表查询---------//
+
+
+
+
+
+
+                    //---------SqlQuery,根据SQL或者存储过程---------//
+
+                    //用于多用复杂语句查询
                     var School = db.SqlQuery<school>("select * from School");
+                    //存储过程
                     //var spResult = db.SqlQuery<school>("exec sp_school @p1,@p2", new { p1=1,p2=2 });
 
 
-                    //---------Sqlable,创建SQL语句---------//
-
-                    string sql = db.Sqlable.Table("Student").ToSql();
-                    //等于 SELECT * FROM  Student WITH(NOLOCK)
-
-                    string sql1 = db.Sqlable.Table<Student>().ToPageSql(2, 10, "id asc");
-                    //等于 SELECT * FROM (SELECT *,row_index=ROW_NUMBER() OVER(ORDER BY id asc ) FROM Student  WITH(NOLOCK) ) t WHERE  t.row_index BETWEEN 11 AND 20
 
 
 
-                    //联表查询
-                    string sql2 = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id?"/*?代表 left join */).WhereAfter("sex='男' order by t2.id").ToSql("t1.*,t2.name as school_name");
-                    //等于：SELECT t1.*,t2.name as school_name FROM Student t1  WITH(NOLOCK)  LEFT JOIN school t2  WITH(NOLOCK)  ON t1.sch_id=t2.id WHERE  sex='男' order by t2.id
-
-                    var studentView = db.SqlQuery<Student_View>(sql2);
-
-                    //联表分页查询
-                    string pageSql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id").ToPageSql(3, 10, "t1.id asc", "t1.*,t2.name as school_name");
-                    //等于: SELECT * FROM (SELECT t1.*,t2.name as school_name,row_index=ROW_NUMBER() OVER(ORDER BY t1.id asc ) FROM Student t1  WITH(NOLOCK)  INNER JOIN school t2  WITH(NOLOCK)  ON t1.sch_id=t2.id ) t WHERE  t.row_index BETWEEN 21 AND 30
-
-                    var studentView2 = db.SqlQuery<Student_View>(pageSql);
-
-
+         
 
 
                     /************************************************************************************************************/
@@ -140,10 +137,13 @@ namespace WebTest
                     /************************************************************************************************************/
                     /*************************************************6、基类****************************************************/
                     /************************************************************************************************************/
+
+                    string sql = "select * from Student";
+
                     db.ExecuteCommand(sql);
 
                     db.GetDataTable(sql);
-                    db.GetList<Student>(sql1);
+                    db.GetList<Student>(sql);
                     db.GetSingle<Student>(sql + " where id=1");
                     using (SqlDataReader read = db.GetReader(sql)) { }  //事务中一定要释放DataReader
 

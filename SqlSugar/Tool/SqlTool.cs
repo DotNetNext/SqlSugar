@@ -22,76 +22,7 @@ namespace SqlSugar
         public static Type StringType = typeof(string);
         public static Type IntType = typeof(int);
 
-        /// <summary>
-        /// 生成MappingTable的内部函数
-        /// </summary>
-        /// <param name="mappCount"></param>
-        /// <returns></returns>
-        public static string CreateMappingTable(int mappCount)
-        {
-            Func<int, string> GetMethodString = count =>
-            {
-                string methodString = (@"  
-/// <summary>
-/// 根据T1到TN生成关联查询
-/// </summary>
-/// <returns></returns>
-public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
-           {1}
-        {{
-    if (sqlable.SqlableCurrentState != null)
-                throw new Exception("".MappingTable只能在Sqlable后面使用,正确用法：Sqlable.MappingTable "");
-            {2};
-            sqlable.SqlableCurrentState = SqlableCurrentState.MappingTable;
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat(""{3}"",{4});
-            sqlable.Sql = sb;
-            return sqlable;
-        }}
-            ");
-                string tStr = string.Empty;
-                string tStr2 = string.Empty;
-                string tStr3 = string.Empty;
-                string tStr4 = string.Empty;
-                string tStr5 = string.Empty;
-                string tStr6 = string.Empty;
-                int j = 2;
-                for (int i = 1; i <= count; i++)
-                {
-
-                    tStr += string.Format("T{0},", i);
-                    tStr2 += string.Format("\n where T{0} : new() \n", i);
-                    tStr3 += string.Format("\n    T{0} t{0} = new T{0}(); \n", i);
-                    if (i != count)
-                        tStr6 += string.Format(", string mappingFeild" + i);
-                    if (i == 1)
-                    {
-                        tStr4 += @" FROM {1} t1 {0} \n   ";
-                        tStr5 += "sqlable.IsNoLock.IsNoLock(),t" + i + ".GetType().Name,";
-
-                    }
-                    else
-                    {
-
-                        tStr4 += @"\n {" + (j) + "} JOIN {" + (j + 1) + "} t" + i + " {0} ON {" + (j + 2) + "} ";
-
-                        tStr5 += "mappingFeild" + (i - 1) + ".IsLeft(),t" + (i) + ".GetType().Name, mappingFeild" + (i - 1) + ".Remove(),";
-                        j = j + 3;
-                    }
-
-                }
-                methodString = string.Format(methodString, tStr.TrimEnd(','), tStr2.TrimEnd(','), tStr3.TrimEnd(','), tStr4, tStr5.TrimEnd(','), tStr6);
-                return methodString;
-            };
-            string reval = string.Empty;
-            for (int i = 2; i < mappCount; i++)
-            {
-                reval += GetMethodString(i);
-            }
-            return reval;
-        }
-
-
+  
         /// <summary>
         /// Reader转成List<T>
         /// </summary>
@@ -122,7 +53,6 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
             if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
             return list;
         }
-
 
         ///// <summary>
         ///// 将dataTable转成List<T>
