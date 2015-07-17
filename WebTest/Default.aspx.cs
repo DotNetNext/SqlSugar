@@ -27,7 +27,7 @@ namespace WebTest
                 //db.RollbackTran(); 事务回滚，catch中声名
 
                 //查询是允许脏读的，可以声名多个（默认值:不允许）
-                db.Sqlable.IsNoLock = true;
+                db.Sqlable().IsNoLock = true;
 
                 try
                 {
@@ -68,17 +68,25 @@ namespace WebTest
                     var student8 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();// 
                     var student9 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();// 
                     var student10 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();// 
-                    var student11= db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();// 
-                    var student12 = db.Queryable<Student>().Where(c => 1==1).ToList();// 
+                    var student11 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();// 
+                    var student12 = db.Queryable<Student>().Where(c => 1 == 1).Where("id>100").ToList();// 
 
 
 
 
                     //---------Sqlable,创建多表查询---------//
 
+                    //多表查询
+                    List<school> dataList = db.Sqlable()
+                       .Form("school", "s")
+                       .Join("student", "st", "st.id", "s.id", JoinType.INNER)
+                       .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<@id").SelectToList<school>("st.*", new { id = 1 });
 
-
-
+                    //多表分页
+                    List<school> dataPageList = db.Sqlable()
+                        .Form("school", "s")
+                        .Join("student", "st", "st.id", "s.id", JoinType.INNER)
+                        .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<100").SelectToPageList<school>("st.*", "s.id", 1, 10);
 
 
                     //---------SqlQuery,根据SQL或者存储过程---------//
@@ -92,7 +100,7 @@ namespace WebTest
 
 
 
-         
+
 
 
                     /************************************************************************************************************/

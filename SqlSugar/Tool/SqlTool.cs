@@ -24,7 +24,7 @@ namespace SqlSugar
 
   
         /// <summary>
-        /// Reader转成List<T>
+        /// Reader转成List《T》
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="dr"></param>

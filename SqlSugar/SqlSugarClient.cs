@@ -29,7 +29,11 @@ namespace SqlSugar
         /// <summary>
         /// 创建sql的对象
         /// </summary>
-        public Sqlable Sqlable = new Sqlable();
+        public Sqlable Sqlable()
+        {
+            return new Sqlable() { DB = this };
+        }
+
 
         /// <summary>
         /// 创建查询的对象
@@ -357,7 +361,7 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name,field,SqlTool.GetWhereByExpression(expression));
+            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, SqlTool.GetWhereByExpression(expression));
             int deleteRowCount = ExecuteCommand(sql);
             isSuccess = deleteRowCount > 0;
             return isSuccess;

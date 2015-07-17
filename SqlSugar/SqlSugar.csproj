@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tool\Check.cs" />
     <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
     <Compile Include="Tool\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -40,7 +40,7 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, string whereString)
         {
             var type = queryable.Type;
-            string whereStr = whereString;
+            string whereStr = string.Format(" AND {0} ", whereString);
             queryable.Where.Add(whereStr);
             return queryable;
         }
@@ -131,7 +131,7 @@ namespace SqlSugar
         public static int Count<T>(this SqlSugar.Queryable<T> queryable)
         {
             StringBuilder sbSql = new StringBuilder();
-            string withNoLock = queryable.DB.Sqlable.IsNoLock ? "WITH(NOLOCK)" : null;
+            string withNoLock = queryable.DB.Sqlable().IsNoLock ? "WITH(NOLOCK)" : null;
             sbSql.AppendFormat("SELECT COUNT(*)  FROM {0} {1} WHERE 1=1 {2}  ", queryable.Name, withNoLock, string.Join("", queryable.Where));
             var count = queryable.DB.GetInt(sbSql.ToString());
             return count;
@@ -148,7 +148,7 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder();
             try
             {
-                string withNoLock = queryable.DB.Sqlable.IsNoLock ? "WITH(NOLOCK)" : null;
+                string withNoLock = queryable.DB.Sqlable().IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.Order.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.Order + " )") : null;
 
                 sbSql.AppendFormat("SELECT * {1} FROM {0} {2} WHERE 1=1 {3}  ", queryable.Name, order, withNoLock, string.Join("", queryable.Where));
