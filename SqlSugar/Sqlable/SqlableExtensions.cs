@@ -84,7 +84,7 @@ namespace SqlSugar
                 sqlable.Sql.Append(sqlable.OrderBy);
                 sqlable.Sql.Append(sqlable.GroupBy);
                 sql = sqlable.Sql.ToString();
-                var sqlParams = SqlTool.GetObjectToParameters(whereObj);
+                var sqlParams = SqlTool.GetParameters(whereObj);
                 var reval = SqlTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sql, sqlParams));
                 return reval;
             }
@@ -114,7 +114,7 @@ namespace SqlSugar
                 int skip = (pageIndex - 1) * pageSize + 1;
                 int take = pageSize;
                 sql = string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
-                var sqlParams = SqlTool.GetObjectToParameters(whereObj);
+                var sqlParams = SqlTool.GetParameters(whereObj);
                 var reval = SqlTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sql, sqlParams));
                 return reval;
             }

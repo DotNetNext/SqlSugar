@@ -117,7 +117,7 @@ namespace SqlSugar
             }
         }
 
-        public static SqlParameter[] GetObjectToParameters(object obj)
+        public static SqlParameter[] GetParameters(object obj)
         {
             List<SqlParameter> listParams = new List<SqlParameter>();
             if (obj != null)

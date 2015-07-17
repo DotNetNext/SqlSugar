@@ -55,7 +55,7 @@ namespace SqlSugar
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             SqlDataReader reader = null;
-            var pars = SqlTool.GetObjectToParameters(whereObj);
+            var pars = SqlTool.GetParameters(whereObj);
             var type = typeof(T);
             reader = GetReader(sql, pars);
             if (type.IsIn(SqlTool.IntType, SqlTool.StringType))
