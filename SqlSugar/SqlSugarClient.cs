@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace SqlSugar
 {
@@ -28,7 +29,11 @@ namespace SqlSugar
         /// <summary>
         /// 创建sql的对象
         /// </summary>
-        public Sqlable Sqlable = new Sqlable();
+        public Sqlable Sqlable()
+        {
+            return new Sqlable() { DB = this };
+        }
+
 
         /// <summary>
         /// 创建查询的对象
@@ -41,7 +46,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 根据SQL语句将数据映射到List<T>
+        /// 根据SQL语句将数据映射到List《T》
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sql"></param>
@@ -50,22 +55,40 @@ namespace SqlSugar
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             SqlDataReader reader = null;
-            var pars = SqlTool.GetObjectToParameters(whereObj);
+            var pars = SqlTool.GetParameters(whereObj);
             var type = typeof(T);
             reader = GetReader(sql, pars);
-            if (type.IsIn(SqlTool.IntType,SqlTool.StringType))
+            if (type.IsIn(SqlTool.IntType, SqlTool.StringType))
             {
                 List<T> strReval = new List<T>();
                 using (SqlDataReader re = reader)
                 {
                     while (re.Read())
                     {
-                        strReval.Add((T)Convert.ChangeType(re.GetValue(0),type));
+                        strReval.Add((T)Convert.ChangeType(re.GetValue(0), type));
                     }
                 }
                 return strReval;
             }
-            var reval = SqlTool.DataReaderToList<T>(type,reader);
+            var reval = SqlTool.DataReaderToList<T>(type, reader);
+            return reval;
+        }
+
+        /// <summary>
+        /// 批量插入
+        /// 使用说明:sqlSugar.Insert(List《entity》);
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity">插入对象</param>
+        /// <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
+        /// <returns></returns>
+        public List<object> InsertRange<T>(List<T> entities, bool isIdentity = true) where T : class
+        {
+            List<object> reval = new List<object>();
+            foreach (var it in entities)
+            {
+                reval.Add(Insert<T>(it, isIdentity));
+            }
             return reval;
         }
 
@@ -171,45 +194,81 @@ namespace SqlSugar
 
         /// <summary>
         /// 更新
-        /// 使用说明:sqlSugar.Update<T>(rowObj,whereObj});
+        /// 注意：主键必需为实体第一列
+        /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="rowObj">new {name="张三",sex="男"}</param>
         /// <param name="whereObj">new {id=100}</param>
         /// <returns></returns>
-        public bool Update<T>(object rowObj, object whereObj) where T : class
+        public bool Update<T>(object rowObj, Expression<Func<T, bool>> expression) where T : class
         {
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
-            if (whereObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.whereObj"); }
+            if (expression == null) { throw new ArgumentNullException("SqlSugarClient.Update.expression"); }
 
 
             Type type = typeof(T);
-            string sql = string.Format(" update {0} set ", type.Name);
+            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
             Dictionary<string, string> rows = SqlTool.GetObjectToDictionary(rowObj);
+            int i = 0;
             foreach (var r in rows)
             {
-                sql += string.Format(" {0} =@{0}  ,", r.Key);
+                if (i == 0)
+                {
+                    if (rowObj.GetType() == type)
+                    {
+                        ++i;
+                        continue;
+                    }
+                }
+                sbSql.Append(string.Format(" {0} =@{0}  ,", r.Key));
+                ++i;
             }
-            sql = sql.TrimEnd(',');
-            sql += string.Format(" where  1=1  ");
-            Dictionary<string, string> wheres = SqlTool.GetObjectToDictionary(whereObj);
-            foreach (var r in wheres)
-            {
-                sql += string.Format(" and {0} =@{0}", r.Key);
-            }
+            sbSql.Remove(sbSql.Length - 1, 1);
+            sbSql.Append(" WHERE  1=1  ");
+            sbSql.Append(SqlTool.GetWhereByExpression<T>(expression)); ;
+
             List<SqlParameter> parsList = new List<SqlParameter>();
             parsList.AddRange(rows.Select(c => new SqlParameter("@" + c.Key, c.Value)));
-            parsList.AddRange(wheres.Select(c => new SqlParameter("@" + c.Key, c.Value)));
-            var updateRowCount = ExecuteCommand(sql, parsList.ToArray());
+            var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
             return updateRowCount > 0;
         }
 
         /// <summary>
-        /// 批量删除(注意：where field 为class中的第一个属性)
-        /// 使用说明::
-        /// Delete<T>(new int[]{1,2,3})
-        /// 或者
-        /// Delete<T>(3)
+        /// 删除,根据表达示
+        /// 使用说明:
+        /// Delete《T》(it=>it.id=100) 或者Delete《T》(3)
+        /// </summary>
+        /// <param name="oc"></param>
+        /// <param name="whereIn">in的集合</param>
+        /// <param name="whereIn">主键为实体的第一个属性</param>
+        public bool Delete<T>(Expression<Func<T, bool>> expression)
+        {
+            Type type = typeof(T);
+            //属性缓存
+            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = null;
+            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+            {
+                props = cachePropertiesManager[cachePropertiesKey];
+            }
+            else
+            {
+                props = type.GetProperties();
+                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+            }
+            string key = type.FullName;
+            bool isSuccess = false;
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, SqlTool.GetWhereByExpression<T>(expression));
+            int deleteRowCount = ExecuteCommand(sql);
+            isSuccess = deleteRowCount > 0;
+            return isSuccess;
+        }
+        /// <summary>
+        /// 批量删除
+        /// 注意：whereIn field 为class中的第一个属性
+        /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
         /// </summary>
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
@@ -220,38 +279,54 @@ namespace SqlSugar
             //属性缓存
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = null;
-            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
-            {
-                props = cachePropertiesManager[cachePropertiesKey];
-            }
-            else
-            {
-                props = type.GetProperties();
-                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
-            }
+            PropertyInfo[] props = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
             string key = type.FullName;
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("delete from {0} where {1} in ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn));
+                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn));
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
             return isSuccess;
         }
 
+
+
         /// <summary>
-        /// 批量删假除(注意：where field 为class中的第一个属性)
+        /// 批量假删除
+        /// 注意：whereIn field 为class中的第一个属性
         /// 使用说明::
-        /// Delete<T>(new int[]{1,2,3})
-        /// 或者
-        /// Delete<T>(3)
+        /// FalseDelete《T》("is_del",new int[]{1,2,3})或者Delete《T》("is_del",3)
         /// </summary>
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
         /// <param name="whereIn">主键为实体的第一个属性</param>
         public bool FalseDelete<T>(string field, params dynamic[] whereIn)
+        {
+            Type type = typeof(T);
+            //属性缓存
+            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+            bool isSuccess = false;
+            if (whereIn != null && whereIn.Length > 0)
+            {
+                string sql = string.Format("UPDATE  {0} SET {3}=0 WHERE {1} IN ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn), field);
+                int deleteRowCount = ExecuteCommand(sql);
+                isSuccess = deleteRowCount > 0;
+            }
+            return isSuccess;
+        }
+        /// <summary>
+        /// 假删除，根据表达示
+        /// 使用说明::
+        /// FalseDelete《T》(new int[]{1,2,3})或者Delete《T》(3)
+        /// </summary>
+        /// <param name="oc"></param>
+        /// <param name="whereIn">in的集合</param>
+        /// <param name="whereIn">主键为实体的第一个属性</param>
+        public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
             //属性缓存
@@ -269,12 +344,9 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            if (whereIn != null && whereIn.Length > 0)
-            {
-                string sql = string.Format("update  {0} set {3}=0 where {1} in ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn), field);
-                int deleteRowCount = ExecuteCommand(sql);
-                isSuccess = deleteRowCount > 0;
-            }
+            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, SqlTool.GetWhereByExpression(expression));
+            int deleteRowCount = ExecuteCommand(sql);
+            isSuccess = deleteRowCount > 0;
             return isSuccess;
         }
 

@@ -14,118 +14,126 @@ namespace SqlSugar
     /// </summary>
     public static partial class SqlableExtensions
     {
-
         /// <summary>
-        /// sql语句Where以后的所有字符串
+        /// Form
         /// </summary>
         /// <param name="sqlable"></param>
-        /// <param name="whereStr">Where以后的所有字符串</param>
+        /// <param name="modelObj">表名</param>
+        /// <param name="shortName">表名简写</param>
         /// <returns></returns>
-        public static Sqlable WhereAfter(this Sqlable sqlable, string whereStr)
+        public static Sqlable Form(this Sqlable sqlable, object tableName, string shortName)
         {
-            if (sqlable.SqlableCurrentState.IsIn(SqlableCurrentState.MappingTable,SqlableCurrentState.Table))
-            {
-                sqlable.SqlableCurrentState = SqlableCurrentState.Where;
-                sqlable.Sql.Append("WHERE  " + whereStr.Replace("where", "").Replace("WHERE", ""));
-                return sqlable;
-            }
-            else
-            {
-                throw new Exception(string.Format("{0}无法使用Where,Where必需在MappingTable或者Table后面使用", sqlable.SqlableCurrentState));
-            }
-        }
-        /// <summary>
-        /// 查询列并且返回完整SQL符串
-        /// </summary>
-        /// <param name="sqlable"></param>
-        /// <param name="SelectFields"></param>
-        /// <returns></returns>
-        public static string ToSql(this Sqlable sqlable, string SelectFields = "*")
-        {
-            if (sqlable.SqlableCurrentState == null)
-            {
-                throw new Exception("ToSql必需在MappingTable或者Table后面使用");
-            }
-            string sql = "SELECT " + SelectFields + sqlable.Sql;
-            sqlable.SqlableCurrentState = null;
-            sqlable =null;
-            return sql;
-        }
-        /// <summary>
-        /// 查询列并且返回完整SQL分页符串
-        /// </summary>
-        /// <param name="sqlable"></param>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="orderFields"></param>
-        /// <param name="SelectFields"></param>
-        /// <returns></returns>
-        public static string ToPageSql(this Sqlable sqlable, int pageIndex, int pageSize, string orderFields, string SelectFields = "*")
-        {
-            if (sqlable.SqlableCurrentState == null)
-            {
-                throw new Exception("ToPageSql必需在MappingTable或者Table后面使用");
-            }
-            string sql = "SELECT " + SelectFields + ",row_index=ROW_NUMBER() OVER(ORDER BY " + orderFields + " )" + sqlable.Sql;
-            int skip = (pageIndex - 1) * pageSize + 1;
-            int take = pageSize;
-            sql = string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
-            sqlable.SqlableCurrentState = null;
-            sqlable = null;
-            return sql;
-        }
-        /// <summary>
-        /// 根据T生成查询字符串
-        /// </summary>
-        /// <typeparam name="T">实表类</typeparam>
-        /// <param name="sqlable"></param>
-        /// <returns> select * from T</returns>
-        public static Sqlable Table<T>(this Sqlable sqlable)
-        {
-            if (sqlable.SqlableCurrentState != null)
-                throw new Exception(".Table只能在Sqlable后面使用,正确用法：Sqlable.Table<T>() ");
             sqlable.Sql = new StringBuilder();
-            sqlable.Sql.Append(string.Format(" FROM {0} {1}", typeof(T).Name, sqlable.IsNoLock.IsNoLock()));
-            sqlable.SqlableCurrentState = SqlableCurrentState.Table;
-            return sqlable;
-        }
-        /// <summary>
-        /// 根据tableName生成查询字符串
-        /// </summary>
-        /// <param name="sqlable"></param>
-        /// <param name="tableName"></param>
-        /// <returns>select * from tableName</returns>
-        public static Sqlable Table(this Sqlable sqlable, string tableName)
-        {
-            if (sqlable.SqlableCurrentState != null)
-                throw new Exception(".Table只能在Sqlable后面使用,正确用法：Sqlable.Table(”tableName“) ");
-            sqlable.Sql = new StringBuilder();
-            sqlable.Sql.Append(string.Format(" FROM {0} {1}", tableName, sqlable.IsNoLock.IsNoLock()));
-            sqlable.SqlableCurrentState = SqlableCurrentState.Table;
+            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName, GetIsNoLock(sqlable.IsNoLock), shortName);
             return sqlable;
         }
 
-        #region helper methods
-        private static string Remove(this string thisValue)
+        /// <summary>
+        /// Join
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="leftFiled"></param>
+        /// <param name="RightFiled"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Sqlable Join(this Sqlable sqlable, object tableName, string shortName, string leftFiled, string RightFiled, JoinType type)
         {
-            if (thisValue == null)
-                throw new ArgumentNullException("SqlSugarExtensions.Remove.thisValue");
-            return thisValue.TrimEnd('?');
+            Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
+            sqlable.Sql.AppendFormat(" {0} JOIN {1} {5} {2} ON  {3} = {4} ", type.ToString(), tableName, GetIsNoLock(sqlable.IsNoLock), leftFiled, RightFiled, shortName);
+            return sqlable;
         }
-        private static string IsLeft(this string thisValue)
-        {
-            if (thisValue == null)
-                throw new ArgumentNullException("SqlSugarExtensions.IsLeft.thisValue");
-            return (thisValue.Last() == '?') ? "LEFT" : "INNER";
 
-        }
-        private static string IsNoLock(this bool thisValue)
+        /// <summary>
+        /// 查询条件比如  t1.id=@id
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        public static Sqlable Where(this Sqlable sqlable, string where)
         {
-            if (thisValue) return " WITH(NOLOCK) ";
-            return "";
-
+            sqlable.Where.Add(where);
+            return sqlable;
         }
-        #endregion
+        public static Sqlable OrderBy(this Sqlable sqlable, string orderBy)
+        {
+            sqlable.OrderBy = orderBy;
+            return sqlable;
+        }
+
+        public static Sqlable Apply(this Sqlable sqlable, string applySql, string shotName, ApplyType type)
+        {
+            Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
+            sqlable.Sql.AppendFormat(" {0} APPLY ({1}) {2}} ", type.ToString(), applySql, shotName);
+            return sqlable;
+        }
+
+        public static Sqlable GroupBy(this Sqlable sqlable, string groupBy)
+        {
+            sqlable.GroupBy = groupBy;
+            return sqlable;
+        }
+
+        public static List<T> SelectToList<T>(this Sqlable sqlable, string fileds, object whereObj = null) where T : class
+        {
+            string sql = null;
+            try
+            {
+                Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
+                sqlable.Sql.Insert(0, string.Format("SELECT {0} ", fileds));
+                sqlable.Sql.Append(" Where 1=1").Append(string.Join(" ", sqlable.Where));
+                sqlable.Sql.Append(sqlable.OrderBy);
+                sqlable.Sql.Append(sqlable.GroupBy);
+                sql = sqlable.Sql.ToString();
+                var sqlParams = SqlTool.GetParameters(whereObj);
+                var reval = SqlTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sql, sqlParams));
+                return reval;
+            }
+            catch (Exception ex)
+            {
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sql, ex.Message);
+                throw;
+            }
+            finally
+            {
+                sqlable = null;
+            }
+        }
+
+        public static List<T> SelectToPageList<T>(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) where T : class
+        {
+            string sql = null;
+            try
+            {
+                if (pageIndex == 0) pageIndex = 1;
+                Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
+                sqlable.Sql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
+                sqlable.Sql.Append(" Where 1=1 ").Append(string.Join(" ", sqlable.Where));
+                sqlable.Sql.Append(sqlable.OrderBy);
+                sqlable.Sql.Append(sqlable.GroupBy);
+                sql = sqlable.Sql.ToString();
+                int skip = (pageIndex - 1) * pageSize + 1;
+                int take = pageSize;
+                sql = string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
+                var sqlParams = SqlTool.GetParameters(whereObj);
+                var reval = SqlTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sql, sqlParams));
+                return reval;
+            }
+            catch (Exception ex)
+            {
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sql, ex.Message);
+                throw;
+            }
+            finally
+            {
+                sql = null;
+                sqlable = null;
+            }
+        }
+
+        private static string GetIsNoLock(bool isNoLock)
+        {
+            return isNoLock ? "WITH(NOLOCK)" : null; ;
+        }
 
     }
 }

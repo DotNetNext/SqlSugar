@@ -27,7 +27,7 @@ namespace WebTest
                 //db.RollbackTran(); 事务回滚，catch中声名
 
                 //查询是允许脏读的，可以声名多个（默认值:不允许）
-                db.Sqlable.IsNoLock = true;
+                db.Sqlable().IsNoLock = true;
 
                 try
                 {
@@ -56,41 +56,49 @@ namespace WebTest
 
 
                     //---------Queryable<T>,扩展函数查询---------//
+
+                    //针对单表或者视图查询
                     var student = db.Queryable<Student>().Where(it => it.name == "张三").Where(c => c.id > 10).ToList();
                     var student2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();//取10-20条
                     var student2Count = db.Queryable<Student>().Where(c => c.id > 10).Count();//查询条数
-                    var student22 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id asc").ToPageList(2, 2);//分页
-                    var student3 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(2).ToList();//从第2条开始
-                    var student4 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Take(2).ToList();//top2
+                    var student3 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id asc").ToPageList(2, 2);//分页
+                    var student4 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(2).ToList();//从第2条开始
+                    var student6 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Take(2).ToList();//top2
+                    var student7 = db.Queryable<Student>().Where(c => !c.name.Contains("a".ToString())).ToList();// 
+                    var student8 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();// 
+                    var student9 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();// 
+                    var student10 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();// 
+                    var student11 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();// 
+                    var student12 = db.Queryable<Student>().Where(c => 1 == 1).Where("id>100").ToList();// 
 
- 
 
-                    //---------SqlQuery,根据SQL语句映射---------//
+
+
+                    //---------Sqlable,创建多表查询---------//
+
+                    //多表查询
+                    List<school> dataList = db.Sqlable()
+                       .Form("school", "s")
+                       .Join("student", "st", "st.id", "s.id", JoinType.INNER)
+                       .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<@id").SelectToList<school>("st.*", new { id = 1 });
+
+                    //多表分页
+                    List<school> dataPageList = db.Sqlable()
+                        .Form("school", "s")
+                        .Join("student", "st", "st.id", "s.id", JoinType.INNER)
+                        .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<100").SelectToPageList<school>("st.*", "s.id", 1, 10);
+
+
+                    //---------SqlQuery,根据SQL或者存储过程---------//
+
+                    //用于多用复杂语句查询
                     var School = db.SqlQuery<school>("select * from School");
+                    //存储过程
                     //var spResult = db.SqlQuery<school>("exec sp_school @p1,@p2", new { p1=1,p2=2 });
 
 
-                    //---------Sqlable,创建SQL语句---------//
-
-                    string sql = db.Sqlable.Table("Student").ToSql();
-                    //等于 SELECT * FROM  Student WITH(NOLOCK)
-
-                    string sql1 = db.Sqlable.Table<Student>().ToPageSql(2, 10, "id asc");
-                    //等于 SELECT * FROM (SELECT *,row_index=ROW_NUMBER() OVER(ORDER BY id asc ) FROM Student  WITH(NOLOCK) ) t WHERE  t.row_index BETWEEN 11 AND 20
 
 
-
-                    //联表查询
-                    string sql2 = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id?"/*?代表 left join */).WhereAfter("sex='男' order by t2.id").ToSql("t1.*,t2.name as school_name");
-                    //等于：SELECT t1.*,t2.name as school_name FROM Student t1  WITH(NOLOCK)  LEFT JOIN school t2  WITH(NOLOCK)  ON t1.sch_id=t2.id WHERE  sex='男' order by t2.id
-
-                    var studentView = db.SqlQuery<Student_View>(sql2);
-
-                    //联表分页查询
-                    string pageSql = db.Sqlable.MappingTable<Student, school>("t1.sch_id=t2.id").ToPageSql(3, 10, "t1.id asc", "t1.*,t2.name as school_name");
-                    //等于: SELECT * FROM (SELECT t1.*,t2.name as school_name,row_index=ROW_NUMBER() OVER(ORDER BY t1.id asc ) FROM Student t1  WITH(NOLOCK)  INNER JOIN school t2  WITH(NOLOCK)  ON t1.sch_id=t2.id ) t WHERE  t.row_index BETWEEN 21 AND 30
-
-                    var studentView2 = db.SqlQuery<Student_View>(pageSql);
 
 
 
@@ -103,16 +111,22 @@ namespace WebTest
                     {
                         name = "蓝翔"
                     };
-                    var id = db.Insert(s);
+                    //插入单条
+                    var id = Convert.ToInt32(db.Insert(s));
 
+                    //插入多条
+                    List<school> sList = new List<school>();
+                    sList.Add(s);
+                    var ids = db.InsertRange(sList);
 
 
                     /************************************************************************************************************/
                     /*************************************************4、修改****************************************************/
                     /************************************************************************************************************/
-
-                    db.Update<school>(new { name = "蓝翔2" }, new { id = id });
-
+                    //指定列更新
+                    db.Update<school>(new { name = "蓝翔2" }, it => it.id == id);
+                    //整个实体更新,注意主键必需为实体类的第一个属性
+                    db.Update<school>(new school { id = id, name = "蓝翔2" }, it => it.id == id);
 
 
 
@@ -120,20 +134,24 @@ namespace WebTest
                     /*************************************************5、删除****************************************************/
                     /************************************************************************************************************/
 
-                    db.Delete<school>(id);
+                    db.Delete<school>(id);//注意主键必需为实体类的第一个属性
+                    db.Delete<school>(it => id > 100);
                     db.Delete<school>(new string[] { "100", "101", "102" });
 
                     //db.FalseDelete<school>("is_del", 100);
                     //等同于 update school set is_del=0 where id in(100)
-
+                    //db.FalseDelete<school>("is_del", it=>it.id==100);
 
                     /************************************************************************************************************/
                     /*************************************************6、基类****************************************************/
                     /************************************************************************************************************/
+
+                    string sql = "select * from Student";
+
                     db.ExecuteCommand(sql);
 
                     db.GetDataTable(sql);
-                    db.GetList<Student>(sql1);
+                    db.GetList<Student>(sql);
                     db.GetSingle<Student>(sql + " where id=1");
                     using (SqlDataReader read = db.GetReader(sql)) { }  //事务中一定要释放DataReader
 

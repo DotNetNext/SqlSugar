@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tool\Check.cs" />
     <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
     <Compile Include="Tool\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -48,7 +49,6 @@
     <Compile Include="Queryable\QueryableExtensions.cs" />
     <Compile Include="Sqlable\Sqlable.cs" />
     <Compile Include="Sqlable\SqlableExtensions.cs" />
-    <Compile Include="Sqlable\SqlableExtensions2.cs" />
     <Compile Include="Base\SqlHelper.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Tool\CacheManager.cs" />

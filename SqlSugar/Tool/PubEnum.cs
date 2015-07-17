@@ -28,4 +28,12 @@ namespace SqlSugar
         LEFT = 1,
         RIGHT = 2
     }
+    /// <summary>
+    /// Apply类型
+    /// </summary>
+    public enum ApplyType
+    {
+        CORSS = 1,
+        OUTRE = 2
+    }
 }
