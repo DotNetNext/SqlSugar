@@ -157,7 +157,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 转换为List<T>集合
+        /// 转换为List《T》集合
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
