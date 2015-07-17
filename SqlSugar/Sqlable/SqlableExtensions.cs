@@ -80,7 +80,7 @@ namespace SqlSugar
             {
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
                 sqlable.Sql.Insert(0, string.Format("SELECT {0} ", fileds));
-                sqlable.Sql.Append(" Where ").Append(string.Join(" ", sqlable.Where));
+                sqlable.Sql.Append(" Where 1=1").Append(string.Join(" ", sqlable.Where));
                 sqlable.Sql.Append(sqlable.OrderBy);
                 sqlable.Sql.Append(sqlable.GroupBy);
                 sql = sqlable.Sql.ToString();
@@ -107,7 +107,7 @@ namespace SqlSugar
                 if (pageIndex == 0) pageIndex = 1;
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
                 sqlable.Sql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
-                sqlable.Sql.Append(" Where ").Append(string.Join(" ", sqlable.Where));
+                sqlable.Sql.Append(" Where 1=1 ").Append(string.Join(" ", sqlable.Where));
                 sqlable.Sql.Append(sqlable.OrderBy);
                 sqlable.Sql.Append(sqlable.GroupBy);
                 sql = sqlable.Sql.ToString();
