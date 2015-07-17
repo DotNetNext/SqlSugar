@@ -36,7 +36,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="whereString"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable,string whereString)
+        public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, string whereString)
         {
             var type = queryable.Type;
             string whereStr = whereString;
@@ -164,9 +164,9 @@ namespace SqlSugar
         /// <returns></returns>
         public static List<T> ToList<T>(this SqlSugar.Queryable<T> queryable)
         {
+            StringBuilder sbSql = new StringBuilder();
             try
             {
-                StringBuilder sbSql = new StringBuilder();
                 string withNoLock = queryable.DB.Sqlable.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.Order.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.Order + " )") : null;
 
@@ -184,7 +184,7 @@ namespace SqlSugar
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
                     sbSql.Insert(0, "SELECT * FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip + "AND  " + (queryable.Skip + queryable.Take - 1));
+                    sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip + " AND " + (queryable.Skip + queryable.Take - 1));
                 }
 
                 var reader = queryable.DB.GetReader(sbSql.ToString());
@@ -194,8 +194,12 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-
                 throw new Exception(string.Format("sql:{0}\r\n message:{1}", ex.Message));
+            }
+            finally
+            {
+                sbSql = null;
+                queryable = null;
             }
 
         }

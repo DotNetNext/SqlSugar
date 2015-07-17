@@ -99,7 +99,7 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
         /// <param name="dr"></param>
         /// <param name="isClose"></param>
         /// <returns></returns>
-        public static List<T> DataReaderToList<T>(Type type,IDataReader dr, bool isClose = true)
+        public static List<T> DataReaderToList<T>(Type type, IDataReader dr, bool isClose = true)
         {
             var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
             string key = "DataReaderToList." + type.FullName;
@@ -122,7 +122,7 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
             if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
             return list;
         }
-        
+
 
         ///// <summary>
         ///// 将dataTable转成List<T>
@@ -224,6 +224,10 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
                 BinaryExpression be = ((BinaryExpression)expression.Body);
                 whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }
+            else
+            {
+                whereStr = " and " + ExpressionRouter(expression.Body, false);
+            }
             return whereStr;
         }
         public static string BinarExpressionProvider(Expression left, Expression right, ExpressionType type)
@@ -246,24 +250,29 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
             return sb += ")";
         }
         //表达式路由计算 
-        static string ExpressionRouter(Expression exp, bool isRight)
+        protected static string ExpressionRouter(Expression exp, bool isRight, bool isNot = false)
         {
+
             string sb = string.Empty;
             if (exp is BinaryExpression)
             {
                 BinaryExpression be = ((BinaryExpression)exp);
-                return BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+                var left = BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+
             }
             else if (exp is MemberExpression)
             {
-                if (!isRight)
+                MemberExpression me = ((MemberExpression)exp);
+                if (me.Expression != null)
                 {
-                    MemberExpression me = ((MemberExpression)exp);
                     return me.Member.Name;
                 }
                 else
                 {
-                    return Expression.Lambda(exp).Compile().DynamicInvoke() + "";
+                    if (isRight)
+                        return Expression.Lambda(exp).Compile().DynamicInvoke() + "";
+                    else
+                        return string.Format("'{0}'", Expression.Lambda(exp).Compile().DynamicInvoke());
                 }
             }
             else if (exp is NewArrayExpression)
@@ -280,20 +289,57 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
             else if (exp is MethodCallExpression)
             {
                 MethodCallExpression mce = (MethodCallExpression)exp;
-                if (mce.Method.Name == "Like")
-                    return string.Format("({0} like {1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
-                else if (mce.Method.Name == "NotLike")
-                    return string.Format("({0} Not like {1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
-                else if (mce.Method.Name == "In")
-                    return string.Format("{0} In ({1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
-                else if (mce.Method.Name == "NotIn")
-                    return string.Format("{0} Not In ({1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
+                string methodName = mce.Method.Name;
+                if (methodName == "Contains")
+                {
+                    return string.Format("({0} {2} LIKE '%{1}%')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false), isNot == true ? "  NOT " : null);
+                }
+                else if (methodName == "StartsWith")
+                {
+                    return string.Format("({0} {2} LIKE '{1}%')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false), isNot == true ? "  NOT " : null);
+                }
+                else if (methodName == "EndWith")
+                {
+                    return string.Format("({0} {2} LIKE '%{1}')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false), isNot == true ? "  NOT " : null);
+                }
+                else if (methodName == "ToString")
+                {
+                    return mce.Object.ToString();
+                }
+                else if (methodName.StartsWith("ToDateTime"))
+                {
+                    if (mce.Object != null)
+                    {
+                        return mce.Object.ToString();
+                    }
+                    else if (mce.Arguments.Count == 1)
+                    {
+                        return Convert.ToDateTime(ExpressionRouter(mce.Arguments[0], false)).ToString();
+                    }
+                }
+                else if (methodName.StartsWith("To"))
+                {
+                    if (mce.Object != null)
+                    {
+                        return mce.Object.ToString();
+                    }
+                    else if (mce.Arguments.Count == 1)
+                    {
+                        return ExpressionRouter(mce.Arguments[0], false);
+                    }
+                }
+
+                throw new Exception(string.Format("目前不支支：{0}函数", methodName));
             }
             else if (exp is ConstantExpression)
             {
                 ConstantExpression ce = ((ConstantExpression)exp);
                 if (ce.Value == null)
                     return "null";
+                else if (ce.Value is Boolean)
+                {
+                    return Convert.ToBoolean(ce.Value) ? "1=1" : "1<>1";
+                }
                 else if (ce.Value is ValueType)
                     return ce.Value.ToString();
                 else if (ce.Value is string || ce.Value is DateTime || ce.Value is char)
@@ -302,12 +348,9 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
             else if (exp is UnaryExpression)
             {
                 UnaryExpression ue = ((UnaryExpression)exp);
-                var mexp = (MemberExpression)ue.Operand;
-                object value = (mexp.Expression as ConstantExpression).Value;
-                string name = mexp.Member.Name;
-                System.Reflection.FieldInfo info = value.GetType().GetField(name);
-                object obj = info.GetValue(value);
-                return obj + "";
+                var mex = ue.Operand;
+                return ExpressionRouter(mex, false, true);
+
             }
             return null;
         }
@@ -348,5 +391,6 @@ public static Sqlable MappingTable<{0}>(this Sqlable sqlable{5})
                     return null;
             }
         }
+
     }
 }
