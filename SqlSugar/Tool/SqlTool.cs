@@ -22,7 +22,7 @@ namespace SqlSugar
         public static Type StringType = typeof(string);
         public static Type IntType = typeof(int);
 
-  
+
         /// <summary>
         /// Reader转成List《T》
         /// </summary>
@@ -122,7 +122,10 @@ namespace SqlSugar
             List<SqlParameter> listParams = new List<SqlParameter>();
             if (obj != null)
             {
-                var propertiesObj = obj.GetType().GetProperties();
+                var type = obj.GetType();
+                string cachePropertiesKey = "db." + obj.ToString() + ".GetProperties";
+                var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+                var propertiesObj = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
                 string replaceGuid = Guid.NewGuid().ToString();
                 foreach (PropertyInfo r in propertiesObj)
                 {
@@ -134,8 +137,13 @@ namespace SqlSugar
 
         public static Dictionary<string, string> GetObjectToDictionary(object obj)
         {
+
             Dictionary<string, string> reval = new Dictionary<string, string>();
-            var propertiesObj = obj.GetType().GetProperties();
+            if (obj == null) return reval;
+            var type = obj.GetType();
+            string cachePropertiesKey = "db." + obj.ToString() + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            var propertiesObj = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
             string replaceGuid = Guid.NewGuid().ToString();
             foreach (PropertyInfo r in propertiesObj)
             {
@@ -144,6 +152,22 @@ namespace SqlSugar
             }
 
             return reval;
+        }
+
+
+        public static PropertyInfo[] GetGetPropertiesByCache(Type type, string cachePropertiesKey, CacheManager<PropertyInfo[]> cachePropertiesManager)
+        {
+            PropertyInfo[] props = null;
+            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+            {
+                props = cachePropertiesManager[cachePropertiesKey];
+            }
+            else
+            {
+                props = type.GetProperties();
+                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+            }
+            return props;
         }
 
         public static string GetWhereByExpression<T>(Expression<Func<T, bool>> expression)

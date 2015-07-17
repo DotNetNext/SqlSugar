@@ -279,16 +279,7 @@ namespace SqlSugar
             //属性缓存
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = null;
-            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
-            {
-                props = cachePropertiesManager[cachePropertiesKey];
-            }
-            else
-            {
-                props = type.GetProperties();
-                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
-            }
+            PropertyInfo[] props = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
             string key = type.FullName;
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
@@ -299,6 +290,8 @@ namespace SqlSugar
             }
             return isSuccess;
         }
+
+
 
         /// <summary>
         /// 批量假删除
@@ -315,17 +308,7 @@ namespace SqlSugar
             //属性缓存
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = null;
-            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
-            {
-                props = cachePropertiesManager[cachePropertiesKey];
-            }
-            else
-            {
-                props = type.GetProperties();
-                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
-            }
-            string key = type.FullName;
+            PropertyInfo[] props = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
