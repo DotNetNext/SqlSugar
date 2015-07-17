@@ -48,6 +48,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -61,8 +64,14 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CSS\StyleSheet1.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Select\All.aspx" />
+    <Content Include="Select\ManyTable.aspx" />
+    <Content Include="Select\ManyTablePage.aspx" />
+    <Content Include="Select\OneWhere.aspx" />
+    <Content Include="Select\WherePage.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -85,7 +94,43 @@
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Student_View.cs" />
+    <Compile Include="Models\Subject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Select\All.aspx.cs">
+      <DependentUpon>All.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Select\All.aspx.designer.cs">
+      <DependentUpon>All.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Select\ManyTable.aspx.cs">
+      <DependentUpon>ManyTable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Select\ManyTable.aspx.designer.cs">
+      <DependentUpon>ManyTable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Select\ManyTablePage.aspx.cs">
+      <DependentUpon>ManyTablePage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Select\ManyTablePage.aspx.designer.cs">
+      <DependentUpon>ManyTablePage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Select\OneWhere.aspx.cs">
+      <DependentUpon>OneWhere.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Select\OneWhere.aspx.designer.cs">
+      <DependentUpon>OneWhere.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Select\WherePage.aspx.cs">
+      <DependentUpon>WherePage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Select\WherePage.aspx.designer.cs">
+      <DependentUpon>WherePage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -93,6 +138,13 @@
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
+    <Compile Include="TestLib\Dapper.cs" />
+    <Compile Include="TestLib\EFMODEL.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EFMODEL.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="TestLib\PerformanceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -105,6 +157,12 @@
       <Project>{46a17e67-7e3e-4369-9b1f-43ba34bbdaef}</Project>
       <Name>SqlSugar</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="TestLib\EFMODEL.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EFMODEL.Designer.cs</LastGenOutput>
+    </EntityDeploy>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

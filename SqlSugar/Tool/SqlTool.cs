@@ -123,9 +123,7 @@ namespace SqlSugar
             if (obj != null)
             {
                 var type = obj.GetType();
-                string cachePropertiesKey = "db." + obj.ToString() + ".GetProperties";
-                var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-                var propertiesObj = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+                var propertiesObj = type.GetProperties();
                 string replaceGuid = Guid.NewGuid().ToString();
                 foreach (PropertyInfo r in propertiesObj)
                 {
@@ -141,9 +139,7 @@ namespace SqlSugar
             Dictionary<string, string> reval = new Dictionary<string, string>();
             if (obj == null) return reval;
             var type = obj.GetType();
-            string cachePropertiesKey = "db." + obj.ToString() + ".GetProperties";
-            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            var propertiesObj = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+            var propertiesObj =type.GetProperties();
             string replaceGuid = Guid.NewGuid().ToString();
             foreach (PropertyInfo r in propertiesObj)
             {
@@ -217,16 +213,20 @@ namespace SqlSugar
             else if (exp is MemberExpression)
             {
                 MemberExpression me = ((MemberExpression)exp);
-                if (me.Expression != null)
+                if (isRight)
                 {
-                    return me.Member.Name;
+                    return Expression.Lambda(exp).Compile().DynamicInvoke() + "";
                 }
                 else
                 {
-                    if (isRight)
-                        return Expression.Lambda(exp).Compile().DynamicInvoke() + "";
+                    if (me.Expression != null)
+                    {
+                        return me.Member.Name;
+                    }
                     else
+                    {
                         return string.Format("'{0}'", Expression.Lambda(exp).Compile().DynamicInvoke());
+                    }
                 }
             }
             else if (exp is NewArrayExpression)

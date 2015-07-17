@@ -51,7 +51,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable Where(this Sqlable sqlable, string where)
         {
-            sqlable.Where.Add(where);
+            sqlable.Where.Add(string.Format(" AND {0} ",where));
             return sqlable;
         }
         public static Sqlable OrderBy(this Sqlable sqlable, string orderBy)

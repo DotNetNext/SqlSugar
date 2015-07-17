@@ -16,7 +16,7 @@ namespace WebTest
         protected void Page_Load(object sender, EventArgs e)
         {
             //连接字符串
-            string connStr = @"Server=(LocalDB)\v11.0; Integrated Security=true ;AttachDbFileName=" + Server.MapPath("~/App_Data/SqlSugar.mdf");
+            string connStr = @"Server=.;uid=sa;pwd=sasa;database=SqlSugarTest";
 
             using (SqlSugarClient db = new SqlSugarClient(connStr))//开启数据库连接
             {
@@ -41,10 +41,10 @@ namespace WebTest
                     //db.ClassGenerating.CreateClassFilesByTableNames(db, Server.MapPath("~/Models"), "Models" , "student","school");
 
                     //根据表名生成class字符串
-                    var str = db.ClassGenerating.TableNameToClass(db, "student");
+                    var str = db.ClassGenerating.TableNameToClass(db, "Student");
 
                     //根据SQL语句生成class字符串
-                    var str2 = db.ClassGenerating.SqlToClass(db, "select top 1 * from student", "student");
+                    var str2 = db.ClassGenerating.SqlToClass(db, "select top 1 * from Student", "student");
 
 
 
@@ -58,41 +58,66 @@ namespace WebTest
                     //---------Queryable<T>,扩展函数查询---------//
 
                     //针对单表或者视图查询
-                    var student = db.Queryable<Student>().Where(it => it.name == "张三").Where(c => c.id > 10).ToList();
-                    var student2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();//取10-20条
-                    var student2Count = db.Queryable<Student>().Where(c => c.id > 10).Count();//查询条数
-                    var student3 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id asc").ToPageList(2, 2);//分页
-                    var student4 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(2).ToList();//从第2条开始
-                    var student6 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Take(2).ToList();//top2
-                    var student7 = db.Queryable<Student>().Where(c => !c.name.Contains("a".ToString())).ToList();// 
-                    var student8 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();// 
-                    var student9 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();// 
-                    var student10 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();// 
-                    var student11 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();// 
-                    var student12 = db.Queryable<Student>().Where(c => 1 == 1).Where("id>100").ToList();// 
+
+                    //查询所有
+                    var student = db.Queryable<Student>().ToList();
+
+                    //查询单条
+                    var single = db.Queryable<Student>().Single(c => c.id == 1);
+
+                    //取10-20条
+                    var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();
+                    //上一句的简化写法，同样取10-20条
+                    var page2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").ToPageList(2, 10);
+
+                    //查询条数
+                    var count = db.Queryable<Student>().Where(c => c.id > 10).Count();
+
+                    //从第2条开始以后取所有
+                    var skip = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(2).ToList();
+
+                    //取前2条
+                    var take = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Take(2).ToList();
+
+                    // Not like 
+                    var notLike = db.Queryable<Student>().Where(c => !c.name.Contains("a".ToString())).ToList();
+
+                    // 可以在拉姆达使用 ToString和 Convert,比EF出色的地方
+                    var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();
+                    var convert2 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();// 
+                    var convert3 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();
+                    var convert4 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();
+
+                    //支持字符串Where 让你解决，更复杂的查询
+                    var student12 = db.Queryable<Student>().Where(c => 1 == 1).Where("id>100").ToList();
 
 
+ 
 
 
                     //---------Sqlable,创建多表查询---------//
 
                     //多表查询
-                    List<school> dataList = db.Sqlable()
+                    List<School> dataList = db.Sqlable()
                        .Form("school", "s")
                        .Join("student", "st", "st.id", "s.id", JoinType.INNER)
-                       .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<@id").SelectToList<school>("st.*", new { id = 1 });
+                       .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<@id").SelectToList<School>("st.*", new { id = 1 });
 
                     //多表分页
-                    List<school> dataPageList = db.Sqlable()
+                    List<School> dataPageList = db.Sqlable()
                         .Form("school", "s")
                         .Join("student", "st", "st.id", "s.id", JoinType.INNER)
-                        .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<100").SelectToPageList<school>("st.*", "s.id", 1, 10);
+                        .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT).Where("s.id>100 and s.id<100").SelectToPageList<School>("st.*", "s.id", 1, 10);
 
 
                     //---------SqlQuery,根据SQL或者存储过程---------//
 
                     //用于多用复杂语句查询
-                    var School = db.SqlQuery<school>("select * from School");
+                    var School = db.SqlQuery<School>("select * from School");
+
+                    //获取id
+                    var id = db.SqlQuery<int>("select top 1 id from School").Single();
+
                     //存储过程
                     //var spResult = db.SqlQuery<school>("exec sp_school @p1,@p2", new { p1=1,p2=2 });
 
@@ -107,15 +132,15 @@ namespace WebTest
                     /*************************************************3、添加****************************************************/
                     /************************************************************************************************************/
 
-                    school s = new school()
+                    School s = new School()
                     {
                         name = "蓝翔"
                     };
                     //插入单条
-                    var id = Convert.ToInt32(db.Insert(s));
+                    var id2 = Convert.ToInt32(db.Insert(s));
 
                     //插入多条
-                    List<school> sList = new List<school>();
+                    List<School> sList = new List<School>();
                     sList.Add(s);
                     var ids = db.InsertRange(sList);
 
@@ -124,9 +149,9 @@ namespace WebTest
                     /*************************************************4、修改****************************************************/
                     /************************************************************************************************************/
                     //指定列更新
-                    db.Update<school>(new { name = "蓝翔2" }, it => it.id == id);
+                    db.Update<School>(new { name = "蓝翔2" }, it => it.id == id);
                     //整个实体更新,注意主键必需为实体类的第一个属性
-                    db.Update<school>(new school { id = id, name = "蓝翔2" }, it => it.id == id);
+                    db.Update<School>(new School { id = id, name = "蓝翔2" }, it => it.id == id);
 
 
 
@@ -134,9 +159,9 @@ namespace WebTest
                     /*************************************************5、删除****************************************************/
                     /************************************************************************************************************/
 
-                    db.Delete<school>(id);//注意主键必需为实体类的第一个属性
-                    db.Delete<school>(it => id > 100);
-                    db.Delete<school>(new string[] { "100", "101", "102" });
+                    db.Delete<School>(id);//注意主键必需为实体类的第一个属性
+                    db.Delete<School>(it => id > 100);
+                    db.Delete<School>(new string[] { "100", "101", "102" });
 
                     //db.FalseDelete<school>("is_del", 100);
                     //等同于 update school set is_del=0 where id in(100)

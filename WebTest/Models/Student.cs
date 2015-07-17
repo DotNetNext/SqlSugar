@@ -1,4 +1,5 @@
-﻿namespace Models
+﻿using System;
+namespace Models
 {
     public class Student{
                         
