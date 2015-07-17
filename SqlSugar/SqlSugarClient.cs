@@ -42,7 +42,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 根据SQL语句将数据映射到List<T>
+        /// 根据SQL语句将数据映射到List《T》
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sql"></param>

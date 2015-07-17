@@ -93,7 +93,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 返回分页List<T>集合
+        /// 返回分页List《T》集合
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
