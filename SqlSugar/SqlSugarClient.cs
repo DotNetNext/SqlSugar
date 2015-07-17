@@ -72,7 +72,7 @@ namespace SqlSugar
 
         /// <summary>
         /// 批量插入
-        /// 使用说明:sqlSugar.Insert(List<entity>>);
+        /// 使用说明:sqlSugar.Insert(List《entity》);
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entity">插入对象</param>
@@ -191,7 +191,7 @@ namespace SqlSugar
         /// <summary>
         /// 更新
         /// 注意：主键必需为实体第一列
-        /// 使用说明:sqlSugar.Update<T>(rowObj,whereObj});
+        /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="rowObj">new {name="张三",sex="男"}</param>
@@ -231,11 +231,9 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 批量删除
-        /// 使用说明::
-        /// Delete<T>(it=>it.id=100)
-        /// 或者
-        /// Delete<T>(3)
+        /// 删除,根据表达示
+        /// 使用说明:
+        /// Delete《T》(it=>it.id=100) 或者Delete《T》(3)
         /// </summary>
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
@@ -266,7 +264,7 @@ namespace SqlSugar
         /// <summary>
         /// 批量删除
         /// 注意：whereIn field 为class中的第一个属性
-        /// 使用说明:Delete<T>(new int[]{1,2,3}) 或者  Delete<T>(3)
+        /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
         /// </summary>
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
@@ -299,10 +297,10 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 批量删假除
+        /// 批量假删除
         /// 注意：whereIn field 为class中的第一个属性
         /// 使用说明::
-        /// FalseDelete<T>("is_del",new int[]{1,2,3})或者Delete<T>(3)
+        /// FalseDelete《T》("is_del",new int[]{1,2,3})或者Delete《T》("is_del",3)
         /// </summary>
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
@@ -334,11 +332,9 @@ namespace SqlSugar
             return isSuccess;
         }
         /// <summary>
-        /// 批量删假除(注意：where field 为class中的第一个属性)
+        /// 假删除，根据表达示
         /// 使用说明::
-        /// Delete<T>(new int[]{1,2,3})
-        /// 或者
-        /// Delete<T>(3)
+        /// FalseDelete《T》(new int[]{1,2,3})或者Delete《T》(3)
         /// </summary>
         /// <param name="oc"></param>
         /// <param name="whereIn">in的集合</param>
