@@ -63,7 +63,7 @@ namespace WebTest
                     var student = db.Queryable<Student>().ToList();
 
                     //查询单条
-                    var single = db.Queryable<Student>().Single(c => c.id == 1);
+                    var single = db.Queryable<Student>().Single(c => c.id == student[0].id);
 
                     //取10-20条
                     var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();
@@ -90,7 +90,7 @@ namespace WebTest
                     var convert4 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();
 
                     //支持字符串Where 让你解决，更复杂的查询
-                    var student12 = db.Queryable<Student>().Where(c => 1 == 1).Where("id>100").ToList();
+                    var student12 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>100").ToList();
 
 
                     //存在记录反回true，则否返回false

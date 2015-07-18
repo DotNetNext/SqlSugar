@@ -204,7 +204,7 @@ namespace SqlSugar
             return sb += ")";
         }
         //表达式路由计算 
-        protected static string ExpressionRouter(Expression exp, bool isRight, bool isNot = false, bool isSingleQuotation = true)
+        protected static string ExpressionRouter(Expression exp, bool isNot = false, bool isSingleQuotation = true)
         {
 
             string sb = string.Empty;
@@ -218,7 +218,7 @@ namespace SqlSugar
             else if (exp is MemberExpression)
             {
                 MemberExpression me = ((MemberExpression)exp);
-                if (isRight)
+                if (me.Expression == null || me.Expression.NodeType.ToString() != "Parameter")
                 {
                     if (isSingleQuotation)
                     {
@@ -231,22 +231,9 @@ namespace SqlSugar
                 }
                 else
                 {
-                    if (me.Expression != null)
-                    {
-                        return me.Member.Name;
-                    }
-                    else
-                    {
-                        if (isSingleQuotation)
-                        {
-                            return ToSqlValue(Expression.Lambda(exp).Compile().DynamicInvoke().ToString());
-                        }
-                        else
-                        {
-                            return Expression.Lambda(exp).Compile().DynamicInvoke().ToString();
-                        }
-                    }
+                    return me.Member.Name;
                 }
+
             }
             else if (exp is NewArrayExpression)
             {
@@ -254,7 +241,7 @@ namespace SqlSugar
                 StringBuilder tmpstr = new StringBuilder();
                 foreach (Expression ex in ae.Expressions)
                 {
-                    tmpstr.Append(ExpressionRouter(ex, false));
+                    tmpstr.Append(ExpressionRouter(ex, false, isSingleQuotation));
                     tmpstr.Append(",");
                 }
                 return tmpstr.ToString(0, tmpstr.Length - 1);
@@ -265,35 +252,35 @@ namespace SqlSugar
                 string methodName = mce.Method.Name;
                 if (methodName == "Contains")
                 {
-                    return string.Format("({0} {2} LIKE '%{1}%')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false, false, false), isNot == true ? "  NOT " : null);
+                    return string.Format("({0} {2} LIKE '%{1}%')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false, false), isNot == true ? "  NOT " : null);
                 }
                 else if (methodName == "StartsWith")
                 {
-                    return string.Format("({0} {2} LIKE '{1}%')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false, false, false), isNot == true ? "  NOT " : null);
+                    return string.Format("({0} {2} LIKE '{1}%')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false, false), isNot == true ? "  NOT " : null);
                 }
                 else if (methodName == "EndWith")
                 {
-                    return string.Format("({0} {2} LIKE '%{1}')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false, false, false), isNot == true ? "  NOT " : null);
+                    return string.Format("({0} {2} LIKE '%{1}')", ExpressionRouter((mce.Object as MemberExpression), false), ExpressionRouter(mce.Arguments[0], false, false), isNot == true ? "  NOT " : null);
                 }
                 else if (methodName == "ToString")
                 {
-                    return ExpressionRouter((mce.Object), true, false, isSingleQuotation);
+                    return ExpressionRouter((mce.Object), false, isSingleQuotation);
                 }
                 else if (methodName.StartsWith("ToDateTime"))
                 {
                     if (mce.Object != null)
                     {
-                        return ExpressionRouter((mce.Object), true, false, isSingleQuotation);
+                        return ExpressionRouter((mce.Object), false, isSingleQuotation);
                     }
                     else if (mce.Arguments.Count == 1)
                     {
                         if (isSingleQuotation)
                         {
-                            return SqlTool.ToSqlValue(Convert.ToDateTime(ExpressionRouter(mce.Arguments[0], false, false, false)).ToString());
+                            return SqlTool.ToSqlValue(Convert.ToDateTime(ExpressionRouter(mce.Arguments[0], false, false)).ToString());
                         }
                         else
                         {
-                            return Convert.ToDateTime(ExpressionRouter(mce.Arguments[0], false, false, false)).ToString();
+                            return Convert.ToDateTime(ExpressionRouter(mce.Arguments[0], false, false)).ToString();
                         }
                     }
                 }
@@ -301,18 +288,11 @@ namespace SqlSugar
                 {
                     if (mce.Object != null)
                     {
-                        return ExpressionRouter((mce.Object), true, false, isSingleQuotation);
+                        return ExpressionRouter((mce.Object), false, isSingleQuotation);
                     }
                     else if (mce.Arguments.Count == 1)
                     {
-                        if (isSingleQuotation)
-                        {
-                            return SqlTool.ToSqlValue(ExpressionRouter(mce.Arguments[0], false));
-                        }
-                        else
-                        {
-                            return ExpressionRouter(mce.Arguments[0], false);
-                        }
+                        return ExpressionRouter(mce.Arguments[0], false, isSingleQuotation);
                     }
                 }
 
@@ -328,7 +308,16 @@ namespace SqlSugar
                     return Convert.ToBoolean(ce.Value) ? "1=1" : "1<>1";
                 }
                 else if (ce.Value is ValueType)
-                    return ce.Value.ToString();
+                {
+                    if (isSingleQuotation)
+                    {
+                        return ToSqlValue(ce.Value.ToString());
+                    }
+                    else
+                    {
+                        return ce.Value.ToString();
+                    }
+                }
                 else if (ce.Value is string || ce.Value is DateTime || ce.Value is char)
                 {
                     if (isSingleQuotation)
