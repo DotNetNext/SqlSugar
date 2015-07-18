@@ -92,7 +92,9 @@ namespace WebTest
                     var student12 = db.Queryable<Student>().Where(c => 1 == 1).Where("id>100").ToList();
 
 
- 
+                    //存在记录反回true，则否返回false
+                    bool isAny100 = db.Queryable<Student>().Any(c => c.id == 100);
+                    bool isAny1 = db.Queryable<Student>().Any(c => c.id == 1);
 
 
                     //---------Sqlable,创建多表查询---------//
