@@ -59,7 +59,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 返回指定索引数据以及索引后面所有数据
+        ///  跳过序列中指定数量的元素，然后返回剩余的元素。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
@@ -188,12 +188,12 @@ namespace SqlSugar
                 if (queryable.Skip == null && queryable.Take != null)
                 {
                     sbSql.Insert(0, "SELECT * FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
+                    sbSql.Append(") t WHERE t.row_index<" + queryable.Take);
                 }
                 else if (queryable.Skip != null && queryable.Take == null)
                 {
                     sbSql.Insert(0, "SELECT * FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index>=" + queryable.Skip);
+                    sbSql.Append(") t WHERE t.row_index>" + queryable.Skip);
                 }
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
