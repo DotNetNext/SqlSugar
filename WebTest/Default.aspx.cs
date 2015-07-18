@@ -36,7 +36,7 @@ namespace WebTest
                     /************************************************************************************************************/
 
                     //根据当前数据库生成所有表的实体类文件 （参数：SqlSugarClient ，文件目录，命名空间）
-                    //db.ClassGenerating.CreateClassFiles(db,Server.MapPath("~/Models"),"Models");
+                    db.ClassGenerating.CreateClassFiles(db,Server.MapPath("~/Models"),"Models");
                     //根据表名生成实体类文件
                     //db.ClassGenerating.CreateClassFilesByTableNames(db, Server.MapPath("~/Models"), "Models" , "student","school");
 
@@ -80,7 +80,8 @@ namespace WebTest
                     var take = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Take(2).ToList();
 
                     // Not like 
-                    var notLike = db.Queryable<Student>().Where(c => !c.name.Contains("a".ToString())).ToList();
+                    string conval = "a";
+                    var notLike = db.Queryable<Student>().Where(c => !c.name.Contains(conval.ToString())).ToList();
 
                     // 可以在拉姆达使用 ToString和 Convert,比EF出色的地方
                     var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();

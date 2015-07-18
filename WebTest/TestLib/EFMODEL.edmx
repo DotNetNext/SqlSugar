@@ -4,12 +4,25 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SqlSugarTestModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="SqlSugarTestModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="SqlSugarTestModelStoreContainer">
+          <EntitySet Name="InsertTest" EntityType="SqlSugarTestModel.Store.InsertTest" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="School" EntityType="SqlSugarTestModel.Store.School" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Student" EntityType="SqlSugarTestModel.Store.Student" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Subject" EntityType="SqlSugarTestModel.Store.Subject" store:Type="Tables" Schema="dbo" />
         </EntityContainer>
+        <EntityType Name="InsertTest">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="v1" Type="varchar" MaxLength="50" />
+          <Property Name="v2" Type="varchar" MaxLength="50" />
+          <Property Name="v3" Type="varchar" MaxLength="50" />
+          <Property Name="int1" Type="int" />
+          <Property Name="d1" Type="datetime" />
+          <Property Name="txt" Type="text" />
+        </EntityType>
         <EntityType Name="School">
           <Key>
             <PropertyRef Name="id" />
@@ -34,8 +47,7 @@
           <Property Name="sid" Type="int" />
           <Property Name="name" Type="varchar" MaxLength="150" />
         </EntityType>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SqlSugarTestModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
@@ -43,6 +55,7 @@
           <EntitySet Name="School" EntityType="SqlSugarTestModel.School" />
           <EntitySet Name="Student" EntityType="SqlSugarTestModel.Student" />
           <EntitySet Name="Subject" EntityType="SqlSugarTestModel.Subject" />
+          <EntitySet Name="InsertTests" EntityType="SqlSugarTestModel.InsertTest" />
         </EntityContainer>
         <EntityType Name="School">
           <Key>
@@ -68,6 +81,18 @@
           <Property Name="sid" Type="Int32" />
           <Property Name="name" Type="String" MaxLength="150" Unicode="false" FixedLength="false" />
         </EntityType>
+        <EntityType Name="InsertTest">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="v1" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="v2" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="v3" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="int1" />
+          <Property Type="DateTime" Name="d1" />
+          <Property Type="String" Name="txt" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -89,6 +114,19 @@
             <ScalarProperty Name="sid" ColumnName="sid" />
             <ScalarProperty Name="name" ColumnName="name" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="InsertTests">
+            <EntityTypeMapping TypeName="SqlSugarTestModel.InsertTest">
+              <MappingFragment StoreEntitySet="InsertTest">
+                <ScalarProperty Name="txt" ColumnName="txt" />
+                <ScalarProperty Name="d1" ColumnName="d1" />
+                <ScalarProperty Name="int1" ColumnName="int1" />
+                <ScalarProperty Name="v3" ColumnName="v3" />
+                <ScalarProperty Name="v2" ColumnName="v2" />
+                <ScalarProperty Name="v1" ColumnName="v1" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -113,6 +151,7 @@
         <EntityTypeShape EntityType="SqlSugarTestModel.School" Width="1.5" PointX="0.75" PointY="0.75" Height="1.3969734700520831" IsExpanded="true" />
         <EntityTypeShape EntityType="SqlSugarTestModel.Student" Width="1.5" PointX="2.75" PointY="0.75" Height="1.7790128580729174" IsExpanded="true" />
         <EntityTypeShape EntityType="SqlSugarTestModel.Subject" Width="1.5" PointX="0.75" PointY="3.75" Height="1.5879931640624996" IsExpanded="true" />
+        <EntityTypeShape EntityType="SqlSugarTestModel.InsertTest" Width="1.5" PointX="3.375" PointY="3.75" Height="2.3520719401041656" />
       </Diagram>
     </Diagrams>
   </Designer>

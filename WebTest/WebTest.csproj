@@ -64,14 +64,16 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
+    <Content Include="PerformanceTest\add_delete_update\Update.aspx" />
     <Content Include="CSS\StyleSheet1.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="Select\All.aspx" />
-    <Content Include="Select\ManyTable.aspx" />
-    <Content Include="Select\ManyTablePage.aspx" />
-    <Content Include="Select\OneWhere.aspx" />
-    <Content Include="Select\WherePage.aspx" />
+    <Content Include="PerformanceTest\Select\All.aspx" />
+    <Content Include="PerformanceTest\Select\ManyTable.aspx" />
+    <Content Include="PerformanceTest\Select\ManyTablePage.aspx" />
+    <Content Include="PerformanceTest\Select\OneWhere.aspx" />
+    <Content Include="PerformanceTest\Select\WherePage.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -81,6 +83,20 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PerformanceTest\add_delete_update\Add.aspx.cs">
+      <DependentUpon>Add.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PerformanceTest\add_delete_update\Add.aspx.designer.cs">
+      <DependentUpon>Add.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PerformanceTest\add_delete_update\Update.aspx.cs">
+      <DependentUpon>Update.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PerformanceTest\add_delete_update\Update.aspx.designer.cs">
+      <DependentUpon>Update.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -91,44 +107,45 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\InsertTest.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Student_View.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Select\All.aspx.cs">
+    <Compile Include="PerformanceTest\Select\All.aspx.cs">
       <DependentUpon>All.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Select\All.aspx.designer.cs">
+    <Compile Include="PerformanceTest\Select\All.aspx.designer.cs">
       <DependentUpon>All.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Select\ManyTable.aspx.cs">
+    <Compile Include="PerformanceTest\Select\ManyTable.aspx.cs">
       <DependentUpon>ManyTable.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Select\ManyTable.aspx.designer.cs">
+    <Compile Include="PerformanceTest\Select\ManyTable.aspx.designer.cs">
       <DependentUpon>ManyTable.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Select\ManyTablePage.aspx.cs">
+    <Compile Include="PerformanceTest\Select\ManyTablePage.aspx.cs">
       <DependentUpon>ManyTablePage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Select\ManyTablePage.aspx.designer.cs">
+    <Compile Include="PerformanceTest\Select\ManyTablePage.aspx.designer.cs">
       <DependentUpon>ManyTablePage.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Select\OneWhere.aspx.cs">
+    <Compile Include="PerformanceTest\Select\OneWhere.aspx.cs">
       <DependentUpon>OneWhere.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Select\OneWhere.aspx.designer.cs">
+    <Compile Include="PerformanceTest\Select\OneWhere.aspx.designer.cs">
       <DependentUpon>OneWhere.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Select\WherePage.aspx.cs">
+    <Compile Include="PerformanceTest\Select\WherePage.aspx.cs">
       <DependentUpon>WherePage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Select\WherePage.aspx.designer.cs">
+    <Compile Include="PerformanceTest\Select\WherePage.aspx.designer.cs">
       <DependentUpon>WherePage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Site.Master.cs">
