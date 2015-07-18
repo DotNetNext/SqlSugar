@@ -110,6 +110,38 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
+        public static bool Any<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
+        {
+            var type = queryable.Type;
+            string whereStr = string.Empty;
+            if (expression.Body is BinaryExpression)
+            {
+                BinaryExpression be = ((BinaryExpression)expression.Body);
+                whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+            }
+            queryable.Where.Add(whereStr);
+            return queryable.Count()>0;
+        }
+
+
+        /// <summary>
+        ///  确定序列是否包含任何元素
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static bool Any<T>(this  SqlSugar.Queryable<T> queryable)
+        {
+            return queryable.Count()>0;
+        }
+
+        /// <summary>
+        ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static T Single<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
@@ -122,6 +154,7 @@ namespace SqlSugar
             queryable.Where.Add(whereStr);
             return queryable.ToList().Single();
         }
+
 
         /// <summary>
         /// 获取总条数
