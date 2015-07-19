@@ -56,7 +56,9 @@
     <Compile Include="Tool\FileSugar.cs" />
     <Compile Include="Tool\IHttpStorageObject.cs" />
     <Compile Include="Tool\IsWhatExtenions.cs" />
-    <Compile Include="Tool\SqlTool.cs" />
+    <Compile Include="Tool\SqlException.cs" />
+    <Compile Include="Tool\SqlSugarToolExtensions.cs" />
+    <Compile Include="Tool\SqlSugarTool.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

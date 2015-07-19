@@ -63,7 +63,7 @@ namespace WebTest
                     var student = db.Queryable<Student>().ToList();
 
                     //查询单条
-                    var single = db.Queryable<Student>().Single(c => c.id == student[0].id);
+                    var single = db.Queryable<Student>().Where(c => c.name=="@a");
 
                     //取10-20条
                     var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();
@@ -116,10 +116,10 @@ namespace WebTest
                     //---------SqlQuery,根据SQL或者存储过程---------//
 
                     //用于多用复杂语句查询
-                    var School = db.SqlQuery<School>("select * from School");
+                    var School = db.SqlQuery<Student>("select * from Student");
 
                     //获取id
-                    var id = db.SqlQuery<int>("select top 1 id from School").Single();
+                    var id = db.SqlQuery<int>("select top 1 id from Student").Single();
 
                     //存储过程
                     //var spResult = db.SqlQuery<school>("exec sp_school @p1,@p2", new { p1=1,p2=2 });

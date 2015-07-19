@@ -17,7 +17,7 @@ namespace SqlSugar
     /// ** 作者：sunkaixuan
     /// ** 使用说明：
     /// </summary>
-    internal class SqlTool
+    internal class SqlSugarTool
     {
         public static Type StringType = typeof(string);
         public static Type IntType = typeof(int);
@@ -100,26 +100,7 @@ namespace SqlSugar
         //    return list;
         //}
 
-        /// <summary>
-        /// 将数组转为 '1','2' 这种格式的字符串 用于 where id in(  )
-        /// </summary>
-        /// <param name="array"></param>
-        /// <returns></returns>
-        public static string ToJoinSqlInVal(object[] array)
-        {
-            if (array == null || array.Length == 0)
-            {
-                return "''";
-            }
-            else
-            {
-                return string.Join(",", array.Where(c => c != null).Select(c => "'" + (c + "").Replace("'", "''") + "'"));//除止SQL注入
-            }
-        }
-        public static string ToSqlValue(string value)
-        {
-            return string.Format("'{0}'", value);
-        }
+    
 
         public static SqlParameter[] GetParameters(object obj)
         {
@@ -176,7 +157,7 @@ namespace SqlSugar
             if (expression.Body is BinaryExpression)
             {
                 BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+                whereStr = " and " + SqlSugarTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }
             else
             {
@@ -222,11 +203,11 @@ namespace SqlSugar
                 {
                     if (isSingleQuotation)
                     {
-                        return ToSqlValue(Expression.Lambda(exp).Compile().DynamicInvoke().ToString());
+                        return  (Expression.Lambda(exp).Compile().DynamicInvoke().ToString()).ToSqlValue();
                     }
                     else
                     {
-                        return Expression.Lambda(exp).Compile().DynamicInvoke().ToString();
+                        return Expression.Lambda(exp).Compile().DynamicInvoke().ToString().ToSqlFilter();
                     }
                 }
                 else
@@ -276,7 +257,7 @@ namespace SqlSugar
                     {
                         if (isSingleQuotation)
                         {
-                            return SqlTool.ToSqlValue(Convert.ToDateTime(ExpressionRouter(mce.Arguments[0], false, false)).ToString());
+                            return (Convert.ToDateTime(ExpressionRouter(mce.Arguments[0], false, false))).ToString().ToSqlValue();
                         }
                         else
                         {
@@ -311,22 +292,22 @@ namespace SqlSugar
                 {
                     if (isSingleQuotation)
                     {
-                        return ToSqlValue(ce.Value.ToString());
+                        return  (ce.Value.ToString()).ToSqlValue();
                     }
                     else
                     {
-                        return ce.Value.ToString();
+                        return ce.Value.ToString().ToSqlFilter();
                     }
                 }
                 else if (ce.Value is string || ce.Value is DateTime || ce.Value is char)
                 {
                     if (isSingleQuotation)
                     {
-                        return SqlTool.ToSqlValue(ce.Value.ToString());
+                        return (ce.Value.ToString()).ToSqlValue();
                     }
                     else
                     {
-                        return ce.Value.ToString();
+                        return ce.Value.ToString().ToSqlFilter();
                     }
                 }
             }

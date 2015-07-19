@@ -55,10 +55,10 @@ namespace SqlSugar
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             SqlDataReader reader = null;
-            var pars = SqlTool.GetParameters(whereObj);
+            var pars = SqlSugarTool.GetParameters(whereObj);
             var type = typeof(T);
             reader = GetReader(sql, pars);
-            if (type.IsIn(SqlTool.IntType, SqlTool.StringType))
+            if (type.IsIn(SqlSugarTool.IntType, SqlSugarTool.StringType))
             {
                 List<T> strReval = new List<T>();
                 using (SqlDataReader re = reader)
@@ -70,7 +70,7 @@ namespace SqlSugar
                 }
                 return strReval;
             }
-            var reval = SqlTool.DataReaderToList<T>(type, reader);
+            var reval = SqlSugarTool.DataReaderToList<T>(type, reader);
             return reval;
         }
 
@@ -209,7 +209,7 @@ namespace SqlSugar
 
             Type type = typeof(T);
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
-            Dictionary<string, string> rows = SqlTool.GetObjectToDictionary(rowObj);
+            Dictionary<string, string> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             int i = 0;
             foreach (var r in rows)
             {
@@ -226,7 +226,7 @@ namespace SqlSugar
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             sbSql.Append(" WHERE  1=1  ");
-            sbSql.Append(SqlTool.GetWhereByExpression<T>(expression)); ;
+            sbSql.Append(SqlSugarTool.GetWhereByExpression<T>(expression)); ;
 
             List<SqlParameter> parsList = new List<SqlParameter>();
             parsList.AddRange(rows.Select(c => new SqlParameter("@" + c.Key, c.Value)));
@@ -260,7 +260,7 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, SqlTool.GetWhereByExpression<T>(expression));
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, SqlSugarTool.GetWhereByExpression<T>(expression));
             int deleteRowCount = ExecuteCommand(sql);
             isSuccess = deleteRowCount > 0;
             return isSuccess;
@@ -279,12 +279,12 @@ namespace SqlSugar
             //属性缓存
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+            PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
             string key = type.FullName;
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn));
+                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, props[0].Name, whereIn.ToJoinSqlInVal());
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
@@ -308,11 +308,11 @@ namespace SqlSugar
             //属性缓存
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = SqlTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+            PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("UPDATE  {0} SET {3}=0 WHERE {1} IN ({2})", type.Name, props[0].Name, SqlTool.ToJoinSqlInVal(whereIn), field);
+                string sql = string.Format("UPDATE  {0} SET {3}=0 WHERE {1} IN ({2})", type.Name, props[0].Name, whereIn.ToJoinSqlInVal(), field);
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
@@ -344,7 +344,7 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, SqlTool.GetWhereByExpression(expression));
+            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, SqlSugarTool.GetWhereByExpression(expression));
             int deleteRowCount = ExecuteCommand(sql);
             isSuccess = deleteRowCount > 0;
             return isSuccess;

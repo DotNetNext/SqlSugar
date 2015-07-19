@@ -25,7 +25,7 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            string whereStr = SqlTool.GetWhereByExpression<T>(expression);
+            string whereStr = SqlSugarTool.GetWhereByExpression<T>(expression);
             queryable.Where.Add(whereStr);
             return queryable;
         }
@@ -117,7 +117,7 @@ namespace SqlSugar
             if (expression.Body is BinaryExpression)
             {
                 BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " AND " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+                whereStr = " AND " + SqlSugarTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }
             queryable.Where.Add(whereStr);
             return queryable.Count()>0;
@@ -149,7 +149,7 @@ namespace SqlSugar
             if (expression.Body is BinaryExpression)
             {
                 BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " AND " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+                whereStr = " AND " + SqlSugarTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }
             queryable.Where.Add(whereStr);
             return queryable.ToList().Single();
@@ -202,7 +202,7 @@ namespace SqlSugar
                 }
 
                 var reader = queryable.DB.GetReader(sbSql.ToString());
-                var reval = SqlTool.DataReaderToList<T>(typeof(T), reader);
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader);
                 queryable = null;
                 return reval;
             }

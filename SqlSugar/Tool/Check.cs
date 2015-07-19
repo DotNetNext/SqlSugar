@@ -6,7 +6,7 @@ using System.Text;
 namespace SqlSugar
 {
     /// <summary>
-    /// Check
+    /// 异常处理类
     /// </summary>
     public class Check
     {
@@ -15,10 +15,12 @@ namespace SqlSugar
             if (checkObj == null)
                 throw new ArgumentNullException(message);
         }
-        public static void Exception(bool isException, string message,params string [] args)
+        public static void Exception(bool isException, string message, params string[] args)
         {
             if (isException)
-                throw new Exception(string.Format(message,args));
+                throw new Exception(string.Format(message, args));
         }
     }
+
+    
 }
