@@ -24,7 +24,7 @@ namespace SqlSugar
         public static Sqlable Form(this Sqlable sqlable, object tableName, string shortName)
         {
             sqlable.Sql = new StringBuilder();
-            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName,  sqlable.DB.IsNoLock.GetLockString(), shortName);
+            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName, shortName, sqlable.DB.IsNoLock.GetLockString());
             return sqlable;
         }
 
@@ -39,7 +39,7 @@ namespace SqlSugar
         public static Sqlable Join(this Sqlable sqlable, object tableName, string shortName, string leftFiled, string RightFiled, JoinType type)
         {
             Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
-            sqlable.Sql.AppendFormat(" {0} JOIN {1} {5} {2} ON  {3} = {4} ", type.ToString(), tableName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled, shortName);
+            sqlable.Sql.AppendFormat(" {0} JOIN {1} {2}  {3} ON  {4} = {5} ", type.ToString(), tableName, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
             return sqlable;
         }
 
