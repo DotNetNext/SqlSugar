@@ -27,6 +27,11 @@ namespace WebTest.Select
                 }, m => { }, "sqlSugar");
             }
 
+            //输出测试页面
+            GridView gv = new GridView();
+            gv.DataSource = pt.GetChartSource();
+            gv.DataBind();
+            Form.Controls.Add(gv);
 
         }
     }
