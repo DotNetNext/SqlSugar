@@ -9,10 +9,13 @@ using System.Reflection.Emit;
 namespace SqlSugar
 {
     /// <summary>
-    /// 作者：网络
-    /// 修改：sunkaixuan
+    /// ** 描述：DataReader实体生成
+    /// ** 创始时间：2010-2-28
+    /// ** 修改时间：-
+    /// ** 作者：网络
+    /// ** 修改人：sunkaixuan
+    /// ** 使用说明：
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class IDataReaderEntityBuilder<T>
     {
         private static readonly MethodInfo getValueMethod =

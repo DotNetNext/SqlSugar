@@ -6,14 +6,18 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    /// <summary>
-    /// 扩展工具类
+
+    /// ** 描述：SqlSugar扩展工具类
+    /// ** 创始时间：2015-7-19
+    /// ** 修改时间：-
+    /// ** 作者：sunkaixuan
+    /// ** 使用说明：
     /// </summary>
     internal static class SqlSugarToolExtensions
     {
 
         /// <summary>
-        /// 将数组转为 '1','2' 这种格式的字符串 用于 where id in(  )
+        /// 数组字串转换成SQL参数格式，例如: 参数 new int{1,2,3} 反回 "'1','2','3'"
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
@@ -29,7 +33,7 @@ namespace SqlSugar
             }
         }
         /// <summary>
-        /// 转换为sql
+        /// 将字符串转换成SQL参数格式，例如: 参数value返回'value'
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -38,7 +42,7 @@ namespace SqlSugar
             return string.Format("'{0}'", value.ToSqlFilter());
         }
         /// <summary>
-        /// SQL关键字过滤,用于过滤拉姆达式特殊字符串
+        /// SQL关键字过滤,过滤拉姆达式中的特殊字符，出现特殊字符则引发异常
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -54,7 +58,7 @@ namespace SqlSugar
             return value;
         }
         /// <summary>
-        ///  指定类型(只允许输入指定字母、数字、下划线、时间、guid)、用于 where in过滤
+        ///  指定数据类型，如果不在指定类当中则引发异常(只允许输入指定字母、数字、下划线、时间、GUID)
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>

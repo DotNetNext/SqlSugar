@@ -15,10 +15,7 @@ namespace SqlSugar
         /// sql
         /// </summary>
         public StringBuilder Sql { get; set; }
-        /// <summary>
-        /// 当前状态
-        /// </summary>
-        public SqlableCurrentState? SqlableCurrentState { get; set; }
+
         /// <summary>
         /// 是否允许脏读
         /// </summary>

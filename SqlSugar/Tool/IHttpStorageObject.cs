@@ -1,6 +1,10 @@
 ﻿using System;
 namespace SqlSugar
 {
+    /// <summary>
+    /// http存储对象接口
+    /// </summary>
+    /// <typeparam name="V"></typeparam>
     internal abstract class IHttpStorageObject<V>
     {
 

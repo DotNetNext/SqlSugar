@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 namespace SqlSugar
 {
     /// <summary>
-    /// ** 描述：工具函数
+    /// ** 描述：SqlSugar工具类
     /// ** 创始时间：2015-7-13
     /// ** 修改时间：-
     /// ** 作者：sunkaixuan
@@ -101,7 +101,11 @@ namespace SqlSugar
         //}
 
     
-
+        /// <summary>
+        /// 将实体对象转换成SqlParameter[] 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static SqlParameter[] GetParameters(object obj)
         {
             List<SqlParameter> listParams = new List<SqlParameter>();
@@ -118,6 +122,11 @@ namespace SqlSugar
             return listParams.ToArray();
         }
 
+        /// <summary>
+        /// 将实体对象转换成 Dictionary《string, string》
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static Dictionary<string, string> GetObjectToDictionary(object obj)
         {
 
@@ -134,8 +143,13 @@ namespace SqlSugar
 
             return reval;
         }
-
-
+        /// <summary>
+        /// 获取type属性cache
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="cachePropertiesKey"></param>
+        /// <param name="cachePropertiesManager"></param>
+        /// <returns></returns>
         public static PropertyInfo[] GetGetPropertiesByCache(Type type, string cachePropertiesKey, CacheManager<PropertyInfo[]> cachePropertiesManager)
         {
             PropertyInfo[] props = null;
@@ -150,7 +164,12 @@ namespace SqlSugar
             }
             return props;
         }
-
+        /// <summary>
+        /// 根据Expression获取SQL WHERE 字符串
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static string GetWhereByExpression<T>(Expression<Func<T, bool>> expression)
         {
             string whereStr = string.Empty;
@@ -165,6 +184,13 @@ namespace SqlSugar
             }
             return whereStr;
         }
+        /// <summary>
+        /// 据Expression获取SQL WHERE 字符串
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static string BinarExpressionProvider(Expression left, Expression right, ExpressionType type)
         {
             string sb = "(";
@@ -184,7 +210,13 @@ namespace SqlSugar
                 sb += tmpStr;
             return sb += ")";
         }
-        //表达式路由计算 
+        /// <summary>
+        /// 表达式路由计算
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <param name="isNot"></param>
+        /// <param name="isSingleQuotation"></param>
+        /// <returns></returns>
         protected static string ExpressionRouter(Expression exp, bool isNot = false, bool isSingleQuotation = true)
         {
 
@@ -320,6 +352,11 @@ namespace SqlSugar
             }
             return null;
         }
+        /// <summary>
+        /// 获取表达示类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         static string ExpressionTypeCast(ExpressionType type)
         {
             switch (type)

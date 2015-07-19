@@ -6,7 +6,12 @@ using System.Text;
 namespace SqlSugar
 {
     /// <summary>
-    /// 异常处理类
+    /// ** 描述：逻辑出错抛出异常
+    /// ** 创始时间：2015-7-19
+    /// ** 修改时间：-
+    /// ** 作者：网络
+    /// ** 修改人：sunkaixuan
+    /// ** 使用说明：
     /// </summary>
     public class Check
     {
