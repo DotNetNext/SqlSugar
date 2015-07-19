@@ -71,5 +71,15 @@ namespace SqlSugar
             }
             throw new SqlSecurityException("指定类型(只允许输入指定字母、数字、下划线、时间、guid)。");
         }
+
+        /// <summary>
+        /// 获取锁字符串
+        /// </summary>
+        /// <param name="isNoLock"></param>
+        /// <returns></returns>
+        public static string GetLockString(this bool isNoLock)
+        {
+            return isNoLock ? "WITH(NOLOCK)" : null; ;
+        }
     }
 }

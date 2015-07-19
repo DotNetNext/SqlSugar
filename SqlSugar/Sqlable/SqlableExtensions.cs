@@ -24,7 +24,7 @@ namespace SqlSugar
         public static Sqlable Form(this Sqlable sqlable, object tableName, string shortName)
         {
             sqlable.Sql = new StringBuilder();
-            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName, GetIsNoLock(sqlable.DB.IsNoLock), shortName);
+            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName,  sqlable.DB.IsNoLock.GetLockString(), shortName);
             return sqlable;
         }
 
@@ -32,34 +32,49 @@ namespace SqlSugar
         /// Join
         /// </summary>
         /// <param name="sqlable"></param>
-        /// <param name="leftFiled"></param>
-        /// <param name="RightFiled"></param>
-        /// <param name="type"></param>
+        /// <param name="leftFiled">join左边连接字段</param>
+        /// <param name="RightFiled">join右边连接字段</param>
+        /// <param name="type">join类型</param>
         /// <returns></returns>
         public static Sqlable Join(this Sqlable sqlable, object tableName, string shortName, string leftFiled, string RightFiled, JoinType type)
         {
             Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
-            sqlable.Sql.AppendFormat(" {0} JOIN {1} {5} {2} ON  {3} = {4} ", type.ToString(), tableName, GetIsNoLock(sqlable.DB.IsNoLock), leftFiled, RightFiled, shortName);
+            sqlable.Sql.AppendFormat(" {0} JOIN {1} {5} {2} ON  {3} = {4} ", type.ToString(), tableName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled, shortName);
             return sqlable;
         }
 
         /// <summary>
-        /// 查询条件比如  t1.id=@id
+        /// Where
         /// </summary>
         /// <param name="sqlable"></param>
-        /// <param name="where"></param>
+        /// <param name="where">查询条件、开头无需写 AND或者WHERE</param>
         /// <returns></returns>
         public static Sqlable Where(this Sqlable sqlable, string where)
         {
             sqlable.Where.Add(string.Format(" AND {0} ",where));
             return sqlable;
         }
+
+        /// <summary>
+        /// OrderBy
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="orderBy">排序字段，可以多个</param>
+        /// <returns></returns>
         public static Sqlable OrderBy(this Sqlable sqlable, string orderBy)
         {
             sqlable.OrderBy = orderBy;
             return sqlable;
         }
 
+        /// <summary>
+        /// Apply
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="applySql">apply主体内容</param>
+        /// <param name="shotName">apply简写</param>
+        /// <param name="type">Apply类型</param>
+        /// <returns></returns>
         public static Sqlable Apply(this Sqlable sqlable, string applySql, string shotName, ApplyType type)
         {
             Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
@@ -67,12 +82,26 @@ namespace SqlSugar
             return sqlable;
         }
 
+        /// <summary>
+        /// GroupBy
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="groupBy">GroupBy字段，可以多个</param>
+        /// <returns></returns>
         public static Sqlable GroupBy(this Sqlable sqlable, string groupBy)
         {
             sqlable.GroupBy = groupBy;
             return sqlable;
         }
 
+        /// <summary>
+        /// 设置查询列执行查询，并且将结果集转成List《T》
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
         public static List<T> SelectToList<T>(this Sqlable sqlable, string fileds, object whereObj = null) where T : class
         {
             string sql = null;
@@ -98,7 +127,17 @@ namespace SqlSugar
                 sqlable = null;
             }
         }
-
+        /// <summary>
+        /// 设置查询列和分页参数执行查询，并且将结果集转成List《T》
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="orderByFiled">Order By字段，可以多个</param>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
         public static List<T> SelectToPageList<T>(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) where T : class
         {
             string sql = null;
@@ -130,10 +169,8 @@ namespace SqlSugar
             }
         }
 
-        private static string GetIsNoLock(bool isNoLock)
-        {
-            return isNoLock ? "WITH(NOLOCK)" : null; ;
-        }
+         
+       
 
     }
 }
