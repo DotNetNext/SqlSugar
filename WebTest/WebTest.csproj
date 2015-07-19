@@ -69,6 +69,7 @@
     <Content Include="CSS\StyleSheet1.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="PerformanceTest\lambda\Test.aspx" />
     <Content Include="PerformanceTest\Select\All.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Del.aspx" />
     <Content Include="PerformanceTest\Select\ManyTable.aspx" />
@@ -119,6 +120,13 @@
     </Compile>
     <Compile Include="PerformanceTest\add_delete_update\Del.aspx.designer.cs">
       <DependentUpon>Del.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PerformanceTest\lambda\Test.aspx.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PerformanceTest\lambda\Test.aspx.designer.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PerformanceTest\Select\All.aspx.cs">

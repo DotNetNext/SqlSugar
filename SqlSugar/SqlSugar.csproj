@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
+    <Compile Include="Tool\ResolveExpress.cs" />
     <Compile Include="Tool\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queryable\Queryable.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Tool\FileSugar.cs" />
     <Compile Include="Tool\IHttpStorageObject.cs" />
     <Compile Include="Tool\IsWhatExtenions.cs" />
+    <Compile Include="Tool\ResovleExpress-Old.cs" />
     <Compile Include="Tool\SqlException.cs" />
     <Compile Include="Tool\SqlSugarToolExtensions.cs" />
     <Compile Include="Tool\SqlSugarTool.cs" />

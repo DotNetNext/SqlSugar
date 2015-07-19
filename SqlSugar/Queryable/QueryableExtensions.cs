@@ -25,8 +25,10 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            string whereStr = SqlSugarTool.GetWhereByExpression<T>(expression);
-            queryable.Where.Add(whereStr);
+            ResolveExpress re = new ResolveExpress();
+            re.ResolveExpression(expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
             return queryable;
         }
 
@@ -115,13 +117,10 @@ namespace SqlSugar
         public static bool Any<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            string whereStr = string.Empty;
-            if (expression.Body is BinaryExpression)
-            {
-                BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " AND " + SqlSugarTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
-            }
-            queryable.Where.Add(whereStr);
+            ResolveExpress re = new ResolveExpress();
+            re.ResolveExpression(expression);
+            queryable.Where.Add(re.SqlWhere);
+            queryable.Params.AddRange(re.Paras);
             return queryable.Count() > 0;
         }
 
@@ -146,13 +145,10 @@ namespace SqlSugar
         public static T Single<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            string whereStr = string.Empty;
-            if (expression.Body is BinaryExpression)
-            {
-                BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " AND " + SqlSugarTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
-            }
-            queryable.Where.Add(whereStr);
+            ResolveExpress re = new ResolveExpress();
+            re.ResolveExpression(expression);
+            queryable.Where.Add(re.SqlWhere);
+            queryable.Params.AddRange(re.Paras);
             return queryable.ToList().Single();
         }
 

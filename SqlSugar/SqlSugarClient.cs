@@ -231,9 +231,12 @@ namespace SqlSugar
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             sbSql.Append(" WHERE  1=1  ");
-            sbSql.Append(SqlSugarTool.GetWhereByExpression<T>(expression)); ;
+            ResolveExpress re = new ResolveExpress();
+            re.ResolveExpression(expression);
+            sbSql.Append(re.SqlWhere); ;
 
             List<SqlParameter> parsList = new List<SqlParameter>();
+            parsList.AddRange(re.Paras);
             parsList.AddRange(rows.Select(c => new SqlParameter("@" + c.Key, c.Value)));
             var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
             return updateRowCount > 0;
@@ -248,8 +251,10 @@ namespace SqlSugar
         public bool Delete<T>(Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
-            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, SqlSugarTool.GetWhereByExpression<T>(expression));
-            bool isSuccess = ExecuteCommand(sql)>0;
+            ResolveExpress re = new ResolveExpress();
+            re.ResolveExpression(expression);
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name,re.SqlWhere);
+            bool isSuccess = ExecuteCommand(sql,re.Paras)>0;
             return isSuccess;
         }
 
@@ -327,8 +332,10 @@ namespace SqlSugar
             }
             string key = type.FullName;
             bool isSuccess = false;
-            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, SqlSugarTool.GetWhereByExpression(expression));
-            int deleteRowCount = ExecuteCommand(sql);
+            ResolveExpress re = new ResolveExpress();
+            re.ResolveExpression(expression);
+            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, re.SqlWhere);
+            int deleteRowCount = ExecuteCommand(sql,re.Paras);
             isSuccess = deleteRowCount > 0;
             return isSuccess;
         }

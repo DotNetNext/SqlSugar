@@ -23,7 +23,7 @@ namespace WebTest.Select
                 //ado.GetDataTable
                 pt.Execute(i =>
                 {
-                    db.GetDataTable("select * from Student WHERE ID>@id", new SqlParameter("@id", 2));
+                    db.GetDataTable("select * from Student WHERE ID>@id", new SqlParameter("@id", i));
 
                 }, m => { }, "ado.DateTable 纯SQL写法");
 
@@ -32,14 +32,14 @@ namespace WebTest.Select
                 var conn = db.GetConnection();
                 pt.Execute(i =>
                 {
-                    conn.Query<Models.Student>("select * from Student where id>@id", new { id = 2 }).ToList();
+                    conn.Query<Models.Student>("select * from Student where id>@id", new { id = i}).ToList();
 
                 }, m => { }, "dapper 纯SQL写法");
 
                 //sqlSugar
                 pt.Execute(i =>
                 {
-                    db.Queryable<Models.Student>().Where(c => c.id == 2).ToList();
+                    db.Queryable<Models.Student>().Where(c => c.id == i).ToList();
 
                 }, m => { }, "sqlSugar 拉姆达");
 
@@ -51,7 +51,7 @@ namespace WebTest.Select
                 //EF
                 pt.Execute(i =>
                 {
-                    db.Student.Where(c => c.id == 2).ToList();
+                    db.Student.Where(c => c.id == i).ToList();
 
                 }, m => { }, "EF4.0+sql05 拉姆达");
             }
