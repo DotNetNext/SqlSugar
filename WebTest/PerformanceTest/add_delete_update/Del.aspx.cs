@@ -16,13 +16,13 @@ namespace WebTest.Select
         {
             
             PerformanceTest pt = new PerformanceTest();
-            pt.SetCount(1);//设置循环次数
+            pt.SetCount(1000);//设置循环次数
             using (SqlSugarClient db = new SqlSugarClient(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConn"].ToString()))
             {
                 //sqlSugar
                 pt.Execute(i =>
                 {
-                    db.Delete<Models.InsertTest>(1000);
+                    db.Delete<Models.InsertTest>(it=>it.id==i);
 
                 }, m => { }, "sqlSugar");
             }
