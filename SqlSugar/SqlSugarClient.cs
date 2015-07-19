@@ -263,7 +263,6 @@ namespace SqlSugar
                 props = type.GetProperties();
                 cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
             }
-            string key = type.FullName;
             bool isSuccess = false;
             string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, SqlSugarTool.GetWhereByExpression<T>(expression));
             int deleteRowCount = ExecuteCommand(sql);

@@ -19,15 +19,7 @@ namespace WebTest.add
             pt.SetCount(10000);//设置循环次数
             using (SqlSugarClient db = new SqlSugarClient(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConn"].ToString()))
             {
-                //sqlSugar
-                pt.Execute(i =>
-                {
-                    //更新10000次
-                    db.Update<Models.InsertTest>(new { v1 = "newv11", v2 = "newv22", v3 = "newv33" }, it => it.id == 1 || it.id > 1000);
-
-                }, m => { }, "sqlSugar");
-
-
+         
 
                 //ef
                 using (WebTest.TestLib.SqlSugarTestEntities ef = new TestLib.SqlSugarTestEntities())
@@ -70,6 +62,16 @@ namespace WebTest.add
                       new { v1 = "newv11", v2 = "newv22", v3 = "newv33",id1=1,id1000=1000 } );
 
                 }, m => { }, "dapper");
+
+                //sqlSugar
+                pt.Execute(i =>
+                {
+                    //更新10000次
+                    db.Update<Models.InsertTest>(new { v1 = "newv11", v2 = "newv22", v3 = "newv33" }, it => it.id == 1 || it.id > 1000);
+
+                }, m => { }, "sqlSugar");
+
+
             }
 
             //输出测试页面
