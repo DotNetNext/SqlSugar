@@ -117,7 +117,7 @@ namespace SqlSugar
             if (expression.Body is BinaryExpression)
             {
                 BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+                whereStr = " AND " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }
             queryable.Where.Add(whereStr);
             return queryable.Count()>0;
@@ -149,7 +149,7 @@ namespace SqlSugar
             if (expression.Body is BinaryExpression)
             {
                 BinaryExpression be = ((BinaryExpression)expression.Body);
-                whereStr = " and " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
+                whereStr = " AND " + SqlTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }
             queryable.Where.Add(whereStr);
             return queryable.ToList().Single();
