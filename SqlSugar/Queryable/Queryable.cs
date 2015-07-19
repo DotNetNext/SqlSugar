@@ -5,8 +5,13 @@ using System.Text;
 
 namespace SqlSugar
 {
+
     /// <summary>
-    /// Queryable是单表查询基类，基于拥有大量查询扩展函数
+    /// ** 描述：Queryable是单表查询基类，基于拥有大量查询扩展函数
+    /// ** 创始时间：2015-7-13
+    /// ** 修改时间：-
+    /// ** 作者：sunkaixuan
+    /// ** 使用说明：
     /// </summary>
     public class Queryable<T>
     {
