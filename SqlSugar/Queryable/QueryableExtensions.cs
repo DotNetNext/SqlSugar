@@ -37,11 +37,13 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="whereString"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, string whereString)
+        public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, string whereString, object whereObj = null)
         {
             var type = queryable.Type;
             string whereStr = string.Format(" AND {0} ", whereString);
             queryable.Where.Add(whereStr);
+            if (whereObj != null)
+                queryable.Params.AddRange(SqlSugarTool.GetParameters(whereObj));
             return queryable;
         }
 
@@ -120,9 +122,8 @@ namespace SqlSugar
                 whereStr = " AND " + SqlSugarTool.BinarExpressionProvider(be.Left, be.Right, be.NodeType);
             }
             queryable.Where.Add(whereStr);
-            return queryable.Count()>0;
+            return queryable.Count() > 0;
         }
-
 
         /// <summary>
         ///  确定序列是否包含任何元素
@@ -132,7 +133,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static bool Any<T>(this  SqlSugar.Queryable<T> queryable)
         {
-            return queryable.Count()>0;
+            return queryable.Count() > 0;
         }
 
         /// <summary>
@@ -155,7 +156,6 @@ namespace SqlSugar
             return queryable.ToList().Single();
         }
 
-
         /// <summary>
         /// 获取序列总记录数
         /// </summary>
@@ -166,7 +166,7 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
             sbSql.AppendFormat("SELECT COUNT(*)  FROM {0} {1} WHERE 1=1 {2}  ", queryable.Name, withNoLock, string.Join("", queryable.Where));
-            var count = queryable.DB.GetInt(sbSql.ToString());
+            var count = queryable.DB.GetInt(sbSql.ToString(),queryable.Params.ToArray());
             return count;
         }
 
@@ -198,10 +198,10 @@ namespace SqlSugar
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
                     sbSql.Insert(0, "SELECT * FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip+1) + " AND " + (queryable.Skip + queryable.Take));
+                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
                 }
 
-                var reader = queryable.DB.GetReader(sbSql.ToString());
+                var reader = queryable.DB.GetReader(sbSql.ToString(),queryable.Params.ToArray());
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader);
                 queryable = null;
                 return reval;

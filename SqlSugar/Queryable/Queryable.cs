@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data.SqlClient;
 
 namespace SqlSugar
 {
@@ -43,5 +44,9 @@ namespace SqlSugar
         /// Order临时数据
         /// </summary>
         public string Order { get; set; }
+        /// <summary>
+        /// SqlParameter临时数据
+        /// </summary>
+        public List<SqlParameter> Params=new  List<SqlParameter>();
     }
 }
