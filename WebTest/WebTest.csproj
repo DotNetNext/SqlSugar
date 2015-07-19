@@ -70,6 +70,7 @@
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="PerformanceTest\Select\All.aspx" />
+    <Content Include="PerformanceTest\add_delete_update\Del.aspx" />
     <Content Include="PerformanceTest\Select\ManyTable.aspx" />
     <Content Include="PerformanceTest\Select\ManyTablePage.aspx" />
     <Content Include="PerformanceTest\Select\OneWhere.aspx" />
@@ -112,6 +113,13 @@
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Student_View.cs" />
     <Compile Include="Models\Subject.cs" />
+    <Compile Include="PerformanceTest\add_delete_update\Del.aspx.cs">
+      <DependentUpon>Del.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PerformanceTest\add_delete_update\Del.aspx.designer.cs">
+      <DependentUpon>Del.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PerformanceTest\Select\All.aspx.cs">
       <DependentUpon>All.aspx</DependentUpon>
