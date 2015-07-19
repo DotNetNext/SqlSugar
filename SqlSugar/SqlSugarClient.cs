@@ -23,20 +23,25 @@ namespace SqlSugar
             : base(connectionString)
         {
             ConnectionString = connectionString;
+            IsNoLock = true;
         }
         public string ConnectionString { get; set; }
 
         /// <summary>
-        /// 创建sql的对象
+        /// 查询是否允许脏读，（默认为:true）
+        /// </summary>
+        public bool IsNoLock { get; set; }
+
+        /// <summary>
+        /// 创建多表查询对象
         /// </summary>
         public Sqlable Sqlable()
         {
             return new Sqlable() { DB = this };
         }
 
-
         /// <summary>
-        /// 创建查询的对象
+        /// 创建单表查询对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
@@ -46,7 +51,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 根据SQL语句将数据映射到List《T》
+        /// 根据SQL语句将结果集映射到List《T》
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sql"></param>
@@ -265,6 +270,7 @@ namespace SqlSugar
             isSuccess = deleteRowCount > 0;
             return isSuccess;
         }
+
         /// <summary>
         /// 批量删除
         /// 注意：whereIn field 为class中的第一个属性
@@ -291,8 +297,6 @@ namespace SqlSugar
             return isSuccess;
         }
 
-
-
         /// <summary>
         /// 批量假删除
         /// 注意：whereIn field 为class中的第一个属性
@@ -318,6 +322,7 @@ namespace SqlSugar
             }
             return isSuccess;
         }
+
         /// <summary>
         /// 假删除，根据表达示
         /// 使用说明::

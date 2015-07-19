@@ -27,7 +27,7 @@ namespace WebTest
                 //db.RollbackTran(); 事务回滚，catch中声名
 
                 //查询是允许脏读的，可以声名多个（默认值:不允许）
-                db.Sqlable().IsNoLock = true;
+                db.IsNoLock = true;
 
                 try
                 {

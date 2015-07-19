@@ -6,29 +6,37 @@ using System.Text;
 namespace SqlSugar
 {
     /// <summary>
-    /// sql查询类
+    /// Queryable是单表查询基类，基于拥有大量查询扩展函数
     /// </summary>
     public class Queryable<T>
     {
-        public string Name
-        {
-            get
-            {
-                return typeof(T).Name;
-            }
-        }
-        public Type Type
-        {
-            get
-            {
-                return typeof(T);
-            }
-        }
-
-        public List<string> Where = new List<string>();
+        /// <summary>
+        /// 表名
+        /// </summary>
+        public string Name { get { return typeof(T).Name; } }
+        /// <summary>
+        /// 实体类型
+        /// </summary>
+        public Type Type { get { return typeof(T); } }
+        /// <summary>
+        /// 数据接口
+        /// </summary>
         public SqlSugarClient DB = null;
+        /// <summary>
+        /// Where临时数据
+        /// </summary>
+        public List<string> Where = new List<string>();
+        /// <summary>
+        /// Skip临时数据
+        /// </summary>
         public int? Skip { get; set; }
+        /// <summary>
+        /// Take临时数据
+        /// </summary>
         public int? Take { get; set; }
+        /// <summary>
+        /// Order临时数据
+        /// </summary>
         public string Order { get; set; }
     }
 }

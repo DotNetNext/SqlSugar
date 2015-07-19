@@ -45,7 +45,7 @@ namespace SqlSugar
         #region 公共函数
 
         /// <summary>         
-        /// key是否存在       
+        /// 验证key是否存在       
         /// </summary>         
         /// <param name="key">key</param>         
         /// <returns> /// 	存在<c>true</c> 不存在<c>false</c>.        /// /// </returns>         
@@ -55,7 +55,7 @@ namespace SqlSugar
         }
 
         /// <summary>         
-        /// 获取缓存值         
+        /// 根据key获取value  
         /// </summary>         
         /// <param name="key">key</param>         
         /// <returns></returns>         

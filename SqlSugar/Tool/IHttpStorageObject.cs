@@ -2,9 +2,11 @@
 namespace SqlSugar
 {
     /// <summary>
-    /// http存储对象接口
+    /// ** 描述：http存储对象接口
+    /// ** 创始时间：2015-5-29
+    /// ** 修改时间：-
+    /// ** 作者：sunkaixuan
     /// </summary>
-    /// <typeparam name="V"></typeparam>
     internal abstract class IHttpStorageObject<V>
     {
 

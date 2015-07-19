@@ -157,21 +157,21 @@ namespace SqlSugar
 
 
         /// <summary>
-        /// 获取总条数
+        /// 获取序列总记录数
         /// </summary>
         /// <param name="queryable"></param>
         /// <returns></returns>
         public static int Count<T>(this SqlSugar.Queryable<T> queryable)
         {
             StringBuilder sbSql = new StringBuilder();
-            string withNoLock = queryable.DB.Sqlable().IsNoLock ? "WITH(NOLOCK)" : null;
+            string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
             sbSql.AppendFormat("SELECT COUNT(*)  FROM {0} {1} WHERE 1=1 {2}  ", queryable.Name, withNoLock, string.Join("", queryable.Where));
             var count = queryable.DB.GetInt(sbSql.ToString());
             return count;
         }
 
         /// <summary>
-        /// 转换为List《T》集合
+        /// 将Queryable转换为List《T》集合
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
@@ -181,7 +181,7 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder();
             try
             {
-                string withNoLock = queryable.DB.Sqlable().IsNoLock ? "WITH(NOLOCK)" : null;
+                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.Order.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.Order + " )") : null;
 
                 sbSql.AppendFormat("SELECT * {1} FROM {0} {2} WHERE 1=1 {3}  ", queryable.Name, order, withNoLock, string.Join("", queryable.Where));
@@ -219,7 +219,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 返回分页List《T》集合
+        /// 将Queryable转换为分页后的List《T》集合
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
