@@ -63,7 +63,7 @@ namespace WebTest
                     var student = db.Queryable<Student>().ToList();
 
                     //查询单条
-                    var single = db.Queryable<Student>().Where(c => c.name=="@a");
+                    var single = db.Queryable<Student>().Single(c => c.id==1);
 
                     //取10-20条
                     var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();

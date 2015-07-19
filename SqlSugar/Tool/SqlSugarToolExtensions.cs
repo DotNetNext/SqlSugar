@@ -65,7 +65,7 @@ namespace SqlSugar
             {
                 return value;
             }
-            throw new SqlSecurityException("查询参数不允许存在特殊字符。");
+            throw new SqlSecurityException("指定类型(只允许输入指定字母、数字、下划线、时间、guid)。");
         }
     }
 }
