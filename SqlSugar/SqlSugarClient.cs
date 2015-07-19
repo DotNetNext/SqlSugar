@@ -244,29 +244,12 @@ namespace SqlSugar
         /// 使用说明:
         /// Delete《T》(it=>it.id=100) 或者Delete《T》(3)
         /// </summary>
-        /// <param name="oc"></param>
-        /// <param name="whereIn">in的集合</param>
-        /// <param name="whereIn">主键为实体的第一个属性</param>
+        /// <param name="expression">筛选表达示</param>
         public bool Delete<T>(Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
-            //属性缓存
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
-            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = null;
-            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
-            {
-                props = cachePropertiesManager[cachePropertiesKey];
-            }
-            else
-            {
-                props = type.GetProperties();
-                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
-            }
-            bool isSuccess = false;
             string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, SqlSugarTool.GetWhereByExpression<T>(expression));
-            int deleteRowCount = ExecuteCommand(sql);
-            isSuccess = deleteRowCount > 0;
+            bool isSuccess = ExecuteCommand(sql)>0;
             return isSuccess;
         }
 
@@ -275,9 +258,7 @@ namespace SqlSugar
         /// 注意：whereIn field 为class中的第一个属性
         /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
         /// </summary>
-        /// <param name="oc"></param>
-        /// <param name="whereIn">in的集合</param>
-        /// <param name="whereIn">主键为实体的第一个属性</param>
+        /// <param name="whereIn"> delete ids </param>
         public bool Delete<T>(params dynamic[] whereIn)
         {
             Type type = typeof(T);
@@ -302,9 +283,8 @@ namespace SqlSugar
         /// 使用说明::
         /// FalseDelete《T》("is_del",new int[]{1,2,3})或者Delete《T》("is_del",3)
         /// </summary>
-        /// <param name="oc"></param>
-        /// <param name="whereIn">in的集合</param>
-        /// <param name="whereIn">主键为实体的第一个属性</param>
+        /// <param name="field">更新删除状态字段</param>
+        /// <param name="whereIn">delete ids</param>
         public bool FalseDelete<T>(string field, params dynamic[] whereIn)
         {
             Type type = typeof(T);
@@ -327,9 +307,8 @@ namespace SqlSugar
         /// 使用说明::
         /// FalseDelete《T》(new int[]{1,2,3})或者Delete《T》(3)
         /// </summary>
-        /// <param name="oc"></param>
-        /// <param name="whereIn">in的集合</param>
-        /// <param name="whereIn">主键为实体的第一个属性</param>
+        /// <param name="field">更新删除状态字段</param>
+        /// <param name="expression">筛选表达示</param>
         public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);

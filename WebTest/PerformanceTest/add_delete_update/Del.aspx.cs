@@ -17,7 +17,7 @@ namespace WebTest.Select
         {
             
             PerformanceTest pt = new PerformanceTest();
-            pt.SetCount(1000);//设置循环次数
+            pt.SetCount(1100);//设置循环次数
             using (SqlSugarClient db = new SqlSugarClient(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConn"].ToString()))
             {
 
