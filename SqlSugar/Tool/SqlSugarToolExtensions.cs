@@ -9,7 +9,7 @@ namespace SqlSugar
     /// <summary>
     /// 扩展工具类
     /// </summary>
-    public static class SqlSugarToolExtensions
+    internal static class SqlSugarToolExtensions
     {
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace SqlSugar
             }
             else
             {
-                return string.Join(",", array.Where(c => c != null).Select(it => (it + "").ToSqlValue()));
+                return string.Join(",", array.Where(c => c != null).Select(it => (it + "").ToSuperSqlFilter().ToSqlValue()));
             }
         }
         /// <summary>
@@ -38,7 +38,7 @@ namespace SqlSugar
             return string.Format("'{0}'", value.ToSqlFilter());
         }
         /// <summary>
-        /// SQL查询关键字过滤
+        /// SQL关键字过滤,用于过滤拉姆达式特殊字符串
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -52,6 +52,20 @@ namespace SqlSugar
                 }
             }
             return value;
+        }
+        /// <summary>
+        ///  指定类型(只允许输入指定字母、数字、下划线、时间、guid)、用于 where in过滤
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToSuperSqlFilter(this string value)
+        {
+            if (value.IsNullOrEmpty()) return value;
+            if (Regex.IsMatch(value, @"^\w|\.|\:|\-$"))
+            {
+                return value;
+            }
+            throw new SqlSecurityException("查询参数不允许存在特殊字符。");
         }
     }
 }

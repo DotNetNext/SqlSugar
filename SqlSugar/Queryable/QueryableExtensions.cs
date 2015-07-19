@@ -188,17 +188,17 @@ namespace SqlSugar
                 if (queryable.Skip == null && queryable.Take != null)
                 {
                     sbSql.Insert(0, "SELECT * FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index<" + queryable.Take);
+                    sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
                 }
                 else if (queryable.Skip != null && queryable.Take == null)
                 {
                     sbSql.Insert(0, "SELECT * FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index>" + queryable.Skip);
+                    sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
                 }
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
                     sbSql.Insert(0, "SELECT * FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index BETWEEN " + queryable.Skip+1 + " AND " + (queryable.Skip + queryable.Take));
+                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip+1) + " AND " + (queryable.Skip + queryable.Take));
                 }
 
                 var reader = queryable.DB.GetReader(sbSql.ToString());
@@ -232,7 +232,7 @@ namespace SqlSugar
             {
                 throw new Exception("分页必需使用.Order排序");
             }
-            queryable.Skip = (pageIndex - 1) * pageSize + 1;
+            queryable.Skip = (pageIndex - 1) * pageSize;
             queryable.Take = pageSize;
             return queryable.ToList();
         }

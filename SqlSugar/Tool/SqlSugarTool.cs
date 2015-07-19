@@ -315,7 +315,7 @@ namespace SqlSugar
             {
                 UnaryExpression ue = ((UnaryExpression)exp);
                 var mex = ue.Operand;
-                return ExpressionRouter(mex, false, true);
+                return ExpressionRouter(mex, true,isSingleQuotation);
 
             }
             return null;
