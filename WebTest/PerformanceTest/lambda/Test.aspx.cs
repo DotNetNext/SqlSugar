@@ -17,7 +17,7 @@ namespace WebTest.lambda
         protected void Page_Load(object sender, EventArgs e)
         {
             PerformanceTest pt = new PerformanceTest();
-            pt.SetCount(10000);//设置循环次数
+            pt.SetCount(100000);//设置循环次数
 
             pt.Execute(i =>
             {

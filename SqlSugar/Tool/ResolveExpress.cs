@@ -128,10 +128,22 @@ namespace SqlSugar
                 if (me.Expression == null || me.Expression.NodeType.ToString() != "Parameter")
                 {
                     type = MemberType.Value;
-                    // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
-                    // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
-                    var dynInv = (me.Member as System.Reflection.FieldInfo).GetValue((me.Expression as ConstantExpression).Value);
-                
+                    object dynInv = null;
+                    try
+                    {
+                        // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
+                        // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
+                        dynInv = (me.Member as System.Reflection.FieldInfo).GetValue((me.Expression as ConstantExpression).Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (me.ToString() == "DateTime.Now")
+                        {
+                            return DateTime.Now.ToString();
+                        }
+                        Check.Exception(true, "错误信息:{0} \r\n message:{1}", "拉姆达解析出错", ex.Message);
+                    }
+
                     if (dynInv == null) return null;
                     else
                         return dynInv.ToString();
