@@ -33,7 +33,7 @@ namespace SqlSugar
         /// 递归解析表达式路由计算
         /// </summary>
         /// <returns></returns>
-        public string CreateSqlElements(Expression exp, ref MemberType type)
+        public string CreateSqlElements(Expression exp, ref MemberType type, bool isTure = true)
         {
             if (exp is LambdaExpression)
             {
@@ -54,13 +54,13 @@ namespace SqlSugar
 
                 if (leftType == MemberType.Key && rightType == MemberType.Value)
                 {
-                    var oldLeft= AddParas(ref left, right);
-                    return string.Format(" ({0} {1} @{2}) ", oldLeft, oper,left);
+                    var oldLeft = AddParas(ref left, right);
+                    return string.Format(" ({0} {1} @{2}) ", oldLeft, oper, left);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Key)
                 {
                     var oldLeft = AddParas(ref right, left);
-                    return string.Format("( @{0} {1} {0} )", oldLeft,oper,right);
+                    return string.Format("( @{0} {1} {0} )", oldLeft, oper, right);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Value)
                 {
@@ -86,15 +86,15 @@ namespace SqlSugar
                 string methodName = mce.Method.Name;
                 if (methodName == "Contains")
                 {
-                    return Contains(methodName, mce, true);
+                    return Contains(methodName, mce, isTure);
                 }
                 else if (methodName == "StartsWith")
                 {
-                    return StartsWith(methodName, mce, true);
+                    return StartsWith(methodName, mce, isTure);
                 }
                 else if (methodName == "EndWith")
                 {
-                    return EndWith(methodName, mce, true);
+                    return EndWith(methodName, mce, isTure);
                 }
                 else if (methodName == "ToString")
                 {
@@ -145,7 +145,7 @@ namespace SqlSugar
             {
                 UnaryExpression ue = ((UnaryExpression)exp);
                 var mex = ue.Operand;
-
+                return CreateSqlElements(mex, ref type, false);
             }
             return null;
         }
@@ -169,15 +169,12 @@ namespace SqlSugar
             return CreateSqlElements(mce.Object, ref type);
         }
 
- 
+
         private string AddParas(ref string left, string right)
         {
             string oldLeft = left;
-            if (this.Paras != null && this.Paras.Any(it => it.ParameterName == ("@"+oldLeft)))
-            {
-                left = left + SameIndex;
-                SameIndex++;
-            }
+            left = left + SameIndex;
+            SameIndex++;
             if (right == null)
             {
                 this.Paras.Add(new SqlParameter("@" + left, DBNull.Value));
@@ -195,7 +192,7 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            var oldLeft= AddParas(ref left, right);
+            var oldLeft = AddParas(ref left, right);
             return string.Format("({0} {1} LIKE '@{2}%')", oldLeft, isTure == false ? "  NOT " : null, left);
         }
         private string EndWith(string methodName, MethodCallExpression mce, bool isTure)
@@ -215,7 +212,7 @@ namespace SqlSugar
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
             var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE '%@{2}%')", oldLeft, rightType, isTure == false ? "  NOT " : null, right);
+            return string.Format("({0} {1} LIKE '%@{2}%')", oldLeft, isTure == false ? "  NOT " : null, right);
         }
 
 

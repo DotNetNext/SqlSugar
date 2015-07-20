@@ -163,7 +163,7 @@ namespace WebTest
                     /************************************************************************************************************/
 
                     db.Delete<School>(10);//注意主键必需为实体类的第一个属性
-                    db.Delete<School>(it => id > 100);
+                    db.Delete<School>(it => it.id > 100);
                     db.Delete<School>(new string[] { "100", "101", "102" });
 
                     //db.FalseDelete<school>("is_del", 100);
