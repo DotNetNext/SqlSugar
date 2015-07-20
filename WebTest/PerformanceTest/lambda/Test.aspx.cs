@@ -17,25 +17,17 @@ namespace WebTest.lambda
         protected void Page_Load(object sender, EventArgs e)
         {
             PerformanceTest pt = new PerformanceTest();
-            pt.SetCount(1);//设置循环次数
+            pt.SetCount(100000);//设置循环次数
 
             pt.Execute(i =>
             {
                 ResolveExpress r = new ResolveExpress();
-                Expression<Func<Models.InsertTest, bool>> func = x => x.v1.StartsWith("a");
-                r.ResolveExpression(func);
-                var x2 = 1;
+                Expression<Func<Models.InsertTest, bool>> func = x => x.id>i||x.id==1;
+                r.ResolveExpression(r,func);
 
-            }, m => { }, "resove");
+            }, m => { }, "lambda");
 
-            pt.Execute(i =>
-            {
-               // var x = SqlSugarTool.GetWhereByExpression<Models.InsertTest>(it => it.id == i);
-
-            }, m => { }, "sqltool");
-
-
-
+         
             //输出测试页面
             GridView gv = new GridView();
             gv.DataSource = pt.GetChartSource();

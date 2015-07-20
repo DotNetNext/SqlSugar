@@ -7,10 +7,11 @@
     <title></title>
 </head>
 <body>
+    <link href="../../CSS/StyleSheet1.css" rel="stylesheet" />
     <form id="form1" runat="server">
-    <div>
-    
-    </div>
+        <h1> 10万次拉姆 </h1>
+        <div>
+        </div>
     </form>
 </body>
 </html>

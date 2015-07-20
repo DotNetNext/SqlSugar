@@ -232,7 +232,7 @@ namespace SqlSugar
             sbSql.Remove(sbSql.Length - 1, 1);
             sbSql.Append(" WHERE  1=1  ");
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(expression);
+            re.ResolveExpression(re,expression);
             sbSql.Append(re.SqlWhere); ;
 
             List<SqlParameter> parsList = new List<SqlParameter>();
@@ -252,9 +252,9 @@ namespace SqlSugar
         {
             Type type = typeof(T);
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(expression);
+            re.ResolveExpression(re,expression);
             string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name,re.SqlWhere);
-            bool isSuccess = ExecuteCommand(sql,re.Paras)>0;
+            bool isSuccess = ExecuteCommand(sql,re.Paras.ToArray())>0;
             return isSuccess;
         }
 
@@ -333,9 +333,9 @@ namespace SqlSugar
             string key = type.FullName;
             bool isSuccess = false;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(expression);
+            re.ResolveExpression(re,expression);
             string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, re.SqlWhere);
-            int deleteRowCount = ExecuteCommand(sql,re.Paras);
+            int deleteRowCount = ExecuteCommand(sql,re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;
             return isSuccess;
         }

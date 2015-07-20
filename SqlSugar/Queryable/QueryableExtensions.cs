@@ -26,7 +26,7 @@ namespace SqlSugar
         {
             var type = queryable.Type;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(expression);
+            re.ResolveExpression(re,expression);
             queryable.Params.AddRange(re.Paras);
             queryable.Where.Add(re.SqlWhere);
             return queryable;
@@ -118,7 +118,7 @@ namespace SqlSugar
         {
             var type = queryable.Type;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(expression);
+            re.ResolveExpression(re,expression);
             queryable.Where.Add(re.SqlWhere);
             queryable.Params.AddRange(re.Paras);
             return queryable.Count() > 0;
@@ -146,7 +146,7 @@ namespace SqlSugar
         {
             var type = queryable.Type;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(expression);
+            re.ResolveExpression(re,expression);
             queryable.Where.Add(re.SqlWhere);
             queryable.Params.AddRange(re.Paras);
             return queryable.ToList().Single();

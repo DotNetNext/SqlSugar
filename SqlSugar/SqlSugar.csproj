@@ -57,7 +57,6 @@
     <Compile Include="Tool\FileSugar.cs" />
     <Compile Include="Tool\IHttpStorageObject.cs" />
     <Compile Include="Tool\IsWhatExtenions.cs" />
-    <Compile Include="Tool\ResovleExpress-Old.cs" />
     <Compile Include="Tool\SqlException.cs" />
     <Compile Include="Tool\SqlSugarToolExtensions.cs" />
     <Compile Include="Tool\SqlSugarTool.cs" />
