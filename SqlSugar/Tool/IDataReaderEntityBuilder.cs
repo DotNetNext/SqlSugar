@@ -12,7 +12,7 @@ namespace SqlSugar
     /// ** 描述：DataReader实体生成
     /// ** 创始时间：2010-2-28
     /// ** 修改时间：-
-    /// ** 作者：sunkaixuan
+    /// ** 作者：网络
     /// ** 使用说明：
     /// </summary>
     public class IDataReaderEntityBuilder<T>
