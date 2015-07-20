@@ -32,7 +32,7 @@ namespace SqlSugar
         /// 递归解析表达式路由计算
         /// </summary>
         /// <returns></returns>
-        public string CreateSqlElements(Expression exp, ref MemberType type, bool isTure = true)
+        private string CreateSqlElements(Expression exp, ref MemberType type, bool isTure = true)
         {
             if (exp is LambdaExpression)
             {
