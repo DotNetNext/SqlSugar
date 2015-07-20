@@ -54,13 +54,13 @@ namespace SqlSugar
 
                 if (leftType == MemberType.Key && rightType == MemberType.Value)
                 {
-                    AddParas(ref left, right);
-                    return string.Format(" ({0} {1} @{0}) ", left, oper);
+                    var oldLeft= AddParas(ref left, right);
+                    return string.Format(" ({0} {1} @{2}) ", oldLeft, oper,left);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Key)
                 {
-                    AddParas(ref right, left);
-                    return string.Format("( @{0} {1} {0} )", right, oper);
+                    var oldLeft = AddParas(ref right, left);
+                    return string.Format("( @{0} {1} {0} )", oldLeft,oper,right);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Value)
                 {
@@ -169,17 +169,8 @@ namespace SqlSugar
             return CreateSqlElements(mce.Object, ref type);
         }
 
-        private string EndWith(string methodName, MethodCallExpression mce, bool isTure)
-        {
-            MemberType leftType = MemberType.None;
-            MemberType rightType = MemberType.None;
-            var left = CreateSqlElements(mce.Object, ref leftType);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            AddParas(ref left, right);
-            return string.Format("({0} {2} LIKE '%@{0}')", left, rightType, isTure == false ? "  NOT " : null);
-        }
-
-        private void AddParas(ref string left, string right)
+ 
+        private string AddParas(ref string left, string right)
         {
             string oldLeft = left;
             if (this.Paras != null && this.Paras.Any(it => it.ParameterName == ("@"+oldLeft)))
@@ -195,6 +186,7 @@ namespace SqlSugar
             {
                 this.Paras.Add(new SqlParameter("@" + left, right));
             }
+            return oldLeft;
         }
 
         private string StartsWith(string methodName, MethodCallExpression mce, bool isTure)
@@ -203,8 +195,17 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            AddParas(ref left, right);
-            return string.Format("({0} {2} LIKE '@{0}%')", left, rightType, isTure == false ? "  NOT " : null);
+            var oldLeft= AddParas(ref left, right);
+            return string.Format("({0} {1} LIKE '@{2}%')", oldLeft, isTure == false ? "  NOT " : null, left);
+        }
+        private string EndWith(string methodName, MethodCallExpression mce, bool isTure)
+        {
+            MemberType leftType = MemberType.None;
+            MemberType rightType = MemberType.None;
+            var left = CreateSqlElements(mce.Object, ref leftType);
+            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
+            var oldLeft = AddParas(ref left, right);
+            return string.Format("({0} {1} LIKE '%@{2}')", oldLeft, isTure == false ? "  NOT " : null, left);
         }
 
         private string Contains(string methodName, MethodCallExpression mce, bool isTure)
@@ -213,8 +214,8 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            AddParas(ref left, right);
-            return string.Format("({0} {2} LIKE '%@{0}%')", left, rightType, isTure == false ? "  NOT " : null);
+            var oldLeft = AddParas(ref left, right);
+            return string.Format("({0} {1} LIKE '%@{2}%')", oldLeft, rightType, isTure == false ? "  NOT " : null, right);
         }
 
 
