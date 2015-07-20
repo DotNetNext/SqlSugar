@@ -18,6 +18,13 @@ namespace WebTest.Select
             pt.SetCount(10000);
             using (SqlSugarClient db = new SqlSugarClient(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConn"].ToString()))
             {
+                //sqlSugar
+                pt.Execute(i =>
+                {
+                    int id = i;
+                    db.Queryable<Models.Student>().Where(c => c.id == id).ToList();
+
+                }, m => { }, "sqlSugar 拉姆达");
 
 
                 //ado.GetDataTable
@@ -36,13 +43,7 @@ namespace WebTest.Select
 
                 }, m => { }, "dapper 纯SQL写法");
 
-                //sqlSugar
-                pt.Execute(i =>
-                {
-                    db.Queryable<Models.Student>().Where(c => c.id == i).ToList();
-
-                }, m => { }, "sqlSugar 拉姆达");
-
+           
 
             }
 
