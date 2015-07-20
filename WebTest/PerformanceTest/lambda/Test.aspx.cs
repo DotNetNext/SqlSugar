@@ -21,10 +21,8 @@ namespace WebTest.lambda
 
             pt.Execute(i =>
             {
-                int id = i;
-                if (i > 100) id =new Random().Next(1,99);
                 ResolveExpress r = new ResolveExpress();
-                Expression<Func<Models.InsertTest, bool>> func = x => x.id>id;
+                Expression<Func<Models.InsertTest, bool>> func = x => x.id>i;
                 r.ResolveExpression(r,func);
 
             }, m => { }, "lambda");
