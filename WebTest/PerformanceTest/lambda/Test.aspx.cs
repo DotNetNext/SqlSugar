@@ -22,7 +22,7 @@ namespace WebTest.lambda
             pt.Execute(i =>
             {
                 ResolveExpress r = new ResolveExpress();
-                Expression<Func<Models.InsertTest, bool>> func = x => x.id>i||x.id==1;
+                Expression<Func<Models.InsertTest, bool>> func = x => x.id>i||x.id==i;
                 r.ResolveExpression(r,func);
 
             }, m => { }, "lambda");

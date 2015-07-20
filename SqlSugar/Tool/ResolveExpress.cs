@@ -21,7 +21,7 @@ namespace SqlSugar
 
         public string SqlWhere = null;
         public List<SqlParameter> Paras = new List<SqlParameter>();
-
+        private int SameIndex = 1;
 
         public void ResolveExpression(ResolveExpress re, Expression exp)
         {
@@ -54,12 +54,12 @@ namespace SqlSugar
 
                 if (leftType == MemberType.Key && rightType == MemberType.Value)
                 {
-                    AddParas(left, right);
+                    AddParas(ref left, right);
                     return string.Format(" ({0} {1} @{0}) ", left, oper);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Key)
                 {
-                    AddParas(right, left);
+                    AddParas(ref right, left);
                     return string.Format("( @{0} {1} {0} )", right, oper);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Value)
@@ -126,7 +126,7 @@ namespace SqlSugar
             else if (exp is MemberExpression)
             {
                 MemberExpression me = ((MemberExpression)exp);
-                if (me.Expression == null || me.Expression.NodeType.ToString() == "MemberAccess")
+                if (me.Expression == null || me.Expression.NodeType.ToString() != "Parameter")
                 {
                     type = MemberType.Value;
                     var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
@@ -175,12 +175,18 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            AddParas(left, right);
+            AddParas(ref left, right);
             return string.Format("({0} {2} LIKE '%@{0}')", left, rightType, isTure == false ? "  NOT " : null);
         }
 
-        private void AddParas(string left, string right)
+        private void AddParas(ref string left, string right)
         {
+            string oldLeft = left;
+            if (this.Paras != null && this.Paras.Any(it => it.ParameterName == ("@"+oldLeft)))
+            {
+                left = left + SameIndex;
+                SameIndex++;
+            }
             if (right == null)
             {
                 this.Paras.Add(new SqlParameter("@" + left, DBNull.Value));
@@ -197,7 +203,7 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            AddParas(left, right);
+            AddParas(ref left, right);
             return string.Format("({0} {2} LIKE '@{0}%')", left, rightType, isTure == false ? "  NOT " : null);
         }
 
@@ -207,7 +213,7 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            AddParas(left, right);
+            AddParas(ref left, right);
             return string.Format("({0} {2} LIKE '%@{0}%')", left, rightType, isTure == false ? "  NOT " : null);
         }
 
