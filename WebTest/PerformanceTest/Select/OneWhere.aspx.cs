@@ -19,14 +19,7 @@ namespace WebTest.Select
             using (SqlSugarClient db = new SqlSugarClient(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConn"].ToString()))
             {
                 int id = 1;
-                //sqlSugar
-                pt.Execute(i =>
-                {
-                
-                    db.Queryable<Models.Student>().Where(c => c.id == i).ToList();
-
-                }, m => { }, "sqlSugar 拉姆达");
-
+              
 
                 //ado.GetDataTable
                 pt.Execute(i =>
@@ -44,7 +37,14 @@ namespace WebTest.Select
 
                 }, m => { }, "dapper 纯SQL写法");
 
-           
+
+                //sqlSugar
+                pt.Execute(i =>
+                {
+
+                    db.Queryable<Models.Student>().Where(c => c.id == i).ToList();
+
+                }, m => { }, "sqlSugar 拉姆达");
 
             }
 
