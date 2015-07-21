@@ -65,7 +65,7 @@ namespace SqlSugar
         public static string ToSuperSqlFilter(this string value)
         {
             if (value.IsNullOrEmpty()) return value;
-            if (Regex.IsMatch(value, @"^\w|\.|\:|\-$"))
+            if (Regex.IsMatch(value, @"^(\w|\.|\:|\-| |\,)+$"))
             {
                 return value;
             }

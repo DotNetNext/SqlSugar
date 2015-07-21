@@ -58,7 +58,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static SqlSugar.Queryable<T> OrderBy<T>(this SqlSugar.Queryable<T> queryable, string orderFileds)
         {
-            queryable.Order = orderFileds;
+            queryable.Order = orderFileds.ToSuperSqlFilter();
             return queryable;
         }
 
