@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -26,7 +27,7 @@ namespace SqlSugar
         {
             var type = queryable.Type;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re,expression);
+            re.ResolveExpression(re, expression);
             queryable.Params.AddRange(re.Paras);
             queryable.Where.Add(re.SqlWhere);
             return queryable;
@@ -58,7 +59,19 @@ namespace SqlSugar
         /// <returns></returns>
         public static SqlSugar.Queryable<T> OrderBy<T>(this SqlSugar.Queryable<T> queryable, string orderFileds)
         {
-            queryable.Order = orderFileds.ToSuperSqlFilter();
+            queryable.OrderBy = orderFileds.ToSuperSqlFilter();
+            return queryable;
+        }
+        /// <summary>
+        /// 分组
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="groupFileds">如：id,name </param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> GroupBy<T>(this SqlSugar.Queryable<T> queryable, string groupFileds)
+        {
+            queryable.GroupBy = groupFileds.ToSuperSqlFilter();
             return queryable;
         }
 
@@ -71,7 +84,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static SqlSugar.Queryable<T> Skip<T>(this SqlSugar.Queryable<T> queryable, int index)
         {
-            if (queryable.Order.IsNullOrEmpty())
+            if (queryable.OrderBy.IsNullOrEmpty())
             {
                 throw new Exception(".Skip必需使用.Order排序");
             }
@@ -88,9 +101,9 @@ namespace SqlSugar
         /// <returns></returns>
         public static SqlSugar.Queryable<T> Take<T>(this SqlSugar.Queryable<T> queryable, int num)
         {
-            if (queryable.Order.IsNullOrEmpty())
+            if (queryable.OrderBy.IsNullOrEmpty())
             {
-                throw new Exception(".Take必需使用.Order排序");
+                throw new Exception(".Take必需使用.OrderBy排序");
             }
             queryable.Take = num;
             return queryable;
@@ -118,11 +131,13 @@ namespace SqlSugar
         {
             var type = queryable.Type;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re,expression);
+            re.ResolveExpression(re, expression);
             queryable.Where.Add(re.SqlWhere);
             queryable.Params.AddRange(re.Paras);
             return queryable.Count() > 0;
         }
+
+
 
         /// <summary>
         ///  确定序列是否包含任何元素
@@ -146,11 +161,64 @@ namespace SqlSugar
         {
             var type = queryable.Type;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re,expression);
+            re.ResolveExpression(re, expression);
             queryable.Where.Add(re.SqlWhere);
             queryable.Params.AddRange(re.Paras);
             return queryable.ToList().Single();
         }
+
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<TResult> Select<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, Expression<Func<TSource, TResult>> expression)
+        {
+            var type = typeof(TSource);
+            SqlSugar.Queryable<TResult> reval = new Queryable<TResult>()
+            {
+                DB = queryable.DB,
+                OrderBy = queryable.OrderBy,
+                Params = queryable.Params,
+                Skip = queryable.Skip,
+                Take = queryable.Take,
+                Where = queryable.Where,
+                TableName = type.Name,
+                GroupBy = queryable.GroupBy,
+                Select = Regex.Match(expression.ToString(), @"(?<=\{).*?(?=\})").Value
+            };
+            reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            return reval;
+        }
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<TResult> Select<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, string select)
+        {
+            var type = typeof(TSource);
+            SqlSugar.Queryable<TResult> reval = new Queryable<TResult>()
+            {
+                DB = queryable.DB,
+                OrderBy = queryable.OrderBy,
+                Params = queryable.Params,
+                Skip = queryable.Skip,
+                Take = queryable.Take,
+                Where = queryable.Where,
+                TableName = type.Name,
+                GroupBy=queryable.GroupBy,
+                Select = select
+            };
+            return reval;
+        }
+
 
         /// <summary>
         /// 获取序列总记录数
@@ -161,8 +229,8 @@ namespace SqlSugar
         {
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-            sbSql.AppendFormat("SELECT COUNT(*)  FROM {0} {1} WHERE 1=1 {2}  ", queryable.Name, withNoLock, string.Join("", queryable.Where));
-            var count = queryable.DB.GetInt(sbSql.ToString(),queryable.Params.ToArray());
+            sbSql.AppendFormat("SELECT COUNT({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", queryable.TName, withNoLock, string.Join("", queryable.Where), queryable.Select.GetSelectFiles(), queryable.GroupBy.GetGroupBy());
+            var count = queryable.DB.GetInt(sbSql.ToString(), queryable.Params.ToArray());
             return count;
         }
 
@@ -178,26 +246,26 @@ namespace SqlSugar
             try
             {
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-                var order = queryable.Order.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.Order + " )") : null;
+                var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
 
-                sbSql.AppendFormat("SELECT * {1} FROM {0} {2} WHERE 1=1 {3}  ", queryable.Name, order, withNoLock, string.Join("", queryable.Where));
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
                 if (queryable.Skip == null && queryable.Take != null)
                 {
-                    sbSql.Insert(0, "SELECT * FROM ( ");
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
                     sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
                 }
                 else if (queryable.Skip != null && queryable.Take == null)
                 {
-                    sbSql.Insert(0, "SELECT * FROM ( ");
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
                     sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
                 }
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
-                    sbSql.Insert(0, "SELECT * FROM ( ");
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
                     sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
                 }
 
-                var reader = queryable.DB.GetReader(sbSql.ToString(),queryable.Params.ToArray());
+                var reader = queryable.DB.GetReader(sbSql.ToString(), queryable.Params.ToArray());
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader);
                 queryable = null;
                 return reval;
@@ -224,7 +292,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static List<T> ToPageList<T>(this SqlSugar.Queryable<T> queryable, int pageIndex, int pageSize)
         {
-            if (queryable.Order.IsNullOrEmpty())
+            if (queryable.OrderBy.IsNullOrEmpty())
             {
                 throw new Exception("分页必需使用.Order排序");
             }

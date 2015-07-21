@@ -81,5 +81,23 @@ namespace SqlSugar
         {
             return isNoLock ? "WITH(NOLOCK)" : null; ;
         }
+        /// <summary>
+        /// 获取Select需要的字段
+        /// </summary>
+        /// <param name="selectFileds"></param>
+        /// <returns></returns>
+        public static string GetSelectFiles(this string selectFileds)
+        {
+            return selectFileds.IsNullOrEmpty() ? "*" : selectFileds;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupByFileds"></param>
+        /// <returns></returns>
+        public static string GetGroupBy(this string groupByFileds)
+        {
+            return groupByFileds.IsNullOrEmpty() ? "" :" GROUP BY "+groupByFileds;
+        }
     }
 }

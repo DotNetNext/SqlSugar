@@ -17,13 +17,13 @@ namespace SqlSugar
     public class Queryable<T>
     {
         /// <summary>
-        /// 表名
+        /// T的名称
         /// </summary>
-        public string Name { get { return typeof(T).Name; } }
+        public string TName { get { return typeof(T).Name; } }
         /// <summary>
         /// 实体类型
         /// </summary>
-        public Type Type { get { return typeof(T); } }
+        public Type Type { get { return typeof(T); }  }
         /// <summary>
         /// 数据接口
         /// </summary>
@@ -43,10 +43,22 @@ namespace SqlSugar
         /// <summary>
         /// Order临时数据
         /// </summary>
-        public string Order { get; set; }
+        public string OrderBy { get; set; }
+        /// <summary>
+        /// Select临时数据
+        /// </summary>
+        public string Select { get; set; }
         /// <summary>
         /// SqlParameter临时数据
         /// </summary>
-        public List<SqlParameter> Params=new  List<SqlParameter>();
+        public List<SqlParameter> Params = new List<SqlParameter>();
+        /// <summary>
+        /// 表名
+        /// </summary>
+        public string TableName { get; set; }
+        /// <summary>
+        /// 分组查询
+        /// </summary>
+        public string GroupBy { get; set; }
     }
 }
