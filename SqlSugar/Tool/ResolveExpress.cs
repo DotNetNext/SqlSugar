@@ -11,8 +11,7 @@ namespace SqlSugar
     /// ** 描述：拉姆达解析类
     /// ** 创始时间：2015-7-20
     /// ** 修改时间：-
-    /// ** 作者：网络
-    /// ** 修改人：sunkaixuan
+    /// ** 作者：sunkaixuan
     /// ** qq：610262374 
     /// ** 使用说明：使用请注名作者
     /// </summary>
@@ -33,7 +32,7 @@ namespace SqlSugar
         /// 递归解析表达式路由计算
         /// </summary>
         /// <returns></returns>
-        public string CreateSqlElements(Expression exp, ref MemberType type, bool isTure = true)
+        private string CreateSqlElements(Expression exp, ref MemberType type, bool isTure = true)
         {
             if (exp is LambdaExpression)
             {
@@ -129,7 +128,22 @@ namespace SqlSugar
                 if (me.Expression == null || me.Expression.NodeType.ToString() != "Parameter")
                 {
                     type = MemberType.Value;
-                    var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
+                    object dynInv = null;
+                    try
+                    {
+                        // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
+                        // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
+                        dynInv = (me.Member as System.Reflection.FieldInfo).GetValue((me.Expression as ConstantExpression).Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (me.ToString() == "DateTime.Now")
+                        {
+                            return DateTime.Now.ToString();
+                        }
+                        Check.Exception(true, "错误信息:{0} \r\n message:{1}", "拉姆达解析出错", ex.Message);
+                    }
+
                     if (dynInv == null) return null;
                     else
                         return dynInv.ToString();

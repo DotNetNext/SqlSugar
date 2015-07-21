@@ -23,7 +23,7 @@ namespace SqlSugar
             : base(connectionString)
         {
             ConnectionString = connectionString;
-            IsNoLock = true;
+            IsNoLock = false;
         }
         public string ConnectionString { get; set; }
 

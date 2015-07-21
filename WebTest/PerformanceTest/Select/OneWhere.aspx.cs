@@ -16,22 +16,16 @@ namespace WebTest.Select
         {
             PerformanceTest pt = new PerformanceTest();
             pt.SetCount(10000);
+            int id = 1;
             using (SqlSugarClient db = new SqlSugarClient(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConn"].ToString()))
             {
-                int id = 1;
-                //sqlSugar
-                pt.Execute(i =>
-                {
-                
-                    db.Queryable<Models.Student>().Where(c => c.id == i).ToList();
-
-                }, m => { }, "sqlSugar 拉姆达");
-
+               
+              
 
                 //ado.GetDataTable
                 pt.Execute(i =>
                 {
-                    db.GetDataTable("select * from Student WHERE ID>@id", new SqlParameter("@id", i));
+                    db.GetDataTable("select * from Student WHERE ID>@id", new SqlParameter("@id", id));
 
                 }, m => { }, "ado.DateTable 纯SQL写法");
 
@@ -40,11 +34,18 @@ namespace WebTest.Select
                 var conn = db.GetConnection();
                 pt.Execute(i =>
                 {
-                    conn.Query<Models.Student>("select * from Student where id>@id", new { id = i}).ToList();
+                    conn.Query<Models.Student>("select * from Student where id>@id", new { id = id}).ToList();
 
                 }, m => { }, "dapper 纯SQL写法");
 
-           
+
+                //sqlSugar
+                pt.Execute(i =>
+                {
+
+                    db.Queryable<Models.Student>().Where(c => c.id == id).ToList();
+
+                }, m => { }, "sqlSugar 拉姆达");
 
             }
 
@@ -53,7 +54,7 @@ namespace WebTest.Select
                 //EF
                 pt.Execute(i =>
                 {
-                    db.Student.Where(c => c.id == i).ToList();
+                    db.Student.Where(c => c.id == id).ToList();
 
                 }, m => { }, "EF4.0+sql05 拉姆达");
             }

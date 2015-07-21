@@ -17,14 +17,12 @@ namespace WebTest.lambda
         protected void Page_Load(object sender, EventArgs e)
         {
             PerformanceTest pt = new PerformanceTest();
-            pt.SetCount(10000);//设置循环次数
+            pt.SetCount(100000);//设置循环次数
 
             pt.Execute(i =>
             {
-                int id = i;
-                if (i > 100) id =new Random().Next(1,99);
                 ResolveExpress r = new ResolveExpress();
-                Expression<Func<Models.InsertTest, bool>> func = x => x.id>id;
+                Expression<Func<Models.InsertTest, bool>> func = x => x.id>i;
                 r.ResolveExpression(r,func);
 
             }, m => { }, "lambda");

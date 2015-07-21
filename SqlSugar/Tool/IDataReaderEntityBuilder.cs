@@ -13,7 +13,6 @@ namespace SqlSugar
     /// ** 创始时间：2010-2-28
     /// ** 修改时间：-
     /// ** 作者：网络
-    /// ** 修改人：sunkaixuan
     /// ** 使用说明：
     /// </summary>
     public class IDataReaderEntityBuilder<T>
