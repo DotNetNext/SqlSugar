@@ -198,7 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Demo\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
