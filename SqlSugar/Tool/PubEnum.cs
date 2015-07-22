@@ -23,4 +23,5 @@ namespace SqlSugar
         CORSS = 1,
         OUTRE = 2
     }
+    
 }

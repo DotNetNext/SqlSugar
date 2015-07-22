@@ -64,6 +64,8 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FunctionTest\Join.aspx" />
+    <Content Include="FunctionTest\Select.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Update.aspx" />
     <Content Include="CSS\StyleSheet1.css" />
@@ -85,6 +87,21 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionTest\SugarDao.cs" />
+    <Compile Include="FunctionTest\Join.aspx.cs">
+      <DependentUpon>Join.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FunctionTest\Join.aspx.designer.cs">
+      <DependentUpon>Join.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionTest\Select.aspx.cs">
+      <DependentUpon>Select.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FunctionTest\Select.aspx.designer.cs">
+      <DependentUpon>Select.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PerformanceTest\add_delete_update\Add.aspx.cs">
       <DependentUpon>Add.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -181,8 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Demo\" />
-    <Folder Include="FunctionTest\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />

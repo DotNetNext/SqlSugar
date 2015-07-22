@@ -65,7 +65,7 @@ namespace SqlSugar
         public static string ToSuperSqlFilter(this string value)
         {
             if (value.IsNullOrEmpty()) return value;
-            if (Regex.IsMatch(value, @"^\w|\.|\:|\-$"))
+            if (Regex.IsMatch(value, @"^(\w|\.|\:|\-| |\,)+$"))
             {
                 return value;
             }
@@ -80,6 +80,24 @@ namespace SqlSugar
         public static string GetLockString(this bool isNoLock)
         {
             return isNoLock ? "WITH(NOLOCK)" : null; ;
+        }
+        /// <summary>
+        /// 获取Select需要的字段
+        /// </summary>
+        /// <param name="selectFileds"></param>
+        /// <returns></returns>
+        public static string GetSelectFiles(this string selectFileds)
+        {
+            return selectFileds.IsNullOrEmpty() ? "*" : selectFileds;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupByFileds"></param>
+        /// <returns></returns>
+        public static string GetGroupBy(this string groupByFileds)
+        {
+            return groupByFileds.IsNullOrEmpty() ? "" :" GROUP BY "+groupByFileds;
         }
     }
 }
