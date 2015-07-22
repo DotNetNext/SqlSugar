@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using SqlSugar;
 namespace WebTest.FunctionTest
 {
     /// <summary>
-    /// SqlSugar数据访问
+    /// 扩展SqlSugarClient
     /// </summary>
-    public class SugarDao : SqlSugar.SqlSugarClient
+    public class SugarDao
     {
-        //可以根据自已习惯重载多个
-        public SugarDao(string connStr = @"Server=.;uid=sa;pwd=sasa;database=SqlSugarTest")
-            : base(connStr)
-        {
+        //禁止实例化
+        private SugarDao() { 
 
         }
-
+        public static SqlSugarClient GetInstance()
+        {
+            string connection = "Server=.;uid=sa;pwd=sasa;database=SqlSugarTest"; //这里可以动态根据cookies或session实现多库切换
+            return new SqlSugarClient(connection);
+        }
     }
 }
