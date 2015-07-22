@@ -15,7 +15,25 @@ namespace WebTest.FunctionTest
             using (var db = SugarDao.GetInstance())
             {
                 var list = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER).SelectToList<Student>("*");
+                GetStudent(0,null);
+            }
+        }
 
+        public List<Student> GetStudent(int id, string name)
+        {
+
+            using (var db = SugarDao.GetInstance())
+            {
+                var sable = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER);
+                if (!string.IsNullOrEmpty(name))
+                {
+                    sable = sable.Where("s.name=s.@name");
+                }
+                if (!string.IsNullOrEmpty(name))
+                {
+                    sable = sable.Where("s.id=@id");
+                }
+                return sable.SelectToList<Student>("s.*", new { id = id, name = name });
             }
         }
     }
