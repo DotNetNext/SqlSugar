@@ -13,6 +13,7 @@ namespace WebTest
 {
     public partial class _Default : System.Web.UI.Page
     {
+        int id = 1;
         protected void Page_Load(object sender, EventArgs e)
         {
             //连接字符串
@@ -62,8 +63,10 @@ namespace WebTest
                     //查询所有
                     var student = db.Queryable<Student>().ToList();
 
+                    var stud = new Student() { id = 1 };
+
                     //查询单条
-                    var single = db.Queryable<Student>().Single(c => c.id==1||c.id>100||(c.id==1));
+                    var single = db.Queryable<Student>().Single(c => c.id==stud.id);
 
                     //取10-20条
                     var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();

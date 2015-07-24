@@ -21,7 +21,7 @@ namespace WebTest.FunctionTest
 
         public List<SexTotal> GetSexTotal()
         {
-            using (SugarDao db = new SugarDao())
+            using (SqlSugarClient db = SugarDao.GetInstance())
             {
                 return db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
             }
@@ -29,7 +29,7 @@ namespace WebTest.FunctionTest
 
         public School GetSingleSchool(int id)
         {
-            using (SugarDao db = new SugarDao())
+            using (SqlSugarClient db = SugarDao.GetInstance())
             {
                 return db.Queryable<School>().Single(c => c.id == id);
             }
@@ -37,7 +37,7 @@ namespace WebTest.FunctionTest
 
         public List<classNew> GetSelectList(int id)
         {
-            using (SugarDao db = new SugarDao())
+            using (SqlSugarClient db = SugarDao.GetInstance())
             {
                 return db.Queryable<Student>().Where(c => c.id < 10).Select(c => new classNew { newid = c.id, newname = c.name, xx_name = c.name }).ToList();//不支持匿名类转换,也不建议使用
             }
@@ -63,7 +63,7 @@ namespace WebTest.FunctionTest
         /// <returns></returns>
         public static List<Student> GetStudent(string name, string sex, int pageIndex, int pageSize, string orderFileds)
         {
-            using (SugarDao db = new SugarDao())
+            using (SqlSugarClient db = SugarDao.GetInstance())
             {
                 var qable = db.Queryable<Student>();
                 if (!string.IsNullOrEmpty(name))

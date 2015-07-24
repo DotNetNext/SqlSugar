@@ -44,12 +44,19 @@ namespace SqlSugar
                 cacheManager.Add(key, eblist, cacheManager.Day);
             }
             List<T> list = new List<T>();
-            if (dr == null) return list;
-            while (dr.Read())
+            try
             {
-                list.Add(eblist.Build(dr));
+                if (dr == null) return list;
+                while (dr.Read())
+                {
+                    list.Add(eblist.Build(dr));
+                }
+                if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
             }
-            if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
+            catch (Exception)
+            {
+                if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
+            }
             return list;
         }
 
@@ -68,7 +75,9 @@ namespace SqlSugar
                 string replaceGuid = Guid.NewGuid().ToString();
                 foreach (PropertyInfo r in propertiesObj)
                 {
-                    listParams.Add(new SqlParameter("@" + r.Name, r.GetValue(obj, null).ToString()));
+                    var value = r.GetValue(obj, null);
+                    if (value == null) value = DBNull.Value;
+                    listParams.Add(new SqlParameter("@" + r.Name, value.ToString()));
                 }
             }
             return listParams.ToArray();

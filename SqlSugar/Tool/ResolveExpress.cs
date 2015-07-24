@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Reflection;
 
 namespace SqlSugar
 {
@@ -133,7 +134,47 @@ namespace SqlSugar
                     {
                         // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
                         // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
-                        dynInv = (me.Member as System.Reflection.FieldInfo).GetValue((me.Expression as ConstantExpression).Value);
+                        var conExp = me.Expression as ConstantExpression;
+                        if (conExp != null)
+                        {
+                            dynInv = (me.Member as System.Reflection.FieldInfo).GetValue((me.Expression as ConstantExpression).Value);
+                        }
+                        else
+                        {
+
+                            var memberInfos = new Stack<MemberInfo>();
+
+                            // "descend" toward's the root object reference:
+                            while (exp is MemberExpression)
+                            {
+                                var memberExpr = exp as MemberExpression;
+                                memberInfos.Push(memberExpr.Member);
+                                exp = memberExpr.Expression;
+                            }
+
+                            // fetch the root object reference:
+                            var constExpr = exp as ConstantExpression;
+                            var objReference = constExpr.Value;
+
+                            // "ascend" back whence we came from and resolve object references along the way:
+                            while (memberInfos.Count > 0)  // or some other break condition
+                            {
+                                var mi = memberInfos.Pop();
+                                if (mi.MemberType == MemberTypes.Property)
+                                {
+                                    objReference = objReference.GetType()
+                                                               .GetProperty(mi.Name)
+                                                               .GetValue(objReference, null);
+                                }
+                                else if (mi.MemberType == MemberTypes.Field)
+                                {
+                                    objReference = objReference.GetType()
+                                                               .GetField(mi.Name)
+                                                               .GetValue(objReference);
+                                }
+                            }
+                            dynInv = objReference;
+                        }
                     }
                     catch (Exception ex)
                     {
