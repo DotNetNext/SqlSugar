@@ -51,7 +51,8 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable Where(this Sqlable sqlable, string where)
         {
-            sqlable.Where.Add(string.Format(" AND {0} ", where));
+            if (!string.IsNullOrEmpty(where))
+                sqlable.Where.Add(string.Format(" AND {0} ", where));
             return sqlable;
         }
 
@@ -63,6 +64,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable OrderBy(this Sqlable sqlable, string orderBy)
         {
+            if (!string.IsNullOrEmpty(orderBy))
             sqlable.OrderBy = orderBy;
             return sqlable;
         }
@@ -90,6 +92,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable GroupBy(this Sqlable sqlable, string groupBy)
         {
+            if (!string.IsNullOrEmpty(groupBy))
             sqlable.GroupBy = groupBy;
             return sqlable;
         }
@@ -133,7 +136,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sqlable"></param>
         /// <returns></returns>
-        public static int Count(this Sqlable sqlable,object whereObj=null)
+        public static int Count(this Sqlable sqlable, object whereObj = null)
         {
             string sql = null;
             try
@@ -145,7 +148,7 @@ namespace SqlSugar
                 sqlable.Sql.Append(sqlable.GroupBy);
                 sql = sqlable.Sql.ToString();
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
-                return sqlable.DB.GetInt(sql,sqlParams);
+                return sqlable.DB.GetInt(sql, sqlParams);
             }
             catch (Exception ex)
             {
