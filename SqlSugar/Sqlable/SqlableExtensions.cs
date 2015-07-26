@@ -51,7 +51,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable Where(this Sqlable sqlable, string where)
         {
-            sqlable.Where.Add(string.Format(" AND {0} ",where));
+            sqlable.Where.Add(string.Format(" AND {0} ", where));
             return sqlable;
         }
 
@@ -127,6 +127,37 @@ namespace SqlSugar
                 sqlable = null;
             }
         }
+
+        /// <summary>
+        /// 反回记录数
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <returns></returns>
+        public static int Count(this Sqlable sqlable,object whereObj=null)
+        {
+            string sql = null;
+            try
+            {
+                Check.ArgumentNullException(sqlable.Sql, "语法错误，Count必需要在.Form后面使用");
+                sqlable.Sql.Insert(0, string.Format("SELECT COUNT(1) "));
+                sqlable.Sql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
+                sqlable.Sql.Append(sqlable.OrderBy);
+                sqlable.Sql.Append(sqlable.GroupBy);
+                sql = sqlable.Sql.ToString();
+                var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                return sqlable.DB.GetInt(sql,sqlParams);
+            }
+            catch (Exception ex)
+            {
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sql, ex.Message);
+                throw;
+            }
+            finally
+            {
+                sqlable = null;
+            }
+        }
+
         /// <summary>
         /// 设置查询列和分页参数执行查询，并且将结果集转成List《T》
         /// </summary>
@@ -169,8 +200,8 @@ namespace SqlSugar
             }
         }
 
-         
-       
+
+
 
     }
 }
