@@ -175,15 +175,16 @@ namespace SqlSugar
         public static List<T> SelectToPageList<T>(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) where T : class
         {
             string sql = null;
+            StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
             {
                 if (pageIndex == 0) pageIndex = 1;
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
-                sqlable.Sql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
-                sqlable.Sql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
-                sqlable.Sql.Append(sqlable.OrderBy);
-                sqlable.Sql.Append(sqlable.GroupBy);
-                sql = sqlable.Sql.ToString();
+                sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
+                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.OrderBy);
+                sbSql.Append(sqlable.GroupBy);
+                sql = sbSql.ToString();
                 int skip = (pageIndex - 1) * pageSize + 1;
                 int take = pageSize;
                 sql = string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
@@ -198,6 +199,7 @@ namespace SqlSugar
             }
             finally
             {
+                sbSql = null;
                 sql = null;
                 sqlable = null;
             }
