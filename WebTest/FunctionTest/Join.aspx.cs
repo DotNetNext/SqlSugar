@@ -15,7 +15,7 @@ namespace WebTest.Dao
             using (var db = SugarDao.GetInstance())
             {
                 var list = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER).SelectToList<Student>("*");
-                GetStudent(0, null);
+                GetStudent(1, "a");
                 var count = GetCount();
             }
         }
@@ -29,19 +29,26 @@ namespace WebTest.Dao
         }
         public List<Student> GetStudent(int id, string name)
         {
-
+            int pageCount = 0;
             using (var db = SugarDao.GetInstance())
             {
-                var sable = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER);
+                //Form("Student","s")语法优化成 Form<Student>("s")
+                var sable = db.Sqlable().Form<Student>("s").Join<School>("l", "s.sch_id", "l.id", JoinType.INNER);
                 if (!string.IsNullOrEmpty(name))
                 {
-                    sable = sable.Where("s.name=s.@name");
+                    sable = sable.Where("s.name=@name");
                 }
                 if (!string.IsNullOrEmpty(name))
                 {
-                    sable = sable.Where("s.id=@id");
+                    sable = sable.Where("s.id=@id or s.id=100");
                 }
-                return sable.SelectToList<Student>("s.*", new { id = id, name = name });
+                if (id > 0) {
+                    sable = sable.Where("l.id in (select top 10 id from school)");//where加子查询
+                }
+                //参数
+                var pars = new { id = id, name = name };
+                pageCount = sable.Count(pars);
+                return sable.SelectToList<Student>("s.*", pars);
             }
         }
     }

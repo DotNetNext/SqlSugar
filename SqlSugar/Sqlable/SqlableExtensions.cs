@@ -27,6 +27,19 @@ namespace SqlSugar
             sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName, shortName, sqlable.DB.IsNoLock.GetLockString());
             return sqlable;
         }
+        /// <summary>
+        /// Form
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="modelObj">表名</param>
+        /// <param name="shortName">表名简写</param>
+        /// <returns></returns>
+        public static Sqlable Form<T>(this Sqlable sqlable,string shortName)
+        {
+            sqlable.Sql = new StringBuilder();
+            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString());
+            return sqlable;
+        }
 
         /// <summary>
         /// Join
@@ -40,6 +53,20 @@ namespace SqlSugar
         {
             Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
             sqlable.Sql.AppendFormat(" {0} JOIN {1} {2}  {3} ON  {4} = {5} ", type.ToString(), tableName, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
+            return sqlable;
+        }
+        /// <summary>
+        /// Join
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="leftFiled">join左边连接字段</param>
+        /// <param name="RightFiled">join右边连接字段</param>
+        /// <param name="type">join类型</param>
+        /// <returns></returns>
+        public static Sqlable Join<T>(this Sqlable sqlable,string shortName, string leftFiled, string RightFiled, JoinType type)
+        {
+            Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
+            sqlable.Sql.AppendFormat(" {0} JOIN {1} {2}  {3} ON  {4} = {5} ", type.ToString(), typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
             return sqlable;
         }
 
@@ -104,27 +131,27 @@ namespace SqlSugar
         /// <returns></returns>
         public static List<T> SelectToList<T>(this Sqlable sqlable, string fileds, object whereObj = null) where T : class
         {
-            string sql = null;
+            StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
             {
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
-                sqlable.Sql.Insert(0, string.Format("SELECT {0} ", fileds));
-                sqlable.Sql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
-                sqlable.Sql.Append(sqlable.OrderBy);
-                sqlable.Sql.Append(sqlable.GroupBy);
-                sql = sqlable.Sql.ToString();
+                sbSql.Insert(0, string.Format("SELECT {0} ", fileds));
+                sbSql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.OrderBy);
+                sbSql.Append(sqlable.GroupBy);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sql, sqlParams));
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams));
                 return reval;
             }
             catch (Exception ex)
             {
-                Check.Exception(true, "sql:{0} \r\n message:{1}", sql, ex.Message);
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sbSql.ToString(), ex.Message);
                 throw;
             }
             finally
             {
                 sqlable = null;
+                sbSql = null;
             }
         }
 
@@ -135,27 +162,26 @@ namespace SqlSugar
         /// <returns></returns>
         public static int Count(this Sqlable sqlable,object whereObj=null)
         {
-            string sql = null;
+            StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
             {
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，Count必需要在.Form后面使用");
-                sqlable.Sql.Insert(0, string.Format("SELECT COUNT(1) "));
-                sqlable.Sql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
-                sqlable.Sql.Append(sqlable.OrderBy);
-                sqlable.Sql.Append(sqlable.GroupBy);
-                sql = sqlable.Sql.ToString();
+                sbSql.Insert(0, string.Format("SELECT COUNT(1) "));
+                sbSql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.OrderBy);
+                sbSql.Append(sqlable.GroupBy);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
-                return sqlable.DB.GetInt(sql,sqlParams);
+                return sqlable.DB.GetInt(sbSql.ToString(), sqlParams);
             }
             catch (Exception ex)
             {
-                Check.Exception(true, "sql:{0} \r\n message:{1}", sql, ex.Message);
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sbSql.ToString(), ex.Message);
                 throw;
             }
             finally
             {
                 sqlable = null;
-                sql = null;
+                sbSql = null;
             }
         }
 
@@ -172,31 +198,31 @@ namespace SqlSugar
         /// <returns></returns>
         public static List<T> SelectToPageList<T>(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) where T : class
         {
-            string sql = null;
+            StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
             {
                 if (pageIndex == 0) pageIndex = 1;
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
-                sqlable.Sql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
-                sqlable.Sql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
-                sqlable.Sql.Append(sqlable.OrderBy);
-                sqlable.Sql.Append(sqlable.GroupBy);
-                sql = sqlable.Sql.ToString();
+                sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
+                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.OrderBy);
+                sbSql.Append(sqlable.GroupBy);
                 int skip = (pageIndex - 1) * pageSize + 1;
                 int take = pageSize;
-                sql = string.Format("SELECT * FROM ({0}) t WHERE  t.row_index BETWEEN {1} AND {2}", sql, skip, skip + take - 1);
+                sbSql.Insert(0, "SELECT * FROM ( ");
+                sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sql, sqlParams));
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams));
                 return reval;
             }
             catch (Exception ex)
             {
-                Check.Exception(true, "sql:{0} \r\n message:{1}", sql, ex.Message);
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sbSql.ToString(), ex.Message);
                 throw;
             }
             finally
             {
-                sql = null;
+                sbSql = null;
                 sqlable = null;
             }
         }
