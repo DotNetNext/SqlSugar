@@ -15,10 +15,18 @@ namespace WebTest.FunctionTest
             using (var db = SugarDao.GetInstance())
             {
                 var list = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER).SelectToList<Student>("*");
-                GetStudent(0,null);
+                GetStudent(0, null);
+                var count = GetCount();
             }
         }
-
+        public int GetCount()
+        {
+            using (var db = SugarDao.GetInstance())
+            {
+                var sable = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER);
+                return sable.Count();
+            }
+        }
         public List<Student> GetStudent(int id, string name)
         {
 
