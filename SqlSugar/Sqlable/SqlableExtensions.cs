@@ -155,6 +155,7 @@ namespace SqlSugar
             finally
             {
                 sqlable = null;
+                sql = null;
             }
         }
 
