@@ -24,6 +24,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +65,7 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BuilderClass.aspx" />
     <Content Include="FunctionTest\Join.aspx" />
     <Content Include="FunctionTest\Select.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
@@ -87,7 +89,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FunctionTest\SugarDao.cs" />
+    <Compile Include="BuilderClass.aspx.cs">
+      <DependentUpon>BuilderClass.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BuilderClass.aspx.designer.cs">
+      <DependentUpon>BuilderClass.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Dao\SugarDao.cs" />
     <Compile Include="FunctionTest\Join.aspx.cs">
       <DependentUpon>Join.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using Models;
-namespace WebTest.FunctionTest
+namespace WebTest.Dao
 {
     public partial class Join : System.Web.UI.Page
     {
