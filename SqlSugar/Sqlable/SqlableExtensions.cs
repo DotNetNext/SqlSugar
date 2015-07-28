@@ -78,7 +78,10 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable Where(this Sqlable sqlable, string where)
         {
-            sqlable.Where.Add(string.Format(" AND {0} ", where));
+            if (where.IsValuable())
+            {
+                sqlable.Where.Add(string.Format(" AND {0} ", where));
+            }
             return sqlable;
         }
 
