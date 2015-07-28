@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using Models;
-namespace WebTest.FunctionTest
+namespace WebTest.Dao
 {
     public partial class Select : System.Web.UI.Page
     {
@@ -14,7 +14,8 @@ namespace WebTest.FunctionTest
         {
             int sid = 1;
             var school = GetSingleSchool(sid);
-            var studentList = GetStudent("孙", "男", 1, 10, "id asc,name");
+            int pageCount = 0;
+            var studentList = GetStudent("孙", "男", 1, 10, "id asc,name",out pageCount);
             var selectList = GetSelectList(sid);
             var groupList = GetSexTotal();
         }
@@ -61,7 +62,7 @@ namespace WebTest.FunctionTest
         /// <param name="name"></param>
         /// <param name="sex"></param>
         /// <returns></returns>
-        public static List<Student> GetStudent(string name, string sex, int pageIndex, int pageSize, string orderFileds)
+        public static List<Student> GetStudent(string name, string sex, int pageIndex, int pageSize, string orderFileds,out int pageCount)
         {
             using (SqlSugarClient db = SugarDao.GetInstance())
             {
@@ -78,6 +79,7 @@ namespace WebTest.FunctionTest
                 {
                     qable = qable.OrderBy(orderFileds);
                 }
+                pageCount = qable.Count();
                 return qable.ToPageList(pageIndex, pageSize);
             }
         }

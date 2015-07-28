@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using SqlSugar;
-namespace WebTest.FunctionTest
+namespace WebTest.Dao
 {
     /// <summary>
     /// 扩展SqlSugarClient

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebTest.FunctionTest
+namespace WebTest.Dao
 {
 
 
