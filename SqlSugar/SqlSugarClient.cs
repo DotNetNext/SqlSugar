@@ -199,7 +199,7 @@ namespace SqlSugar
 
         /// <summary>
         /// 更新
-        /// 注意：rowObj为T类型的实体将更新该实体的非主键所有列（主键需要为实体类的第一个属性），如果rowObj为匿名对象将更新指定列
+        /// 注意：rowObj为T类型将更新该实体的非主键所有列（主键需要为实体类的第一个属性），如果rowObj类型为匿名类将更新指定列
         /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
