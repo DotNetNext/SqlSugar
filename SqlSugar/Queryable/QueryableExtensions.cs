@@ -213,7 +213,7 @@ namespace SqlSugar
                 Take = queryable.Take,
                 Where = queryable.Where,
                 TableName = type.Name,
-                GroupBy=queryable.GroupBy,
+                GroupBy = queryable.GroupBy,
                 Select = select
             };
             return reval;
@@ -232,6 +232,43 @@ namespace SqlSugar
             sbSql.AppendFormat("SELECT COUNT({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", queryable.TName, withNoLock, string.Join("", queryable.Where), queryable.Select.GetSelectFiles(), queryable.GroupBy.GetGroupBy());
             var count = queryable.DB.GetInt(sbSql.ToString(), queryable.Params.ToArray());
             return count;
+        }
+
+
+        /// <summary>
+        /// 获取最大值
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="maxField">列</param>
+        /// <returns></returns>
+        public static TResult Max<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, string maxField)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
+            sbSql.AppendFormat("SELECT MAX({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", queryable.TName, withNoLock, string.Join("", queryable.Where), maxField, queryable.GroupBy.GetGroupBy());
+            var objValue = queryable.DB.GetScalar(sbSql.ToString(), queryable.Params.ToArray());
+            var reval = Convert.ChangeType(objValue, typeof(TResult));
+            return (TResult)reval;
+        }
+
+        /// <summary>
+        /// 获取最小值
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="minField">列</param>
+        /// <returns></returns>
+        public static TResult Min<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, string minField)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
+            sbSql.AppendFormat("SELECT MIN({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", queryable.TName, withNoLock, string.Join("", queryable.Where), minField, queryable.GroupBy.GetGroupBy());
+            var objValue = queryable.DB.GetScalar(sbSql.ToString(), queryable.Params.ToArray());
+            var reval = Convert.ChangeType(objValue, typeof(TResult));
+            return (TResult)reval;
         }
 
         /// <summary>

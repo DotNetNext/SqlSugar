@@ -1,4 +1,3 @@
-D:\工作\SqlSugar\SqlSugar\obj\Debug\ResolveAssemblyReference.cache
 D:\工作\SqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
 D:\工作\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 D:\工作\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll

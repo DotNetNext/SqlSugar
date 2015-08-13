@@ -1,4 +1,3 @@
-D:\工作\SqlSugar\WebTest\obj\Debug\ResolveAssemblyReference.cache
 D:\工作\SqlSugar\WebTest\bin\WebTest.dll
 D:\工作\SqlSugar\WebTest\bin\WebTest.pdb
 D:\工作\SqlSugar\WebTest\bin\SqlSugar.dll
@@ -13,3 +12,4 @@ D:\学习\sunkaixuan-SqlSugar-master\WebTest\obj\Debug\WebTest.csprojResolveAsse
 D:\学习\sunkaixuan-SqlSugar-master\WebTest\obj\Debug\WebTest.dll
 D:\学习\sunkaixuan-SqlSugar-master\WebTest\obj\Debug\WebTest.pdb
 D:\学习\sunkaixuan-SqlSugar-master\WebTest\bin\WebTest.dll.config
+D:\工作\SqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
