@@ -199,11 +199,11 @@ namespace SqlSugar
 
         /// <summary>
         /// 更新
-        /// 注意：主键必需为实体第一列
+        /// 注意：rowObj为T类型的实体将更新该实体的非主键所有列（主键需要为实体类的第一个属性），如果rowObj为匿名对象将更新指定列
         /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
-        /// <param name="rowObj">new {name="张三",sex="男"}</param>
+        /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
         /// <param name="whereObj">new {id=100}</param>
         /// <returns></returns>
         public bool Update<T>(object rowObj, Expression<Func<T, bool>> expression) where T : class

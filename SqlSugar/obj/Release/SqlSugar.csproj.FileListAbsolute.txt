@@ -6,4 +6,3 @@ D:\工作\SqlSugar\SqlSugar\bin\Release\SqlSugar.dll
 D:\工作\SqlSugar\SqlSugar\bin\Release\SqlSugar.pdb
 D:\工作\SqlSugar\SqlSugar\obj\Release\SqlSugar.dll
 D:\工作\SqlSugar\SqlSugar\obj\Release\SqlSugar.pdb
-D:\工作\SqlSugar\SqlSugar\obj\Release\SqlSugar.csprojResolveAssemblyReference.cache
