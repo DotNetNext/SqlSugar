@@ -212,16 +212,16 @@
     <Content Include="Site.Master" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
-      <Project>{46a17e67-7e3e-4369-9b1f-43ba34bbdaef}</Project>
-      <Name>SqlSugar</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EntityDeploy Include="TestLib\EFMODEL.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>EFMODEL.Designer.cs</LastGenOutput>
     </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
+      <Project>{46A17E67-7E3E-4369-9B1F-43BA34BBDAEF}</Project>
+      <Name>SqlSugar</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

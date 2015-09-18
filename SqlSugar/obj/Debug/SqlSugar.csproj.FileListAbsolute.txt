@@ -6,3 +6,7 @@ D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\bin\Debug\SqlSugar.dll
 D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\bin\Debug\SqlSugar.pdb
 D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\obj\Debug\SqlSugar.dll
 D:\学习\sunkaixuan-SqlSugar-master\SqlSugar\obj\Debug\SqlSugar.pdb
+E:\Code\Git\SqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
+E:\Code\Git\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
+E:\Code\Git\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
+E:\Code\Git\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb

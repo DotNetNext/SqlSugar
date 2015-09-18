@@ -17,10 +17,11 @@ namespace WebTest
         protected void Page_Load(object sender, EventArgs e)
         {
             //连接字符串
-            string connStr = @"Server=.;uid=sa;pwd=sasa;database=SqlSugarTest";
+            string connStr = @"Server=DESKTOP-RHDNF4S\SKX;uid=sa;pwd=sasa;database=SqlSugarTest";
 
             using (SqlSugarClient db = new SqlSugarClient(connStr))//开启数据库连接
             {
+                db.Delete<Student>(1, 2);
                 //开启事务，可以不使用事务,也可以使用多个事务
                 db.BeginTran();
 

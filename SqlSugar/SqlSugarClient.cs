@@ -281,6 +281,52 @@ namespace SqlSugar
             }
             return isSuccess;
         }
+        /// <summary>
+        /// 批量删除
+        /// 注意：whereIn field 为class中的第一个属性
+        /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
+        /// </summary>
+        /// <param name="whereIn"> delete ids </param>
+        public bool Delete<T>(params int[] whereIn)
+        {
+            Type type = typeof(T);
+            //属性缓存
+            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+            string key = type.FullName;
+            bool isSuccess = false;
+            if (whereIn != null && whereIn.Length > 0)
+            {
+                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, props[0].Name, whereIn.ToJoinSqlInVal());
+                int deleteRowCount = ExecuteCommand(sql);
+                isSuccess = deleteRowCount > 0;
+            }
+            return isSuccess;
+        }
+        /// <summary>
+        /// 批量删除
+        /// 注意：whereIn field 为class中的第一个属性
+        /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
+        /// </summary>
+        /// <param name="whereIn"> delete ids </param>
+        public bool Delete<T>(params Guid[] whereIn)
+        {
+            Type type = typeof(T);
+            //属性缓存
+            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+            string key = type.FullName;
+            bool isSuccess = false;
+            if (whereIn != null && whereIn.Length > 0)
+            {
+                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, props[0].Name, whereIn.ToJoinSqlInVal());
+                int deleteRowCount = ExecuteCommand(sql);
+                isSuccess = deleteRowCount > 0;
+            }
+            return isSuccess;
+        }
 
         /// <summary>
         /// 批量假删除
