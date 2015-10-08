@@ -11,3 +11,4 @@ E:\Code\Git\SqlSugar2\SqlSugar\bin\Release\SqlSugar.dll
 E:\Code\Git\SqlSugar2\SqlSugar\bin\Release\SqlSugar.pdb
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Release\SqlSugar.dll
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Release\SqlSugar.pdb
+E:\Code\Git\SqlSugar2\SqlSugar\bin\Release\SqlSugar.XML
