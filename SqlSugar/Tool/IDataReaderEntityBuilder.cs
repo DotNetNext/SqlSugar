@@ -54,7 +54,7 @@ namespace SqlSugar
                         generator.Emit(OpCodes.Ldarg_0);
                         generator.Emit(OpCodes.Ldc_I4, i);
                         generator.Emit(OpCodes.Callvirt, getValueMethod);
-                        generator.Emit(OpCodes.Unbox_Any, dataRecord.GetFieldType(i));
+                        generator.Emit(OpCodes.Unbox_Any, propertyInfo.PropertyType);
                         generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
                         generator.MarkLabel(endIfLabel);
                     }
