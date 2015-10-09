@@ -303,7 +303,7 @@ namespace SqlSugar
                 }
 
                 var reader = queryable.DB.GetReader(sbSql.ToString(), queryable.Params.ToArray());
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader);
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader, queryable.Select.GetSelectFiles());
                 queryable = null;
                 return reval;
             }

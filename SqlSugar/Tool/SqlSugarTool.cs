@@ -29,10 +29,10 @@ namespace SqlSugar
         /// <param name="dr"></param>
         /// <param name="isClose"></param>
         /// <returns></returns>
-        public static List<T> DataReaderToList<T>(Type type, IDataReader dr, bool isClose = true)
+        public static List<T> DataReaderToList<T>(Type type, IDataReader dr,string fields, bool isClose = true)
         {
             var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
-            string key = "DataReaderToList." + type.FullName;
+            string key = "DataReaderToList." +fields+ type.FullName;
             IDataReaderEntityBuilder<T> eblist = null;
             if (cacheManager.ContainsKey(key))
             {

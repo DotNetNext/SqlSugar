@@ -20,3 +20,10 @@ E:\Code\Git\SqlSugar\WebTest\bin\SqlSugar.pdb
 E:\Code\Git\SqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
 E:\Code\Git\SqlSugar\WebTest\obj\Debug\WebTest.dll
 E:\Code\Git\SqlSugar\WebTest\obj\Debug\WebTest.pdb
+E:\Code\Git\SqlSugar2\WebTest\bin\WebTest.dll
+E:\Code\Git\SqlSugar2\WebTest\bin\WebTest.pdb
+E:\Code\Git\SqlSugar2\WebTest\bin\SqlSugar.dll
+E:\Code\Git\SqlSugar2\WebTest\bin\SqlSugar.pdb
+E:\Code\Git\SqlSugar2\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
+E:\Code\Git\SqlSugar2\WebTest\obj\Debug\WebTest.dll
+E:\Code\Git\SqlSugar2\WebTest\obj\Debug\WebTest.pdb

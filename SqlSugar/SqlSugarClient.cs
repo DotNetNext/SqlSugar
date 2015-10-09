@@ -75,7 +75,7 @@ namespace SqlSugar
                 }
                 return strReval;
             }
-            var reval = SqlSugarTool.DataReaderToList<T>(type, reader);
+            var reval = SqlSugarTool.DataReaderToList<T>(type, reader,sql.Substring(0,50));
             return reval;
         }
 

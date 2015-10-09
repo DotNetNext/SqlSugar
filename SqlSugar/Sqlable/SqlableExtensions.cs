@@ -143,7 +143,7 @@ namespace SqlSugar
                 sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams));
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams),fileds);
                 return reval;
             }
             catch (Exception ex)
@@ -215,7 +215,7 @@ namespace SqlSugar
                 sbSql.Insert(0, "SELECT * FROM ( ");
                 sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams));
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams),fileds);
                 return reval;
             }
             catch (Exception ex)

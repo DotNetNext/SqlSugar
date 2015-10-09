@@ -21,6 +21,9 @@ namespace WebTest
 
             using (SqlSugarClient db = new SqlSugarClient(connStr))//开启数据库连接
             {
+                var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
+                var sl = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
+               
                 db.Delete<Student>(1, 2);
                 //开启事务，可以不使用事务,也可以使用多个事务
                 db.BeginTran();
