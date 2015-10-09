@@ -26,3 +26,4 @@ E:\Code\Git\SqlSugar2\WebTest\bin\SqlSugar.pdb
 E:\Code\Git\SqlSugar2\WebTest\obj\Release\WebTest.csprojResolveAssemblyReference.cache
 E:\Code\Git\SqlSugar2\WebTest\obj\Release\WebTest.dll
 E:\Code\Git\SqlSugar2\WebTest\obj\Release\WebTest.pdb
+E:\Code\Git\SqlSugar2\WebTest\bin\SqlSugar.xml

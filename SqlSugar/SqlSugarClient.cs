@@ -188,7 +188,14 @@ namespace SqlSugar
             {
                 //**去掉最后一个逗号 
                 sbInsertSql.Remove(sbInsertSql.Length - 1, 1);
-                sbInsertSql.Append(");select @@identity;");
+                if (isIdentity == false)
+                {
+                    sbInsertSql.Append(");select 'true';");
+                }
+                else
+                {
+                    sbInsertSql.Append(");select @@identity;");
+                }
                 cacheSqlManager.Add(cacheSqlKey, sbInsertSql, cacheSqlManager.Day);
             }
             var sql = sbInsertSql.ToString();
@@ -199,7 +206,7 @@ namespace SqlSugar
 
         /// <summary>
         /// 更新
-        /// 注意：rowObj为T类型将更新该实体的非主键所有列（主键需要为实体类的第一个属性），如果rowObj类型为匿名类将更新指定列
+        /// 注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
         /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
@@ -215,19 +222,17 @@ namespace SqlSugar
             Type type = typeof(T);
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
             Dictionary<string, string> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
-            int i = 0;
+            string pkName=SqlSugarTool.GetPrimaryKeyByTableName(this,type.Name);
             foreach (var r in rows)
             {
-                if (i == 0)
+                if (pkName == r.Key)
                 {
                     if (rowObj.GetType() == type)
                     {
-                        ++i;
                         continue;
                     }
                 }
                 sbSql.Append(string.Format(" {0} =@{0}  ,", r.Key));
-                ++i;
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             sbSql.Append(" WHERE  1=1  ");
@@ -260,7 +265,7 @@ namespace SqlSugar
 
         /// <summary>
         /// 批量删除
-        /// 注意：whereIn field 为class中的第一个属性
+        /// 注意：whereIn 主键集合  
         /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
         /// </summary>
         /// <param name="whereIn"> delete ids </param>
@@ -275,7 +280,7 @@ namespace SqlSugar
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, props[0].Name, whereIn.ToJoinSqlInVal());
+                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name,SqlSugarTool.GetPrimaryKeyByTableName(this,type.Name), whereIn.ToJoinSqlInVal());
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }

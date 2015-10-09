@@ -64,7 +64,7 @@ namespace WebTest
                     //查询所有
                     var student = db.Queryable<Student>().ToList();
 
-                    var stud = new Student() { id = 1 };
+                    var stud = new Student() { id = db.GetInt("select top 1 id from Student") };
 
                     //查询单条
                     var single = db.Queryable<Student>().Single(c => c.id==stud.id);
@@ -185,7 +185,7 @@ namespace WebTest
 
                     db.GetDataTable(sql);
                     db.GetList<Student>(sql);
-                    db.GetSingle<Student>(sql + " where id=1");
+                    db.GetSingle<Student>(sql + " where id="+stud.id);
                     using (SqlDataReader read = db.GetReader(sql)) { }  //事务中一定要释放DataReader
 
                     db.GetScalar(sql);

@@ -13,7 +13,7 @@ namespace SqlSugar
         public int Minutes = 60;
         public int Hour = 60 * 60;
         public int Day = 60 * 60 * 24;
-        public System.Web.HttpContext context = System.Web.HttpContext.Current;
+        public System.Web.HttpContext context { get { return System.Web.HttpContext.Current; } }
         public abstract void Add(string key, V value);
         public abstract bool ContainsKey(string key);
         public abstract V Get(string key);
