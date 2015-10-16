@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace SqlSugar
 {
@@ -306,6 +307,54 @@ namespace SqlSugar
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader, queryable.Select.GetSelectFiles());
                 queryable = null;
                 return reval;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("sql:{0}\r\n message:{1}", ex.Message));
+            }
+            finally
+            {
+                sbSql = null;
+                queryable = null;
+            }
+
+        }
+
+
+        /// <summary>
+        /// 将Queryable转换为DataTable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static DataTable ToDataTable<T>(this SqlSugar.Queryable<T> queryable)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            try
+            {
+                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
+                var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
+
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
+                if (queryable.Skip == null && queryable.Take != null)
+                {
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
+                }
+                else if (queryable.Skip != null && queryable.Take == null)
+                {
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
+                }
+                else if (queryable.Skip != null && queryable.Take != null)
+                {
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
+                }
+
+                var dataTable = queryable.DB.GetDataTable(sbSql.ToString(), queryable.Params.ToArray());
+                queryable = null;
+                return dataTable;
             }
             catch (Exception ex)
             {

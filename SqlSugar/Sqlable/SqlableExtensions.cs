@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace SqlSugar
 {
@@ -144,6 +145,41 @@ namespace SqlSugar
                 sbSql.Append(sqlable.GroupBy);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams),fileds);
+                return reval;
+            }
+            catch (Exception ex)
+            {
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sbSql.ToString(), ex.Message);
+                throw;
+            }
+            finally
+            {
+                sqlable = null;
+                sbSql = null;
+            }
+        }
+
+
+        /// <summary>
+        /// 设置查询列执行查询，并且将结果集转成DataTable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
+        public static DataTable SelectToDataTable(this Sqlable sqlable, string fileds, object whereObj = null) 
+        {
+            StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
+            try
+            {
+                Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
+                sbSql.Insert(0, string.Format("SELECT {0} ", fileds));
+                sbSql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.OrderBy);
+                sbSql.Append(sqlable.GroupBy);
+                var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                var reval = sqlable.DB.GetDataTable(sbSql.ToString(), sqlParams);
                 return reval;
             }
             catch (Exception ex)
