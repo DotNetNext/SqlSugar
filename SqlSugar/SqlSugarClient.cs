@@ -75,7 +75,12 @@ namespace SqlSugar
                 }
                 return strReval;
             }
-            var reval = SqlSugarTool.DataReaderToList<T>(type, reader,sql.Substring(0,50));
+            string fields = sql;
+            if (sql.Length > 51)
+            {
+                fields = sql.Substring(0, 50);
+            }
+            var reval = SqlSugarTool.DataReaderToList<T>(type, reader, fields);
             return reval;
         }
 
@@ -181,7 +186,12 @@ namespace SqlSugar
                     object val = prop.GetValue(entity, null);
                     if (val == null)
                         val = DBNull.Value;
-                    pars.Add(new SqlParameter("@" + prop.Name, val));
+                    var par = new SqlParameter("@" + prop.Name, val);
+                    if (par.SqlDbType == SqlDbType.Udt)
+                    {
+                        par.UdtTypeName = "HIERARCHYID";
+                    }
+                    pars.Add(par);
                 }
             }
             if (!cacheSqlManager.ContainsKey(cacheSqlKey))
@@ -243,7 +253,18 @@ namespace SqlSugar
 
             List<SqlParameter> parsList = new List<SqlParameter>();
             parsList.AddRange(re.Paras);
-            parsList.AddRange(rows.Select(c => new SqlParameter("@" + c.Key, c.Value)));
+            var pars = rows.Select(c => new SqlParameter("@" + c.Key, c.Value));
+            if (pars != null)
+            {
+                foreach (var par in pars)
+                {
+                    if (par.SqlDbType == SqlDbType.Udt)
+                    {
+                        par.UdtTypeName = "HIERARCHYID";
+                    }
+                    parsList.Add(par);
+                }
+            }
             var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
             return updateRowCount > 0;
         }
