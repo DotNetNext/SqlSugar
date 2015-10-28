@@ -17,10 +17,10 @@ namespace SqlSugar
     /// ** 作者：sunkaixuan
     /// ** 使用说明：
     /// </summary>
-    internal class SqlSugarTool
+    public class SqlSugarTool
     {
-        public static Type StringType = typeof(string);
-        public static Type IntType = typeof(int);
+        internal static Type StringType = typeof(string);
+        internal static Type IntType = typeof(int);
 
         /// <summary>
         /// Reader转成List《T》
@@ -29,7 +29,7 @@ namespace SqlSugar
         /// <param name="dr"></param>
         /// <param name="isClose"></param>
         /// <returns></returns>
-        public static List<T> DataReaderToList<T>(Type type, IDataReader dr,string fields, bool isClose = true)
+        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr,string fields, bool isClose = true)
         {
             var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
             string key = "DataReaderToList." +fields+ type.FullName;
@@ -89,7 +89,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> GetObjectToDictionary(object obj)
+        internal static Dictionary<string, string> GetObjectToDictionary(object obj)
         {
 
             Dictionary<string, string> reval = new Dictionary<string, string>();
@@ -113,7 +113,7 @@ namespace SqlSugar
         /// <param name="cachePropertiesKey"></param>
         /// <param name="cachePropertiesManager"></param>
         /// <returns></returns>
-        public static PropertyInfo[] GetGetPropertiesByCache(Type type, string cachePropertiesKey, CacheManager<PropertyInfo[]> cachePropertiesManager)
+        internal static PropertyInfo[] GetGetPropertiesByCache(Type type, string cachePropertiesKey, CacheManager<PropertyInfo[]> cachePropertiesManager)
         {
             PropertyInfo[] props = null;
             if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
@@ -135,7 +135,7 @@ namespace SqlSugar
         /// <param name="db"></param>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        public static bool IsPrimaryKey(SqlSugarClient db, string tableName)
+        internal static bool IsPrimaryKey(SqlSugarClient db, string tableName)
         {
             return GetPrimaryKeyByTableName(db, tableName) != null;
         }
@@ -146,7 +146,7 @@ namespace SqlSugar
         /// <param name="db"></param>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        public static string GetPrimaryKeyByTableName(SqlSugarClient db, string tableName)
+        internal static string GetPrimaryKeyByTableName(SqlSugarClient db, string tableName)
         {
             string key = "GetPrimaryKeyByTableName";
             tableName = tableName.ToLower();
@@ -184,6 +184,16 @@ namespace SqlSugar
             }
             return primaryInfo.First(it=>it.Key==tableName).Value;
 
+        }
+        /// <summary>
+        /// 处理like条件的通配符
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
+        public static string SqlLikeWordEncode(string word)
+        {
+            if (word == null) return word;
+            return word.Replace("[", "[[]").Replace("]", "[]]").Replace("%", "[%]").Replace("_", "[_]");
         }
     }
 }
