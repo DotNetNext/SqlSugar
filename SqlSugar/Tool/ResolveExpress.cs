@@ -51,16 +51,37 @@ namespace SqlSugar
                 var left = CreateSqlElements(expression.Left, ref leftType);
                 var right = CreateSqlElements(expression.Right, ref rightType);
                 var oper = GetOperator(expression.NodeType);
-
-                if (leftType == MemberType.Key && rightType == MemberType.Value)
+                var isKeyOperValue = leftType == MemberType.Key && rightType == MemberType.Value;
+                var isValueOperKey = rightType == MemberType.Key && leftType == MemberType.Value;
+                #region 处理 null 
+                if (isKeyOperValue & (right == "null" || right == null) && oper.Trim() == "=")
+                {
+                    var oldLeft = AddParas(ref left, right);
+                    return string.Format(" ({0} is null ) ", oldLeft);
+                }
+                else if (isKeyOperValue & (right == "null"||right==null) && oper.Trim() == "<>")
+                {
+                    var oldLeft = AddParas(ref left, right);
+                    return string.Format(" ({0} is not null ) ", oldLeft);
+                }
+                else if (isValueOperKey & (left == "null"||left==null) && oper.Trim() == "=")
+                {
+                    return string.Format(" ({0} is null ) ", right);
+                }
+                else if (isValueOperKey & (left == "null"||left==null) && oper.Trim() == "<>")
+                {
+                    return string.Format(" ({0} is not null ) ", right);
+                } 
+                #endregion
+                else if (isKeyOperValue)
                 {
                     var oldLeft = AddParas(ref left, right);
                     return string.Format(" ({0} {1} @{2}) ", oldLeft, oper, left);
                 }
-                else if (leftType == MemberType.Value && rightType == MemberType.Key)
+                else if (isValueOperKey)
                 {
-                    var oldLeft = AddParas(ref right, left);
-                    return string.Format("( @{0} {1} {0} )", oldLeft, oper, right);
+                    var oldRight = AddParasReturnRight(left, ref  right);
+                    return string.Format("( @{0} {1} {2} )", right, oper, oldRight);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Value)
                 {
@@ -239,6 +260,21 @@ namespace SqlSugar
                 this.Paras.Add(new SqlParameter("@" + left, right));
             }
             return oldLeft;
+        }
+        private string AddParasReturnRight(string left, ref string right)
+        {
+            string oldRight = right;
+            right = right + SameIndex;
+            SameIndex++;
+            if (left == null)
+            {
+                this.Paras.Add(new SqlParameter("@" + right, DBNull.Value));
+            }
+            else
+            {
+                this.Paras.Add(new SqlParameter("@" + right, left));
+            }
+            return oldRight;
         }
 
         private string StartsWith(string methodName, MethodCallExpression mce, bool isTure)

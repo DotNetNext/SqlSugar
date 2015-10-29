@@ -16,13 +16,16 @@ namespace WebTest
         int id = 1;
         protected void Page_Load(object sender, EventArgs e)
         {
-            var x = SqlSugarTool.SqlLikeWordEncode("ad%fa[dsfas]");
-
+           
+            
             //连接字符串
             string connStr = @"Server=DESKTOP-RHDNF4S\SKX;uid=sa;pwd=sasa;database=SqlSugarTest";
 
             using (SqlSugarClient db = new SqlSugarClient(connStr))//开启数据库连接
             {
+                string aaa = null;
+              var xxx=  db.Queryable<School>().Where(it =>  it.name==aaa ).ToList();
+
                 var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
                 var sl = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
                
