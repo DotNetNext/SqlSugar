@@ -382,6 +382,8 @@ namespace SqlSugar
             {
                 throw new Exception("分页必需使用.Order排序");
             }
+            if (pageIndex == 0)
+                pageIndex = 1;
             queryable.Skip = (pageIndex - 1) * pageSize;
             queryable.Take = pageSize;
             return queryable.ToList();
