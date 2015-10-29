@@ -16,6 +16,8 @@ namespace WebTest
         int id = 1;
         protected void Page_Load(object sender, EventArgs e)
         {
+            var x = SqlSugarTool.SqlLikeWordEncode("ad%fa[dsfas]");
+
             //连接字符串
             string connStr = @"Server=DESKTOP-RHDNF4S\SKX;uid=sa;pwd=sasa;database=SqlSugarTest";
 

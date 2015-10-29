@@ -6,6 +6,7 @@ using System.Data;
 using System.Reflection;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 
 namespace SqlSugar
@@ -193,7 +194,7 @@ namespace SqlSugar
         public static string SqlLikeWordEncode(string word)
         {
             if (word == null) return word;
-            return word.Replace("[", "[[]").Replace("]", "[]]").Replace("%", "[%]").Replace("_", "[_]");
+            return Regex.Replace(word,@"(\[|\]|\%)","[$1]");
         }
     }
 }
