@@ -363,7 +363,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="field">更新删除状态字段</param>
         /// <param name="whereIn">delete ids</param>
-        public bool FalseDelete<T>(string field, params dynamic[] whereIn)
+        public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)
         {
             Type type = typeof(T);
             //属性缓存
