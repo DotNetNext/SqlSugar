@@ -270,6 +270,53 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 更新
+        /// 注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
+        /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
+        /// <param name="expression">new {id=100}</param>
+        /// <returns></returns>
+        public bool Update<T,FiledType>(object rowObj, params FiledType[] whereIn) where T : class
+        {
+            if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
+ 
+            Type type = typeof(T);
+            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
+            Dictionary<string, string> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
+            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
+            foreach (var r in rows)
+            {
+                if (pkName == r.Key)
+                {
+                    if (rowObj.GetType() == type)
+                    {
+                        continue;
+                    }
+                }
+                sbSql.Append(string.Format(" {0} =@{0}  ,", r.Key));
+            }
+            sbSql.Remove(sbSql.Length - 1, 1);
+            sbSql.AppendFormat("WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal());
+            List<SqlParameter> parsList = new List<SqlParameter>();
+            var pars = rows.Select(c => new SqlParameter("@" + c.Key, c.Value));
+            if (pars != null)
+            {
+                foreach (var par in pars)
+                {
+                    if (par.SqlDbType == SqlDbType.Udt)
+                    {
+                        par.UdtTypeName = "HIERARCHYID";
+                    }
+                    parsList.Add(par);
+                }
+            }
+            var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
+            return updateRowCount > 0;
+        }
+
+        /// <summary>
         /// 删除,根据表达示
         /// 使用说明:
         /// Delete《T》(it=>it.id=100) 或者Delete《T》(3)
@@ -291,7 +338,7 @@ namespace SqlSugar
         /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
         /// </summary>
         /// <param name="whereIn"> delete ids </param>
-        public bool Delete<T>(params dynamic[] whereIn)
+        public bool Delete<T, FiledType>(params FiledType[] whereIn)
         {
             Type type = typeof(T);
             //属性缓存
@@ -308,51 +355,7 @@ namespace SqlSugar
             }
             return isSuccess;
         }
-        /// <summary>
-        /// 批量删除
-        /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
-        /// </summary>
-        /// <param name="whereIn"> delete ids </param>
-        public bool Delete<T>(params int[] whereIn)
-        {
-            Type type = typeof(T);
-            //属性缓存
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
-            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
-            string key = type.FullName;
-            bool isSuccess = false;
-            if (whereIn != null && whereIn.Length > 0)
-            {
-                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal());
-                int deleteRowCount = ExecuteCommand(sql);
-                isSuccess = deleteRowCount > 0;
-            }
-            return isSuccess;
-        }
-        /// <summary>
-        /// 批量删除
-        /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
-        /// </summary>
-        /// <param name="whereIn"> delete ids </param>
-        public bool Delete<T>(params Guid[] whereIn)
-        {
-            Type type = typeof(T);
-            //属性缓存
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
-            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
-            string key = type.FullName;
-            bool isSuccess = false;
-            if (whereIn != null && whereIn.Length > 0)
-            {
-                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal());
-                int deleteRowCount = ExecuteCommand(sql);
-                isSuccess = deleteRowCount > 0;
-            }
-            return isSuccess;
-        }
-
+ 
         /// <summary>
         /// 批量假删除
         /// 使用说明::
