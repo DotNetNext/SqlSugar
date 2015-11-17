@@ -194,7 +194,7 @@ namespace SqlSugar
         public static string SqlLikeWordEncode(string word)
         {
             if (word == null) return word;
-            return Regex.Replace(word,@"(\[|\]|\%)","[$1]");
+            return Regex.Replace(word,@"(\[|\%)","[$1]");
         }
     }
 }
