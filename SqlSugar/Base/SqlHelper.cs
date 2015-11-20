@@ -18,6 +18,10 @@ namespace SqlSugar
     {
         SqlConnection _sqlConnection;
         SqlTransaction _tran = null;
+        /// <summary>
+        /// 是否清空SqlParameters
+        /// </summary>
+        public bool isClearParameters = true;
         public SqlHelper(string connectionString)
         {
             _sqlConnection = new SqlConnection(connectionString);
@@ -109,10 +113,11 @@ namespace SqlSugar
             }
             sqlCommand.Parameters.AddRange(pars);
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
-            sqlCommand.Parameters.Clear();
+            if (isClearParameters)
+                sqlCommand.Parameters.Clear();
             return sqlDataReader;
         }
-        public List<T> GetList<T>(string sql,object pars)
+        public List<T> GetList<T>(string sql, object pars)
         {
             return GetList<T>(sql, SqlSugarTool.GetParameters(pars));
         }
@@ -147,7 +152,7 @@ namespace SqlSugar
             _sqlDataAdapter.SelectCommand.Parameters.Clear();
             return dt;
         }
-        public DataSet GetDataSetAll(string sql,object pars)
+        public DataSet GetDataSetAll(string sql, object pars)
         {
             return GetDataSetAll(sql, SqlSugarTool.GetParameters(pars));
         }
