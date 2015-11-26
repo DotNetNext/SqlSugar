@@ -79,7 +79,7 @@ namespace SqlSugar
                 {
                     var value = r.GetValue(obj, null);
                     if (value == null) value = DBNull.Value;
-                    listParams.Add(new SqlParameter("@" + r.Name, value.ToString()));
+                    listParams.Add(new SqlParameter("@" + r.Name, value));
                 }
             }
             return listParams.ToArray();
@@ -90,10 +90,10 @@ namespace SqlSugar
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        internal static Dictionary<string, string> GetObjectToDictionary(object obj)
+        internal static Dictionary<string, object> GetObjectToDictionary(object obj)
         {
 
-            Dictionary<string, string> reval = new Dictionary<string, string>();
+            Dictionary<string, object> reval = new Dictionary<string, object>();
             if (obj == null) return reval;
             var type = obj.GetType();
             var propertiesObj = type.GetProperties();
@@ -101,7 +101,7 @@ namespace SqlSugar
             foreach (PropertyInfo r in propertiesObj)
             {
                 var val = r.GetValue(obj, null);
-                reval.Add(r.Name, val == null ? "" : val.ToString());
+                reval.Add(r.Name, val == null ? "" : val);
             }
 
             return reval;

@@ -232,18 +232,18 @@ namespace SqlSugar
 
             Type type = typeof(T);
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
-            Dictionary<string, string> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
+            var rows = SqlSugarTool.GetParameters(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
             foreach (var r in rows)
             {
-                if (pkName == r.Key)
+                if (pkName == r.ParameterName.TrimStart('@'))
                 {
                     if (rowObj.GetType() == type)
                     {
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" {0} =@{0}  ,", r.Key));
+                sbSql.Append(string.Format(" {0} =@{0}  ,", r.ParameterName.TrimStart('@')));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             sbSql.Append(" WHERE  1=1  ");
@@ -253,7 +253,7 @@ namespace SqlSugar
 
             List<SqlParameter> parsList = new List<SqlParameter>();
             parsList.AddRange(re.Paras);
-            var pars = rows.Select(c => new SqlParameter("@" + c.Key, c.Value));
+            var pars = rows;
             if (pars != null)
             {
                 foreach (var par in pars)
@@ -284,7 +284,7 @@ namespace SqlSugar
  
             Type type = typeof(T);
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
-            Dictionary<string, string> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
+            Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
             foreach (var r in rows)
             {
