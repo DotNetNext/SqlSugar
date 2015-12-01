@@ -222,7 +222,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
-        /// <param name="expression">new {id=100}</param>
+        /// <param name="expression">it.id=100</param>
         /// <returns></returns>
         public bool Update<T>(object rowObj, Expression<Func<T, bool>> expression) where T : class
         {
@@ -276,7 +276,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
-        /// <param name="expression">new {id=100}</param>
+        /// <param name="whereIn">new int[]{1,2,3}</param>
         /// <returns></returns>
         public bool Update<T,FiledType>(object rowObj, params FiledType[] whereIn) where T : class
         {
