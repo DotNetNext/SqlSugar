@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloudClient.cs" />
+    <Compile Include="Cloud\CloudModels.cs" />
+    <Compile Include="Cloud\CloudPubMethod.cs" />
+    <Compile Include="ISqlSugarClient.cs" />
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
     <Compile Include="Tool\KeyValue.cs" />
