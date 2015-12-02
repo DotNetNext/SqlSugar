@@ -23,5 +23,13 @@ namespace SqlSugar
         CORSS = 1,
         OUTRE = 2
     }
-    
+    /// <summary>
+    /// 排序类型
+    /// </summary>
+    public enum OrderByType
+    {
+        asc = 0,
+        desc = 1
+    }
+
 }

@@ -196,5 +196,23 @@ namespace SqlSugar
             if (word == null) return word;
             return Regex.Replace(word,@"(\[|\%)","[$1]");
         }
+
+        public static string GetLockString(bool isNoLock) {
+            return isNoLock ? " WITH(NOLOCK) " : "";
+        }
+
+
+        /// <summary>
+        /// 获取属性值
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        internal static object GetPropertyValue(object obj, string property)
+        {
+            PropertyInfo propertyInfo = obj.GetType().GetProperty(property);
+            return propertyInfo.GetValue(obj, null);
+        }  
+
     }
 }

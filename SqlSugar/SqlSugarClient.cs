@@ -62,6 +62,10 @@ namespace SqlSugar
             SqlDataReader reader = null;
             var pars = SqlSugarTool.GetParameters(whereObj);
             var type = typeof(T);
+            sql +=string.Format( @"
+             --{0}
+             {1}
+            ",type.Name,sql);
             reader = GetReader(sql, pars);
             if (type.IsIn(SqlSugarTool.IntType, SqlSugarTool.StringType))
             {

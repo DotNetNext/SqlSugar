@@ -13,7 +13,6 @@ namespace SqlSugar
         List<object> InsertRange<T>(System.Collections.Generic.List<T> entities, bool isIdentity = true) where T : class;
         bool IsNoLock { get; set; }
         void RemoveAllCache();
-        System.Collections.Generic.List<T> SqlQuery<T>(string sql, object whereObj = null);
         bool Update<T, FiledType>(object rowObj, params FiledType[] whereIn) where T : class;
         bool Update<T>(object rowObj, System.Linq.Expressions.Expression<Func<T, bool>> expression) where T : class;
     }
