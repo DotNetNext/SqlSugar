@@ -20,12 +20,14 @@ namespace SqlSugar
     public partial class CloudClient : IDisposable, IClient
     {
         private Object tranLock = new Object();
+        private List<SqlSugarClient> dbs = new List<SqlSugarClient>();
+
         public bool IsNoLock { get; set; }
         /// <summary>
         /// 分布式事务
         /// </summary>
         public CommittableTransaction Tran = null;
-        private List<SqlSugarClient> dbs = new List<SqlSugarClient>();
+      
         /// <summary>
         /// 内存中处理数据的最大值（默认：1000）
         /// </summary>
@@ -184,7 +186,7 @@ namespace SqlSugar
         /// <summary>
         /// 多线程请求所有数据库节点，同步汇总结果
         /// </summary>
-        /// <typeparam name="T">支持DataTable、实体类类和值类型</typeparam>
+        /// <typeparam name="T">支持DataTable、实体类和值类型</typeparam>
         /// <param name="sql"></param>
         /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
         /// <returns></returns>
@@ -233,7 +235,7 @@ namespace SqlSugar
         /// <summary>
         /// 多线程请求所有数据库节点，同步汇总结果
         /// </summary>
-        /// <typeparam name="T">支持DataTable、实体类类和值类型</typeparam>
+        /// <typeparam name="T">支持DataTable、实体类和值类型</typeparam>
         /// <param name="sqlSelect">sql from之前（例如： "select count(*)" ）</param>
         /// <param name="sqlEnd">sql from之后（例如： "from table where id=1" </param>
         /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
