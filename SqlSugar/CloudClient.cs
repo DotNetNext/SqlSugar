@@ -561,9 +561,12 @@ namespace SqlSugar
         {
             if (dbs != null)
             {
-                foreach (var db in dbs)
+                lock (dbs)
                 {
-                    db.Dispose();
+                    foreach (var db in dbs)
+                    {
+                        db.Dispose();
+                    }
                 }
             }
             dbs = null;
