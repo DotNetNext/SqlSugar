@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
 using System.Transactions;
+using System.Threading;
 namespace WebTest
 {
     /// <summary>
@@ -20,37 +21,48 @@ namespace WebTest
         {
             var id = Guid.Parse("4FC950EC-7C23-480F-9545-443EBDCA32E9");
             int pageCount = 0;
+
             using (CloudClient db = CloudDao.GetInstance())
             {
-
-                TransactionOptions transactionOptions = new TransactionOptions();
-                transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.Serializable;
-                using (TransactionScope txnScope = new TransactionScope(TransactionScopeOption.Suppress, transactionOptions, EnterpriseServicesInteropOption.Automatic))
+                using (CommittableTransaction trans = new CommittableTransaction())//启用分布式事务
                 {
+
+
+                    db.Tran = trans;
+
                     /*** 增、删、改 ***/
 
                     //根据配置的百分比，随机插入到某个节点库
                     var s = new student()
-                   {
-                       createTime = DateTime.Now,
-                       id = Guid.NewGuid(),
-                       name = Guid.NewGuid() + ""
-                   };
+                    {
+                        createTime = DateTime.Now,
+                        id = Guid.NewGuid(),
+                        name = Guid.NewGuid() + ""
+                    };
                     db.Insert<student>(s, false/*false表示不是自增列*/); //数据库设计主键为GUID为佳多库计算不会冲突
 
 
+
                     //并发请求所有节点找出这条数据更新
-                    s.name = "改";
+                    s.name = "改11";
                     db.Update<student>(s, it => it.id == s.id);//根据表达示更新
+
+
                     db.Update<student, Guid>(s, s.id);//根据主键更新
+
                     db.Update<student, Guid>(s, new Guid[] { s.id });//根据主键数组更新
+
 
 
                     //并发请求所有节点找出这条数据删除
                     db.Delete<student>(it => it.id == s.id);
-                    txnScope.Complete();
 
+
+                    trans.Commit();
                 }
+
+                db.DisposeTran();
+
 
                 /*** 使用Taskable实现云计算 ***/
 
@@ -149,4 +161,5 @@ namespace WebTest
             });
         }
     }
+
 }

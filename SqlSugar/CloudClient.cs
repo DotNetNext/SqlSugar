@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Transactions;
 
 namespace SqlSugar
 {
@@ -18,7 +19,13 @@ namespace SqlSugar
     /// </summary>
     public partial class CloudClient : IDisposable, IClient
     {
+        private Object tranLock = new Object();
         public bool IsNoLock { get; set; }
+        /// <summary>
+        /// 分布式事务
+        /// </summary>
+        public CommittableTransaction Tran = null;
+        private List<SqlSugarClient> dbs = new List<SqlSugarClient>();
         /// <summary>
         /// 内存中处理数据的最大值（默认：1000）
         /// </summary>
@@ -71,11 +78,12 @@ namespace SqlSugar
         {
 
             var connName = CloudPubMethod.GetConnection(this.configList);
-            using (var db = new SqlSugarClient(connName))
-            {
-                return db.Insert<T>(entity, isIdentity);
-            }
+            var db = new SqlSugarClient(connName);
+            SettingConnection(db);
+            return db.Insert<T>(entity, isIdentity);
         }
+
+
 
 
         /// <summary>
@@ -92,10 +100,9 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
                     var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        return db.Delete<T, FiledType>(whereIn);
-                    }
+                    var db = new SqlSugarClient(connName);
+                    SettingConnection(db);
+                    return db.Delete<T, FiledType>(whereIn);
 
                 }, tasks, i);
             }
@@ -116,10 +123,10 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
                     var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        return db.Delete<T>(expression);
-                    }
+                    var db = new SqlSugarClient(connName);
+                    SettingConnection(db);
+                    return db.Delete<T>(expression);
+
 
                 }, tasks, i);
             }
@@ -141,10 +148,10 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
                     var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        return db.FalseDelete<T, FiledType>(field, whereIn);
-                    }
+                    var db = new SqlSugarClient(connName);
+                    SettingConnection(db); ;
+                    return db.FalseDelete<T, FiledType>(field, whereIn);
+
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -165,10 +172,9 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
                     var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        return db.FalseDelete<T>(field, expression);
-                    }
+                    var db = new SqlSugarClient(connName);
+                    SettingConnection(db);
+                    return db.FalseDelete<T>(field, expression);
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -194,28 +200,27 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
                 {
                     var connString = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connString))
+                    var db = new SqlSugarClient(connString);
+                    SettingConnection(db);
+                    CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
+                    var isDataTable = typeof(T) == typeof(DataTable);
+                    var isClass = typeof(T).IsClass;
+                    if (isDataTable)
                     {
-
-                        CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
-                        var isDataTable = typeof(T) == typeof(DataTable);
-                        var isClass = typeof(T).IsClass;
-                        if (isDataTable)
-                        {
-                            itemReval.DataTable = db.GetDataTable(sql, whereObj);
-                        }
-                        else if (isClass)
-                        {
-                            itemReval.Entities = db.SqlQuery<T>(sql, whereObj);
-                        } else
-                        {
-                            var obj = db.GetScalar(sql, whereObj);
-                            obj = Convert.ChangeType(obj, typeof(T));
-                            itemReval.Value = (T)obj;
-                        }
-                        itemReval.ConnectionString = connString;
-                        return itemReval;
+                        itemReval.DataTable = db.GetDataTable(sql, whereObj);
                     }
+                    else if (isClass)
+                    {
+                        itemReval.Entities = db.SqlQuery<T>(sql, whereObj);
+                    }
+                    else
+                    {
+                        var obj = db.GetScalar(sql, whereObj);
+                        obj = Convert.ChangeType(obj, typeof(T));
+                        itemReval.Value = (T)obj;
+                    }
+                    itemReval.ConnectionString = connString;
+                    return itemReval;
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -245,30 +250,28 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
                 {
                     var connString = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connString))
+                    var db = new SqlSugarClient(connString);
+                    SettingConnection(db);
+                    CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
+                    var isDataTable = typeof(T) == typeof(DataTable);
+                    var isClass = typeof(T).IsClass;
+                    if (isClass)
                     {
-
-                        CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
-                        var isDataTable = typeof(T) == typeof(DataTable);
-                        var isClass = typeof(T).IsClass;
-                        if (isClass)
-                        {
-                            itemReval.Entities = db.SqlQuery<T>(reval.Sql, whereObj);
-                        }
-                        else if (isDataTable)
-                        {
-                            itemReval.DataTable = db.GetDataTable(reval.Sql, whereObj);
-                        }
-                        else
-                        {
-                            var obj = db.GetScalar(reval.Sql, whereObj);
-                            obj = Convert.ChangeType(obj, typeof(T));
-                            itemReval.Value = (T)obj;
-                        }
-                        itemReval.Count = db.GetInt("SELECT COUNT(1)" + sqlEnd); ;
-                        itemReval.ConnectionString = connString;
-                        return itemReval;
+                        itemReval.Entities = db.SqlQuery<T>(reval.Sql, whereObj);
                     }
+                    else if (isDataTable)
+                    {
+                        itemReval.DataTable = db.GetDataTable(reval.Sql, whereObj);
+                    }
+                    else
+                    {
+                        var obj = db.GetScalar(reval.Sql, whereObj);
+                        obj = Convert.ChangeType(obj, typeof(T));
+                        itemReval.Value = (T)obj;
+                    }
+                    itemReval.Count = db.GetInt("SELECT COUNT(1)" + sqlEnd); ;
+                    itemReval.ConnectionString = connString;
+                    return itemReval;
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -365,7 +368,7 @@ namespace SqlSugar
             #endregion
 
             /***other***/
-            //    return GetListByPage_Block<T>(configCount, sql, pageIndex, pageSize, pageSize, orderByField, orderByType, whereObj);
+            return GetListByPage_Block<T>(configCount, sql, pageIndex, pageSize, pageSize, orderByField, orderByType, whereObj);
             return null;
         }
 
@@ -514,10 +517,9 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
                     var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        return db.Update<T, FiledType>(rowObj, whereIn);
-                    }
+                    var db = new SqlSugarClient(connName);
+                    SettingConnection(db);
+                    return db.Update<T, FiledType>(rowObj, whereIn);
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -541,10 +543,9 @@ namespace SqlSugar
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
                     var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        return db.Update<T>(rowObj, expression);
-                    }
+                    var db = new SqlSugarClient(connName);
+                    SettingConnection(db);
+                    return db.Update<T>(rowObj, expression);
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -556,6 +557,14 @@ namespace SqlSugar
         /// </summary>
         public void Dispose()
         {
+            if (dbs != null)
+            {
+                foreach (var db in dbs)
+                {
+                    db.Dispose();
+                }
+            }
+            dbs = null;
             this.configList = null;
         }
 
@@ -567,6 +576,70 @@ namespace SqlSugar
             var connName = configList[0].ConnectionString;
             var db = new SqlSugarClient(connName);
             db.RemoveAllCache();
+        }
+        public void DisposeTran()
+        {
+            Tran = null;
+        }
+
+        /// <summary>
+        /// 设置连接
+        /// </summary>
+        /// <param name="db"></param>
+        private void SettingConnection(SqlSugarClient db)
+        {
+
+            if (Tran != null)
+            {
+                try
+                {
+                    lock (this.tranLock)
+                    {
+                        lock (this.Tran)
+                        {
+                            db.GetConnection().EnlistTransaction(Tran);
+                        }
+                    }
+                }
+                catch (Exception)//BUG 实现找不到为什么锁了还有时会报被占用
+                {
+
+                    try
+                    {
+                        System.Threading.Thread.Sleep(10);
+                        db.GetConnection().EnlistTransaction(Tran);
+                    }
+                    catch (Exception)
+                    {
+
+                        try
+                        {
+                            System.Threading.Thread.Sleep(100);
+                            db.GetConnection().EnlistTransaction(Tran);
+                        }
+                        catch (Exception)
+                        {
+
+                            try
+                            {
+                                System.Threading.Thread.Sleep(1000);
+                                db.GetConnection().EnlistTransaction(Tran);
+                            }
+                            catch (Exception)
+                            {
+
+                                System.Threading.Thread.Sleep(10000);
+                                db.GetConnection().EnlistTransaction(Tran);
+                            }
+                        }
+                    }
+                }
+
+            }
+            lock (dbs)
+            {
+                dbs.Add(db);
+            }
         }
     }
 }

@@ -140,8 +140,8 @@ namespace SqlSugar
                 props = type.GetProperties();
                 cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
             }
-
-            if (cacheSqlManager.ContainsKey(cacheSqlKey))
+            var isContainCacheSqlKey=cacheSqlManager.ContainsKey(cacheSqlKey);
+            if (isContainCacheSqlKey)
             {
                 sbInsertSql = cacheSqlManager[cacheSqlKey];
             }
@@ -198,7 +198,7 @@ namespace SqlSugar
                     pars.Add(par);
                 }
             }
-            if (!cacheSqlManager.ContainsKey(cacheSqlKey))
+            if (!isContainCacheSqlKey)
             {
                 //**去掉最后一个逗号 
                 sbInsertSql.Remove(sbInsertSql.Length - 1, 1);
@@ -213,8 +213,15 @@ namespace SqlSugar
                 cacheSqlManager.Add(cacheSqlKey, sbInsertSql, cacheSqlManager.Day);
             }
             var sql = sbInsertSql.ToString();
-            var lastInsertRowId = GetScalar(sql, pars.ToArray());
-            return lastInsertRowId;
+            try
+            {
+                var lastInsertRowId = GetScalar(sql, pars.ToArray());
+                return lastInsertRowId;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("sql:"+sql+"\n"+ex.Message);
+            }
 
         }
 
