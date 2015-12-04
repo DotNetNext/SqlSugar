@@ -11,7 +11,7 @@ using System.Transactions;
 namespace SqlSugar
 {
     /// <summary>
-    /// ** 描述：SQL糖 ORM 核心类升级版 分布式存储，运算
+    /// ** 描述：SQL糖 ORM 核心类升级版 分布式存储和云计算框架
     /// ** 创始时间：2015-7-13
     /// ** 修改时间：-
     /// ** 作者：sunkaixuan
