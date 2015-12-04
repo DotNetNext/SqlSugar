@@ -11,6 +11,9 @@ using System.Data.SqlClient;
 
 namespace WebTest
 {
+    /// <summary>
+    /// /*******************************************************************单库操作demo**************************************************************/
+    /// </summary>
     public partial class _Default : System.Web.UI.Page
     {
         int id = 1;

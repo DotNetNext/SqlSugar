@@ -12,9 +12,9 @@ namespace SqlSugar
     /// ** 作者：sunkaixuan
     /// ** 使用说明：
     /// </summary>
-    public class SqlSecurityException : Exception
+    public class SqlSugarException : Exception
     {
-        public SqlSecurityException(string message)
+        public SqlSugarException(string message)
             : base(message)
         {
 

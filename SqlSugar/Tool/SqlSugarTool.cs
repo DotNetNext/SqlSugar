@@ -211,6 +211,7 @@ namespace SqlSugar
         internal static object GetPropertyValue(object obj, string property)
         {
             PropertyInfo propertyInfo = obj.GetType().GetProperty(property);
+            if (propertyInfo == null) return DateTime.Now;
             return propertyInfo.GetValue(obj, null);
         }  
 

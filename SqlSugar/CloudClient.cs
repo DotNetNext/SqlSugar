@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -18,11 +19,15 @@ namespace SqlSugar
     public partial class CloudClient : IDisposable, IClient
     {
         public bool IsNoLock { get; set; }
+        /// <summary>
+        /// 内存中处理数据的最大值（默认：1000）
+        /// </summary>
+        public int PageMaxHandleNumber = 1000;
         private CloudClient()
         {
 
         }
-        private List<SqlSugarClient> sqlSugarClientList = new List<SqlSugarClient>();
+
 
         private List<CloudConnectionConfig> configList { get; set; }
 
@@ -66,9 +71,10 @@ namespace SqlSugar
         {
 
             var connName = CloudPubMethod.GetConnection(this.configList);
-            var db = new SqlSugarClient(connName);
-            sqlSugarClientList.Add(db);
-            return db.Insert<T>(entity);
+            using (var db = new SqlSugarClient(connName))
+            {
+                return db.Insert<T>(entity, isIdentity);
+            }
         }
 
 
@@ -85,10 +91,11 @@ namespace SqlSugar
             {
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    return db.Delete<T, FiledType>(whereIn);
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        return db.Delete<T, FiledType>(whereIn);
+                    }
 
                 }, tasks, i);
             }
@@ -108,16 +115,18 @@ namespace SqlSugar
             {
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    return db.Delete<T>(expression);
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        return db.Delete<T>(expression);
+                    }
 
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
             return tasks.Any(it => it.Result);
         }
+
         /// <summary>
         /// 批量删除
         /// 注意：whereIn 主键集合  
@@ -131,11 +140,11 @@ namespace SqlSugar
             {
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    return db.FalseDelete<T, FiledType>(field, whereIn);
-
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        return db.FalseDelete<T, FiledType>(field, whereIn);
+                    }
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -155,104 +164,132 @@ namespace SqlSugar
             {
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    return db.FalseDelete<T>(field, expression);
-
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        return db.FalseDelete<T>(field, expression);
+                    }
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
             return tasks.Any(it => it.Result);
         }
 
-
-
-        public void RemoveAllCache()
+        /// <summary>
+        /// 多线程请求所有数据库节点，同步汇总结果
+        /// </summary>
+        /// <typeparam name="T">支持DataTable、实体类类和值类型</typeparam>
+        /// <param name="sql"></param>
+        /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+        /// <returns></returns>
+        public Taskable<T> Taskable<T>(string sql, object whereObj = null)
         {
-            var connName = configList[0].ConnectionName;
-            var db = new SqlSugarClient(connName);
-            db.RemoveAllCache();
-        }
+            Taskable<T> reval = new Taskable<T>();
+            reval.Sql = sql;
+            reval.WhereObj = whereObj;
+            var tasks = new Task<CloudSearchResult<T>>[configList.Count];
 
-
-        public T GetMax<T>(string sql, object whereObj = null)
-        {
-            var tasks = new Task<T>[configList.Count];
             for (int i = 0; i < tasks.Length; i++)
             {
-                CloudPubMethod.TaskFactory<T>(ti =>
+                CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    var obj = db.GetScalar(sql);
-                    obj = Convert.ChangeType(obj, typeof(T));
-                    return (T)obj;
+                    var connString = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connString))
+                    {
 
+                        CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
+                        var isDataTable = typeof(T) == typeof(DataTable);
+                        var isClass = typeof(T).IsClass;
+                        if (isDataTable)
+                        {
+                            itemReval.DataTable = db.GetDataTable(sql, whereObj);
+                        }
+                        else if (isClass)
+                        {
+                            itemReval.Entities = db.SqlQuery<T>(sql, whereObj);
+                        } else
+                        {
+                            var obj = db.GetScalar(sql, whereObj);
+                            obj = Convert.ChangeType(obj, typeof(T));
+                            itemReval.Value = (T)obj;
+                        }
+                        itemReval.ConnectionString = connString;
+                        return itemReval;
+                    }
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
-            return tasks.Max(it => it.Result);
+            reval.Tasks = tasks;
+            return reval;
         }
 
-        public T GetMin<T>(string sql, object whereObj = null)
+
+
+        /// <summary>
+        /// 多线程请求所有数据库节点，同步汇总结果
+        /// </summary>
+        /// <typeparam name="T">支持DataTable、实体类类和值类型</typeparam>
+        /// <param name="sqlSelect">sql from之前（例如： "select count(*)" ）</param>
+        /// <param name="sqlEnd">sql from之后（例如： "from table where id=1" </param>
+        /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+        /// <returns></returns>
+        public TaskableWithCount<T> TaskableWithCount<T>(string sqlSelect, string sqlEnd, object whereObj = null)
         {
-            var tasks = new Task<T>[configList.Count];
+            TaskableWithCount<T> reval = new TaskableWithCount<T>();
+            reval.Sql = sqlSelect + sqlEnd;
+            reval.WhereObj = whereObj;
+            var tasks = new Task<CloudSearchResult<T>>[configList.Count];
+
             for (int i = 0; i < tasks.Length; i++)
             {
-                CloudPubMethod.TaskFactory<T>(ti =>
+                CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    var obj = db.GetScalar(sql);
-                    obj = Convert.ChangeType(obj, typeof(T));
-                    return (T)obj;
+                    var connString = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connString))
+                    {
 
+                        CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
+                        var isDataTable = typeof(T) == typeof(DataTable);
+                        var isClass = typeof(T).IsClass;
+                        if (isClass)
+                        {
+                            itemReval.Entities = db.SqlQuery<T>(reval.Sql, whereObj);
+                        }
+                        else if (isDataTable)
+                        {
+                            itemReval.DataTable = db.GetDataTable(reval.Sql, whereObj);
+                        }
+                        else
+                        {
+                            var obj = db.GetScalar(reval.Sql, whereObj);
+                            obj = Convert.ChangeType(obj, typeof(T));
+                            itemReval.Value = (T)obj;
+                        }
+                        itemReval.Count = db.GetInt("SELECT COUNT(1)" + sqlEnd); ;
+                        itemReval.ConnectionString = connString;
+                        return itemReval;
+                    }
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
-            return tasks.Min(it => it.Result);
+            reval.Tasks = tasks;
+            return reval;
         }
-
-
-        public int GetCount<T>(string sql, object whereObj = null)
-        {
-            var tasks = new Task<int>[configList.Count];
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                CloudPubMethod.TaskFactory<int>(ti =>
-                {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    var obj = db.GetScalar(sql);
-                    obj = Convert.ChangeType(obj, typeof(int));
-                    return (int)obj;
-
-                }, tasks, i);
-            }
-            Task.WaitAll(tasks);
-            return tasks.Select(it => it.Result).Sum(); ;
-        }
-
-
 
 
         /// <summary>
         /// 获取分页数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="sql">不包含分页逻辑,Order by只有一个字段Order by逻辑不能写在该参数里面应该写在Order By参数里面，如果要实现多级排序可以写成这样 ：string sql="select top "+int.MaxValue+" from table order by 二级排序字段 desc "</param>
+        /// <param name="sql">不包含分页逻辑,Order by如果只有一个字段不能写在该参数里面,应该写在Order By参数里面，如果要实现多级排序可以写成这样 ：string sql="select top "+int.MaxValue+" from table order by 二级排序字段 desc "</param>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="pageCount"></param>
-        /// <param name="orderByField">主排序字段名要和实体类一致区分大小写</param>
+        /// <param name="orderByField">主排序字段名要和实体类一致,区分大小写</param>
         /// <param name="orderByType">排序类型</param>
         /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
         /// <returns></returns>
-        public List<T> GetListByPage<T>(string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null)
+        public List<T> TaskableWithPage<T>(string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null)
         {
 
             if (pageIndex == 0)
@@ -260,156 +297,205 @@ namespace SqlSugar
 
             /***count***/
             int configCount = configList.Count;
-            var tasks = new Task<CloudSearch<T>>[configCount];
-            GetListByPage_GetPageCount<T>(tasks);
-            Task.WaitAll(tasks);
-            pageCount = tasks.Sum(it => it.Result.Count);
+            string sqlCount = string.Format("SELECT COUNT(*) FROM ({0}) t ", sql);
+            pageCount = Taskable<int>(sqlCount, whereObj).Count();
 
+            string fullOrderByString = orderByField + " " + orderByType.ToString();
 
             /***one nodes***/
+            #region one nodes
             var isOneNode = configCount == 1;
             if (isOneNode)
             {
-                var connName = configList[0].ConnectionName;
-                var db = new SqlSugarClient(connName);
-                var sqlPage = string.Format(@"SELECT * FROM (
-                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
-                                             ", sql, orderByField + " " + orderByType.ToString(), (pageIndex - 1) * pageSize + 1, pageSize * pageIndex);
-                sqlSugarClientList.Add(db);
-                return db.SqlQuery<T>(sql, whereObj);
+                var connName = configList.Single().ConnectionString;
+                using (var db = new SqlSugarClient(connName))
+                {
+                    var sqlPage = string.Format(@"SELECT * FROM (
+                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
+                                                         ", sql, orderByField + " " + orderByType.ToString(), (pageIndex - 1) * pageSize + 1, pageSize * pageIndex);
+                    var list = db.SqlQuery<T>(sql, whereObj);
+                    if (orderByType == OrderByType.asc)
+                    {
+                        return list.OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    }
+                    else
+                    {
+                        return list.OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    }
+                }
             }
+            #endregion
 
-            string fullOrderByString = orderByField + " " + orderByType.ToString();
             /***small data***/
-            var isSmallData = pageCount <= 1000;
+            #region small data
+            var isSmallData = pageCount <= this.PageMaxHandleNumber || int.MaxValue == pageSize;//page size等于int.MaxValue不需要分页
             if (isSmallData)
             {
-                tasks = new Task<CloudSearch<T>>[configCount];
-                GetListByPage_SmallData<T>(sql, tasks, fullOrderByString, whereObj);
-                Task.WaitAll(tasks);
+                var tasks = Taskable<T>(sql + " ORDER BY " + orderByField, whereObj);
                 if (orderByType == OrderByType.asc)
                 {
-                    return tasks.SelectMany(it => it.Result.TEntities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
                 else
                 {
-                    return tasks.SelectMany(it => it.Result.TEntities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
             }
+            #endregion
 
             /***small index***/
-            var isSmallPageIndex = CloudPubMethod.GetIsSmallPageIndex(pageIndex, pageSize, configCount);
+            #region small index
+            var isSmallPageIndex = CloudPubMethod.GetIsSmallPageIndex(pageIndex, pageSize, configCount, this.PageMaxHandleNumber);
             if (isSmallPageIndex)
             {
-                tasks = new Task<CloudSearch<T>>[configCount];
-                GetListByPage_SmallPageIndex<T>(sql, pageSize, fullOrderByString, whereObj, configCount, tasks);
-                Task.WaitAll(tasks);
+
+                var sqlPage = string.Format(@"SELECT * FROM (
+                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
+                                                                                        ", sql, fullOrderByString, 1, pageSize * configCount);
+                var tasks = Taskable<T>(sql, whereObj);
                 if (orderByType == OrderByType.asc)
                 {
-                    return tasks.SelectMany(it => it.Result.TEntities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
                 else
                 {
-                    return tasks.SelectMany(it => it.Result.TEntities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
             }
+            #endregion
 
             /***other***/
-            tasks = new Task<CloudSearch<T>>[configCount];
-            GetListByPage_OtherOne<T>(sql, pageIndex, pageSize, orderByField, orderByType, whereObj, configCount, tasks);
-            Task.WaitAll(tasks);
-            var dataTable = tasks.SelectMany(it => it.Result.DataTable.AsEnumerable()).CopyToDataTable();
-            var connectionList=dataTable.AsEnumerable().Skip(0).Take(pageSize).Select(it => it["CONNECTIONNAME"].ToString()).ToList();
-            connectionList.Distinct();
-            tasks = new Task<CloudSearch<T>>[connectionList.Count];
-
-
+            //    return GetListByPage_Block<T>(configCount, sql, pageIndex, pageSize, pageSize, orderByField, orderByType, whereObj);
             return null;
         }
 
-
-        private void GetListByPage_OtherOne<T>(string sql, int pageIndex, int pageSize, string orderByField, OrderByType orderByType, object whereObj, int configCount, Task<CloudSearch<T>>[] tasks)
+        #region GetListByPage 子函数
+        /// <summary>
+        /// 递归分块获取数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configCount"></param>
+        /// <param name="sql"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="orderByField"></param>
+        /// <param name="orderByType"></param>
+        /// <param name="whereObj"></param>
+        /// <returns></returns>
+        private List<T> GetListByPage_Block<T>(int configCount, string sql, int pageIndex, int pageSize, int OperationalDataSize, string orderByField, OrderByType orderByType, object whereObj)
         {
+            string fullOrderByString = orderByField + " " + orderByType.ToString();
+            var tasks = new Task<CloudSearchResult<T>>[configCount];
+            GetListByPage_GetOperationalData<T>(sql, pageIndex, OperationalDataSize, orderByField, orderByType, whereObj, configCount, tasks);
+            Task.WaitAll(tasks);
+            var dataTable = tasks.SelectMany(it => it.Result.DataTable.AsEnumerable()).CopyToDataTable();
+            var filterConnectionList = dataTable.AsEnumerable().Skip(0).Take(pageSize).Select(it => it["CONNECTIONNAME"].ToString()).ToList();
+            filterConnectionList = filterConnectionList.Distinct().ToList();
+            var isReadSmallData = filterConnectionList.Count * pageSize < this.PageMaxHandleNumber;
+            //读少量数据
+            if (isReadSmallData || OperationalDataSize == 1)
+            {
+                tasks = new Task<CloudSearchResult<T>>[filterConnectionList.Count];
+                GetListByPage_ReadSmallData<T>(sql, pageIndex, pageSize, orderByField, orderByType, whereObj, tasks, fullOrderByString, filterConnectionList);
+                Task.WaitAll(tasks);
+                var newPageIndex = pageIndex % filterConnectionList.Count;
+                if (newPageIndex == 0)
+                {
+                    newPageIndex = filterConnectionList.Count;
+                }
+                if (orderByType == OrderByType.asc)
+                {
+                    return tasks.SelectMany(it => it.Result.Entities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((newPageIndex - 1) * pageSize).Take(pageSize).ToList();
+                }
+                else
+                {
+                    return tasks.SelectMany(it => it.Result.Entities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((newPageIndex - 1) * pageSize).Take(pageSize).ToList();
+                }
+
+            }
+            else//很少情况遇到
+            {
+                OperationalDataSize = OperationalDataSize / 2;
+                if (OperationalDataSize == 0)
+                {
+                    OperationalDataSize = 1;
+                }
+                return GetListByPage_Block<T>(configCount, sql, pageIndex, pageSize, pageSize, orderByField, orderByType, whereObj);
+            }
+        }
+        /// <summary>
+        /// 读取小数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="orderByField"></param>
+        /// <param name="orderByType"></param>
+        /// <param name="whereObj"></param>
+        /// <param name="tasks"></param>
+        /// <param name="fullOrderByString"></param>
+        /// <param name="filterConnectionList"></param>
+        private void GetListByPage_ReadSmallData<T>(string sql, int pageIndex, int pageSize, string orderByField, OrderByType orderByType, object whereObj, Task<CloudSearchResult<T>>[] tasks, string fullOrderByString, List<string> filterConnectionList)
+        {
+            var newPageIndex = CloudPubMethod.GetPageIndex(pageIndex, filterConnectionList.Count);
             for (int i = 0; i < tasks.Length; i++)
             {
-                CloudPubMethod.TaskFactory<CloudSearch<T>>(ti =>
+                CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    var sqlPage = string.Format(@"SELECT ROWINDEX,{4} AS ORDERBYVALUE,{5} CONNECTIONNAME FROM (
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        var sqlPage = string.Format(@"SELECT * FROM (
                                                                             SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
-                                                                            ", sql, orderByField == null ? " GETDATE()" : orderByField + " " + orderByType.ToString(), (pageIndex - 1) * pageSize + 1, pageIndex * pageSize, orderByField);
-                    CloudSearch<T> reval = new CloudSearch<T>();
-                    reval.DataTable = db.GetDataTable(sqlPage, whereObj);
-                    var dv = reval.DataTable.AsDataView();
-                    dv.Sort = orderByField + " " + orderByType.ToString();
-                    reval.DataTable = dv.ToTable();
-                    return reval;
+                                                                            ", sql, fullOrderByString, (newPageIndex - 1) * pageSize + 1, newPageIndex * pageSize, orderByField);
+                        CloudSearchResult<T> reval = new CloudSearchResult<T>();
+                        reval.DataTable = db.GetDataTable(sqlPage, whereObj);
+                        var dv = reval.DataTable.AsDataView();
+                        dv.Sort = orderByField + " " + orderByType.ToString();
+                        reval.DataTable = dv.ToTable();
+                        return reval;
+                    }
                 }, tasks, i);
             }
         }
-
-        private void GetListByPage_SmallPageIndex<T>(string sql, int pageSize, string orderBy, object whereObj, int configCount, Task<CloudSearch<T>>[] tasks)
+        /// <summary>
+        /// 获取运算数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="orderByField"></param>
+        /// <param name="orderByType"></param>
+        /// <param name="whereObj"></param>
+        /// <param name="configCount"></param>
+        /// <param name="tasks"></param>
+        private void GetListByPage_GetOperationalData<T>(string sql, int pageIndex, int pageSize, string orderByField, OrderByType orderByType, object whereObj, int configCount, Task<CloudSearchResult<T>>[] tasks)
         {
+            string fullOrderByString = orderByField + " " + orderByType.ToString();
             for (int i = 0; i < tasks.Length; i++)
             {
-                CloudPubMethod.TaskFactory<CloudSearch<T>>(ti =>
+                CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    var countPage = string.Format(@"SELECT * FROM (
-                                                                            SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
-                                                                            ", sql, orderBy == null ? " GETDATE()" : orderBy, 1, pageSize * configCount);
-                    //data
-                    var list = db.SqlQuery<T>(sql, whereObj);
-                    CloudSearch<T> reval = new CloudSearch<T>();
-                    reval.TEntities = list;
-                    return reval;
-
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        var sqlPage = string.Format(@"SELECT ROWINDEX,{0} AS ORDERBYVALUE,'{1}' CONNECTIONNAME FROM (
+                                                                            SELECT *,ROW_NUMBER()OVER(ORDER BY {2}) AS  ROWINDEX  FROM ({3}) as sqlstr ) t WHERE t.rowIndex BETWEEN {4} AND {5}
+                                                                            ", orderByField, connName, fullOrderByString, sql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
+                        CloudSearchResult<T> reval = new CloudSearchResult<T>();
+                        reval.DataTable = db.GetDataTable(sqlPage, whereObj);
+                        var dv = reval.DataTable.AsDataView();
+                        dv.Sort = "ORDERBYVALUE " + orderByType.ToString();
+                        reval.DataTable = dv.ToTable();
+                        return reval;
+                    }
                 }, tasks, i);
             }
         }
 
-        private void GetListByPage_SmallData<T>(string sql, Task<CloudSearch<T>>[] tasks, string orderBy = null, object whereObj = null)
-        {
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                CloudPubMethod.TaskFactory<CloudSearch<T>>(ti =>
-                {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    CloudSearch<T> reval = new CloudSearch<T>();
-                    reval.TEntities = db.SqlQuery<T>(sql + " ORDER BY " + orderBy, whereObj);
-                    return reval;
-
-                }, tasks, i);
-            }
-        }
-
-        private void GetListByPage_GetPageCount<T>(Task<CloudSearch<T>>[] tasks)
-        {
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                CloudPubMethod.TaskFactory<CloudSearch<T>>(ti =>
-                {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    var countSql = string.Format("SELECT COUNT(*) FROM ({0}) t ");
-                    var count = Convert.ToInt32(db.GetScalar(countSql));
-                    CloudSearch<T> reval = new CloudSearch<T>();
-                    reval.Count = count;
-                    return reval;
-
-                }, tasks, i);
-            }
-        }
-
-
-
+        #endregion
 
         /// <summary>
         /// 更新
@@ -427,11 +513,11 @@ namespace SqlSugar
             {
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    return db.Update<T, FiledType>(rowObj, whereIn);
-
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        return db.Update<T, FiledType>(rowObj, whereIn);
+                    }
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -454,11 +540,11 @@ namespace SqlSugar
             {
                 CloudPubMethod.TaskFactory<bool>(ti =>
                 {
-                    var connName = configList[ti].ConnectionName;
-                    var db = new SqlSugarClient(connName);
-                    sqlSugarClientList.Add(db);
-                    return db.Update<T>(rowObj, expression);
-
+                    var connName = configList[ti].ConnectionString;
+                    using (var db = new SqlSugarClient(connName))
+                    {
+                        return db.Update<T>(rowObj, expression);
+                    }
                 }, tasks, i);
             }
             Task.WaitAll(tasks);
@@ -470,15 +556,17 @@ namespace SqlSugar
         /// </summary>
         public void Dispose()
         {
-            //关闭连接
-            for (int i = 0; i < sqlSugarClientList.Count; i++)
-            {
-                var it = sqlSugarClientList[i];
-                it.Dispose();
-                it = null;
-            }
             this.configList = null;
-            sqlSugarClientList = null;
+        }
+
+        /// <summary>
+        /// 清除所有缓存
+        /// </summary>
+        public void RemoveAllCache()
+        {
+            var connName = configList[0].ConnectionString;
+            var db = new SqlSugarClient(connName);
+            db.RemoveAllCache();
         }
     }
 }

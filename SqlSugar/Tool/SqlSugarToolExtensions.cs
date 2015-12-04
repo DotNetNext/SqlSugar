@@ -52,7 +52,7 @@ namespace SqlSugar
             {
                 if (Regex.IsMatch(value, @"'|%|0x|(\@.*\=)", RegexOptions.IgnoreCase))
                 {
-                    throw new SqlSecurityException("查询参数不允许存在特殊字符。");
+                    throw new SqlSugarException("查询参数不允许存在特殊字符。");
                 }
             }
             return value;
@@ -69,7 +69,7 @@ namespace SqlSugar
             {
                 return value;
             }
-            throw new SqlSecurityException("指定类型(只允许输入指定字母、数字、下划线、时间、guid)。");
+            throw new SqlSugarException("指定类型(只允许输入指定字母、数字、下划线、时间、guid)。");
         }
 
         /// <summary>

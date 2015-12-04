@@ -38,8 +38,8 @@ namespace SqlSugar
         {
             Check.Exception(configList == null || configList.Count == 0, "CloudPubMethod.GetConnection.configList不能为null并且count>0。");
             List<string> connectionNameList = new List<string>();
-            SetConnectionNameList(configList, connectionNameList);
-            var index = random.Next(0, connectionNameList.Count - 1);
+            SetConnectionNameList(configList,ref connectionNameList);
+            var index = random.Next(0, connectionNameList.Count);
             return connectionNameList[index];
         }
 
@@ -58,7 +58,7 @@ namespace SqlSugar
         }
 
 
-        private static void SetConnectionNameList(List<CloudConnectionConfig> configList, List<string> connectionNameList)
+        private static void SetConnectionNameList(List<CloudConnectionConfig> configList,ref List<string> connectionNameList)
         {
             var cacheKey = "SetConnectionNameList";
             var cm = CacheManager<List<string>>.GetInstance();
@@ -68,11 +68,11 @@ namespace SqlSugar
             }
             else
             {
-                foreach (var config in configList)
+                foreach (CloudConnectionConfig config in configList)
                 {
                     for (int i = 0; i < config.Rate; i++)
                     {
-                        connectionNameList.Add(config.ConnectionName);
+                        connectionNameList.Add(config.ConnectionString);
                     }
                 }
                 cm.Add(cacheKey, connectionNameList, cm.Day);
@@ -85,11 +85,11 @@ namespace SqlSugar
         /// <param name="pageSize"></param>
         /// <param name="configCount"></param>
         /// <returns></returns>
-        public static bool GetIsSmallPageIndex(int pageIndex, int pageSize, int configCount)
+        public static bool GetIsSmallPageIndex(int pageIndex, int pageSize, int configCount, int maxHandleNumber)
         {
             if (pageIndex <= configCount)
             {
-                return pageIndex * pageSize * configCount <= 1000;
+                return pageIndex * pageSize * configCount <= maxHandleNumber;
 
             }
             return false;

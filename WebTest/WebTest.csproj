@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BuilderClass.aspx" />
+    <Content Include="CloudTest.aspx" />
     <Content Include="FunctionTest\Join.aspx" />
     <Content Include="FunctionTest\Select.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
@@ -95,6 +96,13 @@
     </Compile>
     <Compile Include="BuilderClass.aspx.designer.cs">
       <DependentUpon>BuilderClass.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CloudTest.aspx.cs">
+      <DependentUpon>CloudTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CloudTest.aspx.designer.cs">
+      <DependentUpon>CloudTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dao\SugarDao.cs" />
     <Compile Include="FunctionTest\Join.aspx.cs">
@@ -204,6 +212,7 @@
       <DependentUpon>EFMODEL.edmx</DependentUpon>
     </Compile>
     <Compile Include="TestLib\PerformanceTest.cs" />
+    <Compile Include="V_Student.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
