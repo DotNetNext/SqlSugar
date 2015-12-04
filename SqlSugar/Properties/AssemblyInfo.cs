@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("SqlSugar")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("作者:孙凯旋，蓝灯软件架构师")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("上海蓝灯软件有限公司")]
 [assembly: AssemblyProduct("SqlSugar")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2015")]
+[assembly: AssemblyCopyright("Copyright © 上 海蓝灯软件有限公司 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

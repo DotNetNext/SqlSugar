@@ -8,6 +8,7 @@ using SqlSugar;
 using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
+using System.Transactions;
 namespace WebTest
 {
     /// <summary>
@@ -22,32 +23,34 @@ namespace WebTest
             using (CloudClient db = CloudDao.GetInstance())
             {
 
-                /*** 增、删、改 ***/
+                TransactionOptions transactionOptions = new TransactionOptions();
+                transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.Serializable;
+                using (TransactionScope txnScope = new TransactionScope(TransactionScopeOption.Suppress, transactionOptions, EnterpriseServicesInteropOption.Automatic))
+                {
+                    /*** 增、删、改 ***/
 
-                //根据配置的百分比，随机插入到某个节点库
-                var s = new student()
-               {
-                   createTime = DateTime.Now,
-                   id = Guid.NewGuid(),
-                   name = Guid.NewGuid() + ""
-               };
-                db.Insert<student>(s, false/*false表示不是自增列*/); //数据库设计主键为GUID为佳多库计算不会冲突
-
-
-                //并发请求所有节点找出这条数据更新
-                s.name = "改";
-                db.Update<student>(s, it => it.id == s.id);//根据表达示更新
-                db.Update<student, Guid>(s, s.id);//根据主键更新
-                db.Update<student, Guid>(s, new Guid[] { s.id });//根据主键数组更新
+                    //根据配置的百分比，随机插入到某个节点库
+                    var s = new student()
+                   {
+                       createTime = DateTime.Now,
+                       id = Guid.NewGuid(),
+                       name = Guid.NewGuid() + ""
+                   };
+                    db.Insert<student>(s, false/*false表示不是自增列*/); //数据库设计主键为GUID为佳多库计算不会冲突
 
 
-                //并发请求所有节点找出这条数据删除
-                db.Delete<student>(it => it.id == s.id);
+                    //并发请求所有节点找出这条数据更新
+                    s.name = "改";
+                    db.Update<student>(s, it => it.id == s.id);//根据表达示更新
+                    db.Update<student, Guid>(s, s.id);//根据主键更新
+                    db.Update<student, Guid>(s, new Guid[] { s.id });//根据主键数组更新
 
 
-               
+                    //并发请求所有节点找出这条数据删除
+                    db.Delete<student>(it => it.id == s.id);
+                    txnScope.Complete();
 
-
+                }
 
                 /*** 使用Taskable实现云计算 ***/
 
@@ -102,7 +105,7 @@ namespace WebTest
                 //再简化
                 List<V_Student> groupList3 = db.Taskable<V_Student>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
                .MergeEntities()//将结果集合并到一个集合
-               .GroupBy(dr => dr.name).Select(dt => new V_Student{ name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
+               .GroupBy(dr => dr.name).Select(dt => new V_Student { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
 
 
 
