@@ -579,7 +579,7 @@ namespace SqlSugar
             var db = new SqlSugarClient(connName);
             db.RemoveAllCache();
         }
-        public void DisposeTran()
+        public void TranDispose()
         {
             Tran = null;
         }

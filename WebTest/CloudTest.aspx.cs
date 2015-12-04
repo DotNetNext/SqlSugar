@@ -61,7 +61,7 @@ namespace WebTest
                     trans.Commit();
                 }
 
-                db.DisposeTran();
+                db.TranDispose();
 
 
                 /*** 使用Taskable实现云计算 ***/
