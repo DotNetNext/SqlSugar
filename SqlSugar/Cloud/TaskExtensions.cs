@@ -113,7 +113,7 @@ namespace SqlSugar
             var isClass = typeof(T).IsClass;
             if (!isClass)
             {
-                Check.Exception(isClass, "TaskExtensions.Min.thisValue T只能为class。");
+                Check.Exception(isClass, "TaskExtensions.ToList.thisValue T只能为class。");
             }
             return thisValue.Tasks.SelectMany(it => it.Result.Entities).ToList();
         }
@@ -130,7 +130,7 @@ namespace SqlSugar
             var isClass = typeof(T).IsClass;
             if (!isClass)
             {
-                Check.Exception(isClass, "TaskExtensions.Min.thisValue T只能为class。");
+                Check.Exception(isClass, "TaskExtensions.ToSingle.thisValue T只能为class。");
             }
             return thisValue.Tasks.SelectMany(it => it.Result.Entities).Single();
         }
@@ -143,7 +143,12 @@ namespace SqlSugar
         /// <returns></returns>
         public static IEnumerable<DataRow> MergeTable<DataTable>(this Taskable<DataTable> thisValue)
         {
-          
+
+            var isDataTable = typeof(DataTable) == typeof(DataTable);
+            if (!isDataTable)
+            {
+                Check.Exception(isDataTable, "TaskExtensions.MergeTable.thisValue T只能为DataTable。");
+            }
             var reval=thisValue.Tasks.SelectMany(it => it.Result.DataTable.AsEnumerable()).ToList();
             return reval;
         }

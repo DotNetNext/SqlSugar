@@ -27,7 +27,7 @@ namespace SqlSugar
         /// 分布式事务
         /// </summary>
         public CommittableTransaction Tran = null;
-      
+
         /// <summary>
         /// 内存中处理数据的最大值（默认：1000）
         /// </summary>
@@ -207,6 +207,8 @@ namespace SqlSugar
                     CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
                     var isDataTable = typeof(T) == typeof(DataTable);
                     var isClass = typeof(T).IsClass;
+                    if (sql.Contains("${connectionString}"))
+                        sql = sql.Replace("${connectionString}", connString);
                     if (isDataTable)
                     {
                         itemReval.DataTable = db.GetDataTable(sql, whereObj);
@@ -294,7 +296,7 @@ namespace SqlSugar
         /// <param name="orderByType">排序类型</param>
         /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
         /// <returns></returns>
-        public List<T> TaskableWithPage<T>(string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null)
+        public List<T> TaskableWithPage<T>(string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null) where T : class
         {
 
             if (pageIndex == 0)
@@ -368,139 +370,80 @@ namespace SqlSugar
                 }
             }
             #endregion
-
+            //单节点最大索引
+            var maxDataIndex = pageIndex * pageSize * configCount;
+            //节点间距
+            var nodeSPacing = pageSize;
+            //分页最大索引
+            var pageMaxIndex = pageIndex * pageSize;
             /***other***/
-            return GetListByPage_Block<T>(configCount, sql, pageIndex, pageSize, pageSize, orderByField, orderByType, whereObj);
+            return GetListByPage_GetOtherList<T>(sql, pageMaxIndex, maxDataIndex, pageIndex, pageSize, nodeSPacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
+
+        }
+
+        private List<T> GetListByPage_GetOtherList<T>(string sql, int pageMaxIndex, int maxDataIndex, int pageIndex, int pageSize, int nodeSPacing, string orderByField, object whereObj, int configCount, string fullOrderByString, OrderByType orderByType) where T : class
+        {
+ 
+            //保证节点间距样品数在10条以内
+            nodeSPacing = GetListByPage_GetNodeSpacing(maxDataIndex, nodeSPacing);
+            //根据节点间距得到间距集合
+            var nodeIndexList = GetListByPage_GetNodeIndexList(maxDataIndex, nodeSPacing);
+            //where in nodeIndexList
+            var SQLPAGE = string.Format(@"SELECT RowIndex,{3} as OrderByField,'${connectionString}' as ConnectionString  FROM (
+                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex IN {2}
+                                                                                        ", sql, fullOrderByString, string.Join(",", nodeIndexList), orderByField);
+            var dataSampleList = Taskable<DataTable>(sql, whereObj).MergeTable();
+            var isAsc = OrderByType.asc == orderByType;
+            if (isAsc)
+            {
+                dataSampleList = dataSampleList.OrderBy(it => it["OrderByField"]).ToList();
+            }
+            else
+            {
+                dataSampleList = dataSampleList.OrderByDescending(it => it["OrderByField"]).ToList();
+            }
+            var sampleListTakeIndex= pageMaxIndex / nodeSPacing;
+            dataSampleList = dataSampleList.Skip(0).Take(sampleListTakeIndex).ToList();
+            var connections=dataSampleList.GroupBy(it=>it["ConnectionString"]).Select(it=>it.Key.ToString()).ToList();
+            int dataSampleCount=dataSampleList.Count();
+            //包含查询所有数据
+            var dataSampleIsContainsReturnValue= dataSampleCount == maxDataIndex;
+            if (dataSampleIsContainsReturnValue)
+            {
+
+            }
+            else { //查询不包含的部分
+            
+            }
             return null;
         }
 
-        #region GetListByPage 子函数
-        /// <summary>
-        /// 递归分块获取数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configCount"></param>
-        /// <param name="sql"></param>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="orderByField"></param>
-        /// <param name="orderByType"></param>
-        /// <param name="whereObj"></param>
-        /// <returns></returns>
-        private List<T> GetListByPage_Block<T>(int configCount, string sql, int pageIndex, int pageSize, int OperationalDataSize, string orderByField, OrderByType orderByType, object whereObj)
+        private static List<int> GetListByPage_GetNodeIndexList(int maxDataIndex, int nodeSPacing)
         {
-            string fullOrderByString = orderByField + " " + orderByType.ToString();
-            var tasks = new Task<CloudSearchResult<T>>[configCount];
-            GetListByPage_GetOperationalData<T>(sql, pageIndex, OperationalDataSize, orderByField, orderByType, whereObj, configCount, tasks);
-            Task.WaitAll(tasks);
-            var dataTable = tasks.SelectMany(it => it.Result.DataTable.AsEnumerable()).CopyToDataTable();
-            var filterConnectionList = dataTable.AsEnumerable().Skip(0).Take(pageSize).Select(it => it["CONNECTIONNAME"].ToString()).ToList();
-            filterConnectionList = filterConnectionList.Distinct().ToList();
-            var isReadSmallData = filterConnectionList.Count * pageSize < this.PageMaxHandleNumber;
-            //读少量数据
-            if (isReadSmallData || OperationalDataSize == 1)
+            List<int> reval = new List<int>();
+            var oldNodeSPacing = nodeSPacing;
+            reval.Add(nodeSPacing);
+            while (nodeSPacing <= maxDataIndex)
             {
-                tasks = new Task<CloudSearchResult<T>>[filterConnectionList.Count];
-                GetListByPage_ReadSmallData<T>(sql, pageIndex, pageSize, orderByField, orderByType, whereObj, tasks, fullOrderByString, filterConnectionList);
-                Task.WaitAll(tasks);
-                var newPageIndex = pageIndex % filterConnectionList.Count;
-                if (newPageIndex == 0)
-                {
-                    newPageIndex = filterConnectionList.Count;
-                }
-                if (orderByType == OrderByType.asc)
-                {
-                    return tasks.SelectMany(it => it.Result.Entities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((newPageIndex - 1) * pageSize).Take(pageSize).ToList();
-                }
-                else
-                {
-                    return tasks.SelectMany(it => it.Result.Entities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((newPageIndex - 1) * pageSize).Take(pageSize).ToList();
-                }
+                nodeSPacing += oldNodeSPacing;
+                reval.Add(nodeSPacing);
 
             }
-            else//很少情况遇到
-            {
-                OperationalDataSize = OperationalDataSize / 2;
-                if (OperationalDataSize == 0)
-                {
-                    OperationalDataSize = 1;
-                }
-                return GetListByPage_Block<T>(configCount, sql, pageIndex, pageSize, pageSize, orderByField, orderByType, whereObj);
-            }
-        }
-        /// <summary>
-        /// 读取小数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="orderByField"></param>
-        /// <param name="orderByType"></param>
-        /// <param name="whereObj"></param>
-        /// <param name="tasks"></param>
-        /// <param name="fullOrderByString"></param>
-        /// <param name="filterConnectionList"></param>
-        private void GetListByPage_ReadSmallData<T>(string sql, int pageIndex, int pageSize, string orderByField, OrderByType orderByType, object whereObj, Task<CloudSearchResult<T>>[] tasks, string fullOrderByString, List<string> filterConnectionList)
-        {
-            var newPageIndex = CloudPubMethod.GetPageIndex(pageIndex, filterConnectionList.Count);
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
-                {
-                    var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        var sqlPage = string.Format(@"SELECT * FROM (
-                                                                            SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
-                                                                            ", sql, fullOrderByString, (newPageIndex - 1) * pageSize + 1, newPageIndex * pageSize, orderByField);
-                        CloudSearchResult<T> reval = new CloudSearchResult<T>();
-                        reval.DataTable = db.GetDataTable(sqlPage, whereObj);
-                        var dv = reval.DataTable.AsDataView();
-                        dv.Sort = orderByField + " " + orderByType.ToString();
-                        reval.DataTable = dv.ToTable();
-                        return reval;
-                    }
-                }, tasks, i);
-            }
-        }
-        /// <summary>
-        /// 获取运算数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="orderByField"></param>
-        /// <param name="orderByType"></param>
-        /// <param name="whereObj"></param>
-        /// <param name="configCount"></param>
-        /// <param name="tasks"></param>
-        private void GetListByPage_GetOperationalData<T>(string sql, int pageIndex, int pageSize, string orderByField, OrderByType orderByType, object whereObj, int configCount, Task<CloudSearchResult<T>>[] tasks)
-        {
-            string fullOrderByString = orderByField + " " + orderByType.ToString();
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
-                {
-                    var connName = configList[ti].ConnectionString;
-                    using (var db = new SqlSugarClient(connName))
-                    {
-                        var sqlPage = string.Format(@"SELECT ROWINDEX,{0} AS ORDERBYVALUE,'{1}' CONNECTIONNAME FROM (
-                                                                            SELECT *,ROW_NUMBER()OVER(ORDER BY {2}) AS  ROWINDEX  FROM ({3}) as sqlstr ) t WHERE t.rowIndex BETWEEN {4} AND {5}
-                                                                            ", orderByField, connName, fullOrderByString, sql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
-                        CloudSearchResult<T> reval = new CloudSearchResult<T>();
-                        reval.DataTable = db.GetDataTable(sqlPage, whereObj);
-                        var dv = reval.DataTable.AsDataView();
-                        dv.Sort = "ORDERBYVALUE " + orderByType.ToString();
-                        reval.DataTable = dv.ToTable();
-                        return reval;
-                    }
-                }, tasks, i);
-            }
+            return reval;
         }
 
-        #endregion
+        private static int GetListByPage_GetNodeSpacing(int maxDataIndex, int nodeSPacing)
+        {
+
+            if (maxDataIndex / nodeSPacing > 10)
+            {
+                nodeSPacing *= 10;
+                return GetListByPage_GetNodeSpacing(maxDataIndex, nodeSPacing);
+            }
+            return nodeSPacing;
+        }
+
+      
 
         /// <summary>
         /// 更新

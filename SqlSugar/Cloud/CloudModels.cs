@@ -49,7 +49,9 @@ namespace SqlSugar
         /// </summary>
         public int Count { get; set; }
     }
-  
+
+ 
+
     /// <summary>
     /// 云计扩展类
     /// </summary>
