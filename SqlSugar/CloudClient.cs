@@ -377,22 +377,38 @@ namespace SqlSugar
             //分页最大索引
             var pageMaxIndex = pageIndex * pageSize;
             /***other***/
-            return GetListByPage_GetOtherList<T>(sql, pageMaxIndex, maxDataIndex, pageIndex, pageSize, nodeSPacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
+            var dataSamplelList = GetListByPage_GetDataSampleList<T>(sql, pageMaxIndex, maxDataIndex, pageIndex, pageSize, nodeSPacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
 
+            return null;
         }
-
-        private List<T> GetListByPage_GetOtherList<T>(string sql, int pageMaxIndex, int maxDataIndex, int pageIndex, int pageSize, int nodeSPacing, string orderByField, object whereObj, int configCount, string fullOrderByString, OrderByType orderByType) where T : class
+        /// <summary>
+        /// 获取样品节点
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="pageMaxIndex"></param>
+        /// <param name="maxDataIndex"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="nodeSpacing"></param>
+        /// <param name="orderByField"></param>
+        /// <param name="whereObj"></param>
+        /// <param name="configCount"></param>
+        /// <param name="fullOrderByString"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        private List<DataRow> GetListByPage_GetDataSampleList<T>(string sql, int pageMaxIndex, int maxDataIndex, int pageIndex, int pageSize, int nodeSpacing, string orderByField, object whereObj, int configCount, string fullOrderByString, OrderByType orderByType) where T : class
         {
- 
+
             //保证节点间距样品数在10条以内
-            nodeSPacing = GetListByPage_GetNodeSpacing(maxDataIndex, nodeSPacing);
+            nodeSpacing = GetListByPage_GetNodeSpacing(maxDataIndex, nodeSpacing);
             //根据节点间距得到间距集合
-            var nodeIndexList = GetListByPage_GetNodeIndexList(maxDataIndex, nodeSPacing);
+            var nodeIndexList = GetListByPage_GetNodeIndexList(maxDataIndex, nodeSpacing);
             //where in nodeIndexList
             var SQLPAGE = string.Format(@"SELECT RowIndex,{3} as OrderByField,'${connectionString}' as ConnectionString  FROM (
                                                                                         SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex IN {2}
                                                                                         ", sql, fullOrderByString, string.Join(",", nodeIndexList), orderByField);
-            var dataSampleList = Taskable<DataTable>(sql, whereObj).MergeTable();
+            var dataSampleList = Taskable<DataTable>(sql, whereObj).MergeTable().ToList();
             var isAsc = OrderByType.asc == orderByType;
             if (isAsc)
             {
@@ -402,20 +418,23 @@ namespace SqlSugar
             {
                 dataSampleList = dataSampleList.OrderByDescending(it => it["OrderByField"]).ToList();
             }
-            var sampleListTakeIndex= pageMaxIndex / nodeSPacing;
-            dataSampleList = dataSampleList.Skip(0).Take(sampleListTakeIndex).ToList();
-            var connections=dataSampleList.GroupBy(it=>it["ConnectionString"]).Select(it=>it.Key.ToString()).ToList();
-            int dataSampleCount=dataSampleList.Count();
-            //包含查询所有数据
-            var dataSampleIsContainsReturnValue= dataSampleCount == maxDataIndex;
-            if (dataSampleIsContainsReturnValue)
+            var sampleListTakeIndex = pageMaxIndex / nodeSpacing;
+            var isSmallSpacing = nodeSpacing == pageSize;
+            if (!isSmallSpacing)
             {
-
+                if (pageMaxIndex % nodeSpacing == 0)
+                {
+                    sampleListTakeIndex = sampleListTakeIndex - nodeSpacing;
+                }
+                dataSampleList = dataSampleList.Skip(0).Take(sampleListTakeIndex).ToList();
+                var connections = dataSampleList.GroupBy(it => it["ConnectionString"]).Select(it => it.Key.ToString()).ToList();
+                int dataSampleCount = dataSampleList.Count();
+                nodeSpacing = nodeSpacing / 10;
+                var list = GetListByPage_GetDataSampleList<T>(sql, pageMaxIndex, maxDataIndex, pageIndex, pageSize, nodeSpacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
+                dataSampleList.AddRange(list);
             }
-            else { //查询不包含的部分
-            
-            }
-            return null;
+            //已经获得所有样品节点
+            return dataSampleList;
         }
 
         private static List<int> GetListByPage_GetNodeIndexList(int maxDataIndex, int nodeSPacing)
@@ -443,7 +462,7 @@ namespace SqlSugar
             return nodeSPacing;
         }
 
-      
+
 
         /// <summary>
         /// 更新
