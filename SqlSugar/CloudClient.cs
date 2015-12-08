@@ -192,30 +192,43 @@ namespace SqlSugar
         /// <returns></returns>
         public Taskable<T> Taskable<T>(string sql, object whereObj = null)
         {
+            return Taskable<T>(sql, configList.Select(it => it.ConnectionString).ToList(), whereObj);
+        }
+        /// <summary>
+        /// 多线程请求所有数据库节点，同步汇总结果
+        /// </summary>
+        /// <typeparam name="T">支持DataTable、实体类和值类型</typeparam>
+        /// <param name="sql"></param>
+        /// <param name="connectionStringList">连接字符串数组</param>
+        /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+        /// <returns></returns>
+        public Taskable<T> Taskable<T>(string sql, List<string> connectionStringList, object whereObj = null)
+        {
             Taskable<T> reval = new Taskable<T>();
             reval.Sql = sql;
             reval.WhereObj = whereObj;
-            var tasks = new Task<CloudSearchResult<T>>[configList.Count];
+            var tasks = new Task<CloudSearchResult<T>>[connectionStringList.Count];
 
             for (int i = 0; i < tasks.Length; i++)
             {
                 CloudPubMethod.TaskFactory<CloudSearchResult<T>>(ti =>
                 {
-                    var connString = configList[ti].ConnectionString;
+                    string innerSql = sql;
+                    var connString = connectionStringList[ti];
                     var db = new SqlSugarClient(connString);
                     SettingConnection(db);
                     CloudSearchResult<T> itemReval = new CloudSearchResult<T>();
                     var isDataTable = typeof(T) == typeof(DataTable);
                     var isClass = typeof(T).IsClass;
-                    if (sql.Contains("${connectionString}"))
-                        sql = sql.Replace("${connectionString}", connString);
+                    if (innerSql.Contains("$:->connectionString<-:$"))
+                        innerSql = innerSql.Replace("$:->connectionString<-:$", connString);
                     if (isDataTable)
                     {
-                        itemReval.DataTable = db.GetDataTable(sql, whereObj);
+                        itemReval.DataTable = db.GetDataTable(innerSql, whereObj);
                     }
                     else if (isClass)
                     {
-                        itemReval.Entities = db.SqlQuery<T>(sql, whereObj);
+                        itemReval.Entities = db.SqlQuery<T>(innerSql, whereObj);
                     }
                     else
                     {
@@ -231,7 +244,6 @@ namespace SqlSugar
             reval.Tasks = tasks;
             return reval;
         }
-
 
 
         /// <summary>
@@ -296,7 +308,7 @@ namespace SqlSugar
         /// <param name="orderByType">排序类型</param>
         /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
         /// <returns></returns>
-        public List<T> TaskableWithPage<T>(string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null) where T : class
+        public List<T> TaskableWithPage<T>(string unqField, string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null) where T : class
         {
 
             if (pageIndex == 0)
@@ -370,16 +382,56 @@ namespace SqlSugar
                 }
             }
             #endregion
+
+
+            /***other***/
+
             //单节点最大索引
             var maxDataIndex = pageIndex * pageSize * configCount;
             //节点间距
-            var nodeSPacing = pageSize;
+            var nodeSPacing = 0;
             //分页最大索引
             var pageMaxIndex = pageIndex * pageSize;
-            /***other***/
-            var dataSamplelList = GetListByPage_GetDataSampleList<T>(sql, pageMaxIndex, maxDataIndex, pageIndex, pageSize, nodeSPacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
 
-            return null;
+            var dataSamplelList = new List<DataRow>();
+            GetListByPage_GetDataSampleList<T>(dataSamplelList,unqField, sql, pageMaxIndex, maxDataIndex, 0, pageIndex, pageSize, nodeSPacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
+            var reval = GetListByPage_GetReval<T>(sql, pageSize, pageIndex, orderByField, orderByType, whereObj, ref dataSamplelList);
+            if (orderByType == OrderByType.asc)
+            {
+                reval = reval.OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).ToList();
+            }
+            else
+            {
+                reval = reval.OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).ToList();
+            }
+            reval = reval.Skip(reval.Count - pageSize).ToList();
+            return reval;
+        }
+
+        private List<T> GetListByPage_GetReval<T>(string sql, int pageSize, int pageIndex, string orderByField, OrderByType orderByType, object whereObj, ref List<DataRow> dataSamplelList) where T : class
+        {
+            var isAsc = OrderByType.asc == orderByType;
+            if (isAsc)
+            {
+                dataSamplelList = dataSamplelList.OrderBy(it => it["OrderByField"]).ToList();
+            }
+            else
+            {
+                dataSamplelList = dataSamplelList.OrderByDescending(it => it["OrderByField"]).ToList();
+            }
+            string fullOrderByString = orderByType == OrderByType.asc ? string.Format(" {0} {1} ", orderByField, OrderByType.desc) : string.Format(" {0} {1} ", orderByField, OrderByType.asc);
+            var maxValue = dataSamplelList.Max(it => it["OrderByField"]);
+            if (!sql.ToLower().Contains("where"))
+            {
+                sql += " WHERE 1=1 ";
+            }
+            sql = string.Format("{0} and {1}<='{2}' ", sql, orderByField, maxValue);
+            var connectionStringList = dataSamplelList.Skip(dataSamplelList.Count - 10).Take(10).Select(it => it["ConnectionString"].ToString()).ToList();
+            sql = string.Format(@"SELECT * FROM (
+                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
+                                                                                        ", sql, fullOrderByString, 1, pageSize * dataSamplelList.Count);
+            var reval = Taskable<T>(sql, connectionStringList, whereObj).MergeEntities().ToList();
+            return reval;
         }
         /// <summary>
         /// 获取样品节点
@@ -397,60 +449,89 @@ namespace SqlSugar
         /// <param name="fullOrderByString"></param>
         /// <param name="orderByType"></param>
         /// <returns></returns>
-        private List<DataRow> GetListByPage_GetDataSampleList<T>(string sql, int pageMaxIndex, int maxDataIndex, int pageIndex, int pageSize, int nodeSpacing, string orderByField, object whereObj, int configCount, string fullOrderByString, OrderByType orderByType) where T : class
+        private List<DataRow> GetListByPage_GetDataSampleList<T>(List<DataRow> dataSamplelList,string unqField, string sql, int pageMaxIndex, int maxDataIndex, int minDataIndex, int pageIndex, int pageSize, int nodeSpacing, string orderByField, object whereObj, int configCount, string fullOrderByString, OrderByType orderByType) where T : class
         {
 
-            //保证节点间距样品数在10条以内
-            nodeSpacing = GetListByPage_GetNodeSpacing(maxDataIndex, nodeSpacing);
+            if (nodeSpacing == 0)
+            {
+                nodeSpacing = pageSize;
+                //保证节点间距样品数在10条以内
+                nodeSpacing = GetListByPage_GetNodeSpacing(maxDataIndex, nodeSpacing);
+            }
             //根据节点间距得到间距集合
-            var nodeIndexList = GetListByPage_GetNodeIndexList(maxDataIndex, nodeSpacing);
+            var nodeIndexList = GetListByPage_GetNodeIndexList(maxDataIndex, nodeSpacing, minDataIndex);
             //where in nodeIndexList
-            var SQLPAGE = string.Format(@"SELECT RowIndex,{3} as OrderByField,'${connectionString}' as ConnectionString  FROM (
-                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex IN {2}
+            var sqlPage = string.Format(@"SELECT RowIndex,{3} as OrderByField,'$:->connectionString<-:$' as ConnectionString  FROM (
+                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex IN ({2})
                                                                                         ", sql, fullOrderByString, string.Join(",", nodeIndexList), orderByField);
-            var dataSampleList = Taskable<DataTable>(sql, whereObj).MergeTable().ToList();
+            var innerDataSampleList = Taskable<DataTable>(sqlPage, whereObj).MergeTable().ToList();
             var isAsc = OrderByType.asc == orderByType;
             if (isAsc)
             {
-                dataSampleList = dataSampleList.OrderBy(it => it["OrderByField"]).ToList();
+                innerDataSampleList = innerDataSampleList.OrderBy(it => it["OrderByField"]).ToList();
             }
             else
             {
-                dataSampleList = dataSampleList.OrderByDescending(it => it["OrderByField"]).ToList();
+                innerDataSampleList = innerDataSampleList.OrderByDescending(it => it["OrderByField"]).ToList();
             }
             var sampleListTakeIndex = pageMaxIndex / nodeSpacing;
             var isSmallSpacing = nodeSpacing == pageSize;
-            if (!isSmallSpacing)
+            if (!isSmallSpacing)//不是最小间距
             {
                 if (pageMaxIndex % nodeSpacing == 0)
                 {
                     sampleListTakeIndex = sampleListTakeIndex - nodeSpacing;
                 }
-                dataSampleList = dataSampleList.Skip(0).Take(sampleListTakeIndex).ToList();
-                var connections = dataSampleList.GroupBy(it => it["ConnectionString"]).Select(it => it.Key.ToString()).ToList();
-                int dataSampleCount = dataSampleList.Count();
+                innerDataSampleList = innerDataSampleList.Skip(0).Take(sampleListTakeIndex).ToList();
+                var connections = innerDataSampleList.GroupBy(it => it["ConnectionString"]).Select(it => it.Key.ToString()).ToList();
+                int dataSampleCount = innerDataSampleList.Count();
                 nodeSpacing = nodeSpacing / 10;
-                var list = GetListByPage_GetDataSampleList<T>(sql, pageMaxIndex, maxDataIndex, pageIndex, pageSize, nodeSpacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
-                dataSampleList.AddRange(list);
+                dataSamplelList.AddRange(innerDataSampleList);
+                var list = GetListByPage_GetDataSampleList<T>(dataSamplelList, unqField, sql, pageMaxIndex, maxDataIndex, sampleListTakeIndex, pageIndex, pageSize, nodeSpacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
+                dataSamplelList.AddRange(list);
+            }
+            else
+            {//是最小间距
+                innerDataSampleList = innerDataSampleList.Skip(0).Take(sampleListTakeIndex).ToList();
+                dataSamplelList.AddRange(innerDataSampleList);
             }
             //已经获得所有样品节点
-            return dataSampleList;
+            return dataSamplelList;
         }
-
-        private static List<int> GetListByPage_GetNodeIndexList(int maxDataIndex, int nodeSPacing)
+        /// <summary>
+        /// 获取样品节点索引数组
+        /// </summary>
+        /// <param name="maxDataIndex"></param>
+        /// <param name="nodeSPacing"></param>
+        /// <param name="minDataIndex"></param>
+        /// <returns></returns>
+        private static List<int> GetListByPage_GetNodeIndexList(int maxDataIndex, int nodeSPacing, int minDataIndex)
         {
             List<int> reval = new List<int>();
             var oldNodeSPacing = nodeSPacing;
-            reval.Add(nodeSPacing);
+            if (minDataIndex == 0)
+            {
+                oldNodeSPacing = nodeSPacing;
+                reval.Add(nodeSPacing);
+            }
+            else
+            {
+                nodeSPacing = minDataIndex;
+            }
             while (nodeSPacing <= maxDataIndex)
             {
                 nodeSPacing += oldNodeSPacing;
                 reval.Add(nodeSPacing);
 
             }
-            return reval;
+            return reval.Distinct().ToList();
         }
-
+        /// <summary>
+        /// 获取节点间距
+        /// </summary>
+        /// <param name="maxDataIndex"></param>
+        /// <param name="nodeSPacing"></param>
+        /// <returns></returns>
         private static int GetListByPage_GetNodeSpacing(int maxDataIndex, int nodeSPacing)
         {
 
