@@ -309,7 +309,6 @@ namespace SqlSugar
         /// <returns></returns>
         public List<T> TaskableWithPage<T>(string unqueField, string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null) where T : class
         {
-
             if (pageIndex == 0)
                 pageIndex = 1;
             /***count***/
@@ -318,7 +317,6 @@ namespace SqlSugar
             pageCount = Taskable<int>(sqlCount, whereObj).Count();
             int totalPage = (pageCount + pageSize - 1) / pageSize;
             string fullOrderByString = orderByField + " " + orderByType.ToString();
-
             string fullOrderByStringReverse = orderByField + " " + (orderByType == OrderByType.asc ? OrderByType.desc : OrderByType.asc);
 
             /***one nodes***/
@@ -362,7 +360,6 @@ namespace SqlSugar
             }
             #endregion
 
-
             /***small index  by reverse***/
             #region small index  by reverse
             var lastPage = (totalPage - pageIndex) + 1;
@@ -390,11 +387,8 @@ namespace SqlSugar
             }
             #endregion
 
-
-
-
             /***other***/
-
+            #region other
             //单节点最大索引
             var maxDataIndex = pageIndex * pageSize * configCount;
             //节点间距
@@ -409,7 +403,8 @@ namespace SqlSugar
             var revalCount = reval.Count;
             var revalSkipIndex = pageSize;
             reval = reval.Skip(reval.Count - pageSize).ToList();
-            return reval;
+            return reval; 
+            #endregion
         }
 
         private List<T> GetListByPage_GetReval<T>(string unqField, string sql, int pageSize, int pageIndex, string orderByField, OrderByType orderByType, object whereObj, ref List<DataRow> dataSamplelList) where T : class
