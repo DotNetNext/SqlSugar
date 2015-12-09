@@ -22,7 +22,6 @@ namespace SqlSugar
         private Object tranLock = new Object();
         private List<SqlSugarClient> dbs = new List<SqlSugarClient>();
 
-        public bool IsNoLock { get; set; }
         /// <summary>
         /// 分布式事务
         /// </summary>
@@ -49,6 +48,7 @@ namespace SqlSugar
             this.configList = configList;
         }
 
+        #region insert
 
         /// <summary>
         /// 批量插入
@@ -67,7 +67,6 @@ namespace SqlSugar
             }
             return reval;
         }
-
         /// <summary>
         /// 插入
         /// 使用说明:sqlSugar.Insert(entity);
@@ -83,11 +82,10 @@ namespace SqlSugar
             var db = new SqlSugarClient(connName);
             SettingConnection(db);
             return db.Insert<T>(entity, isIdentity);
-        }
+        } 
+        #endregion
 
-
-
-
+        #region delete
         /// <summary>
         /// 批量删除
         /// 注意：whereIn 主键集合  
@@ -135,7 +133,6 @@ namespace SqlSugar
             Task.WaitAll(tasks);
             return tasks.Any(it => it.Result);
         }
-
         /// <summary>
         /// 批量删除
         /// 注意：whereIn 主键集合  
@@ -158,7 +155,7 @@ namespace SqlSugar
             }
             Task.WaitAll(tasks);
             return tasks.Any(it => it.Result);
-        }
+        } 
         /// <summary>
         /// 假删除，根据表达示
         /// 使用说明::
@@ -182,6 +179,9 @@ namespace SqlSugar
             Task.WaitAll(tasks);
             return tasks.Any(it => it.Result);
         }
+        #endregion
+
+        #region search
 
         /// <summary>
         /// 多线程请求所有数据库节点，同步汇总结果
@@ -244,8 +244,6 @@ namespace SqlSugar
             reval.Tasks = tasks;
             return reval;
         }
-
-
         /// <summary>
         /// 多线程请求所有数据库节点，同步汇总结果
         /// </summary>
@@ -294,7 +292,7 @@ namespace SqlSugar
             reval.Tasks = tasks;
             return reval;
         }
-
+        #region page
 
         /// <summary>
         /// 获取分页数据
@@ -550,9 +548,10 @@ namespace SqlSugar
             }
             return nodeSPacing;
         }
+        #endregion 
+        #endregion
 
-
-
+        #region update
         /// <summary>
         /// 更新
         /// 注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
@@ -603,7 +602,8 @@ namespace SqlSugar
             }
             Task.WaitAll(tasks);
             return tasks.Any(it => it.Result);
-        }
+        } 
+        #endregion
 
         /// <summary>
         /// 释放资源
@@ -623,6 +623,7 @@ namespace SqlSugar
             dbs = null;
             this.configList = null;
         }
+
 
         /// <summary>
         /// 清除所有缓存
