@@ -132,7 +132,7 @@ namespace WebTest
 
 
 
-                var list = db.TaskableWithPage<student>("id","select * from student", 4, 5, ref pageCount, "num", OrderByType.asc);
+                var list = db.TaskableWithPage<student>("id","select * from student", 3, 5, ref pageCount, "num", OrderByType.asc);
 
             }
         }

@@ -208,11 +208,10 @@ namespace SqlSugar
         /// <param name="obj"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        internal static object GetPropertyValue(object obj, string property)
+        internal static Guid GetPropertyValue(object obj, string property)
         {
             PropertyInfo propertyInfo = obj.GetType().GetProperty(property);
-            if (propertyInfo == null) return DateTime.Now;
-            return propertyInfo.GetValue(obj, null);
+            return (Guid)propertyInfo.GetValue(obj, null);
         }  
 
     }

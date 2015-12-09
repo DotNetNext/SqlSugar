@@ -300,6 +300,7 @@ namespace SqlSugar
         /// 获取分页数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        ///<typeparam name="unqField">数据库中数据唯一的列（建议：主键GUID）</typeparam>
         /// <param name="sql">不包含分页逻辑,Order by如果只有一个字段不能写在该参数里面,应该写在Order By参数里面，如果要实现多级排序可以写成这样 ：string sql="select top "+int.MaxValue+" from table order by 二级排序字段 desc "</param>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
@@ -308,18 +309,19 @@ namespace SqlSugar
         /// <param name="orderByType">排序类型</param>
         /// <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
         /// <returns></returns>
-        public List<T> TaskableWithPage<T>(string unqField, string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null) where T : class
+        public List<T> TaskableWithPage<T>(string unqueField, string sql, int pageIndex, int pageSize, ref int pageCount, string orderByField, OrderByType orderByType, object whereObj = null) where T : class
         {
 
             if (pageIndex == 0)
                 pageIndex = 1;
-
             /***count***/
             int configCount = configList.Count;
             string sqlCount = string.Format("SELECT COUNT(*) FROM ({0}) t ", sql);
             pageCount = Taskable<int>(sqlCount, whereObj).Count();
-
+            int totalPage = (pageCount + pageSize - 1) / pageSize;
             string fullOrderByString = orderByField + " " + orderByType.ToString();
+
+            string fullOrderByStringReverse = orderByField + " " + (orderByType == OrderByType.asc ? OrderByType.desc : OrderByType.asc);
 
             /***one nodes***/
             #region one nodes
@@ -327,21 +329,13 @@ namespace SqlSugar
             if (isOneNode)
             {
                 var connName = configList.Single().ConnectionString;
-                using (var db = new SqlSugarClient(connName))
-                {
-                    var sqlPage = string.Format(@"SELECT * FROM (
+                var db = new SqlSugarClient(connName);
+                SettingConnection(db);
+                var sqlPage = string.Format(@"SELECT * FROM (
                                                                                     SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
                                                          ", sql, orderByField + " " + orderByType.ToString(), (pageIndex - 1) * pageSize + 1, pageSize * pageIndex);
-                    var list = db.SqlQuery<T>(sql, whereObj);
-                    if (orderByType == OrderByType.asc)
-                    {
-                        return list.OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-                    }
-                    else
-                    {
-                        return list.OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-                    }
-                }
+                var list = db.SqlQuery<T>(sql, whereObj);
+                return list.OrderBy(orderByField, orderByType).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             }
             #endregion
 
@@ -351,14 +345,8 @@ namespace SqlSugar
             if (isSmallData)
             {
                 var tasks = Taskable<T>(sql + " ORDER BY " + orderByField, whereObj);
-                if (orderByType == OrderByType.asc)
-                {
-                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-                }
-                else
-                {
-                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-                }
+                return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByField, orderByType).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
             }
             #endregion
 
@@ -372,16 +360,39 @@ namespace SqlSugar
                                                                                         SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
                                                                                         ", sql, fullOrderByString, 1, pageSize * configCount);
                 var tasks = Taskable<T>(sql, whereObj);
-                if (orderByType == OrderByType.asc)
+                return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByField, orderByType).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            }
+            #endregion
+
+
+            /***small index  by reverse***/
+            #region small index  by reverse
+            var lastPage = (totalPage - pageIndex) + 1;
+            var isSmallPageIndexByReverse = CloudPubMethod.GetIsSmallPageIndexByReverse(totalPage, pageIndex, pageSize, configCount, this.PageMaxHandleNumber);
+            if (isSmallPageIndexByReverse)
+            {
+
+                var sqlPage = string.Format(@"SELECT * FROM (
+                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
+                                                                                        ", sql, fullOrderByStringReverse, 1, lastPage * configCount);
+                var tasks = Taskable<T>(sql, whereObj);
+                var lastPageSize = pageCount % pageSize;
+                if (lastPageSize == 0) lastPageSize = pageSize;
+
+                var list = tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByField, orderByType == OrderByType.asc ? OrderByType.desc : OrderByType.asc);
+                var isLast = totalPage == pageIndex;
+                if (isLast)
                 {
-                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return list.Skip(0).Take(lastPageSize).OrderBy(orderByField, orderByType).ToList();
                 }
                 else
                 {
-                    return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return list.Skip((lastPage - 1) * pageSize - lastPageSize - 1).Take(pageSize).OrderBy(orderByField, orderByType).ToList();
                 }
             }
             #endregion
+
+
 
 
             /***other***/
@@ -394,43 +405,33 @@ namespace SqlSugar
             var pageMaxIndex = pageIndex * pageSize;
 
             var dataSamplelList = new List<DataRow>();
-            GetListByPage_GetDataSampleList<T>(dataSamplelList,unqField, sql, pageMaxIndex, maxDataIndex, 0, pageIndex, pageSize, nodeSPacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
-            var reval = GetListByPage_GetReval<T>(sql, pageSize, pageIndex, orderByField, orderByType, whereObj, ref dataSamplelList);
-            if (orderByType == OrderByType.asc)
-            {
-                reval = reval.OrderBy(it => SqlSugarTool.GetPropertyValue(it, orderByField)).ToList();
-            }
-            else
-            {
-                reval = reval.OrderByDescending(it => SqlSugarTool.GetPropertyValue(it, orderByField)).ToList();
-            }
+            GetListByPage_GetDataSampleList<T>(dataSamplelList, unqueField, sql, pageMaxIndex, maxDataIndex, 0, pageIndex, pageSize, nodeSPacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
+            var reval = GetListByPage_GetReval<T>(unqueField, sql, pageSize, pageIndex, orderByField, orderByType, whereObj, ref dataSamplelList);
+            reval = reval.OrderBy(orderByField, orderByType).ThenBy(unqueField, OrderByType.desc).ToList();
+            var revalCount = reval.Count;
+            var revalSkipIndex = pageSize;
             reval = reval.Skip(reval.Count - pageSize).ToList();
             return reval;
         }
 
-        private List<T> GetListByPage_GetReval<T>(string sql, int pageSize, int pageIndex, string orderByField, OrderByType orderByType, object whereObj, ref List<DataRow> dataSamplelList) where T : class
+        private List<T> GetListByPage_GetReval<T>(string unqField, string sql, int pageSize, int pageIndex, string orderByField, OrderByType orderByType, object whereObj, ref List<DataRow> dataSamplelList) where T : class
         {
             var isAsc = OrderByType.asc == orderByType;
-            if (isAsc)
-            {
-                dataSamplelList = dataSamplelList.OrderBy(it => it["OrderByField"]).ToList();
-            }
-            else
-            {
-                dataSamplelList = dataSamplelList.OrderByDescending(it => it["OrderByField"]).ToList();
-            }
+
+            dataSamplelList = dataSamplelList.OrderByDataRow("OrderByField", orderByType).ThenByDataRow(unqField, OrderByType.desc).ToList();
+
             string fullOrderByString = orderByType == OrderByType.asc ? string.Format(" {0} {1} ", orderByField, OrderByType.desc) : string.Format(" {0} {1} ", orderByField, OrderByType.asc);
-            var maxValue = dataSamplelList.Max(it => it["OrderByField"]);
+            var maxRow = isAsc ? dataSamplelList.OrderByDataRow("OrderByField", OrderByType.desc).ThenByDataRow(unqField, OrderByType.desc).First() : dataSamplelList.OrderByDataRow("OrderByField", OrderByType.asc).ThenByDataRow(unqField, OrderByType.desc).First();
             if (!sql.ToLower().Contains("where"))
             {
                 sql += " WHERE 1=1 ";
             }
-            sql = string.Format("{0} and {1}<='{2}' ", sql, orderByField, maxValue);
+            sql = string.Format("{0} AND {1}<'{2}'  OR ({1}='{2}' AND  {3}<='{4}'  )", sql, orderByField, maxRow["OrderByField"], unqField, maxRow[unqField]);
             var connectionStringList = dataSamplelList.Skip(dataSamplelList.Count - 10).Take(10).Select(it => it["ConnectionString"].ToString()).ToList();
             sql = string.Format(@"SELECT * FROM (
                                                                                         SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
                                                                                         ", sql, fullOrderByString, 1, pageSize * dataSamplelList.Count);
-            var reval = Taskable<T>(sql, connectionStringList, whereObj).MergeEntities().ToList();
+            var reval = Taskable<T>(sql, whereObj).MergeEntities().ToList();
             return reval;
         }
         /// <summary>
@@ -449,7 +450,7 @@ namespace SqlSugar
         /// <param name="fullOrderByString"></param>
         /// <param name="orderByType"></param>
         /// <returns></returns>
-        private List<DataRow> GetListByPage_GetDataSampleList<T>(List<DataRow> dataSamplelList,string unqField, string sql, int pageMaxIndex, int maxDataIndex, int minDataIndex, int pageIndex, int pageSize, int nodeSpacing, string orderByField, object whereObj, int configCount, string fullOrderByString, OrderByType orderByType) where T : class
+        private List<DataRow> GetListByPage_GetDataSampleList<T>(List<DataRow> dataSamplelList, string unqField, string sql, int pageMaxIndex, int maxDataIndex, int minDataIndex, int pageIndex, int pageSize, int nodeSpacing, string orderByField, object whereObj, int configCount, string fullOrderByString, OrderByType orderByType) where T : class
         {
 
             if (nodeSpacing == 0)
@@ -461,22 +462,16 @@ namespace SqlSugar
             //根据节点间距得到间距集合
             var nodeIndexList = GetListByPage_GetNodeIndexList(maxDataIndex, nodeSpacing, minDataIndex);
             //where in nodeIndexList
-            var sqlPage = string.Format(@"SELECT RowIndex,{3} as OrderByField,'$:->connectionString<-:$' as ConnectionString  FROM (
-                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex IN ({2})
-                                                                                        ", sql, fullOrderByString, string.Join(",", nodeIndexList), orderByField);
+            var sqlPage = string.Format(@"SELECT {4},RowIndex,{3} as OrderByField,'$:->connectionString<-:$' as ConnectionString  FROM (
+                                                                                        SELECT *,ROW_NUMBER()OVER(ORDER BY {1},{4}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex IN ({2})
+                                                                                        ", sql, fullOrderByString, string.Join(",", nodeIndexList), orderByField, unqField);
             var innerDataSampleList = Taskable<DataTable>(sqlPage, whereObj).MergeTable().ToList();
             var isAsc = OrderByType.asc == orderByType;
-            if (isAsc)
-            {
-                innerDataSampleList = innerDataSampleList.OrderBy(it => it["OrderByField"]).ToList();
-            }
-            else
-            {
-                innerDataSampleList = innerDataSampleList.OrderByDescending(it => it["OrderByField"]).ToList();
-            }
+            innerDataSampleList = innerDataSampleList.OrderByDataRow("OrderByField", orderByType).ThenByDataRow(unqField, OrderByType.desc).ToList();
+
             var sampleListTakeIndex = pageMaxIndex / nodeSpacing;
             var isSmallSpacing = nodeSpacing == pageSize;
-            if (!isSmallSpacing)//不是最小间距
+            if (!isSmallSpacing && nodeSpacing != 1)//不是最小间距
             {
                 if (pageMaxIndex % nodeSpacing == 0)
                 {
@@ -487,12 +482,25 @@ namespace SqlSugar
                 int dataSampleCount = innerDataSampleList.Count();
                 nodeSpacing = nodeSpacing / 10;
                 dataSamplelList.AddRange(innerDataSampleList);
-                var list = GetListByPage_GetDataSampleList<T>(dataSamplelList, unqField, sql, pageMaxIndex, maxDataIndex, sampleListTakeIndex, pageIndex, pageSize, nodeSpacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
-                dataSamplelList.AddRange(list);
+                GetListByPage_GetDataSampleList<T>(dataSamplelList, unqField, sql, pageMaxIndex, maxDataIndex, sampleListTakeIndex, pageIndex, pageSize, nodeSpacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
             }
-            else
-            {//是最小间距
+            else if (isSmallSpacing)
+            {
+                if (pageMaxIndex % nodeSpacing == 0)
+                {
+                    sampleListTakeIndex = sampleListTakeIndex - nodeSpacing;
+                }
                 innerDataSampleList = innerDataSampleList.Skip(0).Take(sampleListTakeIndex).ToList();
+                var connections = innerDataSampleList.GroupBy(it => it["ConnectionString"]).Select(it => it.Key.ToString()).ToList();
+                int dataSampleCount = innerDataSampleList.Count();
+                nodeSpacing = 1;
+                dataSamplelList.AddRange(innerDataSampleList);
+                GetListByPage_GetDataSampleList<T>(dataSamplelList, unqField, sql, pageMaxIndex, maxDataIndex, sampleListTakeIndex, pageIndex, pageSize, nodeSpacing, orderByField, whereObj, configCount, fullOrderByString, orderByType);
+            }
+            else if (nodeSpacing == 1)
+            {//是最小间距
+
+                innerDataSampleList = innerDataSampleList.OrderByDataRow("OrderByField", orderByType).ThenByDataRow(unqField, OrderByType.desc).Skip(0).Take(sampleListTakeIndex).ToList();
                 dataSamplelList.AddRange(innerDataSampleList);
             }
             //已经获得所有样品节点

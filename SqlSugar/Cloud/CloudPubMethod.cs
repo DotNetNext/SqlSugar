@@ -38,7 +38,7 @@ namespace SqlSugar
         {
             Check.Exception(configList == null || configList.Count == 0, "CloudPubMethod.GetConnection.configList不能为null并且count>0。");
             List<string> connectionNameList = new List<string>();
-            SetConnectionNameList(configList,ref connectionNameList);
+            SetConnectionNameList(configList, ref connectionNameList);
             var index = random.Next(0, connectionNameList.Count);
             return connectionNameList[index];
         }
@@ -58,7 +58,7 @@ namespace SqlSugar
         }
 
 
-        private static void SetConnectionNameList(List<CloudConnectionConfig> configList,ref List<string> connectionNameList)
+        private static void SetConnectionNameList(List<CloudConnectionConfig> configList, ref List<string> connectionNameList)
         {
             var cacheKey = "SetConnectionNameList";
             var cm = CacheManager<List<string>>.GetInstance();
@@ -91,6 +91,23 @@ namespace SqlSugar
             {
                 return pageIndex * pageSize * configCount <= maxHandleNumber;
 
+            }
+            return false;
+        }
+        /// <summary>
+        /// 倒数分页索引是否很小
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="configCount"></param>
+        /// <returns></returns>
+        public static bool GetIsSmallPageIndexByReverse(int totalPage, int pageIndex, int pageSize, int configCount, int maxHandleNumber)
+        {
+            //倒数第几页
+            var lastPage=(totalPage - pageIndex)+1 ;
+            if (lastPage <= configCount)
+            {
+                return lastPage * pageSize <= maxHandleNumber;
             }
             return false;
         }
