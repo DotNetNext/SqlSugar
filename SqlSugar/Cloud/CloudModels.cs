@@ -50,7 +50,7 @@ namespace SqlSugar
         public int Count { get; set; }
     }
 
- 
+
 
     /// <summary>
     /// 云计扩展类
@@ -92,5 +92,43 @@ namespace SqlSugar
         /// </summary>
         public object WhereObj { get; set; }
 
+    }
+
+    public class PageRowInnerParamsResult
+    {
+        public DataRow Row { get; set; }
+        public int Count { get; set; }
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public int Begin { get; set; }
+        public int End { get; set; }
+        public string Sql{get;set;}
+        public bool IsEqs { get; set; }
+
+        public string OrderByField { get; set; }
+
+        public string UnqueField { get; set; }
+
+        public int RowIndex { get; set; }
+
+        public bool isGreater { get; set; }
+
+        public string Symbol { get; set; }
+
+        public object OrderByValue { get; set; }
+
+        public object UnqueValue { get; set; }
+
+        public OrderByType OrderByType { get; set; }
+
+        public string FullOrderByString { get; set; }
+
+        public string FullOrderByStringReverse { get; set; }
+
+        public object WhereObj { get; set; }
+
+        public string SymbolReverse { get; set; }
+
+        public int ConfigCount { get; set; }
     }
 }

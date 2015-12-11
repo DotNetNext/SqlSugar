@@ -16,7 +16,7 @@ namespace WebTest.Dao
         }
         public static SqlSugarClient GetInstance()
         {
-            string connection = "Server=.;uid=sa;pwd=sasa;database=SqlSugarTest"; //这里可以动态根据cookies或session实现多库切换
+            string connection = System.Configuration.ConfigurationManager.ConnectionStrings[@"sqlConn"].ToString(); //这里可以动态根据cookies或session实现多库切换
             return new SqlSugarClient(connection);
         }
     }

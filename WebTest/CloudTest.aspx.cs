@@ -24,7 +24,7 @@ namespace WebTest
 
             using (CloudClient db = CloudDao.GetInstance())
             {
-                db.PageMaxHandleNumber = 10;
+                db.PageMaxHandleNumber = 1000;
                 using (CommittableTransaction trans = new CommittableTransaction())//启用分布式事务
                 {
 
@@ -85,40 +85,40 @@ namespace WebTest
                 }
 
                 //多线程请求所有数据库节点，获取汇总结果
-                var taskEntity = db.Taskable<student>("SELECT * FROM STUDENT").Tasks;
+                var taskEntity = db.Taskable<student>("SELECT top 100 * FROM STUDENT").Tasks;
                 foreach (var dr in taskEntity)//遍历所有节点数据
                 {
                     var dt = dr.Result.Entities;//获取实体集合
                     var connectionName = dr.Result.ConnectionString;
                 }
 
-                //Taskable实现分组查询
-                var groupList = db.Taskable<DataTable>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
-                    .Tasks
-                    .SelectMany(it => it.Result.DataTable.AsEnumerable())
-                    .Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
-                    .GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
+               // //Taskable实现分组查询
+               // var groupList = db.Taskable<DataTable>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
+               //     .Tasks
+               //     .SelectMany(it => it.Result.DataTable.AsEnumerable())
+               //     .Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
+               //     .GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
 
 
-                //输出结果
-                foreach (var it in groupList)
-                {
-                    var num = it.num;
-                    var name = it.name;
-                    var count = it.count;
-                }
+               // //输出结果
+               // foreach (var it in groupList)
+               // {
+               //     var num = it.num;
+               //     var name = it.name;
+               //     var count = it.count;
+               // }
 
 
-                //简化
-                var groupList2 = db.Taskable<DataTable>("SELECT NAME,COUNT(*) AS [COUNT],AVG(NUM) as NUM FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
-               .MergeTable()//将结果集合并到一个集合
-               .Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
-               .GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
+               // //简化
+               // var groupList2 = db.Taskable<DataTable>("SELECT NAME,COUNT(*) AS [COUNT],AVG(NUM) as NUM FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
+               //.MergeTable()//将结果集合并到一个集合
+               //.Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
+               //.GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
 
-                //再简化
-                List<V_Student> groupList3 = db.Taskable<V_Student>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
-               .MergeEntities()//将结果集合并到一个集合
-               .GroupBy(dr => dr.name).Select(dt => new V_Student { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
+               // //再简化
+               // List<V_Student> groupList3 = db.Taskable<V_Student>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
+               //.MergeEntities()//将结果集合并到一个集合
+               //.GroupBy(dr => dr.name).Select(dt => new V_Student { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
 
 
 
@@ -126,13 +126,13 @@ namespace WebTest
                 int maxValue = db.Taskable<int>("SELECT max(NUM) FROM STUDENT").Max();//求出所有节点的最大值
                 int minValue = db.Taskable<int>("SELECT min(NUM) FROM STUDENT").Min();//求出所有节点的最小值
                 var dataCount = db.Taskable<int>("SELECT count(1) FROM STUDENT").Count();//求出所有节点数据
-                var avg = db.TaskableWithCount<int>("SELECT avg(num)", " FROM STUDENT").Avg();
+               // var avg = db.TaskableWithCount<int>("SELECT avg(num)", " FROM STUDENT").Avg();
                 var all = db.Taskable<student>("select * from student where name=@name", new { name = "张三" }).ToList();//获取所有节点name为张三的数据,转为list
                 var data = db.Taskable<student>("select * from student where id=@id", new { id = id }).ToSingle();//从所有节点中查询一条记录
 
 
 
-                var list = db.TaskableWithPage<student>("id","select * from student", 4, 5, ref pageCount, "num", OrderByType.asc);
+                var list = db.TaskableWithPage<student>("id","select * from student", 5000, 10, ref pageCount, "num", OrderByType.asc);
 
             }
         }

@@ -157,7 +157,7 @@ namespace {1}
         /// <summary>
         ///  创建SQL实体文件,指定表名
         /// </summary>
-        public void CreateClassFilesByTableNames(SqlSugarClient db, string fileDirectory, string nameSpace,params string [] tableNames)
+        public void CreateClassFilesByTableNames(SqlSugarClient db, string fileDirectory, string nameSpace, params string[] tableNames)
         {
             var tables = db.GetDataTable("select name from sysobjects where xtype='U'");
             if (tables != null && tables.Rows.Count > 0)
