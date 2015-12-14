@@ -318,8 +318,8 @@ namespace SqlSugar
             var lastPage = (totalPage - pageIndex) + 1;
             var isLast = totalPage == pageIndex;
             var isAsc = orderByType == OrderByType.asc;
-            string fullOrderByString = orderByField + " " + orderByType.ToString();
-            string fullOrderByStringReverse = orderByField + " " + (isAsc ? OrderByType.desc : OrderByType.asc);
+            string fullOrderByString = orderByField + " " + orderByType.ToString()+","+unqueField+" ASC ";
+            string fullOrderByStringReverse = orderByField + " " + (isAsc ? OrderByType.desc : OrderByType.asc) + "," + unqueField + " DESC ";
             var orderByTypeReverse = isAsc ? OrderByType.desc : OrderByType.asc;
             var symbol = isAsc ? "<" : ">";
             var symbolReverse = isAsc ? ">" : "<";
@@ -403,7 +403,7 @@ namespace SqlSugar
                 nodeSPacing *= 10;
             }
             var node = GetListByPage_GetNodeIndexList(maxDataIndex, nodeSPacing);
-            string sqlOtherPage = string.Format(@"SELECT {4},RowIndex,{3} as OrderByField,'$:->connectionString<-:$' as ConnectionString  FROM (
+            string sqlOtherPage = string.Format(@"SELECT {4},RowIndex,{3} as OrderByField  FROM (
                                                                                                     SELECT *,ROW_NUMBER()OVER(ORDER BY {1},{4}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex IN ({2})
                                                                                                     ", sql/*0*/,
                                                                                                      fullOrderByString/*1*/,
@@ -412,10 +412,8 @@ namespace SqlSugar
                                                                                                      unqueField/*4*/);
             var nextSize = pageEnd % nodeSPacing == 0 ? 0 : pageEnd % nodeSPacing;
             int nodeTakeIndex = pageEnd / nodeSPacing;
-            var innerDataSampleList = Taskable<DataTable>(sqlOtherPage, whereObj).MergeTable().OrderByDataRow("OrderByField", orderByType).ThenByDataRow(unqueField, OrderByType.desc).ToList();
-            var tbt2 = innerDataSampleList.CopyToDataTable();
+            var innerDataSampleList = Taskable<DataTable>(sqlOtherPage, whereObj).MergeTable().OrderByDataRow("OrderByField", orderByType).ThenByDataRow(unqueField, OrderByType.asc).ToList();
             innerDataSampleList = innerDataSampleList.Skip(0).Take(nodeTakeIndex).ToList();
-            var tbt1 = innerDataSampleList.CopyToDataTable();
             var maxRow = innerDataSampleList.OrderByDataRow("OrderByField", OrderByType.desc).ThenByDataRow(unqueField, orderByTypeReverse).First();
 
 
@@ -452,6 +450,7 @@ namespace SqlSugar
                 FullOrderByString = fullOrderByString,
                 FullOrderByStringReverse = fullOrderByStringReverse,
                 WhereObj = whereObj,
+                OrderByTypeReverse = orderByTypeReverse,
                 ConfigCount=configCount
             };
 
@@ -484,18 +483,23 @@ namespace SqlSugar
             else if (paras.isGreater)
             { //大于
 
-                var createrValue = paras.RowIndex - paras.Begin;
-                sql = string.Format(@"SELECT  top{6}*  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.SymbolReverse + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.SymbolReverse + @"'{4}')
+                var createrValue = (paras.RowIndex) - paras.Begin;
+                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE t.{0}" + paras.Symbol + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.Symbol + @"='{4}')  ORDER BY {5}
                                                                                                     ",
                                                              paras.OrderByField/*0*/,
                                                              paras.UnqueField/*1*/,
                                                              paras.Sql/*2*/,
                                                              paras.OrderByValue/*3*/,
                                                              paras.UnqueValue/*4*/,
-                                                             paras.FullOrderByString/*5*/,
-                                                             paras.PageSize * paras.ConfigCount);
-                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.desc).Take(paras.PageSize).ToList();
+                                                             paras.FullOrderByStringReverse/*5*/,
+                                                             createrValue * paras.ConfigCount,paras.OrderByType);
+
+                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByField,paras.OrderByType).ThenByDataRow(paras.UnqueField,OrderByType.asc).ToList();
+                var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
+                var revalRows = rows.Skip(maxRowIndex-createrValue).Take(paras.PageSize).Select(it=>it[0]).ToArray();
+                sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})",paras.Sql,paras.UnqueField, revalRows.ToJoinSqlInVal());
+                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.asc).Take(paras.PageSize).ToList();
+                
             }
             else { //小于
             
@@ -519,7 +523,7 @@ namespace SqlSugar
 
                 #region 向前取样
                 thisIndex = (paras.RowIndex - paras.Begin) / 3;
-                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField,'$:->connectionString<-:$' as ConnectionString  FROM (
+                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
                                                                                                     SELECT *,ROW_NUMBER()OVER(ORDER BY {0},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}{4}'{6}' ) ) t WHERE t.ROWINDEX={7}
              
                                                                                        ",
@@ -563,7 +567,7 @@ namespace SqlSugar
 
                 #region 向后取样
                 thisIndex = (paras.Begin - paras.RowIndex) / 3;
-                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField,'$:->connectionString<-:$' as ConnectionString  FROM (
+                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
                                                                                                     SELECT *,ROW_NUMBER()OVER(ORDER BY {0},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}{4}'{6}' ) ) t WHERE t.ROWINDEX={7}
              
                                                                                        ",

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Data;
+using System.Data.SqlTypes;
 
 namespace SqlSugar
 {
@@ -12,6 +13,8 @@ namespace SqlSugar
     /// </summary>
     public static class IEnumerableExtensions
     {
+
+        static Type _guidType = typeof(Guid);
         /// <summary>
         /// 排序
         /// </summary>
@@ -22,14 +25,14 @@ namespace SqlSugar
         /// <returns></returns>
         public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> list, string sortField, OrderByType orderByType)
         {
-            PropertyInfo prop = typeof(T).GetProperty(sortField);
-
+            var type = typeof(T);
+            PropertyInfo prop = type.GetProperty(sortField);
             Check.Exception(prop == null, "No property '" + sortField + "' in + " + typeof(T).Name + "'");
-
             if (orderByType == OrderByType.desc)
-                return list.OrderByDescending(it => prop.GetValue(it, null));
+                return list.OrderByDescending(it =>ConvertField(prop.GetValue(it, null)));
             else
-                return list.OrderBy(it => prop.GetValue(it, null));
+                return list.OrderBy(it => ConvertField(prop.GetValue(it, null)));
+
 
         }
         /// <summary>
@@ -42,14 +45,13 @@ namespace SqlSugar
         /// <returns></returns>
         public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> list, string sortField, OrderByType orderByType)
         {
-            PropertyInfo prop = typeof(T).GetProperty(sortField);
-
+            var type = typeof(T);
+            PropertyInfo prop = type.GetProperty(sortField);
             Check.Exception(prop == null, "No property '" + sortField + "' in + " + typeof(T).Name + "'");
-
             if (orderByType == OrderByType.desc)
-                return list.ThenByDescending(it => prop.GetValue(it, null));
+                return list.ThenByDescending(it => ConvertField(prop.GetValue(it, null)));
             else
-                return list.ThenBy(it => prop.GetValue(it, null));
+                return list.ThenBy(it => ConvertField(prop.GetValue(it, null)));
 
         }
 
@@ -62,14 +64,14 @@ namespace SqlSugar
         /// <param name="sortField"></param>
         /// <param name="orderByType"></param>
         /// <returns></returns>
-        public static IOrderedEnumerable<T> OrderByDataRow<T>(this IEnumerable<T> list, string sortField, OrderByType orderByType) where T:DataRow
+        public static IOrderedEnumerable<T> OrderByDataRow<T>(this IEnumerable<T> list, string sortField, OrderByType orderByType) where T : DataRow
         {
-            PropertyInfo prop = typeof(T).GetProperty(sortField);
-
+            var type = typeof(T);
+            PropertyInfo prop = type.GetProperty(sortField);
             if (orderByType == OrderByType.desc)
-                return list.OrderByDescending(it=>it[sortField]);
+                return list.OrderByDescending(it => ConvertField(it[sortField]));
             else
-                return list.OrderBy(it => it[sortField]);
+                return list.OrderBy(it => ConvertField(it[sortField]));
 
         }
 
@@ -83,13 +85,31 @@ namespace SqlSugar
         /// <returns></returns>
         public static IOrderedEnumerable<T> ThenByDataRow<T>(this IOrderedEnumerable<T> list, string sortField, OrderByType orderByType) where T : DataRow
         {
-            PropertyInfo prop = typeof(T).GetProperty(sortField);
-
+            var type = typeof(T);
+            PropertyInfo prop = type.GetProperty(sortField);
             if (orderByType == OrderByType.desc)
-                return list.ThenByDescending(it => it[sortField]);
+                return list.ThenByDescending(it => ConvertField(it[sortField]));
             else
-                return list.ThenBy(it => it[sortField]);
+                return list.ThenBy(it => ConvertField(it[sortField]));
+        }
 
+        /// <summary>
+        /// 解决GUID在SQL和C#中，排序方式不一致
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        private static object ConvertField(object thisValue)
+        {
+            if (thisValue == null) return null;
+            var isGuid = thisValue.GetType() == _guidType;
+            if (isGuid)
+            {
+                return SqlGuid.Parse(thisValue.ToString());
+            }
+            else
+            {
+                return thisValue;
+            }
         }
     }
 }

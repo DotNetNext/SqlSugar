@@ -24,7 +24,7 @@ namespace WebTest
 
             using (CloudClient db = CloudDao.GetInstance())
             {
-                db.PageMaxHandleNumber = 1000;
+                db.PageMaxHandleNumber = 500;
                 using (CommittableTransaction trans = new CommittableTransaction())//启用分布式事务
                 {
 
@@ -132,7 +132,7 @@ namespace WebTest
 
 
 
-                var list = db.TaskableWithPage<student>("id","select * from student", 5000, 10, ref pageCount, "num", OrderByType.asc);
+                var list = db.TaskableWithPage<student>("id", "select * from student", 81985, 20, ref pageCount, "num", OrderByType.asc);
 
             }
         }

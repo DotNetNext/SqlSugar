@@ -130,5 +130,7 @@ namespace SqlSugar
         public string SymbolReverse { get; set; }
 
         public int ConfigCount { get; set; }
+
+        public SqlSugar.OrderByType OrderByTypeReverse { get; set; }
     }
 }
