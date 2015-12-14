@@ -12,44 +12,32 @@ namespace SqlSugar
 {
     /// <summary>
     /// ** 描述：SQL糖 ORM 核心类升级版 分布式存储和云计算框架
-    /// ** 创始时间：2015-7-13
+    /// ** 创始时间：2015-12-14
     /// ** 修改时间：-
     /// ** 作者：sunkaixuan
     /// ** 使用说明：
     /// </summary>
     public partial class CloudClient : IDisposable, IClient
     {
-        private Object tranLock = new Object();
+        #region private variables
+        private object tranLock = new object();
+        private object dbsLock = new object();
         private List<SqlSugarClient> dbs = new List<SqlSugarClient>();
+        private List<CloudConnectionConfig> configList { get; set; }
+        #endregion
 
+        #region public variables
         /// <summary>
         /// 分布式事务
         /// </summary>
         public CommittableTransaction Tran = null;
-
         /// <summary>
         /// 内存中处理数据的最大值（默认：1000）
         /// </summary>
         public int PageMaxHandleNumber = 1000;
-        private CloudClient()
-        {
-
-        }
-
-
-        private List<CloudConnectionConfig> configList { get; set; }
-
-        /// <summary>
-        /// 实例
-        /// </summary>
-        /// <param name="configList">云计算连接配置</param>
-        public CloudClient(List<CloudConnectionConfig> configList)
-        {
-            this.configList = configList;
-        }
+        #endregion
 
         #region insert
-
         /// <summary>
         /// 批量插入
         /// 使用说明:sqlSugar.Insert(List《entity》);
@@ -83,6 +71,28 @@ namespace SqlSugar
             SettingConnection(db);
             return db.Insert<T>(entity, isIdentity);
         }
+        #endregion
+
+        #region constructor
+        /// <summary>
+        /// 私有禁止无参实例
+        /// </summary>
+        private CloudClient()
+        {
+
+        }
+        /// <summary>
+        /// ** 描述：SQL糖 ORM 核心类升级版 分布式存储和云计算框架
+        /// ** 创始时间：2015-12-14
+        /// ** 修改时间：-
+        /// ** 作者：sunkaixuan
+        /// ** 使用说明：
+        /// </summary>
+        /// <param name="configList">云计算连接配置</param>
+        public CloudClient(List<CloudConnectionConfig> configList)
+        {
+            this.configList = configList;
+        } 
         #endregion
 
         #region delete
@@ -292,8 +302,6 @@ namespace SqlSugar
             reval.Tasks = tasks;
             return reval;
         }
-        #region page
-
         /// <summary>
         /// 获取分页数据
         /// </summary>
@@ -456,207 +464,6 @@ namespace SqlSugar
             #endregion
         }
 
-        private List<T> GetListByPage_GetPageList<T>(PageRowInnerParamsResult paras) where T : class
-        {
-
-            string sql = null;
-            if (paras.RowIndex == paras.Begin)
-            { //如果相等
-
-                sql = string.Format(@"SELECT  top {6}*  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.SymbolReverse + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.SymbolReverse + @"'{4}')
-                                                                                                    ",
-                                                                             paras.OrderByField/*0*/,
-                                                                             paras.UnqueField/*1*/,
-                                                                             paras.Sql/*2*/,
-                                                                             paras.OrderByValue/*3*/,
-                                                                             paras.UnqueValue/*4*/,
-                                                                             paras.FullOrderByString/*5*/,
-                                                                             paras.PageSize * paras.ConfigCount);
-                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.desc).Take(paras.PageSize).ToList();
-            }
-            else if (paras.isGreater)
-            { //大于
-
-                var createrValue = (paras.RowIndex) - paras.Begin;
-                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE t.{0}" + paras.Symbol + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.Symbol + @"='{4}')  ORDER BY {5}
-                                                                                                    ",
-                                                             paras.OrderByField/*0*/,
-                                                             paras.UnqueField/*1*/,
-                                                             paras.Sql/*2*/,
-                                                             paras.OrderByValue/*3*/,
-                                                             paras.UnqueValue/*4*/,
-                                                             paras.FullOrderByStringReverse/*5*/,
-                                                             createrValue * paras.ConfigCount, paras.OrderByType);
-
-                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByField, paras.OrderByType).ThenByDataRow(paras.UnqueField, OrderByType.asc).ToList();
-                var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
-                var revalRows = rows.Skip(maxRowIndex - createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
-                sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());
-                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.asc).Take(paras.PageSize).ToList();
-
-            }
-            else
-            { //小于
-
-                var createrValue =paras.Begin-paras.RowIndex;
-                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE t.{0}" + paras.SymbolReverse + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.SymbolReverse + @"='{4}')  ORDER BY {5}
-                                                                                                    ",
-                                                             paras.OrderByField/*0*/,
-                                                             paras.UnqueField/*1*/,
-                                                             paras.Sql/*2*/,
-                                                             paras.OrderByValue/*3*/,
-                                                             paras.UnqueValue/*4*/,
-                                                             paras.FullOrderByString/*5*/,
-                                                             createrValue * paras.ConfigCount+paras.PageSize, paras.OrderByType);
-
-                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByField, paras.OrderByType).ThenByDataRow(paras.UnqueField, OrderByType.asc).ToList();
-                var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
-                var revalRows = rows.Skip(maxRowIndex +createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
-                sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());
-                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.asc).Take(paras.PageSize).ToList();
-
-            }
-        }
-
-        /// <summary>
-        /// 获取BeginRow
-        /// </summary>
-        /// <param name="paras"></param>
-        /// <returns></returns>
-        private PageRowInnerParamsResult GetListByPage_GetPageBeginRow(PageRowInnerParamsResult paras)
-        {
-            string sql = string.Empty;
-            var thisIndex = 0;
-            //向前取样
-            if (paras.isGreater)
-            {
-
-                #region 向前取样
-                thisIndex = (paras.RowIndex - paras.Begin) / 3;
-                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {0}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}{4}'{6}' ) ) t WHERE t.ROWINDEX={7}
-             
-                                                                                       ",
-                                                                                        paras.FullOrderByStringReverse/*0*/,
-                                                                                        paras.UnqueField/*1*/,
-                                                                                        paras.Sql/*2*/,
-                                                                                        paras.OrderByField/*3*/,
-                                                                                        paras.Symbol/*4*/,
-                                                                                        paras.OrderByValue/*5*/,
-                                                                                        paras.UnqueValue/*6*/,
-                                                                                        thisIndex/*7*/);
-
-                var row = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().First();
-                paras.Row = row;
-                paras.OrderByValue = row[2];
-                paras.UnqueValue = row[0];
-
-                sql = string.Format(@"SELECT  COUNT(1)  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.Symbol + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.Symbol + @"'{4}')
-                                                                                                    ",
-                                                                                         paras.OrderByField/*0*/,
-                                                                                         paras.UnqueField/*1*/,
-                                                                                         paras.Sql/*2*/,
-                                                                                         paras.OrderByValue/*3*/,
-                                                                                         paras.UnqueValue/*4*/,
-                                                                                         paras.FullOrderByString/*5*/);
-                var maxRowIndex = Taskable<int>(sql, paras.WhereObj).Count();
-                paras.RowIndex = maxRowIndex;
-                paras.isGreater = maxRowIndex > paras.Begin;
-                if (maxRowIndex == paras.Begin) return paras;//如果相等返回BeginRow
-                if (((maxRowIndex - paras.Begin) * paras.ConfigCount) < PageMaxHandleNumber)
-                {
-                    return paras;
-                }
-                return GetListByPage_GetPageBeginRow(paras);
-                #endregion
-
-            }
-            else//向后取样
-            {
-
-                #region 向后取样
-                thisIndex = (paras.Begin - paras.RowIndex) / 3;
-                if (thisIndex == 0) {
-                    return paras;
-                }
-                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {0},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}{4}'{6}' ) ) t WHERE t.ROWINDEX={7}
-             
-                                                                                       ",
-                                                                                        paras.FullOrderByString/*0*/,
-                                                                                        paras.UnqueField/*1*/,
-                                                                                        paras.Sql/*2*/,
-                                                                                        paras.OrderByField/*3*/,
-                                                                                        paras.SymbolReverse/*4*/,
-                                                                                        paras.OrderByValue/*5*/,
-                                                                                        paras.UnqueValue/*6*/,
-                                                                                        thisIndex/*7*/);
-
-                var row = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().First();
-                paras.Row = row;
-                paras.OrderByValue = row[2];
-                paras.UnqueValue = row[0];
-
-                sql = string.Format(@"SELECT  COUNT(1)  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.Symbol + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.Symbol + @"'{4}')
-                                                                                                    ",
-                                                                                         paras.OrderByField/*0*/,
-                                                                                         paras.UnqueField/*1*/,
-                                                                                         paras.Sql/*2*/,
-                                                                                         paras.OrderByValue/*3*/,
-                                                                                         paras.UnqueValue/*4*/,
-                                                                                         paras.FullOrderByString/*5*/);
-                var maxRowIndex = Taskable<int>(sql, paras.WhereObj).Count();
-                paras.RowIndex = maxRowIndex;
-                paras.isGreater = maxRowIndex > paras.Begin;
-                if (maxRowIndex == paras.Begin) return paras;//如果相等返回BeginRow
-                if (Math.Abs(((maxRowIndex - paras.Begin) * paras.ConfigCount)) < PageMaxHandleNumber)
-                {
-                    return paras;
-                }
-                return GetListByPage_GetPageBeginRow(paras);
-                #endregion
-            }
-        }
-
-        /// <summary>
-        /// 获取样品节点索引数组
-        /// </summary>
-        /// <param name="maxDataIndex"></param>
-        /// <param name="nodeSPacing"></param>
-        /// <param name="minDataIndex"></param>
-        /// <returns></returns>
-        private static List<int> GetListByPage_GetNodeIndexList(int maxDataIndex, int nodeSPacing)
-        {
-            List<int> reval = new List<int>();
-            var oldNodeSPacing = nodeSPacing;
-            while (nodeSPacing + oldNodeSPacing <= maxDataIndex)
-            {
-                nodeSPacing += oldNodeSPacing;
-                reval.Add(nodeSPacing);
-
-            }
-            return reval.Distinct().ToList();
-        }
-        //        /// <summary>
-        //        /// 获取节点间距
-        //        /// </summary>
-        //        /// <param name="maxDataIndex"></param>
-        //        /// <param name="nodeSPacing"></param>
-        //        /// <returns></returns>
-        //        private static int GetListByPage_GetNodeSpacing(int maxDataIndex, int nodeSPacing)
-        //        {
-
-        //            if (maxDataIndex / nodeSPacing > 30)
-        //            {
-        //                nodeSPacing *= 5;
-        //                return GetListByPage_GetNodeSpacing(maxDataIndex, nodeSPacing);
-        //            }
-        //            return nodeSPacing;
-        //        }
-        #endregion
         #endregion
 
         #region update
@@ -713,26 +520,28 @@ namespace SqlSugar
         }
         #endregion
 
+        #region dispose
         /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()
         {
-            if (dbs != null)
+            lock (this.dbsLock)
             {
-                lock (dbs)
+                if (dbs != null)
                 {
-                    foreach (var db in dbs)
+                    lock (dbs)
                     {
-                        db.Dispose();
+                        foreach (var db in dbs)
+                        {
+                            db.Dispose();
+                        }
                     }
                 }
+                dbs = null;
+                this.configList = null;
             }
-            dbs = null;
-            this.configList = null;
         }
-
-
         /// <summary>
         /// 清除所有缓存
         /// </summary>
@@ -742,36 +551,61 @@ namespace SqlSugar
             var db = new SqlSugarClient(connName);
             db.RemoveAllCache();
         }
+
+        /// <summary>
+        /// 清空事务
+        /// </summary>
         public void TranDispose()
         {
-            Tran = null;
+            lock (this.tranLock)
+            {
+                lock (this.Tran)
+                {
+                    Tran = null;
+                }
+            }
         }
+        #endregion
 
+        #region private methods
+
+        #region setting
         /// <summary>
         /// 设置连接
         /// </summary>
         /// <param name="db"></param>
         private void SettingConnection(SqlSugarClient db)
         {
-
-            if (Tran != null)
+            try
             {
-                try
+                lock (this.tranLock)
                 {
-                    lock (this.tranLock)
+                    if (Tran != null)
                     {
                         lock (this.Tran)
                         {
-                            db.GetConnection().EnlistTransaction(Tran);
+                            lock (db)
+                            {
+                                db.GetConnection().EnlistTransaction(Tran);
+                            }
                         }
                     }
                 }
-                catch (Exception)//BUG 实现找不到为什么锁了还有时会报被占用
+            }
+            catch (Exception)//BUG 实现找不到为什么锁了还有时会报被占用
+            {
+
+                try
+                {
+                    System.Threading.Thread.Sleep(10);
+                    db.GetConnection().EnlistTransaction(Tran);
+                }
+                catch (Exception)
                 {
 
                     try
                     {
-                        System.Threading.Thread.Sleep(10);
+                        System.Threading.Thread.Sleep(100);
                         db.GetConnection().EnlistTransaction(Tran);
                     }
                     catch (Exception)
@@ -779,32 +613,225 @@ namespace SqlSugar
 
                         try
                         {
-                            System.Threading.Thread.Sleep(100);
+                            System.Threading.Thread.Sleep(1000);
                             db.GetConnection().EnlistTransaction(Tran);
                         }
                         catch (Exception)
                         {
 
-                            try
-                            {
-                                System.Threading.Thread.Sleep(1000);
-                                db.GetConnection().EnlistTransaction(Tran);
-                            }
-                            catch (Exception)
-                            {
-
-                                System.Threading.Thread.Sleep(10000);
-                                db.GetConnection().EnlistTransaction(Tran);
-                            }
+                            System.Threading.Thread.Sleep(10000);
+                            db.GetConnection().EnlistTransaction(Tran);
                         }
                     }
                 }
+            }
+
+            lock (this.dbsLock)
+            {
+                if (dbs != null)
+                {
+                    lock (dbs)
+                    {
+                        dbs.Add(db);
+                    }
+                }
+            }
+        } 
+        #endregion
+
+        #region page
+        /// <summary>
+        /// 获取分页集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="paras"></param>
+        /// <returns></returns>
+        private List<T> GetListByPage_GetPageList<T>(PageRowInnerParamsResult paras) where T : class
+        {
+
+            string sql = null;
+            if (paras.RowIndex == paras.Begin)
+            { //如果相等
+
+                sql = string.Format(@"SELECT  top {6}*  FROM (
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.SymbolReverse + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.SymbolReverse + @"'{4}')
+                                                                                                    ",
+                                                                             paras.OrderByField/*0*/,
+                                                                             paras.UnqueField/*1*/,
+                                                                             paras.Sql/*2*/,
+                                                                             paras.OrderByValue/*3*/,
+                                                                             paras.UnqueValue/*4*/,
+                                                                             paras.FullOrderByString/*5*/,
+                                                                             paras.PageSize * paras.ConfigCount);
+                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.desc).Take(paras.PageSize).ToList();
+            }
+            else if (paras.isGreater)
+            { //大于
+
+                var createrValue = (paras.RowIndex) - paras.Begin;
+                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE t.{0}" + paras.Symbol + @"'{3}' OR (t.{0}='{3}' AND t.{1}<='{4}')  ORDER BY {5}
+                                                                                                    ",
+                                                             paras.OrderByField/*0*/,
+                                                             paras.UnqueField/*1*/,
+                                                             paras.Sql/*2*/,
+                                                             paras.OrderByValue/*3*/,
+                                                             paras.UnqueValue/*4*/,
+                                                             paras.FullOrderByStringReverse/*5*/,
+                                                             createrValue * paras.ConfigCount, paras.OrderByType);
+
+                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByField, paras.OrderByType).ThenByDataRow(paras.UnqueField, OrderByType.asc).ToList();
+                var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
+                var revalRows = rows.Skip(maxRowIndex - createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
+                sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());
+                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.asc).Take(paras.PageSize).ToList();
 
             }
-            lock (dbs)
-            {
-                dbs.Add(db);
+            else
+            { //小于
+
+                var createrValue = paras.Begin - paras.RowIndex;
+                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE t.{0}" + paras.SymbolReverse + @"'{3}' OR (t.{0}='{3}' AND t.{1}>='{4}')  ORDER BY {5}
+                                                                                                    ",
+                                                             paras.OrderByField/*0*/,
+                                                             paras.UnqueField/*1*/,
+                                                             paras.Sql/*2*/,
+                                                             paras.OrderByValue/*3*/,
+                                                             paras.UnqueValue/*4*/,
+                                                             paras.FullOrderByString/*5*/,
+                                                             createrValue * paras.ConfigCount + paras.PageSize, paras.OrderByType);
+
+                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByField, paras.OrderByType).ThenByDataRow(paras.UnqueField, OrderByType.asc).ToList();
+                var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
+                var revalRows = rows.Skip(maxRowIndex + createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
+                sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());
+                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByField, paras.OrderByType).ThenBy(paras.UnqueField, OrderByType.asc).Take(paras.PageSize).ToList();
+
             }
         }
+
+        /// <summary>
+        /// 获取分页BeginRow
+        /// </summary>
+        /// <param name="paras"></param>
+        /// <returns></returns>
+        private PageRowInnerParamsResult GetListByPage_GetPageBeginRow(PageRowInnerParamsResult paras)
+        {
+            string sql = string.Empty;
+            var thisIndex = 0;
+            //向前取样
+            if (paras.isGreater)
+            {
+
+                #region 向前取样
+                thisIndex = (paras.RowIndex - paras.Begin) / 3;
+                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {0}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}<'{6}' ) ) t WHERE t.ROWINDEX={7}
+             
+                                                                                       ",
+                                                                                        paras.FullOrderByStringReverse/*0*/,
+                                                                                        paras.UnqueField/*1*/,
+                                                                                        paras.Sql/*2*/,
+                                                                                        paras.OrderByField/*3*/,
+                                                                                        paras.Symbol/*4*/,
+                                                                                        paras.OrderByValue/*5*/,
+                                                                                        paras.UnqueValue/*6*/,
+                                                                                        thisIndex/*7*/);
+
+                var row = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().First();
+                paras.Row = row;
+                paras.OrderByValue = row[2];
+                paras.UnqueValue = row[0];
+
+                sql = string.Format(@"SELECT  COUNT(1)  FROM (
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.Symbol + @"'{3}' OR (t.{0}='{3}' AND t.{1}<'{4}')
+                                                                                                    ",
+                                                                                         paras.OrderByField/*0*/,
+                                                                                         paras.UnqueField/*1*/,
+                                                                                         paras.Sql/*2*/,
+                                                                                         paras.OrderByValue/*3*/,
+                                                                                         paras.UnqueValue/*4*/,
+                                                                                         paras.FullOrderByString/*5*/);
+                var maxRowIndex = Taskable<int>(sql, paras.WhereObj).Count();
+                paras.RowIndex = maxRowIndex;
+                paras.isGreater = maxRowIndex > paras.Begin;
+                if (maxRowIndex == paras.Begin) return paras;//如果相等返回BeginRow
+                if (((maxRowIndex - paras.Begin) * paras.ConfigCount) < PageMaxHandleNumber)
+                {
+                    return paras;
+                }
+                return GetListByPage_GetPageBeginRow(paras);
+                #endregion
+
+            }
+            else//向后取样
+            {
+
+                #region 向后取样
+                thisIndex = (paras.Begin - paras.RowIndex) / 3;
+                if (thisIndex == 0)
+                {
+                    return paras;
+                }
+                sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {0},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}{4}'{6}' ) ) t WHERE t.ROWINDEX={7}
+             
+                                                                                       ",
+                                                                                        paras.FullOrderByString/*0*/,
+                                                                                        paras.UnqueField/*1*/,
+                                                                                        paras.Sql/*2*/,
+                                                                                        paras.OrderByField/*3*/,
+                                                                                        paras.SymbolReverse/*4*/,
+                                                                                        paras.OrderByValue/*5*/,
+                                                                                        paras.UnqueValue/*6*/,
+                                                                                        thisIndex/*7*/);
+
+                var row = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().First();
+                paras.Row = row;
+                paras.OrderByValue = row[2];
+                paras.UnqueValue = row[0];
+
+                sql = string.Format(@"SELECT  COUNT(1)  FROM (
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.Symbol + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.Symbol + @"'{4}')
+                                                                                                    ",
+                                                                                         paras.OrderByField/*0*/,
+                                                                                         paras.UnqueField/*1*/,
+                                                                                         paras.Sql/*2*/,
+                                                                                         paras.OrderByValue/*3*/,
+                                                                                         paras.UnqueValue/*4*/,
+                                                                                         paras.FullOrderByString/*5*/);
+                var maxRowIndex = Taskable<int>(sql, paras.WhereObj).Count();
+                paras.RowIndex = maxRowIndex;
+                paras.isGreater = maxRowIndex > paras.Begin;
+                if (maxRowIndex == paras.Begin) return paras;//如果相等返回BeginRow
+                if (Math.Abs(((maxRowIndex - paras.Begin) * paras.ConfigCount)) < PageMaxHandleNumber)
+                {
+                    return paras;
+                }
+                return GetListByPage_GetPageBeginRow(paras);
+                #endregion
+            }
+        }
+
+        /// <summary>
+        /// 获取分页样品节点索引数组
+        /// </summary>
+        /// <param name="maxDataIndex"></param>
+        /// <param name="nodeSPacing"></param>
+        /// <param name="minDataIndex"></param>
+        /// <returns></returns>
+        private static List<int> GetListByPage_GetNodeIndexList(int maxDataIndex, int nodeSPacing)
+        {
+            List<int> reval = new List<int>();
+            var oldNodeSPacing = nodeSPacing;
+            while (nodeSPacing + oldNodeSPacing <= maxDataIndex)
+            {
+                nodeSPacing += oldNodeSPacing;
+                reval.Add(nodeSPacing);
+
+            }
+            return reval.Distinct().ToList();
+        } 
+        #endregion
+        #endregion
     }
 }
