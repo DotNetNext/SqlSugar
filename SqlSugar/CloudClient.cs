@@ -422,12 +422,12 @@ namespace SqlSugar
                                                                                                      sampleRow[2]/*3:OrderByValue*/,
                                                                                                      sampleRow[0]/*4:UnqueValue*/,
                                                                                                      fullOrderByString/*5*/);
-            var maxRowIndex = Taskable<int>(sqlOtherPage, whereObj).Count();
+            var sampleRowIndex = Taskable<int>(sqlOtherPage, whereObj).Count();
 
             //获取分页索引所需参数实体
             PageRowInnerParamsResult beginEndRowParams = new PageRowInnerParamsResult()
             {
-                RowIndex = maxRowIndex,
+                RowIndex = sampleRowIndex,
                 Row = sampleRow,
                 Begin = pageBegin,
                 End = pageEnd,
@@ -436,7 +436,7 @@ namespace SqlSugar
                 Sql = sql,
                 OrderByField = orderByField,
                 UnqueField = unqueField,
-                isGreater = maxRowIndex > pageBegin,
+                isGreater = sampleRowIndex > pageBegin,
                 Symbol = symbol,
                 SymbolReverse = symbolReverse,
                 OrderByValue = sampleRow[2],
@@ -535,7 +535,7 @@ namespace SqlSugar
                 #region 向前取样
                 thisIndex = (paras.RowIndex - paras.Begin) / 3;
                 sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {0},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}{4}'{6}' ) ) t WHERE t.ROWINDEX={7}
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {0}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}{4}'{6}' ) ) t WHERE t.ROWINDEX={7}
              
                                                                                        ",
                                                                                         paras.FullOrderByStringReverse/*0*/,
@@ -553,7 +553,7 @@ namespace SqlSugar
                 paras.UnqueValue = row[0];
 
                 sql = string.Format(@"SELECT  COUNT(1)  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.Symbol + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.Symbol + @"'{4}')
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE t.{0}" + paras.Symbol + "'{3}' OR (t.{0}='{3}' AND t.{1}" + paras.Symbol + @"'{4}')
                                                                                                     ",
                                                                                          paras.OrderByField/*0*/,
                                                                                          paras.UnqueField/*1*/,
