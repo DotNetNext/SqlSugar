@@ -62,10 +62,10 @@ namespace SqlSugar
             SqlDataReader reader = null;
             var pars = SqlSugarTool.GetParameters(whereObj);
             var type = typeof(T);
-            sql =string.Format( @"
+            sql = string.Format(@"
              --{0}
              {1}
-            ",type.Name,sql);
+            ", type.Name, sql);
             reader = GetReader(sql, pars);
             if (type.IsIn(SqlSugarTool.IntType, SqlSugarTool.StringType))
             {
@@ -129,7 +129,6 @@ namespace SqlSugar
             string cachePropertiesKey = "db." + type.Name + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
 
-
             PropertyInfo[] props = null;
             if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
             {
@@ -140,7 +139,7 @@ namespace SqlSugar
                 props = type.GetProperties();
                 cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
             }
-            var isContainCacheSqlKey=cacheSqlManager.ContainsKey(cacheSqlKey);
+            var isContainCacheSqlKey = cacheSqlManager.ContainsKey(cacheSqlKey);
             if (isContainCacheSqlKey)
             {
                 sbInsertSql = cacheSqlManager[cacheSqlKey];
@@ -220,7 +219,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new Exception("sql:"+sql+"\n"+ex.Message);
+                throw new Exception("sql:" + sql + "\n" + ex.Message);
             }
 
         }
@@ -289,10 +288,10 @@ namespace SqlSugar
         /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
         /// <param name="whereIn">new int[]{1,2,3}</param>
         /// <returns></returns>
-        public bool Update<T,FiledType>(object rowObj, params FiledType[] whereIn) where T : class
+        public bool Update<T, FiledType>(object rowObj, params FiledType[] whereIn) where T : class
         {
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
- 
+
             Type type = typeof(T);
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
@@ -323,8 +322,15 @@ namespace SqlSugar
                     parsList.Add(par);
                 }
             }
-            var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
-            return updateRowCount > 0;
+            try
+            {
+                var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
+                return updateRowCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("sql:" + sbSql.ToString() + "\n" + ex.Message);
+            }
         }
 
         /// <summary>
@@ -366,7 +372,7 @@ namespace SqlSugar
             }
             return isSuccess;
         }
- 
+
         /// <summary>
         /// 批量假删除
         /// 使用说明::

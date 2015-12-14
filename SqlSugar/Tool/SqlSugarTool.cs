@@ -30,10 +30,10 @@ namespace SqlSugar
         /// <param name="dr"></param>
         /// <param name="isClose"></param>
         /// <returns></returns>
-        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr,string fields, bool isClose = true)
+        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true)
         {
             var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
-            string key = "DataReaderToList." +fields+ type.FullName;
+            string key = "DataReaderToList." + fields + type.FullName;
             IDataReaderEntityBuilder<T> eblist = null;
             if (cacheManager.ContainsKey(key))
             {
@@ -179,11 +179,11 @@ namespace SqlSugar
             }
 
             //反回主键
-            if (!primaryInfo.Any(it=>it.Key==tableName))
+            if (!primaryInfo.Any(it => it.Key == tableName))
             {
                 return null;
             }
-            return primaryInfo.First(it=>it.Key==tableName).Value;
+            return primaryInfo.First(it => it.Key == tableName).Value;
 
         }
         /// <summary>
@@ -194,10 +194,11 @@ namespace SqlSugar
         public static string SqlLikeWordEncode(string word)
         {
             if (word == null) return word;
-            return Regex.Replace(word,@"(\[|\%)","[$1]");
+            return Regex.Replace(word, @"(\[|\%)", "[$1]");
         }
 
-        public static string GetLockString(bool isNoLock) {
+        public static string GetLockString(bool isNoLock)
+        {
             return isNoLock ? " WITH(NOLOCK) " : "";
         }
 
@@ -212,7 +213,7 @@ namespace SqlSugar
         {
             PropertyInfo propertyInfo = obj.GetType().GetProperty(property);
             return (Guid)propertyInfo.GetValue(obj, null);
-        }  
+        }
 
     }
 }

@@ -359,7 +359,7 @@ namespace SqlSugar
                 var sqlPage = string.Format(@"SELECT * FROM (
                                                                                         SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
                                                                                         ", sql, fullOrderByString, 1, pageSize * configCount);
-                var tasks = Taskable<T>(sql, whereObj);
+                var tasks = Taskable<T>(sqlPage, whereObj);
                 return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByField, orderByType).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             }
             #endregion
@@ -372,19 +372,20 @@ namespace SqlSugar
 
                 var sqlPage = string.Format(@"SELECT * FROM (
                                                                                         SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
-                                                                                        ", sql, fullOrderByStringReverse, 1, lastPage * configCount);
-                var tasks = Taskable<T>(sql, whereObj);
+                                                                                        ", sql, fullOrderByStringReverse, 1, lastPage * configCount*pageSize);
+                var tasks = Taskable<T>(sqlPage, whereObj);
                 var lastPageSize = pageCount % pageSize;
                 if (lastPageSize == 0) lastPageSize = pageSize;
 
-                var list = tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByField, orderByTypeReverse);
+                var list = tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByField, orderByTypeReverse).ThenBy(unqueField, OrderByType.desc);
                 if (isLast)
                 {
-                    return list.Skip(0).Take(lastPageSize).OrderBy(orderByField, orderByType).ToList();
+                    return list.Skip(0).Take(lastPageSize).OrderBy(orderByField, orderByType).ThenBy(unqueField, OrderByType.asc).ToList();
                 }
                 else
                 {
-                    return list.Skip((lastPage - 1) * pageSize - lastPageSize - 1).Take(pageSize).OrderBy(orderByField, orderByType).ToList();
+                    var skipIndex = (lastPage - 1) * pageSize + lastPageSize-pageSize;
+                    return list.Skip(skipIndex).Take(pageSize).OrderBy(orderByField, orderByType).ThenBy(unqueField, OrderByType.asc).ToList();
                 }
             }
             #endregion
