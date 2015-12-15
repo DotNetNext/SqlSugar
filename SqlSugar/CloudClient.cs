@@ -322,6 +322,9 @@ namespace SqlSugar
             int configCount = configList.Count;
             string sqlCount = string.Format("SELECT COUNT(*) FROM ({0}) t ", sql);
             pageCount = Taskable<int>(sqlCount, whereObj).Count();
+            if (pageCount == 0) {
+                return new List<T>();
+            }
             int totalPage = (pageCount + pageSize - 1) / pageSize;
             var lastPage = (totalPage - pageIndex) + 1;
             var isLast = totalPage == pageIndex;
@@ -723,7 +726,7 @@ namespace SqlSugar
             {
 
                 #region 向前取样
-                thisIndex = (paras.RowIndex - paras.Begin) / 3;
+                thisIndex = (paras.RowIndex - paras.Begin) / paras.ConfigCount;
                 sql = string.Format(@"SELECT {1},RowIndex,{3} as OrderByField  FROM (
                                                                                                     SELECT *,ROW_NUMBER()OVER(ORDER BY {0}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {3}{4}'{5}' OR ({3}='{5}' AND {1}<'{6}' ) ) t WHERE t.ROWINDEX={7}
              
@@ -755,7 +758,7 @@ namespace SqlSugar
                 paras.RowIndex = maxRowIndex;
                 paras.isGreater = maxRowIndex > paras.Begin;
                 if (maxRowIndex == paras.Begin) return paras;//如果相等返回BeginRow
-                if (((maxRowIndex - paras.Begin) * paras.ConfigCount) < PageMaxHandleNumber)
+                if (Math.Abs((maxRowIndex - paras.Begin) * paras.ConfigCount) < PageMaxHandleNumber)
                 {
                     return paras;
                 }
@@ -767,7 +770,7 @@ namespace SqlSugar
             {
 
                 #region 向后取样
-                thisIndex = (paras.Begin - paras.RowIndex) / 3;
+                thisIndex = (paras.Begin - paras.RowIndex) / paras.ConfigCount ;
                 if (thisIndex == 0)
                 {
                     return paras;
