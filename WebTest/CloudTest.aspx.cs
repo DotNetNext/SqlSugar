@@ -44,19 +44,19 @@ namespace WebTest
 
 
 
-                    //并发请求所有节点找出这条数据更新
-                    s.name = "改11";
-                    db.Update<student>(s, it => it.id == s.id);//根据表达示更新
+                    ////并发请求所有节点找出这条数据更新
+                    //s.name = "改11";
+                    //db.Update<student>(s, it => it.id == s.id);//根据表达示更新
 
 
-                    db.Update<student, Guid>(s, s.id);//根据主键更新
+                    //db.Update<student, Guid>(s, s.id);//根据主键更新
 
-                    db.Update<student, Guid>(s, new Guid[] { s.id });//根据主键数组更新
+                    //db.Update<student, Guid>(s, new Guid[] { s.id });//根据主键数组更新
 
 
 
-                    //并发请求所有节点找出这条数据删除
-                    db.Delete<student>(it => it.id == s.id);
+                    ////并发请求所有节点找出这条数据删除
+                    //db.Delete<student>(it => it.id == s.id);
 
 
                     trans.Commit();
@@ -127,14 +127,13 @@ namespace WebTest
                 int minValue = db.Taskable<int>("SELECT min(NUM) FROM STUDENT").Min();//求出所有节点的最小值
                 var dataCount = db.Taskable<int>("SELECT count(1) FROM STUDENT").Count();//求出所有节点数据
                 // var avg = db.TaskableWithCount<int>("SELECT avg(num)", " FROM STUDENT").Avg();
-                var all = db.Taskable<student>("select * from student where name=@name", new { name = "张三" }).ToList();//获取所有节点name为张三的数据,转为list
+                var all = db.Taskable<student>("select * from student where Contains(name,@name)", new { name = "张三" }).ToList();//获取所有节点name为张三的数据,转为list
                 var data = db.Taskable<student>("select * from student where id=@id", new { id = id }).ToSingle();//从所有节点中查询一条记录
 
 
                 var dn = DateTime.Now;
-                var list = db.TaskableWithPage<student>("id", "select * from student where  Contains(name, N'test')", 1001, 25, ref pageCount, "num", OrderByType.asc);
+                var list = db.TaskableWithPage<student>("id", "select * from student where   Contains(name, '\"*李小名*\"')", 10, 25, ref pageCount, "num", OrderByType.asc);
                 var x = (DateTime.Now - dn).TotalSeconds;
-
             }
         }
     }
