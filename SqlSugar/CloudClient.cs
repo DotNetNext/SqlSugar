@@ -243,8 +243,15 @@ namespace SqlSugar
                     else
                     {
                         var obj = db.GetScalar(sql, whereObj);
-                        obj = Convert.ChangeType(obj, typeof(T));
-                        itemReval.Value = (T)obj;
+                        if (obj == DBNull.Value)
+                        {
+                            itemReval.Value = default(T);
+                        }
+                        else
+                        {
+                            obj = Convert.ChangeType(obj, typeof(T));
+                            itemReval.Value = (T)obj;
+                        }
                     }
                     itemReval.ConnectionString = connString;
                     return itemReval;
