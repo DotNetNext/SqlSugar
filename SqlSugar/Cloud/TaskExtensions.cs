@@ -52,9 +52,9 @@ namespace SqlSugar
         /// <returns></returns>
         public static int Avg(this TaskableWithCount<int> thisValue)
         {
-            var count=thisValue.Tasks.Select(it=>it.Result.Count).Sum();
-            if(count==0) return 0;
-            var reval=thisValue.Tasks.Select(it => it.Result.Value * it.Result.Count).Sum()/count;
+            var count = thisValue.Tasks.Select(it => it.Result.Count).Sum();
+            if (count == 0) return 0;
+            var reval = thisValue.Tasks.Select(it => it.Result.Value * it.Result.Count).Sum() / count;
             return reval;
         }
         /// <summary>
@@ -83,7 +83,7 @@ namespace SqlSugar
             var reval = thisValue.Tasks.Select(it => it.Result.Value * it.Result.Count).Sum() / count;
             return reval;
         }
-   
+
 
         /// <summary>
         /// 获取最小值
@@ -108,33 +108,84 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="thisValue"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this Taskable<T> thisValue)
+        public static List<T> ToList<T>(this Taskable<T> thisValue) where T : class
         {
             var isClass = typeof(T).IsClass;
             if (!isClass)
             {
                 Check.Exception(isClass, "TaskExtensions.ToList.thisValue T只能为class。");
             }
-            return thisValue.Tasks.SelectMany(it => it.Result.Entities).ToList();
+            return thisValue.MergeEntities<T>();
         }
 
 
         /// <summary>
-        /// 获取单条记录
+        ///  返回序列中的唯一元素；如果该序列为空，此方法将引发异常；如果该序列包含多个元素，此方法将引发异常。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="thisValue"></param>
         /// <returns></returns>
-        public static T ToSingle<T>(this Taskable<T> thisValue)
+        public static T ToSingle<T>(this Taskable<T> thisValue) where T : class
         {
             var isClass = typeof(T).IsClass;
             if (!isClass)
             {
                 Check.Exception(isClass, "TaskExtensions.ToSingle.thisValue T只能为class。");
             }
-            return thisValue.Tasks.SelectMany(it => it.Result.Entities).Single();
+            return thisValue.MergeEntities<T>().Single();
         }
 
+        /// <summary>
+        ///  返回序列中的唯一元素；如果该序列为空，则返回默认值；如果该序列包含多个元素，此方法将引发异常。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static T ToSingleOrDefault<T>(this Taskable<T> thisValue) where T : class
+        {
+            var isClass = typeof(T).IsClass;
+            if (!isClass)
+            {
+                Check.Exception(isClass, "TaskExtensions.ToSingle.thisValue T只能为class。");
+            }
+            return thisValue.MergeEntities<T>().SingleOrDefault();
+        }
+
+
+        /// <summary>
+        /// 获取第一行数据,，如果序列中不包含任何元素,则会抛出异常
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static T ToFirst<T>(this Taskable<T> thisValue) where T : class
+        {
+            var isClass = typeof(T).IsClass;
+            if (!isClass)
+            {
+                Check.Exception(isClass, "TaskExtensions.ToSingle.thisValue T只能为class。");
+            }
+            return thisValue.MergeEntities<T>().First();
+        }
+
+        /// <summary>
+        /// 如果序列中不包含任何元素，则返回默认值。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static T ToFirstOrDefault<T>(this Taskable<T> thisValue) where T : class
+        {
+            var isClass = typeof(T).IsClass;
+            if (!isClass)
+            {
+                Check.Exception(isClass, "TaskExtensions.ToSingle.thisValue T只能为class。");
+            }
+            return thisValue.MergeEntities<T>().FirstOrDefault();
+        }
+
+
+     
         /// <summary>
         /// 将结果集合并到一个集合
         /// </summary>
@@ -149,7 +200,7 @@ namespace SqlSugar
             {
                 Check.Exception(isDataTable, "TaskExtensions.MergeTable.thisValue T只能为DataTable。");
             }
-            var reval=thisValue.Tasks.SelectMany(it => it.Result.DataTable.AsEnumerable()).ToList();
+            var reval = thisValue.Tasks.SelectMany(it => it.Result.DataTable.AsEnumerable()).ToList();
             return reval;
         }
 
@@ -159,7 +210,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="thisValue"></param>
         /// <returns></returns>
-        public static List<T> MergeEntities<T>(this Taskable<T> thisValue)where T:class
+        public static List<T> MergeEntities<T>(this Taskable<T> thisValue) where T : class
         {
 
             var reval = thisValue.Tasks.SelectMany(it => it.Result.Entities).ToList();
@@ -173,7 +224,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="thisValue"></param>
         /// <returns></returns>
-        public static List<T> MergeValue<T>(this Taskable<T> thisValue) 
+        public static List<T> MergeValue<T>(this Taskable<T> thisValue)
         {
 
             var reval = thisValue.Tasks.Select(it => it.Result.Value).ToList();

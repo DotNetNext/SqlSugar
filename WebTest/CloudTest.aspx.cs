@@ -127,12 +127,12 @@ namespace WebTest
                 int minValue = db.Taskable<int>("SELECT min(NUM) FROM STUDENT").Min();//求出所有节点的最小值
                 var dataCount = db.Taskable<int>("SELECT count(1) FROM STUDENT").Count();//求出所有节点数据
                 // var avg = db.TaskableWithCount<int>("SELECT avg(num)", " FROM STUDENT").Avg();
-                var all = db.Taskable<student>("select * from student where Contains(name,@name)", new { name = "张三" }).ToList();//获取所有节点name为张三的数据,转为list
+                var all = db.Taskable<student>("select * from student where Contains(name,@name)"/*使用contains需要建全文索引*/, new { name = "张三" }).ToList();//获取所有节点name为张三的数据,转为list
                 var data = db.Taskable<student>("select * from student where id=@id", new { id = id }).ToSingle();//从所有节点中查询一条记录
 
 
                 var dn = DateTime.Now;
-                var list = db.TaskableWithPage<student>("id", "select * from student where   Contains(name, '\"*李*\"')", 10, 25, ref pageCount, "num", OrderByType.asc);
+                var list = db.TaskableWithPage<student>("id", "select * from student where   Contains(name, '\"*李*\"')"/*使用contains需要建全文索引*/, 10, 25, ref pageCount, "num", OrderByType.asc);
                 var time = (DateTime.Now - dn).TotalSeconds;
             }
         }
