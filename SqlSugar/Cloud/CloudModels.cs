@@ -94,7 +94,7 @@ namespace SqlSugar
 
     }
 
-    public class PageRowInnerParamsResult
+    internal class PageRowInnerParamsResult
     {
         public DataRow Row { get; set; }
         public int Count { get; set; }
@@ -102,35 +102,88 @@ namespace SqlSugar
         public int PageSize { get; set; }
         public int Begin { get; set; }
         public int End { get; set; }
-        public string Sql{get;set;}
+        public string Sql { get; set; }
         public bool IsEqs { get; set; }
-
         public string OrderByField { get; set; }
-
         public string UnqueField { get; set; }
-
         public int RowIndex { get; set; }
-
         public bool isGreater { get; set; }
-
         public string Symbol { get; set; }
-
         public object OrderByValue { get; set; }
-
         public object UnqueValue { get; set; }
-
         public OrderByType OrderByType { get; set; }
-
         public string FullOrderByString { get; set; }
-
         public string FullOrderByStringReverse { get; set; }
-
         public object WhereObj { get; set; }
-
         public string SymbolReverse { get; set; }
-
         public int ConfigCount { get; set; }
-
         public SqlSugar.OrderByType OrderByTypeReverse { get; set; }
+    }
+
+    internal class PageRowInnerParamsResultMultipleOrderBy
+    {
+        public DataRow Row { get; set; }
+        public int Count { get; set; }
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public int Begin { get; set; }
+        public int End { get; set; }
+        public string Sql { get; set; }
+        public string UnqueField { get; set; }
+        public int RowIndex { get; set; }
+        public bool isGreater { get; set; }
+        public object UnqueValue { get; set; }
+        public string FullOrderByString { get; set; }
+        public string FullOrderByStringReverse { get; set; }
+        public object WhereObj { get; set; }
+        public int ConfigCount { get; set; }
+    }
+
+    public class OrderByDictionary
+    {
+        public string OrderByField { get; set; }
+        public OrderByType OrderByType { get; set; }
+        public string OrderByString
+        {
+            get
+            {
+                return string.Format(" {0} {1} ", OrderByField, OrderByType.ToString());
+            }
+        }
+        public string OrderByStringReverse
+        {
+            get
+            {
+                return string.Format(" {0} {1} ", OrderByField, OrderByTypeReverse.ToString());
+            }
+        }
+        public OrderByType OrderByTypeReverse
+        {
+            get
+            {
+                return IsAsc ? OrderByType.desc : OrderByType.asc;
+            }
+        }
+        public bool IsAsc
+        {
+            get
+            {
+                return OrderByType == OrderByType.asc;
+            }
+        }
+        public string Symbol
+        {
+            get
+            {
+                return IsAsc ? "<" : ">";
+            }
+        }
+        public string SymbolReverse
+        {
+            get
+            {
+                return IsAsc ? ">" : "<";
+            }
+        }
     }
 }

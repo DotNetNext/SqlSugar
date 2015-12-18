@@ -15,6 +15,8 @@ namespace SqlSugar
     {
 
         static Type _guidType = typeof(Guid);
+        
+        #region 单组
         /// <summary>
         /// 排序
         /// </summary>
@@ -29,7 +31,7 @@ namespace SqlSugar
             PropertyInfo prop = type.GetProperty(sortField);
             Check.Exception(prop == null, "No property '" + sortField + "' in + " + typeof(T).Name + "'");
             if (orderByType == OrderByType.desc)
-                return list.OrderByDescending(it =>ConvertField(prop.GetValue(it, null)));
+                return list.OrderByDescending(it => ConvertField(prop.GetValue(it, null)));
             else
                 return list.OrderBy(it => ConvertField(prop.GetValue(it, null)));
 
@@ -54,7 +56,6 @@ namespace SqlSugar
                 return list.ThenBy(it => ConvertField(prop.GetValue(it, null)));
 
         }
-
 
         /// <summary>
         /// 排序
@@ -92,6 +93,198 @@ namespace SqlSugar
             else
                 return list.ThenBy(it => ConvertField(it[sortField]));
         }
+        #endregion
+
+
+        #region 多组
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes)
+        {
+            var type = typeof(T);
+            IOrderedEnumerable<T> reval = list.OrderBy(it => true);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                Check.Exception(prop == null, "No property '" + orderByType.OrderByField + "' in + " + typeof(T).Name + "'");
+                if (!orderByType.IsAsc)
+                    reval = reval.ThenByDescending(it => ConvertField(prop.GetValue(it, null)));
+                else
+                    reval = reval.ThenBy(it => ConvertField(prop.GetValue(it, null)));
+            }
+            return reval;
+        }
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> list, List<OrderByDictionary> orderByTypes)
+        {
+            var type = typeof(T);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                Check.Exception(prop == null, "No property '" + orderByType.OrderByField + "' in + " + typeof(T).Name + "'");
+                if (!orderByType.IsAsc)
+                    list = list.ThenByDescending(it => ConvertField(prop.GetValue(it, null)));
+                else
+                    list = list.ThenBy(it => ConvertField(prop.GetValue(it, null)));
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> OrderByDataRow<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
+        {
+            var type = typeof(T);
+            IOrderedEnumerable<T> reval = list.OrderBy(it => true);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                if (!orderByType.IsAsc)
+                    reval = list.OrderByDescending(it => ConvertField(it[orderByType.OrderByField]));
+                else
+                    reval = list.OrderBy(it => ConvertField(it[orderByType.OrderByField]));
+            }
+            return reval;
+        }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> ThenByDataRow<T>(this IOrderedEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
+        {
+            var type = typeof(T);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                if (!orderByType.IsAsc)
+                    list = list.ThenByDescending(it => ConvertField(it[orderByType.OrderByField]));
+                else
+                    list = list.ThenBy(it => ConvertField(it[orderByType.OrderByField]));
+            }
+            return list;
+        } 
+        #endregion
+
+
+        #region 多组反转
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> OrderByReverse<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes)
+        {
+            var type = typeof(T);
+            IOrderedEnumerable<T> reval = list.OrderBy(it => true);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                Check.Exception(prop == null, "No property '" + orderByType.OrderByField + "' in + " + typeof(T).Name + "'");
+                if (orderByType.IsAsc)
+                    reval = reval.ThenByDescending(it => ConvertField(prop.GetValue(it, null)));
+                else
+                    reval = reval.ThenBy(it => ConvertField(prop.GetValue(it, null)));
+            }
+            return reval;
+        }
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> ThenByReverse<T>(this IOrderedEnumerable<T> list, List<OrderByDictionary> orderByTypes)
+        {
+            var type = typeof(T);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                Check.Exception(prop == null, "No property '" + orderByType.OrderByField + "' in + " + typeof(T).Name + "'");
+                if (orderByType.IsAsc)
+                    list = list.ThenByDescending(it => ConvertField(prop.GetValue(it, null)));
+                else
+                    list = list.ThenBy(it => ConvertField(prop.GetValue(it, null)));
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> OrderByDataRowReverse<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
+        {
+            var type = typeof(T);
+            IOrderedEnumerable<T> reval = list.OrderBy(it => true);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                if (orderByType.IsAsc)
+                    reval = list.OrderByDescending(it => ConvertField(it[orderByType.OrderByField]));
+                else
+                    reval = list.OrderBy(it => ConvertField(it[orderByType.OrderByField]));
+            }
+            return reval;
+        }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static IOrderedEnumerable<T> ThenByDataRowReverse<T>(this IOrderedEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
+        {
+            var type = typeof(T);
+            foreach (OrderByDictionary orderByType in orderByTypes)
+            {
+                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                if (orderByType.IsAsc)
+                    list = list.ThenByDescending(it => ConvertField(it[orderByType.OrderByField]));
+                else
+                    list = list.ThenBy(it => ConvertField(it[orderByType.OrderByField]));
+            }
+            return list;
+        }
+        #endregion
+
 
         /// <summary>
         /// 解决GUID在SQL和C#中，排序方式不一致

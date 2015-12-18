@@ -132,8 +132,12 @@ namespace WebTest
 
 
                 var dn = DateTime.Now;
+                //单列排序
                 var list = db.TaskableWithPage<student>("id", "select * from student where   Contains(name, '\"*李*\"')"/*使用contains需要建全文索引*/, 10, 25, ref pageCount, "num", OrderByType.asc);
                 var time = (DateTime.Now - dn).TotalSeconds;
+
+                //等于order by num,time
+                //多组排序正在开发中....
             }
         }
     }
