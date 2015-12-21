@@ -92,33 +92,33 @@ namespace WebTest
                     var connectionName = dr.Result.ConnectionString;
                 }
 
-               // //Taskable实现分组查询
-               // var groupList = db.Taskable<DataTable>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
-               //     .Tasks
-               //     .SelectMany(it => it.Result.DataTable.AsEnumerable())
-               //     .Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
-               //     .GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
+                // //Taskable实现分组查询
+                // var groupList = db.Taskable<DataTable>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
+                //     .Tasks
+                //     .SelectMany(it => it.Result.DataTable.AsEnumerable())
+                //     .Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
+                //     .GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
 
 
-               // //输出结果
-               // foreach (var it in groupList)
-               // {
-               //     var num = it.num;
-               //     var name = it.name;
-               //     var count = it.count;
-               // }
+                // //输出结果
+                // foreach (var it in groupList)
+                // {
+                //     var num = it.num;
+                //     var name = it.name;
+                //     var count = it.count;
+                // }
 
 
-               // //简化
-               // var groupList2 = db.Taskable<DataTable>("SELECT NAME,COUNT(*) AS [COUNT],AVG(NUM) as NUM FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
-               //.MergeTable()//将结果集合并到一个集合
-               //.Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
-               //.GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
+                // //简化
+                // var groupList2 = db.Taskable<DataTable>("SELECT NAME,COUNT(*) AS [COUNT],AVG(NUM) as NUM FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
+                //.MergeTable()//将结果集合并到一个集合
+                //.Select(dr => new { num = Convert.ToInt32(dr["NUM"]), name = dr["NAME"].ToString(), count = Convert.ToInt32(dr["COUNT"]) })
+                //.GroupBy(dr => dr.name).Select(dt => new { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
 
-               // //再简化
-               // List<V_Student> groupList3 = db.Taskable<V_Student>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
-               //.MergeEntities()//将结果集合并到一个集合
-               //.GroupBy(dr => dr.name).Select(dt => new V_Student { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
+                // //再简化
+                // List<V_Student> groupList3 = db.Taskable<V_Student>("SELECT name,COUNT(*) AS [count],AVG(num) as num FROM STUDENT WHERE ID IS NOT NULL  GROUP BY NAME ")
+                //.MergeEntities()//将结果集合并到一个集合
+                //.GroupBy(dr => dr.name).Select(dt => new V_Student { name = dt.First().name, count = dt.Sum(dtItem => dtItem.count), num = dt.Sum(dtItem => dtItem.num) / dt.Sum(dtItem => dtItem.count) }).ToList();
 
 
 
@@ -133,9 +133,13 @@ namespace WebTest
 
                 var dn = DateTime.Now;
                 //单列排序
-                var list = db.TaskableWithPage<student>("id", "select * from student where   Contains(name, '\"*李*\"')"/*使用contains需要建全文索引*/, 10, 25, ref pageCount, "num", OrderByType.asc);
+                var list = db.TaskableWithPage<student>("id", "select * from student where   Contains(name,@name)"/*使用contains需要建全文索引*/, 10, 25, ref pageCount, "num", OrderByType.asc, new { name =  "\"*李*\"" });
                 var time = (DateTime.Now - dn).TotalSeconds;
 
+                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student where   Contains(name, @name)"/*使用contains需要建全文索引*/, 10, 25, ref pageCount, new List<OrderByDictionary>() { 
+                     new   OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.asc},
+                     new OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.asc}
+                }, new { name =  "\"*李*\"" });
                 //等于order by num,time
                 //多组排序正在开发中....
             }

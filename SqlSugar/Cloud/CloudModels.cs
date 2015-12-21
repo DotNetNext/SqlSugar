@@ -137,6 +137,10 @@ namespace SqlSugar
         public string FullOrderByStringReverse { get; set; }
         public object WhereObj { get; set; }
         public int ConfigCount { get; set; }
+ 
+        public string orderByFieldsString { get; set; }
+
+        public List<OrderByDictionary> OrderByTypes { get; set; }
     }
 
     public class OrderByDictionary
