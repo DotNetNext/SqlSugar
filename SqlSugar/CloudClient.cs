@@ -605,7 +605,7 @@ namespace SqlSugar
             string whereCompareReverse = GetWhereCompare(null, orderByTypes, sampleRow, true);
 
             sqlOtherPage = string.Format(@"SELECT  COUNT(1)  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE {0}{3} AND t.{1}<'{4}'
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE {0}({3}) AND t.{1}<'{4}'
                                                                                                     ",
                                                                                                      null/*0*/,
                                                                                                      unqueField/*1*/,
@@ -1007,18 +1007,24 @@ namespace SqlSugar
         private string GetWhereCompare(string whereCompare, List<OrderByDictionary> orderByTypes, DataRow sampleRow, bool isReverse = false)
         {
             List<string> reval = new List<string>();
-            foreach (var it in orderByTypes)
+            for (int i = 0; i < orderByTypes.Count; i++)
             {
-                if (isReverse == true)
+                List<string> revalChild = new List<string>();
+                for (int j = 0; j <= i; j++)
                 {
-                    reval.Add(string.Format(" {0}{1}='{2}' ", it.OrderByField, it.SymbolReverse, sampleRow[it.OrderByField]));
+                    var it = orderByTypes[j];
+                    if (isReverse == true)
+                    {
+                        revalChild.Add(string.Format(" {0}{1}='{2}' ", it.OrderByField, it.SymbolReverse, sampleRow[it.OrderByField]));
+                    }
+                    else
+                    {
+                        revalChild.Add(string.Format(" {0}{1}='{2}' ", it.OrderByField, it.Symbol, sampleRow[it.OrderByField]));
+                    }
                 }
-                else
-                {
-                    reval.Add(string.Format(" {0}{1}='{2}' ", it.OrderByField, it.Symbol, sampleRow[it.OrderByField]));
-                }
+                reval.Add(" ("+string.Join(" AND ", revalChild)+") ");
             }
-            return string.Join(" AND ", reval);
+            return string.Join(" OR ", reval);
         }
         private PageRowInnerParamsResultMultipleOrderBy GetListByPage_GetPageBeginRowMultipleOrderBy(PageRowInnerParamsResultMultipleOrderBy paras)
         {
@@ -1040,7 +1046,7 @@ namespace SqlSugar
                                                                                         paras.UnqueField/*1*/,
                                                                                         paras.Sql/*2*/,
                                                                                         paras.orderByFieldsString/*3*/,
-                                                                                        whereCompareReverse/*4*/,
+                                                                                        whereCompare/*4*/,
                                                                                         string.Empty/*5*/,
                                                                                         paras.UnqueValue/*6*/,
                                                                                         thisIndex/*7*/);
@@ -1079,29 +1085,20 @@ namespace SqlSugar
                 {
                     return paras;
                 }
-                List<DataRow> drs = new List<DataRow>();
-                while (true)
-                {
-                    sql = string.Format(@"SELECT {1},RowIndex,{3}   FROM (
+
+                sql = string.Format(@"SELECT {1},RowIndex,{3}   FROM (
                                                                                                     SELECT *,ROW_NUMBER()OVER(ORDER BY {0},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr WHERE {5} AND {1}>'{6}'  ) t WHERE t.ROWINDEX={7}
              
                                                                                        ",
-                                                                                            paras.FullOrderByString/*0*/,
-                                                                                            paras.UnqueField/*1*/,
-                                                                                            paras.Sql/*2*/,
-                                                                                            paras.orderByFieldsString/*3*/,
-                                                                                            null/*4*/,
-                                                                                            whereCompareReverse/*5*/,
-                                                                                            paras.UnqueValue/*6*/,
-                                                                                            thisIndex/*7*/);
-                    drs = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().ToList();
-                    if (drs.Count > 0)
-                    {
-                        break;
-                    }
-                    thisIndex =thisIndex- thisIndex/paras.ConfigCount;
-                }
-                var row = drs.First();
+                                                                                        paras.FullOrderByString/*0*/,
+                                                                                        paras.UnqueField/*1*/,
+                                                                                        paras.Sql/*2*/,
+                                                                                        paras.orderByFieldsString/*3*/,
+                                                                                        null/*4*/,
+                                                                                        whereCompareReverse/*5*/,
+                                                                                        paras.UnqueValue/*6*/,
+                                                                                        thisIndex/*7*/);
+                var row = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().First();
                 paras.Row = row;
                 paras.UnqueValue = row[0];
 
@@ -1135,7 +1132,7 @@ namespace SqlSugar
             { //如果相等
 
                 sql = string.Format(@"SELECT  top {6}*  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE  {3} AND t.{1}<'{4}')
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5},{1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE  ({3}) AND t.{1}<'{4}')
                                                                                                     ",
                                                                              paras.orderByFieldsString/*0*/,
                                                                              paras.UnqueField/*1*/,
@@ -1150,7 +1147,7 @@ namespace SqlSugar
             { //大于
 
                 var createrValue = (paras.RowIndex) - paras.Begin;
-                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE {3} AND t.{1}<='{4}'  ORDER BY {5}
+                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE ({3}) AND t.{1}<='{4}'  ORDER BY {5}
                                                                                                     ",
                                                              paras.orderByFieldsString/*0*/,
                                                              paras.UnqueField/*1*/,
@@ -1171,12 +1168,12 @@ namespace SqlSugar
             { //小于
 
                 var createrValue = paras.Begin - paras.RowIndex;
-                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE  {3} t.{1}>='{4}')  ORDER BY {5}
+                sql = string.Format(@"SELECT TOP {6}  {1},{0} FROM ({2}) as  t WHERE  {3}  AND t.{1}>='{4}'  ORDER BY {5}
                                                                                                     ",
                                                              paras.orderByFieldsString/*0*/,
                                                              paras.UnqueField/*1*/,
                                                              paras.Sql/*2*/,
-                                                             whereCompare/*3*/,
+                                                             whereCompareReverse/*3*/,
                                                              paras.UnqueValue/*4*/,
                                                              paras.FullOrderByString/*5*/,
                                                              createrValue * paras.ConfigCount + paras.PageSize);
