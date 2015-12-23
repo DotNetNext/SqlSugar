@@ -834,13 +834,13 @@ namespace SqlSugar
                 sql = string.Format(@"SELECT  top {0}*  FROM (
                                                                                                     SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE  ({3}) 
                                                                                                     ",
-                                                                             paras.PageSize * paras.ConfigCount/*0*/,
+                                                                             paras.PageSize * paras.ConfigCount + paras.PageSize * paras.PageSize/*0*/,
                                                                              paras.FullOrderByString/*1*/,
                                                                              paras.Sql/*2*/,
                                                                              whereCompareReverse/*3*/,
                                                                              paras.UnqueValue/*4*/
                                                                              );
-                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByTypes).ThenBy(paras.UnqueField, OrderByType.desc).Take(paras.PageSize).ToList();
+                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByTypes).Skip(0).Take(paras.PageSize).ToList();
             }
             else if (paras.isGreater)
             { //大于
