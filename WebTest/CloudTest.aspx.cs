@@ -131,20 +131,18 @@ namespace WebTest
                 var data = db.Taskable<student>("select * from student where id=@id", new { id = id }).ToSingle();//从所有节点中查询一条记录
 
 
-                var dn2 = DateTime.Now;
-                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student where name='xx122' "/*使用contains需要建全文索引*/, 1, 25, ref pageCount, new List<OrderByDictionary>() { 
-                     new   OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.asc},
-                   //  new OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.asc}
-                }, new { name = "\"*李*\"" });
-                var time2 = (DateTime.Now - dn2).TotalSeconds;
-
                 var dn = DateTime.Now;
                 //单列排序
-                var list = db.TaskableWithPage<student>("id", "select * from student where name='xx122'  "/*使用contains需要建全文索引*/, 1, 25, ref pageCount, "num", OrderByType.asc, new { name = "\"*李*\"" });
+                var list = db.TaskableWithPage<student>("id", "select * from student    "/*使用contains需要建全文索引*/, 1011, 25, ref pageCount, "num", OrderByType.desc, new { name = "\"*李*\"" });
                 var time = (DateTime.Now - dn).TotalSeconds;
                
-                //等于order by num,time
-                //多组排序正在开发中....
+                //多组排序 order by num,time
+                var dn2 = DateTime.Now;
+                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student   "/*使用contains需要建全文索引*/, 1011, 25, ref pageCount, new List<OrderByDictionary>() { 
+                     new   OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.desc},
+                     new OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.asc}
+                }, new { name = "\"*李*\"" });
+                var time2 = (DateTime.Now - dn2).TotalSeconds;
             }
         }
     }
