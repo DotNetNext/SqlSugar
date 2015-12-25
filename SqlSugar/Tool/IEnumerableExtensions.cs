@@ -188,9 +188,24 @@ namespace SqlSugar
         public static List<DataRow> OrderByDataRow(this IEnumerable<DataRow> list, List<OrderByDictionary> orderByTypes, OrderByDictionary orderByUnqueField)
         {
             orderByTypes.Add(orderByUnqueField);
-            var view = list.AsEnumerable().CopyToDataTable().AsDataView();
-            view.Sort = string.Join(",",orderByTypes.Select(it=>string.Format(" {0} {1} ",it.OrderByField,it.IsAsc?"ASC":"DESC")));
+            var dt = list.AsEnumerable().CopyToDataTable();
+            var guidType = typeof(Guid);
+            var sqlGuidType = typeof(SqlGuid);
+            System.Data.DataTable dtByConvertGuidToSqlGuid= new System.Data.DataTable();
+            foreach (DataColumn it in dt.Columns)
+            {
+                var isGuid = it.DataType == guidType;
+                if (isGuid)
+                    dtByConvertGuidToSqlGuid.Columns.Add(it.ColumnName, sqlGuidType);
+                else
+                    dtByConvertGuidToSqlGuid.Columns.Add(it.ColumnName, it.DataType);
+            }
+            //将dataTable中guid换转成sqlguid，这样排序才会和SQL一致
+            dtByConvertGuidToSqlGuid.Load(dt.CreateDataReader(), System.Data.LoadOption.OverwriteChanges);
+            var view = dtByConvertGuidToSqlGuid.AsDataView();
+            view.Sort = string.Join(",", orderByTypes.Select(it => string.Format(" {0} {1} ", it.OrderByField, it.IsAsc ? "ASC" : "DESC")));
             var reval = view.ToTable().AsEnumerable().ToList();
+            orderByTypes.Remove(orderByUnqueField);
             return reval;
         }
 

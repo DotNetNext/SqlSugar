@@ -138,8 +138,9 @@ namespace WebTest
                
                 //多组排序 order by num,time
                 var dn2 = DateTime.Now;
-                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student   "/*使用contains需要建全文索引*/, 200, 25, ref pageCount, new List<OrderByDictionary>() { 
+                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student where  contains(name,@name)   "/*使用contains需要建全文索引*/, 32, 25, ref pageCount, new List<OrderByDictionary>() { 
                      new   OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.desc},
+                            new   OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.desc},
                    //  new OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.asc}
                 }, new { name = "\"*李*\"" });
                 var time2 = (DateTime.Now - dn2).TotalSeconds;
