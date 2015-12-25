@@ -24,7 +24,7 @@ namespace WebTest
 
             using (CloudClient db = CloudDao.GetInstance())
             {
-                db.PageMaxHandleNumber = 500;
+                db.PageMaxHandleNumber = 1500;
                 using (CommittableTransaction trans = new CommittableTransaction())//启用分布式事务
                 {
 
@@ -40,7 +40,7 @@ namespace WebTest
                         id = Guid.NewGuid(),
                         name = Guid.NewGuid() + ""
                     };
-                    db.Insert<student>(s, false/*false表示不是自增列*/); //数据库设计主键为GUID为佳多库计算不会冲突
+                    //db.Insert<student>(s, false/*false表示不是自增列*/); //数据库设计主键为GUID为佳多库计算不会冲突
 
 
 
@@ -133,16 +133,18 @@ namespace WebTest
 
                 var dn = DateTime.Now;
                 //单列排序
-                var list = db.TaskableWithPage<student>("id", "select * from student    "/*使用contains需要建全文索引*/, 1011, 25, ref pageCount, "num", OrderByType.desc, new { name = "\"*李*\"" });
+             //  var list = db.TaskableWithPage<student>("id", "select * from student    "/*使用contains需要建全文索引*/, 2160, 25, ref pageCount, "num", OrderByType.desc, new { name = "\"*李*\"" });
                 var time = (DateTime.Now - dn).TotalSeconds;
                
                 //多组排序 order by num,time
                 var dn2 = DateTime.Now;
-                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student   "/*使用contains需要建全文索引*/, 1011, 25, ref pageCount, new List<OrderByDictionary>() { 
+                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student   "/*使用contains需要建全文索引*/, 200, 25, ref pageCount, new List<OrderByDictionary>() { 
                      new   OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.desc},
-                     new OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.asc}
+                   //  new OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.asc}
                 }, new { name = "\"*李*\"" });
                 var time2 = (DateTime.Now - dn2).TotalSeconds;
+
+ 
             }
         }
     }

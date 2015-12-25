@@ -35,6 +35,20 @@ namespace SqlSugar
         /// 内存中处理数据的最大值（默认：1000）
         /// </summary>
         public int PageMaxHandleNumber = 1000;
+        /// <summary>
+        /// 将时间格式化成数据库格式,如果数据库格式和默认值不相同需要重新设置(默认:yyyy-MM-dd hh:mm:ss.ms)
+        /// </summary>
+        public Func<object, object> FormatTimeByDataBase = (object fieldValue) =>
+        {
+            if (fieldValue.GetType().Name == "DateTime")
+            {
+                if (fieldValue != DBNull.Value)
+                {
+                    fieldValue = Convert.ToDateTime(fieldValue).ToString("yyyy-MM-dd HH:mm:ss") + "." + Convert.ToDateTime(fieldValue).Millisecond;
+                }
+            }
+            return fieldValue;
+        };
         #endregion
 
         #region insert
@@ -310,7 +324,7 @@ namespace SqlSugar
             return reval;
         }
         /// <summary>
-        /// 获取分页数据
+        /// 获取分页数据(注意：该函数不可以在事务内使用)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="unqueField">数据库中数据唯一的列（建议：主键GUID）</param>
@@ -327,7 +341,7 @@ namespace SqlSugar
             return TaskableWithPage<T>(unqueField, sql, pageIndex, pageSize, ref pageCount, new List<OrderByDictionary>() { new OrderByDictionary() { OrderByField = orderByField, OrderByType = orderByType } }, whereObj);
         }
         /// <summary>
-        /// 获取分页数据
+        /// 获取分页数据(注意：该函数不可以在事务内使用)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="unqueField">数据库中数据唯一的列（建议：主键GUID）</param>
@@ -488,8 +502,10 @@ namespace SqlSugar
                 Count = pageCount
             };
 
-            var beginEndRow = GetListByPage_GetPageBeginRowMultipleOrderBy(beginEndRowParams);
-
+            PageRowInnerParamsResultMultipleOrderBy beginEndRow =null;
+            var isBeginRow = (Math.Abs(sampleRowIndex - pageBegin) * configCount < PageMaxHandleNumber || Math.Abs(pageBegin - sampleRowIndex) * configCount < PageMaxHandleNumber);
+            beginEndRow=isBeginRow?beginEndRowParams: GetListByPage_GetPageBeginRowMultipleOrderBy(beginEndRowParams);
+            Dispose(false);
             var reval = GetListByPage_GetPageListMultipleOrderBy<T>(beginEndRow);
             Dispose(false);
             return reval;
@@ -704,32 +720,60 @@ namespace SqlSugar
         private string GetWhereCompare(string whereCompare, List<OrderByDictionary> orderByTypes, DataRow sampleRow, string unqueField, string unqueValue, bool isReverse = false, bool isEqual = false)
         {
             List<string> reval = new List<string>();
-            for (int i = 0; i < orderByTypes.Count; i++)
+            var ordersCount = orderByTypes.Count;
+            /*
+               排序筛选逻辑:
+             * 例如:  num desc, createTime asc
+             *  num>x
+             *  num=x and createTime<xx
+             *  num=x and createTime=xx and unqueField<unqueValue
+             *  以此类推
+             */
+            //算出没有unqueField的部分
+            for (int i = 0; i < ordersCount; i++)
             {
                 List<string> revalChild = new List<string>();
-                List<string> revalChildEqual = new List<string>();
                 for (int j = 0; j <= i; j++)
                 {
-                    var it = orderByTypes[j];
-                    if (isReverse == true)
+                    var isLastEach = j == i;
+                    OrderByDictionary currentOrderType = orderByTypes[j];
+                    var currentSymbol = isReverse ? currentOrderType.SymbolReverse : currentOrderType.Symbol;
+                    var fieldValue = sampleRow[currentOrderType.OrderByField];
+                    fieldValue = FormatTimeByDataBase(fieldValue);
+                    if (isLastEach)
                     {
-                        revalChild.Add(string.Format(" {0}{1}'{2}' ", it.OrderByField, it.SymbolReverse, sampleRow[it.OrderByField]));
+                        revalChild.Add(string.Format(" {0}{1}'{2}' ", currentOrderType.OrderByField, currentSymbol, fieldValue));
                     }
                     else
                     {
-                        revalChild.Add(string.Format(" {0}{1}'{2}' ", it.OrderByField, it.Symbol, sampleRow[it.OrderByField]));
+                        revalChild.Add(string.Format(" {0}='{1}' ", currentOrderType.OrderByField, fieldValue));
                     }
-                    revalChildEqual.Add(string.Format(" {0}='{1}' ", it.OrderByField, sampleRow[it.OrderByField]));
                 }
-                string revalChildString = null;
-                string revalChildStringTemp = string.Join(" AND ", revalChild);
-                string revalChildStringTempEqual = string.Join(" AND ", revalChildEqual);
-                var symbol = isReverse ? ">" : "<";
-                revalChildString = string.Format(" ( ({0}) OR ( {1} AND {2}{3}{4}'{5}') ) ", revalChildStringTemp, revalChildStringTempEqual, unqueField, symbol, isEqual ? "=" : null, unqueValue);
-                reval.Add(revalChildString);
+                reval.Add(" ( " + string.Join(" AND ", revalChild) + " ) ");
             }
+            //算出unqueField的部分
+            List<string> revalChildLast = new List<string>();
+            for (int i = 0; i < ordersCount; i++)
+            {
+                OrderByDictionary currentOrderType = orderByTypes[i];
+                var fieldValue = sampleRow[currentOrderType.OrderByField];
+                fieldValue = FormatTimeByDataBase(fieldValue);
+                revalChildLast.Add(string.Format(" {0}='{1}' ", currentOrderType.OrderByField, fieldValue));
+            }
+            var isSymbol = isReverse ? ">" : "<";
+            if (isEqual)
+            {
+                isSymbol = isReverse ? ">=" : "<=";
+            }
+            revalChildLast.Add(string.Format("{0}{1}'{2}' ", unqueField, isSymbol, unqueValue));
+            reval.Add(" ( " + string.Join(" AND ", revalChildLast) + " ) ");
+
+
+            //将unqueField部分和非unqueField部分进行OR拼接
             return string.Join(" OR ", reval);
         }
+
+
         private PageRowInnerParamsResultMultipleOrderBy GetListByPage_GetPageBeginRowMultipleOrderBy(PageRowInnerParamsResultMultipleOrderBy paras)
         {
             string whereCompare = GetWhereCompare(string.Empty, paras.OrderByTypes, paras.Row, paras.UnqueField, paras.UnqueValue.ToString());
@@ -753,7 +797,8 @@ namespace SqlSugar
                                                                                              whereCompare/*4*/,
                                                                                              thisIndex/*5*/);
 
-                var row = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().First();
+                var rowList=Taskable<DataTable>(sql, paras.WhereObj).MergeTable().ToList();
+                var row = rowList[rowList.Count/2];
                 paras.Row = row;
                 paras.UnqueValue = row[0];
                 whereCompare = GetWhereCompare(string.Empty, paras.OrderByTypes, paras.Row, paras.UnqueField, paras.UnqueValue.ToString());
@@ -797,7 +842,8 @@ namespace SqlSugar
                                                                                         paras.Sql/*3*/,
                                                                                         whereCompareReverse/*4*/,
                                                                                         thisIndex/*5*/);
-                var row = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().First();
+                var rowList = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByTypes).ToList();
+                var row = rowList[rowList.Count / 2];
                 paras.Row = row;
                 paras.UnqueValue = row[0];
                 whereCompare = GetWhereCompare(string.Empty, paras.OrderByTypes, paras.Row, paras.UnqueField, paras.UnqueValue.ToString());
@@ -812,6 +858,7 @@ namespace SqlSugar
                 var maxRowIndex = Taskable<int>(sql, paras.WhereObj).Count();
                 paras.RowIndex = maxRowIndex;
                 paras.isGreater = maxRowIndex > paras.Begin;
+                Dispose(false);
                 if (maxRowIndex == paras.Begin) return paras;//如果相等返回BeginRow
                 if (Math.Abs(((maxRowIndex - paras.Begin) * paras.ConfigCount)) < PageMaxHandleNumber)
                 {
@@ -844,7 +891,8 @@ namespace SqlSugar
             }
             else if (paras.isGreater)
             { //大于
-
+                string whereCompareReverse = GetWhereCompare(string.Empty, paras.OrderByTypes, paras.Row, paras.UnqueField, paras.UnqueValue.ToString(), true);
+                string AnotherPartSql = null;
                 var createrValue = (paras.RowIndex) - paras.Begin;
                 sql = string.Format(@"SELECT TOP {0}  {1},{2} FROM ({3}) as  t WHERE {4}  ORDER BY {5}
                                                                        
@@ -856,8 +904,28 @@ namespace SqlSugar
                                                              whereCompareEqual/*4*/,
                                                              paras.FullOrderByStringReverse/*5*/
                                                             );
+                if (createrValue < paras.PageSize)
+                {
 
-                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByTypes).ThenByDataRow(paras.UnqueField, OrderByType.asc).ToList();
+                    AnotherPartSql = string.Format(@"SELECT TOP {0}  {1},{2} FROM ({3}) as  t WHERE {4}   ORDER BY {5}
+                                                                       
+                             ",
+                                                            (paras.PageSize - createrValue) * paras.ConfigCount/*0*/,
+                                                            paras.UnqueField/*1*/,
+                                                            paras.orderByFieldsString/*2*/,
+                                                            paras.Sql/*3*/,
+                                                            whereCompareReverse/*4*/,
+                                                            paras.FullOrderByString/*5*/,
+                                                            paras.UnqueValue
+                                                            );
+                }
+                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().ToList();
+                if (createrValue < paras.PageSize)
+                {
+                    var rows2 = Taskable<DataTable>(AnotherPartSql, paras.WhereObj).MergeTable().ToList();
+                    rows.AddRange(rows2);
+                }
+                rows = rows.OrderByDataRow(paras.OrderByTypes, new OrderByDictionary() { OrderByField = paras.UnqueField, OrderByType = OrderByType.asc });
                 var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
                 var revalRows = rows.Skip(maxRowIndex - createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
                 sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());
@@ -877,8 +945,7 @@ namespace SqlSugar
                                                              whereCompareReverseEqual/*4*/,
                                                              paras.FullOrderByString/*5*/
                                                              );
-
-                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByTypes).ThenByDataRow(paras.UnqueField, OrderByType.asc).ToList();
+                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByTypes, new OrderByDictionary() { OrderByField = paras.UnqueField, OrderByType = OrderByType.asc });
                 var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
                 var revalRows = rows.Skip(maxRowIndex + createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
                 sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());

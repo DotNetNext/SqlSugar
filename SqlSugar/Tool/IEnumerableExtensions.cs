@@ -15,7 +15,7 @@ namespace SqlSugar
     {
 
         static Type _guidType = typeof(Guid);
-        
+
         #region 单组
         /// <summary>
         /// 排序
@@ -155,15 +155,42 @@ namespace SqlSugar
         public static IOrderedEnumerable<T> OrderByDataRow<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
         {
             var type = typeof(T);
-            IOrderedEnumerable<T> reval = list.OrderBy(it => true);
+            IOrderedEnumerable<T> reval = null;
             foreach (OrderByDictionary orderByType in orderByTypes)
             {
-                PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
-                if (!orderByType.IsAsc)
-                    reval = list.OrderByDescending(it => ConvertField(it[orderByType.OrderByField]));
+                if (reval == null)
+                {
+                    PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                    if (!orderByType.IsAsc)
+                        reval = list.OrderByDescending(it => ConvertField(it[orderByType.OrderByField]));
+                    else
+                        reval = list.OrderBy(it => ConvertField(it[orderByType.OrderByField]));
+                }
                 else
-                    reval = list.OrderBy(it => ConvertField(it[orderByType.OrderByField]));
+                {
+                    PropertyInfo prop = type.GetProperty(orderByType.OrderByField);
+                    if (!orderByType.IsAsc)
+                        reval = reval.ThenByDescending(it => ConvertField(it[orderByType.OrderByField]));
+                    else
+                        reval = reval.ThenBy(it => ConvertField(it[orderByType.OrderByField]));
+                }
             }
+            return reval;
+        }
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="sortField"></param>
+        /// <param name="orderByType"></param>
+        /// <returns></returns>
+        public static List<DataRow> OrderByDataRow(this IEnumerable<DataRow> list, List<OrderByDictionary> orderByTypes, OrderByDictionary orderByUnqueField)
+        {
+            orderByTypes.Add(orderByUnqueField);
+            var view = list.AsEnumerable().CopyToDataTable().AsDataView();
+            view.Sort = string.Join(",",orderByTypes.Select(it=>string.Format(" {0} {1} ",it.OrderByField,it.IsAsc?"ASC":"DESC")));
+            var reval = view.ToTable().AsEnumerable().ToList();
             return reval;
         }
 
@@ -187,7 +214,7 @@ namespace SqlSugar
                     list = list.ThenBy(it => ConvertField(it[orderByType.OrderByField]));
             }
             return list;
-        } 
+        }
         #endregion
 
 

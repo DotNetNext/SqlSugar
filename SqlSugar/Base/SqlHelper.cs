@@ -22,6 +22,7 @@ namespace SqlSugar
         /// 是否清空SqlParameters
         /// </summary>
         public bool isClearParameters = true;
+        public int CommandTimeOut = 30000;
         public SqlHelper(string connectionString)
         {
             _sqlConnection = new SqlConnection(connectionString);
@@ -78,6 +79,7 @@ namespace SqlSugar
             {
                 sqlCommand.Transaction = _tran;
             }
+            sqlCommand.CommandTimeout = this.CommandTimeOut;
             sqlCommand.Parameters.AddRange(pars);
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
@@ -91,6 +93,7 @@ namespace SqlSugar
         public int ExecuteCommand(string sql, params SqlParameter[] pars)
         {
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
+            sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
                 sqlCommand.Transaction = _tran;
@@ -107,6 +110,7 @@ namespace SqlSugar
         public SqlDataReader GetReader(string sql, params SqlParameter[] pars)
         {
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
+            sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
                 sqlCommand.Transaction = _tran;
@@ -143,6 +147,7 @@ namespace SqlSugar
         {
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
+            _sqlDataAdapter.SelectCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
                 _sqlDataAdapter.SelectCommand.Transaction = _tran;
@@ -163,6 +168,7 @@ namespace SqlSugar
             {
                 _sqlDataAdapter.SelectCommand.Transaction = _tran;
             }
+            _sqlDataAdapter.SelectCommand.CommandTimeout = this.CommandTimeOut;
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             DataSet ds = new DataSet();
             _sqlDataAdapter.Fill(ds);

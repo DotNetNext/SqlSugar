@@ -186,6 +186,7 @@ namespace SqlSugar
             return primaryInfo.First(it => it.Key == tableName).Value;
 
         }
+
         /// <summary>
         /// 处理like条件的通配符
         /// </summary>
@@ -202,7 +203,6 @@ namespace SqlSugar
             return isNoLock ? " WITH(NOLOCK) " : "";
         }
 
-
         /// <summary>
         /// 获取属性值
         /// </summary>
@@ -213,6 +213,16 @@ namespace SqlSugar
         {
             PropertyInfo propertyInfo = obj.GetType().GetProperty(property);
             return (Guid)propertyInfo.GetValue(obj, null);
+        }
+        /// <summary>
+        /// 包装SQL
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="shortName"></param>
+        /// <returns></returns>
+        internal static string PackagingSQL(string sql, string shortName)
+        {
+            return string.Format(" SELECT * FROM ({0}) {1} ",sql,shortName);
         }
 
     }
