@@ -128,24 +128,26 @@ namespace WebTest
                 var dataCount = db.Taskable<int>("SELECT count(1) FROM STUDENT").Count();//求出所有节点数据
                 // var avg = db.TaskableWithCount<int>("SELECT avg(num)", " FROM STUDENT").Avg();
                 var all = db.Taskable<student>("select * from student where Contains(name,@name)"/*使用contains需要建全文索引*/, new { name = "张三" }).ToList();//获取所有节点name为张三的数据,转为list
-                var data = db.Taskable<student>("select * from student where id=@id", new { id = id }).ToSingle();//从所有节点中查询一条记录
 
+                var dnSingle= DateTime.Now;
+                var data = db.Taskable<student>("select * from student where id=@id", new { id = id }).ToSingle();//从所有节点中查询一条记录
+                var timeSingle = (DateTime.Now - dnSingle).TotalSeconds;
 
                 var dn = DateTime.Now;
                 //单列排序
-             //  var list = db.TaskableWithPage<student>("id", "select * from student    "/*使用contains需要建全文索引*/, 2160, 25, ref pageCount, "num", OrderByType.desc, new { name = "\"*李*\"" });
+                //  var list = db.TaskableWithPage<student>("id", "select * from student    "/*使用contains需要建全文索引*/, 2160, 25, ref pageCount, "num", OrderByType.desc, new { name = "\"*李*\"" });
                 var time = (DateTime.Now - dn).TotalSeconds;
-               
+
                 //多组排序 order by num,time
                 var dn2 = DateTime.Now;
-                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student where  contains(name,@name)   "/*使用contains需要建全文索引*/, 32, 25, ref pageCount, new List<OrderByDictionary>() { 
-                     new   OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.desc},
-                            new   OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.desc},
+                var listMultipleOrderBy = db.TaskableWithPage<student>("id", "select * from student   "/*使用contains需要建全文索引*/, 5000, 25, ref pageCount, new List<OrderByDictionary>() { 
+                     new   OrderByDictionary(){ OrderByField="num", OrderByType=OrderByType.asc},
+                     //       new   OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.desc},
                    //  new OrderByDictionary(){ OrderByField="createTime", OrderByType=OrderByType.asc}
-                }, new { name = "\"*李*\"" });
+                }, new { name = "\"*小*\"" });
                 var time2 = (DateTime.Now - dn2).TotalSeconds;
 
- 
+
             }
         }
     }
@@ -171,13 +173,33 @@ namespace WebTest
                  new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c1"].ToString(), Rate=1},
                  new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c2"].ToString(), Rate=1},
                  new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c3"].ToString(), Rate=1},
-                     new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c4"].ToString(), Rate=1},
+                 new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c4"].ToString(), Rate=1},
                  new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c5"].ToString(), Rate=1},
                  new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c6"].ToString(), Rate=1},
-                     new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c7"].ToString(), Rate=1},
+                 new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c7"].ToString(), Rate=1},
                  new CloudConnectionConfig(){  ConnectionString=ConfigurationManager.ConnectionStrings["c8"].ToString(), Rate=1},
                  new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c9"].ToString(), Rate=1},
-                      new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c10"].ToString(), Rate=1}
+                 new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c10"].ToString(), Rate=1},
+                 new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c15"].ToString(), Rate=1},
+                 new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c16"].ToString(), Rate=1},              
+                 new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["c17"].ToString(), Rate=1},
+                new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["cy1"].ToString(), Rate=1},
+                   new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["cy2"].ToString(), Rate=1},
+                    new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["cy3"].ToString(), Rate=1},
+                                      new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["zq1"].ToString(), Rate=1},
+                   new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["zq2"].ToString(), Rate=1},
+                    new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["zq3"].ToString(), Rate=1},
+                            new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["qp1"].ToString(), Rate=1},
+                   new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["qp2"].ToString(), Rate=1},
+                    new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["qp3"].ToString(), Rate=1},
+                                 new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["wy1"].ToString(), Rate=1},
+                   new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["wy2"].ToString(), Rate=1},
+                    new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["wy3"].ToString(), Rate=1},
+                                                   new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["wwf1"].ToString(), Rate=1},
+                   new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["wwf2"].ToString(), Rate=1},
+                    new CloudConnectionConfig(){ ConnectionString=ConfigurationManager.ConnectionStrings["wwf3"].ToString(), Rate=1},
+
+
             });
         }
     }

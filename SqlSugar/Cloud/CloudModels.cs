@@ -141,6 +141,8 @@ namespace SqlSugar
         public string orderByFieldsString { get; set; }
 
         public List<OrderByDictionary> OrderByTypes { get; set; }
+
+        public int SampleEachIndex { get; set; }
     }
 
     public class OrderByDictionary
