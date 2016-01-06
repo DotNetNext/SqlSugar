@@ -8,6 +8,7 @@ using SqlSugar;
 using Models;
 using System.Linq.Expressions;
 using System.Data.SqlClient;
+using WebTest.Dao;
 
 namespace WebTest
 {
@@ -19,12 +20,11 @@ namespace WebTest
         int id = 1;
         protected void Page_Load(object sender, EventArgs e)
         {
-           
-            
-            //连接字符串
-            string connStr = @"Server=DESKTOP-RHDNF4S\SKX;uid=sa;pwd=sasa;database=SqlSugarTest";
 
-            using (SqlSugarClient db = new SqlSugarClient(connStr))//开启数据库连接
+
+
+
+            using (SqlSugarClient db = SugarDao.GetInstance())//开启数据库连接
             {
                 string aaa = null;
               var xxx=  db.Queryable<School>().Where(it =>  it.name==aaa ).ToList();

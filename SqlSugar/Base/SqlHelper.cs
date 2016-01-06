@@ -23,6 +23,14 @@ namespace SqlSugar
         /// </summary>
         public bool isClearParameters = true;
         public int CommandTimeOut = 30000;
+        /// <summary>
+        /// 将页面参数自动填充到SqlParameter []，无需在程序中指定，这种情况需要注意是否有重复参数
+        /// 例如：
+        ///     var list = db.Queryable《Student》().Where("id=@id").ToList();
+        ///     以前写法
+        ///     var list = db.Queryable《Student》().Where("id=@id", new { id=Request["id"] }).ToList();
+        /// </summary>
+        public bool IsGetPageParas = false;
         public SqlHelper(string connectionString)
         {
             _sqlConnection = new SqlConnection(connectionString);
@@ -81,6 +89,9 @@ namespace SqlSugar
             }
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             sqlCommand.Parameters.AddRange(pars);
+            if (IsGetPageParas) {
+               SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
+            }
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
             sqlCommand.Parameters.Clear();
@@ -99,6 +110,10 @@ namespace SqlSugar
                 sqlCommand.Transaction = _tran;
             }
             sqlCommand.Parameters.AddRange(pars);
+            if (IsGetPageParas)
+            {
+                SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
+            }
             int count = sqlCommand.ExecuteNonQuery();
             sqlCommand.Parameters.Clear();
             return count;
@@ -116,6 +131,10 @@ namespace SqlSugar
                 sqlCommand.Transaction = _tran;
             }
             sqlCommand.Parameters.AddRange(pars);
+            if (IsGetPageParas)
+            {
+                SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
+            }
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
             if (isClearParameters)
                 sqlCommand.Parameters.Clear();
@@ -147,6 +166,10 @@ namespace SqlSugar
         {
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
+            if (IsGetPageParas)
+            {
+                SqlSugarToolExtensions.RequestParasToSqlParameters(_sqlDataAdapter.SelectCommand.Parameters);
+            }
             _sqlDataAdapter.SelectCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
@@ -167,6 +190,10 @@ namespace SqlSugar
             if (_tran != null)
             {
                 _sqlDataAdapter.SelectCommand.Transaction = _tran;
+            }
+            if (IsGetPageParas)
+            {
+                SqlSugarToolExtensions.RequestParasToSqlParameters(_sqlDataAdapter.SelectCommand.Parameters);
             }
             _sqlDataAdapter.SelectCommand.CommandTimeout = this.CommandTimeOut;
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);

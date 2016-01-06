@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
+using System.Data.SqlClient;
 
 namespace SqlSugar
 {
@@ -97,7 +99,35 @@ namespace SqlSugar
         /// <returns></returns>
         public static string GetGroupBy(this string groupByFileds)
         {
-            return groupByFileds.IsNullOrEmpty() ? "" :" GROUP BY "+groupByFileds;
+            return groupByFileds.IsNullOrEmpty() ? "" : " GROUP BY " + groupByFileds;
+        }
+        /// <summary>
+        /// 将Request里的参数转成SqlParameter[]
+        /// </summary>
+        /// <returns></returns>
+        public static void RequestParasToSqlParameters(SqlParameterCollection  oldParas)
+        {
+            var oldParaList= oldParas.Cast<SqlParameter>().ToList();
+            Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
+                   .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
+
+            Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
+
+            var paraDictionarAll=paraDictionaryByGet.Union(paraDictionaryByPost);
+            if (paraDictionarAll != null && paraDictionarAll.Count() > 0)
+            {
+            
+                foreach (KeyValuePair<string, string> it in paraDictionarAll)
+                {
+                 
+                    var par=new SqlParameter("@" + it.Key, it.Value);
+                    if (!oldParaList.Any(oldPara=>oldPara.ParameterName==("@"+it.Key)))
+                    {
+                        oldParas.Add(par);
+                    }
+                }
+            }
         }
     }
 }
