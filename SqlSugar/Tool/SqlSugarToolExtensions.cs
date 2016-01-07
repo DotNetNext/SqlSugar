@@ -108,13 +108,7 @@ namespace SqlSugar
         public static void RequestParasToSqlParameters(SqlParameterCollection  oldParas)
         {
             var oldParaList= oldParas.Cast<SqlParameter>().ToList();
-            Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
-                   .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
-
-            Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
-                .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
-
-            var paraDictionarAll=paraDictionaryByGet.Union(paraDictionaryByPost);
+            var paraDictionarAll =SqlSugarTool.GetParameterDictionary();
             if (paraDictionarAll != null && paraDictionarAll.Count() > 0)
             {
             
@@ -129,5 +123,6 @@ namespace SqlSugar
                 }
             }
         }
+
     }
 }

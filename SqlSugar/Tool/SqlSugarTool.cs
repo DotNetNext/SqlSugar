@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Web;
 
 
 namespace SqlSugar
@@ -225,5 +226,20 @@ namespace SqlSugar
             return string.Format(" SELECT * FROM ({0}) {1} ",sql,shortName);
         }
 
+        /// <summary>
+        /// 获取参数到键值集合根据页面Request参数
+        /// </summary>
+        /// <returns></returns>
+        public static List<KeyValuePair<string, string>> GetParameterDictionary()
+        {
+            Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
+                   .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
+
+            Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
+
+            var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
+            return paraDictionarAll.ToList();
+        }
     }
 }

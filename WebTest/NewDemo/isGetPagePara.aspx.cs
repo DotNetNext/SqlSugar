@@ -22,6 +22,8 @@ namespace WebTest.NewDemo
                 db.IsGetPageParas = true;//使用无参模式直接将Requst中的ID传给@id无需在代码中写出来
 
                 var list = db.Queryable<Student>().Where("id=@id").ToList();
+
+                var kvs= SqlSugarTool.GetParameterDictionary();
                 //以前写法
                 //var xx = db.Queryable<Student>().Where("id=@id", new { id=Request["id"] }).ToList();
             }
