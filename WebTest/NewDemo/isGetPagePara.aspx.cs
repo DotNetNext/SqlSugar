@@ -67,7 +67,7 @@ namespace WebTest.NewDemo
             }
         }
 
-        public void OldMethod()
+        public void NewMethod()
         {
             //请在页面加上参数id=1
 
