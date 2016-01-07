@@ -230,7 +230,7 @@ namespace SqlSugar
         /// 获取参数到键值集合根据页面Request参数
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string,string> GetParameterDictionary()
+        public static Dictionary<string,string> GetParameterDictionary(bool isNotNullAndEmpty=false)
         {
             Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
                    .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
@@ -239,6 +239,9 @@ namespace SqlSugar
                 .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
 
             var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
+            if (isNotNullAndEmpty) {
+                paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
+            }
             return paraDictionarAll.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);;
         }
     }
