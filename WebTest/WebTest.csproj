@@ -70,6 +70,7 @@
     <Content Include="CloudTest.aspx" />
     <Content Include="FunctionTest\Join.aspx" />
     <Content Include="FunctionTest\Select.aspx" />
+    <Content Include="NewDemo\GetClass.aspx" />
     <Content Include="NewDemo\isGetPagePara.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Update.aspx" />
@@ -120,6 +121,13 @@
     </Compile>
     <Compile Include="FunctionTest\Select.aspx.designer.cs">
       <DependentUpon>Select.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="NewDemo\GetClass.aspx.cs">
+      <DependentUpon>GetClass.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NewDemo\GetClass.aspx.designer.cs">
+      <DependentUpon>GetClass.aspx</DependentUpon>
     </Compile>
     <Compile Include="NewDemo\isGetPagePara.aspx.cs">
       <DependentUpon>isGetPagePara.aspx</DependentUpon>

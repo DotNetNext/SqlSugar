@@ -195,6 +195,21 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 生成查询结果对应的实体类字符串
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
+        public static string ToClass(this Sqlable sqlable, string fileds, object whereObj = null)
+        {
+            var cg = new ClassGenerating();
+            var dt = SelectToDataTable(sqlable, fileds, whereObj);
+            return cg.DataTableToClass(dt, "TableName");
+        }
+
+        /// <summary>
         /// 反回记录数
         /// </summary>
         /// <param name="sqlable"></param>
