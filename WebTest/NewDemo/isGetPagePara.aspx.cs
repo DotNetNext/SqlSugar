@@ -24,6 +24,7 @@ namespace WebTest.NewDemo
                 var list = db.Queryable<Student>().Where("id=@id").ToList();
 
                 var kvs= SqlSugarTool.GetParameterDictionary();
+          
                 //以前写法
                 //var xx = db.Queryable<Student>().Where("id=@id", new { id=Request["id"] }).ToList();
             }
