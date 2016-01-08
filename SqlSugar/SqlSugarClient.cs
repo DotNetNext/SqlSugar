@@ -390,7 +390,7 @@ namespace SqlSugar
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("UPDATE  {0} SET {3}=0 WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal(), field);
+                string sql = string.Format("UPDATE  {0} SET {3}=1 WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal(), field);
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
@@ -424,7 +424,7 @@ namespace SqlSugar
             bool isSuccess = false;
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
-            string sql = string.Format("UPDATE  {0} SET {1}=0 WHERE  1=1 {2}", type.Name, field, re.SqlWhere);
+            string sql = string.Format("UPDATE  {0} SET {1}=1 WHERE  1=1 {2}", type.Name, field, re.SqlWhere);
             int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;
             return isSuccess;
