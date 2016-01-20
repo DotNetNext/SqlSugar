@@ -147,7 +147,7 @@ namespace SqlSugar
             else
             {
 
-                var primaryKeyName = string.Empty;
+                var primaryKeyName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
 
                 //2.获得实体的属性集合 
 
@@ -160,11 +160,6 @@ namespace SqlSugar
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
                 {
-                    if (props.First() == prop)
-                    {
-                        primaryKeyName = prop.Name;
-                    }
-
                     //EntityState,@EntityKey
                     if (isIdentity == false || (isIdentity && prop.Name != primaryKeyName))
                     {
