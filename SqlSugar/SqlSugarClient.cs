@@ -120,7 +120,7 @@ namespace SqlSugar
             Type type = entity.GetType();
             StringBuilder sbInsertSql = new StringBuilder();
             List<SqlParameter> pars = new List<SqlParameter>();
-
+            var primaryKeyName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
             //sql语句缓存
             string cacheSqlKey = "db.Insert." + type.Name;
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
@@ -147,7 +147,7 @@ namespace SqlSugar
             else
             {
 
-                var primaryKeyName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
+          
 
                 //2.获得实体的属性集合 
 
@@ -177,7 +177,7 @@ namespace SqlSugar
             foreach (PropertyInfo prop in props)
             {
                 //EntityState,@EntityKey
-                if (isIdentity == false || (isIdentity && prop.Name != props[0].Name))
+                if (isIdentity == false || (isIdentity && prop.Name != primaryKeyName))
                 {
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
                         sbInsertSql.Append("@" + prop.Name + ",");
