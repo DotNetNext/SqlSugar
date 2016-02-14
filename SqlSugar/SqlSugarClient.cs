@@ -25,6 +25,20 @@ namespace SqlSugar
             ConnectionString = connectionString;
             IsNoLock = false;
         }
+        private List<KeyValue> _mappingTableList = null;
+        /// <summary>
+        /// 设置实体类与表名的映射， Key为实体类 Value为表名
+        /// </summary>
+        /// <param name="mappingTables"></param>
+        public void SetMappingTables(List<KeyValue> mappingTables)
+        {
+            if (mappingTables.IsValuable()) {
+
+                _mappingTableList = mappingTables;
+            }
+
+        }
+
         public string ConnectionString { get; set; }
 
         /// <summary>
@@ -47,7 +61,27 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>() where T : new()
         {
+
+            if (_mappingTableList.IsValuable())
+            {
+                string name = typeof(T).Name;
+                if (_mappingTableList.Any(it => it.Key == name))
+                {
+                    return new Queryable<T>() { DB = this, TableName = _mappingTableList.First(it => it.Key == name).Value };
+                }
+            }
+
             return new Queryable<T>() { DB = this };
+
+        }
+        /// <summary>
+        /// 创建单表查询对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public Queryable<T> Queryable<T>(string tableName) where T : new()
+        {
+            return new Queryable<T>() { DB = this, TableName = tableName };
         }
 
         /// <summary>
@@ -120,7 +154,7 @@ namespace SqlSugar
             Type type = entity.GetType();
             StringBuilder sbInsertSql = new StringBuilder();
             List<SqlParameter> pars = new List<SqlParameter>();
-
+            var primaryKeyName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
             //sql语句缓存
             string cacheSqlKey = "db.Insert." + type.Name;
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
@@ -147,7 +181,7 @@ namespace SqlSugar
             else
             {
 
-                var primaryKeyName = string.Empty;
+
 
                 //2.获得实体的属性集合 
 
@@ -160,11 +194,6 @@ namespace SqlSugar
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
                 {
-                    if (props.First() == prop)
-                    {
-                        primaryKeyName = prop.Name;
-                    }
-
                     //EntityState,@EntityKey
                     if (isIdentity == false || (isIdentity && prop.Name != primaryKeyName))
                     {
@@ -182,7 +211,7 @@ namespace SqlSugar
             foreach (PropertyInfo prop in props)
             {
                 //EntityState,@EntityKey
-                if (isIdentity == false || (isIdentity && prop.Name != props[0].Name))
+                if (isIdentity == false || (isIdentity && prop.Name != primaryKeyName))
                 {
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
                         sbInsertSql.Append("@" + prop.Name + ",");
