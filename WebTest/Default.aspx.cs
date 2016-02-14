@@ -172,6 +172,7 @@ namespace WebTest
                     db.Update<School,int>(new { name = "蓝翔2" }, 1,3,12);
                     db.Update<School, string>(new { name = "蓝翔2" },new string []{"1","2"});
                     //整个实体更新,注意主键必需为实体类的第一个属性
+                    db.Update(new School { id = id, name = "蓝翔2" });
                     db.Update<School>(new School { id = id, name = "蓝翔2" }, it => it.id == id);
 
 
