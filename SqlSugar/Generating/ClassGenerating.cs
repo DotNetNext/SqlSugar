@@ -141,7 +141,7 @@ namespace {1}
         /// </summary>
         public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null)
         {
-            var tables = db.GetDataTable("select name from sysobjects where xtype='U'");
+            var tables = db.GetDataTable("select name from sysobjects where xtype in ('U','V') ");
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
@@ -159,7 +159,7 @@ namespace {1}
         /// </summary>
         public void CreateClassFilesByTableNames(SqlSugarClient db, string fileDirectory, string nameSpace, params string[] tableNames)
         {
-            var tables = db.GetDataTable("select name from sysobjects where xtype='U'");
+            var tables = db.GetDataTable("select name from sysobjects where xtype in ('U','V') ");
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
