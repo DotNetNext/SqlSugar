@@ -26,6 +26,18 @@ namespace SqlSugar
             IsNoLock = false;
         }
         private List<KeyValue> _mappingTableList = null;
+        private string GetTypeNameByMappingTables(string typeName)
+        {
+            if (_mappingTableList.IsValuable())
+            {
+                if (_mappingTableList.Any(it => it.Key == typeName))
+                {
+                    typeName = _mappingTableList.First(it => it.Key == typeName).Value;
+                }
+            }
+            return typeName;
+        }
+
         /// <summary>
         /// 设置实体类与表名的映射， Key为实体类 Value为表名
         /// </summary>
@@ -152,15 +164,18 @@ namespace SqlSugar
         {
 
             Type type = entity.GetType();
+            string typeName = type.Name;
+            typeName = GetTypeNameByMappingTables(typeName);
+
             StringBuilder sbInsertSql = new StringBuilder();
             List<SqlParameter> pars = new List<SqlParameter>();
-            var primaryKeyName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
+            var primaryKeyName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             //sql语句缓存
-            string cacheSqlKey = "db.Insert." + type.Name;
+            string cacheSqlKey = "db.Insert." + typeName;
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
 
             //属性缓存
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            string cachePropertiesKey = "db." +typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
 
             PropertyInfo[] props = null;
@@ -189,7 +204,7 @@ namespace SqlSugar
                 //实例化一个StringBuilder做字符串的拼接 
 
 
-                sbInsertSql.Append("insert into " + type.Name + " (");
+                sbInsertSql.Append("insert into " + typeName + " (");
 
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
@@ -254,6 +269,7 @@ namespace SqlSugar
         }
 
 
+
         /// <summary>
         /// 更新
         /// 注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
@@ -270,9 +286,11 @@ namespace SqlSugar
 
 
             Type type = typeof(T);
-            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
+            string typeName = type.Name;
+            typeName = GetTypeNameByMappingTables(typeName);
+            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
             var rows = SqlSugarTool.GetParameters(rowObj);
-            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
+            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this,typeName);
             foreach (var r in rows)
             {
                 if (pkName == r.ParameterName.TrimStart('@'))
@@ -322,9 +340,11 @@ namespace SqlSugar
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
 
             Type type = typeof(T);
-            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", type.Name));
+            string typeName = type.Name;
+            typeName = GetTypeNameByMappingTables(typeName);
+            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
-            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name);
+            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             foreach (var r in rows)
             {
                 if (pkName == r.Key)
@@ -337,7 +357,7 @@ namespace SqlSugar
                 sbSql.Append(string.Format(" {0} =@{0}  ,", r.Key));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
-            sbSql.AppendFormat("WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal());
+            sbSql.AppendFormat("WHERE {1} IN ({2})", typeName, SqlSugarTool.GetPrimaryKeyByTableName(this, typeName), whereIn.ToJoinSqlInVal());
             List<SqlParameter> parsList = new List<SqlParameter>();
             var pars = rows.Select(c => new SqlParameter("@" + c.Key, c.Value));
             if (pars != null)
@@ -371,9 +391,11 @@ namespace SqlSugar
         public bool Delete<T>(Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTypeNameByMappingTables(typeName);
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
-            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", type.Name, re.SqlWhere);
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", typeName, re.SqlWhere);
             bool isSuccess = ExecuteCommand(sql, re.Paras.ToArray()) > 0;
             return isSuccess;
         }
@@ -387,15 +409,16 @@ namespace SqlSugar
         public bool Delete<T, FiledType>(params FiledType[] whereIn)
         {
             Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTypeNameByMappingTables(typeName);
             //属性缓存
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            string cachePropertiesKey = "db." + typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
             PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
-            string key = type.FullName;
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal());
+                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})",typeName, SqlSugarTool.GetPrimaryKeyByTableName(this, typeName), whereIn.ToJoinSqlInVal());
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
@@ -412,14 +435,16 @@ namespace SqlSugar
         public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)
         {
             Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTypeNameByMappingTables(typeName);
             //属性缓存
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            string cachePropertiesKey = "db." + typeName+ ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
             PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("UPDATE  {0} SET {3}=1 WHERE {1} IN ({2})", type.Name, SqlSugarTool.GetPrimaryKeyByTableName(this, type.Name), whereIn.ToJoinSqlInVal(), field);
+                string sql = string.Format("UPDATE  {0} SET {3}=1 WHERE {1} IN ({2})", typeName, SqlSugarTool.GetPrimaryKeyByTableName(this,typeName), whereIn.ToJoinSqlInVal(), field);
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
@@ -436,8 +461,10 @@ namespace SqlSugar
         public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTypeNameByMappingTables(typeName);
             //属性缓存
-            string cachePropertiesKey = "db." + type.Name + ".GetProperties";
+            string cachePropertiesKey = "db." +typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
             PropertyInfo[] props = null;
             if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
@@ -449,11 +476,10 @@ namespace SqlSugar
                 props = type.GetProperties();
                 cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
             }
-            string key = type.FullName;
             bool isSuccess = false;
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
-            string sql = string.Format("UPDATE  {0} SET {1}=1 WHERE  1=1 {2}", type.Name, field, re.SqlWhere);
+            string sql = string.Format("UPDATE  {0} SET {1}=1 WHERE  1=1 {2}", typeName, field, re.SqlWhere);
             int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;
             return isSuccess;
