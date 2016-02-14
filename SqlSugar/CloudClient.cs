@@ -455,50 +455,12 @@ namespace SqlSugar
             //节点间距
             var dataSampleIndex = pageBegin / configCount;
 
-            string sqlOtherPage = string.Format(@"SELECT {4},RowIndex,{3}   FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex = ({2})
-                                                                                                    ", sql/*0*/,
-                                                                                                     fullOrderByString/*1*/,
-                                                                                                     dataSampleIndex/*2*/,
-                                                                                                     orderByFieldsString/*3*/,
-                                                                                                    unqueField/*4*/);
+            string sqlOtherPage = GetSqlSampleRowSql(unqueField, sql, fullOrderByString, orderByFieldsString, dataSampleIndex);
             DataRow sampleRow = null;
-            int sampleRowIndex = 0;
-            int sampleEachIndex = 0;
-            int nodeSpacing=6;
-            var innerDataSampleList = Taskable<DataTable>(sqlOtherPage, whereObj).MergeTable().OrderByDataRow(orderByTypes).ThenByDataRow(unqueField, OrderByType.asc).ToList();
-            for (int i = 0; i < configCount; i++)
-            {
-                if (configCount < nodeSpacing)
-                {
-                    if (i != configCount / 2) continue;
-                }
-                else if (i % nodeSpacing != 0){
-                    continue;
-                }
-            
-                sampleRow = innerDataSampleList[i];
-
-                whereCompare = GetWhereCompare(whereCompare, orderByTypes, sampleRow, unqueField, sampleRow[0].ToString());
-                string whereCompareReverse = GetWhereCompare(null, orderByTypes, sampleRow, unqueField, sampleRow[0].ToString(), true);
-
-                sqlOtherPage = string.Format(@"SELECT  COUNT(1)  FROM (
-                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE {0}({3}) 
-                                                                                                    ",
-                                                                                                         null/*0*/,
-                                                                                                         unqueField/*1*/,
-                                                                                                         sql/*2*/,
-                                                                                                         whereCompare/*3*/,
-                                                                                                         sampleRow[0]/*4:UnqueValue*/,
-                                                                                                         fullOrderByString/*5*/);
-                var innerSampleRowIndex = Taskable<int>(sqlOtherPage, whereObj).Count();
-                var isSet = sampleRowIndex == 0||(Math.Abs(pageBegin-innerSampleRowIndex)<(Math.Abs(pageBegin-sampleRowIndex)));
-                if (isSet)
-                {
-                    sampleRowIndex = innerSampleRowIndex;
-                    sampleEachIndex = i;
-                }
-            }
+            int sampleRowIndex;
+            int sampleEachIndex;
+            List<DataRow> innerDataSampleList;
+            InitSampleRow(unqueField, sql, orderByTypes, whereObj, configCount, fullOrderByString, ref whereCompare, pageBegin, ref sqlOtherPage, ref sampleRow, out sampleRowIndex, out sampleEachIndex, out innerDataSampleList);
             sampleRow=innerDataSampleList[sampleEachIndex];
             //获取分页索引所需参数实体
             PageRowInnerParamsResultMultipleOrderBy beginEndRowParams = new PageRowInnerParamsResultMultipleOrderBy()
@@ -533,6 +495,9 @@ namespace SqlSugar
             #endregion
 
         }
+
+
+    
 
         #endregion
 
@@ -878,7 +843,7 @@ namespace SqlSugar
                                                                                         whereCompareReverse/*4*/,
                                                                                         thisIndex/*5*/);
                 var rowList = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByTypes).ToList();
-                var row = rowList[paras.ConfigCount-paras.SampleEachIndex];
+                var row = rowList[paras.ConfigCount-paras.SampleEachIndex-1];
                 paras.Row = row;
                 paras.UnqueValue = row[0];
                 whereCompare = GetWhereCompare(string.Empty, paras.OrderByTypes, paras.Row, paras.UnqueField, paras.UnqueValue.ToString());
@@ -991,6 +956,104 @@ namespace SqlSugar
 
 
         #endregion
+
+        #region  get page Sample 
+
+        /// <summary>
+        /// 获取样品SQL
+        /// </summary>
+        /// <param name="unqueField"></param>
+        /// <param name="sql"></param>
+        /// <param name="fullOrderByString"></param>
+        /// <param name="orderByFieldsString"></param>
+        /// <param name="dataSampleIndex"></param>
+        /// <returns></returns>
+        private static string GetSqlSampleRowSql(string unqueField, string sql, string fullOrderByString, string orderByFieldsString, int dataSampleIndex)
+        {
+            string sqlOtherPage = string.Format(@"SELECT {4},RowIndex,{3}   FROM (
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex = ({2})
+                                                                                                    ", sql/*0*/,
+                                                                                                     fullOrderByString/*1*/,
+                                                                                                     dataSampleIndex/*2*/,
+                                                                                                     orderByFieldsString/*3*/,
+                                                                                                    unqueField/*4*/);
+            return sqlOtherPage;
+        }
+        /// <summary>
+        /// 获取样品索引SQL
+        /// </summary>
+        /// <param name="unqueField"></param>
+        /// <param name="sql"></param>
+        /// <param name="fullOrderByString"></param>
+        /// <param name="whereCompare"></param>
+        /// <param name="sqlOtherPage"></param>
+        /// <param name="sampleRow"></param>
+        /// <returns></returns>
+        private static string GetSampleIndexSql(string unqueField, string sql, string fullOrderByString, string whereCompare, string sqlOtherPage, DataRow sampleRow)
+        {
+            sqlOtherPage = string.Format(@"SELECT  COUNT(1)  FROM (
+                                                                                                    SELECT *,ROW_NUMBER()OVER(ORDER BY {5}) AS  ROWINDEX  FROM ({2}) as sqlstr ) t WHERE {0}({3}) 
+                                                                                                    ",
+                                                                                                     null/*0*/,
+                                                                                                     unqueField/*1*/,
+                                                                                                     sql/*2*/,
+                                                                                                     whereCompare/*3*/,
+                                                                                                     sampleRow[0]/*4:UnqueValue*/,
+                                                                                                     fullOrderByString/*5*/);
+            return sqlOtherPage;
+        }
+        /// <summary>
+        /// 初始化样品数据
+        /// </summary>
+        /// <param name="unqueField"></param>
+        /// <param name="sql"></param>
+        /// <param name="orderByTypes"></param>
+        /// <param name="whereObj"></param>
+        /// <param name="configCount"></param>
+        /// <param name="fullOrderByString"></param>
+        /// <param name="whereCompare"></param>
+        /// <param name="pageBegin"></param>
+        /// <param name="sqlOtherPage"></param>
+        /// <param name="sampleRow"></param>
+        /// <param name="sampleRowIndex"></param>
+        /// <param name="sampleEachIndex"></param>
+        /// <param name="innerDataSampleList"></param>
+        private void InitSampleRow(string unqueField, string sql, List<OrderByDictionary> orderByTypes, object whereObj, int configCount, string fullOrderByString, ref string whereCompare, int pageBegin, ref string sqlOtherPage, ref DataRow sampleRow, out int sampleRowIndex, out int sampleEachIndex, out List<DataRow> innerDataSampleList)
+        {
+            sampleRowIndex = 0;
+            sampleEachIndex = 0;
+            int nodeSpacing = 1;
+            innerDataSampleList = Taskable<DataTable>(sqlOtherPage, whereObj).MergeTable().OrderByDataRow(orderByTypes).ThenByDataRow(unqueField, OrderByType.asc).ToList();
+
+            for (int i = 0; i < configCount; i++)
+            {
+                if (configCount < nodeSpacing)
+                {
+                    if (i != configCount / 2) continue;
+                }
+                else if (i % nodeSpacing != 0)
+                {
+                    continue;
+                }
+
+                sampleRow = innerDataSampleList[i];
+
+                whereCompare = GetWhereCompare(whereCompare, orderByTypes, sampleRow, unqueField, sampleRow[0].ToString());
+                string whereCompareReverse = GetWhereCompare(null, orderByTypes, sampleRow, unqueField, sampleRow[0].ToString(), true);
+
+                sqlOtherPage = GetSampleIndexSql(unqueField, sql, fullOrderByString, whereCompare, sqlOtherPage, sampleRow);
+                var innerSampleRowIndex = Taskable<int>(sqlOtherPage, whereObj).Count();
+                var isSet = sampleRowIndex == 0 || (Math.Abs(pageBegin - innerSampleRowIndex) < (Math.Abs(pageBegin - sampleRowIndex)));
+                if (isSet)
+                {
+                    sampleRowIndex = innerSampleRowIndex;
+                    sampleEachIndex = i;
+                }
+            }
+        } 
+        #endregion
+
+     
         #endregion
     }
 }

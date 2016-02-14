@@ -51,6 +51,16 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 创建单表查询对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public Queryable<T> Queryable<T>(string tableName) where T : new()
+        {
+            return new Queryable<T>() { DB = this, TableName=tableName };
+        }
+
+        /// <summary>
         /// 根据SQL语句将结果集映射到List《T》
         /// </summary>
         /// <typeparam name="T"></typeparam>
