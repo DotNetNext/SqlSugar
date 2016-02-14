@@ -27,7 +27,7 @@ namespace SqlSugar
         }
         private List<KeyValue> _mappingTableList = null;
         /// <summary>
-        /// 设置实体类与表名的映射
+        /// 设置实体类与表名的映射， Key为实体类 Value为表名
         /// </summary>
         /// <param name="mappingTables"></param>
         public void SetMappingTables(List<KeyValue> mappingTables)
