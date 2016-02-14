@@ -25,6 +25,20 @@ namespace SqlSugar
             ConnectionString = connectionString;
             IsNoLock = false;
         }
+        private List<KeyValue> _mappingTableList = null;
+        /// <summary>
+        /// 设置实体类与表名的映射
+        /// </summary>
+        /// <param name="mappingTables"></param>
+        public void SetMappingTables(List<KeyValue> mappingTables)
+        {
+            if (mappingTables.IsValuable()) {
+
+                _mappingTableList = mappingTables;
+            }
+
+        }
+
         public string ConnectionString { get; set; }
 
         /// <summary>
@@ -47,9 +61,19 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>() where T : new()
         {
-            return new Queryable<T>() { DB = this };
-        }
 
+            if (_mappingTableList.IsValuable())
+            {
+                string name = typeof(T).Name;
+                if (_mappingTableList.Any(it => it.Key == name))
+                {
+                    return new Queryable<T>() { DB = this, TableName = _mappingTableList.First(it => it.Key == name).Value };
+                }
+            }
+
+            return new Queryable<T>() { DB = this };
+
+        }
         /// <summary>
         /// 创建单表查询对象
         /// </summary>
@@ -57,7 +81,7 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>(string tableName) where T : new()
         {
-            return new Queryable<T>() { DB = this, TableName=tableName };
+            return new Queryable<T>() { DB = this, TableName = tableName };
         }
 
         /// <summary>
@@ -157,7 +181,7 @@ namespace SqlSugar
             else
             {
 
-          
+
 
                 //2.获得实体的属性集合 
 
