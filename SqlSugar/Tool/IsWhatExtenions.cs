@@ -96,7 +96,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static bool IsValuable(this object thisValue)
         {
-            if (thisValue == null) return false;
+            if (thisValue == null||thisValue==DBNull.Value) return false;
             return thisValue.ToString() != "";
         }
         /// <summary>

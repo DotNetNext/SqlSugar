@@ -26,16 +26,30 @@ namespace SqlSugar
             IsNoLock = false;
         }
         private List<KeyValue> _mappingTableList = null;
-        private string GetTypeNameByMappingTables(string typeName)
+       
+        internal string GetTableNameByClassType(string typeName)
         {
             if (_mappingTableList.IsValuable())
             {
+                //Key为实体类 Value为表名
                 if (_mappingTableList.Any(it => it.Key == typeName))
                 {
                     typeName = _mappingTableList.First(it => it.Key == typeName).Value;
                 }
             }
             return typeName;
+        }
+        internal string GetClassTypeByTableName(string tableName)
+        {
+            if (_mappingTableList.IsValuable())
+            {
+                //Key为实体类 Value为表名
+                if (_mappingTableList.Any(it => it.Value == tableName))
+                {
+                    tableName = _mappingTableList.First(it => it.Value == tableName).Key;
+                }
+            }
+            return tableName;
         }
 
         /// <summary>
@@ -166,7 +180,7 @@ namespace SqlSugar
 
             Type type = entity.GetType();
             string typeName = type.Name;
-            typeName = GetTypeNameByMappingTables(typeName);
+            typeName = GetTableNameByClassType(typeName);
 
             StringBuilder sbInsertSql = new StringBuilder();
             List<SqlParameter> pars = new List<SqlParameter>();
@@ -288,7 +302,7 @@ namespace SqlSugar
 
             Type type = typeof(T);
             string typeName = type.Name;
-            typeName = GetTypeNameByMappingTables(typeName);
+            typeName = GetTableNameByClassType(typeName);
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
             var rows = SqlSugarTool.GetParameters(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
@@ -353,7 +367,7 @@ namespace SqlSugar
 
             Type type = typeof(T);
             string typeName = type.Name;
-            typeName = GetTypeNameByMappingTables(typeName);
+            typeName = GetTableNameByClassType(typeName);
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
@@ -412,7 +426,7 @@ namespace SqlSugar
         {
             Type type = typeof(T);
             string typeName = type.Name;
-            typeName = GetTypeNameByMappingTables(typeName);
+            typeName = GetTableNameByClassType(typeName);
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
             string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", typeName, re.SqlWhere);
@@ -430,7 +444,7 @@ namespace SqlSugar
         {
             Type type = typeof(T);
             string typeName = type.Name;
-            typeName = GetTypeNameByMappingTables(typeName);
+            typeName = GetTableNameByClassType(typeName);
             //属性缓存
             string cachePropertiesKey = "db." + typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
@@ -456,7 +470,7 @@ namespace SqlSugar
         {
             Type type = typeof(T);
             string typeName = type.Name;
-            typeName = GetTypeNameByMappingTables(typeName);
+            typeName = GetTableNameByClassType(typeName);
             //属性缓存
             string cachePropertiesKey = "db." + typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
@@ -482,7 +496,7 @@ namespace SqlSugar
         {
             Type type = typeof(T);
             string typeName = type.Name;
-            typeName = GetTypeNameByMappingTables(typeName);
+            typeName = GetTableNameByClassType(typeName);
             //属性缓存
             string cachePropertiesKey = "db." + typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();

@@ -5,6 +5,7 @@ using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace SqlSugar
 {
@@ -67,7 +68,7 @@ namespace SqlSugar
         /// <param name="sql"></param>
         /// <param name="className"></param>
         /// <returns></returns>
-        public string DataTableToClass(DataTable dt, string className, string nameSpace = null)
+        public string DataTableToClass(DataTable dt, string className, string nameSpace = null, List<PubModel.DataTableMap> dataTableMapList = null)
         {
             StringBuilder reval = new StringBuilder();
             StringBuilder propertiesValue = new StringBuilder();
@@ -76,9 +77,30 @@ namespace SqlSugar
             {
                 propertiesValue.AppendLine();
                 string typeName = ChangeType(r.DataType);
-                propertiesValue.AppendFormat("    public {0} {1} {2}", typeName, r.ColumnName, "{get;set;}");
+                bool isAny = false;
+                PubModel.DataTableMap columnInfo=new PubModel.DataTableMap();
+                if (dataTableMapList.IsValuable())
+                {
+                    isAny = dataTableMapList.Any(it => it.COLUMN_NAME.ToString() == r.ColumnName);
+                    if (isAny)
+                    {
+                        columnInfo = dataTableMapList.First(it => it.COLUMN_NAME.ToString() == r.ColumnName);
+                        propertiesValue.AppendFormat(@"     /// <summary>
+     /// 说明:{0} 
+     /// 默认:{1} 
+     /// 可空:{2} 
+     /// </summary>
+",
+   columnInfo.COLUMN_DESCRIPTION.IsValuable() ? columnInfo.COLUMN_DESCRIPTION.ToString() : "-", //{0}
+   columnInfo.COLUMN_DEFAULT.IsValuable() ? columnInfo.COLUMN_DEFAULT.ToString() : "-", //{1}
+   Convert.ToBoolean(columnInfo.IS_NULLABLE));//{2}
+                    }
+
+                }
+                propertiesValue.AppendFormat("    public {0} {1} {2}", isAny ? ChangeNullable(typeName,Convert.ToBoolean(columnInfo.IS_NULLABLE)) : typeName, r.ColumnName, "{get;set;}");
                 propertiesValue.AppendLine();
             }
+
             reval.AppendFormat(@"   public class {0}{{
                         {1}
    }}
@@ -137,22 +159,51 @@ namespace {1}
 
 
         /// <summary>
-        ///  创建SQL实体文件
+        /// 创建SQL实体文件
         /// </summary>
-        public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null)
+        /// <param name="db"></param>
+        /// <param name="fileDirectory"></param>
+        /// <param name="nameSpace">命名空间（默认：null）</param>
+        /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
+        public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null)
         {
             var tables = db.GetDataTable("select name from sysobjects where xtype in ('U','V') ");
+            if (tableOrView != null)
+            {
+                if (tableOrView == true)
+                {
+                    tables = db.GetDataTable("select name from sysobjects where xtype in ('U') ");
+                }
+                else
+                {
+
+                    tables = db.GetDataTable("select name from sysobjects where xtype in ('V') ");
+                }
+            }
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
                 {
                     string tableName = dr["name"].ToString();
                     var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
-                    var classCode = DataTableToClass(currentTable, tableName, nameSpace);
-                    FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode);
+                    if (callBack != null)
+                    {
+                        var tableColumns = GetTableColumns(db, tableName);
+                        var classCode = DataTableToClass(currentTable, tableName, nameSpace, tableColumns);
+                        string className = db.GetClassTypeByTableName(tableName);
+                        classCode = classCode.Replace("class " + tableName, "class " + className);
+                        FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + className + ".cs", classCode);
+                        callBack(className);
+                    }
+                    else
+                    {
+                        var classCode = DataTableToClass(currentTable, tableName, nameSpace);
+                        FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode);
+                    }
                 }
             }
         }
+
 
         /// <summary>
         ///  创建SQL实体文件,指定表名
@@ -190,5 +241,49 @@ namespace {1}
             }
             return typeName;
         }
+
+        private string ChangeNullable(string typeName, bool isNull)
+        {
+            if (isNull)
+            {
+                switch (typeName)
+                {
+                    case "int": typeName = "int?"; break;
+                    case "Double": typeName = "Double?"; break;
+                    case "Byte": typeName = "Byte?"; break;
+                    case "Boolean": typeName = "Boolean?"; break;
+                    case "DateTime": typeName = "DateTime?"; break;
+
+                }
+            }
+            return typeName;
+        }
+
+        // 获取表结构信息
+        private List<PubModel.DataTableMap> GetTableColumns(SqlSugarClient db, string tableName)
+        {
+            string sql = @"SELECT  Sysobjects.name AS TABLE_NAME ,
+								syscolumns.Id  AS TABLE_ID,
+								syscolumns.name AS COLUMN_NAME ,
+								systypes.name AS DATA_TYPE ,
+								syscolumns.length AS CHARACTER_MAXIMUM_LENGTH ,
+								sys.extended_properties.[value] AS COLUMN_DESCRIPTION ,
+								syscomments.text AS COLUMN_DEFAULT ,
+								syscolumns.isnullable AS IS_NULLABLE
+								FROM    syscolumns
+								INNER JOIN systypes ON syscolumns.xtype = systypes.xtype
+								LEFT JOIN sysobjects ON syscolumns.id = sysobjects.id
+								LEFT OUTER JOIN sys.extended_properties ON ( sys.extended_properties.minor_id = syscolumns.colid
+																			 AND sys.extended_properties.major_id = syscolumns.id
+																		   )
+								LEFT OUTER JOIN syscomments ON syscolumns.cdefault = syscomments.id
+								WHERE   syscolumns.id IN ( SELECT   id
+												   FROM     SYSOBJECTS
+												   WHERE    xtype in( 'U','V') )
+								AND ( systypes.name <> 'sysname' ) AND Sysobjects.name='" + tableName + "'  ORDER BY syscolumns.colid";
+
+            return db.SqlQuery<PubModel.DataTableMap>(sql);
+        }
     }
+
 }

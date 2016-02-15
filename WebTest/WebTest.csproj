@@ -66,6 +66,12 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Lib\SqlSugar.dll" />
+    <Content Include="App_Lib\SqlSugar.pdb" />
+    <Content Include="App_Lib\SqlSugar.XML" />
+    <Content Include="App_Lib\SyntacticSugar.dll" />
+    <Content Include="App_Lib\SyntacticSugar.pdb" />
+    <Content Include="App_Lib\SyntacticSugar.XML" />
     <Content Include="BuilderClass.aspx" />
     <Content Include="CloudTest.aspx" />
     <Content Include="FunctionTest\Join.aspx" />
@@ -85,6 +91,13 @@
     <Content Include="PerformanceTest\Select\ManyTablePage.aspx" />
     <Content Include="PerformanceTest\Select\OneWhere.aspx" />
     <Content Include="PerformanceTest\Select\WherePage.aspx" />
+    <Content Include="T4\SugarTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SugarTemplate.cs</LastGenOutput>
+    </Content>
+    <Content Include="T4\SugarTemplate.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -230,6 +243,12 @@
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
+    <Compile Include="T4\SugarTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SugarTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T4\SugarTemplateCore.cs" />
     <Compile Include="TestLib\Dapper.cs" />
     <Compile Include="TestLib\EFMODEL.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -256,6 +275,12 @@
       <Project>{46A17E67-7E3E-4369-9B1F-43BA34BBDAEF}</Project>
       <Name>SqlSugar</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\SugarTemplateCore.ttinclude" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

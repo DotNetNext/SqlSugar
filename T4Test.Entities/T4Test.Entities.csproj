@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{46A17E67-7E3E-4369-9B1F-43BA34BBDAEF}</ProjectGuid>
+    <ProjectGuid>{CAC458A0-634F-4022-8AB0-B496D1FFF8D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SqlSugar</RootNamespace>
-    <AssemblyName>SqlSugar</AssemblyName>
+    <RootNamespace>T4Test.Entities</RootNamespace>
+    <AssemblyName>T4Test.Entities</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,14 +29,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\SqlSugar.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,38 +40,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CloudClient.cs" />
-    <Compile Include="Cloud\CloudModels.cs" />
-    <Compile Include="Cloud\CloudPubMethod.cs" />
-    <Compile Include="Cloud\TaskExtensions.cs" />
-    <Compile Include="IClient.cs" />
-    <Compile Include="Tool\Check.cs" />
-    <Compile Include="Tool\IEnumerableExtensions.cs" />
-    <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
-    <Compile Include="Tool\KeyValue.cs" />
-    <Compile Include="Tool\PubModel.cs" />
-    <Compile Include="Tool\ResolveExpress.cs" />
-    <Compile Include="Tool\PubEnum.cs" />
+    <Compile Include="Views\V_Test.cs" />
+    <Compile Include="Tables\sysdiagrams.cs" />
+    <Compile Include="Tables\Flow_FormContentStepCheckState.cs" />
+    <Compile Include="Tables\Flow_StepRule.cs" />
+    <Compile Include="Tables\Flow_FormContentStepCheck.cs" />
+    <Compile Include="Tables\Flow_FormContent.cs" />
+    <Compile Include="Tables\Flow_Step.cs" />
+    <Compile Include="Tables\Flow_Form.cs" />
+    <Compile Include="Tables\FormAttr.cs" />
+    <Compile Include="Tables\Flow_Seal.cs" />
+    <Compile Include="Tables\Flow_Type.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queryable\Queryable.cs" />
-    <Compile Include="Queryable\QueryableExtensions.cs" />
-    <Compile Include="Sqlable\Sqlable.cs" />
-    <Compile Include="Sqlable\SqlableExtensions.cs" />
-    <Compile Include="Base\SqlHelper.cs" />
-    <Compile Include="SqlSugarClient.cs" />
-    <Compile Include="Tool\CacheManager.cs" />
-    <Compile Include="Generating\ClassGenerating.cs" />
-    <Compile Include="Tool\FileSugar.cs" />
-    <Compile Include="Tool\IHttpStorageObject.cs" />
-    <Compile Include="Tool\IsWhatExtenions.cs" />
-    <Compile Include="Tool\SqlException.cs" />
-    <Compile Include="Tool\SqlSugarToolExtensions.cs" />
-    <Compile Include="Tool\SqlSugarTool.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Content Include="App_Data\单库模式DEMO脚本.sql" />
-    <Content Include="App_Data\多库模式数据库结构脚本cloudDB %281%29.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

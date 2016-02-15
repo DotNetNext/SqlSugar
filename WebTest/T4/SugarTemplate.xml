@@ -1,0 +1,5 @@
+﻿<xml>
+  <appString>
+    <add key="connectionString">server=.;uid=sa;pwd=sasa;database=x6</add>
+  </appString>
+</xml>
