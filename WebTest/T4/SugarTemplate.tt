@@ -16,7 +16,7 @@
 <#@ include file="$(ProjectDir)\T4\SugarTemplateCore.ttinclude"  #>
 
 <# 
-    /* 用法实体类的类库格式必须是 xxx.Entities 格式，当然你也可以自已改SugarTemplateCore.ttinclude里面的逻辑 */
+    /* 用法实体类的类库格式必须是 xxx.Entities 格式，当然你也可以自已改SugarTemplateCore.ttinclude里面的逻辑,SugarTemplate.xml设置连接字符串 */
 
 
     //当前项目目录
