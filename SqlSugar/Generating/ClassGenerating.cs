@@ -78,7 +78,7 @@ namespace SqlSugar
                 propertiesValue.AppendLine();
                 string typeName = ChangeType(r.DataType);
                 bool isAny = false;
-                PubModel.DataTableMap columnInfo=new PubModel.DataTableMap();
+                PubModel.DataTableMap columnInfo = new PubModel.DataTableMap();
                 if (dataTableMapList.IsValuable())
                 {
                     isAny = dataTableMapList.Any(it => it.COLUMN_NAME.ToString() == r.ColumnName);
@@ -97,7 +97,7 @@ namespace SqlSugar
                     }
 
                 }
-                propertiesValue.AppendFormat("    public {0} {1} {2}", isAny ? ChangeNullable(typeName,Convert.ToBoolean(columnInfo.IS_NULLABLE)) : typeName, r.ColumnName, "{get;set;}");
+                propertiesValue.AppendFormat("    public {0} {1} {2}", isAny ? ChangeNullable(typeName, Convert.ToBoolean(columnInfo.IS_NULLABLE)) : typeName, r.ColumnName, "{get;set;}");
                 propertiesValue.AppendLine();
             }
 
@@ -224,6 +224,23 @@ namespace {1}
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 获取所有数据库表名
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        public List<string> GetTableNames(SqlSugarClient db)
+        {
+
+            var tableNameList = db.SqlQuery<string>("select name from sysobjects where xtype in ('U','V') ").ToList();
+            for (int i = 0; i < tableNameList.Count; i++)
+            {
+                var tableName = tableNameList[i];
+                tableNameList[i] = db.GetClassTypeByTableName(tableName);
+            }
+            return tableNameList;
         }
 
         /// <summary>
