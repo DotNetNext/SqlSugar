@@ -263,13 +263,13 @@ namespace {1}
         {
             if (isNull)
             {
-                switch (typeName)
+                switch (typeName.ToLower())
                 {
                     case "int": typeName = "int?"; break;
-                    case "Double": typeName = "Double?"; break;
-                    case "Byte": typeName = "Byte?"; break;
-                    case "Boolean": typeName = "Boolean?"; break;
-                    case "DateTime": typeName = "DateTime?"; break;
+                    case "double": typeName = "Double?"; break;
+                    case "byte": typeName = "Byte?"; break;
+                    case "boolean": typeName = "Boolean?"; break;
+                    case "datetime": typeName = "DateTime?"; break;
 
                 }
             }
