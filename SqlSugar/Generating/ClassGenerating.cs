@@ -277,7 +277,7 @@ namespace {1}
         }
 
         // 获取表结构信息
-        private List<PubModel.DataTableMap> GetTableColumns(SqlSugarClient db, string tableName)
+        public List<PubModel.DataTableMap> GetTableColumns(SqlSugarClient db, string tableName)
         {
             string sql = @"SELECT  Sysobjects.name AS TABLE_NAME ,
 								syscolumns.Id  AS TABLE_ID,
