@@ -284,7 +284,7 @@ namespace {1}
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        private string ChangeType(Type type)
+        public string ChangeType(Type type)
         {
             string typeName = type.Name;
             switch (typeName)
@@ -295,7 +295,7 @@ namespace {1}
             return typeName;
         }
 
-        private string ChangeNullable(string typeName, bool isNull)
+        public string ChangeNullable(string typeName, bool isNull)
         {
             if (isNull)
             {
