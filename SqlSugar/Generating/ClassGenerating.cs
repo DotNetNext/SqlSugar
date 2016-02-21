@@ -235,7 +235,7 @@ namespace {1}
                     string tableName = dr["name"].ToString();
                     var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
                     string className = db.GetClassTypeByTableName(tableName);
-                    callBack(currentTable, className,tableName);
+                    callBack(tables, className,tableName);
                 }
             }
         }
