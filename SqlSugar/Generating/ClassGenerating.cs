@@ -213,7 +213,7 @@ namespace {1}
         /// <param name="fileDirectory"></param>
         /// <param name="nameSpace">命名空间（默认：null）</param>
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
-        public void CreateClassFilesInterface(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<DataTable,string> callBack = null)
+        public void CreateClassFilesInterface(SqlSugarClient db,bool? tableOrView , Action<DataTable,string,string> callBack)
         {
             var tables = db.GetDataTable("select name from sysobjects where xtype in ('U','V') ");
             if (tableOrView != null)
@@ -234,7 +234,8 @@ namespace {1}
                 {
                     string tableName = dr["name"].ToString();
                     var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
-                    callBack(currentTable, tableName);
+                    string className = db.GetClassTypeByTableName(tableName);
+                    callBack(currentTable, className,tableName);
                 }
             }
         }
