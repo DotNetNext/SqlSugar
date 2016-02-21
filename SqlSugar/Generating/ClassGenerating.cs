@@ -312,7 +312,7 @@ namespace {1}
             return typeName;
         }
 
-        public static string MapCsharpType(string dbtype)
+        public  string DbTypeToFieldType(string dbtype)
         {
             if (string.IsNullOrEmpty(dbtype)) return dbtype;
             dbtype = dbtype.ToLower();
