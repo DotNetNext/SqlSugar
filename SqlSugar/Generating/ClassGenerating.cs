@@ -375,7 +375,7 @@ namespace {1}
 								WHERE   syscolumns.id IN ( SELECT   id
 												   FROM     SYSOBJECTS
 												   WHERE    xtype in( 'U','V') )
-								AND ( systypes.name <> 'sysname' ) AND Sysobjects.name='" + tableName + "'  ORDER BY syscolumns.colid";
+								AND ( systypes.name <> 'sysname' ) AND Sysobjects.name='" + tableName + "'  AND systypes.name<>'geometry' AND systypes.name<>'geography'  ORDER BY syscolumns.colid";
 
             return db.SqlQuery<PubModel.DataTableMap>(sql);
         }
