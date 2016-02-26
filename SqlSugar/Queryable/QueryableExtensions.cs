@@ -34,6 +34,34 @@ namespace SqlSugar
             return queryable;
         }
 
+
+        /// <summary>
+        /// 条件筛选 例如：InFieldName 为 a inValues 值为 new string[]{"a" ,"b"} 生成的SQL就是  a in('a','b')
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> In<T,FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName,params FieldType [] inValues)
+        {
+            var type = queryable.Type;
+            ResolveExpress re = new ResolveExpress();
+            queryable.Where.Add(string.Format(" AND {0} IN ({1})",InFieldName, inValues.ToJoinSqlInVal()));
+            return queryable;
+        }
+
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName,List<FieldType> inValues)
+        {
+            return In<T, FieldType>(queryable, InFieldName, inValues.ToArray());
+        }
+
         /// <summary>
         /// 条件筛选
         /// </summary>
