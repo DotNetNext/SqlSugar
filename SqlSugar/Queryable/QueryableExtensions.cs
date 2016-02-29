@@ -166,6 +166,33 @@ namespace SqlSugar
         }
 
         /// <summary>
+        ///   返回序列中的第一个元素,如果序列为NULL返回default(T)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static T FirstOrDefault<T>(this  SqlSugar.Queryable<T> queryable)
+        {
+            var reval = queryable.ToList();
+            if (reval == null || reval.Count == 0)
+            {
+                return default(T);
+            }
+            return reval.First();
+        }
+        /// <summary>
+        ///  返回序列中的第一个元素。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static T First<T>(this  SqlSugar.Queryable<T> queryable)
+        {
+            var reval = queryable.ToList();
+            return reval.First();
+        }
+
+        /// <summary>
         ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
         /// </summary>
         /// <typeparam name="T"></typeparam>
