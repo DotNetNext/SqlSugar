@@ -35,6 +35,8 @@ namespace WebTest
                 db.Queryable<Student>().In("id", "1", "2", "3").ToList();
                 db.Queryable<Student>().In("id", new string[]{ "1", "2", "3"}).ToList();
                 db.Queryable<Student>().In("id", new List<string>{ "1", "2", "3" }).ToList();
+                var array = new string[] { "1", "2", "3" };
+                db.Queryable<Student>().Where(it => array.Contains(it.name));
 
                 db.Delete<Student,int>(1, 2);
                 //开启事务，可以不使用事务,也可以使用多个事务

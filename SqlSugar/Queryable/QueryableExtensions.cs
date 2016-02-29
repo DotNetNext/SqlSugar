@@ -42,11 +42,11 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> In<T,FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName,params FieldType [] inValues)
+        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName, params FieldType[] inValues)
         {
             var type = queryable.Type;
             ResolveExpress re = new ResolveExpress();
-            queryable.Where.Add(string.Format(" AND {0} IN ({1})",InFieldName, inValues.ToJoinSqlInVal()));
+            queryable.Where.Add(string.Format(" AND {0} IN ({1})", InFieldName, inValues.ToJoinSqlInVal()));
             return queryable;
         }
 
@@ -57,7 +57,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName,List<FieldType> inValues)
+        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName, List<FieldType> inValues)
         {
             return In<T, FieldType>(queryable, InFieldName, inValues.ToArray());
         }
@@ -147,6 +147,22 @@ namespace SqlSugar
         public static T Single<T>(this  SqlSugar.Queryable<T> queryable)
         {
             return queryable.ToList().Single();
+        }
+
+        /// <summary>
+        ///  返回序列的唯一元素；如果该序列为空返回Default(T),序列超过1条返则抛出异常。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static T SingleOrDefault<T>(this  SqlSugar.Queryable<T> queryable)
+        {
+            var reval = queryable.ToList();
+            if (reval == null || reval.Count == 0)
+            {
+                return default(T);
+            }
+            return reval.Single();
         }
 
         /// <summary>
