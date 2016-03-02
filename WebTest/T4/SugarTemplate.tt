@@ -12,7 +12,6 @@
 <#@ import namespace="System.Web" #>
 <#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SqlSugar.dll" #>
 <#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SyntacticSugar.dll" #>
-<#@ output extension=".cs" #>
 <#@ include file="$(ProjectDir)\T4\SugarTemplateCore.ttinclude"  #>
 
 <# 
