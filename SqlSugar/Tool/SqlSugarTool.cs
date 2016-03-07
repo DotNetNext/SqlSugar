@@ -160,13 +160,13 @@ namespace SqlSugar
                 primaryInfo = cm[key];
             else
             {
-                string sql = @"  with tb as(
-                                        select * from sysobjects where xtype='U'  
-                                        ),
-                                        pk as(
-                                         SELECT TABLE_NAME,COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
-                                        )
-                                        select pk.COLUMN_NAME as keyName,tb.name as tableName from tb inner join pk on tb.name=pk.TABLE_NAME";
+                string sql = @"  				SELECT a.name as keyName ,d.name as tableName
+  FROM   syscolumns a 
+  inner  join sysobjects d on a.id=d.id       
+  where  exists(SELECT 1 FROM sysobjects where xtype='PK' and  parent_obj=a.id and name in (  
+  SELECT name  FROM sysindexes   WHERE indid in(  
+  SELECT indid FROM sysindexkeys WHERE id = a.id AND colid=a.colid  
+)))";
                 var dt = db.GetDataTable(sql);
                 primaryInfo = new List<KeyValue>();
                 if (dt != null && dt.Rows.Count > 0)
