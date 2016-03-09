@@ -14,3 +14,4 @@ E:\Code\Git\SqlSugar2\SqlSugar\bin\Debug\SqlSugar.dll
 E:\Code\Git\SqlSugar2\SqlSugar\bin\Debug\SqlSugar.pdb
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Debug\SqlSugar.dll
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Debug\SqlSugar.pdb
+E:\Code\Git\SqlSugar2\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache

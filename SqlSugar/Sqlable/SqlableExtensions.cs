@@ -214,7 +214,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sqlable"></param>
         /// <returns></returns>
-        public static int Count(this Sqlable sqlable,object whereObj=null)
+        public static int Count(this Sqlable sqlable,object whereObj=null,string preSql=null,string nextSql=null)
         {
             StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
@@ -225,6 +225,12 @@ namespace SqlSugar
                 sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                if (preSql != null) {
+                    sbSql.Insert(0, preSql);
+                }
+                if (nextSql != null) {
+                    sbSql.Append(nextSql);
+                }
                 return sqlable.DB.GetInt(sbSql.ToString(), sqlParams);
             }
             catch (Exception ex)
