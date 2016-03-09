@@ -133,7 +133,7 @@ namespace SqlSugar
         /// <param name="fileds">查询列</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
         /// <returns></returns>
-        public static List<T> SelectToList<T>(this Sqlable sqlable, string fileds, object whereObj = null) where T : class
+        public static List<T> SelectToList<T>(this Sqlable sqlable, string fileds, object whereObj = null, string preSql = null, string nextSql = null) where T : class
         {
             StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
@@ -144,6 +144,14 @@ namespace SqlSugar
                 sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
                 var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                if (preSql != null)
+                {
+                    sbSql.Insert(0, preSql);
+                }
+                if (nextSql != null)
+                {
+                    sbSql.Append(nextSql);
+                }
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams),fileds);
                 return reval;
             }
