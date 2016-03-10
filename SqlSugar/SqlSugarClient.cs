@@ -315,7 +315,7 @@ namespace SqlSugar
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" {0} =@{0}  ,", r.ParameterName.TrimStart('@')));
+                sbSql.Append(string.Format(" [{0}] =@{0}  ,", r.ParameterName.TrimStart('@')));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             sbSql.Append(" WHERE  1=1  ");
@@ -380,7 +380,7 @@ namespace SqlSugar
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" {0} =@{0}  ,", r.Key));
+                sbSql.Append(string.Format(" [{0}] =@{0}  ,", r.Key));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             if (whereIn.Count() == 0)

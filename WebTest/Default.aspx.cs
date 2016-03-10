@@ -119,7 +119,7 @@ namespace WebTest
                     bool isAny1 = db.Queryable<Student>().Any(c => c.id == 1);
 
                     int maxId= db.Queryable<Student>().Max<Student,int>("id");
-                    int minId = db.Queryable<Student>().Where(c=>c.id>10).Min<Student, int>("id");
+                    int minId = db.Queryable<Student>().Where(c=>c.id>0).Min<Student, int>("id");
                     //---------Sqlable,创建多表查询---------//
 
                     //多表查询
