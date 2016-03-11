@@ -398,7 +398,7 @@ namespace SqlSugar
             {
                 foreach (var par in pars)
                 {
-                    if (par.SqlDbType == SqlDbType.Udt)
+                    if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
                         par.UdtTypeName = "HIERARCHYID";
                     }

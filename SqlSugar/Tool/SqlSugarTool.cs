@@ -80,7 +80,19 @@ namespace SqlSugar
                 {
                     var value = r.GetValue(obj, null);
                     if (value == null) value = DBNull.Value;
-                    listParams.Add(new SqlParameter("@" + r.Name, value));
+                    if (r.Name.ToLower().Contains("hierarchyid"))
+                    {
+                        var par = new SqlParameter("@" + r.Name, value);
+                        if (par.SqlDbType == SqlDbType.Udt)
+                        {
+                            par.UdtTypeName = "HIERARCHYID";
+                        }
+                        listParams.Add(par);
+                    }
+                    else
+                    {
+                        listParams.Add(new SqlParameter("@" + r.Name, value));
+                    }
                 }
             }
             return listParams.ToArray();
