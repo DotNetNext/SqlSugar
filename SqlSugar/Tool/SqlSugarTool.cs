@@ -83,10 +83,7 @@ namespace SqlSugar
                     if (r.Name.ToLower().Contains("hierarchyid"))
                     {
                         var par = new SqlParameter("@" + r.Name, value);
-                        if (par.SqlDbType == SqlDbType.Udt)
-                        {
-                            par.UdtTypeName = "HIERARCHYID";
-                        }
+                        par.UdtTypeName = "HIERARCHYID";
                         listParams.Add(par);
                     }
                     else
@@ -235,14 +232,14 @@ namespace SqlSugar
         /// <returns></returns>
         internal static string PackagingSQL(string sql, string shortName)
         {
-            return string.Format(" SELECT * FROM ({0}) {1} ",sql,shortName);
+            return string.Format(" SELECT * FROM ({0}) {1} ", sql, shortName);
         }
 
         /// <summary>
         /// 获取参数到键值集合根据页面Request参数
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string,string> GetParameterDictionary(bool isNotNullAndEmpty=false)
+        public static Dictionary<string, string> GetParameterDictionary(bool isNotNullAndEmpty = false)
         {
             Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
                    .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
@@ -251,10 +248,11 @@ namespace SqlSugar
                 .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
 
             var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
-            if (isNotNullAndEmpty) {
+            if (isNotNullAndEmpty)
+            {
                 paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
             }
-            return paraDictionarAll.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);;
+            return paraDictionarAll.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value); ;
         }
     }
 }
