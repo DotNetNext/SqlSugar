@@ -82,8 +82,9 @@ namespace SqlSugar
                     if (value == null) value = DBNull.Value;
                     if (r.Name.ToLower().Contains("hierarchyid"))
                     {
-                        var par = new SqlParameter("@" + r.Name, value);
+                        var par = new SqlParameter("@" + r.Name,SqlDbType.Udt);
                         par.UdtTypeName = "HIERARCHYID";
+                        par.Value = value;
                         listParams.Add(par);
                     }
                     else
