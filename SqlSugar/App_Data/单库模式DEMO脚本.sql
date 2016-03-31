@@ -128,6 +128,7 @@ CREATE TABLE [dbo].[Student](
 	[name] [varchar](100) NULL,
 	[sch_id] [int] NULL,
 	[sex] [char](10) NULL,
+	isOk bit null,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC

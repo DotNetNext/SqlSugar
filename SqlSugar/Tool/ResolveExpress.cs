@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -26,7 +27,29 @@ namespace SqlSugar
         public void ResolveExpression(ResolveExpress re, Expression exp)
         {
             ResolveExpress.MemberType type = ResolveExpress.MemberType.None;
-            this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
+            var expStr = exp.ToString();
+            var isNotBool = !expStr.Contains("True") && !expStr.Contains("False");
+            if (isNotBool)
+            {
+                this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
+            }
+            else
+            {
+                var isTrue = Regex.IsMatch(expStr, @"\=\> True$");
+                var isFalse = Regex.IsMatch(expStr, @"\=\> False$");
+                if (isFalse)
+                {
+                    this.SqlWhere = string.Format(" AND 1<>1 ");
+                }
+                else if (isTrue)
+                {
+
+                }
+                else
+                {
+                    this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
+                }
+            }
         }
 
         /// <summary>
@@ -53,25 +76,25 @@ namespace SqlSugar
                 var oper = GetOperator(expression.NodeType);
                 var isKeyOperValue = leftType == MemberType.Key && rightType == MemberType.Value;
                 var isValueOperKey = rightType == MemberType.Key && leftType == MemberType.Value;
-                #region 处理 null 
+                #region 处理 null
                 if (isKeyOperValue & (right == "null" || right == null) && oper.Trim() == "=")
                 {
                     var oldLeft = AddParas(ref left, right);
                     return string.Format(" ({0} is null ) ", oldLeft);
                 }
-                else if (isKeyOperValue & (right == "null"||right==null) && oper.Trim() == "<>")
+                else if (isKeyOperValue & (right == "null" || right == null) && oper.Trim() == "<>")
                 {
                     var oldLeft = AddParas(ref left, right);
                     return string.Format(" ({0} is not null ) ", oldLeft);
                 }
-                else if (isValueOperKey & (left == "null"||left==null) && oper.Trim() == "=")
+                else if (isValueOperKey & (left == "null" || left == null) && oper.Trim() == "=")
                 {
                     return string.Format(" ({0} is null ) ", right);
                 }
-                else if (isValueOperKey & (left == "null"||left==null) && oper.Trim() == "<>")
+                else if (isValueOperKey & (left == "null" || left == null) && oper.Trim() == "<>")
                 {
                     return string.Format(" ({0} is not null ) ", right);
-                } 
+                }
                 #endregion
                 else if (isKeyOperValue)
                 {
@@ -135,10 +158,6 @@ namespace SqlSugar
                 ConstantExpression ce = ((ConstantExpression)exp);
                 if (ce.Value == null)
                     return "null";
-                else if (ce.Value is Boolean)
-                {
-                    return Convert.ToBoolean(ce.Value) ? "1=1" : "1<>1";
-                }
                 else
                 {
                     return ce.Value.ToString();

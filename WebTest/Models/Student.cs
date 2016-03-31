@@ -10,7 +10,7 @@ namespace Models
     public int sch_id {get;set;}
 
     public string sex {get;set;}
-
+    public bool isOk { get; set; }
    }
 
 
@@ -24,6 +24,8 @@ namespace Models
         public int sch_id { get; set; }
 
         public string sex { get; set; }
+
+
 
     }
        

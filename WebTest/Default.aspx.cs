@@ -27,18 +27,21 @@ namespace WebTest
             using (SqlSugarClient db = SugarDao.GetInstance())//开启数据库连接
             {
                 string aaa = null;
-              var xxx=  db.Queryable<School>().Where(it =>  it.name==aaa ).ToList();
+                var xx = db.Queryable<School>().Where(it => true).ToList();
+                var xx2 = db.Queryable<Student>().Where(it => it.isOk == false ).ToList();
+
+
 
                 var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
                 var sl = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
 
                 db.Queryable<Student>().In("id", "1", "2", "3").ToList();
-                db.Queryable<Student>().In("id", new string[]{ "1", "2", "3"}).ToList();
-                db.Queryable<Student>().In("id", new List<string>{ "1", "2", "3" }).ToList();
+                db.Queryable<Student>().In("id", new string[] { "1", "2", "3" }).ToList();
+                db.Queryable<Student>().In("id", new List<string> { "1", "2", "3" }).ToList();
                 var array = new string[] { "1", "2", "3" };
                 db.Queryable<Student>().Where(it => array.Contains(it.name));
 
-                db.Delete<Student,int>(1, 2);
+                db.Delete<Student, int>(1, 2);
                 //开启事务，可以不使用事务,也可以使用多个事务
                 db.BeginTran();
 
@@ -84,7 +87,7 @@ namespace WebTest
                     var stud = new Student() { id = db.GetInt("select top 1 id from Student") };
 
                     //查询单条
-                    var single = db.Queryable<Student>().Single(c => c.id==stud.id);
+                    var single = db.Queryable<Student>().Single(c => c.id == stud.id);
 
                     //取10-20条
                     var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();
@@ -118,8 +121,8 @@ namespace WebTest
                     bool isAny100 = db.Queryable<Student>().Any(c => c.id == 100);
                     bool isAny1 = db.Queryable<Student>().Any(c => c.id == 1);
 
-                    int maxId= db.Queryable<Student>().Max<Student,int>("id");
-                    int minId = db.Queryable<Student>().Where(c=>c.id>0).Min<Student, int>("id");
+                    int maxId = db.Queryable<Student>().Max<Student, int>("id");
+                    int minId = db.Queryable<Student>().Where(c => c.id > 0).Min<Student, int>("id");
                     //---------Sqlable,创建多表查询---------//
 
                     //多表查询
@@ -175,8 +178,8 @@ namespace WebTest
                     /************************************************************************************************************/
                     //指定列更新
                     db.Update<School>(new { name = "蓝翔2" }, it => it.id == id);
-                    db.Update<School,int>(new { name = "蓝翔2" }, 1,3,12);
-                    db.Update<School, string>(new { name = "蓝翔2" },new string []{"1","2"});
+                    db.Update<School, int>(new { name = "蓝翔2" }, 1, 3, 12);
+                    db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "1", "2" });
                     //整个实体更新,注意主键必需为实体类的第一个属性
                     db.Update(new School { id = id, name = "蓝翔2" });
                     db.Update<School>(new School { id = id, name = "蓝翔2" }, it => it.id == id);
@@ -187,9 +190,9 @@ namespace WebTest
                     /*************************************************5、删除****************************************************/
                     /************************************************************************************************************/
 
-                    db.Delete<School,int>(10);//注意主键必需为实体类的第一个属性
+                    db.Delete<School, int>(10);//注意主键必需为实体类的第一个属性
                     db.Delete<School>(it => it.id > 100);
-                    db.Delete<School,string>(new string[] { "100", "101", "102" });
+                    db.Delete<School, string>(new string[] { "100", "101", "102" });
 
                     //db.FalseDelete<school>("is_del", 100);
                     //等同于 update school set is_del=0 where id in(100)
@@ -205,7 +208,7 @@ namespace WebTest
 
                     db.GetDataTable(sql);
                     db.GetList<Student>(sql);
-                    db.GetSingle<Student>(sql + " where id="+stud.id);
+                    db.GetSingle<Student>(sql + " where id=" + stud.id);
                     using (SqlDataReader read = db.GetReader(sql)) { }  //事务中一定要释放DataReader
 
                     db.GetScalar(sql);
