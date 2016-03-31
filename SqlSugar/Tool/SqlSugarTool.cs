@@ -160,7 +160,7 @@ namespace SqlSugar
         /// <returns></returns>
         internal static string GetPrimaryKeyByTableName(SqlSugarClient db, string tableName)
         {
-            string key = "GetPrimaryKeyByTableName";
+            string key = "GetPrimaryKeyByTableName"+tableName;
             tableName = tableName.ToLower();
             var cm = CacheManager<List<KeyValue>>.GetInstance();
             List<KeyValue> primaryInfo = null;
