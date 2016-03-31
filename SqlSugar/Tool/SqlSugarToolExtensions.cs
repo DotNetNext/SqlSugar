@@ -15,7 +15,7 @@ namespace SqlSugar
     /// ** 作者：sunkaixuan
     /// ** 使用说明：
     /// </summary>
-    internal static class SqlSugarToolExtensions
+    public static class SqlSugarToolExtensions
     {
 
         /// <summary>
