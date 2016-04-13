@@ -28,7 +28,7 @@ namespace WebTest
             {
                 string aaa = null;
                 var xx = db.Queryable<School>().Where(it => true).ToList();
-                var xx2 = db.Queryable<Student>().Where(it => it.isOk == false ).ToList();
+                var xx2 = db.Queryable<Student>().Where(it => !it.isOk  ).ToList();
 
 
 
