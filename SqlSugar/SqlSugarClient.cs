@@ -386,7 +386,7 @@ namespace SqlSugar
             if (whereIn.Count() == 0)
             {
                 var value = type.GetProperties().Cast<PropertyInfo>().Single(it => it.Name == pkName).GetValue(rowObj, null);
-                sbSql.AppendFormat("WHERE {1} IN ({2})", typeName, pkName, value);
+                sbSql.AppendFormat("WHERE {1} IN ('{2}')", typeName, pkName, value);
             }
             else
             {

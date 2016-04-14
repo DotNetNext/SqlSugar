@@ -15,5 +15,5 @@ E:\Code\GIT\SqlSugar\SqlSugar\bin\Release\SqlSugar.dll
 E:\Code\GIT\SqlSugar\SqlSugar\bin\Release\SqlSugar.pdb
 E:\Code\GIT\SqlSugar\SqlSugar\obj\Release\SqlSugar.dll
 E:\Code\GIT\SqlSugar\SqlSugar\obj\Release\SqlSugar.pdb
-E:\Code\Git\SqlSugar2\SqlSugar\bin\Release\SqlSugar.XML
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Release\SqlSugar.csprojResolveAssemblyReference.cache
+E:\Code\Git\SqlSugar2\SqlSugar\bin\Release\SqlSugar.XML
