@@ -82,7 +82,7 @@ namespace SqlSugar
                     if (value == null) value = DBNull.Value;
                     if (r.Name.ToLower().Contains("hierarchyid"))
                     {
-                        var par = new SqlParameter("@" + r.Name,SqlDbType.Udt);
+                        var par = new SqlParameter("@" + r.Name, SqlDbType.Udt);
                         par.UdtTypeName = "HIERARCHYID";
                         par.Value = value;
                         listParams.Add(par);
@@ -160,7 +160,7 @@ namespace SqlSugar
         /// <returns></returns>
         internal static string GetPrimaryKeyByTableName(SqlSugarClient db, string tableName)
         {
-            string key = "GetPrimaryKeyByTableName"+tableName;
+            string key = "GetPrimaryKeyByTableName" + tableName;
             tableName = tableName.ToLower();
             var cm = CacheManager<List<KeyValue>>.GetInstance();
             List<KeyValue> primaryInfo = null;
@@ -254,6 +254,25 @@ namespace SqlSugar
                 paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
             }
             return paraDictionarAll.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value); ;
+        }
+        /// <summary>
+        /// 获取参数到键值集合根据页面Request参数
+        /// </summary>
+        /// <returns></returns>
+        public static SqlParameter[] GetParameterArray(bool isNotNullAndEmpty = false)
+        {
+            Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
+                   .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
+
+            Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
+
+            var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
+            if (isNotNullAndEmpty)
+            {
+                paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
+            }
+            return paraDictionarAll.Select(it => new SqlParameter("@" + it.Key, it.Value)).ToArray();
         }
     }
 }
