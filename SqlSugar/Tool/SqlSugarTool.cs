@@ -237,24 +237,44 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 使用页面自动填充sqlParameter时 Request.Form出现特殊字符时可以重写Request.Form方法，使用时注意加锁并且用到将该值设为null
+        /// </summary>
+        public static Func<string, string> SpecialRequestForm = null;
+
+        /// <summary>
         /// 获取参数到键值集合根据页面Request参数
         /// </summary>
         /// <returns></returns>
         public static Dictionary<string, string> GetParameterDictionary(bool isNotNullAndEmpty = false)
         {
-            Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
-                   .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
-
-            Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
-                .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
-
-            var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
-            if (isNotNullAndEmpty)
+            if (SpecialRequestForm == null)
             {
-                paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
+                Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
+                       .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
+
+                Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                    .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
+
+                var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
+                if (isNotNullAndEmpty)
+                {
+                    paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
+                }
+                return paraDictionarAll.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
             }
-            return paraDictionarAll.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value); ;
+            else {
+
+                var pars = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                     .ToDictionary(k => k, v => SpecialRequestForm(v)).Where(it=>true);
+                if (isNotNullAndEmpty)
+                {
+                    pars = pars.Where(it => !string.IsNullOrEmpty(it.Value));
+                }
+                return pars.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+            }
         }
+  
+
         /// <summary>
         /// 获取参数到键值集合根据页面Request参数
         /// </summary>

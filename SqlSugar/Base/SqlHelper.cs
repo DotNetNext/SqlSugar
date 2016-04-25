@@ -88,9 +88,11 @@ namespace SqlSugar
                 sqlCommand.Transaction = _tran;
             }
             sqlCommand.CommandTimeout = this.CommandTimeOut;
-            sqlCommand.Parameters.AddRange(pars);
-            if (IsGetPageParas) {
-               SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
+            if (pars != null)
+                sqlCommand.Parameters.AddRange(pars);
+            if (IsGetPageParas)
+            {
+                SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
@@ -109,7 +111,8 @@ namespace SqlSugar
             {
                 sqlCommand.Transaction = _tran;
             }
-            sqlCommand.Parameters.AddRange(pars);
+            if (pars != null)
+                sqlCommand.Parameters.AddRange(pars);
             if (IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
@@ -130,7 +133,8 @@ namespace SqlSugar
             {
                 sqlCommand.Transaction = _tran;
             }
-            sqlCommand.Parameters.AddRange(pars);
+            if (pars != null)
+                sqlCommand.Parameters.AddRange(pars);
             if (IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
