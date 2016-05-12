@@ -10,4 +10,10 @@ namespace SqlSugar
         public string Key { get; set; }
         public string Value { get; set; }
     }
+
+    public class KeyValueObj
+    {
+        public string Key { get; set; }
+        public object Value { get; set; }
+    }
 }

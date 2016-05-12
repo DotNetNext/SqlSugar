@@ -26,7 +26,8 @@ namespace SqlSugar
             IsNoLock = false;
         }
         private List<KeyValue> _mappingTableList = null;
-       
+        private Dictionary<string, KeyValueObj> _filterFuns = null;
+
         internal string GetTableNameByClassType(string typeName)
         {
             if (_mappingTableList.IsValuable())
@@ -74,11 +75,40 @@ namespace SqlSugar
         public bool IsNoLock { get; set; }
 
         /// <summary>
+        /// 设置过滤器（用户权限过滤）
+        /// Func《过滤器的名字,过滤的条件SQL，过滤的参数对象，返回条件加参数对象》
+        /// </summary>
+        /// <param name="filters"></param>
+        public void SetFilterFilterFuns(Dictionary<string, KeyValueObj> filters)
+        {
+            _filterFuns = filters;
+        }
+
+        /// <summary>
+        /// 数据过滤器键
+        /// </summary>
+        public string CurrentFilterKey = null;
+
+        /// <summary>
         /// 创建多表查询对象
         /// </summary>
         public Sqlable Sqlable()
         {
-            return new Sqlable() { DB = this };
+            var sqlable=new  Sqlable(){ DB = this };
+            //全局过滤器
+            if (CurrentFilterKey.IsValuable())
+            {
+                if (_filterFuns.ContainsKey(CurrentFilterKey))
+                {
+                    var filterInfo = _filterFuns[CurrentFilterKey];
+                    string whereStr = string.Format(" AND {0} ", filterInfo.Key);
+                    sqlable.Where.Add(whereStr);
+                    if (filterInfo.Value != null)
+                        sqlable.Params.AddRange(SqlSugarTool.GetParameters(filterInfo.Value));
+                    return sqlable;
+                }
+            }
+            return sqlable;
         }
 
         /// <summary>
@@ -88,17 +118,30 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>() where T : new()
         {
-
+            var queryable = new Queryable<T>() { DB = this };
+            //别名表
             if (_mappingTableList.IsValuable())
             {
                 string name = typeof(T).Name;
                 if (_mappingTableList.Any(it => it.Key == name))
                 {
-                    return new Queryable<T>() { DB = this, TableName = _mappingTableList.First(it => it.Key == name).Value };
+                    queryable.TableName = _mappingTableList.First(it => it.Key == name).Value;
                 }
             }
-
-            return new Queryable<T>() { DB = this };
+            //全局过滤器
+            if (CurrentFilterKey.IsValuable())
+            {
+                if (_filterFuns.ContainsKey(CurrentFilterKey))
+                {
+                    var filterInfo = _filterFuns[CurrentFilterKey];
+                    string whereStr = string.Format(" AND {0} ", filterInfo.Key);
+                    queryable.Where.Add(whereStr);
+                    if (filterInfo.Value != null)
+                        queryable.Params.AddRange(SqlSugarTool.GetParameters(filterInfo.Value));
+                    return queryable;
+                }
+            }
+            return queryable;
 
         }
         /// <summary>
@@ -228,7 +271,7 @@ namespace SqlSugar
                     if (isIdentity == false || (isIdentity && prop.Name != primaryKeyName))
                     {
                         //4.将属性的名字加入到字符串中 
-                        sbInsertSql.Append("["+prop.Name + "],");
+                        sbInsertSql.Append("[" + prop.Name + "],");
                     }
                 }
                 //**去掉最后一个逗号 
