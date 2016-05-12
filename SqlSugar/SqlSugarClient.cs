@@ -79,7 +79,7 @@ namespace SqlSugar
         /// Func《过滤器的名字,过滤的条件SQL，过滤的参数对象，返回条件加参数对象》
         /// </summary>
         /// <param name="filters"></param>
-        public void SetFilterFilterFuns(Dictionary<string, KeyValueObj> filters)
+        public void SetFilterFilterParas(Dictionary<string, KeyValueObj> filters)
         {
             _filterFuns = filters;
         }

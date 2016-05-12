@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace SqlSugar
 {
@@ -143,7 +144,7 @@ namespace SqlSugar
                 sbSql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
                 sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
-                var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                var sqlParams = GetAllParas(sqlable, whereObj);
                 if (preSql != null)
                 {
                     sbSql.Insert(0, preSql);
@@ -152,7 +153,7 @@ namespace SqlSugar
                 {
                     sbSql.Append(nextSql);
                 }
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams),fileds);
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams), fileds);
                 return reval;
             }
             catch (Exception ex)
@@ -165,6 +166,27 @@ namespace SqlSugar
                 sqlable = null;
                 sbSql = null;
             }
+        }
+
+        /// <summary>
+        /// 获取页面参数
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="whereObj"></param>
+        /// <returns></returns>
+        private  static SqlParameter[] GetAllParas(Sqlable sqlable, object whereObj)
+        {
+            List<SqlParameter> allParams = new List<SqlParameter>();
+            var selectParas = SqlSugarTool.GetParameters(whereObj).ToList();
+            if (selectParas.IsValuable())
+            {
+                allParams.AddRange(selectParas);
+            }
+            if (sqlable.Params.IsValuable())
+            {
+                allParams.AddRange(sqlable.Params);
+            }
+            return allParams.ToArray();
         }
 
 
@@ -186,7 +208,7 @@ namespace SqlSugar
                 sbSql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
                 sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
-                var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                var sqlParams = GetAllParas(sqlable, whereObj);
                 var reval = sqlable.DB.GetDataTable(sbSql.ToString(), sqlParams);
                 return reval;
             }
@@ -232,7 +254,7 @@ namespace SqlSugar
                 sbSql.Append(" WHERE 1=1").Append(string.Join(" ", sqlable.Where));
                 sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
-                var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                var sqlParams = GetAllParas(sqlable, whereObj);
                 if (preSql != null) {
                     sbSql.Insert(0, preSql);
                 }
@@ -279,7 +301,7 @@ namespace SqlSugar
                 int take = pageSize;
                 sbSql.Insert(0, "SELECT * FROM ( ");
                 sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
-                var sqlParams = SqlSugarTool.GetParameters(whereObj);
+                var sqlParams = GetAllParas(sqlable, whereObj);
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams),fileds);
                 return reval;
             }

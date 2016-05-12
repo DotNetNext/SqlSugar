@@ -76,6 +76,7 @@
     <Content Include="CloudTest.aspx" />
     <Content Include="FunctionTest\Join.aspx" />
     <Content Include="FunctionTest\Select.aspx" />
+    <Content Include="NewDemo\Filter.aspx" />
     <Content Include="NewDemo\GetClass.aspx" />
     <Content Include="NewDemo\isGetPagePara.aspx" />
     <Content Include="NewDemo\QueryableDifferentTableName.aspx" />
@@ -135,6 +136,13 @@
     </Compile>
     <Compile Include="FunctionTest\Select.aspx.designer.cs">
       <DependentUpon>Select.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="NewDemo\Filter.aspx.cs">
+      <DependentUpon>Filter.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NewDemo\Filter.aspx.designer.cs">
+      <DependentUpon>Filter.aspx</DependentUpon>
     </Compile>
     <Compile Include="NewDemo\GetClass.aspx.cs">
       <DependentUpon>GetClass.aspx</DependentUpon>
