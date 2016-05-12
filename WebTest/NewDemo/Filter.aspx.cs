@@ -18,7 +18,7 @@ namespace WebTest.NewDemo
             {
                 //queryable
                 db.CurrentFilterKey = "role";
-                var list = db.Queryable<Student>().ToList(); //通过全局过滤器对需要权限验证的数代码进行过滤
+                var list = db.Queryable<Student>().ToList(); //通过全局过滤器对需要权限验证的数据进行过滤
                 //相当于db.Queryable<Student>().Where("id=@id",new{id=1})
 
 
