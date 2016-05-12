@@ -25,7 +25,7 @@ namespace WebTest.NewDemo
 
                 //sqlable
                 var list2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
-
+                //相当于同上
             }
 
         }
