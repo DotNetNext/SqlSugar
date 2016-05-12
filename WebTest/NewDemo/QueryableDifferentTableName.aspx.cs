@@ -19,6 +19,7 @@ namespace WebTest.NewDemo
                 var list = db.Queryable<Student>().ToList();
                 //如果类名与数据库名不一致可以写在这样
                 var list2 = db.Queryable<Student2>("Student").ToList();
+                var list2Count = db.Queryable<Student2>("Student").Count();
             }
 
             using (SqlSugarClient db = SugarDaoMappingTable.GetInstance())//开启数据库连接
