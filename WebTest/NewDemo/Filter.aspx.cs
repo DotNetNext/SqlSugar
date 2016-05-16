@@ -43,10 +43,16 @@ namespace WebTest.NewDemo
         /// <summary>
         /// 页面所需要的过滤函数
         /// </summary>
-        private static Dictionary<string, KeyValueObj> _filterParas = new Dictionary<string, KeyValueObj>()
+        private static Dictionary<string,Func<KeyValueObj>> _filterParas = new Dictionary<string,Func<KeyValueObj>>()
         {
-          { "role",new KeyValueObj(){ Key=" id=@id" , Value=new{ id=1}}},
-          { "org",new KeyValueObj(){ Key=" orgId=@orgId" , Value=new{ orgId=1}}},
+          { "role",()=>{
+                    return new KeyValueObj(){ Key=" id=@id" , Value=new{ id=1}};
+               }
+          },
+          { "org",()=>{ 
+                    return new KeyValueObj(){ Key=" orgId=@orgId" , Value=new{ orgId=1}};
+              }
+          },
         };
         public static SqlSugarClient GetInstance()
         {

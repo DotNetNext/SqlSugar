@@ -26,7 +26,7 @@ namespace SqlSugar
             IsNoLock = false;
         }
         private List<KeyValue> _mappingTableList = null;
-        private Dictionary<string, KeyValueObj> _filterFuns = null;
+        private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
 
         internal string GetTableNameByClassType(string typeName)
         {
@@ -79,7 +79,7 @@ namespace SqlSugar
         /// Func《过滤器的名字,过滤的条件SQL，过滤的参数对象，返回条件加参数对象》
         /// </summary>
         /// <param name="filters"></param>
-        public void SetFilterFilterParas(Dictionary<string, KeyValueObj> filters)
+        public void SetFilterFilterParas(Dictionary<string, Func<KeyValueObj>> filters)
         {
             _filterFuns = filters;
         }
@@ -101,10 +101,11 @@ namespace SqlSugar
                 if (_filterFuns.ContainsKey(CurrentFilterKey))
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
-                    string whereStr = string.Format(" AND {0} ", filterInfo.Key);
+                    var filterVlue = filterInfo();
+                    string whereStr = string.Format(" AND {0} ", filterVlue.Key);
                     sqlable.Where.Add(whereStr);
-                    if (filterInfo.Value != null)
-                        sqlable.Params.AddRange(SqlSugarTool.GetParameters(filterInfo.Value));
+                    if (filterVlue.Value != null)
+                        sqlable.Params.AddRange(SqlSugarTool.GetParameters(filterVlue.Value));
                     return sqlable;
                 }
             }
@@ -134,10 +135,11 @@ namespace SqlSugar
                 if (_filterFuns.ContainsKey(CurrentFilterKey))
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
-                    string whereStr = string.Format(" AND {0} ", filterInfo.Key);
+                    var filterValue=filterInfo();
+                    string whereStr = string.Format(" AND {0} ", filterValue.Key);
                     queryable.Where.Add(whereStr);
-                    if (filterInfo.Value != null)
-                        queryable.Params.AddRange(SqlSugarTool.GetParameters(filterInfo.Value));
+                    if (filterValue.Value != null)
+                        queryable.Params.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
                     return queryable;
                 }
             }
