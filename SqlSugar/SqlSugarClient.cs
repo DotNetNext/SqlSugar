@@ -94,7 +94,7 @@ namespace SqlSugar
         /// </summary>
         public Sqlable Sqlable()
         {
-            var sqlable=new  Sqlable(){ DB = this };
+            var sqlable = new Sqlable() { DB = this };
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
@@ -135,7 +135,7 @@ namespace SqlSugar
                 if (_filterFuns.ContainsKey(CurrentFilterKey))
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
-                    var filterValue=filterInfo();
+                    var filterValue = filterInfo();
                     string whereStr = string.Format(" AND {0} ", filterValue.Key);
                     queryable.Where.Add(whereStr);
                     if (filterValue.Value != null)
@@ -167,6 +167,31 @@ namespace SqlSugar
         {
             SqlDataReader reader = null;
             var pars = SqlSugarTool.GetParameters(whereObj).ToList();
+            return SqlQuery<T>(ref sql, ref reader, pars);
+        }
+
+        /// <summary>
+        /// 根据SQL语句将结果集映射到List《T》
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="pars"></param>
+        /// <returns></returns>
+        public List<T> SqlQuery<T>(string sql, SqlParameter[] pars)
+        {
+            SqlDataReader reader = null;
+            return SqlQuery<T>(ref sql, ref reader, pars.ToList());
+        }
+        /// <summary>
+        /// 根据SQL语句将结果集映射到List《T》
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="reader"></param>
+        /// <param name="pars"></param>
+        /// <returns></returns>
+        public List<T> SqlQuery<T>(ref string sql, ref SqlDataReader reader, List<SqlParameter> pars)
+        {
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
@@ -174,8 +199,9 @@ namespace SqlSugar
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
                     var filterValue = filterInfo();
-                    sql+= string.Format(" AND {0} ", filterValue.Key);
-                    if (filterValue.Value != null) {
+                    sql += string.Format(" AND {0} ", filterValue.Key);
+                    if (filterValue.Value != null)
+                    {
                         pars.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
                     }
                 }
