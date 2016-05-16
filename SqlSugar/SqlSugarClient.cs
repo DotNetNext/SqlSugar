@@ -166,13 +166,26 @@ namespace SqlSugar
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             SqlDataReader reader = null;
-            var pars = SqlSugarTool.GetParameters(whereObj);
+            var pars = SqlSugarTool.GetParameters(whereObj).ToList();
+            //全局过滤器
+            if (CurrentFilterKey.IsValuable())
+            {
+                if (_filterFuns.ContainsKey(CurrentFilterKey))
+                {
+                    var filterInfo = _filterFuns[CurrentFilterKey];
+                    var filterValue = filterInfo();
+                    sql+= string.Format(" AND {0} ", filterValue.Key);
+                    if (filterValue.Value != null) {
+                        pars.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
+                    }
+                }
+            }
             var type = typeof(T);
             sql = string.Format(@"
              --{0}
              {1}
             ", type.Name, sql);
-            reader = GetReader(sql, pars);
+            reader = GetReader(sql, pars.ToArray());
             if (type.IsIn(SqlSugarTool.IntType, SqlSugarTool.StringType))
             {
                 List<T> strReval = new List<T>();
