@@ -29,7 +29,7 @@ namespace WebTest
                
                 var xx = db.Queryable<School>().Where(it => true).ToList();
                 var xx2 = db.Queryable<Student>().Where(it => !it.isOk  ).ToList();
-                var xxx3 = db.Queryable<School>().Where(it => it.id == 1).Where(it => it.name == "a").ToList();
+                var xxx3 = db.Queryable<School>().Where(it => it.id == 1||it.id==2).Where(it => it.name == "a").ToList();
 
 
                 var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
