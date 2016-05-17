@@ -27,7 +27,8 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            ResolveExpress re = new ResolveExpress();
+            queryable.WhereIndex=queryable.WhereIndex+100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             re.ResolveExpression(re, expression);
             queryable.Params.AddRange(re.Paras);
             queryable.Where.Add(re.SqlWhere);
@@ -45,7 +46,8 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName, params FieldType[] inValues)
         {
             var type = queryable.Type;
-            ResolveExpress re = new ResolveExpress();
+            queryable.WhereIndex=queryable.WhereIndex+100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             queryable.Where.Add(string.Format(" AND {0} IN ({1})", InFieldName, inValues.ToJoinSqlInVal()));
             return queryable;
         }
@@ -202,7 +204,8 @@ namespace SqlSugar
         public static bool Any<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            ResolveExpress re = new ResolveExpress();
+            queryable.WhereIndex=queryable.WhereIndex+100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             re.ResolveExpression(re, expression);
             queryable.Where.Add(re.SqlWhere);
             queryable.Params.AddRange(re.Paras);
@@ -232,7 +235,8 @@ namespace SqlSugar
         public static T Single<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            ResolveExpress re = new ResolveExpress();
+            queryable.WhereIndex=queryable.WhereIndex+100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             re.ResolveExpression(re, expression);
             queryable.Where.Add(re.SqlWhere);
             queryable.Params.AddRange(re.Paras);

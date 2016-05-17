@@ -19,7 +19,10 @@ namespace SqlSugar
     /// </summary>
     public class ResolveExpress
     {
-
+        public ResolveExpress(int sameIndex = 1)
+        {
+            this.SameIndex = sameIndex;
+        }
         public string SqlWhere = null;
         public List<SqlParameter> Paras = new List<SqlParameter>();
         private int SameIndex = 1;

@@ -60,5 +60,9 @@ namespace SqlSugar
         /// 分组查询
         /// </summary>
         public string GroupBy { get; set; }
+        /// <summary>
+        /// 条件索引
+        /// </summary>
+        public int WhereIndex = 1;
     }
 }
