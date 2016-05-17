@@ -26,10 +26,10 @@ namespace WebTest
 
             using (SqlSugarClient db = SugarDao.GetInstance())//开启数据库连接
             {
-                string aaa = null;
+               
                 var xx = db.Queryable<School>().Where(it => true).ToList();
                 var xx2 = db.Queryable<Student>().Where(it => !it.isOk  ).ToList();
-
+                var xxx3 = db.Queryable<School>().Where(it => it.id == 1).Where(it => it.name == "a").ToList();
 
 
                 var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
@@ -91,6 +91,7 @@ namespace WebTest
 
                     //取10-20条
                     var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();
+                    
                     //上一句的简化写法，同样取10-20条
                     var page2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").ToPageList(2, 10);
 
