@@ -15,6 +15,7 @@ namespace WebTest.Dao
             using (var db = SugarDao.GetInstance())
             {
                 var list = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER).SelectToList<Student>("*");
+                var list2 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=1", JoinType.INNER).SelectToList<Student>("*");
                 GetStudent(1, "a");
                 var count = GetCount();
             }
