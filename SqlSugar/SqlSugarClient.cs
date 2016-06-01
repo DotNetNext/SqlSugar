@@ -207,12 +207,17 @@ namespace SqlSugar
                 }
             }
             var type = typeof(T);
-            sql = string.Format(@"
-             --{0}
-             {1}
-            ", type.Name, sql);
+            sql = string.Format(@"--{0}
+{1}", type.Name, sql);
             reader = GetReader(sql, pars.ToArray());
-            if (type.IsIn(SqlSugarTool.IntType, SqlSugarTool.StringType))
+            if (type.IsIn(
+                SqlSugarTool.IntType,
+                SqlSugarTool.StringType,
+                SqlSugarTool.DecType,
+                SqlSugarTool.DateType,
+                SqlSugarTool.GuidType,
+                SqlSugarTool.ByteType,
+                SqlSugarTool.BoolType))
             {
                 List<T> strReval = new List<T>();
                 using (SqlDataReader re = reader)
@@ -225,9 +230,9 @@ namespace SqlSugar
                 return strReval;
             }
             string fields = sql;
-            if (sql.Length > 51)
+            if (sql.Length > 101)
             {
-                fields = sql.Substring(0, 50);
+                fields = sql.Substring(0, 100);
             }
             var reval = SqlSugarTool.DataReaderToList<T>(type, reader, fields);
             return reval;

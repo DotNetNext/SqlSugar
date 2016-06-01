@@ -31,13 +31,16 @@ namespace WebTest
                 //最近测试
                 var x = db.Queryable<TableDataTypeTest>().Single(it => it.Id == 1);
                 var xx = db.Queryable<School>().Where(it => true).ToList();
-                var xxx= db.Queryable<Student>().Where(it => !it.isOk  ).ToList();
+                var xxx = db.Queryable<Student>().Where(it => !it.isOk).ToList();
+          
+           
                 var xxxx = db.Queryable<School>().Where(it => it.id == 1||it.id==2).Where(it => it.name == "a").ToList();
 
 
                 //示例
                 var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
                 var sl = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
+
 
                 db.Queryable<Student>().In("id", "1", "2", "3").ToList();
                 db.Queryable<Student>().In("id", new string[] { "1", "2", "3" }).ToList();

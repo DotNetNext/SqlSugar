@@ -23,6 +23,11 @@ namespace SqlSugar
     {
         internal static Type StringType = typeof(string);
         internal static Type IntType = typeof(int);
+        internal static Type DecType = typeof(decimal);
+        internal static Type GuidType = typeof(Guid);
+        internal static Type DateType = typeof(DateTime);
+        internal static Type ByteType = typeof(Byte);
+        internal static Type BoolType = typeof(bool);
 
         /// <summary>
         /// Reader转成List《T》

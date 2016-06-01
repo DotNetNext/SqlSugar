@@ -33,7 +33,7 @@ namespace SqlSugar
             var expStr = exp.ToString();
             var isNotBool = !expStr.Contains("True") && !expStr.Contains("False");
             var isContainsNot = expStr.Contains("Not");
-            if (isContainsNot && expStr.IsMatch(@" => Not\(.+?\)"))
+            if (isContainsNot && expStr.IsMatch(@" => Not\(.+?\)") && !expStr.Contains("Contains"))
             {
                 this.SqlWhere = string.Format(" AND {0}=0 or {0} is null ", Regex.Match(expStr, @" => Not\(.+\.(.+?)\)").Groups[1].Value);
             }
