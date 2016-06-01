@@ -15,3 +15,7 @@ E:\Code\Git\SqlSugar2\SqlSugar\bin\Debug\SqlSugar.pdb
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Debug\SqlSugar.dll
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Debug\SqlSugar.pdb
 E:\Code\Git\SqlSugar2\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb

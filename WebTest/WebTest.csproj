@@ -66,6 +66,8 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\单库模式DEMO脚本.sql" />
+    <Content Include="App_Data\多库模式数据库结构脚本cloudDB %281%29.sql" />
     <Content Include="App_Lib\SqlSugar.dll" />
     <Content Include="App_Lib\SqlSugar.pdb" />
     <Content Include="App_Lib\SqlSugar.XML" />
@@ -137,6 +139,7 @@
     <Compile Include="FunctionTest\Select.aspx.designer.cs">
       <DependentUpon>Select.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\TableDataTypeTest.cs" />
     <Compile Include="NewDemo\Filter.aspx.cs">
       <DependentUpon>Filter.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -266,9 +269,7 @@
     <Compile Include="TestLib\PerformanceTest.cs" />
     <Compile Include="V_Student.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Site.Master" />
   </ItemGroup>

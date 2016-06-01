@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Data.SqlClient;
 using WebTest.Dao;
 
+
 namespace WebTest
 {
     /// <summary>
@@ -26,12 +27,15 @@ namespace WebTest
 
             using (SqlSugarClient db = SugarDao.GetInstance())//开启数据库连接
             {
-               
+
+                //最近测试
+                var x = db.Queryable<TableDataTypeTest>().Single(it => it.Id == 1);
                 var xx = db.Queryable<School>().Where(it => true).ToList();
-                var xx2 = db.Queryable<Student>().Where(it => !it.isOk  ).ToList();
-                var xxx3 = db.Queryable<School>().Where(it => it.id == 1||it.id==2).Where(it => it.name == "a").ToList();
+                var xxx= db.Queryable<Student>().Where(it => !it.isOk  ).ToList();
+                var xxxx = db.Queryable<School>().Where(it => it.id == 1||it.id==2).Where(it => it.name == "a").ToList();
 
 
+                //示例
                 var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
                 var sl = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
 

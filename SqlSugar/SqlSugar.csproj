@@ -73,10 +73,6 @@
     <Compile Include="Tool\SqlSugarTool.cs" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="App_Data\单库模式DEMO脚本.sql" />
-    <Content Include="App_Data\多库模式数据库结构脚本cloudDB %281%29.sql" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -5,3 +5,10 @@ E:\Code\Git\SqlSugar2\WebTest\bin\SqlSugar.pdb
 E:\Code\Git\SqlSugar2\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
 E:\Code\Git\SqlSugar2\WebTest\obj\Debug\WebTest.dll
 E:\Code\Git\SqlSugar2\WebTest\obj\Debug\WebTest.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.pdb
