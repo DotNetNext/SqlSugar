@@ -98,7 +98,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.ContainsKey(CurrentFilterKey) && _filterFuns.IsValuable())
+                if (_filterFuns.IsValuable() && _filterFuns.ContainsKey(CurrentFilterKey))
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
                     var filterVlue = filterInfo();
@@ -132,7 +132,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.ContainsKey(CurrentFilterKey) && _filterFuns.IsValuable())
+                if (_filterFuns.IsValuable()&&_filterFuns.ContainsKey(CurrentFilterKey) )
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
                     var filterValue = filterInfo();
@@ -195,7 +195,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.ContainsKey(CurrentFilterKey) && _filterFuns.IsValuable())
+                if (_filterFuns.IsValuable() && _filterFuns.ContainsKey(CurrentFilterKey))
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
                     var filterValue = filterInfo();
