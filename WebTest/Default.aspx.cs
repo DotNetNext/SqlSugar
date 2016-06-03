@@ -9,6 +9,7 @@ using Models;
 using System.Linq.Expressions;
 using System.Data.SqlClient;
 using WebTest.Dao;
+using System.Data;
 
 
 namespace WebTest
@@ -32,21 +33,8 @@ namespace WebTest
                 var x = db.Queryable<TableDataTypeTest>().Single(it => it.Id == 1);
                 var xx = db.Queryable<School>().Where(it => true).ToList();
                 var xxx = db.Queryable<Student>().Where(it => !it.isOk).ToList();
-          
-           
                 var xxxx = db.Queryable<School>().Where(it => it.id == 1||it.id==2).Where(it => it.name == "a").ToList();
 
-
-                //示例
-                var sl2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("id");
-                var sl = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
-
-
-                db.Queryable<Student>().In("id", "1", "2", "3").ToList();
-                db.Queryable<Student>().In("id", new string[] { "1", "2", "3" }).ToList();
-                db.Queryable<Student>().In("id", new List<string> { "1", "2", "3" }).ToList();
-                var array = new string[] { "1", "2", "3" };
-                db.Queryable<Student>().Where(it => array.Contains(it.name));
 
                 db.Delete<Student, int>(1, 2);
                 //开启事务，可以不使用事务,也可以使用多个事务
@@ -158,10 +146,23 @@ namespace WebTest
                     //var spResult = db.SqlQuery<school>("exec sp_school @p1,@p2", new { p1=1,p2=2 });
 
 
+                    //键值查询
+                    //Dictionary KEY 不能重复 Dictionary<string,int> xxxx = db.SqlQuery<KeyValuePair<string, int>>("select name,id from Student").ToDictionary(it=>it.Key,it=>it.Value);
+                    List<KeyValuePair<string, int>> kv = db.SqlQuery<KeyValuePair<string, int>>("select name,id from Student");
 
 
+                    //转换为数组
+                    List<int []> arrayList = db.SqlQuery<int[]>("select id from Student");
+                    List<string []> arrayList2= db.Sqlable().Form<Student>("s").SelectToList<string[]>("*");
 
+                    //转换为dataTable
+                    DataTable table = db.Sqlable().Form<Student>("s").SelectToDataTable("*");
 
+                    //In
+                    db.Queryable<Student>().In("id", "1", "2", "3").ToList();
+                    db.Queryable<Student>().In("id", new string[] { "1", "2", "3" }).ToList();
+                    db.Queryable<Student>().In("id", new List<string> { "1", "2", "3" }).ToList();
+                    var array = new string[] { "1", "2", "3" };
 
 
                     /************************************************************************************************************/

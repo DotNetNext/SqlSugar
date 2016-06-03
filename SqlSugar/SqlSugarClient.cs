@@ -210,25 +210,6 @@ namespace SqlSugar
             sql = string.Format(@"--{0}
 {1}", type.Name, sql);
             reader = GetReader(sql, pars.ToArray());
-            if (type.IsIn(
-                SqlSugarTool.IntType,
-                SqlSugarTool.StringType,
-                SqlSugarTool.DecType,
-                SqlSugarTool.DateType,
-                SqlSugarTool.GuidType,
-                SqlSugarTool.ByteType,
-                SqlSugarTool.BoolType))
-            {
-                List<T> strReval = new List<T>();
-                using (SqlDataReader re = reader)
-                {
-                    while (re.Read())
-                    {
-                        strReval.Add((T)Convert.ChangeType(re.GetValue(0), type));
-                    }
-                }
-                return strReval;
-            }
             string fields = sql;
             if (sql.Length > 101)
             {
