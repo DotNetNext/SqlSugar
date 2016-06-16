@@ -176,6 +176,13 @@ namespace WebTest
                     //插入单条
                     var id2 = Convert.ToInt32(db.Insert(s));
 
+                    //插入GUID
+                    GuidTest test = new GuidTest() {
+                     GUID=Guid.NewGuid(),
+                     name="test"
+                    };
+                    db.Insert<GuidTest>(test);
+
                     //插入多条
                     List<School> sList = new List<School>();
                     sList.Add(s);

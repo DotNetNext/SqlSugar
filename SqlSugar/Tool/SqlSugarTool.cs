@@ -271,6 +271,57 @@ namespace SqlSugar
         }
 
         /// <summary>
+        ///根据表名获取自添列 keyTableName Value columnName
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        internal static List<KeyValue> GetIdentitiesKeyByTableName(SqlSugarClient db, string tableName)
+        {
+            string key = "GetIdentityKeyByTableName" + tableName;
+            var cm = CacheManager<List<KeyValue>>.GetInstance();
+            List<KeyValue> identityInfo = null;
+            string sql=string.Format( @"
+                            declare @Table_name varchar(60)
+                            set @Table_name = '{0}';
+
+
+                            Select so.name tableName,                   --表名字
+                                   sc.name keyName,             --自增字段名字
+                                   ident_current(so.name) curr_value,    --自增字段当前值
+                                   ident_incr(so.name) incr_value,       --自增字段增长值
+                                   ident_seed(so.name) seed_value        --自增字段种子值
+                              from sysobjects so 
+                            Inner Join syscolumns sc
+                                on so.id = sc.id
+
+                                   and columnproperty(sc.id, sc.name, 'IsIdentity') = 1
+
+                            Where upper(so.name) = upper(@Table_name)
+         ",tableName);
+            if (cm.ContainsKey(key))
+            {
+                identityInfo = cm[key];
+                return identityInfo;
+            }
+            else
+            {
+                var dt = db.GetDataTable(sql);
+                identityInfo = new List<KeyValue>();
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        identityInfo.Add(new KeyValue() { Key = dr["tableName"].ToString().ToLower(), Value = dr["keyName"].ToString() });
+                    }
+                }
+                cm.Add(key, identityInfo, cm.Day);
+                return identityInfo;
+            }
+        }
+
+
+        /// <summary>
         /// 根据表获取主键
         /// </summary>
         /// <param name="db"></param>

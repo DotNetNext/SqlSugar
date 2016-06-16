@@ -139,6 +139,7 @@
     <Compile Include="FunctionTest\Select.aspx.designer.cs">
       <DependentUpon>Select.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\GuidTest.cs" />
     <Compile Include="Models\TableDataTypeTest.cs" />
     <Compile Include="NewDemo\Filter.aspx.cs">
       <DependentUpon>Filter.aspx</DependentUpon>
@@ -305,7 +306,7 @@
           <UseIIS>False</UseIIS>
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>46944</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <DevelopmentServerVPath>/8050</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

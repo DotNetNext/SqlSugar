@@ -243,7 +243,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entity">插入对象</param>
-        /// <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
+        /// <param name="isIdentity">该属性已经作废可以不填，主键是否为自增长,true可以不填,false必填</param>
         /// <returns></returns>
         public object Insert<T>(T entity, bool isIdentity = true) where T : class
         {
@@ -254,7 +254,8 @@ namespace SqlSugar
 
             StringBuilder sbInsertSql = new StringBuilder();
             List<SqlParameter> pars = new List<SqlParameter>();
-            var primaryKeyName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            var identities = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
+            isIdentity=identities!= null && identities.Count> 0;
             //sql语句缓存
             string cacheSqlKey = "db.Insert." + typeName;
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
@@ -295,7 +296,7 @@ namespace SqlSugar
                 foreach (PropertyInfo prop in props)
                 {
                     //EntityState,@EntityKey
-                    if (isIdentity == false || (isIdentity && prop.Name != primaryKeyName))
+                    if (!isIdentity || identities.Any(it => it.Value.ToLower() != prop.Name.ToLower()))
                     {
                         //4.将属性的名字加入到字符串中 
                         sbInsertSql.Append("[" + prop.Name + "],");
@@ -311,7 +312,7 @@ namespace SqlSugar
             foreach (PropertyInfo prop in props)
             {
                 //EntityState,@EntityKey
-                if (isIdentity == false || (isIdentity && prop.Name != primaryKeyName))
+                if (!isIdentity || identities.Any(it => it.Value.ToLower() != prop.Name.ToLower()))
                 {
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
                         sbInsertSql.Append("@" + prop.Name + ",");
