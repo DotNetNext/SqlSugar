@@ -8,15 +8,15 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
-
 namespace WebTest.TestLib
 {
     #region 上下文
@@ -128,8 +128,57 @@ namespace WebTest.TestLib
             }
         }
         private ObjectSet<InsertTest> _InsertTests;
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        public ObjectSet<GuidTest> GuidTests
+        {
+            get
+            {
+                if ((_GuidTests == null))
+                {
+                    _GuidTests = base.CreateObjectSet<GuidTest>("GuidTests");
+                }
+                return _GuidTests;
+            }
+        }
+        private ObjectSet<GuidTest> _GuidTests;
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        public ObjectSet<TableDataTypeTest> TableDataTypeTests
+        {
+            get
+            {
+                if ((_TableDataTypeTests == null))
+                {
+                    _TableDataTypeTests = base.CreateObjectSet<TableDataTypeTest>("TableDataTypeTests");
+                }
+                return _TableDataTypeTests;
+            }
+        }
+        private ObjectSet<TableDataTypeTest> _TableDataTypeTests;
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        public ObjectSet<TestOfNull> TestOfNulls
+        {
+            get
+            {
+                if ((_TestOfNulls == null))
+                {
+                    _TestOfNulls = base.CreateObjectSet<TestOfNull>("TestOfNulls");
+                }
+                return _TestOfNulls;
+            }
+        }
+        private ObjectSet<TestOfNull> _TestOfNulls;
 
         #endregion
+
         #region AddTo 方法
     
         /// <summary>
@@ -163,14 +212,119 @@ namespace WebTest.TestLib
         {
             base.AddObject("InsertTests", insertTest);
         }
+    
+        /// <summary>
+        /// 用于向 GuidTests EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
+        /// </summary>
+        public void AddToGuidTests(GuidTest guidTest)
+        {
+            base.AddObject("GuidTests", guidTest);
+        }
+    
+        /// <summary>
+        /// 用于向 TableDataTypeTests EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
+        /// </summary>
+        public void AddToTableDataTypeTests(TableDataTypeTest tableDataTypeTest)
+        {
+            base.AddObject("TableDataTypeTests", tableDataTypeTest);
+        }
+    
+        /// <summary>
+        /// 用于向 TestOfNulls EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
+        /// </summary>
+        public void AddToTestOfNulls(TestOfNull testOfNull)
+        {
+            base.AddObject("TestOfNulls", testOfNull);
+        }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region 实体
+    
+    /// <summary>
+    /// 没有元数据文档可用。
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="SqlSugarTestModel", Name="GuidTest")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class GuidTest : EntityObject
+    {
+        #region 工厂方法
+    
+        /// <summary>
+        /// 创建新的 GuidTest 对象。
+        /// </summary>
+        /// <param name="gUID">GUID 属性的初始值。</param>
+        public static GuidTest CreateGuidTest(global::System.Guid gUID)
+        {
+            GuidTest guidTest = new GuidTest();
+            guidTest.GUID = gUID;
+            return guidTest;
+        }
+
+        #endregion
+
+        #region 基元属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Guid GUID
+        {
+            get
+            {
+                return _GUID;
+            }
+            set
+            {
+                if (_GUID != value)
+                {
+                    OnGUIDChanging(value);
+                    ReportPropertyChanging("GUID");
+                    _GUID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("GUID");
+                    OnGUIDChanged();
+                }
+            }
+        }
+        private global::System.Guid _GUID;
+        partial void OnGUIDChanging(global::System.Guid value);
+        partial void OnGUIDChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Name");
+                OnNameChanged();
+            }
+        }
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
+
+        #endregion
+
+    
+    }
     
     /// <summary>
     /// 没有元数据文档可用。
@@ -194,6 +348,7 @@ namespace WebTest.TestLib
         }
 
         #endregion
+
         #region 基元属性
     
         /// <summary>
@@ -368,6 +523,7 @@ namespace WebTest.TestLib
         partial void OntxtChanged();
 
         #endregion
+
     
     }
     
@@ -393,6 +549,7 @@ namespace WebTest.TestLib
         }
 
         #endregion
+
         #region 基元属性
     
         /// <summary>
@@ -447,6 +604,7 @@ namespace WebTest.TestLib
         partial void OnnameChanged();
 
         #endregion
+
     
     }
     
@@ -472,6 +630,7 @@ namespace WebTest.TestLib
         }
 
         #endregion
+
         #region 基元属性
     
         /// <summary>
@@ -572,8 +731,33 @@ namespace WebTest.TestLib
         private global::System.String _sex;
         partial void OnsexChanging(global::System.String value);
         partial void OnsexChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Boolean> isOk
+        {
+            get
+            {
+                return _isOk;
+            }
+            set
+            {
+                OnisOkChanging(value);
+                ReportPropertyChanging("isOk");
+                _isOk = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("isOk");
+                OnisOkChanged();
+            }
+        }
+        private Nullable<global::System.Boolean> _isOk;
+        partial void OnisOkChanging(Nullable<global::System.Boolean> value);
+        partial void OnisOkChanged();
 
         #endregion
+
     
     }
     
@@ -599,6 +783,7 @@ namespace WebTest.TestLib
         }
 
         #endregion
+
         #region 基元属性
     
         /// <summary>
@@ -677,9 +862,197 @@ namespace WebTest.TestLib
         partial void OnnameChanged();
 
         #endregion
+
+    
+    }
+    
+    /// <summary>
+    /// 没有元数据文档可用。
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="SqlSugarTestModel", Name="TableDataTypeTest")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class TableDataTypeTest : EntityObject
+    {
+        #region 工厂方法
+    
+        /// <summary>
+        /// 创建新的 TableDataTypeTest 对象。
+        /// </summary>
+        /// <param name="id">Id 属性的初始值。</param>
+        public static TableDataTypeTest CreateTableDataTypeTest(global::System.Byte id)
+        {
+            TableDataTypeTest tableDataTypeTest = new TableDataTypeTest();
+            tableDataTypeTest.Id = id;
+            return tableDataTypeTest;
+        }
+
+        #endregion
+
+        #region 基元属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Byte Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Byte _Id;
+        partial void OnIdChanging(global::System.Byte value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                OnnameChanging(value);
+                ReportPropertyChanging("name");
+                _name = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("name");
+                OnnameChanged();
+            }
+        }
+        private global::System.String _name;
+        partial void OnnameChanging(global::System.String value);
+        partial void OnnameChanged();
+
+        #endregion
+
+    
+    }
+    
+    /// <summary>
+    /// 没有元数据文档可用。
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="SqlSugarTestModel", Name="TestOfNull")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class TestOfNull : EntityObject
+    {
+        #region 工厂方法
+    
+        /// <summary>
+        /// 创建新的 TestOfNull 对象。
+        /// </summary>
+        /// <param name="id">id 属性的初始值。</param>
+        public static TestOfNull CreateTestOfNull(global::System.Int32 id)
+        {
+            TestOfNull testOfNull = new TestOfNull();
+            testOfNull.id = id;
+            return testOfNull;
+        }
+
+        #endregion
+
+        #region 基元属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value)
+                {
+                    OnidChanging(value);
+                    ReportPropertyChanging("id");
+                    _id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("id");
+                    OnidChanged();
+                }
+            }
+        }
+        private global::System.Int32 _id;
+        partial void OnidChanging(global::System.Int32 value);
+        partial void OnidChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> createDate
+        {
+            get
+            {
+                return _createDate;
+            }
+            set
+            {
+                OncreateDateChanging(value);
+                ReportPropertyChanging("createDate");
+                _createDate = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("createDate");
+                OncreateDateChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _createDate;
+        partial void OncreateDateChanging(Nullable<global::System.DateTime> value);
+        partial void OncreateDateChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.Byte[] bytes
+        {
+            get
+            {
+                return StructuralObject.GetValidValue(_bytes);
+            }
+            set
+            {
+                OnbytesChanging(value);
+                ReportPropertyChanging("bytes");
+                _bytes = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("bytes");
+                OnbytesChanged();
+            }
+        }
+        private global::System.Byte[] _bytes;
+        partial void OnbytesChanging(global::System.Byte[] value);
+        partial void OnbytesChanged();
+
+        #endregion
+
     
     }
 
     #endregion
+
     
 }

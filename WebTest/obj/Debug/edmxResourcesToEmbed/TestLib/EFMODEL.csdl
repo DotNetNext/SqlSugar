@@ -5,6 +5,9 @@
     <EntitySet Name="Student" EntityType="SqlSugarTestModel.Student" />
     <EntitySet Name="Subject" EntityType="SqlSugarTestModel.Subject" />
     <EntitySet Name="InsertTests" EntityType="SqlSugarTestModel.InsertTest" />
+    <EntitySet Name="GuidTests" EntityType="SqlSugarTestModel.GuidTest" />
+    <EntitySet Name="TableDataTypeTests" EntityType="SqlSugarTestModel.TableDataTypeTest" />
+    <EntitySet Name="TestOfNulls" EntityType="SqlSugarTestModel.TestOfNull" />
   </EntityContainer>
   <EntityType Name="School">
     <Key>
@@ -21,6 +24,7 @@
     <Property Name="name" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
     <Property Name="sch_id" Type="Int32" />
     <Property Name="sex" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+    <Property Type="Boolean" Name="isOk" />
   </EntityType>
   <EntityType Name="Subject">
     <Key>
@@ -41,5 +45,27 @@
     <Property Type="Int32" Name="int1" />
     <Property Type="DateTime" Name="d1" />
     <Property Type="String" Name="txt" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="GuidTest">
+    <Key>
+      <PropertyRef Name="GUID" />
+    </Key>
+    <Property Type="Guid" Name="GUID" Nullable="false" />
+    <Property Type="String" Name="Name" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="TableDataTypeTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Byte" Name="Id" Nullable="false" />
+    <Property Type="String" Name="name" MaxLength="10" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TestOfNull">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="DateTime" Name="createDate" />
+    <Property Type="Binary" Name="bytes" MaxLength="250" FixedLength="true" />
   </EntityType>
 </Schema>
