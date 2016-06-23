@@ -36,7 +36,7 @@ namespace SqlSugar
         /// <param name="modelObj">表名</param>
         /// <param name="shortName">表名简写</param>
         /// <returns></returns>
-        public static Sqlable Form<T>(this Sqlable sqlable,string shortName)
+        public static Sqlable Form<T>(this Sqlable sqlable, string shortName)
         {
             sqlable.Sql = new StringBuilder();
             sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString());
@@ -65,7 +65,7 @@ namespace SqlSugar
         /// <param name="RightFiled">join右边连接字段</param>
         /// <param name="type">join类型</param>
         /// <returns></returns>
-        public static Sqlable Join<T>(this Sqlable sqlable,string shortName, string leftFiled, string RightFiled, JoinType type)
+        public static Sqlable Join<T>(this Sqlable sqlable, string shortName, string leftFiled, string RightFiled, JoinType type)
         {
             Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
             sqlable.Sql.AppendFormat(" {0} JOIN {1} {2}  {3} ON  {4} = {5} ", type.ToString(), typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
@@ -174,7 +174,7 @@ namespace SqlSugar
         /// <param name="sqlable"></param>
         /// <param name="whereObj"></param>
         /// <returns></returns>
-        private  static SqlParameter[] GetAllParas(Sqlable sqlable, object whereObj)
+        private static SqlParameter[] GetAllParas(Sqlable sqlable, object whereObj)
         {
             List<SqlParameter> allParams = new List<SqlParameter>();
             var selectParas = SqlSugarTool.GetParameters(whereObj).ToList();
@@ -198,7 +198,7 @@ namespace SqlSugar
         /// <param name="fileds">查询列</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
         /// <returns></returns>
-        public static DataTable SelectToDataTable(this Sqlable sqlable, string fileds, object whereObj = null) 
+        public static DataTable SelectToDataTable(this Sqlable sqlable, string fileds, object whereObj = null)
         {
             StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
@@ -223,6 +223,14 @@ namespace SqlSugar
                 sbSql = null;
             }
         }
+        public static string SelectToJson(this Sqlable sqlable, string fileds, object whereObj = null)
+        {
+            return JsonConverter.DataTableToJson(SelectToDataTable(sqlable, fileds, whereObj));
+        }
+        public static dynamic SelectToDynamic(this Sqlable sqlable, string fileds, object whereObj = null)
+        {
+            return JsonConverter.ConvertJson(SelectToJson(sqlable, fileds, whereObj));
+        }
 
         /// <summary>
         /// 生成查询结果对应的实体类字符串
@@ -244,7 +252,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sqlable"></param>
         /// <returns></returns>
-        public static int Count(this Sqlable sqlable,object whereObj=null,string preSql=null,string nextSql=null)
+        public static int Count(this Sqlable sqlable, object whereObj = null, string preSql = null, string nextSql = null)
         {
             StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
             try
@@ -255,10 +263,12 @@ namespace SqlSugar
                 sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
                 var sqlParams = GetAllParas(sqlable, whereObj);
-                if (preSql != null) {
+                if (preSql != null)
+                {
                     sbSql.Insert(0, preSql);
                 }
-                if (nextSql != null) {
+                if (nextSql != null)
+                {
                     sbSql.Append(nextSql);
                 }
                 return sqlable.DB.GetInt(sbSql.ToString(), sqlParams);
@@ -302,7 +312,7 @@ namespace SqlSugar
                 sbSql.Insert(0, "SELECT * FROM ( ");
                 sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
                 var sqlParams = GetAllParas(sqlable, whereObj);
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams),fileds);
+                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams), fileds);
                 return reval;
             }
             catch (Exception ex)

@@ -173,6 +173,29 @@ namespace SqlSugar
             var pars = SqlSugarTool.GetParameters(whereObj).ToList();
             return SqlQuery<T>(ref sql, ref reader, pars);
         }
+        /// <summary>
+        /// 根据SQL语句将结果集映射到dynamic
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="whereObj"></param>
+        /// <returns></returns>
+        public dynamic SqlQueryDynamic(string sql, object whereObj = null)
+        {
+            return JsonConverter.ConvertJson(SqlQueryJson(sql, whereObj));
+        }
+        /// <summary>
+        /// 根据SQL语句将结果集映射到json
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="whereObj"></param>
+        /// <returns></returns>
+        public string SqlQueryJson(string sql, object whereObj = null)
+        {
+            return JsonConverter.DataTableToJson(GetDataTable(sql, whereObj));
+        }
+
 
         /// <summary>
         /// 根据SQL语句将结果集映射到List《T》

@@ -16,6 +16,11 @@ namespace WebTest.Dao
             {
                 var list = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id", JoinType.INNER).SelectToList<Student>("*");
                 var list2 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToList<Student>("*", new { id=1});
+                var list3 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDynamic("*", new { id=1});
+                var list4 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToJson("*", new { id = 1 });
+                var list5 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDataTable("*", new { id = 1 });
+                var list6 = db.SqlQueryDynamic("select * from student");
+                var list7 = db.SqlQueryJson("select * from student");
                 GetStudent(1, "a");
                 var count = GetCount();
             }

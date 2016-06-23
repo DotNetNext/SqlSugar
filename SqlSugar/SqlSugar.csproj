@@ -37,6 +37,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +51,7 @@
     <Compile Include="Cloud\TaskExtensions.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Tool\Check.cs" />
+    <Compile Include="Tool\JsonConverter.cs" />
     <Compile Include="Tool\IEnumerableExtensions.cs" />
     <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
     <Compile Include="Tool\KeyValue.cs" />
