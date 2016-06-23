@@ -78,6 +78,7 @@
     <Content Include="CloudTest.aspx" />
     <Content Include="FunctionTest\Join.aspx" />
     <Content Include="FunctionTest\Select.aspx" />
+    <Content Include="NewDemo\DisableUpdateColumns.aspx" />
     <Content Include="NewDemo\Filter.aspx" />
     <Content Include="NewDemo\GetClass.aspx" />
     <Content Include="NewDemo\isGetPagePara.aspx" />
@@ -141,6 +142,14 @@
     </Compile>
     <Compile Include="Models\GuidTest.cs" />
     <Compile Include="Models\TableDataTypeTest.cs" />
+    <Compile Include="Models\TestUpdateColumns.cs" />
+    <Compile Include="NewDemo\DisableUpdateColumns.aspx.cs">
+      <DependentUpon>DisableUpdateColumns.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NewDemo\DisableUpdateColumns.aspx.designer.cs">
+      <DependentUpon>DisableUpdateColumns.aspx</DependentUpon>
+    </Compile>
     <Compile Include="NewDemo\Filter.aspx.cs">
       <DependentUpon>Filter.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

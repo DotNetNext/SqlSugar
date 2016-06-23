@@ -73,6 +73,10 @@ namespace SqlSugar
         /// 查询是否允许脏读，（默认为:true）
         /// </summary>
         public bool IsNoLock { get; set; }
+        /// <summary>
+        /// 设置禁止更新的列
+        /// </summary>
+        public string[] DisableUpdateColumns{get;set;}
 
         /// <summary>
         /// 设置过滤器（用户权限过滤）
@@ -442,9 +446,13 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this,typeName);
             foreach (var r in rows)
             {
-                if (pkName == r.Key)
+                var isPk = pkName!=null&&pkName.ToLower() == r.Key.ToLower();
+                var isIdentity=identityNames.Any(it => it.Value.ToLower() == r.Key.ToLower());
+                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower()); ;
+                if (isPk || isIdentity || isDisableUpdateColumns)
                 {
                     if (rowObj.GetType() == type)
                     {
