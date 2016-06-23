@@ -174,3 +174,35 @@ USE [master]
 GO
 ALTER DATABASE [SqlSugarTest] SET  READ_WRITE 
 GO
+
+USE [SqlSugarTest]
+GO
+
+/****** Object:  Table [dbo].[TestUpdateColumns]    Script Date: 2016/6/23 11:29:31 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[TestUpdateColumns](
+	[VGUID] [uniqueidentifier] NOT NULL,
+	[IdentityField] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](50) NULL,
+	[Name2] [varchar](50) NULL,
+	[CreateTime] [datetime] NULL,
+ CONSTRAINT [PK_TestUpdateColumns] PRIMARY KEY CLUSTERED 
+(
+	[VGUID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
