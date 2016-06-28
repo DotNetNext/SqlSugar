@@ -474,7 +474,7 @@ namespace SqlSugar
             {
                 var isPk = pkName!=null&&pkName.ToLower() == r.Key.ToLower();
                 var isIdentity=identityNames.Any(it => it.Value.ToLower() == r.Key.ToLower());
-                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower()); ;
+                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower()); 
                 if (isPk || isIdentity || isDisableUpdateColumns)
                 {
                     if (rowObj.GetType() == type)
@@ -500,11 +500,15 @@ namespace SqlSugar
             {
                 foreach (var par in pars)
                 {
+                    var isDisableUpdateColumns = DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.ToLower());
                     if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
                         par.UdtTypeName = "HIERARCHYID";
                     }
-                    parsList.Add(par);
+                    if (!isDisableUpdateColumns)
+                    {
+                        parsList.Add(par);
+                    }
                 }
             }
             try
