@@ -193,7 +193,6 @@ namespace SqlSugar
         /// <summary>
         /// 设置查询列执行查询，并且将结果集转成DataTable
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="sqlable"></param>
         /// <param name="fileds">查询列</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
@@ -223,10 +222,27 @@ namespace SqlSugar
                 sbSql = null;
             }
         }
+
+        /// <summary>
+        /// 设置查询列执行查询，并且将结果集转成json
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
         public static string SelectToJson(this Sqlable sqlable, string fileds, object whereObj = null)
         {
             return JsonConverter.DataTableToJson(SelectToDataTable(sqlable, fileds, whereObj));
         }
+
+        /// <summary>
+        /// 设置查询列执行查询，并且将结果集转成dynamic
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
         public static dynamic SelectToDynamic(this Sqlable sqlable, string fileds, object whereObj = null)
         {
             return JsonConverter.ConvertJson(SelectToJson(sqlable, fileds, whereObj));
@@ -328,6 +344,78 @@ namespace SqlSugar
         }
 
 
+        /// <summary>
+        /// 设置查询列和分页参数执行查询，并且将结果集转成DataTable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="orderByFiled">Order By字段，可以多个</param>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
+        public static DataTable SelectToPageTable(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null)
+        {
+            StringBuilder sbSql = new StringBuilder(sqlable.Sql.ToString());
+            try
+            {
+                if (pageIndex == 0) pageIndex = 1;
+                Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
+                sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
+                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.OrderBy);
+                sbSql.Append(sqlable.GroupBy);
+                int skip = (pageIndex - 1) * pageSize + 1;
+                int take = pageSize;
+                sbSql.Insert(0, "SELECT * FROM ( ");
+                sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
+                var sqlParams = GetAllParas(sqlable, whereObj);
+                var reval = sqlable.DB.GetDataTable(sbSql.ToString(), sqlParams);
+                return reval;
+            }
+            catch (Exception ex)
+            {
+                Check.Exception(true, "sql:{0} \r\n message:{1}", sbSql.ToString(), ex.Message);
+                throw;
+            }
+            finally
+            {
+                sbSql = null;
+                sqlable = null;
+            }
+        }
+
+        
+        /// <summary>
+        /// 设置查询列和分页参数执行查询，并且将结果集转成json
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="orderByFiled">Order By字段，可以多个</param>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
+        public static string SelectToPageJson(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) 
+        {
+           return  JsonConverter.DataTableToJson(SelectToPageTable(sqlable,fileds,orderByFiled,pageIndex,pageSize,whereObj));
+        }
+            
+        /// <summary>
+        /// 设置查询列和分页参数执行查询，并且将结果集转成dynamic
+        /// </summary>
+        /// <param name="sqlable"></param>
+        /// <param name="fileds">查询列</param>
+        /// <param name="orderByFiled">Order By字段，可以多个</param>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <returns></returns>
+        public static dynamic SelectToPageDynamic(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) 
+        {
+           return  JsonConverter.ConvertJson(SelectToPageJson(sqlable,fileds,orderByFiled,pageIndex,pageSize,whereObj));
+        }
 
 
     }
