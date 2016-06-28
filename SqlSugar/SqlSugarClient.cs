@@ -500,7 +500,7 @@ namespace SqlSugar
             {
                 foreach (var par in pars)
                 {
-                    var isDisableUpdateColumns = DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.ToLower());
+                    var isDisableUpdateColumns = DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.TrimStart('@').ToLower());
                     if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
                         par.UdtTypeName = "HIERARCHYID";
