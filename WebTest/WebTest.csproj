@@ -92,7 +92,6 @@
     <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Update.aspx" />
     <Content Include="CSS\StyleSheet1.css" />
-    <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="PerformanceTest\lambda\Test.aspx" />
     <Content Include="PerformanceTest\Select\All.aspx" />
@@ -240,13 +239,6 @@
     </Compile>
     <Compile Include="PerformanceTest\add_delete_update\Update.aspx.designer.cs">
       <DependentUpon>Update.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

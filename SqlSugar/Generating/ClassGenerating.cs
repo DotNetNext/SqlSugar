@@ -192,13 +192,13 @@ namespace {1}
                         var classCode = DataTableToClass(currentTable, tableName, nameSpace, tableColumns);
                         string className = db.GetClassTypeByTableName(tableName);
                         classCode = classCode.Replace("class " + tableName, "class " + className);
-                        FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + className + ".cs", classCode);
+                        FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + className + ".cs", classCode,Encoding.UTF8);
                         callBack(className);
                     }
                     else
                     {
                         var classCode = DataTableToClass(currentTable, tableName, nameSpace);
-                        FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode);
+                        FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode,Encoding.UTF8);
                     }
                 }
             }

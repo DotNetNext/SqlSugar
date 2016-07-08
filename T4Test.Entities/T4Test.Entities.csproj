@@ -40,17 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Views\V_Test.cs" />
-    <Compile Include="Tables\sysdiagrams.cs" />
-    <Compile Include="Tables\Flow_FormContentStepCheckState.cs" />
-    <Compile Include="Tables\Flow_StepRule.cs" />
-    <Compile Include="Tables\Flow_FormContentStepCheck.cs" />
-    <Compile Include="Tables\Flow_FormContent.cs" />
-    <Compile Include="Tables\Flow_Step.cs" />
-    <Compile Include="Tables\Flow_Form.cs" />
-    <Compile Include="Tables\FormAttr.cs" />
-    <Compile Include="Tables\Flow_Seal.cs" />
-    <Compile Include="Tables\Flow_Type.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

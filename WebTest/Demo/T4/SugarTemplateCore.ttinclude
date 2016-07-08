@@ -29,7 +29,7 @@
             _projectPath = projectPath;
             _solutionDir = solutionDir;
 			_mappingTables=mappingTables;
-            _cf = new ConfigHelper(_projectPath.TrimEnd('\\') + @"\T4\SugarTemplate.xml");
+            _cf = new ConfigHelper(_projectPath.TrimEnd('\\') + @"\Demo\T4\SugarTemplate.xml");
         }
 
 

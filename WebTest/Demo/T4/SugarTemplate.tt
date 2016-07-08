@@ -12,7 +12,7 @@
 <#@ import namespace="System.Web" #>
 <#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SqlSugar.dll" #>
 <#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SyntacticSugar.dll" #>
-<#@ include file="$(ProjectDir)\T4\SugarTemplateCore.ttinclude"  #>
+<#@ include file="$(ProjectDir)\Demo\T4\SugarTemplateCore.ttinclude"  #>
 
 <# 
     /* 用法实体类的类库格式必须是 xxx.Entities 格式，当然你也可以自已改SugarTemplateCore.ttinclude里面的逻辑,SugarTemplate.xml设置连接字符串 */
