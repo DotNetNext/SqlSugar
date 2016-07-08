@@ -171,6 +171,7 @@ namespace WebTest.Demo
 
                 //支持字符串Where 让你解决，更复杂的查询
                 var student12 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>100").ToList();
+                var student13 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>100 and id in( select 1)").ToList();
 
 
                 //存在记录反回true，则否返回false
