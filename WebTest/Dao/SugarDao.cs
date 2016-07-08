@@ -6,7 +6,7 @@ using SqlSugar;
 namespace WebTest.Dao
 {
     /// <summary>
-    /// 扩展SqlSugarClient
+    /// SqlSugar
     /// </summary>
     public class SugarDao
     {

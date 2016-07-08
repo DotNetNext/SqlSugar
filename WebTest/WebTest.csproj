@@ -76,6 +76,16 @@
     <Content Include="App_Lib\SyntacticSugar.XML" />
     <Content Include="BuilderClass.aspx" />
     <Content Include="CloudTest.aspx" />
+    <Content Include="Demo\Ado.net.aspx" />
+    <Content Include="Demo\Cloud.aspx" />
+    <Content Include="Demo\CreateModelFile.aspx" />
+    <Content Include="Demo\Delete.aspx" />
+    <Content Include="Demo\Filter.aspx" />
+    <Content Include="Demo\NoParameter.aspx" />
+    <Content Include="Demo\Rename.aspx" />
+    <Content Include="Demo\Select.aspx" />
+    <Content Include="Demo\Tran.aspx" />
+    <Content Include="Demo\Update.aspx" />
     <Content Include="FunctionTest\Join.aspx" />
     <Content Include="FunctionTest\Select.aspx" />
     <Content Include="NewDemo\DisableUpdateColumns.aspx" />
@@ -95,11 +105,11 @@
     <Content Include="PerformanceTest\Select\ManyTablePage.aspx" />
     <Content Include="PerformanceTest\Select\OneWhere.aspx" />
     <Content Include="PerformanceTest\Select\WherePage.aspx" />
-    <Content Include="T4\SugarTemplate.tt">
+    <Content Include="Demo\T4\SugarTemplate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SugarTemplate.cs</LastGenOutput>
     </Content>
-    <Content Include="T4\SugarTemplate.xml">
+    <Content Include="Demo\T4\SugarTemplate.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.config" />
@@ -126,6 +136,75 @@
       <DependentUpon>CloudTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dao\SugarDao.cs" />
+    <Compile Include="Demo\Ado.net.aspx.cs">
+      <DependentUpon>Ado.net.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Ado.net.aspx.designer.cs">
+      <DependentUpon>Ado.net.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Cloud.aspx.cs">
+      <DependentUpon>Cloud.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Cloud.aspx.designer.cs">
+      <DependentUpon>Cloud.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\CreateModelFile.aspx.cs">
+      <DependentUpon>CreateModelFile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\CreateModelFile.aspx.designer.cs">
+      <DependentUpon>CreateModelFile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Delete.aspx.cs">
+      <DependentUpon>Delete.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Delete.aspx.designer.cs">
+      <DependentUpon>Delete.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Filter.aspx.cs">
+      <DependentUpon>Filter.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Filter.aspx.designer.cs">
+      <DependentUpon>Filter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\NoParameter.aspx.cs">
+      <DependentUpon>NoParameter.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\NoParameter.aspx.designer.cs">
+      <DependentUpon>NoParameter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Rename.aspx.cs">
+      <DependentUpon>Rename.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Rename.aspx.designer.cs">
+      <DependentUpon>Rename.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Select.aspx.cs">
+      <DependentUpon>Select.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Select.aspx.designer.cs">
+      <DependentUpon>Select.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Tran.aspx.cs">
+      <DependentUpon>Tran.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Tran.aspx.designer.cs">
+      <DependentUpon>Tran.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Update.aspx.cs">
+      <DependentUpon>Update.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Update.aspx.designer.cs">
+      <DependentUpon>Update.aspx</DependentUpon>
+    </Compile>
     <Compile Include="FunctionTest\Join.aspx.cs">
       <DependentUpon>Join.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -264,12 +343,12 @@
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
-    <Compile Include="T4\SugarTemplate.cs">
+    <Compile Include="Demo\T4\SugarTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SugarTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Include="T4\SugarTemplateCore.cs" />
+    <Compile Include="Demo\T4\SugarTemplateCore.cs" />
     <Compile Include="TestLib\Dapper.cs" />
     <Compile Include="TestLib\EFMODEL.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -279,7 +358,9 @@
     <Compile Include="TestLib\PerformanceTest.cs" />
     <Compile Include="V_Student.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="T4\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
   </ItemGroup>
@@ -296,7 +377,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="T4\SugarTemplateCore.ttinclude" />
+    <None Include="Demo\T4\SugarTemplateCore.ttinclude" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
