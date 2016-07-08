@@ -78,6 +78,7 @@
     <Content Include="Demo\CreateModelFile.aspx" />
     <Content Include="Demo\Delete.aspx" />
     <Content Include="Demo\Filter.aspx" />
+    <Content Include="Demo\Function.aspx" />
     <Content Include="Demo\NoParameter.aspx" />
     <Content Include="Demo\Rename.aspx" />
     <Content Include="Demo\Select.aspx" />
@@ -152,6 +153,13 @@
     </Compile>
     <Compile Include="Demo\Filter.aspx.designer.cs">
       <DependentUpon>Filter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demo\Function.aspx.cs">
+      <DependentUpon>Function.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Function.aspx.designer.cs">
+      <DependentUpon>Function.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demo\NoParameter.aspx.cs">
       <DependentUpon>NoParameter.aspx</DependentUpon>
