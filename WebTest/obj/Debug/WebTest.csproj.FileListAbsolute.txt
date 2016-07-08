@@ -20,3 +20,11 @@ C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.dll
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.pdb
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.dll
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.pdb
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.dll
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.pdb
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.dll
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.pdb
