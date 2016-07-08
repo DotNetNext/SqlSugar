@@ -69,10 +69,8 @@
     <Content Include="App_Data\单库模式DEMO脚本.sql" />
     <Content Include="App_Data\多库模式数据库结构脚本cloudDB %281%29.sql" />
     <Content Include="App_Lib\SqlSugar.dll" />
-    <Content Include="App_Lib\SqlSugar.pdb" />
     <Content Include="App_Lib\SqlSugar.XML" />
     <Content Include="App_Lib\SyntacticSugar.dll" />
-    <Content Include="App_Lib\SyntacticSugar.pdb" />
     <Content Include="App_Lib\SyntacticSugar.XML" />
     <Content Include="BuilderClass.aspx" />
     <Content Include="Demo\Cloud.aspx" />
@@ -84,11 +82,6 @@
     <Content Include="Demo\Select.aspx" />
     <Content Include="Demo\Tran.aspx" />
     <Content Include="Demo\Update.aspx" />
-    <Content Include="NewDemo\DisableUpdateColumns.aspx" />
-    <Content Include="NewDemo\Filter.aspx" />
-    <Content Include="NewDemo\GetClass.aspx" />
-    <Content Include="NewDemo\isGetPagePara.aspx" />
-    <Content Include="NewDemo\QueryableDifferentTableName.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Update.aspx" />
     <Content Include="CSS\StyleSheet1.css" />
@@ -191,41 +184,6 @@
     <Compile Include="Models\TableDataTypeTest.cs" />
     <Compile Include="Models\TestModels.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
-    <Compile Include="NewDemo\DisableUpdateColumns.aspx.cs">
-      <DependentUpon>DisableUpdateColumns.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="NewDemo\DisableUpdateColumns.aspx.designer.cs">
-      <DependentUpon>DisableUpdateColumns.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="NewDemo\Filter.aspx.cs">
-      <DependentUpon>Filter.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="NewDemo\Filter.aspx.designer.cs">
-      <DependentUpon>Filter.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="NewDemo\GetClass.aspx.cs">
-      <DependentUpon>GetClass.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="NewDemo\GetClass.aspx.designer.cs">
-      <DependentUpon>GetClass.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="NewDemo\isGetPagePara.aspx.cs">
-      <DependentUpon>isGetPagePara.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="NewDemo\isGetPagePara.aspx.designer.cs">
-      <DependentUpon>isGetPagePara.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="NewDemo\QueryableDifferentTableName.aspx.cs">
-      <DependentUpon>QueryableDifferentTableName.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="NewDemo\QueryableDifferentTableName.aspx.designer.cs">
-      <DependentUpon>QueryableDifferentTableName.aspx</DependentUpon>
-    </Compile>
     <Compile Include="PerformanceTest\add_delete_update\Add.aspx.cs">
       <DependentUpon>Add.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -318,7 +276,7 @@
       <DependentUpon>EFMODEL.edmx</DependentUpon>
     </Compile>
     <Compile Include="TestLib\PerformanceTest.cs" />
-    <Compile Include="V_Student.cs" />
+    <Compile Include="Models\V_Student.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -48,7 +48,6 @@
     <Compile Include="Tables\School.cs" />
     <Compile Include="Tables\InsertTest.cs" />
     <Compile Include="Tables\GuidTest.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
