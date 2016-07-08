@@ -40,6 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tables\TestUpdateColumns.cs" />
+    <Compile Include="Tables\TestOfNull.cs" />
+    <Compile Include="Tables\TableDataTypeTest.cs" />
+    <Compile Include="Tables\Subject.cs" />
+    <Compile Include="Tables\Student3.cs" />
+    <Compile Include="Tables\School.cs" />
+    <Compile Include="Tables\InsertTest.cs" />
+    <Compile Include="Tables\GuidTest.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
