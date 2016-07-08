@@ -85,8 +85,6 @@
     <Content Include="Demo\Select.aspx" />
     <Content Include="Demo\Tran.aspx" />
     <Content Include="Demo\Update.aspx" />
-    <Content Include="FunctionTest\Join.aspx" />
-    <Content Include="FunctionTest\Select.aspx" />
     <Content Include="NewDemo\DisableUpdateColumns.aspx" />
     <Content Include="NewDemo\Filter.aspx" />
     <Content Include="NewDemo\GetClass.aspx" />
@@ -197,20 +195,6 @@
     </Compile>
     <Compile Include="Demo\Update.aspx.designer.cs">
       <DependentUpon>Update.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="FunctionTest\Join.aspx.cs">
-      <DependentUpon>Join.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="FunctionTest\Join.aspx.designer.cs">
-      <DependentUpon>Join.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="FunctionTest\Select.aspx.cs">
-      <DependentUpon>Select.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="FunctionTest\Select.aspx.designer.cs">
-      <DependentUpon>Select.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\GuidTest.cs" />
     <Compile Include="Models\TableDataTypeTest.cs" />
