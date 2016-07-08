@@ -10,6 +10,9 @@ using SqlSugar;
 using System.Data;
 namespace WebTest.Demo
 {
+    /// <summary>
+    /// 查询例子
+    /// </summary>
     public partial class Select : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
