@@ -24,6 +24,23 @@ namespace WebTest.Demo
             //Sql查询
             SqlQuery();
 
+            //新容器转换
+            NewSelect();
+
+        }
+
+        /// <summary>
+        /// 新容器转换
+        /// </summary>
+        private void NewSelect()
+        {
+         
+            using (SqlSugarClient db = SugarDao.GetInstance())
+            {
+                var list2= db.Queryable<Student>().Where(c => c.id < 10).Select(c => new classNew { newid = c.id, newname = c.name, xx_name = c.name }).ToList();//不支持匿名类转换,也不建议使用
+
+                var list3 = db.Queryable<Student>().Where(c => c.id < 10).Select(c => new   { newid = c.id, newname = c.name, xx_name = c.name }).ToDynamic();//匿名类转换
+            }
         }
         /// <summary>
         /// Sql查询
@@ -65,6 +82,7 @@ namespace WebTest.Demo
                    .Join("student", "st", "st.id", "s.id", JoinType.INNER)
                    .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
                    .Where("s.id>100 and s.id<@id")
+                   .Where("1=1")//可以多个WHERE
                    .SelectToList<School/*新的Model我这里没有所以写的School*/>("st.*", new { id = 1 });
 
                 //多表分页
@@ -188,6 +206,10 @@ namespace WebTest.Demo
                 var list2=db.Queryable<Student>().In("id", new string[] { "1", "2", "3" }).ToList();
                 var list3=db.Queryable<Student>().In("id", new List<string> { "1", "2", "3" }).ToList();
                 var list4 = db.Queryable<Student>().Where(it=>it.id<10).In("id", new List<string> { "1", "2", "3" }).ToList();
+
+                //分组查询
+                var list5= db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
+                //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex --生成结果
 
             }
         }

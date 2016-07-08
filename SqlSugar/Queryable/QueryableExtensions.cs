@@ -254,6 +254,7 @@ namespace SqlSugar
         public static SqlSugar.Queryable<TResult> Select<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, Expression<Func<TSource, TResult>> expression)
         {
             var type = typeof(TSource);
+            var expStr = expression.ToString();
             SqlSugar.Queryable<TResult> reval = new Queryable<TResult>()
             {
                 DB = queryable.DB,
@@ -263,9 +264,13 @@ namespace SqlSugar
                 Take = queryable.Take,
                 Where = queryable.Where,
                 TableName = type.Name,
-                GroupBy = queryable.GroupBy,
-                Select = Regex.Match(expression.ToString(), @"(?<=\{).*?(?=\})").Value
+                GroupBy = queryable.GroupBy
             };
+            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
+            if (reval.Select.IsNullOrEmpty())
+            {
+                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
+            }
             reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
             return reval;
         }

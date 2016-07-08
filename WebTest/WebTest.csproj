@@ -214,6 +214,7 @@
     </Compile>
     <Compile Include="Models\GuidTest.cs" />
     <Compile Include="Models\TableDataTypeTest.cs" />
+    <Compile Include="Models\TestModels.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
     <Compile Include="NewDemo\DisableUpdateColumns.aspx.cs">
       <DependentUpon>DisableUpdateColumns.aspx</DependentUpon>
