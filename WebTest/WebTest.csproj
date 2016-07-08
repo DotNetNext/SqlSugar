@@ -352,9 +352,7 @@
     <Compile Include="TestLib\PerformanceTest.cs" />
     <Compile Include="V_Student.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="T4\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Site.Master" />
   </ItemGroup>
