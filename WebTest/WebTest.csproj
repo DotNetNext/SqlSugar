@@ -75,7 +75,6 @@
     <Content Include="App_Lib\SyntacticSugar.pdb" />
     <Content Include="App_Lib\SyntacticSugar.XML" />
     <Content Include="BuilderClass.aspx" />
-    <Content Include="CloudTest.aspx" />
     <Content Include="Demo\Cloud.aspx" />
     <Content Include="Demo\CreateModelFile.aspx" />
     <Content Include="Demo\Delete.aspx" />
@@ -124,13 +123,6 @@
     </Compile>
     <Compile Include="BuilderClass.aspx.designer.cs">
       <DependentUpon>BuilderClass.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="CloudTest.aspx.cs">
-      <DependentUpon>CloudTest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CloudTest.aspx.designer.cs">
-      <DependentUpon>CloudTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dao\SugarDao.cs" />
     <Compile Include="Demo\Cloud.aspx.cs">
