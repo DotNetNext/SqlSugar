@@ -73,6 +73,7 @@
     <Content Include="App_Lib\SyntacticSugar.dll" />
     <Content Include="App_Lib\SyntacticSugar.XML" />
     <Content Include="BuilderClass.aspx" />
+    <Content Include="Demo\Ado.aspx" />
     <Content Include="Demo\Cloud.aspx" />
     <Content Include="Demo\CreateModelFile.aspx" />
     <Content Include="Demo\Delete.aspx" />
@@ -117,6 +118,13 @@
       <DependentUpon>BuilderClass.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dao\SugarDao.cs" />
+    <Compile Include="Demo\Ado.aspx.cs">
+      <DependentUpon>Ado.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demo\Ado.aspx.designer.cs">
+      <DependentUpon>Ado.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Demo\Cloud.aspx.cs">
       <DependentUpon>Cloud.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
