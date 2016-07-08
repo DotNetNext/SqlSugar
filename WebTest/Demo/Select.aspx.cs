@@ -43,9 +43,9 @@ namespace WebTest.Demo
                 //返回int
                 var list5 = db.SqlQuery<int>("select top 1 id from Student").Single();
                 //反回键值
-                Dictionary<int, string> list6 = db.SqlQuery<KeyValuePair<int, string>>("select id,name from Student").ToDictionary(it => it.Key, it => it.Value);
+                Dictionary<string, string> list6 = db.SqlQuery<KeyValuePair<string, string>>("select id,name from Student").ToDictionary(it => it.Key, it => it.Value);
                 //反回List<string[]>
-                var list7 = db.SqlQuery<string[]>("select id,name from Student").Single();
+                var list7 = db.SqlQuery<string[]>("select top 1 id,name from Student").Single();
                 //存储过程
                 var spResult = db.SqlQuery<School>("exec sp_school @p1,@p2", new { p1=1,p2=2 });
             }
@@ -80,7 +80,7 @@ namespace WebTest.Demo
                     .Form("school", "s")
                     .Join("student", "st", "st.id", "s.id", JoinType.INNER)
                     .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
-                    .Where("s.id>100 and s.id<100 and s.id (select 1 )" /*这里面写子查询都可以*/)
+                    .Where("s.id>100 and s.id<100 and s.id in (select 1 )" /*这里面写子查询都可以*/)
                     .SelectToPageList<School>("st.*", "s.id", 1, 10);
 
 
@@ -116,7 +116,7 @@ namespace WebTest.Demo
                 }
                 var pars = new { id = id, name = name };
                 int pageCount = sable.Count(pars);
-                var list7 = sable.SelectToPageList<Student>("s.*","id desc",1,20, pars);
+                var list7 = sable.SelectToPageList<Student>("s.*","l.id desc",1,20, pars);
 
 
             }
