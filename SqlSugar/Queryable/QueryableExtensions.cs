@@ -27,7 +27,7 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            queryable.WhereIndex=queryable.WhereIndex+100;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
             ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             re.ResolveExpression(re, expression);
             queryable.Params.AddRange(re.Paras);
@@ -46,7 +46,7 @@ namespace SqlSugar
         public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName, params FieldType[] inValues)
         {
             var type = queryable.Type;
-            queryable.WhereIndex=queryable.WhereIndex+100;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
             ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             queryable.Where.Add(string.Format(" AND {0} IN ({1})", InFieldName, inValues.ToJoinSqlInVal()));
             return queryable;
@@ -204,7 +204,7 @@ namespace SqlSugar
         public static bool Any<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            queryable.WhereIndex=queryable.WhereIndex+100;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
             ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             re.ResolveExpression(re, expression);
             queryable.Where.Add(re.SqlWhere);
@@ -235,7 +235,7 @@ namespace SqlSugar
         public static T Single<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
-            queryable.WhereIndex=queryable.WhereIndex+100;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
             ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
             re.ResolveExpression(re, expression);
             queryable.Where.Add(re.SqlWhere);
@@ -305,9 +305,10 @@ namespace SqlSugar
         {
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-            var tableName=queryable.TName;
-            if(queryable.TableName.IsValuable()){
-                tableName=queryable.TableName;
+            var tableName = queryable.TName;
+            if (queryable.TableName.IsValuable())
+            {
+                tableName = queryable.TableName;
             }
             sbSql.AppendFormat("SELECT COUNT({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", tableName, withNoLock, string.Join("", queryable.Where), queryable.Select.GetSelectFiles(), queryable.GroupBy.GetGroupBy());
             var count = queryable.DB.GetInt(sbSql.ToString(), queryable.Params.ToArray());
@@ -398,6 +399,29 @@ namespace SqlSugar
             }
 
         }
+
+        /// <summary>
+        /// 将Queryable转换为Json
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static string ToJson<T>(this SqlSugar.Queryable<T> queryable)
+        {
+            return JsonConverter.DataTableToJson(ToDataTable<T>(queryable));
+        }
+
+        /// <summary>
+        /// 将Queryable转换为Dynamic
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static dynamic ToDynamic<T>(this SqlSugar.Queryable<T> queryable)
+        {
+            return JsonConverter.ConvertJson(ToJson<T>(queryable));
+        }
+
 
 
         /// <summary>

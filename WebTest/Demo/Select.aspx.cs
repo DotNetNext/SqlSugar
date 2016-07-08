@@ -138,6 +138,8 @@ namespace WebTest.Demo
 
                 //查询所有
                 var student = db.Queryable<Student>().ToList();
+                var studentDynamic = db.Queryable<Student>().ToDynamic();
+                var studentJson = db.Queryable<Student>().ToJson();
 
                 //查询单条
                 var single = db.Queryable<Student>().Single(c => c.id == 1);
