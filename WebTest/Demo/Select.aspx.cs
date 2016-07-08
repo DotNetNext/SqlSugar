@@ -164,6 +164,12 @@ namespace WebTest.Demo
 
                 //查询单条
                 var single = db.Queryable<Student>().Single(c => c.id == 1);
+                //查询单条没有记录返回空对象
+                var single2 = db.Queryable<Student>().Where(c => c.id == 1).SingleOrDefault();
+
+                //查询第一条
+                var first = db.Queryable<Student>().Where(c => c.id == 1).First();
+                var first2 = db.Queryable<Student>().Where(c => c.id == 1).FirstOrDefault();
 
                 //取10-20条
                 var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy("id").Skip(10).Take(20).ToList();
