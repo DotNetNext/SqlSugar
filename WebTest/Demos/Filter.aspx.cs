@@ -27,7 +27,7 @@ namespace WebTest.Demo
 
 
                 //sqlable
-                var list2 = db.Sqlable().Form<Student>("s").SelectToList<Student>("*");
+                var list2 = db.Sqlable().From<Student>("s").SelectToList<Student>("*");
                 //同上
 
                 //sqlQuery

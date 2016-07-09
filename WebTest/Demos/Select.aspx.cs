@@ -81,7 +81,7 @@ namespace WebTest.Demo
 
                 //多表查询
                 List<School> dataList = db.Sqlable()
-                   .Form("school", "s")
+                   .From("school", "s")
                    .Join("student", "st", "st.id", "s.id", JoinType.INNER)
                    .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
                    .Where("s.id>100 and s.id<@id")
@@ -90,7 +90,7 @@ namespace WebTest.Demo
 
                 //多表分页
                 List<School> dataPageList = db.Sqlable()
-                    .Form("school", "s")
+                    .From("school", "s")
                     .Join("student", "st", "st.id", "s.id", JoinType.INNER)
                     .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
                     .Where("s.id>100 and s.id<100")
@@ -98,7 +98,7 @@ namespace WebTest.Demo
 
                 //多表分页WHERE加子查询
                 List<School> dataPageList2 = db.Sqlable()
-                    .Form("school", "s")
+                    .From("school", "s")
                     .Join("student", "st", "st.id", "s.id", JoinType.INNER)
                     .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
                     .Where("s.id>100 and s.id<100 and s.id in (select 1 )" /*这里面写子查询都可以*/)
@@ -109,18 +109,18 @@ namespace WebTest.Demo
                 //--------转成List Dynmaic 或者 Json-----//
 
                 //不分页
-                var list1 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDynamic("*", new { id = 1 });
-                var list2 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToJson("*", new { id = 1 });
-                var list3 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDataTable("*", new { id = 1 });
+                var list1 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDynamic("*", new { id = 1 });
+                var list2 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToJson("*", new { id = 1 });
+                var list3 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDataTable("*", new { id = 1 });
 
                 //分页
-                var list4 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
-                var list5 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageTable("s.*", "l.id", 1, 10, new { id = 1 });
-                var list6 = db.Sqlable().Form("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
+                var list4 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
+                var list5 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageTable("s.*", "l.id", 1, 10, new { id = 1 });
+                var list6 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
 
 
                 //--------拼接-----//
-                Sqlable sable = db.Sqlable().Form<Student>("s").Join<School>("l", "s.sch_id", "l.id", JoinType.INNER);
+                Sqlable sable = db.Sqlable().From<Student>("s").Join<School>("l", "s.sch_id", "l.id", JoinType.INNER);
                 string name = "a";
                 int id = 1;
                 if (!string.IsNullOrEmpty(name))

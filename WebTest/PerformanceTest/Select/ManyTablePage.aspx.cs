@@ -42,7 +42,7 @@ left join dbo.Subject sb on sb.sid=s.id where  s.id>@id1 and  s.id>@id2) t where
                 //sqlSugar
                 pt.Execute(i =>
                 {
-                    db.Sqlable().Form("Student", "s")
+                    db.Sqlable().From("Student", "s")
                         .Join("School", "sc", "sc.id", "s.sch_id", JoinType.INNER)
                         .Join("subject", "sb", "sb.sid", "s.id", JoinType.LEFT).Where("s.id>@id1").Where("s.id>@id2")
                         .SelectToPageList<Models.Student>("s.*", "s.id asc,s.name desc", 2, 10, new { id1=1,id2=2 });

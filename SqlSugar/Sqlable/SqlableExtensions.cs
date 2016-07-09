@@ -23,7 +23,7 @@ namespace SqlSugar
         /// <param name="modelObj">表名</param>
         /// <param name="shortName">表名简写</param>
         /// <returns></returns>
-        public static Sqlable Form(this Sqlable sqlable, object tableName, string shortName)
+        public static Sqlable From(this Sqlable sqlable, object tableName, string shortName)
         {
             sqlable.Sql = new StringBuilder();
             sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName, shortName, sqlable.DB.IsNoLock.GetLockString());
@@ -36,7 +36,7 @@ namespace SqlSugar
         /// <param name="modelObj">表名</param>
         /// <param name="shortName">表名简写</param>
         /// <returns></returns>
-        public static Sqlable Form<T>(this Sqlable sqlable, string shortName)
+        public static Sqlable From<T>(this Sqlable sqlable, string shortName)
         {
             sqlable.Sql = new StringBuilder();
             sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString());

@@ -43,7 +43,7 @@ left join dbo.Subject sb on sb.sid=s.id").ToList();
                 //sqlSugar
                 pt.Execute(i =>
                 {
-                    db.Sqlable().Form("Student", "s")
+                    db.Sqlable().From("Student", "s")
                         .Join("School","sc","sc.id","s.sch_id",JoinType.INNER)
                         .Join("subject","sb","sb.sid","s.id",JoinType.LEFT).SelectToList<Models.Student>("*");
 
