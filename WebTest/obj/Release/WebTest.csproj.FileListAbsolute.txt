@@ -28,3 +28,11 @@ E:\Code\Git\SqlSugar2\WebTest\obj\Release\WebTest.dll
 E:\Code\Git\SqlSugar2\WebTest\obj\Release\WebTest.pdb
 E:\Code\Git\SqlSugar2\WebTest\bin\SqlSugar.xml
 E:\Code\GIT\SqlSugar\WebTest\bin\SqlSugar.xml
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.dll
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.pdb
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.dll
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.pdb
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.csprojResolveAssemblyReference.cache
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.dll
+G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.pdb

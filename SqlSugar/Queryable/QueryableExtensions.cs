@@ -365,9 +365,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static List<T> ToList<T>(this SqlSugar.Queryable<T> queryable)
         {
-            StringBuilder sbSql = new StringBuilder();
-            try
-            {
+                StringBuilder sbSql = new StringBuilder();
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
 
@@ -391,17 +389,9 @@ namespace SqlSugar
                 var reader = queryable.DB.GetReader(sbSql.ToString(), queryable.Params.ToArray());
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader, queryable.Select.GetSelectFiles());
                 queryable = null;
-                return reval;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Format("sql:{0}\r\n message:{1}", ex.Message));
-            }
-            finally
-            {
                 sbSql = null;
-                queryable = null;
-            }
+                return reval;
+     
 
         }
 
