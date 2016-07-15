@@ -81,6 +81,10 @@ namespace SqlSugar
         /// 设置序列化实体转成JSON的日期格式
         /// </summary>
         public string SerializerDateFormat = null;
+        /// <summary>
+        /// 设置分页类型
+        /// </summary>
+        public PageModel PageModel = PageModel.RowNumber;
 
         /// <summary>
         /// 设置过滤器（用户权限过滤）

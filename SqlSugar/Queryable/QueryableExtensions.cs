@@ -365,35 +365,17 @@ namespace SqlSugar
         /// <returns></returns>
         public static List<T> ToList<T>(this SqlSugar.Queryable<T> queryable)
         {
-                StringBuilder sbSql = new StringBuilder();
-                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-                var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
+            StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
+            var reader = queryable.DB.GetReader(sbSql.ToString(), queryable.Params.ToArray());
+            var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader, queryable.Select.GetSelectFiles());
+            queryable = null;
+            sbSql = null;
+            return reval;
 
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
-                if (queryable.Skip == null && queryable.Take != null)
-                {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
-                }
-                else if (queryable.Skip != null && queryable.Take == null)
-                {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
-                }
-                else if (queryable.Skip != null && queryable.Take != null)
-                {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
-                }
-
-                var reader = queryable.DB.GetReader(sbSql.ToString(), queryable.Params.ToArray());
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader, queryable.Select.GetSelectFiles());
-                queryable = null;
-                sbSql = null;
-                return reval;
-     
 
         }
+
+    
 
         /// <summary>
         /// 将Queryable转换为Json
@@ -403,7 +385,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static string ToJson<T>(this SqlSugar.Queryable<T> queryable)
         {
-            return JsonConverter.DataTableToJson(ToDataTable<T>(queryable),queryable.DB.SerializerDateFormat);
+            return JsonConverter.DataTableToJson(ToDataTable<T>(queryable), queryable.DB.SerializerDateFormat);
         }
 
         /// <summary>
@@ -427,43 +409,11 @@ namespace SqlSugar
         /// <returns></returns>
         public static DataTable ToDataTable<T>(this SqlSugar.Queryable<T> queryable)
         {
-            StringBuilder sbSql = new StringBuilder();
-            try
-            {
-                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-                var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
-
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
-                if (queryable.Skip == null && queryable.Take != null)
-                {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
-                }
-                else if (queryable.Skip != null && queryable.Take == null)
-                {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
-                }
-                else if (queryable.Skip != null && queryable.Take != null)
-                {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
-                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
-                }
-
+                StringBuilder sbSql =SqlSugarTool.GetQueryableSql<T>(queryable);
                 var dataTable = queryable.DB.GetDataTable(sbSql.ToString(), queryable.Params.ToArray());
                 queryable = null;
-                return dataTable;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Format("sql:{0}\r\n message:{1}", ex.Message));
-            }
-            finally
-            {
                 sbSql = null;
-                queryable = null;
-            }
-
+                return dataTable;
         }
 
         /// <summary>

@@ -31,5 +31,12 @@ namespace SqlSugar
         asc = 0,
         desc = 1
     }
-
+    /// <summary>
+    /// 分页类型
+    /// </summary>
+    public enum PageModel
+    {
+        RowNumber = 0,
+        Offset = 1
+    }
 }

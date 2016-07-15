@@ -319,14 +319,7 @@ namespace SqlSugar
             {
                 if (pageIndex == 0) pageIndex = 1;
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
-                sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
-                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
-                sbSql.Append(sqlable.OrderBy);
-                sbSql.Append(sqlable.GroupBy);
-                int skip = (pageIndex - 1) * pageSize + 1;
-                int take = pageSize;
-                sbSql.Insert(0, "SELECT * FROM ( ");
-                sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
+                SqlSugarTool.GetSqlableSql(sqlable, fileds, orderByFiled, pageIndex, pageSize, sbSql);
                 var sqlParams = GetAllParas(sqlable, whereObj);
                 var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams), fileds);
                 return reval;
@@ -342,6 +335,8 @@ namespace SqlSugar
                 sqlable = null;
             }
         }
+
+   
 
 
         /// <summary>
@@ -362,14 +357,7 @@ namespace SqlSugar
             {
                 if (pageIndex == 0) pageIndex = 1;
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
-                sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
-                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
-                sbSql.Append(sqlable.OrderBy);
-                sbSql.Append(sqlable.GroupBy);
-                int skip = (pageIndex - 1) * pageSize + 1;
-                int take = pageSize;
-                sbSql.Insert(0, "SELECT * FROM ( ");
-                sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
+                 SqlSugarTool.GetSqlableSql(sqlable, fileds, orderByFiled, pageIndex, pageSize, sbSql);
                 var sqlParams = GetAllParas(sqlable, whereObj);
                 var reval = sqlable.DB.GetDataTable(sbSql.ToString(), sqlParams);
                 return reval;

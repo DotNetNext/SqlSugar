@@ -444,7 +444,30 @@ namespace SqlSugar
             }
         }
 
-
+        internal static void GetSqlableSql(Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, StringBuilder sbSql)
+        {
+            if (sqlable.DB.PageModel == PageModel.RowNumber)
+            {
+                sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
+                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.OrderBy);
+                sbSql.Append(sqlable.GroupBy);
+                int skip = (pageIndex - 1) * pageSize + 1;
+                int take = pageSize;
+                sbSql.Insert(0, "SELECT * FROM ( ");
+                sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
+            }
+            else
+            {
+                sbSql.Insert(0, string.Format("SELECT {0}", fileds));
+                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
+                sbSql.Append(sqlable.GroupBy);
+                sbSql.AppendFormat(" ORDER BY {0} ", orderByFiled);
+                int skip = (pageIndex - 1) * pageSize;
+                int take = pageSize;
+                sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY", skip, take);
+            }
+        }
         /// <summary>
         /// 获取参数到键值集合根据页面Request参数
         /// </summary>
@@ -463,6 +486,47 @@ namespace SqlSugar
                 paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
             }
             return paraDictionarAll.Select(it => new SqlParameter("@" + it.Key, it.Value)).ToArray();
+        }
+
+        internal static StringBuilder GetQueryableSql<T>(SqlSugar.Queryable<T> queryable)
+        {
+            StringBuilder sbSql = new StringBuilder();
+            if (queryable.DB.PageModel == PageModel.RowNumber)
+            {
+                #region  rowNumber
+                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
+                var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
+
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
+                if (queryable.Skip == null && queryable.Take != null)
+                {
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
+                }
+                else if (queryable.Skip != null && queryable.Take == null)
+                {
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
+                }
+                else if (queryable.Skip != null && queryable.Take != null)
+                {
+                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
+                } 
+                #endregion
+            }
+            else
+            {
+
+                #region offset
+                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
+                var order = queryable.OrderBy.IsValuable() ? ("ORDER BY " + queryable.OrderBy+" " ) : null;
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
+                sbSql.Append(order);
+                sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY",queryable.Skip,queryable.Take);
+                #endregion
+            }
+            return sbSql;
         }
     }
 }
