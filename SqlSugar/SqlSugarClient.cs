@@ -77,6 +77,10 @@ namespace SqlSugar
         /// 设置禁止更新的列
         /// </summary>
         public string[] DisableUpdateColumns{get;set;}
+        /// <summary>
+        /// 设置序列化实体转成JSON的日期格式
+        /// </summary>
+        public string SerializerDateFormat = null;
 
         /// <summary>
         /// 设置过滤器（用户权限过滤）
@@ -193,7 +197,7 @@ namespace SqlSugar
         /// <returns></returns>
         public string SqlQueryJson(string sql, object whereObj = null)
         {
-            return JsonConverter.DataTableToJson(GetDataTable(sql, whereObj));
+            return JsonConverter.DataTableToJson(GetDataTable(sql, whereObj),SerializerDateFormat);
         }
 
 

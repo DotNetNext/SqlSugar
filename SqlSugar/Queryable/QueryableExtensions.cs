@@ -403,7 +403,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static string ToJson<T>(this SqlSugar.Queryable<T> queryable)
         {
-            return JsonConverter.DataTableToJson(ToDataTable<T>(queryable));
+            return JsonConverter.DataTableToJson(ToDataTable<T>(queryable),queryable.DB.SerializerDateFormat);
         }
 
         /// <summary>

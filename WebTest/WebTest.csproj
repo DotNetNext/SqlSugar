@@ -83,6 +83,7 @@
     <Content Include="Demos\NoParameter.aspx" />
     <Content Include="Demos\Rename.aspx" />
     <Content Include="Demos\Select.aspx" />
+    <Content Include="Demos\SerializerDateFormat.aspx" />
     <Content Include="Demos\Tran.aspx" />
     <Content Include="Demos\Update.aspx" />
     <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
@@ -189,6 +190,13 @@
     </Compile>
     <Compile Include="Demos\Select.aspx.designer.cs">
       <DependentUpon>Select.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\SerializerDateFormat.aspx.cs">
+      <DependentUpon>SerializerDateFormat.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\SerializerDateFormat.aspx.designer.cs">
+      <DependentUpon>SerializerDateFormat.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\Tran.aspx.cs">
       <DependentUpon>Tran.aspx</DependentUpon>

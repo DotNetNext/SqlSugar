@@ -36,3 +36,11 @@ G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.csprojResolveAssemblyReference.cache
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.dll
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.pdb
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.dll
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\WebTest.pdb
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.dll
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.pdb
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.csprojResolveAssemblyReference.cache
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.dll
+C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.pdb

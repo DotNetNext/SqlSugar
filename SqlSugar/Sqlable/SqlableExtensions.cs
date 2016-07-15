@@ -232,7 +232,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static string SelectToJson(this Sqlable sqlable, string fileds, object whereObj = null)
         {
-            return JsonConverter.DataTableToJson(SelectToDataTable(sqlable, fileds, whereObj));
+            return JsonConverter.DataTableToJson(SelectToDataTable(sqlable, fileds, whereObj),sqlable.DB.SerializerDateFormat);
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static string SelectToPageJson(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) 
         {
-           return  JsonConverter.DataTableToJson(SelectToPageTable(sqlable,fileds,orderByFiled,pageIndex,pageSize,whereObj));
+           return  JsonConverter.DataTableToJson(SelectToPageTable(sqlable,fileds,orderByFiled,pageIndex,pageSize,whereObj),sqlable.DB.SerializerDateFormat);
         }
             
         /// <summary>

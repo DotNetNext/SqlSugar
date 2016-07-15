@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 using System.Collections;
 using System.Web.Configuration;
 using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -37,6 +38,20 @@ namespace SqlSugar
                 parentRow.Add(childRow);
             }
             return jsSerializer.Serialize(parentRow);
+        }
+
+        public static string DataTableToJson(DataTable table, string dateFormat)
+        {
+            var reval = DataTableToJson(table);
+            if (dateFormat.IsNullOrEmpty()) return reval;
+            reval = Regex.Replace(reval, @"\\/Date\((\d+)\)\\/", match =>
+            {
+                DateTime dt = new DateTime(1970, 1, 1);
+                dt = dt.AddMilliseconds(long.Parse(match.Groups[1].Value));
+                dt = dt.ToLocalTime();
+                return dt.ToString(dateFormat);
+            });
+            return reval;
         }
 
 
