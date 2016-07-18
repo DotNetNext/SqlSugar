@@ -230,7 +230,7 @@ namespace SqlSugar
             foreach (PropertyInfo r in propertiesObj)
             {
                 var val = r.GetValue(obj, null);
-                reval.Add(r.Name, val == null ? "" : val);
+                reval.Add(r.Name, val == null ? DBNull.Value : val);
             }
 
             return reval;
