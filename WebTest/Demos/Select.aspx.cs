@@ -189,6 +189,9 @@ namespace WebTest.Demo
                 // Not like 
                 string conval = "a";
                 var notLike = db.Queryable<Student>().Where(c => !c.name.Contains(conval.ToString())).ToList();
+                //Like
+                conval = "三";
+                var like = db.Queryable<Student>().Where(c => c.name.Contains(conval)).ToList();
 
                 // 可以在拉姆达使用 ToString和 Convert,比EF出色的地方
                 var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();
