@@ -27,6 +27,7 @@ namespace SqlSugar
         }
         private List<KeyValue> _mappingTableList = null;
         private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
+        private List<PubModel.SerialNumber> _serialNumber = null;
 
         internal string GetTableNameByClassType(string typeName)
         {
@@ -61,10 +62,19 @@ namespace SqlSugar
         {
             if (mappingTables.IsValuable())
             {
-
                 _mappingTableList = mappingTables;
             }
-
+        }
+        /// <summary>
+        /// 设置流水号 （说明：Dictionary<流水号名称, Func<{表名，字段名},返回的流水号>>）
+        /// </summary>
+        /// <param name="serNum"></param>
+        public void SetSerialNumber(List<PubModel.SerialNumber> serNum)
+        {
+            if (serNum.IsValuable())
+            {
+                _serialNumber = serNum;
+            }
         }
 
         public string ConnectionString { get; set; }
@@ -76,7 +86,7 @@ namespace SqlSugar
         /// <summary>
         /// 设置禁止更新的列
         /// </summary>
-        public string[] DisableUpdateColumns{get;set;}
+        public string[] DisableUpdateColumns { get; set; }
         /// <summary>
         /// 设置序列化实体转成JSON的日期格式
         /// </summary>
@@ -144,7 +154,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable()&&_filterFuns.ContainsKey(CurrentFilterKey) )
+                if (_filterFuns.IsValuable() && _filterFuns.ContainsKey(CurrentFilterKey))
                 {
                     var filterInfo = _filterFuns[CurrentFilterKey];
                     var filterValue = filterInfo();
@@ -201,7 +211,7 @@ namespace SqlSugar
         /// <returns></returns>
         public string SqlQueryJson(string sql, object whereObj = null)
         {
-            return JsonConverter.DataTableToJson(GetDataTable(sql, whereObj),SerializerDateFormat);
+            return JsonConverter.DataTableToJson(GetDataTable(sql, whereObj), SerializerDateFormat);
         }
 
 
@@ -290,7 +300,7 @@ namespace SqlSugar
             StringBuilder sbInsertSql = new StringBuilder();
             List<SqlParameter> pars = new List<SqlParameter>();
             var identities = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
-            isIdentity=identities!= null && identities.Count> 0;
+            isIdentity = identities != null && identities.Count > 0;
             //sql语句缓存
             string cacheSqlKey = "db.Insert." + typeName;
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
@@ -354,6 +364,13 @@ namespace SqlSugar
                     object val = prop.GetValue(entity, null);
                     if (val == null)
                         val = DBNull.Value;
+                    if (_serialNumber.IsValuable()) {
+                       Func<PubModel.SerialNumber,bool> serEexp=it => it.TableName.ToLower() == typeName.ToLower() && it.FieldName.ToLower() == prop.Name.ToLower();
+                       var isAnyNum = _serialNumber.Any(serEexp);
+                       if (isAnyNum&&(val==DBNull.Value||val.IsNullOrEmpty())) {
+                           val = _serialNumber.First(serEexp).GetNumFunc();
+                       }
+                    }
                     var par = new SqlParameter("@" + prop.Name, val);
                     if (par.SqlDbType == SqlDbType.Udt)
                     {
@@ -477,12 +494,12 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
-            var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this,typeName);
+            var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             foreach (var r in rows)
             {
-                var isPk = pkName!=null&&pkName.ToLower() == r.Key.ToLower();
-                var isIdentity=identityNames.Any(it => it.Value.ToLower() == r.Key.ToLower());
-                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower()); 
+                var isPk = pkName != null && pkName.ToLower() == r.Key.ToLower();
+                var isIdentity = identityNames.Any(it => it.Value.ToLower() == r.Key.ToLower());
+                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower());
                 if (isPk || isIdentity || isDisableUpdateColumns)
                 {
                     if (rowObj.GetType() == type)
@@ -508,7 +525,7 @@ namespace SqlSugar
             {
                 foreach (var par in pars)
                 {
-                    var isDisableUpdateColumns =DisableUpdateColumns!=null&& DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.TrimStart('@').ToLower());
+                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.TrimStart('@').ToLower());
                     if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
                         par.UdtTypeName = "HIERARCHYID";

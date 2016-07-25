@@ -29,5 +29,18 @@ namespace SqlSugar
         }
 
         #endregion
+
+        /// <summary>
+        /// 流水号设置实体
+        /// </summary>
+        public class SerialNumber
+        {
+            public string TableName { get; set; }
+            public string FieldName { get; set; }
+            /// <summary>
+            /// 获取流水号函数
+            /// </summary>
+            public Func<string> GetNumFunc { get; set; }
+        }
     }
 }

@@ -84,6 +84,7 @@
     <Content Include="Demos\Rename.aspx" />
     <Content Include="Demos\Select.aspx" />
     <Content Include="Demos\SerializerDateFormat.aspx" />
+    <Content Include="Demos\SerialNumber.aspx" />
     <Content Include="Demos\SqlPageModel.aspx" />
     <Content Include="Demos\Tran.aspx" />
     <Content Include="Demos\Update.aspx" />
@@ -198,6 +199,13 @@
     </Compile>
     <Compile Include="Demos\SerializerDateFormat.aspx.designer.cs">
       <DependentUpon>SerializerDateFormat.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\SerialNumber.aspx.cs">
+      <DependentUpon>SerialNumber.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\SerialNumber.aspx.designer.cs">
+      <DependentUpon>SerialNumber.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\SqlPageModel.aspx.cs">
       <DependentUpon>SqlPageModel.aspx</DependentUpon>

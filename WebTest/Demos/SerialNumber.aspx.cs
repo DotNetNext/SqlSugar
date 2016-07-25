@@ -1,0 +1,61 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using SqlSugar;
+using Models;
+
+namespace WebTest.Demos
+{
+    public partial class SerialNumber : System.Web.UI.Page
+    {
+     
+            protected void Page_Load(object sender, EventArgs e)
+            {
+                using (SqlSugarClient db = SugarDaoSerNum.GetInstance())//开启数据库连接
+                {
+                    var obj =Convert.ToInt32( db.Insert<Student>(new Student() { }));
+
+                    var name = db.Queryable<Student>().Single(it => it.id == obj).name;
+   
+
+                    var obj2 = Convert.ToInt32( db.Insert<School>(new School() { }));
+
+                    var name2=db.Queryable<School>().Single(it => it.id == obj2).name;
+                }
+            }
+  
+        /// <summary>
+        /// 扩展SqlSugarClient
+        /// </summary>
+        public class SugarDaoSerNum
+        {
+            //禁止实例化
+            private SugarDaoSerNum()
+            {
+
+            }
+            /// <summary>
+            /// 页面所需要的过滤函数
+            /// </summary>
+            private static List<PubModel.SerialNumber> _nums = new List<PubModel.SerialNumber>(){
+              new PubModel.SerialNumber(){TableName="Student", FieldName="name", GetNumFunc=()=>{
+                  return "stud-"+DateTime.Now.ToString("yyyy-MM-dd");
+              }},
+                new PubModel.SerialNumber(){TableName="School", FieldName="name", GetNumFunc=()=>{
+                  return "ch-"+DateTime.Now.ToString("syyyy-MM-dd");
+              }}
+            };
+
+            public static SqlSugarClient GetInstance()
+            {
+                string connection = System.Configuration.ConfigurationManager.ConnectionStrings[@"sqlConn"].ToString(); //这里可以动态根据cookies或session实现多库切换
+                var reval = new SqlSugarClient(connection);
+                reval.SetSerialNumber(_nums);
+                return reval;
+            }
+        }
+    }
+}

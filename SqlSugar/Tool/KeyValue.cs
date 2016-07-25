@@ -16,4 +16,5 @@ namespace SqlSugar
         public string Key { get; set; }
         public object Value { get; set; }
     }
+
 }
