@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using WebTest.Dao;
+using System.Data;
 namespace WebTest.Demo
 {
     /// <summary>
@@ -22,6 +23,7 @@ namespace WebTest.Demo
                 try
                 {
                     db.BeginTran();//开启事务
+                    //db.BeginTran(IsolationLevel.ReadCommitted);+3重载可以设置事世隔离级别
 
                     db.CommitTran();//提交事务
                 }

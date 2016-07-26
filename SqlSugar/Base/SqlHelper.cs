@@ -44,6 +44,22 @@ namespace SqlSugar
         {
             _tran = _sqlConnection.BeginTransaction();
         }
+
+        public void BeginTran(IsolationLevel iso)
+        {
+            _tran = _sqlConnection.BeginTransaction(iso);
+        }
+
+        public void BeginTran(string transactionName)
+        {
+            _tran = _sqlConnection.BeginTransaction(transactionName);
+        }
+
+        public void BeginTran(IsolationLevel iso, string transactionName)
+        {
+            _tran = _sqlConnection.BeginTransaction(iso, transactionName);
+        }
+
         public void RollbackTran()
         {
             if (_tran != null)
