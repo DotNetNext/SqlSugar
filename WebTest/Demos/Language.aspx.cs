@@ -50,6 +50,7 @@ namespace WebTest.Demos
                  select * from LanguageTest where LanguageId=2
                  */
 
+                //V_LanguageTest__$_en 是我SqlSugar自动帮你创建的 当视图发生变化需要重新执行 LanguageHelper.UpdateView(db.Language, db);
 
                 var list2=db.Queryable<V_LanguageTest>().ToList();
                 //生成的Sql等于 select * from V_LanguageTest_$_en 
