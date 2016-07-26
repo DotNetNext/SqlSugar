@@ -9,6 +9,9 @@ using Models;
 
 namespace WebTest.Demos
 {
+    /// <summary>
+    /// 全局配置流水号,插入就不需要定任何逻辑
+    /// </summary>
     public partial class SerialNumber : System.Web.UI.Page
     {
      
@@ -53,6 +56,7 @@ namespace WebTest.Demos
             {
                 string connection = System.Configuration.ConfigurationManager.ConnectionStrings[@"sqlConn"].ToString(); //这里可以动态根据cookies或session实现多库切换
                 var reval = new SqlSugarClient(connection);
+                //设置流水号
                 reval.SetSerialNumber(_nums);
                 return reval;
             }

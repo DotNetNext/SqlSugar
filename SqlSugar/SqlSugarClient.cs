@@ -95,6 +95,10 @@ namespace SqlSugar
         /// 设置分页类型
         /// </summary>
         public PageModel PageModel = PageModel.RowNumber;
+        /// <summary>
+        /// 设置多语言配置
+        /// </summary>
+        public PubModel.Language Language = null;
 
         /// <summary>
         /// 设置过滤器（用户权限过滤）
@@ -105,6 +109,9 @@ namespace SqlSugar
         {
             _filterFuns = filters;
         }
+
+
+
 
         /// <summary>
         /// 数据过滤器键
@@ -187,9 +194,8 @@ namespace SqlSugar
         /// <returns></returns>
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
-            SqlDataReader reader = null;
             var pars = SqlSugarTool.GetParameters(whereObj).ToList();
-            return SqlQuery<T>(ref sql, ref reader, pars);
+            return SqlQuery<T>(sql, pars);
         }
         /// <summary>
         /// 根据SQL语句将结果集映射到dynamic
@@ -224,8 +230,7 @@ namespace SqlSugar
         /// <returns></returns>
         public List<T> SqlQuery<T>(string sql, SqlParameter[] pars)
         {
-            SqlDataReader reader = null;
-            return SqlQuery<T>(ref sql, ref reader, pars.ToList());
+            return SqlQuery<T>(sql, pars.ToList());
         }
         /// <summary>
         /// 根据SQL语句将结果集映射到List《T》
@@ -235,8 +240,9 @@ namespace SqlSugar
         /// <param name="reader"></param>
         /// <param name="pars"></param>
         /// <returns></returns>
-        public List<T> SqlQuery<T>(ref string sql, ref SqlDataReader reader, List<SqlParameter> pars)
+        public List<T> SqlQuery<T>(string sql, List<SqlParameter> pars)
         {
+            SqlDataReader reader = null;
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
@@ -261,6 +267,8 @@ namespace SqlSugar
                 fields = sql.Substring(0, 100);
             }
             var reval = SqlSugarTool.DataReaderToList<T>(type, reader, fields);
+            fields = null;
+            sql = null;
             return reval;
         }
 

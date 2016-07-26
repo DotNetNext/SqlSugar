@@ -281,7 +281,7 @@ namespace SqlSugar
             string key = "GetIdentityKeyByTableName" + tableName;
             var cm = CacheManager<List<KeyValue>>.GetInstance();
             List<KeyValue> identityInfo = null;
-            string sql=string.Format( @"
+            string sql = string.Format(@"
                             declare @Table_name varchar(60)
                             set @Table_name = '{0}';
 
@@ -298,7 +298,7 @@ namespace SqlSugar
                                    and columnproperty(sc.id, sc.name, 'IsIdentity') = 1
 
                             Where upper(so.name) = upper(@Table_name)
-         ",tableName);
+         ", tableName);
             if (cm.ContainsKey(key))
             {
                 identityInfo = cm[key];
@@ -491,13 +491,27 @@ namespace SqlSugar
         internal static StringBuilder GetQueryableSql<T>(SqlSugar.Queryable<T> queryable)
         {
             StringBuilder sbSql = new StringBuilder();
+            string tableName = queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName;
+            if (queryable.DB.Language.IsValuable() && queryable.DB.Language.Suffix.IsValuable())
+            {
+                var viewNameList = LanguageHelper.GetLanguageViewNameList(queryable.DB);
+                var isLanView = viewNameList.IsValuable() && viewNameList.Any(it => it == tableName);
+                if (!queryable.DB.Language.Suffix.StartsWith(LanguageHelper.PreSuffix))
+                {
+                    queryable.DB.Language.Suffix = LanguageHelper.PreSuffix + queryable.DB.Language.Suffix;
+                }
+
+                //将视图变更为多语言的视图
+                if (isLanView)
+                    tableName = typeof(T).Name + queryable.DB.Language.Suffix;
+            }
             if (queryable.DB.PageModel == PageModel.RowNumber)
             {
                 #region  rowNumber
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
 
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", tableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
                 if (queryable.Skip == null && queryable.Take != null)
                 {
                     sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
@@ -512,7 +526,7 @@ namespace SqlSugar
                 {
                     sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
                     sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
-                } 
+                }
                 #endregion
             }
             else
@@ -520,10 +534,10 @@ namespace SqlSugar
 
                 #region offset
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-                var order = queryable.OrderBy.IsValuable() ? ("ORDER BY " + queryable.OrderBy+" " ) : null;
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName, "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
+                var order = queryable.OrderBy.IsValuable() ? ("ORDER BY " + queryable.OrderBy + " ") : null;
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", tableName, "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
                 sbSql.Append(order);
-                sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY",queryable.Skip,queryable.Take);
+                sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY", queryable.Skip, queryable.Take);
                 #endregion
             }
             return sbSql;

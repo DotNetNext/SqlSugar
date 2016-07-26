@@ -265,3 +265,16 @@ USE [master]
 GO
 ALTER DATABASE [SqlSugarTest] SET  READ_WRITE 
 GO
+
+Create Table LanguageTest(
+ Id int primary key identity(1,1),
+ LanguageId int ,
+ Name varchar(100)
+)
+go
+
+create view V_LanguageTest
+as
+select * from LanguageTest where LanguageId=1
+
+go

@@ -55,6 +55,7 @@
     <Compile Include="Tool\IEnumerableExtensions.cs" />
     <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
     <Compile Include="Tool\KeyValue.cs" />
+    <Compile Include="Tool\LanguageHelper.cs" />
     <Compile Include="Tool\PubModel.cs" />
     <Compile Include="Tool\ResolveExpress.cs" />
     <Compile Include="Tool\PubEnum.cs" />

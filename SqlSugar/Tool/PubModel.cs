@@ -42,5 +42,29 @@ namespace SqlSugar
             /// </summary>
             public Func<string> GetNumFunc { get; set; }
         }
+
+        /// <summary>
+        /// 语言
+        /// </summary>
+        public class Language
+        {
+            /// <summary>
+            /// 数据库里面的语言后缀
+            /// </summary>
+            public string Suffix { get; set; }
+            /// <summary>
+            /// 数据库语言的VALUE
+            /// </summary>
+            public int LanguageValue { get; set; }
+            /// <summary>
+            /// 需要全局替换的字符串Key(用于替换默认语言)
+            /// </summary>
+            public string ReplaceViewStringKey = "LanguageId=1";
+            /// <summary>
+            /// 需要全局替换的字符串Value(用于替换默认语言)
+            /// </summary>
+            public string ReplaceViewStringValue = "LanguageId = {0}";
+
+        }
     }
 }

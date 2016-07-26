@@ -43,6 +43,10 @@ namespace WebTest.Demo
             //将匿名对象转成SqlParameter
             var par3= SqlSugarTool.GetParameters(new { id=1});
 
+
+            //用于生成多语言的视图
+            //LanguageHelper.UpdateView()
+
         }
     }
 }
