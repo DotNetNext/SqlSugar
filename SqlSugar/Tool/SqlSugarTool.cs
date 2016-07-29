@@ -44,7 +44,7 @@ namespace SqlSugar
         /// <param name="dr"></param>
         /// <param name="isClose"></param>
         /// <returns></returns>
-        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true)
+        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true, bool isTry = true)
         {
             if (type.Name.Contains("KeyValuePair"))
             {
@@ -92,8 +92,32 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
-                throw ex;
+                if (isTry)//解决实体变更缓存引起的错误
+                {
+
+                    try
+                    {
+                        if (cacheManager.ContainsKey(key))
+                        {
+                            //清除实体缓存 
+                            cacheManager.Remove(key);
+                            return DataReaderToList<T>(type, dr, fields, isClose, false);
+                        }
+                    }
+                    catch (Exception innerEx)
+                    {
+                        throw new Exception("可能实体与数据库类型不匹配，请用 var str = db.ClassGenerating.TableNameToClass(db, \"类名\") 查看正确的实体！！\r\n具体错误信息:"+innerEx.Message);
+                    }
+                    finally {
+                        if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
+                    }
+
+                }
+                else
+                {
+                    if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
+                    throw ex;
+                }
             }
             return list;
         }
