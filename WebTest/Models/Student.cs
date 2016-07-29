@@ -1,17 +1,48 @@
 ﻿using System;
 namespace Models
 {
-    public class Student{
-                        
-    public int id {get;set;}
 
-    public string name {get;set;}
+    public class Student
+    {
 
-    public int sch_id {get;set;}
+        /// <summary>
+        /// 说明:- 
+        /// 默认:- 
+        /// 可空:False 
+        /// </summary>
+        public int id { get; set; }
 
-    public string sex {get;set;}
-    public bool isOk { get; set; }
-   }
+        /// <summary>
+        /// 说明:- 
+        /// 默认:- 
+        /// 可空:True 
+        /// </summary>
+        public string name { get; set; }
+
+        /// <summary>
+        /// 说明:- 
+        /// 默认:- 
+        /// 可空:False 
+        /// </summary>
+        public int sch_id { get; set; }
+
+        /// <summary>
+        /// 说明:- 
+        /// 默认:- 
+        /// 可空:True 
+        /// </summary>
+        public string sex { get; set; }
+
+        /// <summary>
+        /// 说明:- 
+        /// 默认:- 
+        /// 可空:False 
+        /// </summary>
+        public Boolean isOk { get; set; }
+
+    }
+
+
 
 
     public class Student2
@@ -28,6 +59,6 @@ namespace Models
 
 
     }
-       
-            
+
+
 }

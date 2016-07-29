@@ -152,7 +152,8 @@ namespace {1}
         public string TableNameToClass(SqlSugarClient db, string tableName)
         {
             var dt = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
-            var reval = DataTableToClass(dt, tableName);
+            var tableColumns = GetTableColumns(db, tableName);
+            var reval = DataTableToClass(dt, tableName,null,tableColumns);
             return reval;
         }
 
@@ -197,7 +198,8 @@ namespace {1}
                     }
                     else
                     {
-                        var classCode = DataTableToClass(currentTable, tableName, nameSpace);
+                        var tableColumns = GetTableColumns(db, tableName);
+                        var classCode = DataTableToClass(currentTable, tableName, nameSpace,tableColumns);
                         FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode,Encoding.UTF8);
                     }
                 }
