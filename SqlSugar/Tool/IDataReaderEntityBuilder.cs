@@ -54,7 +54,27 @@ namespace SqlSugar
                         generator.Emit(OpCodes.Ldarg_0);
                         generator.Emit(OpCodes.Ldc_I4, i);
                         generator.Emit(OpCodes.Callvirt, getValueMethod);
-                        generator.Emit(OpCodes.Unbox_Any, propertyInfo.PropertyType);
+                        bool nullable = false;
+                        var unType = GfetUnType(propertyInfo, ref nullable);
+                        var ieEnum = unType.IsEnum;
+                        if (ieEnum)
+                        {
+                         MethodInfo method_EnumCast = null; 
+                        if (nullable) 
+                        {
+                            method_EnumCast = typeof(EnumMethod).GetMethod("ConvertToEnum_Nullable").MakeGenericMethod(unType); 
+                         } 
+                         else 
+                          {
+                              method_EnumCast = typeof(EnumMethod).GetMethod("ConvertToEnum").MakeGenericMethod(unType); 
+                          } 
+ 
+                          generator.Emit(OpCodes.Call, method_EnumCast); 
+                        }
+                        else
+                        {
+                            generator.Emit(OpCodes.Unbox_Any, propertyInfo.PropertyType);
+                        }
                         generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
                         generator.MarkLabel(endIfLabel);
                     }
@@ -64,6 +84,14 @@ namespace SqlSugar
                 dynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
                 return dynamicBuilder;
             }
+        }
+
+        private static Type GfetUnType(PropertyInfo propertyInfo,ref bool nullable)
+        {
+            Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+            nullable = unType != null;
+            unType = unType ?? propertyInfo.PropertyType;
+            return unType;
         }
     }
 }

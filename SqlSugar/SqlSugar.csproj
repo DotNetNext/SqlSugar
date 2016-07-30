@@ -51,6 +51,7 @@
     <Compile Include="Cloud\TaskExtensions.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Tool\Check.cs" />
+    <Compile Include="Tool\EnumMethod.cs" />
     <Compile Include="Tool\JsonConverter.cs" />
     <Compile Include="Tool\IEnumerableExtensions.cs" />
     <Compile Include="Tool\IDataReaderEntityBuilder.cs" />

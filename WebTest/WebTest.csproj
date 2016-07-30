@@ -77,6 +77,7 @@
     <Content Include="Demos\Cloud.aspx" />
     <Content Include="Demos\CreateModelFile.aspx" />
     <Content Include="Demos\Delete.aspx" />
+    <Content Include="Demos\EnumType.aspx" />
     <Content Include="Demos\Filter.aspx" />
     <Content Include="Demos\Function.aspx" />
     <Content Include="Demos\Insert.aspx" />
@@ -151,6 +152,13 @@
     </Compile>
     <Compile Include="Demos\Delete.aspx.designer.cs">
       <DependentUpon>Delete.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\EnumType.aspx.cs">
+      <DependentUpon>EnumType.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\EnumType.aspx.designer.cs">
+      <DependentUpon>EnumType.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\Filter.aspx.cs">
       <DependentUpon>Filter.aspx</DependentUpon>
