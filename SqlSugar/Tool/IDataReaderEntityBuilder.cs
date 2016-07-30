@@ -55,7 +55,7 @@ namespace SqlSugar
                         generator.Emit(OpCodes.Ldc_I4, i);
                         generator.Emit(OpCodes.Callvirt, getValueMethod);
                         bool nullable = false;
-                        var unType = GfetUnType(propertyInfo, ref nullable);
+                        var unType = GetUnType(propertyInfo, ref nullable);
                         var ieEnum = unType.IsEnum;
                         if (ieEnum)
                         {
@@ -86,7 +86,7 @@ namespace SqlSugar
             }
         }
 
-        private static Type GfetUnType(PropertyInfo propertyInfo,ref bool nullable)
+        private static Type GetUnType(PropertyInfo propertyInfo,ref bool nullable)
         {
             Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
             nullable = unType != null;
