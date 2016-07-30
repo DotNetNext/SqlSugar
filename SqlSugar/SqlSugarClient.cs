@@ -379,6 +379,11 @@ namespace SqlSugar
                            val = _serialNumber.First(serEexp).GetNumFunc();
                        }
                     }
+
+                    if (prop.PropertyType.IsEnum) { 
+                      val=(int)(val);
+                    }
+
                     var par = new SqlParameter("@" + prop.Name, val);
                     if (par.SqlDbType == SqlDbType.Udt)
                     {

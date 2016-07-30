@@ -221,6 +221,9 @@ namespace SqlSugar
                 foreach (PropertyInfo r in propertiesObj)
                 {
                     var value = r.GetValue(obj, null);
+                    if (r.PropertyType.IsEnum) {
+                        value = (int)value;
+                    }
                     if (value == null) value = DBNull.Value;
                     if (r.Name.ToLower().Contains("hierarchyid"))
                     {
@@ -254,6 +257,9 @@ namespace SqlSugar
             foreach (PropertyInfo r in propertiesObj)
             {
                 var val = r.GetValue(obj, null);
+                if (r.PropertyType.IsEnum) {
+                    val = (int)val;
+                }
                 reval.Add(r.Name, val == null ? DBNull.Value : val);
             }
 
