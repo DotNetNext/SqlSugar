@@ -86,6 +86,7 @@ namespace WebTest.Demo
                    .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
                    .Where("s.id>100 and s.id<@id")
                    .Where("1=1")//可以多个WHERE
+                   .OrderBy("id")
                    .SelectToList<School/*新的Model我这里没有所以写的School*/>("st.*", new { id = 1 });
 
                 //多表分页

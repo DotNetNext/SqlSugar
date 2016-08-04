@@ -95,7 +95,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable OrderBy(this Sqlable sqlable, string orderBy)
         {
-            sqlable.OrderBy = orderBy;
+            sqlable.OrderBy ="ORDER BY "+ orderBy+" ";
             return sqlable;
         }
 
@@ -122,7 +122,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable GroupBy(this Sqlable sqlable, string groupBy)
         {
-            sqlable.GroupBy = groupBy;
+            sqlable.GroupBy ="GROUP BY "+ groupBy+" ";
             return sqlable;
         }
 
