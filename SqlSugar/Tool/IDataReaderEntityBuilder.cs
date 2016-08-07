@@ -114,6 +114,7 @@ namespace SqlSugar
         {
             MethodInfo method = null;
             var typeName = ChangeDBTypeToCSharpType(dbTypeName);
+            var objTypeName = type.Name.ToLower();
             var isEnum = type.IsEnum;
             if (isEnum)
             {
@@ -124,7 +125,11 @@ namespace SqlSugar
                 switch (typeName)
                 {
                     case "int":
-                        method = getConvertInt32; break;
+                        var isNotInt = objTypeName != "int32";
+                        if (isNotInt)
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertInt32; break;
                     case "bool":
                         method = getConvertBoolean; break;
                     case "string":
@@ -132,9 +137,17 @@ namespace SqlSugar
                     case "dateTime":
                         method = getConvertDateTime; break;
                     case "decimal":
-                        method = getConvertDecimal; break;
+                        var isNotDecimal = objTypeName != "decimal";
+                        if (isNotDecimal)
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertDecimal; break;
                     case "double":
-                        method = getConvertDouble; break;
+                        var isNotDouble = objTypeName != "double";
+                        if (isNotDouble)
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertDouble; break;
                     case "guid":
                         method = getConvertGuid; break;
                     case "byte":
@@ -142,7 +155,7 @@ namespace SqlSugar
                     case "ENUMNAME":
                         method = getConvertToEnum_Nullable.MakeGenericMethod(type); break;
                     default:
-                        method = getOtherNull.MakeGenericMethod(type);  break;
+                        method = getOtherNull.MakeGenericMethod(type); break;
                 }
 
                 generator.Emit(OpCodes.Call, method);
@@ -153,7 +166,11 @@ namespace SqlSugar
                 switch (typeName)
                 {
                     case "int":
-                        method = getInt32; break;
+                        var isNotInt = objTypeName != "int32";
+                        if (isNotInt)
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getInt32; break;
                     case "bool":
                         method = getBoolean; break;
                     case "string":
@@ -161,15 +178,23 @@ namespace SqlSugar
                     case "dateTime":
                         method = getDateTime; break;
                     case "decimal":
-                        method = getDecimal; break;
+                        var isNotDecimal = objTypeName != "decimal";
+                        if (isNotDecimal)
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getDecimal; break;
                     case "double":
-                        method = getDouble; break;
+                        var isNotDouble = objTypeName != "double";
+                        if (isNotDouble)
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getDouble; break;
                     case "guid":
                         method = getGuid; break;
                     case "byte":
                         method = getByte; break;
                     case "ENUMNAME":
-                         method = getValueMethod;  break;
+                        method = getValueMethod; break;
                     default: method = getOther.MakeGenericMethod(type); break; ;
 
                 }
