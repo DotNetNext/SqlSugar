@@ -51,6 +51,7 @@ namespace SqlSugar
         private static readonly MethodInfo getConvetInt64 = typeof(IDataRecordExtensions).GetMethod("getConvetInt64");
         private static readonly MethodInfo getConvertToEnum_Nullable = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Nullable");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
+        private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
 
 
 
@@ -167,13 +168,13 @@ namespace SqlSugar
                         method = getGuid; break;
                     case "byte":
                         method = getByte; break;
-                    default:
-                        method = getValueMethod;
-                        break;
+                    case "ENUMNAME":
+                         method = getValueMethod;  break;
+                    default: method = getOther.MakeGenericMethod(type); break; ;
 
                 }
 
-                generator.Emit(OpCodes.Callvirt, method);
+                generator.Emit(OpCodes.Call, method);
 
                 if (method == getValueMethod)
                 {
