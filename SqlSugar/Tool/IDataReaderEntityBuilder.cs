@@ -49,8 +49,8 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertInt16 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt16");
         private static readonly MethodInfo getConvertInt32 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt32");
         private static readonly MethodInfo getConvetInt64 = typeof(IDataRecordExtensions).GetMethod("getConvetInt64");
-        private static readonly MethodInfo GetConvertToEnum_Nullable = typeof(IDataRecordExtensions).GetMethod("GetConvertToEnum_Nullable");
-        private static readonly MethodInfo GetConvertToEnum = typeof(IDataRecordExtensions).GetMethod("GetConvertToEnum");
+        private static readonly MethodInfo getConvertToEnum_Nullable = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Nullable");
+        private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
 
 
 
@@ -139,19 +139,13 @@ namespace SqlSugar
                     case "byte":
                         method = getConvertByte; break;
                     case "ENUMNAME":
-                        method = GetConvertToEnum_Nullable; break;
+                        method = getConvertToEnum_Nullable.MakeGenericMethod(type); break;
                     default:
-                        method = getValueMethod;
-                        break;
+                        method = getOtherNull.MakeGenericMethod(type);  break;
                 }
-                if (isEnum)
-                {
-                    generator.Emit(OpCodes.Call, method);
-                }
-                else
-                {
-                    generator.Emit(OpCodes.Callvirt, method);
-                }
+
+                generator.Emit(OpCodes.Call, method);
+
             }
             else
             {
@@ -173,21 +167,14 @@ namespace SqlSugar
                         method = getGuid; break;
                     case "byte":
                         method = getByte; break;
-                    case "ENUMNAME":
-                        method = GetConvertToEnum; break;
                     default:
                         method = getValueMethod;
                         break;
 
                 }
-                if (isEnum)
-                {
-                    generator.Emit(OpCodes.Call, method);
-                }
-                else
-                {
-                    generator.Emit(OpCodes.Callvirt, method);
-                }
+
+                generator.Emit(OpCodes.Callvirt, method);
+
                 if (method == getValueMethod)
                 {
                     generator.Emit(OpCodes.Unbox_Any, pro.PropertyType);//找不到类型才执行拆箱（类型转换）

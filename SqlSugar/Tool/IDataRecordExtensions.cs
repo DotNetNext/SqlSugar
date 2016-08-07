@@ -111,18 +111,24 @@ namespace SqlSugar
             var reval = dr.GetInt64(i);
             return reval;
         }
-
-        public static Nullable<TEnum> GetConvertToEnum_Nullable<TEnum>(this IDataRecord dr, int i) where TEnum : struct
+        public static Nullable<T> GetOtherNull<T>(this IDataReader dr, int i) where T : struct
         {
-            TEnum ret = GetConvertToEnum<TEnum>(dr, i);
-            return new Nullable<TEnum>(ret);
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            return (T)Convert.ChangeType(dr.GetValue(i), typeof(T));
+
         }
-
-        public static TEnum GetConvertToEnum<TEnum>(this IDataRecord dr, int i) where TEnum : struct
+        public static Nullable<T> GetConvertEnum_Nullable<T>(this IDataReader dr, int i) where T : struct
         {
-            Type t = typeof(TEnum);
-            TEnum ret = (TEnum)Enum.ToObject(t, dr.GetValue(i));
-            return ret;
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            object value = dr.GetValue(i);
+            T t = (T)Enum.ToObject(typeof(T), value);
+            return t;
         }
 
     }

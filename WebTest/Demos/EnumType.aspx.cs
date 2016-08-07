@@ -17,8 +17,8 @@ namespace WebTest.Demos
             {
                 var stuList= db.Queryable<Student>().ToList();
                 db.Insert<Student>(new Student() { sch_id = SchoolEnum.蓝翔2 });
-                db.Update<Student>(new Student() {  sch_id=SchoolEnum.蓝翔2 , id=1} );
-                var stuList2 = db.Queryable<Student>().Where(it=>it.sch_id==SchoolEnum.蓝翔1).ToList();
+                db.Update<Student>(new Student() { sch_id = SchoolEnum.蓝翔2, id = 1 });
+                var stuList2 = db.Queryable<Student>().Where(it => it.sch_id == SchoolEnum.蓝翔1).ToList();
             }
         }
 
