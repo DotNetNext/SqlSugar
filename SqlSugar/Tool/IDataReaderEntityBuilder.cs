@@ -10,17 +10,51 @@ namespace SqlSugar
 {
     /// <summary>
     /// ** 描述：DataReader实体生成
-    /// ** 创始时间：2010-2-28
+    /// ** 创始时间：2016-8-7
     /// ** 修改时间：-
-    /// ** 作者：网络
+    /// ** 作者：孙凯旋
     /// ** 使用说明：
     /// </summary>
     public class IDataReaderEntityBuilder<T>
     {
-        private static readonly MethodInfo getValueMethod =
-        typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
-        private static readonly MethodInfo isDBNullMethod =
-            typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
+
+        private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
+
+        //default method
+        private static readonly MethodInfo getValueMethod = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
+
+        //dr valueType method
+        private static readonly MethodInfo getBoolean = typeof(IDataRecord).GetMethod("GetBoolean", new Type[] { typeof(int) });
+        private static readonly MethodInfo getByte = typeof(IDataRecord).GetMethod("GetByte", new Type[] { typeof(int) });
+        private static readonly MethodInfo getDateTime = typeof(IDataRecord).GetMethod("GetDateTime", new Type[] { typeof(int) });
+        private static readonly MethodInfo getDecimal = typeof(IDataRecord).GetMethod("GetDecimal", new Type[] { typeof(int) });
+        private static readonly MethodInfo getDouble = typeof(IDataRecord).GetMethod("GetDouble", new Type[] { typeof(int) });
+        private static readonly MethodInfo getFloat = typeof(IDataRecord).GetMethod("GetFloat", new Type[] { typeof(int) });
+        private static readonly MethodInfo getGuid = typeof(IDataRecord).GetMethod("GetGuid", new Type[] { typeof(int) });
+        private static readonly MethodInfo getInt16 = typeof(IDataRecord).GetMethod("GetInt16", new Type[] { typeof(int) });
+        private static readonly MethodInfo getInt32 = typeof(IDataRecord).GetMethod("GetInt32", new Type[] { typeof(int) });
+        private static readonly MethodInfo getInt64 = typeof(IDataRecord).GetMethod("GetInt64", new Type[] { typeof(int) });
+        private static readonly MethodInfo getString = typeof(IDataRecord).GetMethod("GetString", new Type[] { typeof(int) });
+
+
+
+        //convert method
+        private static readonly MethodInfo getConvertBoolean = typeof(IDataRecordExtensions).GetMethod("GetConvertBoolean");
+        private static readonly MethodInfo getConvertByte = typeof(IDataRecordExtensions).GetMethod("GetConvertByte");
+        private static readonly MethodInfo getConvertChar = typeof(IDataRecordExtensions).GetMethod("GetConvertChar");
+        private static readonly MethodInfo getConvertDateTime = typeof(IDataRecordExtensions).GetMethod("GetConvertDateTime");
+        private static readonly MethodInfo getConvertDecimal = typeof(IDataRecordExtensions).GetMethod("GetConvertDecimal");
+        private static readonly MethodInfo getConvertDouble = typeof(IDataRecordExtensions).GetMethod("GetConvertDouble");
+        private static readonly MethodInfo getConvertGuid = typeof(IDataRecordExtensions).GetMethod("GetConvertGuid");
+        private static readonly MethodInfo getConvertInt16 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt16");
+        private static readonly MethodInfo getConvertInt32 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt32");
+        private static readonly MethodInfo getConvetInt64 = typeof(IDataRecordExtensions).GetMethod("getConvetInt64");
+        private static readonly MethodInfo GetConvertToEnum_Nullable = typeof(IDataRecordExtensions).GetMethod("GetConvertToEnum_Nullable");
+        private static readonly MethodInfo GetConvertToEnum = typeof(IDataRecordExtensions).GetMethod("GetConvertToEnum");
+
+
+
+
         private delegate T Load(IDataRecord dataRecord);
 
         private Load handler;
@@ -29,9 +63,9 @@ namespace SqlSugar
         {
             return handler(dataRecord);
         }
-        public static IDataReaderEntityBuilder<T> CreateBuilder(Type type,IDataRecord dataRecord)
+        public static IDataReaderEntityBuilder<T> CreateBuilder(Type type, IDataRecord dataRecord)
         {
-          
+
             {
                 IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
                 DynamicMethod method = new DynamicMethod("DynamicCreateEntity", type,
@@ -42,10 +76,14 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Stloc, result);
                 for (int i = 0; i < dataRecord.FieldCount; i++)
                 {
-                    PropertyInfo propertyInfo = type.GetProperty(dataRecord.GetName(i));
+                    string fieldName = dataRecord.GetName(i);
+                    PropertyInfo propertyInfo = type.GetProperty(fieldName);
                     Label endIfLabel = generator.DefineLabel();
                     if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                     {
+                        bool isNullable = false;
+                        var underType = GetUnderType(propertyInfo, ref isNullable);
+
                         generator.Emit(OpCodes.Ldarg_0);
                         generator.Emit(OpCodes.Ldc_I4, i);
                         generator.Emit(OpCodes.Callvirt, isDBNullMethod);
@@ -53,28 +91,7 @@ namespace SqlSugar
                         generator.Emit(OpCodes.Ldloc, result);
                         generator.Emit(OpCodes.Ldarg_0);
                         generator.Emit(OpCodes.Ldc_I4, i);
-                        generator.Emit(OpCodes.Callvirt, getValueMethod);
-                        bool nullable = false;
-                        var unType = GetUnType(propertyInfo, ref nullable);
-                        var ieEnum = unType.IsEnum;
-                        if (ieEnum)
-                        {
-                         MethodInfo method_EnumCast = null; 
-                        if (nullable) 
-                        {
-                            method_EnumCast = typeof(EnumMethod).GetMethod("ConvertToEnum_Nullable").MakeGenericMethod(unType); 
-                         } 
-                         else 
-                          {
-                              method_EnumCast = typeof(EnumMethod).GetMethod("ConvertToEnum").MakeGenericMethod(unType); 
-                          } 
- 
-                          generator.Emit(OpCodes.Call, method_EnumCast); 
-                        }
-                        else
-                        {
-                            generator.Emit(OpCodes.Unbox_Any, propertyInfo.PropertyType);
-                        }
+                        GeneratorCallMethod(generator, underType, isNullable, propertyInfo, dataRecord.GetDataTypeName(i), fieldName);
                         generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
                         generator.MarkLabel(endIfLabel);
                     }
@@ -86,10 +103,200 @@ namespace SqlSugar
             }
         }
 
-        private static Type GetUnType(PropertyInfo propertyInfo,ref bool nullable)
+
+        /// <summary>
+        /// 动态获取IDataRecord里面的函数
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="pro"></param>
+        private static void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName)
+        {
+            MethodInfo method = null;
+            var typeName = ChangeDBTypeToCSharpType(dbTypeName);
+            var isEnum = type.IsEnum;
+            if (isEnum)
+            {
+                typeName = "ENUMNAME";
+            }
+            if (isNullable)
+            {
+                switch (typeName)
+                {
+                    case "int":
+                        method = getConvertInt32; break;
+                    case "bool":
+                        method = getConvertBoolean; break;
+                    case "string":
+                        method = getString; break;
+                    case "dateTime":
+                        method = getConvertDateTime; break;
+                    case "decimal":
+                        method = getConvertDecimal; break;
+                    case "double":
+                        method = getConvertDouble; break;
+                    case "guid":
+                        method = getConvertGuid; break;
+                    case "byte":
+                        method = getConvertByte; break;
+                    case "ENUMNAME":
+                        method = GetConvertToEnum_Nullable; break;
+                    default:
+                        method = getValueMethod;
+                        break;
+                }
+                if (isEnum)
+                {
+                    generator.Emit(OpCodes.Call, method);
+                }
+                else
+                {
+                    generator.Emit(OpCodes.Callvirt, method);
+                }
+            }
+            else
+            {
+                switch (typeName)
+                {
+                    case "int":
+                        method = getInt32; break;
+                    case "bool":
+                        method = getBoolean; break;
+                    case "string":
+                        method = getString; break;
+                    case "dateTime":
+                        method = getDateTime; break;
+                    case "decimal":
+                        method = getDecimal; break;
+                    case "double":
+                        method = getDouble; break;
+                    case "guid":
+                        method = getGuid; break;
+                    case "byte":
+                        method = getByte; break;
+                    case "ENUMNAME":
+                        method = GetConvertToEnum; break;
+                    default:
+                        method = getValueMethod;
+                        break;
+
+                }
+                if (isEnum)
+                {
+                    generator.Emit(OpCodes.Call, method);
+                }
+                else
+                {
+                    generator.Emit(OpCodes.Callvirt, method);
+                }
+                if (method == getValueMethod)
+                {
+                    generator.Emit(OpCodes.Unbox_Any, pro.PropertyType);//找不到类型才执行拆箱（类型转换）
+                }
+            }
+
+
+        }
+        /// <summary>
+        /// 将SqlType转成C#Type
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public static string ChangeDBTypeToCSharpType(string typeName)
+        {
+            string reval = string.Empty;
+            switch (typeName.ToLower())
+            {
+                case "int":
+                    reval = "int";
+                    break;
+                case "text":
+                    reval = "string";
+                    break;
+                case "bigint":
+                    reval = "long";
+                    break;
+                case "binary":
+                    reval = "object";
+                    break;
+                case "bit":
+                    reval = "bool";
+                    break;
+                case "char":
+                    reval = "string";
+                    break;
+                case "datetime":
+                    reval = "dateTime";
+                    break;
+                case "decimal":
+                    reval = "decimal";
+                    break;
+                case "float":
+                    reval = "double";
+                    break;
+                case "image":
+                    reval = "byte[]";
+                    break;
+                case "money":
+                    reval = "decimal";
+                    break;
+                case "nchar":
+                    reval = "string";
+                    break;
+                case "ntext":
+                    reval = "string";
+                    break;
+                case "numeric":
+                    reval = "decimal";
+                    break;
+                case "nvarchar":
+                    reval = "string";
+                    break;
+                case "real":
+                    reval = "float";
+                    break;
+                case "smalldatetime":
+                    reval = "dateTime";
+                    break;
+                case "smallint":
+                    reval = "short";
+                    break;
+                case "smallmoney":
+                    reval = "decimal";
+                    break;
+                case "timestamp":
+                    reval = "dateTime";
+                    break;
+                case "tinyint":
+                    reval = "byte[]";
+                    break;
+                case "uniqueidentifier":
+                    reval = "guid";
+                    break;
+                case "varbinary":
+                    reval = "byte[]";
+                    break;
+                case "varchar":
+                    reval = "string";
+                    break;
+                case "Variant":
+                    reval = "object";
+                    break;
+                default:
+                    reval = "string";
+                    break;
+            }
+            return reval;
+        }
+        /// <summary>
+        /// 获取最底层类型
+        /// </summary>
+        /// <param name="propertyInfo"></param>
+        /// <param name="isNullable"></param>
+        /// <returns></returns>
+        private static Type GetUnderType(PropertyInfo propertyInfo, ref bool isNullable)
         {
             Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
-            nullable = unType != null;
+            isNullable = unType != null;
             unType = unType ?? propertyInfo.PropertyType;
             return unType;
         }

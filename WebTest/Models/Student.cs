@@ -38,7 +38,7 @@ namespace Models
         /// 默认:- 
         /// 可空:False 
         /// </summary>
-        public Boolean isOk { get; set; }
+        public bool isOk { get; set; }
 
     }
 

@@ -15,7 +15,6 @@ namespace Demo
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
 
         protected void btnCreate_Click(object sender, EventArgs e)
