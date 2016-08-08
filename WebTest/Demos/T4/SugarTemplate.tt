@@ -11,8 +11,6 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Web" #>
 <#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SqlSugar.dll" #>
-<#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SyntacticSugar.dll" #>
-<#@ include file="$(ProjectDir)\Demo\T4\SugarTemplateCore.ttinclude"  #>
 
 <# 
     /* 用法实体类的类库格式必须是 xxx.Entities 格式，当然你也可以自已改SugarTemplateCore.ttinclude里面的逻辑,SugarTemplate.xml设置连接字符串 */
@@ -24,13 +22,10 @@
 	//解决方案目录
     string solutionDir = Host.ResolveAssemblyReference("$(SolutionDir)");
 
-	 //设置 Mapping Table 如果没这方面需求可以传NULL
-	 List<KeyValue> mappingTableList = new List<KeyValue>()
-        {
-            new KeyValue(){ Key="FormAttr", Value="Flow_FormAttr"},
-            new KeyValue(){ Key="Student3", Value="Student"}
-        };
+ 
+	 using (var db = new SqlSugarClient("server=.;Initial Catalog=SqlSugarTest;Persist Security Info=True;User ID=sa;Password=sasa"))
+     {
+          db.ClassGenerating.CreateClassFiles(db, "E://T4/Models","Models");
 
-	GeneratingEntities ge=new GeneratingEntities(projectDir,solutionDir,mappingTableList);
-	ge.CreateClass();
+      };
 #>
