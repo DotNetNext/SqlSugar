@@ -414,6 +414,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                var cacheManager = CacheManager<string>.GetInstance();
+                cacheManager.RemoveAll(it => it.Contains("KeyBy"));
                 throw new Exception("sql:" + sql + "\n" + ex.Message);
             }
 
@@ -473,8 +475,17 @@ namespace SqlSugar
                     parsList.Add(par);
                 }
             }
-            var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
-            return updateRowCount > 0;
+            try
+            {
+                var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
+                return updateRowCount > 0;
+            }
+            catch (Exception ex)
+            {
+                var cacheManager = CacheManager<string>.GetInstance();
+                cacheManager.RemoveAll(it => it.Contains("KeyBy"));
+                throw new Exception("sql:" + sbSql.ToString() + "\n" + ex.Message);
+            }
         }
 
         /// <summary>
@@ -556,6 +567,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                var cacheManager = CacheManager<string>.GetInstance();
+                cacheManager.RemoveAll(it => it.Contains("KeyBy"));
                 throw new Exception("sql:" + sbSql.ToString() + "\n" + ex.Message);
             }
         }
