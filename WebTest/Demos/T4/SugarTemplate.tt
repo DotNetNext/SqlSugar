@@ -13,8 +13,7 @@
 <#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SqlSugar.dll" #>
 
 <# 
-    /* 用法实体类的类库格式必须是 xxx.Entities 格式，当然你也可以自已改SugarTemplateCore.ttinclude里面的逻辑,SugarTemplate.xml设置连接字符串 */
-
+     
 
     //当前项目目录
     string projectDir = Host.ResolveAssemblyReference("$(ProjectDir)");
@@ -25,7 +24,7 @@
  
 	 using (var db = new SqlSugarClient("server=.;Initial Catalog=SqlSugarTest;Persist Security Info=True;User ID=sa;Password=sasa"))
      {
-          db.ClassGenerating.CreateClassFiles(db, "E://T4/Models","Models");
+          db.ClassGenerating.CreateClassFiles(db, "E://T4/Models","Models");  
 
       };
 #>
