@@ -89,7 +89,7 @@
 
     using (var db = SugarDao.GetInstance())
     {
-                //---------Sqlable,创建多表查询---------//
+     
 
                 //select  multiple table 
                 List<School> dataList = db.Sqlable()
@@ -97,9 +97,9 @@
                    .Join("student", "st", "st.id", "s.id", JoinType.INNER)
                    .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
                    .Where("s.id>100 and s.id<@id")
-                   .Where("1=1")//可以多个WHERE
+                   .Where("1=1")  
                    .OrderBy("id")
-                   .SelectToList<School/*新的Model我这里没有所以写的School*/>("st.*", new { id = 1 });
+                   .SelectToList<School/*new model*/>("st.*", new { id = 1 });
 
                 //page
                 List<School> dataPageList = db.Sqlable()
@@ -146,7 +146,7 @@
                 }
                 if (id > 0)
                 {
-                    sable = sable.Where("l.id in (select top 10 id from school)");//where加子查询
+                    sable = sable.Where("l.id in (select top 10 id from school)");//where in
                 }
                 var pars = new { id = id, name = name };
                 int pageCount = sable.Count(pars);
