@@ -237,3 +237,14 @@
 
                 //CreateTime no update 
                 db.Update(updObj);
+#Delete 
+
+                //delete
+                db.Delete<School, int>(10);
+                db.Delete<School>(it => it.id > 100);
+                db.Delete<School, string>(new string[] { "100", "101", "102" });
+
+                //false delte 
+                //db.FalseDelete<school>("is_del", 100);
+                //sql = update school set is_del=0 where id in(100)
+                //db.FalseDelete<school>("is_del", it=>it.id==100);
