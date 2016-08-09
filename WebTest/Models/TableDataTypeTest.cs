@@ -1,17 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 
 namespace Models
 {
     public class TableDataTypeTest
     {
+        
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:False 
+     /// </summary>
+        public Byte Id {get;set;}
 
-        public Byte Id { get; set; }
-
-        public string name { get; set; }
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string name {get;set;}
 
     }
-            
 }

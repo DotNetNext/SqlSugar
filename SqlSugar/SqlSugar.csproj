@@ -49,6 +49,7 @@
     <Compile Include="Cloud\CloudModels.cs" />
     <Compile Include="Cloud\CloudPubMethod.cs" />
     <Compile Include="Cloud\TaskExtensions.cs" />
+    <Compile Include="Generating\ClassTemplate.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Tool\EnumMethod.cs" />

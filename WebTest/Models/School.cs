@@ -1,12 +1,25 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
+
 namespace Models
 {
-    public class School{
-                        
-    public int id {get;set;}
+    public class School
+    {
+        
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:False 
+     /// </summary>
+        public int id {get;set;}
 
-    public string name {get;set;}
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string name {get;set;}
 
-   }
-            
+    }
 }

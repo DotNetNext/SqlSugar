@@ -28,11 +28,14 @@ namespace SqlSugar
         /// <returns></returns>
         public string DynamicToClass(object entity, string className)
         {
-            StringBuilder reval = new StringBuilder();
             StringBuilder propertiesValue = new StringBuilder();
             var propertiesObj = entity.GetType().GetProperties();
             string replaceGuid = Guid.NewGuid().ToString();
             string nullable = string.Empty;
+            var classTemplate = ClassTemplate.Template;
+            string _ns = "";
+            string _foreach="";
+            string _className = className;
             foreach (var r in propertiesObj)
             {
 
@@ -46,19 +49,13 @@ namespace SqlSugar
                 {
                     propertiesValue.AppendLine();
                     string typeName = ChangeType(type);
-                    propertiesValue.AppendFormat("public {0}{3} {1} {2}", typeName, r.Name, "{get;set;}", nullable);
+                    propertiesValue.AppendFormat(ClassTemplate.ItemTemplate, typeName, r.Name, "{get;set;}", nullable);
                     propertiesValue.AppendLine();
                 }
             }
-
-            reval.AppendFormat(@"
-                 public class {0}{{
-                        {1}
-                 }}
-            ", className, propertiesValue);
-
-
-            return reval.ToString();
+            _foreach = propertiesValue.ToString();
+            classTemplate = ClassTemplate.Replace(classTemplate, _ns, _foreach, _className);
+            return classTemplate;
         }
 
 
@@ -73,6 +70,12 @@ namespace SqlSugar
             StringBuilder reval = new StringBuilder();
             StringBuilder propertiesValue = new StringBuilder();
             string replaceGuid = Guid.NewGuid().ToString();
+
+            var template = ClassTemplate.Template;
+            string _ns = nameSpace;
+            string _foreach = "";
+            string _className = className;
+
             foreach (DataColumn r in dt.Columns)
             {
                 propertiesValue.AppendLine();
@@ -86,9 +89,9 @@ namespace SqlSugar
                     {
                         columnInfo = dataTableMapList.First(it => it.COLUMN_NAME.ToString() == r.ColumnName);
                         propertiesValue.AppendFormat(@"     /// <summary>
-     /// 说明:{0} 
-     /// 默认:{1} 
-     /// 可空:{2} 
+     /// Desc:{0} 
+     /// Default:{1} 
+     /// Nullable:{2} 
      /// </summary>
 ",
    columnInfo.COLUMN_DESCRIPTION.IsValuable() ? columnInfo.COLUMN_DESCRIPTION.ToString() : "-", //{0}
@@ -97,27 +100,17 @@ namespace SqlSugar
                     }
 
                 }
-                propertiesValue.AppendFormat("    public {0} {1} {2}", isAny ? ChangeNullable(typeName, Convert.ToBoolean(columnInfo.IS_NULLABLE)) : typeName, r.ColumnName, "{get;set;}");
+                propertiesValue.AppendFormat(
+                    ClassTemplate.ItemTemplate, 
+                    isAny ? ChangeNullable(typeName, Convert.ToBoolean(columnInfo.IS_NULLABLE)) : typeName, 
+                    r.ColumnName, "{get;set;}",
+                    "");
                 propertiesValue.AppendLine();
             }
+            _foreach = propertiesValue.ToString();
 
-            reval.AppendFormat(@"   public class {0}{{
-                        {1}
-   }}
-            ", className, propertiesValue);
-
-            if (nameSpace != null)
-            {
-                return string.Format(@"using System;
-namespace {1}
-{{
- {0}
-}}", reval.ToString(), nameSpace);
-            }
-            else
-            {
-                return reval.ToString();
-            }
+            template = ClassTemplate.Replace(template, _ns, _foreach, _className);
+            return template;
         }
 
 

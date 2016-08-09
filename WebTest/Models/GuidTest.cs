@@ -1,13 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 
 namespace Models
 {
     public class GuidTest
     {
-        public Guid GUID { get; set; }
-        public string name { get; set; }
+        
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:False 
+     /// </summary>
+        public Guid GUID {get;set;}
+
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string Name {get;set;}
+
     }
 }

@@ -246,6 +246,7 @@
     <Compile Include="Models\TableDataTypeTest.cs" />
     <Compile Include="Models\TestModels.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
+    <Compile Include="Models\V_LanguageTest.cs" />
     <Compile Include="PerformanceTest\add_delete_update\Add.aspx.cs">
       <DependentUpon>Add.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

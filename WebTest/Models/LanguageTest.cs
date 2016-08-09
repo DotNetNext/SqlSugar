@@ -1,20 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 
-namespace  Models
+namespace Models
 {
     public class LanguageTest
     {
-        public string Name { get; set; }
-        public int LanguageId { get; set; }
-        public int Id { get; set; }
-    }
-    public class V_LanguageTest
-    {
-        public string Name { get; set; }
-        public int LanguageId { get; set; }
-        public int Id { get; set; }
+        
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:False 
+     /// </summary>
+        public int Id {get;set;}
+
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public int? LanguageId {get;set;}
+
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string Name {get;set;}
+
     }
 }

@@ -1,22 +1,60 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
+
 namespace Models
 {
-    public class InsertTest{
-                        
-    public int id {get;set;}
+    public class InsertTest
+    {
+        
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:False 
+     /// </summary>
+        public int id {get;set;}
 
-    public string v1 {get;set;}
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string v1 {get;set;}
 
-    public string v2 {get;set;}
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string v2 {get;set;}
 
-    public string v3 {get;set;}
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string v3 {get;set;}
 
-    public int int1 {get;set;}
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public int? int1 {get;set;}
 
-    public DateTime d1 {get;set;}
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public DateTime? d1 {get;set;}
 
-    public string txt {get;set;}
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public string txt {get;set;}
 
-   }
-            
+    }
 }

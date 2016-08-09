@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Models
 {
-    public class TestOfNull
+    public class V_LanguageTest_$_en
     {
         
      /// <summary>
@@ -12,21 +12,21 @@ namespace Models
      /// Default:- 
      /// Nullable:False 
      /// </summary>
-        public int id {get;set;}
+        public int Id {get;set;}
 
      /// <summary>
      /// Desc:- 
      /// Default:- 
      /// Nullable:True 
      /// </summary>
-        public DateTime? createDate {get;set;}
+        public int? LanguageId {get;set;}
 
      /// <summary>
      /// Desc:- 
      /// Default:- 
      /// Nullable:True 
      /// </summary>
-        public Byte[] bytes {get;set;}
+        public string Name {get;set;}
 
     }
 }
