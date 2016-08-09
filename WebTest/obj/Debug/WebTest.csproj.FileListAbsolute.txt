@@ -27,4 +27,3 @@ G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAsse
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.dll
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.pdb
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
-C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
