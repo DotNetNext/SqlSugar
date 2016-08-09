@@ -231,7 +231,8 @@ namespace WebTest.Demo
 
                 //order By 
                 var orderList = db.Queryable<Student>().OrderBy("id desc,name asc").ToList();//字符串支持多个排序
-                var order2List = db.Queryable<Student>().OrderBy(it => it.id, OrderByType.desc).ToList();
+                //可以多个order by表达示
+                var order2List = db.Queryable<Student>().OrderBy(it=>it.name).OrderBy(it => it.id, OrderByType.desc).ToList(); // order by name as ,order by id desc
 
                 //In
                 var list1 = db.Queryable<Student>().In("id", "1", "2", "3").ToList();
@@ -241,6 +242,7 @@ namespace WebTest.Demo
 
                 //分组查询
                 var list7 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select("sex,Count=count(*)").ToDynamic();
+                var list8 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).GroupBy(it=>it.id).Select("id,sex,Count=count(*)").ToDynamic();
                 List<SexTotal> list5 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
                 List<SexTotal> list6 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
                 //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex --生成结果

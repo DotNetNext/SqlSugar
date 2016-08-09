@@ -107,7 +107,8 @@ namespace SqlSugar
         {
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFiled(expression);
-            queryable.OrderBy = field + " " + type.ToString().ToUpper();
+            var pre = queryable.OrderBy.IsValuable() ? "," : "";
+            queryable.OrderBy +=pre+ field + " " + type.ToString().ToUpper();
             return queryable;
         }
 
@@ -122,7 +123,8 @@ namespace SqlSugar
         {
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFiled(expression);
-            queryable.GroupBy = field;
+            var pre = queryable.GroupBy.IsValuable() ? "," : "";
+            queryable.GroupBy += pre+field;
             return queryable;
         }
 
