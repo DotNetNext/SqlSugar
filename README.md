@@ -180,3 +180,35 @@
                 int v2 = db.GetInt("select 1 as name");
                 double v3 = db.GetDouble("select 1 as name");
                 decimal v4 = db.GetDecimal("select 1 as name");
+#select new
+
+
+               var list2 = db.Queryable<Student>().Where(c => c.id < 10).Select(c => new classNew { newid = c.id, newname = c.name, xx_name = c.name }).ToList();// 
+
+                var list3 = db.Queryable<Student>().Where(c => c.id < 10).Select(c => new { newid = c.id, newname = c.name, xx_name = c.name }).ToDynamic();// 
+
+                var list4 = db.Queryable<Student>().Where(c => c.id < 10).Select("id as newid, name as newname ,name as xx_name").ToDynamic();// 
+                
+#Insert
+             
+             
+               Student s = new Student()
+                {
+                    name = "张" + new Random().Next(1, int.MaxValue)
+                };
+                db.Insert(s);  
+
+
+                List<Student> list = new List<Student>()
+                {
+                     new Student()
+                {
+                     name="张"+new Random().Next(1,int.MaxValue)
+                },
+                 new Student()
+                {
+                     name="张"+new Random().Next(1,int.MaxValue)
+                }
+                };
+
+                db.InsertRange(list);  
