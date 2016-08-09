@@ -112,6 +112,8 @@ namespace SqlSugar
         /// <param name="pro"></param>
         private static void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName)
         {
+            List<string> boolThrow = new List<string>() { "", "", "" };
+
             MethodInfo method = null;
             var typeName = ChangeDBTypeToCSharpType(dbTypeName);
             var objTypeName = type.Name.ToLower();
@@ -131,7 +133,10 @@ namespace SqlSugar
                         else
                             method = getConvertInt32; break;
                     case "bool":
-                        method = getConvertBoolean; break;
+                        if (objTypeName != "bool")
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertBoolean; break;
                     case "string":
                         method = getString; break;
                     case "dateTime":
@@ -172,7 +177,10 @@ namespace SqlSugar
                         else
                             method = getInt32; break;
                     case "bool":
-                        method = getBoolean; break;
+                        if (objTypeName != "bool")
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getBoolean; break;
                     case "string":
                         method = getString; break;
                     case "dateTime":

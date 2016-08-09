@@ -31,7 +31,7 @@ namespace WebTest.Demos
             /// 默认:- 
             /// 可空:False 
             /// </summary>
-            public int id { get; set; }
+              public int id { get; set; }
 
             /// <summary>
             /// 说明:- 
@@ -59,7 +59,7 @@ namespace WebTest.Demos
             /// 默认:- 
             /// 可空:False 
             /// </summary>
-            public Boolean isOk { get; set; }
+            public string isOk { get; set; }
 
         }
 

@@ -26,4 +26,3 @@ G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.pdb
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.dll
 G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Debug\WebTest.pdb
-G:\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
