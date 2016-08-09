@@ -1,6 +1,5 @@
-# Select
+# Select Queryable<T>
 
-                //---------Queryable<T>---------//
 
      using (var db = SqlSugarClient("sever=.;sa=saxxxxxxxx"))
      {
@@ -58,18 +57,19 @@
 
                 //max Id
                 object maxId = db.Queryable<Student>().Max(it => it.id);
-                int maxId1 = db.Queryable<Student>().Max(it => it.id).ObjToInt();//拉姆达
-                int maxId2 = db.Queryable<Student>().Max<Student, int>("id"); //字符串写法
+                int maxId1 = db.Queryable<Student>().Max(it => it.id).ObjToInt();
+                int maxId2 = db.Queryable<Student>().Max<Student, int>("id"); 
 
                 //min id
-                int minId1 = db.Queryable<Student>().Where(c => c.id > 0).Min(it => it.id).ObjToInt();//拉姆达
-                int minId2 = db.Queryable<Student>().Where(c => c.id > 0).Min<Student, int>("id");//字符串写法
+                int minId1 = db.Queryable<Student>().Where(c => c.id > 0).Min(it => it.id).ObjToInt();
+                int minId2 = db.Queryable<Student>().Where(c => c.id > 0).Min<Student, int>("id");
 
 
                 //order by 
-                var orderList = db.Queryable<Student>().OrderBy("id desc,name asc").ToList();//字符串支持多个排序
+                var orderList = db.Queryable<Student>().OrderBy("id desc,name asc").ToList();
                 //multiple order by
-                var order2List = db.Queryable<Student>().OrderBy(it=>it.name).OrderBy(it => it.id, OrderByType.desc).ToList(); // order by name as ,order by id desc
+                var order2List = db.Queryable<Student>().OrderBy(it=>it.name).OrderBy(it => it.id, OrderByType.desc).ToList();
+                // order by name as ,order by id desc
 
                 //in
                 var list1 = db.Queryable<Student>().In("id", "1", "2", "3").ToList();
@@ -82,6 +82,75 @@
                 var list8 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).GroupBy(it=>it.id).Select("id,sex,Count=count(*)").ToDynamic();
                 List<SexTotal> list5 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
                 List<SexTotal> list6 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
-                //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex --生成结果
+                //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex 
       }
 
+# Select Sqlable
+
+    using (var db = SugarDao.GetInstance())
+    {
+                //---------Sqlable,创建多表查询---------//
+
+                //select  multiple table 
+                List<School> dataList = db.Sqlable()
+                   .From("school", "s")
+                   .Join("student", "st", "st.id", "s.id", JoinType.INNER)
+                   .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
+                   .Where("s.id>100 and s.id<@id")
+                   .Where("1=1")//可以多个WHERE
+                   .OrderBy("id")
+                   .SelectToList<School/*新的Model我这里没有所以写的School*/>("st.*", new { id = 1 });
+
+                //page
+                List<School> dataPageList = db.Sqlable()
+                    .From("school", "s")
+                    .Join("student", "st", "st.id", "s.id", JoinType.INNER)
+                    .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
+                    .Where("s.id>100 and s.id<100")
+                    .SelectToPageList<School>("st.*", "s.id", 1, 10);
+
+                //page 
+                List<School> dataPageList2 = db.Sqlable()
+                    .From("school", "s")
+                    .Join("student", "st", "st.id", "s.id", JoinType.INNER)
+                    .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
+                    .Where("s.id>100 and s.id<100 and s.id in (select 1 )" )
+                    .SelectToPageList<School>("st.*", "s.id", 1, 10);
+
+
+
+                //--------Convert List Dynmaic OR Json-----//
+
+                
+                var list1 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDynamic("*", new { id = 1 });
+                var list2 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToJson("*", new { id = 1 });
+                var list3 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDataTable("*", new { id = 1 });
+
+               
+                var list4 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
+                var list5 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageTable("s.*", "l.id", 1, 10, new { id = 1 });
+                var list6 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
+
+
+                //--------Assemble OBJECT-----//
+                Sqlable sable = db.Sqlable().From<Student>("s").Join<School>("l", "s.sch_id", "l.id", JoinType.INNER);
+                string name = "a";
+                int id = 1;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    sable = sable.Where("s.name=@name");
+                }
+                if (!string.IsNullOrEmpty(name))
+                {
+                    sable = sable.Where("s.id=@id or s.id=100");
+                }
+                if (id > 0)
+                {
+                    sable = sable.Where("l.id in (select top 10 id from school)");//where加子查询
+                }
+                var pars = new { id = id, name = name };
+                int pageCount = sable.Count(pars);
+                var list7 = sable.SelectToPageList<Student>("s.*", "l.id desc", 1, 20, pars);
+
+
+    }
