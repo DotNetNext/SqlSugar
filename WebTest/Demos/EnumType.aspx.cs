@@ -59,7 +59,7 @@ namespace WebTest.Demos
             /// 默认:- 
             /// 可空:False 
             /// </summary>
-            public string isOk { get; set; }
+            public bool isOk { get; set; }
 
         }
 

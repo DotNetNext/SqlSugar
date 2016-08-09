@@ -105,6 +105,16 @@ namespace SqlSugar
         }
 
 
+        private static void CheckType(List<string> errorTypes, string objType, string dbType, string field)
+        {
+            var isAny = errorTypes.Contains(objType);
+            if (isAny)
+            {
+                throw new Exception(string.Format("{0} can't  convert {1} to {2}", field, dbType, objType));
+            }
+        }
+
+
         /// <summary>
         /// 动态获取IDataRecord里面的函数
         /// </summary>
@@ -112,7 +122,12 @@ namespace SqlSugar
         /// <param name="pro"></param>
         private static void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName)
         {
-            List<string> boolThrow = new List<string>() { "", "", "" };
+            List<string> guidThrow = new List<string>() { "int32", "dateTime", "decimal", "double", "byte" };//数据库为GUID有错的实体类形
+            List<string> intThrow = new List<string>() { "dateTime", "byte" };//数据库为int有错的实体类形
+            List<string> stringThrow = new List<string>() { "int32", "dateTime", "decimal", "double", "byte", "guid" };//数据库为vachar有错的实体类形
+            List<string> decimalThrow = new List<string>() { "dateTime", "byte", "guid" };
+            List<string> doubleThrow = new List<string>() { "dateTime", "byte", "guid" };
+            List<string> dateThrow = new List<string>() { "int32","decimal", "double", "byte","guid" };
 
             MethodInfo method = null;
             var typeName = ChangeDBTypeToCSharpType(dbTypeName);
@@ -127,6 +142,7 @@ namespace SqlSugar
                 switch (typeName)
                 {
                     case "int":
+                        CheckType(intThrow, objTypeName, typeName, fieldName);
                         var isNotInt = objTypeName != "int32";
                         if (isNotInt)
                             method = getOtherNull.MakeGenericMethod(type);
@@ -138,22 +154,27 @@ namespace SqlSugar
                         else
                             method = getConvertBoolean; break;
                     case "string":
+                        CheckType(stringThrow, objTypeName, typeName, fieldName);
                         method = getString; break;
                     case "dateTime":
+                        CheckType(dateThrow, objTypeName, typeName, fieldName);
                         method = getConvertDateTime; break;
                     case "decimal":
+                        CheckType(decimalThrow, objTypeName, typeName, fieldName);
                         var isNotDecimal = objTypeName != "decimal";
                         if (isNotDecimal)
                             method = getOtherNull.MakeGenericMethod(type);
                         else
                             method = getConvertDecimal; break;
                     case "double":
+                        CheckType(doubleThrow, objTypeName, typeName, fieldName);
                         var isNotDouble = objTypeName != "double";
                         if (isNotDouble)
                             method = getOtherNull.MakeGenericMethod(type);
                         else
                             method = getConvertDouble; break;
                     case "guid":
+                        CheckType(guidThrow, objTypeName, typeName, fieldName);
                         method = getConvertGuid; break;
                     case "byte":
                         method = getConvertByte; break;
@@ -171,6 +192,7 @@ namespace SqlSugar
                 switch (typeName)
                 {
                     case "int":
+                        CheckType(intThrow, objTypeName, typeName, fieldName);
                         var isNotInt = objTypeName != "int32";
                         if (isNotInt)
                             method = getOther.MakeGenericMethod(type);
@@ -182,22 +204,27 @@ namespace SqlSugar
                         else
                             method = getBoolean; break;
                     case "string":
+                        CheckType(stringThrow, objTypeName, typeName, fieldName);
                         method = getString; break;
                     case "dateTime":
+                        CheckType(dateThrow, objTypeName, typeName, fieldName);
                         method = getDateTime; break;
                     case "decimal":
+                        CheckType(decimalThrow, objTypeName, typeName, fieldName);
                         var isNotDecimal = objTypeName != "decimal";
                         if (isNotDecimal)
                             method = getOther.MakeGenericMethod(type);
                         else
                             method = getDecimal; break;
                     case "double":
+                        CheckType(doubleThrow, objTypeName, typeName, fieldName);
                         var isNotDouble = objTypeName != "double";
                         if (isNotDouble)
                             method = getOther.MakeGenericMethod(type);
                         else
                             method = getDouble; break;
                     case "guid":
+                        CheckType(guidThrow, objTypeName, typeName, fieldName);
                         method = getGuid; break;
                     case "byte":
                         method = getByte; break;
