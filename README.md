@@ -85,7 +85,7 @@
                 //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex 
       }
 
-# Select Sqlable
+# Complex query  Sqlable
 
     using (var db = SugarDao.GetInstance())
     {
@@ -154,3 +154,29 @@
 
 
     }
+    
+    
+# SqlQuery  
+
+               //ToList
+                List<Student> list1 = db.SqlQuery<Student>("select * from Student");
+                //ToList with parameters
+                List<Student> list2 = db.SqlQuery<Student>("select * from Student where id=@id", new { id = 1 });
+                //To Dynamic
+                dynamic list3 = db.SqlQueryDynamic("select * from student");
+                //To Json
+                string list4 = db.SqlQueryJson("select * from student");
+                //get int
+                var list5 = db.SqlQuery<int>("select top 1 id from Student").SingleOrDefault();
+                //get dictionary
+                Dictionary<string, string> list6 = db.SqlQuery<KeyValuePair<string, string>>("select id,name from Student").ToDictionary(it => it.Key, it => it.Value);
+                //get array
+                var list7 = db.SqlQuery<string[]>("select top 1 id,name from Student").SingleOrDefault();
+                //exex sp
+                var spResult = db.SqlQuery<School>("exec sp_school @p1,@p2", new { p1 = 1, p2 = 2 });
+
+                //get frist row frist column
+                string v1 = db.GetString("select '张三' as name");
+                int v2 = db.GetInt("select 1 as name");
+                double v3 = db.GetDouble("select 1 as name");
+                decimal v4 = db.GetDecimal("select 1 as name");
