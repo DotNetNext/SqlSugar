@@ -93,6 +93,39 @@ namespace SqlSugar
             queryable.OrderBy = orderFileds.ToSuperSqlFilter();
             return queryable;
         }
+
+
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="orderFileds">如：id asc,name desc </param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> OrderBy<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression, OrderByType type=OrderByType.asc)
+        {
+            ResolveExpress re = new ResolveExpress();
+            var field = re.GetExpressionRightFiled(expression);
+            queryable.OrderBy = field + " " + type.ToString().ToUpper();
+            return queryable;
+        }
+
+        /// <summary>
+        /// 分组
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="groupFileds">如：id,name </param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> GroupBy<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression)
+        {
+            ResolveExpress re = new ResolveExpress();
+            var field = re.GetExpressionRightFiled(expression);
+            queryable.GroupBy = field;
+            return queryable;
+        }
+
         /// <summary>
         /// 分组
         /// </summary>
@@ -299,6 +332,19 @@ namespace SqlSugar
             };
             return reval;
         }
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> Select<T>(this SqlSugar.Queryable<T> queryable, string select)
+        {
+            queryable.Select = select;
+            return queryable;
+        }
 
 
         /// <summary>
@@ -340,6 +386,22 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 获取最大值
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="maxField">列</param>
+        /// <returns></returns>
+        public static object Max<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression)
+        {
+
+            ResolveExpress re = new ResolveExpress();
+            var minField = re.GetExpressionRightFiled(expression);
+            return Max<T, object>(queryable, minField);
+        }
+
+        /// <summary>
         /// 获取最小值
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
@@ -356,6 +418,22 @@ namespace SqlSugar
             var reval = Convert.ChangeType(objValue, typeof(TResult));
             return (TResult)reval;
         }
+
+        /// <summary>
+        /// 获取最小值
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="minField">列</param>
+        /// <returns></returns>
+        public static object Min<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression)
+        {
+            ResolveExpress re = new ResolveExpress();
+            var minField = re.GetExpressionRightFiled(expression);
+            return Min<T, object>(queryable, minField);
+        }
+
 
         /// <summary>
         /// 将Queryable转换为List《T》集合
@@ -375,7 +453,7 @@ namespace SqlSugar
 
         }
 
-    
+
 
         /// <summary>
         /// 将Queryable转换为Json
@@ -409,11 +487,11 @@ namespace SqlSugar
         /// <returns></returns>
         public static DataTable ToDataTable<T>(this SqlSugar.Queryable<T> queryable)
         {
-                StringBuilder sbSql =SqlSugarTool.GetQueryableSql<T>(queryable);
-                var dataTable = queryable.DB.GetDataTable(sbSql.ToString(), queryable.Params.ToArray());
-                queryable = null;
-                sbSql = null;
-                return dataTable;
+            StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
+            var dataTable = queryable.DB.GetDataTable(sbSql.ToString(), queryable.Params.ToArray());
+            queryable = null;
+            sbSql = null;
+            return dataTable;
         }
 
         /// <summary>

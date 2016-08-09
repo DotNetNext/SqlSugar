@@ -92,6 +92,18 @@ namespace SqlSugar
         {
             return Convert.ToInt32(GetScalar(sql, pars));
         }
+        public Double GetDouble(string sql, params SqlParameter[] pars)
+        {
+            return Convert.ToDouble(GetScalar(sql, pars));
+        }
+        public decimal GetDecimal(string sql, params SqlParameter[] pars)
+        {
+            return Convert.ToDecimal(GetScalar(sql, pars));
+        }
+        public DateTime GetDateTime(string sql, params SqlParameter[] pars)
+        {
+            return Convert.ToDateTime(GetScalar(sql, pars));
+        }
         public object GetScalar(string sql, object pars)
         {
             return GetScalar(sql, SqlSugarTool.GetParameters(pars));
