@@ -248,3 +248,21 @@
                 //db.FalseDelete<school>("is_del", 100);
                 //sql = update school set is_del=0 where id in(100)
                 //db.FalseDelete<school>("is_del", it=>it.id==100);
+                
+                
+#Transaction                
+                
+                db.IsNoLock = true;// with (nolock)
+                db.CommandTimeOut = 30000;
+                try
+                {
+                    db.BeginTran();
+                    //db.BeginTran(IsolationLevel.ReadCommitted);+3
+
+                    db.CommitTran();
+                }
+                catch (Exception)
+                {
+                    db.RollbackTran(); 
+                    throw;
+                }
