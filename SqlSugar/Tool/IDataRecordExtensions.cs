@@ -120,7 +120,7 @@ namespace SqlSugar
             return (T)Convert.ChangeType(dr.GetValue(i), typeof(T));
 
         }
-        public static T GetOther<T>(this IDataReader dr, int i) where T : struct
+        public static T GetOther<T>(this IDataReader dr, int i) 
         {
             return (T)Convert.ChangeType(dr.GetValue(i), typeof(T));
         }
