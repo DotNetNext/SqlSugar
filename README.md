@@ -87,7 +87,7 @@
 
 # Complex query  Sqlable
 
-    using (var db = SugarDao.GetInstance())
+using (var db = SqlSugarClient("sever=.;sa=saxxxxxxxx"))
     {
      
 
