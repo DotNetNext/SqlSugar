@@ -212,3 +212,28 @@
                 };
 
                 db.InsertRange(list);  
+#Update 
+               //Specify column update
+                db.Update<School>(new { name = "蓝翔2" }, it => it.id == id);
+                db.Update<School, int>(new { name = "蓝翔2" }, 1, 3, 12);
+                db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "1", "2" });
+
+                //update object
+                db.Update(new School { id = id, name = "蓝翔2" });
+                db.Update<School>(new School { id = id, name = "蓝翔2" }, it => it.id == id);
+
+
+                // setting disable Update Columns
+                db.DisableUpdateColumns = new string[] { "CreateTime" };//设置CreateTime不更新
+
+                TestUpdateColumns updObj = new TestUpdateColumns()
+                {
+                    VGUID = Guid.Parse("542b5a27-6984-47c7-a8ee-359e483c8470"),
+                    Name = "xx",
+                    Name2 = "xx2",
+                    IdentityField = 0,
+                    CreateTime = null
+                };
+
+                //CreateTime no update 
+                db.Update(updObj);
