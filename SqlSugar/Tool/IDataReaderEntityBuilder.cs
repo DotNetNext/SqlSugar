@@ -127,7 +127,7 @@ namespace SqlSugar
             List<string> stringThrow = new List<string>() { "int32", "dateTime", "decimal", "double", "byte", "guid" };//数据库为vachar有错的实体类形
             List<string> decimalThrow = new List<string>() { "dateTime", "byte", "guid" };
             List<string> doubleThrow = new List<string>() { "dateTime", "byte", "guid" };
-            List<string> dateThrow = new List<string>() { "int32","decimal", "double", "byte","guid" };
+            List<string> dateThrow = new List<string>() { "int32", "decimal", "double", "byte", "guid" };
 
             MethodInfo method = null;
             var typeName = ChangeDBTypeToCSharpType(dbTypeName);
@@ -158,7 +158,10 @@ namespace SqlSugar
                         method = getString; break;
                     case "dateTime":
                         CheckType(dateThrow, objTypeName, typeName, fieldName);
-                        method = getConvertDateTime; break;
+                        if (objTypeName != "dateTime")
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertDateTime; break;
                     case "decimal":
                         CheckType(decimalThrow, objTypeName, typeName, fieldName);
                         var isNotDecimal = objTypeName != "decimal";
@@ -175,7 +178,10 @@ namespace SqlSugar
                             method = getConvertDouble; break;
                     case "guid":
                         CheckType(guidThrow, objTypeName, typeName, fieldName);
-                        method = getConvertGuid; break;
+                        if (objTypeName != "guid")
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertGuid; break;
                     case "byte":
                         method = getConvertByte; break;
                     case "ENUMNAME":
@@ -208,7 +214,10 @@ namespace SqlSugar
                         method = getString; break;
                     case "dateTime":
                         CheckType(dateThrow, objTypeName, typeName, fieldName);
-                        method = getDateTime; break;
+                        if (objTypeName != "dateTime")
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getDateTime; break;
                     case "decimal":
                         CheckType(decimalThrow, objTypeName, typeName, fieldName);
                         var isNotDecimal = objTypeName != "decimal";
@@ -225,7 +234,10 @@ namespace SqlSugar
                             method = getDouble; break;
                     case "guid":
                         CheckType(guidThrow, objTypeName, typeName, fieldName);
-                        method = getGuid; break;
+                        if (objTypeName != "guid")
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getGuid; break;
                     case "byte":
                         method = getByte; break;
                     case "ENUMNAME":
