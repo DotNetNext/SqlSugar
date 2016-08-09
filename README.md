@@ -4,6 +4,13 @@ Email 610262374@qq.com
 QQ Group 225982985
 
 
+Other versions
+ASP.NET CORE MSSQL https://github.com/sunkaixuan/ASP_NET_CORE_ORM_SqlSugar
+ASP.NET 4.0+ MYSQL https://github.com/sunkaixuan/MySqlSugar
+
+
+
+
 # Select Queryable<T>
 
 
