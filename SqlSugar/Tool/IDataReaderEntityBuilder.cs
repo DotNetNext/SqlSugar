@@ -158,7 +158,7 @@ namespace SqlSugar
                         method = getString; break;
                     case "dateTime":
                         CheckType(dateThrow, objTypeName, typeName, fieldName);
-                        if (objTypeName != "dateTime")
+                        if (objTypeName != "datetime")
                             method = getOtherNull.MakeGenericMethod(type);
                         else
                             method = getConvertDateTime; break;
@@ -214,7 +214,7 @@ namespace SqlSugar
                         method = getString; break;
                     case "dateTime":
                         CheckType(dateThrow, objTypeName, typeName, fieldName);
-                        if (objTypeName != "dateTime")
+                        if (objTypeName != "datetime")
                             method = getOther.MakeGenericMethod(type);
                         else
                             method = getDateTime; break;
