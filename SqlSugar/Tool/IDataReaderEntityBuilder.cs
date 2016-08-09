@@ -122,11 +122,11 @@ namespace SqlSugar
         /// <param name="pro"></param>
         private static void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName)
         {
-            List<string> guidThrow = new List<string>() { "int32", "dateTime", "decimal", "double", "byte" };//数据库为GUID有错的实体类形
-            List<string> intThrow = new List<string>() { "dateTime", "byte" };//数据库为int有错的实体类形
-            List<string> stringThrow = new List<string>() { "int32", "dateTime", "decimal", "double", "byte", "guid" };//数据库为vachar有错的实体类形
-            List<string> decimalThrow = new List<string>() { "dateTime", "byte", "guid" };
-            List<string> doubleThrow = new List<string>() { "dateTime", "byte", "guid" };
+            List<string> guidThrow = new List<string>() { "int32", "datetime", "decimal", "double", "byte" };//数据库为GUID有错的实体类形
+            List<string> intThrow = new List<string>() { "datetime", "byte" };//数据库为int有错的实体类形
+            List<string> stringThrow = new List<string>() { "int32", "datetime", "decimal", "double", "byte", "guid" };//数据库为vachar有错的实体类形
+            List<string> decimalThrow = new List<string>() { "datetime", "byte", "guid" };
+            List<string> doubleThrow = new List<string>() { "datetime", "byte", "guid" };
             List<string> dateThrow = new List<string>() { "int32", "decimal", "double", "byte", "guid" };
 
             MethodInfo method = null;
