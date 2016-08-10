@@ -122,13 +122,13 @@ namespace SqlSugar
         /// <param name="pro"></param>
         private static void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName)
         {
-            List<string> guidThrow = new List<string>() { "int32", "datetime", "decimal", "double", "byte","string" };//数据库为GUID有错的实体类形
+            List<string> guidThrow = new List<string>() { "int32", "datetime", "decimal", "double", "byte", "string" };//数据库为GUID有错的实体类形
             List<string> intThrow = new List<string>() { "datetime", "byte" };//数据库为int有错的实体类形
             List<string> stringThrow = new List<string>() { "int32", "datetime", "decimal", "double", "byte", "guid" };//数据库为vachar有错的实体类形
             List<string> decimalThrow = new List<string>() { "datetime", "byte", "guid" };
             List<string> doubleThrow = new List<string>() { "datetime", "byte", "guid" };
             List<string> dateThrow = new List<string>() { "int32", "decimal", "double", "byte", "guid" };
-
+            List<string> shortThrow = new List<string>() { "datetime", "guid" };
             MethodInfo method = null;
             var typeName = ChangeDBTypeToCSharpType(dbTypeName);
             var objTypeName = type.Name.ToLower();
@@ -149,7 +149,7 @@ namespace SqlSugar
                         else
                             method = getConvertInt32; break;
                     case "bool":
-                        if (objTypeName != "bool")
+                        if (objTypeName != "bool" && objTypeName != "boolean")
                             method = getOtherNull.MakeGenericMethod(type);
                         else
                             method = getConvertBoolean; break;
@@ -186,6 +186,14 @@ namespace SqlSugar
                         method = getConvertByte; break;
                     case "ENUMNAME":
                         method = getConvertToEnum_Nullable.MakeGenericMethod(type); break;
+                    case "short":
+                        CheckType(shortThrow, objTypeName, typeName, fieldName);
+                        var isNotShort = objTypeName != "int16" && objTypeName != "short";
+                        if (isNotShort)
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertInt16;
+                        break;
                     default:
                         method = getOtherNull.MakeGenericMethod(type); break;
                 }
@@ -205,7 +213,7 @@ namespace SqlSugar
                         else
                             method = getInt32; break;
                     case "bool":
-                        if (objTypeName != "bool")
+                        if (objTypeName != "bool" && objTypeName != "boolean")
                             method = getOther.MakeGenericMethod(type);
                         else
                             method = getBoolean; break;
@@ -242,6 +250,14 @@ namespace SqlSugar
                         method = getByte; break;
                     case "ENUMNAME":
                         method = getValueMethod; break;
+                    case "short":
+                        CheckType(shortThrow, objTypeName, typeName, fieldName);
+                        var isNotShort = objTypeName != "int16" && objTypeName != "short";
+                        if (isNotShort)
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getInt16;
+                        break;
                     default: method = getOther.MakeGenericMethod(type); break; ;
 
                 }
