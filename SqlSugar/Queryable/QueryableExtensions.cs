@@ -53,6 +53,36 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 条件筛选 例如：expression 为 it=>it.a  inValues值为 new string[]{"a" ,"b"} 生成的SQL就是  a in('a','b')
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression, params FieldType[] inValues)
+        {
+
+            ResolveExpress re = new ResolveExpress();
+            var InFieldName = re.GetExpressionRightFiled(expression);
+            return In<T, FieldType>(queryable, InFieldName, inValues);
+        }
+        /// <summary>
+        /// 条件筛选 例如：expression 为 it=>it.a  inValues值为 new string[]{"a" ,"b"} 生成的SQL就是  a in('a','b')
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression,  List<FieldType> inValues)
+        {
+
+            ResolveExpress re = new ResolveExpress();
+            var InFieldName = re.GetExpressionRightFiled(expression);
+            return In<T, FieldType>(queryable, InFieldName, inValues);
+        }
+
+
+        /// <summary>
         /// 条件筛选
         /// </summary>
         /// <typeparam name="T"></typeparam>
