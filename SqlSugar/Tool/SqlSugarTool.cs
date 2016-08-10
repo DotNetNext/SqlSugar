@@ -92,7 +92,6 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
                 throw ex;
             }
             return list;
