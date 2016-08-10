@@ -87,10 +87,13 @@ ASP.NET 4.0+ MYSQL https://github.com/sunkaixuan/MySqlSugar
                 // order by name as ,order by id desc
 
                 //in
-                var list1 = db.Queryable<Student>().In("id", "1", "2", "3").ToList();
-                var list2 = db.Queryable<Student>().In("id", new string[] { "1", "2", "3" }).ToList();
-                var list3 = db.Queryable<Student>().In("id", new List<string> { "1", "2", "3" }).ToList();
-                var list4 = db.Queryable<Student>().Where(it => it.id < 10).In("id", new List<string> { "1", "2", "3" }).ToList();
+                var intArray=new []{"5", "2", "3"};
+                var intList = intArray.ToList();
+                var list0 = db.Queryable<Student>().In(it => it.id, 1,2,3).ToList();
+                var list1 = db.Queryable<Student>().In(it=>it.id, intArray).ToList();
+                var list2 = db.Queryable<Student>().In("id", intArray).ToList();
+                var list3 = db.Queryable<Student>().In(it => it.id, intList).ToList();
+                var list4 = db.Queryable<Student>().In("id", intList).ToList();
 
                 //group by
                 var list7 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select("sex,Count=count(*)").ToDynamic();
