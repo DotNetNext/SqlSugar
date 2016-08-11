@@ -77,6 +77,9 @@ namespace SqlSugar
                     this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
                 }
             }
+            foreach (var par in Paras) {
+                SqlSugarTool.SetParSize(par);
+            }
         }
 
         /// <summary>

@@ -181,6 +181,31 @@ namespace SqlSugar
                 }
             }
         }
+
+        public static void SetParSize(SqlParameter par)
+        {
+            if (par.Size < 5)
+            {
+                par.Size = 5;
+            }
+            else if (par.Size < 10)
+            {
+                par.Size = 10;
+            }
+            else if (par.Size < 100)
+            {
+                par.Size = 100;
+            }
+            else if (par.Size < 1000)
+            {
+                par.Size = 1000;
+            }
+            else if (par.Size < 4000)
+            {
+                par.Size = 4000;
+            }
+        }
+
         /// <summary>
         /// 将实体对象转换成SqlParameter[] 
         /// </summary>
@@ -197,7 +222,8 @@ namespace SqlSugar
                 foreach (PropertyInfo r in propertiesObj)
                 {
                     var value = r.GetValue(obj, null);
-                    if (r.PropertyType.IsEnum) {
+                    if (r.PropertyType.IsEnum)
+                    {
                         value = (int)value;
                     }
                     if (value == null) value = DBNull.Value;
@@ -210,7 +236,9 @@ namespace SqlSugar
                     }
                     else
                     {
-                        listParams.Add(new SqlParameter("@" + r.Name, value));
+                        var par = new SqlParameter("@" + r.Name, value);
+                        SetParSize(par);
+                        listParams.Add(par);
                     }
                 }
             }
@@ -233,7 +261,8 @@ namespace SqlSugar
             foreach (PropertyInfo r in propertiesObj)
             {
                 var val = r.GetValue(obj, null);
-                if (r.PropertyType.IsEnum) {
+                if (r.PropertyType.IsEnum)
+                {
                     val = (int)val;
                 }
                 reval.Add(r.Name, val == null ? DBNull.Value : val);

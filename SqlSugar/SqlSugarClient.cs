@@ -385,6 +385,7 @@ namespace SqlSugar
                     }
 
                     var par = new SqlParameter("@" + prop.Name, val);
+                    SqlSugarTool.SetParSize(par);
                     if (par.SqlDbType == SqlDbType.Udt)
                     {
                         par.UdtTypeName = "HIERARCHYID";
@@ -472,6 +473,7 @@ namespace SqlSugar
                     {
                         par.UdtTypeName = "HIERARCHYID";
                     }
+                    SqlSugarTool.SetParSize(par);
                     parsList.Add(par);
                 }
             }
