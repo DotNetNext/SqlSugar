@@ -184,23 +184,24 @@ namespace SqlSugar
 
         public static void SetParSize(SqlParameter par)
         {
-            if (par.Size < 5)
+            int size = par.Size;
+            if (size < 5)
             {
                 par.Size = 5;
             }
-            else if (par.Size < 10)
+            else if (size < 10)
             {
                 par.Size = 10;
             }
-            else if (par.Size < 100)
+            else if (size < 100)
             {
                 par.Size = 100;
             }
-            else if (par.Size < 1000)
+            else if (size < 1000)
             {
                 par.Size = 1000;
             }
-            else if (par.Size < 4000)
+            else if (size < 4000)
             {
                 par.Size = 4000;
             }
