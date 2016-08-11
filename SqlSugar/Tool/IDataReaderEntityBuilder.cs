@@ -129,6 +129,7 @@ namespace SqlSugar
             List<string> doubleThrow = new List<string>() { "datetime", "byte", "guid" };
             List<string> dateThrow = new List<string>() { "int32", "decimal", "double", "byte", "guid" };
             List<string> shortThrow = new List<string>() { "datetime", "guid" };
+            List<string> byteThrow = new List<string>() { "datetime", "guid" };
             MethodInfo method = null;
             var typeName = ChangeDBTypeToCSharpType(dbTypeName);
             var objTypeName = type.Name.ToLower();
@@ -136,6 +137,12 @@ namespace SqlSugar
             if (isEnum)
             {
                 typeName = "ENUMNAME";
+            }
+            else if (dbTypeName.Contains("hierarchyid") || typeName == "byte[]")
+            {
+                generator.Emit(OpCodes.Call, getValueMethod);
+                generator.Emit(OpCodes.Unbox_Any, pro.PropertyType);//找不到类型才执行拆箱（类型转换）
+                return;
             }
             if (isNullable)
             {
@@ -183,7 +190,11 @@ namespace SqlSugar
                         else
                             method = getConvertGuid; break;
                     case "byte":
-                        method = getConvertByte; break;
+                        CheckType(byteThrow, objTypeName, typeName, fieldName);
+                        if (objTypeName != "byte")
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertByte; break;
                     case "ENUMNAME":
                         method = getConvertToEnum_Nullable.MakeGenericMethod(type); break;
                     case "short":
@@ -247,7 +258,11 @@ namespace SqlSugar
                         else
                             method = getGuid; break;
                     case "byte":
-                        method = getByte; break;
+                        CheckType(byteThrow, objTypeName, typeName, fieldName);
+                        if (objTypeName != "byte")
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getByte; break;
                     case "ENUMNAME":
                         method = getValueMethod; break;
                     case "short":
@@ -343,7 +358,7 @@ namespace SqlSugar
                     reval = "dateTime";
                     break;
                 case "tinyint":
-                    reval = "byte[]";
+                    reval = "byte";
                     break;
                 case "uniqueidentifier":
                     reval = "guid";
