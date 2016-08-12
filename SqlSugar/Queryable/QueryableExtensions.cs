@@ -24,7 +24,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
+        public static Queryable<T> Where<T>(this Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -43,7 +43,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName, params FieldType[] inValues)
+        public static Queryable<T> In<T, FieldType>(this Queryable<T> queryable, string InFieldName, params FieldType[] inValues)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -59,7 +59,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression, params FieldType[] inValues)
+        public static Queryable<T> In<T, FieldType>(this Queryable<T> queryable, Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
 
             ResolveExpress re = new ResolveExpress();
@@ -73,7 +73,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression,  List<FieldType> inValues)
+        public static Queryable<T> In<T, FieldType>(this Queryable<T> queryable, Expression<Func<T, object>> expression,  List<FieldType> inValues)
         {
 
             ResolveExpress re = new ResolveExpress();
@@ -89,7 +89,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> In<T, FieldType>(this SqlSugar.Queryable<T> queryable, string InFieldName, List<FieldType> inValues)
+        public static Queryable<T> In<T, FieldType>(this Queryable<T> queryable, string InFieldName, List<FieldType> inValues)
         {
             return In<T, FieldType>(queryable, InFieldName, inValues.ToArray());
         }
@@ -101,7 +101,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="whereString"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Where<T>(this SqlSugar.Queryable<T> queryable, string whereString, object whereObj = null)
+        public static Queryable<T> Where<T>(this Queryable<T> queryable, string whereString, object whereObj = null)
         {
             var type = queryable.Type;
             string whereStr = string.Format(" AND {0} ", whereString);
@@ -118,7 +118,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="orderFileds">如：id asc,name desc </param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> OrderBy<T>(this SqlSugar.Queryable<T> queryable, string orderFileds)
+        public static Queryable<T> OrderBy<T>(this Queryable<T> queryable, string orderFileds)
         {
             queryable.OrderBy = orderFileds.ToSuperSqlFilter();
             return queryable;
@@ -133,7 +133,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="orderFileds">如：id asc,name desc </param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> OrderBy<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression, OrderByType type=OrderByType.asc)
+        public static Queryable<T> OrderBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression, OrderByType type=OrderByType.asc)
         {
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFiled(expression);
@@ -149,7 +149,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="groupFileds">如：id,name </param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> GroupBy<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression)
+        public static Queryable<T> GroupBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFiled(expression);
@@ -165,7 +165,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="groupFileds">如：id,name </param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> GroupBy<T>(this SqlSugar.Queryable<T> queryable, string groupFileds)
+        public static Queryable<T> GroupBy<T>(this Queryable<T> queryable, string groupFileds)
         {
             queryable.GroupBy = groupFileds.ToSuperSqlFilter();
             return queryable;
@@ -178,7 +178,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Skip<T>(this SqlSugar.Queryable<T> queryable, int index)
+        public static Queryable<T> Skip<T>(this Queryable<T> queryable, int index)
         {
             if (queryable.OrderBy.IsNullOrEmpty())
             {
@@ -195,7 +195,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Take<T>(this SqlSugar.Queryable<T> queryable, int num)
+        public static Queryable<T> Take<T>(this Queryable<T> queryable, int num)
         {
             if (queryable.OrderBy.IsNullOrEmpty())
             {
@@ -211,7 +211,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static T Single<T>(this  SqlSugar.Queryable<T> queryable)
+        public static T Single<T>(this  Queryable<T> queryable)
         {
             return queryable.ToList().Single();
         }
@@ -222,7 +222,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static T SingleOrDefault<T>(this  SqlSugar.Queryable<T> queryable)
+        public static T SingleOrDefault<T>(this  Queryable<T> queryable)
         {
             var reval = queryable.ToList();
             if (reval == null || reval.Count == 0)
@@ -238,7 +238,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static T FirstOrDefault<T>(this  SqlSugar.Queryable<T> queryable)
+        public static T FirstOrDefault<T>(this  Queryable<T> queryable)
         {
             var reval = queryable.ToList();
             if (reval == null || reval.Count == 0)
@@ -253,7 +253,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static T First<T>(this  SqlSugar.Queryable<T> queryable)
+        public static T First<T>(this  Queryable<T> queryable)
         {
             var reval = queryable.ToList();
             return reval.First();
@@ -266,7 +266,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static bool Any<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
+        public static bool Any<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -285,7 +285,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static bool Any<T>(this  SqlSugar.Queryable<T> queryable)
+        public static bool Any<T>(this  Queryable<T> queryable)
         {
             return queryable.Count() > 0;
         }
@@ -297,7 +297,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static T Single<T>(this  SqlSugar.Queryable<T> queryable, Expression<Func<T, bool>> expression)
+        public static T Single<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -316,11 +316,11 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<TResult> Select<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, Expression<Func<TSource, TResult>> expression)
+        public static Queryable<TResult> Select<TSource, TResult>(this Queryable<TSource> queryable, Expression<Func<TSource, TResult>> expression)
         {
             var type = typeof(TSource);
             var expStr = expression.ToString();
-            SqlSugar.Queryable<TResult> reval = new Queryable<TResult>()
+            Queryable<TResult> reval = new Queryable<TResult>()
             {
                 DB = queryable.DB,
                 OrderBy = queryable.OrderBy,
@@ -347,10 +347,10 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<TResult> Select<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, string select)
+        public static Queryable<TResult> Select<TSource, TResult>(this Queryable<TSource> queryable, string select)
         {
             var type = typeof(TSource);
-            SqlSugar.Queryable<TResult> reval = new Queryable<TResult>()
+            Queryable<TResult> reval = new Queryable<TResult>()
             {
                 DB = queryable.DB,
                 OrderBy = queryable.OrderBy,
@@ -372,7 +372,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static SqlSugar.Queryable<T> Select<T>(this SqlSugar.Queryable<T> queryable, string select)
+        public static Queryable<T> Select<T>(this Queryable<T> queryable, string select)
         {
             queryable.Select = select;
             return queryable;
@@ -384,7 +384,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static int Count<T>(this SqlSugar.Queryable<T> queryable)
+        public static int Count<T>(this Queryable<T> queryable)
         {
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
@@ -407,7 +407,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="maxField">列</param>
         /// <returns></returns>
-        public static TResult Max<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, string maxField)
+        public static TResult Max<TSource, TResult>(this Queryable<TSource> queryable, string maxField)
         {
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
@@ -425,7 +425,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="maxField">列</param>
         /// <returns></returns>
-        public static object Max<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression)
+        public static object Max<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
 
             ResolveExpress re = new ResolveExpress();
@@ -441,7 +441,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="minField">列</param>
         /// <returns></returns>
-        public static TResult Min<TSource, TResult>(this SqlSugar.Queryable<TSource> queryable, string minField)
+        public static TResult Min<TSource, TResult>(this Queryable<TSource> queryable, string minField)
         {
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
@@ -459,7 +459,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="minField">列</param>
         /// <returns></returns>
-        public static object Min<T>(this SqlSugar.Queryable<T> queryable, Expression<Func<T, object>> expression)
+        public static object Min<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
             ResolveExpress re = new ResolveExpress();
             var minField = re.GetExpressionRightFiled(expression);
@@ -473,7 +473,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this SqlSugar.Queryable<T> queryable)
+        public static List<T> ToList<T>(this Queryable<T> queryable)
         {
             StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
             var reader = queryable.DB.GetReader(sbSql.ToString(), queryable.Params.ToArray());
@@ -493,7 +493,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static string ToJson<T>(this SqlSugar.Queryable<T> queryable)
+        public static string ToJson<T>(this Queryable<T> queryable)
         {
             return JsonConverter.DataTableToJson(ToDataTable<T>(queryable), queryable.DB.SerializerDateFormat);
         }
@@ -504,7 +504,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static dynamic ToDynamic<T>(this SqlSugar.Queryable<T> queryable)
+        public static dynamic ToDynamic<T>(this Queryable<T> queryable)
         {
             return JsonConverter.ConvertJson(ToJson<T>(queryable));
         }
@@ -517,7 +517,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static DataTable ToDataTable<T>(this SqlSugar.Queryable<T> queryable)
+        public static DataTable ToDataTable<T>(this Queryable<T> queryable)
         {
             StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
             var dataTable = queryable.DB.GetDataTable(sbSql.ToString(), queryable.Params.ToArray());
@@ -534,7 +534,7 @@ namespace SqlSugar
         /// <param name="pageIndex">当前页码</param>
         /// <param name="pageSize">每页显示数量</param>
         /// <returns></returns>
-        public static List<T> ToPageList<T>(this SqlSugar.Queryable<T> queryable, int pageIndex, int pageSize)
+        public static List<T> ToPageList<T>(this Queryable<T> queryable, int pageIndex, int pageSize)
         {
             if (queryable.OrderBy.IsNullOrEmpty())
             {
