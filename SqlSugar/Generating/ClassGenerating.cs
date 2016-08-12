@@ -123,17 +123,10 @@ namespace SqlSugar
         /// <returns></returns>
         public string SqlToClass(SqlSugarClient db, string sql, string className)
         {
-            using (SqlConnection conn = new SqlConnection(db.ConnectionString))
-            {
-                SqlCommand command = new SqlCommand();
-                command.Connection = conn;
-                command.CommandText = sql;
-                DataTable dt = new DataTable();
-                SqlDataAdapter sad = new SqlDataAdapter(command);
-                sad.Fill(dt);
-                var reval = DataTableToClass(dt, className);
-                return reval;
-            }
+            var dt = db.GetDataTable(sql);
+            var reval = DataTableToClass(dt, className);
+            return reval;
+             
         }
         /// <summary>
         /// 根据表名获取实体类的字符串
