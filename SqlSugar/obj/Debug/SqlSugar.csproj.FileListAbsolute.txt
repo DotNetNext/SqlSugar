@@ -27,4 +27,3 @@ G:\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
 G:\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 G:\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
 G:\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
-G:\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
