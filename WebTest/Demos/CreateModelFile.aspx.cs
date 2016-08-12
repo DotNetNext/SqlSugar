@@ -17,7 +17,12 @@ namespace WebTest.Demo
         {
             using (var db = SugarDao.GetInstance())
             {
-                
+
+                //可以生成别名类和别名表同时使用
+                //List<KeyValue> mappingTableList = new List<KeyValue>(){
+                //new KeyValue(){ Key="s", Value="Student"}
+                //};
+                //db.SetMappingTables(mappingTableList);
 
                 //根据当前数据库生成所有表的实体类文件 （参数：SqlSugarClient ，文件目录，命名空间）
                 db.ClassGenerating.CreateClassFiles(db, Server.MapPath("~/Models"), "Models");
@@ -27,7 +32,7 @@ namespace WebTest.Demo
                 //根据表名生成class字符串
                 var str = db.ClassGenerating.TableNameToClass(db, "Student");
 
-                var dynamicToClassStr= db.ClassGenerating.DynamicToClass(new { id=1},"dyName");
+                var dynamicToClassStr = db.ClassGenerating.DynamicToClass(new { id = 1 }, "dyName");
 
                 //根据SQL语句生成class字符串
                 var str2 = db.ClassGenerating.SqlToClass(db, "select top 1 * from Student", "student");
@@ -35,8 +40,8 @@ namespace WebTest.Demo
 
 
                 //改变值（lassTemplate.ItemTemplate=XXXX）可以自定义格式
-                 var tempItem=ClassTemplate.ItemTemplate;
-                 var temp=ClassTemplate.Template ;
+                var tempItem = ClassTemplate.ItemTemplate;
+                var temp = ClassTemplate.Template;
             }
 
         }

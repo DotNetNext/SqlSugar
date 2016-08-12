@@ -34,7 +34,7 @@ namespace SqlSugar
             string nullable = string.Empty;
             var classTemplate = ClassTemplate.Template;
             string _ns = "";
-            string _foreach="";
+            string _foreach = "";
             string _className = className;
             foreach (var r in propertiesObj)
             {
@@ -101,8 +101,8 @@ namespace SqlSugar
 
                 }
                 propertiesValue.AppendFormat(
-                    ClassTemplate.ItemTemplate, 
-                    isAny ? ChangeNullable(typeName, Convert.ToBoolean(columnInfo.IS_NULLABLE)) : typeName, 
+                    ClassTemplate.ItemTemplate,
+                    isAny ? ChangeNullable(typeName, Convert.ToBoolean(columnInfo.IS_NULLABLE)) : typeName,
                     r.ColumnName, "{get;set;}",
                     "");
                 propertiesValue.AppendLine();
@@ -126,7 +126,7 @@ namespace SqlSugar
             var dt = db.GetDataTable(sql);
             var reval = DataTableToClass(dt, className);
             return reval;
-             
+
         }
         /// <summary>
         /// 根据表名获取实体类的字符串
@@ -139,7 +139,7 @@ namespace SqlSugar
         {
             var dt = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
             var tableColumns = GetTableColumns(db, tableName);
-            var reval = DataTableToClass(dt, tableName,null,tableColumns);
+            var reval = DataTableToClass(dt, tableName, null, tableColumns);
             return reval;
         }
 
@@ -154,19 +154,8 @@ namespace SqlSugar
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
         public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null)
         {
-            var tables = db.GetDataTable("select name from sysobjects where xtype in ('U','V') ");
-            if (tableOrView != null)
-            {
-                if (tableOrView == true)
-                {
-                    tables = db.GetDataTable("select name from sysobjects where xtype in ('U') ");
-                }
-                else
-                {
-
-                    tables = db.GetDataTable("select name from sysobjects where xtype in ('V') ");
-                }
-            }
+            string sql = GetCreateClassSql(tableOrView);
+            var tables = db.GetDataTable(sql);
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
@@ -179,14 +168,15 @@ namespace SqlSugar
                         var classCode = DataTableToClass(currentTable, tableName, nameSpace, tableColumns);
                         string className = db.GetClassTypeByTableName(tableName);
                         classCode = classCode.Replace("class " + tableName, "class " + className);
-                        FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + className + ".cs", classCode,Encoding.UTF8);
+                        FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + className + ".cs", classCode, Encoding.UTF8);
                         callBack(className);
                     }
                     else
                     {
                         var tableColumns = GetTableColumns(db, tableName);
-                        var classCode = DataTableToClass(currentTable, tableName, nameSpace,tableColumns);
-                        FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode,Encoding.UTF8);
+                        string className = db.GetClassTypeByTableName(tableName);
+                        var classCode = DataTableToClass(currentTable, className, nameSpace, tableColumns);
+                        FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + className + ".cs", classCode, Encoding.UTF8);
                     }
                 }
             }
@@ -201,21 +191,10 @@ namespace SqlSugar
         /// <param name="fileDirectory"></param>
         /// <param name="nameSpace">命名空间（默认：null）</param>
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
-        public void CreateClassFilesInterface(SqlSugarClient db,bool? tableOrView , Action<DataTable,string,string> callBack)
+        public void CreateClassFilesInterface(SqlSugarClient db, bool? tableOrView, Action<DataTable, string, string> callBack)
         {
-            var tables = db.GetDataTable("select name from sysobjects where xtype in ('U','V') ");
-            if (tableOrView != null)
-            {
-                if (tableOrView == true)
-                {
-                    tables = db.GetDataTable("select name from sysobjects where xtype in ('U') ");
-                }
-                else
-                {
-
-                    tables = db.GetDataTable("select name from sysobjects where xtype in ('V') ");
-                }
-            }
+            string sql = GetCreateClassSql(tableOrView);
+            var tables = db.GetDataTable(sql);
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
@@ -223,9 +202,31 @@ namespace SqlSugar
                     string tableName = dr["name"].ToString();
                     var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
                     string className = db.GetClassTypeByTableName(tableName);
-                    callBack(tables, className,tableName);
+                    callBack(tables, className, tableName);
                 }
             }
+        }
+        /// <summary>
+        ///tableOrView  null=u,v , true=u , false=v
+        /// </summary>
+        /// <param name="tableOrView"></param>
+        /// <returns></returns>
+        private static string GetCreateClassSql(bool? tableOrView)
+        {
+            string sql = null;
+            if (tableOrView == null)
+            {
+                sql = "select name from sysobjects where xtype in ('U','V') ";
+            }
+            else if (tableOrView == true)
+            {
+                sql = "select name from sysobjects where xtype in ('U') ";
+            }
+            else
+            {
+                sql = "select name from sysobjects where xtype in ('V') ";
+            }
+            return sql;
         }
 
 
@@ -234,7 +235,8 @@ namespace SqlSugar
         /// </summary>
         public void CreateClassFilesByTableNames(SqlSugarClient db, string fileDirectory, string nameSpace, params string[] tableNames)
         {
-            var tables = db.GetDataTable("select name from sysobjects where xtype in ('U','V') ");
+            string sql = GetCreateClassSql(null);
+            var tables = db.GetDataTable(sql);
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
@@ -257,8 +259,8 @@ namespace SqlSugar
         /// <returns></returns>
         public List<string> GetTableNames(SqlSugarClient db)
         {
-
-            var tableNameList = db.SqlQuery<string>("select name from sysobjects where xtype in ('U','V') ").ToList();
+            string sql = GetCreateClassSql(null);
+            var tableNameList = db.SqlQuery<string>(sql).ToList();
             for (int i = 0; i < tableNameList.Count; i++)
             {
                 var tableName = tableNameList[i];
@@ -300,7 +302,7 @@ namespace SqlSugar
             return typeName;
         }
 
-        public  string DbTypeToFieldType(string dbtype)
+        public string DbTypeToFieldType(string dbtype)
         {
             if (string.IsNullOrEmpty(dbtype)) return dbtype;
             dbtype = dbtype.ToLower();
