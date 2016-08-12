@@ -16,7 +16,7 @@ namespace SqlSugar
     /// </summary>
     /// <typeparam name="K">键</typeparam>
     /// <typeparam name="V">值</typeparam>
-    internal class CacheManager<V> : IHttpStorageObject<V>
+    internal class CacheManager<V> 
     {
 
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();

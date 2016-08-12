@@ -688,7 +688,7 @@ namespace SqlSugar
         /// </summary>
         public void RemoveAllCache()
         {
-            CacheManager<int>.GetInstance().RemoveAll(c => c.Contains("SqlSugar."));
+            CacheManager<int>.GetInstance().RemoveAll(c =>true);
         }
 
     }
