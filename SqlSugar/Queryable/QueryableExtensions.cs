@@ -73,7 +73,7 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static Queryable<T> In<T, FieldType>(this Queryable<T> queryable, Expression<Func<T, object>> expression,  List<FieldType> inValues)
+        public static Queryable<T> In<T, FieldType>(this Queryable<T> queryable, Expression<Func<T, object>> expression, List<FieldType> inValues)
         {
 
             ResolveExpress re = new ResolveExpress();
@@ -133,12 +133,12 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="orderFileds">如：id asc,name desc </param>
         /// <returns></returns>
-        public static Queryable<T> OrderBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression, OrderByType type=OrderByType.asc)
+        public static Queryable<T> OrderBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression, OrderByType type = OrderByType.asc)
         {
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFiled(expression);
             var pre = queryable.OrderBy.IsValuable() ? "," : "";
-            queryable.OrderBy +=pre+ field + " " + type.ToString().ToUpper();
+            queryable.OrderBy += pre + field + " " + type.ToString().ToUpper();
             return queryable;
         }
 
@@ -154,7 +154,7 @@ namespace SqlSugar
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFiled(expression);
             var pre = queryable.GroupBy.IsValuable() ? "," : "";
-            queryable.GroupBy += pre+field;
+            queryable.GroupBy += pre + field;
             return queryable;
         }
 
@@ -548,5 +548,13 @@ namespace SqlSugar
         }
 
 
+        public static Queryable<T> InnerJoin<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression)
+        {
+
+            ResolveExpress rs = new ResolveExpress();
+            rs.Type = ResolveExpressType.onlyFieldString;
+            rs.ResolveExpression(rs, expression);
+            throw new Exception("敬请期待....");
+        }
     }
 }

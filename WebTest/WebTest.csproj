@@ -82,6 +82,7 @@
     <Content Include="Demos\Function.aspx" />
     <Content Include="Demos\Insert.aspx" />
     <Content Include="Demos\Language.aspx" />
+    <Content Include="Demos\newFunctionTest.aspx" />
     <Content Include="Demos\NoParameter.aspx" />
     <Content Include="Demos\Rename.aspx" />
     <Content Include="Demos\Select.aspx" />
@@ -184,6 +185,13 @@
     </Compile>
     <Compile Include="Demos\Language.aspx.designer.cs">
       <DependentUpon>Language.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\newFunctionTest.aspx.cs">
+      <DependentUpon>newFunctionTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\newFunctionTest.aspx.designer.cs">
+      <DependentUpon>newFunctionTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\NoParameter.aspx.cs">
       <DependentUpon>NoParameter.aspx</DependentUpon>
