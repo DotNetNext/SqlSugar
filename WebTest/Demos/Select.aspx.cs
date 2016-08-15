@@ -17,7 +17,6 @@ namespace WebTest.Demo
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
             //单表查询
             QueryableDemo();
 
@@ -232,20 +231,20 @@ namespace WebTest.Demo
                 //order By 
                 var orderList = db.Queryable<Student>().OrderBy("id desc,name asc").ToList();//字符串支持多个排序
                 //可以多个order by表达示
-                var order2List = db.Queryable<Student>().OrderBy(it=>it.name).OrderBy(it => it.id, OrderByType.desc).ToList(); // order by name as ,order by id desc
+                var order2List = db.Queryable<Student>().OrderBy(it => it.name).OrderBy(it => it.id, OrderByType.desc).ToList(); // order by name as ,order by id desc
 
                 //In
-                var intArray=new []{"5", "2", "3"};
+                var intArray = new[] { "5", "2", "3" };
                 var intList = intArray.ToList();
-                var list0 = db.Queryable<Student>().In(it => it.id, 1,2,3).ToList();
-                var list1 = db.Queryable<Student>().In(it=>it.id, intArray).ToList();
+                var list0 = db.Queryable<Student>().In(it => it.id, 1, 2, 3).ToList();
+                var list1 = db.Queryable<Student>().In(it => it.id, intArray).ToList();
                 var list2 = db.Queryable<Student>().In("id", intArray).ToList();
                 var list3 = db.Queryable<Student>().In(it => it.id, intList).ToList();
                 var list4 = db.Queryable<Student>().In("id", intList).ToList();
 
                 //分组查询
                 var list7 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select("sex,Count=count(*)").ToDynamic();
-                var list8 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).GroupBy(it=>it.id).Select("id,sex,Count=count(*)").ToDynamic();
+                var list8 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).GroupBy(it => it.id).Select("id,sex,Count=count(*)").ToDynamic();
                 List<SexTotal> list9 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
                 List<SexTotal> list10 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
                 //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex --生成结果
