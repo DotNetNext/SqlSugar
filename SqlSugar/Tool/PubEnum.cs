@@ -45,11 +45,11 @@ namespace SqlSugar
     public enum ResolveExpressType
     {
         /// <summary>
-        /// 参数和值
+        /// 单个T
         /// </summary>
         oneT = 0,
         /// <summary>
-        /// 只要字段名和运算符
+        /// 多个T
         /// </summary>
         nT = 1,
  
