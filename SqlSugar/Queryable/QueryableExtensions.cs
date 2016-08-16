@@ -63,7 +63,7 @@ namespace SqlSugar
         {
 
             ResolveExpress re = new ResolveExpress();
-            var InFieldName = re.GetExpressionRightFiled(expression);
+            var InFieldName = re.GetExpressionRightField(expression);
             return In<T, FieldType>(queryable, InFieldName, inValues);
         }
         /// <summary>
@@ -77,7 +77,7 @@ namespace SqlSugar
         {
 
             ResolveExpress re = new ResolveExpress();
-            var InFieldName = re.GetExpressionRightFiled(expression);
+            var InFieldName = re.GetExpressionRightField(expression);
             return In<T, FieldType>(queryable, InFieldName, inValues);
         }
 
@@ -136,7 +136,7 @@ namespace SqlSugar
         public static Queryable<T> OrderBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression, OrderByType type = OrderByType.asc)
         {
             ResolveExpress re = new ResolveExpress();
-            var field = re.GetExpressionRightFiled(expression);
+            var field = re.GetExpressionRightField(expression);
             var pre = queryable.OrderBy.IsValuable() ? "," : "";
             queryable.OrderBy += pre + field + " " + type.ToString().ToUpper();
             return queryable;
@@ -152,7 +152,7 @@ namespace SqlSugar
         public static Queryable<T> GroupBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
             ResolveExpress re = new ResolveExpress();
-            var field = re.GetExpressionRightFiled(expression);
+            var field = re.GetExpressionRightField(expression);
             var pre = queryable.GroupBy.IsValuable() ? "," : "";
             queryable.GroupBy += pre + field;
             return queryable;
@@ -429,7 +429,7 @@ namespace SqlSugar
         {
 
             ResolveExpress re = new ResolveExpress();
-            var minField = re.GetExpressionRightFiled(expression);
+            var minField = re.GetExpressionRightField(expression);
             return Max<T, object>(queryable, minField);
         }
 
@@ -462,7 +462,7 @@ namespace SqlSugar
         public static object Min<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
             ResolveExpress re = new ResolveExpress();
-            var minField = re.GetExpressionRightFiled(expression);
+            var minField = re.GetExpressionRightField(expression);
             return Min<T, object>(queryable, minField);
         }
 

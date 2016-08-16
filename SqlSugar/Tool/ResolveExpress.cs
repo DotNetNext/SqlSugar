@@ -28,7 +28,7 @@ namespace SqlSugar
         public List<SqlParameter> Paras = new List<SqlParameter>();
         private int SameIndex = 1;
 
-        public string GetExpressionRightFiled(Expression exp)
+        public string GetExpressionRightField(Expression exp)
         {
             LambdaExpression lambda = exp as LambdaExpression;
             if (lambda.Body.NodeType.IsIn(ExpressionType.Convert))
