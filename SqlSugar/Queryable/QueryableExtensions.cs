@@ -552,7 +552,7 @@ namespace SqlSugar
         {
 
             ResolveExpress rs = new ResolveExpress();
-            rs.Type = ResolveExpressType.onlyFieldString;
+            rs.Type = ResolveExpressType.nT;
             rs.ResolveExpression(rs, expression);
             throw new Exception("敬请期待....");
         }

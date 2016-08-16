@@ -24,7 +24,7 @@ namespace SqlSugar
             this.SameIndex = sameIndex;
         }
         public string SqlWhere = null;
-        public ResolveExpressType Type = ResolveExpressType.oneTParameterAndValue;
+        public ResolveExpressType Type = ResolveExpressType.oneT;
         public List<SqlParameter> Paras = new List<SqlParameter>();
         private int SameIndex = 1;
 
@@ -281,7 +281,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    if (Type == ResolveExpressType.onlyFieldString)
+                    if (Type == ResolveExpressType.nT)
                     {
                         type = MemberType.Key;
                         return exp.ToString();
@@ -326,7 +326,7 @@ namespace SqlSugar
             string oldLeft = left;
             left = left + SameIndex;
             SameIndex++;
-            if (Type != ResolveExpressType.oneTParameterAndValue)
+            if (Type != ResolveExpressType.oneT)
             {
                 left = left.Replace(".", "_");
             }
@@ -345,7 +345,7 @@ namespace SqlSugar
             string oldRight = right;
             right = right + SameIndex;
             SameIndex++;
-            if (Type != ResolveExpressType.oneTParameterAndValue)
+            if (Type != ResolveExpressType.oneT)
             {
                 right = right.Replace(".", "_");
             }

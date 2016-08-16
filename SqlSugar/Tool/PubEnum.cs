@@ -47,13 +47,11 @@ namespace SqlSugar
         /// <summary>
         /// 参数和值
         /// </summary>
-        oneTParameterAndValue = 0,
+        oneT = 0,
         /// <summary>
         /// 只要字段名和运算符
         /// </summary>
-        onlyFieldString = 1,
-        //N个以上T参数和值
-        NTParameterAndValue = 2
-
+        nT = 1,
+ 
     }
 }
