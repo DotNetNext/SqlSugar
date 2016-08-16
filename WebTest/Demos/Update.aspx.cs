@@ -24,6 +24,8 @@ namespace WebTest.Demo
                 db.Update<School, int>(new { name = "蓝翔2" }, 1, 3, 12);
                 db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "1", "2" });
 
+                db.Update<School>(new School() { id = 1, name = "xx" });
+
                 //整个实体更新
                 db.Update(new School { id = id, name = "蓝翔2" });
                 db.Update<School>(new School { id = id, name = "蓝翔2" }, it => it.id == id);

@@ -445,16 +445,21 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
             var rows = SqlSugarTool.GetParameters(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             foreach (var r in rows)
             {
-                if (pkName == r.ParameterName.TrimStart('@'))
+                var name = r.ParameterName.TrimStart('@');
+                var isPk = pkName != null && pkName.ToLower() == name.ToLower();
+                var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
+                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
+                if (isPk || isIdentity || isDisableUpdateColumns)
                 {
                     if (rowObj.GetType() == type)
                     {
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" [{0}] =@{0}  ,", r.ParameterName.TrimStart('@')));
+                sbSql.Append(string.Format(" [{0}] =@{0}  ,", name));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             sbSql.Append(" WHERE  1=1  ");
