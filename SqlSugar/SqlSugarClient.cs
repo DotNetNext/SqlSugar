@@ -343,7 +343,7 @@ namespace SqlSugar
                 //实例化一个StringBuilder做字符串的拼接 
 
 
-                sbInsertSql.Append("insert into " + typeName + " (");
+                sbInsertSql.Append("insert into [" + typeName + "] (");
 
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
@@ -442,7 +442,7 @@ namespace SqlSugar
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
+            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
             var rows = SqlSugarTool.GetParameters(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             foreach (var r in rows)
@@ -517,7 +517,7 @@ namespace SqlSugar
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName));
+            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
@@ -588,7 +588,7 @@ namespace SqlSugar
             typeName = GetTableNameByClassType(typeName);
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
-            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", typeName, re.SqlWhere);
+            string sql = string.Format("DELETE FROM [{0}] WHERE 1=1 {1}", typeName, re.SqlWhere);
             bool isSuccess = ExecuteCommand(sql, re.Paras.ToArray()) > 0;
             return isSuccess;
         }
@@ -611,7 +611,7 @@ namespace SqlSugar
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", typeName, SqlSugarTool.GetPrimaryKeyByTableName(this, typeName), whereIn.ToJoinSqlInVal());
+                string sql = string.Format("DELETE FROM [{0}] WHERE {1} IN ({2})", typeName, SqlSugarTool.GetPrimaryKeyByTableName(this, typeName), whereIn.ToJoinSqlInVal());
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
@@ -637,7 +637,7 @@ namespace SqlSugar
             bool isSuccess = false;
             if (whereIn != null && whereIn.Length > 0)
             {
-                string sql = string.Format("UPDATE  {0} SET {3}=1 WHERE {1} IN ({2})", typeName, SqlSugarTool.GetPrimaryKeyByTableName(this, typeName), whereIn.ToJoinSqlInVal(), field);
+                string sql = string.Format("UPDATE  [{0}] SET {3}=1 WHERE {1} IN ({2})", typeName, SqlSugarTool.GetPrimaryKeyByTableName(this, typeName), whereIn.ToJoinSqlInVal(), field);
                 int deleteRowCount = ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
@@ -672,7 +672,7 @@ namespace SqlSugar
             bool isSuccess = false;
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
-            string sql = string.Format("UPDATE  {0} SET {1}=1 WHERE  1=1 {2}", typeName, field, re.SqlWhere);
+            string sql = string.Format("UPDATE  [{0}] SET {1}=1 WHERE  1=1 {2}", typeName, field, re.SqlWhere);
             int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;
             return isSuccess;

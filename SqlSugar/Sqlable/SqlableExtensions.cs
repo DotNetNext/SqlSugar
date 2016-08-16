@@ -26,7 +26,7 @@ namespace SqlSugar
         public static Sqlable From(this Sqlable sqlable, object tableName, string shortName)
         {
             sqlable.Sql = new StringBuilder();
-            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", tableName, shortName, sqlable.DB.IsNoLock.GetLockString());
+            sqlable.Sql.AppendFormat(" FROM [{0}] {1} {2} ", tableName, shortName, sqlable.DB.IsNoLock.GetLockString());
             return sqlable;
         }
         /// <summary>
@@ -39,7 +39,7 @@ namespace SqlSugar
         public static Sqlable From<T>(this Sqlable sqlable, string shortName)
         {
             sqlable.Sql = new StringBuilder();
-            sqlable.Sql.AppendFormat(" FROM {0} {1} {2} ", typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString());
+            sqlable.Sql.AppendFormat(" FROM [{0}] {1} {2} ", typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString());
             return sqlable;
         }
 
@@ -54,7 +54,7 @@ namespace SqlSugar
         public static Sqlable Join(this Sqlable sqlable, object tableName, string shortName, string leftFiled, string RightFiled, JoinType type)
         {
             Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
-            sqlable.Sql.AppendFormat(" {0} JOIN {1} {2}  {3} ON  {4} = {5} ", type.ToString(), tableName, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
+            sqlable.Sql.AppendFormat(" {0} JOIN [{1}] {2}  {3} ON  {4} = {5} ", type.ToString(), tableName, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
             return sqlable;
         }
         /// <summary>
@@ -68,7 +68,7 @@ namespace SqlSugar
         public static Sqlable Join<T>(this Sqlable sqlable, string shortName, string leftFiled, string RightFiled, JoinType type)
         {
             Check.ArgumentNullException(sqlable.Sql, "语法错误，正确用法：sqlable.Form(“table”).Join");
-            sqlable.Sql.AppendFormat(" {0} JOIN {1} {2}  {3} ON  {4} = {5} ", type.ToString(), typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
+            sqlable.Sql.AppendFormat(" {0} JOIN [{1}] {2}  {3} ON  {4} = {5} ", type.ToString(), typeof(T).Name, shortName, sqlable.DB.IsNoLock.GetLockString(), leftFiled, RightFiled);
             return sqlable;
         }
 
