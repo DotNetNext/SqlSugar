@@ -403,7 +403,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    sbInsertSql.Append(");select @@identity;");
+                    sbInsertSql.Append(");select SCOPE_IDENTITY();");
                 }
                 cacheSqlManager.Add(cacheSqlKey, sbInsertSql, cacheSqlManager.Day);
             }
