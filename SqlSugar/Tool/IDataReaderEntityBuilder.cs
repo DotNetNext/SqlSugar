@@ -138,7 +138,7 @@ namespace SqlSugar
             {
                 typeName = "ENUMNAME";
             }
-            else if (dbTypeName.Contains("hierarchyid") || typeName == "byte[]")
+            else if (dbTypeName.Contains("hierarchyid") || typeName == "byte[]"||objTypeName== "object")
             {
                 generator.Emit(OpCodes.Call, getValueMethod);
                 generator.Emit(OpCodes.Unbox_Any, pro.PropertyType);//找不到类型才执行拆箱（类型转换）
