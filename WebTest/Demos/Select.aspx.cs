@@ -252,7 +252,7 @@ namespace WebTest.Demo
 
 
 
-                //2关联查询
+                //2表关联查询
                 var jList = db.Queryable<Student>()
                 .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //默认left join
                 .Where<Student, School>((s1, s2) => s1.id ==1)
