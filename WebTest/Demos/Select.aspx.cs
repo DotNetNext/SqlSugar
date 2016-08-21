@@ -17,24 +17,24 @@ namespace WebTest.Demo
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //单表查询
+            //使用拉姆达查询 基于Queryable
             QueryableDemo();
 
-            //多表查询
+            //使用更接近sql的查询方式 基于Sqlable
             SqlableDemo();
 
-            //Sql查询
+            //使用原生Sql查询 
             SqlQuery();
 
             //新容器转换
-            NewSelect();
+            SelectNewClass();
 
         }
 
         /// <summary>
         /// 新容器转换
         /// </summary>
-        private void NewSelect()
+        private void SelectNewClass()
         {
 
             using (SqlSugarClient db = SugarDao.GetInstance())
