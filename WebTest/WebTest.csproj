@@ -348,7 +348,9 @@
     <Compile Include="TestLib\PerformanceTest.cs" />
     <Compile Include="Models\V_Student.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
   </ItemGroup>

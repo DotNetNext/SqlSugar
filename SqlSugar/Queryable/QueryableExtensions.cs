@@ -547,7 +547,15 @@ namespace SqlSugar
             return queryable.ToList();
         }
 
-
+        /// <summary>
+        /// 联表查询
+        /// </summary>
+        /// <typeparam name="T">第一个表的对象</typeparam>
+        /// <typeparam name="T2">联接的表对象</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression">表达示</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static Queryable<T> JoinTable<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression,JoinType type=JoinType.LEFT)
         {
 
@@ -559,8 +567,9 @@ namespace SqlSugar
             var shortName1 = exLeftArray.First();
             var shortName2 = exLeftArray.Last();
             re.ResolveExpression(re, expression);
+            string joinTableName=type.ToString();
             string joinStr=string.Format(" {0} JOIN {1} {2} ON {3}  ",
-                /*0*/queryable.Join.Count == 0 ? (" "+shortName1+" "+type.ToString()) : type.ToString(),
+                /*0*/queryable.Join.Count == 0 ? (" "+shortName1+" "+joinTableName) : joinTableName.ToString(),
                 /*1*/typeof(T2).Name,
                 /*2*/shortName2,
                 /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
@@ -627,8 +636,10 @@ namespace SqlSugar
         /// 排序
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T2"></typeparam>
         /// <param name="queryable"></param>
-        /// <param name="orderFileds">如：id asc,name desc </param>
+        /// <param name="expression">例如 (s1,s2)=>s1.id,相当于 order by s1.id</param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public static Queryable<T> OrderBy<T,T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
         {
