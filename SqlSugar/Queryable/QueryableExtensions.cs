@@ -548,7 +548,7 @@ namespace SqlSugar
         }
 
 
-        public static Queryable<T> Join<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression,JoinType type=JoinType.LEFT)
+        public static Queryable<T> JoinTable<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression,JoinType type=JoinType.LEFT)
         {
 
             ResolveExpress re = new ResolveExpress();
