@@ -556,20 +556,20 @@ namespace SqlSugar
         /// <param name="expression">表达示</param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Queryable<T> JoinTable<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression,JoinType type=JoinType.LEFT)
+        public static Queryable<T> JoinTable<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
         {
 
             ResolveExpress re = new ResolveExpress();
             queryable.WhereIndex = queryable.WhereIndex + 100;
             re.Type = ResolveExpressType.nT;
-            var exLeftStr =Regex.Match(expression.ToString(),@"\((.+?)\).+").Groups[1].Value;
-            var exLeftArray=exLeftStr.Split(',');
+            var exLeftStr = Regex.Match(expression.ToString(), @"\((.+?)\).+").Groups[1].Value;
+            var exLeftArray = exLeftStr.Split(',');
             var shortName1 = exLeftArray.First();
             var shortName2 = exLeftArray.Last();
             re.ResolveExpression(re, expression);
-            string joinTableName=type.ToString();
-            string joinStr=string.Format(" {0} JOIN {1} {2} ON {3}  ",
-                /*0*/queryable.Join.Count == 0 ? (" "+shortName1+" "+joinTableName) : joinTableName.ToString(),
+            string joinTableName = type.ToString();
+            string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
+                /*0*/queryable.Join.Count == 0 ? (" " + shortName1 + " " + joinTableName) : joinTableName.ToString(),
                 /*1*/typeof(T2).Name,
                 /*2*/shortName2,
                 /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
@@ -621,7 +621,25 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static Queryable<T> Where<T, T2, T3,T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3,T4, object>> expression)
+        public static Queryable<T> Where<T, T2, T3, T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.Type = ResolveExpressType.nT;
+            re.ResolveExpression(re, expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
+            return queryable;
+        }
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T, T2, T3, T4, T5>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, T5, object>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -641,7 +659,7 @@ namespace SqlSugar
         /// <param name="expression">例如 (s1,s2)=>s1.id,相当于 order by s1.id</param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Queryable<T> OrderBy<T,T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
+        public static Queryable<T> OrderBy<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
         {
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFieldByNT(expression);
