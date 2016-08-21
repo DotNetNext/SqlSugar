@@ -64,5 +64,9 @@ namespace SqlSugar
         /// 条件索引
         /// </summary>
         public int WhereIndex = 1;
+        /// <summary>
+        /// 联表查询临时数据
+        /// </summary>
+        public List<string> Join = new List<string>();
     }
 }

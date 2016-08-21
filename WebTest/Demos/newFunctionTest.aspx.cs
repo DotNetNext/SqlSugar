@@ -18,8 +18,10 @@ namespace WebTest.Demos
         {
             using (var db = SugarDao.GetInstance())
             {
-                int id1 = 1;
-                db.Queryable<Student>().InnerJoin<Student, School>((s1, s2) => s1.id == s2.id && s2.id > id1 && id1 < s1.id);
+                var list= db.Queryable<Student>()
+                    .Join<Student, School>((s1, s2) =>s1.sch_id==s2.id) //默认left join
+                    .Where<Student,School>((s1,s2)=>s1.id==1)
+                    .Select("s1.*,s2.name as schName").ToDynamic();
             }
         }
     }
