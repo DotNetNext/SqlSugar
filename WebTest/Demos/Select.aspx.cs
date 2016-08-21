@@ -268,6 +268,8 @@ namespace WebTest.Demo
                 //2表关联查询并分页
                 var jList2 = db.Queryable<Student>()
                 .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //默认left join
+                //如果要用inner join这么写
+                //.JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id  ,JoinType.INNER)
                 .Where<Student, School>((s1, s2) => s1.id > 1)
                 .OrderBy<Student, School>((s1, s2) => s1.name)
                 .Skip(10)
