@@ -285,7 +285,7 @@ namespace WebTest.Demo
                .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id
                .Skip(10)
                .Take(20)
-               .Select("s1.*,s2.name as schName,s3.name as schName2")
+               .Select("s1.*,s2.name as schName,s3.name as schName2")//select目前只支持这种写法
                .ToDynamic();
 
                 //最多支持5表查询,太过复杂的建议用Sqlable或者SqlQuery,我们的Queryable只适合轻量级的查询
