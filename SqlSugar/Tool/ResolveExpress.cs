@@ -47,6 +47,25 @@ namespace SqlSugar
                 return null;
             }
         }
+        public string GetExpressionRightFieldByNT(Expression exp)
+        {
+            LambdaExpression lambda = exp as LambdaExpression;
+            if (lambda.Body.NodeType.IsIn(ExpressionType.Convert))
+            {
+                var memberExpr =
+                      ((UnaryExpression)lambda.Body).Operand as MemberExpression;
+                return memberExpr.ToString();
+            }
+            else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
+            {
+                return lambda.Body.ToString();
+            }
+            else
+            {
+                Check.Exception(true, "不是有效拉姆达格式" + exp.ToString());
+                return null;
+            }
+        }
         public void ResolveExpression(ResolveExpress re, Expression exp)
         {
             ResolveExpress.MemberType type = ResolveExpress.MemberType.None;

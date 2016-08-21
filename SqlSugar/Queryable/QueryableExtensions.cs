@@ -587,5 +587,57 @@ namespace SqlSugar
             queryable.Where.Add(re.SqlWhere);
             return queryable;
         }
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T, T2, T3>(this Queryable<T> queryable, Expression<Func<T, T2, T3, object>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.Type = ResolveExpressType.nT;
+            re.ResolveExpression(re, expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
+            return queryable;
+        }
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T, T2, T3,T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3,T4, object>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.Type = ResolveExpressType.nT;
+            re.ResolveExpression(re, expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
+            return queryable;
+        }
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="orderFileds">如：id asc,name desc </param>
+        /// <returns></returns>
+        public static Queryable<T> OrderBy<T,T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
+        {
+            ResolveExpress re = new ResolveExpress();
+            var field = re.GetExpressionRightFieldByNT(expression);
+            var pre = queryable.OrderBy.IsValuable() ? "," : "";
+            queryable.OrderBy += pre + field + " " + type.ToString().ToUpper();
+            return queryable;
+        }
+
     }
 }

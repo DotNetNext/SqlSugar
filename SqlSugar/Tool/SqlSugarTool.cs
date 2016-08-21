@@ -532,20 +532,41 @@ namespace SqlSugar
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
 
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy(),joinInfo);
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy(), joinInfo);
                 if (queryable.Skip == null && queryable.Take != null)
                 {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    if (joinInfo.IsValuable())
+                    {
+                        sbSql.Insert(0, "SELECT * FROM ( ");
+                    }
+                    else
+                    {
+                        sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    }
                     sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
                 }
                 else if (queryable.Skip != null && queryable.Take == null)
                 {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    if (joinInfo.IsValuable())
+                    {
+                        sbSql.Insert(0, "SELECT * FROM ( ");
+                    }
+                    else
+                    {
+                        sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    }
                     sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
                 }
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    if (joinInfo.IsValuable())
+                    {
+                        sbSql.Insert(0, "SELECT * FROM ( ");
+                    }
+                    else
+                    {
+                        sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    }
                     sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
                 }
                 #endregion
@@ -556,7 +577,7 @@ namespace SqlSugar
                 #region offset
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderBy.IsValuable() ? ("ORDER BY " + queryable.OrderBy + " ") : null;
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName+joinInfo, "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy(),joinInfo);
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName , "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy(), joinInfo);
                 sbSql.Append(order);
                 sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY", queryable.Skip, queryable.Take);
                 #endregion
