@@ -67,6 +67,6 @@ namespace SqlSugar
         /// <summary>
         /// 联表查询临时数据
         /// </summary>
-        public List<string> Join = new List<string>();
+        public List<string> JoinTable = new List<string>();
     }
 }

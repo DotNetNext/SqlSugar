@@ -611,12 +611,12 @@ namespace SqlSugar
             re.ResolveExpression(re, expression);
             string joinTableName = type.ToString();
             string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
-                /*0*/queryable.Join.Count == 0 ? (" " + shortName1 + " " + joinTableName) : joinTableName.ToString(),
+                /*0*/queryable.JoinTable.Count == 0 ? (" " + shortName1 + " " + joinTableName) : joinTableName.ToString(),
                 /*1*/typeof(T2).Name,
                 /*2*/shortName2,
                 /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
                 );
-            queryable.Join.Add(joinStr);
+            queryable.JoinTable.Add(joinStr);
             queryable.Params.AddRange(re.Paras);
             return queryable;
         }

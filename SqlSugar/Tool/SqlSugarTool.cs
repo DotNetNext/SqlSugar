@@ -510,7 +510,7 @@ namespace SqlSugar
 
         internal static StringBuilder GetQueryableSql<T>(SqlSugar.Queryable<T> queryable)
         {
-            string joinInfo = string.Join(" ", queryable.Join);
+            string joinInfo = string.Join(" ", queryable.JoinTable);
             StringBuilder sbSql = new StringBuilder();
             string tableName = queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName;
             if (queryable.DB.Language.IsValuable() && queryable.DB.Language.Suffix.IsValuable())
