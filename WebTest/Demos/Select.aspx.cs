@@ -289,9 +289,25 @@ namespace WebTest.Demo
                .Take(20)
                .Select("s1.*,s2.name as schName,s3.name as schName2")//select目前只支持这种写法
                .ToDynamic();
-
                 //最多支持5表查询,太过复杂的建议用Sqlable或者SqlQuery,我们的Queryable只适合轻量级的查询
 
+
+                //拼接
+                var queryable = db.Queryable<Student>().Where(it => true);
+                if (maxId.ObjToInt() == 1)
+                {
+                    queryable.Where(it => it.id == 1);
+                }
+                else {
+                    queryable.Where(it => it.id == 2);
+                }
+                var listJoin = queryable.ToList();
+
+
+                //queryable和SqlSugarClient解耦
+                var par = new Queryable<Student>().Where(it => it.id == 1);//声名没有connection对象的Queryable
+                par.DB = db;
+                var listPar = par.ToList(); 
             }
         }
     }
