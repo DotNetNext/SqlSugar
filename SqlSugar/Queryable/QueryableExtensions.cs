@@ -213,6 +213,12 @@ namespace SqlSugar
         /// <returns></returns>
         public static T Single<T>(this  Queryable<T> queryable)
         {
+            if (queryable.OrderBy.IsNullOrEmpty())
+            {
+                queryable.OrderBy = "GETDATE()";
+            }
+            queryable.Skip(0);
+            queryable.Take(1);
             return queryable.ToList().Single();
         }
 
@@ -224,6 +230,12 @@ namespace SqlSugar
         /// <returns></returns>
         public static T SingleOrDefault<T>(this  Queryable<T> queryable)
         {
+            if (queryable.OrderBy.IsNullOrEmpty())
+            {
+                queryable.OrderBy = "GETDATE()";
+            }
+            queryable.Skip(0);
+            queryable.Take(1);
             var reval = queryable.ToList();
             if (reval == null || reval.Count == 0)
             {
@@ -240,6 +252,12 @@ namespace SqlSugar
         /// <returns></returns>
         public static T FirstOrDefault<T>(this  Queryable<T> queryable)
         {
+            if (queryable.OrderBy.IsNullOrEmpty())
+            {
+                queryable.OrderBy = "GETDATE()";
+            }
+            queryable.Skip(0);
+            queryable.Take(1);
             var reval = queryable.ToList();
             if (reval == null || reval.Count == 0)
             {
@@ -255,6 +273,12 @@ namespace SqlSugar
         /// <returns></returns>
         public static T First<T>(this  Queryable<T> queryable)
         {
+            if (queryable.OrderBy.IsNullOrEmpty())
+            {
+                queryable.OrderBy = "GETDATE()";
+            }
+            queryable.Skip(0);
+            queryable.Take(1);
             var reval = queryable.ToList();
             return reval.First();
         }
