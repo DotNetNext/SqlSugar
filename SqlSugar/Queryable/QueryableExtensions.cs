@@ -333,6 +333,24 @@ namespace SqlSugar
         }
 
         /// <summary>
+        ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，否则返回null。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static T SingleOrDefault<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.ResolveExpression(re, expression);
+            queryable.Where.Add(re.SqlWhere);
+            queryable.Params.AddRange(re.Paras);
+            return queryable.ToList().SingleOrDefault();
+        }
+
+        /// <summary>
         /// 将源数据对象转换到新对象中
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
