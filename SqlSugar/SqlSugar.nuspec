@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>sqlSugar</id>
-    <version>2.4.5.5</version>
+    <version>2.5.0.1</version>
     <title>SqlSugar ORM</title>
     <authors>sun kaixuan</authors>
     <owners>landa</owners>
@@ -13,5 +13,9 @@
     <description>SqlSugar ORM  .NET 4.0+ High-performance, lightweight http://www.cnblogs.com/sunkaixuan/p/5654695.html</description>
     <copyright>Copyright 2015</copyright>
     <tags>asp.net orm</tags>
+
   </metadata>
+    <files>
+     <file src="G:\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\bin\Debug\SqlSugar.XML"  target=""></file>
+    </files>
 </package>
