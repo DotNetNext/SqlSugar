@@ -442,31 +442,51 @@ namespace SqlSugar
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
             var rows = SqlSugarTool.GetParameters(rowObj);
+
+            //sql语句缓存
+            string cacheSqlKey = "db.update." + typeName + rows.Length;
+            var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
+
+       
+          
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
-            foreach (var r in rows)
-            {
-                var name = r.ParameterName.TrimStart('@');
-                var isPk = pkName != null && pkName.ToLower() == name.ToLower();
-                var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
-                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
-                if (isPk || isIdentity || isDisableUpdateColumns)
-                {
-                    if (rowObj.GetType() == type)
-                    {
-                        continue;
-                    }
-                }
-                sbSql.Append(string.Format(" [{0}] =@{0}  ,", name));
-            }
-            sbSql.Remove(sbSql.Length - 1, 1);
-            sbSql.Append(" WHERE  1=1  ");
+
+
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
-            sbSql.Append(re.SqlWhere); ;
+         
 
+            StringBuilder sbSql = new StringBuilder();
+            if (cacheSqlManager.ContainsKey(cacheSqlKey))
+            {
+                sbSql = cacheSqlManager[cacheSqlKey];
+            }
+            else
+            {
+               sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
+                foreach (var r in rows)
+                {
+                    var name = r.ParameterName.TrimStart('@');
+                    var isPk = pkName != null && pkName.ToLower() == name.ToLower();
+                    var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
+                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
+                    if (isPk || isIdentity || isDisableUpdateColumns)
+                    {
+                        if (rowObj.GetType() == type)
+                        {
+                            continue;
+                        }
+                    }
+                    sbSql.Append(string.Format(" [{0}] =@{0}  ,", name));
+                }
+                sbSql.Remove(sbSql.Length - 1, 1);
+                sbSql.Append(" WHERE  1=1  ");
+                sbSql.Append(re.SqlWhere); ;
+                cacheSqlManager.Add(cacheSqlKey, sbSql, cacheSqlManager.Day);
+            }
+          
             List<SqlParameter> parsList = new List<SqlParameter>();
             parsList.AddRange(re.Paras);
             var pars = rows;
