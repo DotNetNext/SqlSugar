@@ -485,7 +485,7 @@ namespace SqlSugar
                 }
                 sbSql.Remove(sbSql.Length - 1, 1);
                 sbSql.Append(" WHERE  1=1  ");
-                sbSql.Append(re.SqlWhere); ;
+                sbSql.Append(re.SqlWhere); 
                 cacheSqlManager.Add(cacheSqlKey, sbSql, cacheSqlManager.Day);
             }
           
