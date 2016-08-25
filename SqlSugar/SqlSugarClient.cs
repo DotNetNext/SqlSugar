@@ -443,6 +443,8 @@ namespace SqlSugar
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             var rows = SqlSugarTool.GetParameters(rowObj);
+            var isDynamic=rowObj.GetType() != type;
+            var isClass=!isDynamic;
 
             //sql语句缓存
             string cacheSqlKey = "db.update." + typeName + rows.Length;
@@ -459,7 +461,7 @@ namespace SqlSugar
          
 
             StringBuilder sbSql = new StringBuilder();
-            if (cacheSqlManager.ContainsKey(cacheSqlKey))
+            if (cacheSqlManager.ContainsKey(cacheSqlKey)&&isClass)
             {
                 sbSql = cacheSqlManager[cacheSqlKey];
             }
@@ -474,7 +476,7 @@ namespace SqlSugar
                     var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
                     if (isPk || isIdentity || isDisableUpdateColumns)
                     {
-                        if (rowObj.GetType() == type)
+                        if (isClass)
                         {
                             continue;
                         }
