@@ -646,6 +646,49 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="FiledType">whereIn里面元素的类型</typeparam>
+        /// <param name="expression">in 的字段名称</param>
+        /// <param name="whereIn">需要删除条件值的数组集合</param>
+        /// <returns></returns>
+        public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn)
+        {
+            if (whereIn == null) return false;
+            return Delete<T, FiledType>(expression, whereIn.ToArray());
+        }
+
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="FiledType">whereIn里面元素的类型</typeparam>
+        /// <param name="expression">in 的字段名称</param>
+        /// <param name="whereIn">需要删除条件值的数组集合</param>
+        /// <returns></returns>
+        public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
+        {
+            ResolveExpress re = new ResolveExpress();
+            var fieldName = re.GetExpressionRightField(expression);
+            Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTableNameByClassType(typeName);
+            //属性缓存
+            string cachePropertiesKey = "db." + typeName + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = SqlSugarTool.GetGetPropertiesByCache(type, cachePropertiesKey, cachePropertiesManager);
+            bool isSuccess = false;
+            if (whereIn != null && whereIn.Length > 0)
+            {
+                string sql = string.Format("DELETE FROM [{0}] WHERE {1} IN ({2})", typeName, fieldName, whereIn.ToJoinSqlInVal());
+                int deleteRowCount = ExecuteCommand(sql);
+                isSuccess = deleteRowCount > 0;
+            }
+            return isSuccess;
+        }
+
+        /// <summary>
         /// 批量假删除
         /// 使用说明::
         /// FalseDelete《T》("is_del",new int[]{1,2,3})或者Delete《T》("is_del",3)
