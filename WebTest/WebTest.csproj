@@ -81,6 +81,7 @@
     <Content Include="Demos\Filter.aspx" />
     <Content Include="Demos\Function.aspx" />
     <Content Include="Demos\Insert.aspx" />
+    <Content Include="Demos\InsertBigData.aspx" />
     <Content Include="Demos\Language.aspx" />
     <Content Include="Demos\newFunctionTest.aspx" />
     <Content Include="Demos\NoParameter.aspx" />
@@ -178,6 +179,13 @@
     </Compile>
     <Compile Include="Demos\Insert.aspx.designer.cs">
       <DependentUpon>Insert.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\InsertBigData.aspx.cs">
+      <DependentUpon>InsertBigData.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\InsertBigData.aspx.designer.cs">
+      <DependentUpon>InsertBigData.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\Language.aspx.cs">
       <DependentUpon>Language.aspx</DependentUpon>

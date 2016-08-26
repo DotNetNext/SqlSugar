@@ -430,14 +430,71 @@ namespace SqlSugar
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
-        public List<T> SqlBulkCopy<T>(List<T> entities) where T : class
+        public bool SqlBulkCopy<T>(List<T> entities) where T : class
         {
+            if (entities == null) { return false; };
+
             Type type = typeof(T);
             string typeName = type.Name;
+            typeName = GetTableNameByClassType(typeName);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             var isIdentity = identityNames != null && identityNames.Count > 0;
+            var columnNames = SqlSugarTool.GetColumnsByTableName(this, typeName);
+            if (isIdentity)
+            {
+                columnNames = columnNames.Where(c => !identityNames.Any(it => it.Value == c)).ToList();//去掉自添列
+            }
+            StringBuilder sbSql = new StringBuilder("INSERT INTO ");
+            sbSql.AppendLine(typeName);
+            sbSql.AppendFormat("({0})", string.Join(",", columnNames.Select(it => "[" + it + "]")));
 
+
+
+            //属性缓存
+            string cachePropertiesKey = "db." + typeName + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            List<SqlParameter> pars = new List<SqlParameter>();
+
+            PropertyInfo[] props = null;
+            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+            {
+                props = cachePropertiesManager[cachePropertiesKey];
+            }
+            else
+            {
+                props = type.GetProperties();
+                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+            }
+            foreach (var entity in entities)
+            {
+                sbSql.AppendLine("SELECT ");
+                foreach (var name in columnNames)
+                {
+                    var isLastName = name == columnNames.Last();
+                    var prop = props.Single(it => it.Name == name);
+                    var objValue = prop.GetValue(entity, null);
+                    SqlParameter par = null;
+                    if (objValue == null)
+                    {
+                        par = new SqlParameter("@" + name, DBNull.Value);
+                    }
+                    else
+                    {
+                        par = new SqlParameter("@" + name, objValue);
+                    }
+                    SqlSugarTool.SetParSize(par);
+                    sbSql.Append("@" + name + (isLastName ? "" : ","));
+                    pars.Add(par);
+                }
+                var isLastEntity = entities.Last() == entity;
+                if (!isLastEntity)
+                {
+                    sbSql.AppendLine("UNION ALL");
+                }
+            }
+            var reval = base.ExecuteCommand(sbSql.ToString(), pars.ToArray());
+            return reval>0;
         }
 
         /// <summary>
