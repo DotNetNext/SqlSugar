@@ -339,7 +339,28 @@ namespace SqlSugar
                 return identityInfo;
             }
         }
-
+        /// <summary>
+        /// 根据表名获取列名
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        internal static List<string> GetColumnsByTableName(SqlSugarClient db, string tableName)
+        {
+            string key = "GetColumnNamesByTableName" + tableName;
+            var cm = CacheManager<List<string>>.GetInstance();
+            if (cm.ContainsKey(key))
+            {
+                return cm[key];
+            }
+            else
+            {
+                string sql = " SELECT Name FROM SysColumns WHERE id=Object_Id('" + tableName + "')";
+                var reval = db.SqlQuery<string>(sql);
+                cm.Add(key, reval, cm.Day);
+                return reval;
+            }
+        }
 
         /// <summary>
         /// 根据表获取主键
@@ -577,11 +598,11 @@ namespace SqlSugar
                 #region offset
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderBy.IsValuable() ? ("ORDER BY " + queryable.OrderBy + " ") : null;
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName , "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy(), joinInfo);
+                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName, "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy(), joinInfo);
                 sbSql.Append(order);
                 if (queryable.Skip != null || queryable.Take != null)
                 {
-                    sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY",Convert.ToInt32(queryable.Skip),Convert.ToInt32(queryable.Take));
+                    sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY", Convert.ToInt32(queryable.Skip), Convert.ToInt32(queryable.Take));
                 }
                 #endregion
             }

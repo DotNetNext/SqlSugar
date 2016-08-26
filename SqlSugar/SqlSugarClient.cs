@@ -425,7 +425,20 @@ namespace SqlSugar
 
         }
 
+        /// <summary>
+        /// 大数据插入(结构体必须和数据库一致)
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public List<T> SqlBulkCopy<T>(List<T> entities) where T : class
+        {
+            Type type = typeof(T);
+            string typeName = type.Name;
+            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
+            var isIdentity = identityNames != null && identityNames.Count > 0;
 
+        }
 
         /// <summary>
         /// 更新
