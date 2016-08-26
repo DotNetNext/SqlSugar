@@ -372,16 +372,19 @@ namespace SqlSugar
                     object val = prop.GetValue(entity, null);
                     if (val == null)
                         val = DBNull.Value;
-                    if (_serialNumber.IsValuable()) {
-                       Func<PubModel.SerialNumber,bool> serEexp=it => it.TableName.ToLower() == typeName.ToLower() && it.FieldName.ToLower() == prop.Name.ToLower();
-                       var isAnyNum = _serialNumber.Any(serEexp);
-                       if (isAnyNum&&(val==DBNull.Value||val.IsNullOrEmpty())) {
-                           val = _serialNumber.First(serEexp).GetNumFunc();
-                       }
+                    if (_serialNumber.IsValuable())
+                    {
+                        Func<PubModel.SerialNumber, bool> serEexp = it => it.TableName.ToLower() == typeName.ToLower() && it.FieldName.ToLower() == prop.Name.ToLower();
+                        var isAnyNum = _serialNumber.Any(serEexp);
+                        if (isAnyNum && (val == DBNull.Value || val.IsNullOrEmpty()))
+                        {
+                            val = _serialNumber.First(serEexp).GetNumFunc();
+                        }
                     }
 
-                    if (prop.PropertyType.IsEnum) { 
-                      val=(int)(val);
+                    if (prop.PropertyType.IsEnum)
+                    {
+                        val = (int)(val);
                     }
 
                     var par = new SqlParameter("@" + prop.Name, val);
@@ -443,31 +446,31 @@ namespace SqlSugar
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             var rows = SqlSugarTool.GetParameters(rowObj);
-            var isDynamic=rowObj.GetType() != type;
-            var isClass=!isDynamic;
+            var isDynamic = rowObj.GetType() != type;
+            var isClass = !isDynamic;
 
             //sql语句缓存
             string cacheSqlKey = "db.update." + typeName + rows.Length;
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
 
-       
-          
+
+
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
 
 
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression);
-         
+
 
             StringBuilder sbSql = new StringBuilder();
-            if (cacheSqlManager.ContainsKey(cacheSqlKey)&&isClass)
+            if (cacheSqlManager.ContainsKey(cacheSqlKey) && isClass)
             {
                 sbSql = cacheSqlManager[cacheSqlKey];
             }
             else
             {
-               sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
+                sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
                 foreach (var r in rows)
                 {
                     var name = r.ParameterName.TrimStart('@');
@@ -485,10 +488,10 @@ namespace SqlSugar
                 }
                 sbSql.Remove(sbSql.Length - 1, 1);
                 sbSql.Append(" WHERE  1=1  ");
-                sbSql.Append(re.SqlWhere); 
+                sbSql.Append(re.SqlWhere);
                 cacheSqlManager.Add(cacheSqlKey, sbSql, cacheSqlManager.Day);
             }
-          
+
             List<SqlParameter> parsList = new List<SqlParameter>();
             parsList.AddRange(re.Paras);
             var pars = rows;
@@ -758,7 +761,7 @@ namespace SqlSugar
         /// </summary>
         public void RemoveAllCache()
         {
-            CacheManager<int>.GetInstance().RemoveAll(c =>true);
+            CacheManager<int>.GetInstance().RemoveAll(c => true);
         }
 
     }
