@@ -44,3 +44,11 @@ C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\bin\SqlSugar.xml
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.csprojResolveAssemblyReference.cache
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.dll
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\WebTest\obj\Release\WebTest.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\bin\WebTest.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\bin\WebTest.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\bin\SqlSugar.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\bin\SqlSugar.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\bin\SqlSugar.xml
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\obj\Release\WebTest.csprojResolveAssemblyReference.cache
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\obj\Release\WebTest.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\WebTest\obj\Release\WebTest.pdb

@@ -26,3 +26,8 @@ C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\bin\Release\SqlS
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\bin\Release\SqlSugar.pdb
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\obj\Release\SqlSugar.dll
 C:\Users\jailall.sun\OneDrive\Asp.net\Project\SqlSugar\SqlSugar\obj\Release\SqlSugar.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\bin\Release\SqlSugar.XML
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\bin\Release\SqlSugar.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\bin\Release\SqlSugar.pdb
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\obj\Release\SqlSugar.dll
+C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\obj\Release\SqlSugar.pdb
