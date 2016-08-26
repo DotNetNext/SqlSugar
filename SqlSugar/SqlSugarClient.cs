@@ -450,7 +450,7 @@ namespace SqlSugar
             sbSql.AppendFormat("({0})", string.Join(",", columnNames.Select(it => "[" + it + "]")));
 
 
-
+            int i = 0;
             //属性缓存
             string cachePropertiesKey = "db." + typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
@@ -468,6 +468,7 @@ namespace SqlSugar
             }
             foreach (var entity in entities)
             {
+                ++i;
                 sbSql.AppendLine("SELECT ");
                 foreach (var name in columnNames)
                 {
@@ -477,20 +478,20 @@ namespace SqlSugar
                     SqlParameter par = null;
                     if (objValue == null)
                     {
-                        par = new SqlParameter("@" + name, DBNull.Value);
+                        par = new SqlParameter("@" + name+i, DBNull.Value);
                     }
                     else
                     {
-                        par = new SqlParameter("@" + name, objValue);
+                        par = new SqlParameter("@" + name+i, objValue);
                     }
                     SqlSugarTool.SetParSize(par);
-                    sbSql.Append("@" + name + (isLastName ? "" : ","));
+                    sbSql.Append("@" + name+i+ (isLastName ? "" : ","));
                     pars.Add(par);
                 }
                 var isLastEntity = entities.Last() == entity;
                 if (!isLastEntity)
                 {
-                    sbSql.AppendLine("UNION ALL");
+                    sbSql.AppendLine(" UNION ALL ");
                 }
             }
             var reval = base.ExecuteCommand(sbSql.ToString(), pars.ToArray());
