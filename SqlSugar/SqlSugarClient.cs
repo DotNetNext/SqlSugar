@@ -474,14 +474,21 @@ namespace SqlSugar
                     var objValue = prop.GetValue(entity, null);
                     bool isNullable = false;
                     var underType = SqlSugarTool.GetUnderType(prop, ref isNullable);
-                    if (underType == SqlSugarTool.DateType) {
-                        objValue = objValue.ToString();
+                    if (objValue == null) {
+                        objValue = "NULL";
                     }
-                    else if (underType == SqlSugarTool.BoolType) {
-                        objValue =Convert.ToBoolean(objValue)?1:0;
+                    if (underType == SqlSugarTool.DateType) {
+                        objValue = "'"+objValue.ToString()+"'";
+                    }
+                    else if (underType == SqlSugarTool.BoolType)
+                    {
+                        objValue = Convert.ToBoolean(objValue) ? 1 : 0;
+                    }
+                    else {
+                        objValue = "'" + objValue.ToString() + "'";
                     }
 
-                    sbSql.Append("'" + objValue + (isLastName ? "'" : "',"));
+                    sbSql.Append( objValue + (isLastName ? "" : ","));
                 }
                 var isLastEntity = entities.Last() == entity;
                 if (!isLastEntity)
