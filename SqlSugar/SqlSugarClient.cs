@@ -451,7 +451,7 @@ namespace SqlSugar
                 }
                 entities.RemoveRange(0, actionNum);
             }
-            return true;
+            return reval;
         }
 
         private bool SqlBulkCopy<T>(IEnumerable<T> entities) where T : class
