@@ -432,6 +432,30 @@ namespace SqlSugar
         /// <returns></returns>
         public bool SqlBulkCopy<T>(List<T> entities) where T : class
         {
+            int actionNum = 100;
+            var reval = true;
+            while (entities.Count > 0)
+            {
+                var insertRes = SqlBulkCopy<T>(entities.Take(actionNum));
+                if (reval && insertRes)
+                {
+                    reval = true;
+                }
+                else
+                {
+                    reval = false;
+                }
+                if (actionNum > entities.Count)
+                {
+                    actionNum = entities.Count;
+                }
+                entities.RemoveRange(0, actionNum);
+            }
+            return true;
+        }
+
+        private bool SqlBulkCopy<T>(IEnumerable<T> entities) where T : class
+        {
             if (entities == null) { return false; };
 
             Type type = typeof(T);
@@ -474,21 +498,24 @@ namespace SqlSugar
                     var objValue = prop.GetValue(entity, null);
                     bool isNullable = false;
                     var underType = SqlSugarTool.GetUnderType(prop, ref isNullable);
-                    if (objValue == null) {
+                    if (objValue == null)
+                    {
                         objValue = "NULL";
                     }
-                    if (underType == SqlSugarTool.DateType) {
-                        objValue = "'"+objValue.ToString()+"'";
+                    else if (underType == SqlSugarTool.DateType)
+                    {
+                        objValue = "'" + objValue.ToString() + "'";
                     }
                     else if (underType == SqlSugarTool.BoolType)
                     {
                         objValue = Convert.ToBoolean(objValue) ? 1 : 0;
                     }
-                    else {
+                    else
+                    {
                         objValue = "'" + objValue.ToString() + "'";
                     }
 
-                    sbSql.Append( objValue + (isLastName ? "" : ","));
+                    sbSql.Append(objValue + (isLastName ? "" : ","));
                 }
                 var isLastEntity = entities.Last() == entity;
                 if (!isLastEntity)
@@ -497,7 +524,8 @@ namespace SqlSugar
                 }
             }
             var reval = base.ExecuteCommand(sbSql.ToString());
-            return reval>0;
+            sbSql = null;
+            return reval > 0;
         }
 
         /// <summary>
