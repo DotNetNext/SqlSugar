@@ -608,5 +608,19 @@ namespace SqlSugar
             }
             return sbSql;
         }
+
+        /// <summary>
+        /// 获取最底层类型
+        /// </summary>
+        /// <param name="propertyInfo"></param>
+        /// <param name="isNullable"></param>
+        /// <returns></returns>
+        internal static Type GetUnderType(PropertyInfo propertyInfo, ref bool isNullable)
+        {
+            Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+            isNullable = unType != null;
+            unType = unType ?? propertyInfo.PropertyType;
+            return unType;
+        }
     }
 }

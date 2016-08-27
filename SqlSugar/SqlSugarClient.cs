@@ -454,8 +454,6 @@ namespace SqlSugar
             //属性缓存
             string cachePropertiesKey = "db." + typeName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            List<SqlParameter> pars = new List<SqlParameter>();
-
             PropertyInfo[] props = null;
             if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
             {
@@ -468,25 +466,22 @@ namespace SqlSugar
             }
             foreach (var entity in entities)
             {
-                ++i;
                 sbSql.AppendLine("SELECT ");
                 foreach (var name in columnNames)
                 {
                     var isLastName = name == columnNames.Last();
                     var prop = props.Single(it => it.Name == name);
                     var objValue = prop.GetValue(entity, null);
-                    SqlParameter par = null;
-                    if (objValue == null)
-                    {
-                        par = new SqlParameter("@" + name+i, DBNull.Value);
+                    bool isNullable = false;
+                    var underType = SqlSugarTool.GetUnderType(prop, ref isNullable);
+                    if (underType == SqlSugarTool.DateType) {
+                        objValue = objValue.ToString();
                     }
-                    else
-                    {
-                        par = new SqlParameter("@" + name+i, objValue);
+                    else if (underType == SqlSugarTool.BoolType) {
+                        objValue =Convert.ToBoolean(objValue)?1:0;
                     }
-                    SqlSugarTool.SetParSize(par);
-                    sbSql.Append("@" + name+i+ (isLastName ? "" : ","));
-                    pars.Add(par);
+
+                    sbSql.Append("'" + objValue + (isLastName ? "'" : "',"));
                 }
                 var isLastEntity = entities.Last() == entity;
                 if (!isLastEntity)
@@ -494,7 +489,7 @@ namespace SqlSugar
                     sbSql.AppendLine(" UNION ALL ");
                 }
             }
-            var reval = base.ExecuteCommand(sbSql.ToString(), pars.ToArray());
+            var reval = base.ExecuteCommand(sbSql.ToString());
             return reval>0;
         }
 

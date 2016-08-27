@@ -83,7 +83,7 @@ namespace SqlSugar
                     if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                     {
                         bool isNullable = false;
-                        var underType = GetUnderType(propertyInfo, ref isNullable);
+                        var underType =SqlSugarTool.GetUnderType(propertyInfo, ref isNullable);
 
                         generator.Emit(OpCodes.Ldarg_0);
                         generator.Emit(OpCodes.Ldc_I4, i);
@@ -378,18 +378,6 @@ namespace SqlSugar
             }
             return reval;
         }
-        /// <summary>
-        /// 获取最底层类型
-        /// </summary>
-        /// <param name="propertyInfo"></param>
-        /// <param name="isNullable"></param>
-        /// <returns></returns>
-        private static Type GetUnderType(PropertyInfo propertyInfo, ref bool isNullable)
-        {
-            Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
-            isNullable = unType != null;
-            unType = unType ?? propertyInfo.PropertyType;
-            return unType;
-        }
+
     }
 }
