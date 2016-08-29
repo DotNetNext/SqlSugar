@@ -21,5 +21,12 @@ namespace Models
      /// </summary>
         public string name {get;set;}
 
+     /// <summary>
+     /// Desc:- 
+     /// Default:- 
+     /// Nullable:True 
+     /// </summary>
+        public int? AreaId {get;set;}
+
     }
 }

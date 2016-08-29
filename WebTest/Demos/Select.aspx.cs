@@ -51,7 +51,7 @@ namespace WebTest.Demo
                  .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
                  .Skip(1)
                  .Take(2)
-                 .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s1.name, xx_name=s1.name})//select目前只支持这种写法
+                 .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s2.name, xx_name=s1.name})//select目前只支持这种写法
                  .ToList();
 
                 var jList2 = db.Queryable<Student>()
@@ -307,7 +307,21 @@ namespace WebTest.Demo
                .Take(20)
                .Select("s1.*,s2.name as schName,s3.name as schName2")//select目前只支持这种写法
                .ToDynamic();
+
+
+                //上面的方式都是与第一张表join，第三张表想与第二张表join写法如下
+                List<classNew> jList4 = db.Queryable<Student>()
+                 .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
+                 .JoinTable<Student, School,Area>((s1,s2,a1)=>a1.Id==s2.AreaId)// left join  Area a1  on a1.id=s2.AreaId
+                 .Select<Student, School, Area, classNew>((s1, s2, a1) => new classNew { newid=s1.id, studentName=s1.name,  schoolName=s2.name,  areaName=a1.name}).ToList();
+
+
+
+
                 //最多支持5表查询,太过复杂的建议用Sqlable或者SqlQuery,我们的Queryable只适合轻量级的查询
+
+
+                
 
 
                 //拼接

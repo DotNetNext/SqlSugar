@@ -249,10 +249,12 @@
     <Compile Include="Demos\Update.aspx.designer.cs">
       <DependentUpon>Update.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Area.cs" />
     <Compile Include="Models\GuidTest.cs" />
     <Compile Include="Models\LanguageTest.cs" />
     <Compile Include="Models\TableDataTypeTest.cs" />
     <Compile Include="Models\TestModels.cs" />
+    <Compile Include="Models\TestOfNull.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
     <Compile Include="Models\V_LanguageTest.cs" />
     <Compile Include="PerformanceTest\add_delete_update\Add.aspx.cs">

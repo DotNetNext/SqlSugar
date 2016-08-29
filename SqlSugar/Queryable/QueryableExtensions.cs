@@ -886,5 +886,38 @@ namespace SqlSugar
             return queryable;
         }
 
+
+        /// <summary>
+        /// 联表查询
+        /// </summary>
+        /// <typeparam name="T">第一个表的对象</typeparam>
+        /// <typeparam name="T2">联接的表对象</typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression">表达示</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Queryable<T> JoinTable<T, T2,T3>(this Queryable<T> queryable, Expression<Func<T, T2,T3, object>> expression, JoinType type = JoinType.LEFT)
+        {
+
+            ResolveExpress re = new ResolveExpress();
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            re.Type = ResolveExpressType.nT;
+            var exLeftStr = Regex.Match(expression.ToString(), @"\((.+?)\).+").Groups[1].Value;
+            var exLeftArray = exLeftStr.Split(',');
+            var shortName1 = exLeftArray[1];
+            var shortName2 = exLeftArray[2];
+            re.ResolveExpression(re, expression);
+            string joinTableName = type.ToString();
+            string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
+                /*0*/queryable.JoinTable.Count == 0 ? (" " + shortName1 + " " + joinTableName) : joinTableName.ToString(),
+                /*1*/typeof(T3).Name,
+                /*2*/shortName2,
+                /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
+                );
+            queryable.JoinTable.Add(joinStr);
+            queryable.Params.AddRange(re.Paras);
+            return queryable;
+        }
+
     }
 }
