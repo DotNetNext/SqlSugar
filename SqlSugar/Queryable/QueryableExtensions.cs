@@ -66,6 +66,7 @@ namespace SqlSugar
             var InFieldName = re.GetExpressionRightField(expression);
             return In<T, FieldType>(queryable, InFieldName, inValues);
         }
+        
         /// <summary>
         /// 条件筛选 例如：expression 为 it=>it.a  inValues值为 new string[]{"a" ,"b"} 生成的SQL就是  a in('a','b')
         /// </summary>
