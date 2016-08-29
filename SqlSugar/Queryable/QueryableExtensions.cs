@@ -485,6 +485,137 @@ namespace SqlSugar
             return queryable.Count() > 0;
         }
 
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<TResult> Select<T, T2, TResult>(this Queryable<T> queryable, Expression<Func<T, T2, TResult>> expression)
+        {
+            var expStr = expression.ToString();
+            var type = typeof(T);
+            Queryable<TResult> reval = new Queryable<TResult>()
+            {
+                DB = queryable.DB,
+                OrderBy = queryable.OrderBy,
+                Params = queryable.Params,
+                Skip = queryable.Skip,
+                Take = queryable.Take,
+                Where = queryable.Where,
+                TableName = type.Name,
+                GroupBy = queryable.GroupBy,
+                JoinTable=queryable.JoinTable
+            };
+            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
+            if (reval.Select.IsNullOrEmpty())
+            {
+                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
+            }
+            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            return reval;
+        }
+
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<TResult> Select<T, T2 ,T3, TResult>(this Queryable<T> queryable, Expression<Func<T, T2,T3, TResult>> expression)
+        {
+            var expStr = expression.ToString();
+            var type = typeof(T);
+            Queryable<TResult> reval = new Queryable<TResult>()
+            {
+                DB = queryable.DB,
+                OrderBy = queryable.OrderBy,
+                Params = queryable.Params,
+                Skip = queryable.Skip,
+                Take = queryable.Take,
+                Where = queryable.Where,
+                TableName = type.Name,
+                GroupBy = queryable.GroupBy,
+                JoinTable = queryable.JoinTable
+            };
+            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
+            if (reval.Select.IsNullOrEmpty())
+            {
+                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
+            }
+            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            return reval;
+        }
+
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<TResult> Select<T, T2, T3,T4, TResult>(this Queryable<T> queryable, Expression<Func<T, T2, T3,T4, TResult>> expression)
+        {
+            var expStr = expression.ToString();
+            var type = typeof(T);
+            Queryable<TResult> reval = new Queryable<TResult>()
+            {
+                DB = queryable.DB,
+                OrderBy = queryable.OrderBy,
+                Params = queryable.Params,
+                Skip = queryable.Skip,
+                Take = queryable.Take,
+                Where = queryable.Where,
+                TableName = type.Name,
+                GroupBy = queryable.GroupBy,
+                JoinTable = queryable.JoinTable
+            };
+            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
+            if (reval.Select.IsNullOrEmpty())
+            {
+                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
+            }
+            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            return reval;
+        }
+
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<TResult> Select<T, T2, T3, T4,T5, TResult>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4,T5, TResult>> expression)
+        {
+            var expStr = expression.ToString();
+            var type = typeof(T);
+            Queryable<TResult> reval = new Queryable<TResult>()
+            {
+                DB = queryable.DB,
+                OrderBy = queryable.OrderBy,
+                Params = queryable.Params,
+                Skip = queryable.Skip,
+                Take = queryable.Take,
+                Where = queryable.Where,
+                TableName = type.Name,
+                GroupBy = queryable.GroupBy,
+                JoinTable = queryable.JoinTable
+            };
+            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
+            if (reval.Select.IsNullOrEmpty())
+            {
+                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
+            }
+            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            return reval;
+        }
 
         /// <summary>
         /// 将源数据对象转换到新对象中

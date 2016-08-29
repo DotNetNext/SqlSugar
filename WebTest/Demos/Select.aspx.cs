@@ -44,6 +44,24 @@ namespace WebTest.Demo
                 var list3 = db.Queryable<Student>().Where(c => c.id < 10).Select(c => new { newid = c.id, newname = c.name, xx_name = c.name }).ToDynamic();//匿名类转换
 
                 var list4 = db.Queryable<Student>().Where(c => c.id < 10).Select("id as newid, name as newname ,name as xx_name").ToDynamic();//匿名类转换
+
+                var jList1 = db.Queryable<Student>()
+                 .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
+                 .Where<Student, School>((s1, s2) => s1.id > 1)  // where s1.id>1
+                 .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
+                 .Skip(1)
+                 .Take(2)
+                 .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s1.name, xx_name=s1.name})//select目前只支持这种写法
+                 .ToList();
+
+                var jList2 = db.Queryable<Student>()
+                .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
+                .Where<Student, School>((s1, s2) => s1.id > 1)  // where s1.id>1
+                .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
+                .Skip(1)
+                .Take(2)
+                .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s1.name, xx_name = s1.name })//select目前只支持这种写法
+                .ToDynamic();
             }
         }
 
