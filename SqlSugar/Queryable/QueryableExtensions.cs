@@ -70,7 +70,7 @@ namespace SqlSugar
             queryable.Where.Add(re.SqlWhere);
             return queryable;
         }
-       
+
         /// <summary>
         /// 条件筛选
         /// </summary>
@@ -89,7 +89,7 @@ namespace SqlSugar
             queryable.Where.Add(re.SqlWhere);
             return queryable;
         }
-       
+
         /// <summary>
         /// 条件筛选
         /// </summary>
@@ -108,7 +108,7 @@ namespace SqlSugar
             queryable.Where.Add(re.SqlWhere);
             return queryable;
         }
-        
+
         /// <summary>
         /// 条件筛选
         /// </summary>
@@ -128,7 +128,7 @@ namespace SqlSugar
             return queryable;
         }
 
-       
+
         /// <summary>
         /// 条件筛选 例如：InFieldName 为 a inValues 值为 new string[]{"a" ,"b"} 生成的SQL就是  a in('a','b')
         /// </summary>
@@ -159,9 +159,9 @@ namespace SqlSugar
             var InFieldName = re.GetExpressionRightField(expression);
             return In<T, FieldType>(queryable, InFieldName, inValues);
         }
-        
+
         /// <summary>
-        /// 条件筛选 例如：expression 为 it=>it.a  inValues值为 new string[]{"a" ,"b"} 生成的SQL就是  a in('a','b')
+        /// 条件筛选 例如：expression 为 it=>it.a  inValues值为 new list《string》{"a" ,"b"} 生成的SQL就是  a in('a','b')
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
@@ -176,7 +176,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 条件筛选
+        /// 条件筛选 例如：InFieldName 为 a inValues 值为 new list《string》{"a" ,"b"} 生成的SQL就是  a in('a','b')
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
@@ -206,7 +206,8 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
-        /// <param name="orderFileds">如：id asc,name desc </param>
+        /// <param name="expression">排序字段 it=>it.fieldName </param>
+        /// <param name="type">排序类型</param>
         /// <returns></returns>
         public static Queryable<T> OrderBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression, OrderByType type = OrderByType.asc)
         {
@@ -234,14 +235,14 @@ namespace SqlSugar
             queryable.OrderBy += pre + field + " " + type.ToString().ToUpper();
             return queryable;
         }
-       
-       
+
+
         /// <summary>
         /// 分组
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
-        /// <param name="groupFileds">如：id,name </param>
+        /// <param name="expression">分组字段 it=>it.fieldName</param>
         /// <returns></returns>
         public static Queryable<T> GroupBy<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
@@ -415,7 +416,7 @@ namespace SqlSugar
             }
             return reval.First();
         }
-        
+
         /// <summary>
         /// 返回序列中的第一个元素。
         /// </summary>
@@ -423,7 +424,8 @@ namespace SqlSugar
         /// <param name="queryable"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static T First<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression) {
+        public static T First<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
+        {
 
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -515,7 +517,7 @@ namespace SqlSugar
             reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
             return reval;
         }
-        
+
         /// <summary>
         /// 将源数据对象转换到新对象中
         /// </summary>
@@ -541,7 +543,7 @@ namespace SqlSugar
             };
             return reval;
         }
-       
+
         /// <summary>
         /// 将源数据对象转换到新对象中
         /// </summary>
@@ -752,6 +754,6 @@ namespace SqlSugar
             queryable.Params.AddRange(re.Paras);
             return queryable;
         }
-      
+
     }
 }
