@@ -35,7 +35,100 @@ namespace SqlSugar
             return queryable;
         }
 
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="whereString"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T>(this Queryable<T> queryable, string whereString, object whereObj = null)
+        {
+            var type = queryable.Type;
+            string whereStr = string.Format(" AND {0} ", whereString);
+            queryable.Where.Add(whereStr);
+            if (whereObj != null)
+                queryable.Params.AddRange(SqlSugarTool.GetParameters(whereObj));
+            return queryable;
+        }
 
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.Type = ResolveExpressType.nT;
+            re.ResolveExpression(re, expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
+            return queryable;
+        }
+       
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T, T2, T3>(this Queryable<T> queryable, Expression<Func<T, T2, T3, object>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.Type = ResolveExpressType.nT;
+            re.ResolveExpression(re, expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
+            return queryable;
+        }
+       
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T, T2, T3, T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.Type = ResolveExpressType.nT;
+            re.ResolveExpression(re, expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
+            return queryable;
+        }
+        
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static Queryable<T> Where<T, T2, T3, T4, T5>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        {
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.Type = ResolveExpressType.nT;
+            re.ResolveExpression(re, expression);
+            queryable.Params.AddRange(re.Paras);
+            queryable.Where.Add(re.SqlWhere);
+            return queryable;
+        }
+
+       
         /// <summary>
         /// 条件筛选 例如：InFieldName 为 a inValues 值为 new string[]{"a" ,"b"} 生成的SQL就是  a in('a','b')
         /// </summary>
@@ -82,7 +175,6 @@ namespace SqlSugar
             return In<T, FieldType>(queryable, InFieldName, inValues);
         }
 
-
         /// <summary>
         /// 条件筛选
         /// </summary>
@@ -95,22 +187,6 @@ namespace SqlSugar
             return In<T, FieldType>(queryable, InFieldName, inValues.ToArray());
         }
 
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="whereString"></param>
-        /// <returns></returns>
-        public static Queryable<T> Where<T>(this Queryable<T> queryable, string whereString, object whereObj = null)
-        {
-            var type = queryable.Type;
-            string whereStr = string.Format(" AND {0} ", whereString);
-            queryable.Where.Add(whereStr);
-            if (whereObj != null)
-                queryable.Params.AddRange(SqlSugarTool.GetParameters(whereObj));
-            return queryable;
-        }
 
         /// <summary>
         /// 排序
@@ -124,8 +200,6 @@ namespace SqlSugar
             queryable.OrderBy = orderFileds.ToSuperSqlFilter();
             return queryable;
         }
-
-
 
         /// <summary>
         /// 排序
@@ -143,6 +217,25 @@ namespace SqlSugar
             return queryable;
         }
 
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression">例如 (s1,s2)=>s1.id,相当于 order by s1.id</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Queryable<T> OrderBy<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
+        {
+            ResolveExpress re = new ResolveExpress();
+            var field = re.GetExpressionRightFieldByNT(expression);
+            var pre = queryable.OrderBy.IsValuable() ? "," : "";
+            queryable.OrderBy += pre + field + " " + type.ToString().ToUpper();
+            return queryable;
+        }
+       
+       
         /// <summary>
         /// 分组
         /// </summary>
@@ -171,6 +264,7 @@ namespace SqlSugar
             queryable.GroupBy = groupFileds.ToSuperSqlFilter();
             return queryable;
         }
+
 
         /// <summary>
         ///  跳过序列中指定数量的元素，然后返回剩余的元素。
@@ -205,6 +299,7 @@ namespace SqlSugar
             queryable.Take = num;
             return queryable;
         }
+
 
         /// <summary>
         ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
@@ -245,6 +340,7 @@ namespace SqlSugar
             return reval.Single();
         }
 
+
         /// <summary>
         ///   返回序列中的第一个元素,如果序列为NULL返回default(T)
         /// </summary>
@@ -266,6 +362,7 @@ namespace SqlSugar
             }
             return reval.First();
         }
+
         /// <summary>
         ///  返回序列中的第一个元素。
         /// </summary>
@@ -283,6 +380,7 @@ namespace SqlSugar
             var reval = queryable.ToList();
             return reval.First();
         }
+
 
         /// <summary>
         ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
@@ -302,8 +400,6 @@ namespace SqlSugar
             return queryable.Count() > 0;
         }
 
-
-
         /// <summary>
         ///  确定序列是否包含任何元素
         /// </summary>
@@ -314,6 +410,7 @@ namespace SqlSugar
         {
             return queryable.Count() > 0;
         }
+
 
         /// <summary>
         ///  返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
@@ -351,6 +448,7 @@ namespace SqlSugar
             return queryable.ToList().SingleOrDefault();
         }
 
+
         /// <summary>
         /// 将源数据对象转换到新对象中
         /// </summary>
@@ -382,6 +480,7 @@ namespace SqlSugar
             reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
             return reval;
         }
+        
         /// <summary>
         /// 将源数据对象转换到新对象中
         /// </summary>
@@ -407,6 +506,7 @@ namespace SqlSugar
             };
             return reval;
         }
+       
         /// <summary>
         /// 将源数据对象转换到新对象中
         /// </summary>
@@ -528,8 +628,6 @@ namespace SqlSugar
 
         }
 
-
-
         /// <summary>
         /// 将Queryable转换为Json
         /// </summary>
@@ -551,8 +649,6 @@ namespace SqlSugar
         {
             return JsonConverter.ConvertJson(ToJson<T>(queryable));
         }
-
-
 
         /// <summary>
         /// 将Queryable转换为DataTable
@@ -621,95 +717,6 @@ namespace SqlSugar
             queryable.Params.AddRange(re.Paras);
             return queryable;
         }
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static Queryable<T> Where<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression)
-        {
-            var type = queryable.Type;
-            queryable.WhereIndex = queryable.WhereIndex + 100;
-            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
-            re.Type = ResolveExpressType.nT;
-            re.ResolveExpression(re, expression);
-            queryable.Params.AddRange(re.Paras);
-            queryable.Where.Add(re.SqlWhere);
-            return queryable;
-        }
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static Queryable<T> Where<T, T2, T3>(this Queryable<T> queryable, Expression<Func<T, T2, T3, object>> expression)
-        {
-            var type = queryable.Type;
-            queryable.WhereIndex = queryable.WhereIndex + 100;
-            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
-            re.Type = ResolveExpressType.nT;
-            re.ResolveExpression(re, expression);
-            queryable.Params.AddRange(re.Paras);
-            queryable.Where.Add(re.SqlWhere);
-            return queryable;
-        }
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static Queryable<T> Where<T, T2, T3, T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, object>> expression)
-        {
-            var type = queryable.Type;
-            queryable.WhereIndex = queryable.WhereIndex + 100;
-            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
-            re.Type = ResolveExpressType.nT;
-            re.ResolveExpression(re, expression);
-            queryable.Params.AddRange(re.Paras);
-            queryable.Where.Add(re.SqlWhere);
-            return queryable;
-        }
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static Queryable<T> Where<T, T2, T3, T4, T5>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, T5, object>> expression)
-        {
-            var type = queryable.Type;
-            queryable.WhereIndex = queryable.WhereIndex + 100;
-            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
-            re.Type = ResolveExpressType.nT;
-            re.ResolveExpression(re, expression);
-            queryable.Params.AddRange(re.Paras);
-            queryable.Where.Add(re.SqlWhere);
-            return queryable;
-        }
-        /// <summary>
-        /// 排序
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="expression">例如 (s1,s2)=>s1.id,相当于 order by s1.id</param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static Queryable<T> OrderBy<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
-        {
-            ResolveExpress re = new ResolveExpress();
-            var field = re.GetExpressionRightFieldByNT(expression);
-            var pre = queryable.OrderBy.IsValuable() ? "," : "";
-            queryable.OrderBy += pre + field + " " + type.ToString().ToUpper();
-            return queryable;
-        }
-
+      
     }
 }
