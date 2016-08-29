@@ -85,7 +85,7 @@ namespace SqlSugar
         public bool IsNoLock { get; set; }
 
         /// <summary>
-        /// 忽略非数据库列，如果特殊需求不建议启用
+        /// 忽略非数据库列，如果非特殊需求不建议启用
         /// </summary>
         public bool IsIgnoreErrorColumns = false;
 
@@ -354,6 +354,13 @@ namespace SqlSugar
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
                 {
+                    if (this.IsIgnoreErrorColumns)
+                    {
+                        if (!SqlSugarTool.GetColumnsByTableName(this,typeName).Any(it => it.ToLower() == prop.Name.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
                     //EntityState,@EntityKey
                     if (!isIdentity || identities.Any(it => it.Value.ToLower() != prop.Name.ToLower()))
                     {
@@ -373,6 +380,13 @@ namespace SqlSugar
                 //EntityState,@EntityKey
                 if (!isIdentity || identities.Any(it => it.Value.ToLower() != prop.Name.ToLower()))
                 {
+                    if (this.IsIgnoreErrorColumns)
+                    {
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == prop.Name.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
                         sbInsertSql.Append("@" + prop.Name + ",");
                     object val = prop.GetValue(entity, null);
@@ -584,6 +598,15 @@ namespace SqlSugar
                     var isPk = pkName != null && pkName.ToLower() == name.ToLower();
                     var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
                     var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
+
+                    if (this.IsIgnoreErrorColumns)
+                    {
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == name.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
+                    
                     if (isPk || isIdentity || isDisableUpdateColumns)
                     {
                         if (isClass)
@@ -663,6 +686,15 @@ namespace SqlSugar
                 var isPk = pkName != null && pkName.ToLower() == r.Key.ToLower();
                 var isIdentity = identityNames.Any(it => it.Value.ToLower() == r.Key.ToLower());
                 var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower());
+
+                if (this.IsIgnoreErrorColumns)
+                {
+                    if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == r.Key.ToLower()))
+                    {
+                        continue;
+                    }
+                }
+
                 if (isPk || isIdentity || isDisableUpdateColumns)
                 {
                     if (rowObj.GetType() == type)
