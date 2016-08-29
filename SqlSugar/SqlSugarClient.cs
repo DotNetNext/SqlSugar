@@ -83,6 +83,12 @@ namespace SqlSugar
         /// 查询是否允许脏读，（默认为:true）
         /// </summary>
         public bool IsNoLock { get; set; }
+
+        /// <summary>
+        /// 忽略非数据库列，如果特殊需求不建议启用
+        /// </summary>
+        public bool IsIgnoreErrorColumns = false;
+
         /// <summary>
         /// 设置禁止更新的列
         /// </summary>
