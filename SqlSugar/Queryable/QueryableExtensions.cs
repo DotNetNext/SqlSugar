@@ -376,6 +376,23 @@ namespace SqlSugar
             return queryable.ToList().SingleOrDefault();
         }
 
+        /// <summary>
+        ///  返回序列中的第一个元素。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public static T First<T>(this  Queryable<T> queryable)
+        {
+            if (queryable.OrderBy.IsNullOrEmpty())
+            {
+                queryable.OrderBy = "GETDATE()";
+            }
+            queryable.Skip(0);
+            queryable.Take(1);
+            var reval = queryable.ToList();
+            return reval.First();
+        }
 
         /// <summary>
         ///   返回序列中的第一个元素,如果序列为NULL返回default(T)
@@ -398,23 +415,42 @@ namespace SqlSugar
             }
             return reval.First();
         }
-
+        
         /// <summary>
-        ///  返回序列中的第一个元素。
+        /// 返回序列中的第一个元素。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
+        /// <param name="expression"></param>
         /// <returns></returns>
-        public static T First<T>(this  Queryable<T> queryable)
+        public static T First<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression) {
+
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.ResolveExpression(re, expression);
+            queryable.Where.Add(re.SqlWhere);
+            queryable.Params.AddRange(re.Paras);
+            return First<T>(queryable);
+        }
+
+        /// <summary>
+        /// 返回序列中的第一个元素,如果序列为NULL返回default(T)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static T FirstOrDefault<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
-            if (queryable.OrderBy.IsNullOrEmpty())
-            {
-                queryable.OrderBy = "GETDATE()";
-            }
-            queryable.Skip(0);
-            queryable.Take(1);
-            var reval = queryable.ToList();
-            return reval.First();
+
+            var type = queryable.Type;
+            queryable.WhereIndex = queryable.WhereIndex + 100;
+            ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            re.ResolveExpression(re, expression);
+            queryable.Where.Add(re.SqlWhere);
+            queryable.Params.AddRange(re.Paras);
+            return FirstOrDefault<T>(queryable);
         }
 
 
