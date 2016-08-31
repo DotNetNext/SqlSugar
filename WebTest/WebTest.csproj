@@ -80,6 +80,7 @@
     <Content Include="Demos\EnumType.aspx" />
     <Content Include="Demos\Filter.aspx" />
     <Content Include="Demos\Function.aspx" />
+    <Content Include="Demos\IgnoreErrorColumns.aspx" />
     <Content Include="Demos\Insert.aspx" />
     <Content Include="Demos\InsertBigData.aspx" />
     <Content Include="Demos\Language.aspx" />
@@ -171,6 +172,13 @@
     </Compile>
     <Compile Include="Demos\Function.aspx.designer.cs">
       <DependentUpon>Function.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\IgnoreErrorColumns.aspx.cs">
+      <DependentUpon>IgnoreErrorColumns.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\IgnoreErrorColumns.aspx.designer.cs">
+      <DependentUpon>IgnoreErrorColumns.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\Insert.aspx.cs">
       <DependentUpon>Insert.aspx</DependentUpon>

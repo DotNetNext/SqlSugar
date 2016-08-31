@@ -302,6 +302,7 @@ namespace WebTest.Demo
                .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
                .JoinTable<Student, School>((s1, s3) => s1.sch_id == s3.id) // left join  School s3  on s1.id=s3.id
                .Where<Student, School>((s1, s2) => s1.id > 1)  // where s1.id>1
+               .Where<Student>(s1=>s1.id>0)
                .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
                .Skip(10)
                .Take(20)

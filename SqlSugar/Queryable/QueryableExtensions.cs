@@ -29,6 +29,9 @@ namespace SqlSugar
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
             ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
+            if (queryable.JoinTable.IsValuable()) {
+                re.Type = ResolveExpressType.nT;
+            }
             re.ResolveExpression(re, expression);
             queryable.Params.AddRange(re.Paras);
             queryable.Where.Add(re.SqlWhere);
