@@ -356,7 +356,7 @@ namespace SqlSugar
                 {
                     if (this.IsIgnoreErrorColumns)
                     {
-                        if (!SqlSugarTool.GetColumnsByTableName(this,typeName).Any(it => it.ToLower() == prop.Name.ToLower()))
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == prop.Name.ToLower()))
                         {
                             continue;
                         }
@@ -530,6 +530,11 @@ namespace SqlSugar
                     {
                         objValue = Convert.ToBoolean(objValue) ? 1 : 0;
                     }
+                    else if (underType == SqlSugarTool.StringType)
+                    {
+                        //string参数需要处理注入 (因为SqlParameter参数上限为2100所以无法使用参数化)
+                        objValue = "'" + objValue.ToString().ToSqlFilter() + "'";
+                    }
                     else
                     {
                         objValue = "'" + objValue.ToString() + "'";
@@ -606,7 +611,7 @@ namespace SqlSugar
                             continue;
                         }
                     }
-                    
+
                     if (isPk || isIdentity || isDisableUpdateColumns)
                     {
                         if (isClass)

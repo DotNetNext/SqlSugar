@@ -52,10 +52,11 @@ namespace SqlSugar
         {
             if (!value.IsNullOrEmpty())
             {
-                if (Regex.IsMatch(value, @"'|%|0x|(\@.*\=)", RegexOptions.IgnoreCase))
+                if (Regex.IsMatch(value, @"%\d|0x\d|0x[0-9,a-z]{6,300}|(\@.*\=)", RegexOptions.IgnoreCase))
                 {
                     throw new SqlSugarException("查询参数不允许存在特殊字符。");
                 }
+                value = value.Replace("'", "''");
             }
             return value;
         }
