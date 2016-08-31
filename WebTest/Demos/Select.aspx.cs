@@ -51,7 +51,7 @@ namespace WebTest.Demo
                  .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
                  .Skip(1)
                  .Take(2)
-                 .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s2.name, xx_name=s1.name})//select目前只支持这种写法
+                 .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s2.name, xx_name = s1.name })//select目前只支持这种写法
                  .ToList();
 
                 var jList2 = db.Queryable<Student>()
@@ -61,6 +61,16 @@ namespace WebTest.Demo
                 .Skip(1)
                 .Take(2)
                 .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s1.name, xx_name = s1.name })//select目前只支持这种写法
+                .ToDynamic();
+
+
+                var jList3 = db.Queryable<Student>()
+                .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
+                .Where<Student, School>((s1, s2) => s1.id > 1)  // where s1.id>1
+                .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
+                .Skip(1)
+                .Take(2)
+                .Select<Student, classNew>(s1 => new classNew() { newid = s1.id, newname = s1.name, xx_name = s1.name })//select目前只支持这种写法
                 .ToDynamic();
             }
         }
@@ -230,7 +240,7 @@ namespace WebTest.Demo
                 var convert4 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();
 
                 //支持字符串Where 让你解决，更复杂的查询
-                var student12 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>@id", new { id=1}).ToList();
+                var student12 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>@id", new { id = 1 }).ToList();
                 var student13 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>100 and id in( select 1)").ToList();
 
 
@@ -275,7 +285,7 @@ namespace WebTest.Demo
                 //2表关联查询
                 var jList = db.Queryable<Student>()
                 .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //默认left join
-                .Where<Student, School>((s1, s2) => s1.id ==1)
+                .Where<Student, School>((s1, s2) => s1.id == 1)
                 .Select("s1.*,s2.name as schName")
                 .ToDynamic();
 
@@ -283,13 +293,13 @@ namespace WebTest.Demo
                  SELECT s1.*,s2.name as schName 
                  FROM [Student]  s1 
                  LEFT JOIN [School]  s2 ON  s1.sch_id  = s2.id 
-                 WHERE  s1.id  = 1 */ 
+                 WHERE  s1.id  = 1 */
 
                 //2表关联查询并分页
                 var jList2 = db.Queryable<Student>()
                 .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //默认left join
-                //如果要用inner join这么写
-                //.JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id  ,JoinType.INNER)
+                    //如果要用inner join这么写
+                    //.JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id  ,JoinType.INNER)
                 .Where<Student, School>((s1, s2) => s1.id > 1)
                 .OrderBy<Student, School>((s1, s2) => s1.name)
                 .Skip(10)
@@ -302,7 +312,7 @@ namespace WebTest.Demo
                .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
                .JoinTable<Student, School>((s1, s3) => s1.sch_id == s3.id) // left join  School s3  on s1.id=s3.id
                .Where<Student, School>((s1, s2) => s1.id > 1)  // where s1.id>1
-               .Where<Student>(s1=>s1.id>0)
+               .Where<Student>(s1 => s1.id > 0)
                .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
                .Skip(10)
                .Take(20)
@@ -313,8 +323,8 @@ namespace WebTest.Demo
                 //上面的方式都是与第一张表join，第三张表想与第二张表join写法如下
                 List<classNew> jList4 = db.Queryable<Student>()
                  .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
-                 .JoinTable<Student, School,Area>((s1,s2,a1)=>a1.Id==s2.AreaId)// left join  Area a1  on a1.id=s2.AreaId
-                 .Select<Student, School, Area, classNew>((s1, s2, a1) => new classNew { newid=s1.id, studentName=s1.name,  schoolName=s2.name,  areaName=a1.name}).ToList();
+                 .JoinTable<Student, School, Area>((s1, s2, a1) => a1.Id == s2.AreaId)// left join  Area a1  on a1.id=s2.AreaId
+                 .Select<Student, School, Area, classNew>((s1, s2, a1) => new classNew { newid = s1.id, studentName = s1.name, schoolName = s2.name, areaName = a1.name }).ToList();
 
 
 
@@ -322,7 +332,7 @@ namespace WebTest.Demo
                 //最多支持5表查询,太过复杂的建议用Sqlable或者SqlQuery,我们的Queryable只适合轻量级的查询
 
 
-                
+
 
 
                 //拼接
@@ -331,7 +341,8 @@ namespace WebTest.Demo
                 {
                     queryable.Where(it => it.id == 1);
                 }
-                else {
+                else
+                {
                     queryable.Where(it => it.id == 2);
                 }
                 var listJoin = queryable.ToList();
@@ -340,7 +351,7 @@ namespace WebTest.Demo
                 //queryable和SqlSugarClient解耦
                 var par = new Queryable<Student>().Where(it => it.id == 1);//声名没有connection对象的Queryable
                 par.DB = db;
-                var listPar = par.ToList(); 
+                var listPar = par.ToList();
             }
         }
     }

@@ -648,7 +648,13 @@ namespace SqlSugar
             {
                 reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
             }
-            reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            if (queryable.JoinTable.IsValuable() == false)
+            {
+                reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            }
+            else {
+                reval.JoinTable = queryable.JoinTable;
+            }
             return reval;
         }
 
