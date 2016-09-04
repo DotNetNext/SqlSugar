@@ -681,6 +681,10 @@ namespace SqlSugar
                 GroupBy = queryable.GroupBy,
                 Select = select
             };
+            if (queryable.JoinTable.IsValuable())
+            {
+                reval.JoinTable = queryable.JoinTable;
+            }
             return reval;
         }
 
