@@ -233,12 +233,6 @@ namespace WebTest.Demo
                 conval = "三";
                 var like = db.Queryable<Student>().Where(c => c.name.Contains(conval)).ToList();
 
-                // 可以在拉姆达使用 ToString和 Convert,比EF出色的地方
-                var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();
-                var convert2 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();// 
-                var convert3 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();
-                var convert4 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();
-
                 //支持字符串Where 让你解决，更复杂的查询
                 var student12 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>@id", new { id = 1 }).ToList();
                 var student13 = db.Queryable<Student>().Where(c => "a" == "a").Where("id>100 and id in( select 1)").ToList();
@@ -358,6 +352,23 @@ namespace WebTest.Demo
                 var id=1;
                 var sqlAndPars = db.Queryable<Student>().Where(it => it.id == id).OrderBy(it => it.id).ToSql();
 
+
+
+                //函数的支持(字段暂不支持函数,只有参数支持) 目前只支持这么多
+                var par1 = "2015-1-1"; var par2 = "   我 有空格, ";
+                var r1 = db.Queryable<Student>().Where(it => it.name == par1.ObjToString()).ToSql(); //ObjToString会将null转转成""
+                var r2 = db.Queryable<InsertTest>().Where(it => it.d1 == par1.ObjToDate()).ToSql();
+                var r3 = db.Queryable<InsertTest>().Where(it => it.id == 1.ObjToInt()).ToSql();//ObjToInt会将null转转成0
+                var r4 = db.Queryable<InsertTest>().Where(it => it.id == 2.ObjToDecimal()).ToSql();
+                var r5 = db.Queryable<InsertTest>().Where(it => it.id == 3.ObjToMoney()).ToSql();
+                var r6 = db.Queryable<InsertTest>().Where(it => it.v1 == par2.Trim()).ToSql();
+                var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();
+                var convert2 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();// 
+                var convert3 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();
+                var convert4 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();
+                var c1 = db.Queryable<Student>().Where(c =>c.name.Contains("a")).ToList();
+                var c2 = db.Queryable<Student>().Where(c => c.name.StartsWith("a")).ToList();
+                var c3 = db.Queryable<Student>().Where(c => c.name.EndsWith("a")).ToList();
             }
         }
     }

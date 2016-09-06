@@ -826,12 +826,12 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static Dictionary<string, SqlParameter[]> ToSql<T>(this Queryable<T> queryable)
+        public static Dictionary<string, string[]> ToSql<T>(this Queryable<T> queryable)
         {
             var sql=SqlSugarTool.GetQueryableSql<T>(queryable).ToString();
             var pars = queryable.Params.ToArray();
-            var reval = new Dictionary<string, SqlParameter[]>();
-            reval.Add(sql,pars);
+            var reval = new Dictionary<string, string[]>();
+            reval.Add(sql, pars.Select(it =>it.ParameterName+":"+it.Value).ToArray());
             return reval;
         }
 

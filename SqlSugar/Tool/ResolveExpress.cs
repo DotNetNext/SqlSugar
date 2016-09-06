@@ -155,7 +155,8 @@ namespace SqlSugar
                     {
                         parValue = Convert.ToDateTime(right);
                     }
-                    else {
+                    else
+                    {
                         parValue = right;
                     }
                     var oldLeft = AddParas(ref left, parValue);
@@ -214,7 +215,7 @@ namespace SqlSugar
                     type = MemberType.Value;
                     return MethodToString(methodName, mce, ref type);
                 }
-                else if (methodName.StartsWith("To"))
+                else
                 {
                     type = MemberType.Value;
                     return MethodTo(methodName, mce, ref type);
@@ -322,14 +323,30 @@ namespace SqlSugar
 
         private string MethodTo(string methodName, MethodCallExpression mce, ref MemberType type)
         {
-            var value = CreateSqlElements(mce.Arguments[0], ref type);
-            if (methodName == "ToDateTime")
+            string value = string.Empty;
+            if (mce.Arguments.IsValuable())
+            {
+                value = CreateSqlElements(mce.Arguments.FirstOrDefault(), ref type);
+            }
+            else
+            {
+                value = MethodToString(methodName, mce, ref type); ;
+            }
+            if (methodName == "ToDateTime" || methodName == "ObjToDate")
             {
                 return Convert.ToDateTime(value).ToString();
             }
             else if (methodName.StartsWith("ToInt"))
             {
                 return Convert.ToInt32(value).ToString();
+            }
+            else if (methodName.StartsWith("Trim"))
+            {
+                return (value.ObjToString()).Trim();
+            }
+            else if (methodName.StartsWith("ObjTo"))
+            {
+                return value;
             }
             return value;
         }
