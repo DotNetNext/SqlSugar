@@ -398,7 +398,13 @@ namespace SqlSugar
                         var isAnyNum = _serialNumber.Any(serEexp);
                         if (isAnyNum && (val == DBNull.Value || val.IsNullOrEmpty()))
                         {
-                            val = _serialNumber.First(serEexp).GetNumFunc();
+                            if (_serialNumber.First(serEexp).GetNumFunc != null) {
+                                val = _serialNumber.First(serEexp).GetNumFunc();
+                            }
+                            if (_serialNumber.First(serEexp).GetNumFuncWithDb != null)
+                            {
+                                val = _serialNumber.First(serEexp).GetNumFuncWithDb(this);
+                            }
                         }
                     }
 

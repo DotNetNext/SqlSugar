@@ -41,6 +41,10 @@ namespace SqlSugar
             /// 获取流水号函数
             /// </summary>
             public Func<string> GetNumFunc { get; set; }
+            /// <summary>
+            /// 获取流水号函数(解决事务中死锁BUG)
+            /// </summary>
+            public Func<SqlSugarClient,string> GetNumFuncWithDb { get; set; }
         }
 
         /// <summary>

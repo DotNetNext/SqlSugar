@@ -44,10 +44,10 @@ namespace WebTest.Demos
             /// 页面所需要的过滤函数
             /// </summary>
             private static List<PubModel.SerialNumber> _nums = new List<PubModel.SerialNumber>(){
-              new PubModel.SerialNumber(){TableName="Student", FieldName="name", GetNumFunc=()=>{
+              new PubModel.SerialNumber(){TableName="Student", FieldName="name", GetNumFunc=()=>{ //GetNumFunc在没有事中使用
                   return "stud-"+DateTime.Now.ToString("yyyy-MM-dd");
               }},
-                new PubModel.SerialNumber(){TableName="School", FieldName="name", GetNumFunc=()=>{
+                new PubModel.SerialNumber(){TableName="School", FieldName="name",  GetNumFuncWithDb=db=>{ //事务中请使用GetNumFuncWithDb保证同一个DB对象,不然会出现死锁
                   return "ch-"+DateTime.Now.ToString("syyyy-MM-dd");
               }}
             };
