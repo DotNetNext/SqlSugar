@@ -352,6 +352,12 @@ namespace WebTest.Demo
                 var par = new Queryable<Student>().Where(it => it.id == 1);//声名没有connection对象的Queryable
                 par.DB = db;
                 var listPar = par.ToList();
+
+
+                //查看生成的sql和参数
+                var id=1;
+                var sqlAndPars = db.Queryable<Student>().Where(it => it.id == id).OrderBy(it => it.id).ToSql();
+
             }
         }
     }
