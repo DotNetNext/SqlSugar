@@ -292,7 +292,7 @@ namespace SqlSugar
                         {
                             return DateTime.Now.ToString();
                         }
-                        Check.Exception(true, "错误信息:{0} \r\n message:{1}", "拉姆达解析出错", ex.Message);
+                        Check.Exception(true, "错误信息:{0} \r\n message:{1}", "拉姆达解析出错,参数可支持的函数有 Trim 、Contains 、ObjToXXX、 Convert.ToXXX、Contains、StartsWith和StartsEnd。 ", ex.Message);
                     }
 
                     if (dynInv == null) return null;
