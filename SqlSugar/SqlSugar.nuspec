@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>sqlSugar</id>
-    <version>2.5.0.3</version>
+    <version>2.7.0.3</version>
     <title>SqlSugar ORM</title>
     <authors>sun kaixuan</authors>
     <owners>landa</owners>
@@ -16,6 +16,6 @@
 
   </metadata>
     <files>
-     <file src="G:\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\bin\Debug\SqlSugar.XML"  target=""></file>
+     <file src="d:\SqlSugar.XML"  target=""></file>
     </files>
 </package>
