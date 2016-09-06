@@ -45,4 +45,3 @@ C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.pdb
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.dll
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.pdb
-C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
