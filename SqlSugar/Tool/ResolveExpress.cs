@@ -206,7 +206,7 @@ namespace SqlSugar
                 {
                     return StartsWith(methodName, mce, isTure);
                 }
-                else if (methodName == "EndWith")
+                else if (methodName == "EndsWith")
                 {
                     return EndWith(methodName, mce, isTure);
                 }
