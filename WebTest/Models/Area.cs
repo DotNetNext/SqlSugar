@@ -12,7 +12,7 @@ namespace Models
      /// Default:- 
      /// Nullable:False 
      /// </summary>
-        public int Id {get;set;}
+        public int id {get;set;}
 
      /// <summary>
      /// Desc:- 

@@ -22,7 +22,7 @@ namespace Models
         public string name {get;set;}
 
      /// <summary>
-     /// Desc:- 
+     /// Desc:学校ID 
      /// Default:- 
      /// Nullable:True 
      /// </summary>

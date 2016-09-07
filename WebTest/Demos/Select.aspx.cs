@@ -317,7 +317,7 @@ namespace WebTest.Demo
                 //上面的方式都是与第一张表join，第三张表想与第二张表join写法如下
                 List<classNew> jList4 = db.Queryable<Student>()
                  .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
-                 .JoinTable<Student, School, Area>((s1, s2, a1) => a1.Id == s2.AreaId)// left join  Area a1  on a1.id=s2.AreaId
+                 .JoinTable<Student, School, Area>((s1, s2, a1) => a1.id == s2.AreaId)// left join  Area a1  on a1.id=s2.AreaId
                  .Select<Student, School, Area, classNew>((s1, s2, a1) => new classNew { newid = s1.id, studentName = s1.name, schoolName = s2.name, areaName = a1.name }).ToList();
 
 

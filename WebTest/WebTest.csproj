@@ -240,11 +240,8 @@
       <DependentUpon>Update.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Area.cs" />
-    <Compile Include="Models\GuidTest.cs" />
     <Compile Include="Models\LanguageTest.cs" />
-    <Compile Include="Models\TableDataTypeTest.cs" />
     <Compile Include="Models\TestModels.cs" />
-    <Compile Include="Models\TestOfNull.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
     <Compile Include="Models\V_LanguageTest.cs" />
     <Compile Include="Global.asax.cs">
@@ -253,7 +250,6 @@
     <Compile Include="Models\InsertTest.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
-    <Compile Include="Models\Student_View.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Demos\T4\SugarTemplate.cs">

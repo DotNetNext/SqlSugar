@@ -8,7 +8,7 @@ namespace Models
     {
         
      /// <summary>
-     /// Desc:- 
+     /// Desc:地域ID，关联area表 
      /// Default:- 
      /// Nullable:False 
      /// </summary>

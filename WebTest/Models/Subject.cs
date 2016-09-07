@@ -15,11 +15,11 @@ namespace Models
         public int id {get;set;}
 
      /// <summary>
-     /// Desc:- 
+     /// Desc:学生ID 
      /// Default:- 
      /// Nullable:True 
      /// </summary>
-        public int? sid {get;set;}
+        public int? studentId {get;set;}
 
      /// <summary>
      /// Desc:- 

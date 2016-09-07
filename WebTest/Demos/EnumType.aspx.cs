@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using WebTest.Dao;
-
+using SqlSugar;
 namespace WebTest.Demos
 {
     //支持枚举
@@ -16,10 +16,14 @@ namespace WebTest.Demos
         {
             using (SqlSugarClient db = SugarDao.GetInstance())
             {
+                db.RemoveAllCache();//清除实体缓存，因为与其它demo用的不是一个Student类防止缓存报错
                 var stuList= db.Queryable<Student>().ToList();
                 db.Insert<Student>(new Student() { sch_id = SchoolEnum.蓝翔2 });
                 db.Update<Student>(new Student() { sch_id = SchoolEnum.蓝翔2, id = 1 });
                 var stuList2 = db.Queryable<Student>().Where(it => it.sch_id == SchoolEnum.蓝翔1).ToList();
+
+
+                db.RemoveAllCache();
             }
         }
 
