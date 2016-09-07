@@ -6,10 +6,11 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using WebTest.Dao;
-using WebTest.TestLib;
+using Models;
 
 namespace WebTest.Demos
 {
+    //自动排除非数据库列
     public partial class IgnoreErrorColumns : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)

@@ -9,6 +9,7 @@ using WebTest.Dao;
 
 namespace WebTest.Demos
 {
+    //支持枚举
     public partial class EnumType : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)

@@ -16,15 +16,15 @@ namespace WebTest.Demo
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            int id = 1;
+            int id = 11;
             using (var db = SugarDao.GetInstance())
             {
                 //指定列更新
                 db.Update<School>(new { name = "蓝翔2" }, it => it.id == id);
-                db.Update<School, int>(new { name = "蓝翔2" }, 1, 3, 12);
-                db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "1", "2" });
+                db.Update<School, int>(new { name = "蓝翔2" }, 11, 23, 12);
+                db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "11", "21" });
 
-                db.Update<School>(new School() { id = 1, name = "xx" });
+                db.Update<School>(new School() { id = 11, name = "xx" });
 
                 //整个实体更新
                 db.Update(new School { id = id, name = "蓝翔2" });
