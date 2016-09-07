@@ -66,8 +66,9 @@ namespace WebTest.Demos
 
         public enum SchoolEnum
         {
-            蓝翔1 = 1,
-            蓝翔2 = 2
+            北大青鸟 = 1,
+            it清华 = 2,
+            全智=3
         }
     }
 }
