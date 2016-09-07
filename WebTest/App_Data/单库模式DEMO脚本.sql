@@ -258,7 +258,7 @@ INSERT [dbo].[School] ([id], [name], [AreaId]) VALUES (2002, N'ch-32016-09-07', 
 SET IDENTITY_INSERT [dbo].[School] OFF
 SET IDENTITY_INSERT [dbo].[Student] ON 
 
-INSERT [dbo].[Student] ([id], [name], [sch_id], [sex], [isOk]) VALUES (1, N'小杰', 2, N'1         ', 0)
+INSERT [dbo].[Student] ([id], [name], [sch_id], [sex], [isOk]) VALUES (1, N'小杰', 3, N'1         ', 0)
 INSERT [dbo].[Student] ([id], [name], [sch_id], [sex], [isOk]) VALUES (2, N'李四', 2, N'2         ', 1)
 INSERT [dbo].[Student] ([id], [name], [sch_id], [sex], [isOk]) VALUES (3, N'小明', 1, N'2         ', 1)
 INSERT [dbo].[Student] ([id], [name], [sch_id], [sex], [isOk]) VALUES (4, N'小张', 4, N'1         ', 0)
