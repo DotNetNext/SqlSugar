@@ -17,9 +17,9 @@ namespace WebTest.Demos
             using (SqlSugarClient db = SugarDao.GetInstance())
             {
                 var stuList= db.Queryable<Student>().ToList();
-                db.Insert<Student>(new Student() { sch_id = SchoolEnum.蓝翔2 });
-                db.Update<Student>(new Student() { sch_id = SchoolEnum.蓝翔2, id = 1 });
-                var stuList2 = db.Queryable<Student>().Where(it => it.sch_id == SchoolEnum.蓝翔1).ToList();
+                db.Insert<Student>(new Student() { sch_id = SchoolEnum.北大青鸟 });
+                db.Update<Student>(new Student() { sch_id = SchoolEnum.it清华, id = 11 });
+                var stuList2 = db.Queryable<Student>().Where(it => it.sch_id == SchoolEnum.全智).ToList();
             }
         }
 
