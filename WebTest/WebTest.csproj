@@ -241,7 +241,7 @@
     </Compile>
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\LanguageTest.cs" />
-    <Compile Include="Models\TestModels.cs" />
+    <Compile Include="Models\TestSelectModels.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
     <Compile Include="Models\V_LanguageTest.cs" />
     <Compile Include="Global.asax.cs">
