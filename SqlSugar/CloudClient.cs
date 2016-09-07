@@ -602,11 +602,11 @@ namespace SqlSugar
         /// <summary>
         /// 清除所有缓存
         /// </summary>
-        public void RemoveAllCache()
+        public void RemoveAllCache<T>()
         {
             var connName = configList[0].ConnectionString;
             var db = new SqlSugarClient(connName);
-            db.RemoveAllCache();
+            db.RemoveAllCache<T>();
         }
 
         /// <summary>
