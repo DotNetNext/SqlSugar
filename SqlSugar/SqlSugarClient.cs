@@ -27,6 +27,7 @@ namespace SqlSugar
         }
         private List<KeyValue> _mappingTableList = null;
         private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
+        private Dictionary<string, List<string>> _filterColumns = null;
         private List<PubModel.SerialNumber> _serialNumber = null;
 
         internal string GetTableNameByClassType(string typeName)
@@ -116,6 +117,19 @@ namespace SqlSugar
             _filterFuns = filters;
         }
 
+        /// <summary>
+        /// 设置过滤器（用户权限过滤）
+        /// filters为可查询列名的集合，
+        /// </summary>
+        /// <param name="filters"></param>
+        public void SetFilterFilterParas(Dictionary<string, List<string>> filterColumns)
+        {
+            if (filterColumns.Values == null || filterColumns.Values.Count == 0)
+            {
+                throw new Exception("过滤器的列名集合不能为空SetFilterFilterParas.filters");
+            }
+            _filterColumns = filterColumns;
+        }
 
 
 
@@ -175,7 +189,10 @@ namespace SqlSugar
                     queryable.Where.Add(whereStr);
                     if (filterValue.Value != null)
                         queryable.Params.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
-                    return queryable;
+                }
+                if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey)) {
+                    var columns = _filterColumns[CurrentFilterKey];
+                    queryable.Select = string.Join(",", columns);
                 }
             }
             return queryable;

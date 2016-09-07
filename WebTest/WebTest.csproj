@@ -79,6 +79,7 @@
     <Content Include="Demos\Delete.aspx" />
     <Content Include="Demos\EnumType.aspx" />
     <Content Include="Demos\Filter.aspx" />
+    <Content Include="Demos\Filter2.aspx" />
     <Content Include="Demos\Function.aspx" />
     <Content Include="Demos\IgnoreErrorColumns.aspx" />
     <Content Include="Demos\Insert.aspx" />
@@ -149,6 +150,13 @@
     </Compile>
     <Compile Include="Demos\Filter.aspx.designer.cs">
       <DependentUpon>Filter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\Filter2.aspx.cs">
+      <DependentUpon>Filter2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\Filter2.aspx.designer.cs">
+      <DependentUpon>Filter2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\Function.aspx.cs">
       <DependentUpon>Function.aspx</DependentUpon>
