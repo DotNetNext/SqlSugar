@@ -14,7 +14,7 @@
 
 <# 
      
-
+	//CTRL+S将会执行该文件的代码，自动作生实体
     //当前项目目录
     string projectDir = Host.ResolveAssemblyReference("$(ProjectDir)");
 

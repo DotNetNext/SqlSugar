@@ -72,7 +72,6 @@
     <Content Include="App_Lib\SqlSugar.XML" />
     <Content Include="App_Lib\SyntacticSugar.dll" />
     <Content Include="App_Lib\SyntacticSugar.XML" />
-    <Content Include="BuilderClass.aspx" />
     <Content Include="Demos\Ado.aspx" />
     <Content Include="Demos\Cloud.aspx" />
     <Content Include="Demos\CreateModelFile.aspx" />
@@ -92,17 +91,7 @@
     <Content Include="Demos\SqlPageModel.aspx" />
     <Content Include="Demos\Tran.aspx" />
     <Content Include="Demos\Update.aspx" />
-    <Content Include="PerformanceTest\add_delete_update\Add.aspx" />
-    <Content Include="PerformanceTest\add_delete_update\Update.aspx" />
-    <Content Include="CSS\StyleSheet1.css" />
     <Content Include="Global.asax" />
-    <Content Include="PerformanceTest\lambda\Test.aspx" />
-    <Content Include="PerformanceTest\Select\All.aspx" />
-    <Content Include="PerformanceTest\add_delete_update\Del.aspx" />
-    <Content Include="PerformanceTest\Select\ManyTable.aspx" />
-    <Content Include="PerformanceTest\Select\ManyTablePage.aspx" />
-    <Content Include="PerformanceTest\Select\OneWhere.aspx" />
-    <Content Include="PerformanceTest\Select\WherePage.aspx" />
     <Content Include="Demos\T4\SugarTemplate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SugarTemplate.cs</LastGenOutput>
@@ -116,13 +105,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuilderClass.aspx.cs">
-      <DependentUpon>BuilderClass.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="BuilderClass.aspx.designer.cs">
-      <DependentUpon>BuilderClass.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Dao\SugarDao.cs" />
     <Compile Include="Demos\Ado.aspx.cs">
       <DependentUpon>Ado.aspx</DependentUpon>
@@ -265,20 +247,6 @@
     <Compile Include="Models\TestOfNull.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
     <Compile Include="Models\V_LanguageTest.cs" />
-    <Compile Include="PerformanceTest\add_delete_update\Add.aspx.cs">
-      <DependentUpon>Add.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\add_delete_update\Add.aspx.designer.cs">
-      <DependentUpon>Add.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PerformanceTest\add_delete_update\Update.aspx.cs">
-      <DependentUpon>Update.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\add_delete_update\Update.aspx.designer.cs">
-      <DependentUpon>Update.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -287,88 +255,13 @@
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Student_View.cs" />
     <Compile Include="Models\Subject.cs" />
-    <Compile Include="PerformanceTest\add_delete_update\Del.aspx.cs">
-      <DependentUpon>Del.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\add_delete_update\Del.aspx.designer.cs">
-      <DependentUpon>Del.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PerformanceTest\lambda\Test.aspx.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\lambda\Test.aspx.designer.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PerformanceTest\Select\All.aspx.cs">
-      <DependentUpon>All.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\All.aspx.designer.cs">
-      <DependentUpon>All.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\ManyTable.aspx.cs">
-      <DependentUpon>ManyTable.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\ManyTable.aspx.designer.cs">
-      <DependentUpon>ManyTable.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\ManyTablePage.aspx.cs">
-      <DependentUpon>ManyTablePage.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\ManyTablePage.aspx.designer.cs">
-      <DependentUpon>ManyTablePage.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\OneWhere.aspx.cs">
-      <DependentUpon>OneWhere.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\OneWhere.aspx.designer.cs">
-      <DependentUpon>OneWhere.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\WherePage.aspx.cs">
-      <DependentUpon>WherePage.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PerformanceTest\Select\WherePage.aspx.designer.cs">
-      <DependentUpon>WherePage.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Site.Master.cs">
-      <DependentUpon>Site.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Site.Master.designer.cs">
-      <DependentUpon>Site.Master</DependentUpon>
-    </Compile>
     <Compile Include="Demos\T4\SugarTemplate.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SugarTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Include="TestLib\Dapper.cs" />
-    <Compile Include="TestLib\EFMODEL.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EFMODEL.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="TestLib\PerformanceTest.cs" />
     <Compile Include="Models\V_Student.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Site.Master" />
-  </ItemGroup>
-  <ItemGroup>
-    <EntityDeploy Include="TestLib\EFMODEL.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EFMODEL.Designer.cs</LastGenOutput>
-    </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
