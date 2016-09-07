@@ -66,6 +66,7 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="api_en.htm" />
     <Content Include="App_Data\单库模式DEMO脚本.sql" />
     <Content Include="App_Data\多库模式数据库结构脚本cloudDB %281%29.sql" />
     <Content Include="App_Lib\SqlSugar.dll" />
@@ -96,6 +97,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SugarTemplate.cs</LastGenOutput>
     </Content>
+    <Content Include="api_cn.htm" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
