@@ -45,8 +45,8 @@ C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.dll
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.pdb
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.XML
-G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.XML
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.dll
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.pdb
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.dll
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.pdb
+G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.XML
