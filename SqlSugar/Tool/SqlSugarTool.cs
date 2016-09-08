@@ -36,6 +36,8 @@ namespace SqlSugar
         internal static Type DicOO = typeof(KeyValuePair<object, object>);
         internal static Type DicSo = typeof(KeyValuePair<string, object>);
         internal static Type DicIS = typeof(KeyValuePair<int, string>);
+        internal static Type DicArraySS = typeof(Dictionary<string, string>);
+        internal static Type DicArraySO = typeof(Dictionary<string, object>);
 
         /// <summary>
         /// Reader转成List《T》
@@ -202,28 +204,55 @@ namespace SqlSugar
             if (obj != null)
             {
                 var type = obj.GetType();
-                var propertiesObj = type.GetProperties();
-                string replaceGuid = Guid.NewGuid().ToString();
-                foreach (PropertyInfo r in propertiesObj)
+                var isDic = type.IsIn(SqlSugarTool.DicArraySO, SqlSugarTool.DicArraySS);
+                if (isDic)
                 {
-                    var value = r.GetValue(obj, null);
-                    if (r.PropertyType.IsEnum)
+                    if (type == SqlSugarTool.DicArraySO)
                     {
-                        value = (int)value;
+                        var newObj = (Dictionary<string, object>)obj;
+                        var pars = newObj.Select(it=>new SqlParameter("@"+it.Key,it.Value));
+                        foreach (var par in pars)
+                        {
+                            SetParSize(par);
+                        }
+                        listParams.AddRange(pars);
                     }
-                    if (value == null) value = DBNull.Value;
-                    if (r.Name.ToLower().Contains("hierarchyid"))
-                    {
-                        var par = new SqlParameter("@" + r.Name, SqlDbType.Udt);
-                        par.UdtTypeName = "HIERARCHYID";
-                        par.Value = value;
-                        listParams.Add(par);
+                    else {
+
+                        var newObj = (Dictionary<string, string>)obj;
+                        var pars = newObj.Select(it => new SqlParameter("@" + it.Key, it.Value));
+                        foreach (var par in pars)
+                        {
+                            SetParSize(par);
+                        }
+                        listParams.AddRange(pars); ;
                     }
-                    else
+                }
+                else
+                {
+                    var propertiesObj = type.GetProperties();
+                    string replaceGuid = Guid.NewGuid().ToString();
+                    foreach (PropertyInfo r in propertiesObj)
                     {
-                        var par = new SqlParameter("@" + r.Name, value);
-                        SetParSize(par);
-                        listParams.Add(par);
+                        var value = r.GetValue(obj, null);
+                        if (r.PropertyType.IsEnum)
+                        {
+                            value = (int)value;
+                        }
+                        if (value == null) value = DBNull.Value;
+                        if (r.Name.ToLower().Contains("hierarchyid"))
+                        {
+                            var par = new SqlParameter("@" + r.Name, SqlDbType.Udt);
+                            par.UdtTypeName = "HIERARCHYID";
+                            par.Value = value;
+                            listParams.Add(par);
+                        }
+                        else
+                        {
+                            var par = new SqlParameter("@" + r.Name, value);
+                            SetParSize(par);
+                            listParams.Add(par);
+                        }
                     }
                 }
             }
@@ -241,19 +270,39 @@ namespace SqlSugar
             Dictionary<string, object> reval = new Dictionary<string, object>();
             if (obj == null) return reval;
             var type = obj.GetType();
-            var propertiesObj = type.GetProperties();
-            string replaceGuid = Guid.NewGuid().ToString();
-            foreach (PropertyInfo r in propertiesObj)
+            var isDic = type.IsIn(SqlSugarTool.DicArraySO, SqlSugarTool.DicArraySS);
+            if (isDic)
             {
-                var val = r.GetValue(obj, null);
-                if (r.PropertyType.IsEnum)
+                if (type == SqlSugarTool.DicArraySO)
                 {
-                    val = (int)val;
+                    return (Dictionary<string, object>)obj;
                 }
-                reval.Add(r.Name, val == null ? DBNull.Value : val);
+                else
+                {
+                    var newObj = (Dictionary<string, string>)obj;
+                    foreach (var item in newObj)
+                    {
+                        reval.Add(item.Key, item.Value);
+                    }
+                    return reval;
+                }
             }
+            else
+            {
+                var propertiesObj = type.GetProperties();
+                string replaceGuid = Guid.NewGuid().ToString();
+                foreach (PropertyInfo r in propertiesObj)
+                {
+                    var val = r.GetValue(obj, null);
+                    if (r.PropertyType.IsEnum)
+                    {
+                        val = (int)val;
+                    }
+                    reval.Add(r.Name, val == null ? DBNull.Value : val);
+                }
 
-            return reval;
+                return reval;
+            }
         }
 
         /// <summary>
