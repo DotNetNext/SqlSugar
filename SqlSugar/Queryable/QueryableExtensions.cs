@@ -217,6 +217,9 @@ namespace SqlSugar
         {
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightField(expression);
+            if (queryable.JoinTable.IsValuable()) {
+                 field = re.GetExpressionRightFieldByNT(expression);
+            }
             var pre = queryable.OrderBy.IsValuable() ? "," : "";
             queryable.OrderBy += pre + field + " " + type.ToString().ToUpper();
             return queryable;
