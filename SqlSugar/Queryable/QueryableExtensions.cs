@@ -715,13 +715,14 @@ namespace SqlSugar
         public static int Count<T>(this Queryable<T> queryable)
         {
             StringBuilder sbSql = new StringBuilder();
+            string joinInfo = string.Join(" ", queryable.JoinTable);
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
             var tableName = queryable.TName;
             if (queryable.TableName.IsValuable())
             {
                 tableName = queryable.TableName;
             }
-            sbSql.AppendFormat("SELECT COUNT({3})  FROM [{0}] {1} WHERE 1=1 {2} {4} ", tableName, withNoLock, string.Join("", queryable.Where), queryable.Select.GetSelectFiles(), queryable.GroupBy.GetGroupBy());
+            sbSql.AppendFormat("SELECT COUNT({3})  FROM [{0}] {1} "+joinInfo+" WHERE 1=1 {2} {4} ", tableName, withNoLock, string.Join("", queryable.Where), "1", queryable.GroupBy.GetGroupBy());
             var count = queryable.DB.GetInt(sbSql.ToString(), queryable.Params.ToArray());
             return count;
         }
@@ -829,13 +830,13 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public static Dictionary<string, string[]> ToSql<T>(this Queryable<T> queryable)
+        public static KeyValuePair<string, string[]> ToSql<T>(this Queryable<T> queryable)
         {
             var sql=SqlSugarTool.GetQueryableSql<T>(queryable).ToString();
             var pars = queryable.Params.ToArray();
             var reval = new Dictionary<string, string[]>();
             reval.Add(sql, pars.Select(it =>it.ParameterName+":"+it.Value).ToArray());
-            return reval;
+            return reval.First();
         }
 
         /// <summary>
@@ -947,6 +948,35 @@ namespace SqlSugar
                 );
             queryable.JoinTable.Add(joinStr);
             queryable.Params.AddRange(re.Paras);
+            return queryable;
+        }
+
+        /// <summary>
+        /// 联表查询根据字符串
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="tableName">表名（可是以表或也可以是SQL语句加括号）</param>
+        /// <param name="shortName">表名简写</param>
+        /// <param name="onWhere">on后面的条件</param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Queryable<T> JoinTable<T>(this Queryable<T> queryable, string tableName,string shortName,string onWhere,object whereObj, JoinType type = JoinType.LEFT)
+        {
+
+            queryable.WhereIndex = queryable.WhereIndex + 100;;
+            string joinType = type.ToString();
+            string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
+                /*0*/joinType,
+                /*1*/tableName,
+                /*2*/shortName,
+                /*3*/onWhere
+                );
+            queryable.JoinTable.Add(joinStr);
+            if (whereObj != null)
+            {
+                queryable.Params.AddRange(SqlSugarTool.GetParameters(whereObj));
+            }
             return queryable;
         }
 
