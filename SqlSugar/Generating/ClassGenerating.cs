@@ -296,6 +296,8 @@ namespace SqlSugar
                     case "byte": typeName = "Byte?"; break;
                     case "boolean": typeName = "Boolean?"; break;
                     case "datetime": typeName = "DateTime?"; break;
+                    case "decimal": typeName = "decimal?"; break;
+                    case "guid": typeName = "Guid?"; break;
 
                 }
             }
