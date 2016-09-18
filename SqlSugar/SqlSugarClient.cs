@@ -18,6 +18,7 @@ namespace SqlSugar
     /// </summary>
     public class SqlSugarClient : SqlHelper, SqlSugar.IClient
     {
+        #region constructor
         /// <summary>
         /// 初始化 SqlSugarClient 类的新实例
         /// </summary>
@@ -27,10 +28,11 @@ namespace SqlSugar
         {
             ConnectionString = connectionString;
             IsNoLock = false;
-        }
+        } 
+        #endregion
 
 
-
+        #region private variables
         private List<KeyValue> _mappingTableList = null;
         private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
         private Dictionary<string, List<string>> _filterColumns = null;
@@ -58,15 +60,19 @@ namespace SqlSugar
                 }
             }
             return tableName;
-        }
+        } 
+        #endregion
 
 
-
+        #region readonly info
         /// <summary>
         /// 当前连接字符串
         /// </summary>
-        public string ConnectionString { get; set; }
+        public  string ConnectionString { get;internal set; } 
+        #endregion
 
+
+        #region setting
         /// <summary>
         /// 查询是否允许脏读（默认为:true）
         /// </summary>
@@ -146,11 +152,11 @@ namespace SqlSugar
             {
                 _serialNumber = serNum;
             }
-        }
+        } 
+        #endregion
 
 
-
-
+        #region sqlable
         /// <summary>
         /// 创建更接近Sql语句的查询对象
         /// </summary>
@@ -172,12 +178,11 @@ namespace SqlSugar
                 }
             }
             return sqlable;
-        }
+        } 
+        #endregion
 
 
-
-
-
+        #region queryable
         /// <summary>
         /// 创建拉姆达查询对象
         /// </summary>
@@ -226,11 +231,11 @@ namespace SqlSugar
         public Queryable<T> Queryable<T>(string tableName) where T : new()
         {
             return new Queryable<T>() { DB = this, TableName = tableName };
-        }
+        } 
+        #endregion
 
 
-
-
+        #region sqlQuery
         /// <summary>
         /// 根据SQL语句将结果集映射到List&lt;T&gt;
         /// </summary>
@@ -244,17 +249,17 @@ namespace SqlSugar
             return SqlQuery<T>(sql, pars);
         }
 
-       /// <summary>
+        /// <summary>
         /// 根据SQL语句将结果集映射到dynamic
-       /// </summary>
+        /// </summary>
         /// <param name="sql">sql语句</param>
         /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
-       /// <returns>动态集合</returns>
+        /// <returns>动态集合</returns>
         public dynamic SqlQueryDynamic(string sql, object whereObj = null)
         {
             return JsonConverter.ConvertJson(SqlQueryJson(sql, whereObj));
         }
-       
+
         /// <summary>
         /// 根据SQL语句将结果集映射到json
         /// </summary>
@@ -315,11 +320,11 @@ namespace SqlSugar
             fields = null;
             sql = null;
             return reval;
-        }
+        } 
+        #endregion
 
 
-
-
+        #region insert
         /// <summary>
         /// 批量插入
         /// </summary>
@@ -594,12 +599,11 @@ namespace SqlSugar
             var reval = base.ExecuteCommand(sbSql.ToString());
             sbSql = null;
             return reval > 0;
-        }
+        } 
+        #endregion
 
 
-
-
-
+        #region update
 
         /// <summary>
         /// 根据表达示条件将实体对象更新到数据库
@@ -789,12 +793,11 @@ namespace SqlSugar
             {
                 throw new Exception("sql:" + sbSql.ToString() + "\n" + ex.Message);
             }
-        }
+        } 
+        #endregion
 
 
-
-
-
+        #region delete
         /// <summary>
         /// 根据表达示删除数据
         /// </summary>
@@ -941,16 +944,20 @@ namespace SqlSugar
             int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;
             return isSuccess;
-        }
+        } 
+        #endregion
 
 
-
-
+        #region create class file
 
         /// <summary>
         /// 生成实体的对象
         /// </summary>
-        public ClassGenerating ClassGenerating = new ClassGenerating();
+        public ClassGenerating ClassGenerating = new ClassGenerating(); 
+        #endregion
+
+
+        #region cache
 
         /// <summary>
         /// 清除所有缓存
@@ -958,7 +965,9 @@ namespace SqlSugar
         public void RemoveAllCache<T>()
         {
             CacheManager<T>.GetInstance().RemoveAll(c => true);
-        }
+        } 
+
+        #endregion
 
     }
 

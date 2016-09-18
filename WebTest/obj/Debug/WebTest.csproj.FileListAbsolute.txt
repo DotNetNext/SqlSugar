@@ -60,3 +60,11 @@ G:\OneDrive\Asp.net\Project\SqlSugar2.7\WebTest\bin\SqlSugar.xml
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\WebTest\obj\Debug\WebTest.dll
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\WebTest\obj\Debug\WebTest.pdb
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\bin\WebTest.dll
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\bin\WebTest.pdb
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\bin\SqlSugar.dll
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\bin\SqlSugar.pdb
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\bin\SqlSugar.xml
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\obj\Debug\WebTest.dll
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\obj\Debug\WebTest.pdb
