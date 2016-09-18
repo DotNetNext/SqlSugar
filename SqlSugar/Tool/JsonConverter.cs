@@ -15,7 +15,7 @@ namespace SqlSugar
     /// ** 描述：Json转换类
     /// ** 创始时间：2010-2-28
     /// ** 修改时间：-
-    /// ** 作者：执心的dakang
+    /// ** 作者：热心的dakang
     /// ** 使用说明：
     /// </summary>
     public class JsonConverter
