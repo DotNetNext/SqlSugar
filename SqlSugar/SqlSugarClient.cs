@@ -80,7 +80,9 @@ namespace SqlSugar
                 _serialNumber = serNum;
             }
         }
-
+        /// <summary>
+        /// 当前连接字符串
+        /// </summary>
         public string ConnectionString { get; set; }
 
         /// <summary>
@@ -307,7 +309,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="entities">插入对象的集合</param>
         /// <param name="isIdentity">过期参数无需填写</param>
-        /// <returns></returns>
+        /// <returns>默认返回Identity的集合，如果没有Identity执行成功将返回bool的集合</returns>
         public List<object> InsertRange<T>(List<T> entities, bool isIdentity = true) where T : class
         {
             List<object> reval = new List<object>();
@@ -324,7 +326,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="entity">插入对象</param>
         /// <param name="isIdentity">过期参数无需填写</param>
-        /// <returns></returns>
+        /// <returns>默认返回Identity，如果没有Identity执行成功将返回true</returns>
         public object Insert<T>(T entity, bool isIdentity = true) where T : class
         {
 
@@ -475,7 +477,7 @@ namespace SqlSugar
         /// 大数据插入(结构体必须和数据库一致)
         /// </summary>
         /// <param name="entities"></param>
-        /// <returns></returns>
+        /// <returns>全部插入成功返回true</returns>
         public bool SqlBulkCopy<T>(List<T> entities) where T : class
         {
             int actionNum = 100;
@@ -583,7 +585,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
         /// <param name="expression">表达示条件</param>
-        /// <returns></returns>
+        /// <returns>更新成功返回true</returns>
         public bool Update<T>(object rowObj, Expression<Func<T, bool>> expression) where T : class
         {
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
@@ -680,7 +682,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rowObj">rowObj必需包含主键， rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
-        /// <returns></returns>
+        /// <returns>更新成功返回true</returns>
         public bool Update<T>(T rowObj) where T : class
         {
             var reval = Update<T, object>(rowObj);
@@ -693,7 +695,7 @@ namespace SqlSugar
         /// <typeparam name="FiledType"></typeparam>
         /// <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
         /// <param name="whereIn">主键集合</param>
-        /// <returns></returns>
+        /// <returns>更新成功返回true</returns>
         public bool Update<T, FiledType>(object rowObj, params FiledType[] whereIn) where T : class
         {
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
@@ -771,7 +773,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expression">表达示条件</param>
-        /// <returns></returns>
+        /// <returns>删除成功返回true</returns>
         public bool Delete<T>(Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
@@ -790,7 +792,7 @@ namespace SqlSugar
         /// <typeparam name="T">实体类型</typeparam>
         /// <typeparam name="FiledType">主键类型</typeparam>
         /// <param name="whereIn">主键集合</param>
-        /// <returns></returns>
+        /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(params FiledType[] whereIn)
         {
             Type type = typeof(T);
@@ -817,7 +819,7 @@ namespace SqlSugar
         /// <typeparam name="FiledType">主键类型</typeparam>
         /// <param name="expression">表达示条件</param>
         /// <param name="whereIn">主键集合</param>
-        /// <returns></returns>
+        /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn)
         {
             if (whereIn == null) return false;
@@ -831,7 +833,7 @@ namespace SqlSugar
         /// <typeparam name="FiledType">主键类型</typeparam>
         /// <param name="expression">表达示条件</param>
         /// <param name="whereIn">主键集合</param>
-        /// <returns></returns>
+        /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
         {
             ResolveExpress re = new ResolveExpress();
