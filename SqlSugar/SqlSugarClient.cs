@@ -262,7 +262,7 @@ namespace SqlSugar
             return SqlQuery<T>(sql, pars.ToList());
         }
         /// <summary>
-        /// 根据SQL语句将结果集映射到List《T》
+        /// 根据SQL语句将结果集映射到List&lt;T&gt;
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sql"></param>
@@ -578,13 +578,11 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 更新
-        /// 注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
-        /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
+        /// 根据表达示条件将实体对象更新到数据库
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
-        /// <param name="expression">it.id=100</param>
+        /// <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
+        /// <param name="expression">表达示条件</param>
         /// <returns></returns>
         public bool Update<T>(object rowObj, Expression<Func<T, bool>> expression) where T : class
         {
@@ -678,24 +676,23 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 更新
+        /// 将实体对象更新到数据库
         /// </summary>
-        /// <param name="rowObj">实体必须包含主键</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rowObj">rowObj必需包含主键， rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
         /// <returns></returns>
         public bool Update<T>(T rowObj) where T : class
         {
             var reval = Update<T, object>(rowObj);
             return reval;
         }
-
         /// <summary>
-        /// 更新
-        /// 注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
-        /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
+        /// 将实体对象更新到数据库
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
-        /// <param name="whereIn">new int[]{1,2,3}</param>
+        /// <typeparam name="FiledType"></typeparam>
+        /// <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
+        /// <param name="whereIn">主键集合</param>
         /// <returns></returns>
         public bool Update<T, FiledType>(object rowObj, params FiledType[] whereIn) where T : class
         {
