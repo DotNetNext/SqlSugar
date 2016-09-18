@@ -19,7 +19,7 @@ namespace SqlSugar
     {
 
         /// <summary>
-        /// 数组字转换成Where In 需要的格式(例如:参数 new int{1,2,3} 反回 "'1','2','3'")
+        /// 将数组转换成Where In 需要的格式(例如:参数 new int{1,2,3} 反回 "'1','2','3'")
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
@@ -44,7 +44,7 @@ namespace SqlSugar
             return string.Format("'{0}'", value.ToSqlFilter());
         }
         /// <summary>
-        /// SQL关键字过滤,过滤拉姆达式中的特殊字符，出现特殊字符则引发异常
+        ///SQL注入过滤
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
