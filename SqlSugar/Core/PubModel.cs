@@ -10,7 +10,6 @@ namespace SqlSugar
     /// </summary>
     public class PubModel
     {
-      
         /// <summary>
         /// 用于存储数据表与列的映射信息
         /// </summary>
@@ -49,7 +48,6 @@ namespace SqlSugar
             /// </summary>
             public object IS_NULLABLE { get; set; }
         }
-
 
         /// <summary>
         /// 流水号设置实体
