@@ -490,7 +490,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new SqlSugarException("sql:" + sql + "\n" + ex.Message);
+                throw new SqlSugarException(ex.Message,sql,entity);
             }
 
         }
