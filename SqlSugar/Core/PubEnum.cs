@@ -5,7 +5,6 @@ using System.Text;
 
 namespace SqlSugar
 {
-
     /// <summary>
     /// join类型
     /// </summary>
