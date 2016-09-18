@@ -27,11 +27,11 @@ namespace SqlSugar
         /// </summary>
         public int CommandTimeOut = 30000;
         /// <summary>
-        /// 将页面参数自动填充到SqlParameter []，无需在程序中指定，这种情况需要注意是否有重复参数
+        /// 将页面参数自动填充到SqlParameter []，无需在程序中指定参数
         /// 例如：
-        ///     var list = db.Queryable《Student》().Where("id=@id").ToList();
+        ///     var list = db.Queryable&lt;Student&gt;().Where("id=@id").ToList();
         ///     以前写法
-        ///     var list = db.Queryable《Student》().Where("id=@id", new { id=Request["id"] }).ToList();
+        ///     var list = db.Queryable&lt;Student&gt;().Where("id=@id", new { id=Request["id"] }).ToList();
         /// </summary>
         public bool IsGetPageParas = false;
         public SqlHelper(string connectionString)
