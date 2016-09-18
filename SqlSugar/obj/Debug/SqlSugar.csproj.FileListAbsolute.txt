@@ -50,7 +50,6 @@ G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.dll
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\obj\Debug\SqlSugar.pdb
 G:\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.XML
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.7\SqlSugar\bin\Debug\SqlSugar.XML
-C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\obj\Debug\SqlSugar.dll

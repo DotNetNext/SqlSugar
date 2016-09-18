@@ -8,7 +8,7 @@ namespace SqlSugar
 {
 
     /// <summary>
-    /// ** 描述：Queryable是单表查询基类，基于拥有大量查询扩展函数
+    /// ** 描述：Queryable拉姆达查询对象
     /// ** 创始时间：2015-7-13
     /// ** 修改时间：-
     /// ** 作者：sunkaixuan
@@ -19,11 +19,11 @@ namespace SqlSugar
         /// <summary>
         /// T的名称
         /// </summary>
-        public string TName { get { return typeof(T).Name; } }
+        internal string TName { get { return typeof(T).Name; } }
         /// <summary>
         /// 实体类型
         /// </summary>
-        public Type Type { get { return typeof(T); }  }
+        internal Type Type { get { return typeof(T); } }
         /// <summary>
         /// 数据接口
         /// </summary>
@@ -31,42 +31,42 @@ namespace SqlSugar
         /// <summary>
         /// Where临时数据
         /// </summary>
-        public List<string> Where = new List<string>();
+        internal List<string> Where = new List<string>();
         /// <summary>
         /// Skip临时数据
         /// </summary>
-        public int? Skip { get; set; }
+        internal int? Skip { get; set; }
         /// <summary>
         /// Take临时数据
         /// </summary>
-        public int? Take { get; set; }
+        internal int? Take { get; set; }
         /// <summary>
         /// Order临时数据
         /// </summary>
-        public string OrderBy { get; set; }
+        internal string OrderBy { get; set; }
         /// <summary>
         /// Select临时数据
         /// </summary>
-        public string Select { get; set; }
+        internal string Select { get; set; }
         /// <summary>
         /// SqlParameter临时数据
         /// </summary>
-        public List<SqlParameter> Params = new List<SqlParameter>();
+        internal List<SqlParameter> Params = new List<SqlParameter>();
         /// <summary>
-        /// 表名
+        /// 表名临时数据
         /// </summary>
-        public string TableName { get; set; }
+        internal string TableName { get; set; }
         /// <summary>
-        /// 分组查询
+        /// 分组查询临时数据
         /// </summary>
-        public string GroupBy { get; set; }
+        internal string GroupBy { get; set; }
         /// <summary>
-        /// 条件索引
+        /// 条件索引临时数据
         /// </summary>
-        public int WhereIndex = 1;
+        internal int WhereIndex = 1;
         /// <summary>
         /// 联表查询临时数据
         /// </summary>
-        public List<string> JoinTable = new List<string>();
+        internal List<string> JoinTable = new List<string>();
     }
 }
