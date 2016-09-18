@@ -6,7 +6,7 @@ using System.Text;
 namespace SqlSugar
 {
     /// <summary>
-    /// ** 描述：逻辑出错抛出异常
+    /// ** 描述：验证失败，则抛出异常
     /// ** 创始时间：2015-7-19
     /// ** 修改时间：-
     /// ** 作者：sunkaixuan
