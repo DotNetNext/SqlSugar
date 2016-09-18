@@ -21,7 +21,10 @@ namespace SqlSugar
         /// <summary>
         /// 是否清空SqlParameters
         /// </summary>
-        public bool isClearParameters = true;
+        public bool IsClearParameters = true;
+        /// <summary>
+        /// 设置在终止执行命令的尝试并生成错误之前的等待时间。（单位：秒）
+        /// </summary>
         public int CommandTimeOut = 30000;
         /// <summary>
         /// 将页面参数自动填充到SqlParameter []，无需在程序中指定，这种情况需要注意是否有重复参数
@@ -168,7 +171,7 @@ namespace SqlSugar
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
-            if (isClearParameters)
+            if (IsClearParameters)
                 sqlCommand.Parameters.Clear();
             return sqlDataReader;
         }
