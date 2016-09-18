@@ -490,7 +490,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new Exception("sql:" + sql + "\n" + ex.Message);
+                throw new SqlSugarException("sql:" + sql + "\n" + ex.Message);
             }
 
         }
@@ -699,7 +699,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new Exception("sql:" + sbSql.ToString() + "\n" + ex.Message);
+                throw new SqlSugarException("sql:" + sbSql.ToString() + "\n" + ex.Message);
             }
         }
 
@@ -791,7 +791,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new Exception("sql:" + sbSql.ToString() + "\n" + ex.Message);
+                throw new SqlSugarException("sql:" + sbSql.ToString() + "\n" + ex.Message);
             }
         } 
         #endregion
