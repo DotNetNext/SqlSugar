@@ -18,7 +18,10 @@ namespace SqlSugar
     /// </summary>
     public class SqlSugarClient : SqlHelper, SqlSugar.IClient
     {
-
+        /// <summary>
+        /// 初始化 SqlSugarClient 类的新实例
+        /// </summary>
+        /// <param name="connectionString">数据库连接字符串</param>
         public SqlSugarClient(string connectionString)
             : base(connectionString)
         {
@@ -67,9 +70,9 @@ namespace SqlSugar
             }
         }
         /// <summary>
-        /// 设置流水号 （说明：Dictionary<流水号名称, Func<{表名，字段名},返回的流水号>>）
+        /// 设置流水号 
         /// </summary>
-        /// <param name="serNum"></param>
+        /// <param name="serNum">设置流水号所需要的参数集合</param>
         public void SetSerialNumber(List<PubModel.SerialNumber> serNum)
         {
             if (serNum.IsValuable())
@@ -81,12 +84,12 @@ namespace SqlSugar
         public string ConnectionString { get; set; }
 
         /// <summary>
-        /// 查询是否允许脏读，（默认为:true）
+        /// 查询是否允许脏读（默认为:true）
         /// </summary>
         public bool IsNoLock { get; set; }
 
         /// <summary>
-        /// 忽略非数据库列，如果非特殊需求不建议启用
+        /// 忽略非数据库列 （默认为:false）
         /// </summary>
         public bool IsIgnoreErrorColumns = false;
 
@@ -94,14 +97,17 @@ namespace SqlSugar
         /// 设置禁止更新的列
         /// </summary>
         public string[] DisableUpdateColumns { get; set; }
+
         /// <summary>
-        /// 设置序列化实体转成JSON的日期格式
+        ///设置Queryable或者Sqlable转换成JSON字符串时的日期格式
         /// </summary>
         public string SerializerDateFormat = null;
+
         /// <summary>
         /// 设置分页类型
         /// </summary>
         public PageModel PageModel = PageModel.RowNumber;
+
         /// <summary>
         /// 设置多语言配置
         /// </summary>
@@ -109,9 +115,8 @@ namespace SqlSugar
 
         /// <summary>
         /// 设置过滤器（用户权限过滤）
-        /// Func《过滤器的名字,过滤的条件SQL，过滤的参数对象，返回条件加参数对象》
         /// </summary>
-        /// <param name="filters"></param>
+        /// <param name="filters">参数Dictionary string 为过滤器的名称 , Dictionary Func&lt;KeyValueObj&gt; 为过滤函数 (KeyValueObj 中的 Key为Sql条件,Value为Sql参数)</param>
         public void SetFilterFilterParas(Dictionary<string, Func<KeyValueObj>> filters)
         {
             _filterFuns = filters;
@@ -121,7 +126,7 @@ namespace SqlSugar
         /// 设置过滤器（用户权限过滤）
         /// filters为可查询列名的集合，
         /// </summary>
-        /// <param name="filters"></param>
+        /// <param name="filterColumns"></param>
         public void SetFilterFilterParas(Dictionary<string, List<string>> filterColumns)
         {
             if (filterColumns.Values == null || filterColumns.Values.Count == 0)

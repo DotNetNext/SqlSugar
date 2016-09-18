@@ -5,37 +5,64 @@ using System.Text;
 
 namespace SqlSugar
 {
+    /// <summary>
+    /// 公共参数表
+    /// </summary>
     public class PubModel
     {
-        #region 表字段映射实体
-
+      
+        /// <summary>
+        /// 用于存储数据表与列的映射信息
+        /// </summary>
         public class DataTableMap
         {
+            /// <summary>
+            /// 表名
+            /// </summary>
             public object TABLE_NAME { get; set; }
-
+            /// <summary>
+            /// 表ID
+            /// </summary>
             public object TABLE_ID { get; set; }
-
+            /// <summary>
+            /// 列名
+            /// </summary>
             public object COLUMN_NAME { get; set; }
-
+            /// <summary>
+            /// 数据类型
+            /// </summary>
             public object DATA_TYPE { get; set; }
-
+            /// <summary>
+            /// 字符最大长度
+            /// </summary>
             public object CHARACTER_MAXIMUM_LENGTH { get; set; }
-
+            /// <summary>
+            /// 备注
+            /// </summary>
             public object COLUMN_DESCRIPTION { get; set; }
-
+            /// <summary>
+            /// 默认值
+            /// </summary>
             public object COLUMN_DEFAULT { get; set; }
-
+            /// <summary>
+            /// 是否允许为null
+            /// </summary>
             public object IS_NULLABLE { get; set; }
         }
 
-        #endregion
 
         /// <summary>
         /// 流水号设置实体
         /// </summary>
         public class SerialNumber
         {
+            /// <summary>
+            /// 表名
+            /// </summary>
             public string TableName { get; set; }
+            /// <summary>
+            /// 字段名
+            /// </summary>
             public string FieldName { get; set; }
             /// <summary>
             /// 获取流水号函数
@@ -48,7 +75,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 语言
+        /// 多语言设置的参数表
         /// </summary>
         public class Language
         {
