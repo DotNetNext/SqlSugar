@@ -40,7 +40,7 @@ namespace SqlSugar
         internal static Type DicArraySO = typeof(Dictionary<string, object>);
 
         /// <summary>
-        /// Reader转成List《T》
+        /// Reader转成T的集合
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="dr"></param>
