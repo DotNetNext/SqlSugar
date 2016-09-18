@@ -124,9 +124,8 @@ namespace SqlSugar
 
         /// <summary>
         /// 设置过滤器（用户权限过滤）
-        /// filters为可查询列名的集合，
         /// </summary>
-        /// <param name="filterColumns"></param>
+        /// <param name="filterColumns">参数Dictionary string 为过滤器的名称 , Dictionary List&lt;string&gt;为允许查询的列的集合</param>
         public void SetFilterFilterParas(Dictionary<string, List<string>> filterColumns)
         {
             if (filterColumns.Values == null || filterColumns.Values.Count == 0)
@@ -139,12 +138,12 @@ namespace SqlSugar
 
 
         /// <summary>
-        /// 数据过滤器键
+        /// 当前滤器名称
         /// </summary>
         public string CurrentFilterKey = null;
 
         /// <summary>
-        /// 创建多表查询对象
+        /// 创建更接近Sql语句的查询对象
         /// </summary>
         public Sqlable Sqlable()
         {
@@ -167,7 +166,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 创建单表查询对象
+        /// 创建拉姆达查询对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
@@ -195,7 +194,8 @@ namespace SqlSugar
                     if (filterValue.Value != null)
                         queryable.Params.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
                 }
-                if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey)) {
+                if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey))
+                {
                     var columns = _filterColumns[CurrentFilterKey];
                     queryable.Select = string.Join(",", columns);
                 }
@@ -204,9 +204,10 @@ namespace SqlSugar
 
         }
         /// <summary>
-        /// 创建单表查询对象
+        /// 创建拉姆达查询对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">T类型对应的真实表名</param>
         /// <returns></returns>
         public Queryable<T> Queryable<T>(string tableName) where T : new()
         {
@@ -214,7 +215,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 根据SQL语句将结果集映射到List《T》
+        /// 根据SQL语句将结果集映射到List&lt;T&gt;
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sql"></param>
@@ -250,7 +251,7 @@ namespace SqlSugar
 
 
         /// <summary>
-        /// 根据SQL语句将结果集映射到List《T》
+        /// 根据SQL语句将结果集映射到List&lt;T&gt;
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sql"></param>
@@ -302,11 +303,10 @@ namespace SqlSugar
 
         /// <summary>
         /// 批量插入
-        /// 使用说明:sqlSugar.Insert(List《entity》);
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="entity">插入对象</param>
-        /// <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
+        /// <param name="entities">插入对象的集合</param>
+        /// <param name="isIdentity">过期参数无需填写</param>
         /// <returns></returns>
         public List<object> InsertRange<T>(List<T> entities, bool isIdentity = true) where T : class
         {
@@ -320,11 +320,10 @@ namespace SqlSugar
 
         /// <summary>
         /// 插入
-        /// 使用说明:sqlSugar.Insert(entity);
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entity">插入对象</param>
-        /// <param name="isIdentity">该属性已经作废可以不填，主键是否为自增长,true可以不填,false必填</param>
+        /// <param name="isIdentity">过期参数无需填写</param>
         /// <returns></returns>
         public object Insert<T>(T entity, bool isIdentity = true) where T : class
         {
@@ -420,7 +419,8 @@ namespace SqlSugar
                         var isAnyNum = _serialNumber.Any(serEexp);
                         if (isAnyNum && (val == DBNull.Value || val.IsNullOrEmpty()))
                         {
-                            if (_serialNumber.First(serEexp).GetNumFunc != null) {
+                            if (_serialNumber.First(serEexp).GetNumFunc != null)
+                            {
                                 val = _serialNumber.First(serEexp).GetNumFunc();
                             }
                             if (_serialNumber.First(serEexp).GetNumFuncWithDb != null)
