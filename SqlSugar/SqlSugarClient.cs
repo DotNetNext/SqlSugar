@@ -514,8 +514,6 @@ namespace SqlSugar
             sbSql.AppendLine(typeName);
             sbSql.AppendFormat("({0})", string.Join(",", columnNames.Select(it => "[" + it + "]")));
 
-
-            int i = 0;
             //属性缓存
             string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
