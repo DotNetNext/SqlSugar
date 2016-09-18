@@ -7,7 +7,11 @@ using System.Data;
 namespace SqlSugar
 {
     /// <summary>
-    /// DataRecord扩展
+    /// ** 描述：IDataRecord扩展类
+    /// ** 创始时间：2016-8-7
+    /// ** 修改时间：-
+    /// ** 作者：孙凯旋
+    /// ** 使用说明：
     /// </summary>
     public static class IDataRecordExtensions
     {

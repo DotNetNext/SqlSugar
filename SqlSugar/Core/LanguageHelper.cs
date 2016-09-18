@@ -6,7 +6,11 @@ using System.Text;
 namespace SqlSugar
 {
     /// <summary>
-    /// 多语言帮助类
+    /// ** 描述：多语言视图帮助类
+    /// ** 创始时间：2016-8-7
+    /// ** 修改时间：-
+    /// ** 作者：孙凯旋
+    /// ** 使用说明：
     /// </summary>
     public class LanguageHelper
     {

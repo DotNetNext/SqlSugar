@@ -82,7 +82,30 @@ namespace SqlSugar
                 return null;
             }
         }
+
+        /// <summary>
+        /// 解析表达示
+        /// </summary>
+        /// <param name="re">当前解析对象</param>
+        /// <param name="exp">要解析的表达示</param>
         public void ResolveExpression(ResolveExpress re, Expression exp)
+        {
+            //初始化表达示
+            Init(re, exp);
+
+            //设置PageSize
+            foreach (var par in Paras)
+            {
+                SqlSugarTool.SetParSize(par);
+            }
+        }
+
+        /// <summary>
+        /// 初始化表达示
+        /// </summary>
+        /// <param name="re"></param>
+        /// <param name="exp"></param>
+        private void Init(ResolveExpress re, Expression exp)
         {
             ResolveExpress.MemberType type = ResolveExpress.MemberType.None;
             var expStr = exp.ToString();
@@ -94,6 +117,7 @@ namespace SqlSugar
             }
             else if (isNotBool)
             {
+                //解析表达示
                 this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
             }
             else
@@ -110,12 +134,9 @@ namespace SqlSugar
                 }
                 else
                 {
+                    //解析表达示
                     this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
                 }
-            }
-            foreach (var par in Paras)
-            {
-                SqlSugarTool.SetParSize(par);
             }
         }
 
@@ -337,6 +358,13 @@ namespace SqlSugar
             return null;
         }
 
+        /// <summary>
+        /// 拉姆达函数处理
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="mce"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private string MethodTo(string methodName, MethodCallExpression mce, ref MemberType type)
         {
             string value = string.Empty;
@@ -367,12 +395,24 @@ namespace SqlSugar
             return value;
         }
 
+        /// <summary>
+        /// 拉姆达ToString函数处理
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="mce"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private string MethodToString(string methodName, MethodCallExpression mce, ref MemberType type)
         {
             return CreateSqlElements(mce.Object, ref type);
         }
 
-
+        /// <summary>
+        /// 添加参数
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         private string AddParas(ref string left, object right)
         {
             string oldLeft = left;
@@ -392,6 +432,13 @@ namespace SqlSugar
             }
             return oldLeft;
         }
+
+        /// <summary>
+        /// 添加参数并返回右边值
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         private string AddParasReturnRight(object left, ref string right)
         {
             string oldRight = right;
@@ -412,6 +459,13 @@ namespace SqlSugar
             return oldRight;
         }
 
+        /// <summary>
+        /// 拉姆达StartsWith函数处理
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="mce"></param>
+        /// <param name="isTure"></param>
+        /// <returns></returns>
         private string StartsWith(string methodName, MethodCallExpression mce, bool isTure)
         {
             MemberType leftType = MemberType.None;
@@ -421,6 +475,14 @@ namespace SqlSugar
             var oldLeft = AddParas(ref left, right);
             return string.Format("({0} {1} LIKE @{2}+'%')", oldLeft, isTure == false ? "  NOT " : null, left);
         }
+
+        /// <summary>
+        /// 拉姆达EndWith函数处理
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="mce"></param>
+        /// <param name="isTure"></param>
+        /// <returns></returns>
         private string EndWith(string methodName, MethodCallExpression mce, bool isTure)
         {
             MemberType leftType = MemberType.None;
@@ -431,6 +493,13 @@ namespace SqlSugar
             return string.Format("({0} {1} LIKE '%'+@{2})", oldLeft, isTure == false ? "  NOT " : null, left);
         }
 
+        /// <summary>
+        /// 拉姆达Contains函数处理
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="mce"></param>
+        /// <param name="isTure"></param>
+        /// <returns></returns>
         private string Contains(string methodName, MethodCallExpression mce, bool isTure)
         {
             MemberType leftType = MemberType.None;
@@ -485,6 +554,9 @@ namespace SqlSugar
             }
         }
 
+        /// <summary>
+        /// 拉姆达成员类型
+        /// </summary>
         public enum MemberType
         {
             None = 0,
