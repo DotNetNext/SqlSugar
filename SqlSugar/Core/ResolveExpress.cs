@@ -17,17 +17,27 @@ namespace SqlSugar
     /// ** qq：610262374 
     /// ** 使用说明：使用请注名作者
     /// </summary>
-    public class ResolveExpress
+    internal class ResolveExpress
     {
+        /// <summary>
+        /// 解析拉姆达
+        /// </summary>
+        /// <param name="sameIndex">区分相同参数名的索引号</param>
         public ResolveExpress(int sameIndex = 1)
         {
             this.SameIndex = sameIndex;
         }
+
         public string SqlWhere = null;
         public ResolveExpressType Type = ResolveExpressType.oneT;
         public List<SqlParameter> Paras = new List<SqlParameter>();
         private int SameIndex = 1;
 
+        /// <summary>
+        /// 获取拉姆达表达示的字段值
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         public string GetExpressionRightField(Expression exp)
         {
             LambdaExpression lambda = exp as LambdaExpression;
@@ -47,6 +57,12 @@ namespace SqlSugar
                 return null;
             }
         }
+
+        /// <summary>
+        /// 获取拉姆达表达示的字段值多个T模式
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         public string GetExpressionRightFieldByNT(Expression exp)
         {
             LambdaExpression lambda = exp as LambdaExpression;
