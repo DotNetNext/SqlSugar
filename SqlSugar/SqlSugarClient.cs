@@ -28,11 +28,13 @@ namespace SqlSugar
             ConnectionString = connectionString;
             IsNoLock = false;
         }
+
+
+
         private List<KeyValue> _mappingTableList = null;
         private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
         private Dictionary<string, List<string>> _filterColumns = null;
         private List<PubModel.SerialNumber> _serialNumber = null;
-
         internal string GetTableNameByClassType(string typeName)
         {
             if (_mappingTableList.IsValuable())
@@ -58,28 +60,8 @@ namespace SqlSugar
             return tableName;
         }
 
-        /// <summary>
-        /// 设置实体类与表名的映射， Key为实体类 Value为表名
-        /// </summary>
-        /// <param name="mappingTables"></param>
-        public void SetMappingTables(List<KeyValue> mappingTables)
-        {
-            if (mappingTables.IsValuable())
-            {
-                _mappingTableList = mappingTables;
-            }
-        }
-        /// <summary>
-        /// 设置流水号 
-        /// </summary>
-        /// <param name="serNum">设置流水号所需要的参数集合</param>
-        public void SetSerialNumber(List<PubModel.SerialNumber> serNum)
-        {
-            if (serNum.IsValuable())
-            {
-                _serialNumber = serNum;
-            }
-        }
+
+
         /// <summary>
         /// 当前连接字符串
         /// </summary>
@@ -116,6 +98,11 @@ namespace SqlSugar
         public PubModel.Language Language = null;
 
         /// <summary>
+        /// 当前滤器名称
+        /// </summary>
+        public string CurrentFilterKey = null;
+
+        /// <summary>
         /// 设置过滤器（用户权限过滤）
         /// </summary>
         /// <param name="filters">参数Dictionary string 为过滤器的名称 , Dictionary Func&lt;KeyValueObj&gt; 为过滤函数 (KeyValueObj 中的 Key为Sql条件,Value为Sql参数)</param>
@@ -137,12 +124,32 @@ namespace SqlSugar
             _filterColumns = filterColumns;
         }
 
-
+        /// <summary>
+        /// 设置实体类与表名的映射， Key为实体类 Value为表名
+        /// </summary>
+        /// <param name="mappingTables"></param>
+        public void SetMappingTables(List<KeyValue> mappingTables)
+        {
+            if (mappingTables.IsValuable())
+            {
+                _mappingTableList = mappingTables;
+            }
+        }
 
         /// <summary>
-        /// 当前滤器名称
+        /// 设置流水号 
         /// </summary>
-        public string CurrentFilterKey = null;
+        /// <param name="serNum">设置流水号所需要的参数集合</param>
+        public void SetSerialNumber(List<PubModel.SerialNumber> serNum)
+        {
+            if (serNum.IsValuable())
+            {
+                _serialNumber = serNum;
+            }
+        }
+
+
+
 
         /// <summary>
         /// 创建更接近Sql语句的查询对象
@@ -166,6 +173,10 @@ namespace SqlSugar
             }
             return sqlable;
         }
+
+
+
+
 
         /// <summary>
         /// 创建拉姆达查询对象
@@ -205,6 +216,7 @@ namespace SqlSugar
             return queryable;
 
         }
+
         /// <summary>
         /// 创建拉姆达查询对象
         /// </summary>
@@ -215,6 +227,9 @@ namespace SqlSugar
         {
             return new Queryable<T>() { DB = this, TableName = tableName };
         }
+
+
+
 
         /// <summary>
         /// 根据SQL语句将结果集映射到List&lt;T&gt;
@@ -250,7 +265,6 @@ namespace SqlSugar
         {
             return JsonConverter.DataTableToJson(GetDataTable(sql, whereObj), SerializerDateFormat);
         }
-
 
         /// <summary>
         /// 根据SQL语句将结果集映射到List&lt;T&gt;
@@ -302,6 +316,9 @@ namespace SqlSugar
             sql = null;
             return reval;
         }
+
+
+
 
         /// <summary>
         /// 批量插入
@@ -579,6 +596,11 @@ namespace SqlSugar
             return reval > 0;
         }
 
+
+
+
+
+
         /// <summary>
         /// 根据表达示条件将实体对象更新到数据库
         /// </summary>
@@ -688,6 +710,7 @@ namespace SqlSugar
             var reval = Update<T, object>(rowObj);
             return reval;
         }
+
         /// <summary>
         /// 将实体对象更新到数据库
         /// </summary>
@@ -767,6 +790,10 @@ namespace SqlSugar
                 throw new Exception("sql:" + sbSql.ToString() + "\n" + ex.Message);
             }
         }
+
+
+
+
 
         /// <summary>
         /// 根据表达示删除数据
@@ -915,6 +942,10 @@ namespace SqlSugar
             isSuccess = deleteRowCount > 0;
             return isSuccess;
         }
+
+
+
+
 
         /// <summary>
         /// 生成实体的对象
