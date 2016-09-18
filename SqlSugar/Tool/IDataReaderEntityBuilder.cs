@@ -110,7 +110,7 @@ namespace SqlSugar
             var isAny = errorTypes.Contains(objType);
             if (isAny)
             {
-                throw new Exception(string.Format("{0} can't  convert {1} to {2}", field, dbType, objType));
+                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", field, dbType, objType));
             }
         }
 

@@ -95,7 +95,7 @@ namespace SqlSugar
             catch (Exception ex)
             {
                 if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
-                throw ex;
+                Check.Exception(true,"错误信息：实体映射出错。\r\n错误详情：{0}",ex.Message);
             }
             return list;
         }
