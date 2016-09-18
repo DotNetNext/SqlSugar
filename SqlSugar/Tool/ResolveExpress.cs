@@ -465,7 +465,7 @@ namespace SqlSugar
                 case ExpressionType.MultiplyChecked:
                     return "*";
                 default:
-                    throw new Exception(string.Format("不支持{0}此种运算符查找！" + expressiontype));
+                    throw new SqlSugarException(string.Format("拉姆达解析出错：不支持{0}此种运算符查找！" + expressiontype));
             }
         }
 
