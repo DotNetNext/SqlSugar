@@ -47,8 +47,15 @@ namespace SqlSugar
 
         private static string GetMessage(string message, string sql, object pars)
         {
-            var reval = GetLineMessage("错误信息         ", message) + GetLineMessage("ORM生成的Sql", sql) + GetLineMessage("函数参数        ",JsonConverter.Serialize(pars));
-            return reval;
+            if (pars == null)
+            {
+                return GetMessage(message,sql);
+            }
+            else
+            {
+                var reval = GetLineMessage("错误信息         ", message) + GetLineMessage("ORM生成的Sql", sql) + GetLineMessage("函数参数        ", JsonConverter.Serialize(pars));
+                return reval;
+            }
         }
 
 

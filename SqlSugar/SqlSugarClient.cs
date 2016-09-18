@@ -699,7 +699,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new SqlSugarException("sql:" + sbSql.ToString() + "\n" + ex.Message);
+                throw new SqlSugarException(ex.Message, sbSql.ToString(), new { rowObj = rowObj, expression = expression+"" });
             }
         }
 
@@ -791,7 +791,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new SqlSugarException("sql:" + sbSql.ToString() + "\n" + ex.Message);
+                throw new SqlSugarException(ex.Message, sbSql.ToString(), new { rowObj = rowObj, whereIn = whereIn });
             }
         } 
         #endregion
