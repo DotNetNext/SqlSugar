@@ -17,11 +17,13 @@ namespace SqlSugar
     /// </summary>
     public class IDataReaderEntityBuilder<T>
     {
-
+        //is db null method
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
+
 
         //default method
         private static readonly MethodInfo getValueMethod = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
+
 
         //dr valueType method
         private static readonly MethodInfo getBoolean = typeof(IDataRecord).GetMethod("GetBoolean", new Type[] { typeof(int) });
@@ -35,7 +37,6 @@ namespace SqlSugar
         private static readonly MethodInfo getInt32 = typeof(IDataRecord).GetMethod("GetInt32", new Type[] { typeof(int) });
         private static readonly MethodInfo getInt64 = typeof(IDataRecord).GetMethod("GetInt64", new Type[] { typeof(int) });
         private static readonly MethodInfo getString = typeof(IDataRecord).GetMethod("GetString", new Type[] { typeof(int) });
-
 
 
         //convert method
@@ -55,15 +56,34 @@ namespace SqlSugar
 
 
 
-
+        /// <summary>
+        /// 声名委托类型
+        /// </summary>
+        /// <param name="dataRecord"></param>
+        /// <returns></returns>
         private delegate T Load(IDataRecord dataRecord);
 
+        /// <summary>
+        /// 声名事件，当执行CreateBuilder后，EMIT将动态创建最高性能的实体绑定对象
+        /// </summary>
         private Load handler;
 
+        /// <summary>
+        /// 将dataRecord的值绑定到T
+        /// </summary>
+        /// <param name="dataRecord"></param>
+        /// <returns></returns>
         public T Build(IDataRecord dataRecord)
         {
             return handler(dataRecord);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="dataRecord"></param>
+        /// <returns></returns>
         public static IDataReaderEntityBuilder<T> CreateBuilder(Type type, IDataRecord dataRecord)
         {
 

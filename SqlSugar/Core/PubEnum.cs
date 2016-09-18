@@ -52,6 +52,6 @@ namespace SqlSugar
         /// 多个T
         /// </summary>
         nT = 1,
- 
+
     }
 }
