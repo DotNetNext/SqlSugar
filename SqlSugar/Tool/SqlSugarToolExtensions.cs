@@ -19,7 +19,7 @@ namespace SqlSugar
     {
 
         /// <summary>
-        /// 数组字串转换成SQL参数格式，例如: 参数 new int{1,2,3} 反回 "'1','2','3'"
+        /// 数组字转换成Where In 需要的格式(例如:参数 new int{1,2,3} 反回 "'1','2','3'")
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
@@ -35,7 +35,7 @@ namespace SqlSugar
             }
         }
         /// <summary>
-        /// 将字符串转换成SQL参数格式，例如: 参数value返回'value'
+        /// 将字符串转换成SQL参数所需要的格式(例如: 参数value返回'value')
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -80,7 +80,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="isNoLock"></param>
         /// <returns></returns>
-        public static string GetLockString(this bool isNoLock)
+        internal static string GetLockString(this bool isNoLock)
         {
             return isNoLock ? "WITH(NOLOCK)" : null; ;
         }
@@ -89,7 +89,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="selectFileds"></param>
         /// <returns></returns>
-        public static string GetSelectFiles(this string selectFileds)
+        internal static string GetSelectFiles(this string selectFileds)
         {
             return selectFileds.IsNullOrEmpty() ? "*" : selectFileds;
         }
@@ -98,7 +98,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="groupByFileds"></param>
         /// <returns></returns>
-        public static string GetGroupBy(this string groupByFileds)
+        internal static string GetGroupBy(this string groupByFileds)
         {
             return groupByFileds.IsNullOrEmpty() ? "" : " GROUP BY " + groupByFileds;
         }
@@ -106,7 +106,7 @@ namespace SqlSugar
         /// 将Request里的参数转成SqlParameter[]
         /// </summary>
         /// <returns></returns>
-        public static void RequestParasToSqlParameters(SqlParameterCollection  oldParas)
+        internal static void RequestParasToSqlParameters(SqlParameterCollection  oldParas)
         {
             var oldParaList= oldParas.Cast<SqlParameter>().ToList();
             var paraDictionarAll =SqlSugarTool.GetParameterDictionary();
