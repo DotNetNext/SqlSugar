@@ -219,33 +219,33 @@ namespace SqlSugar
         /// <summary>
         /// 根据SQL语句将结果集映射到List&lt;T&gt;
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="whereObj"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体对象</typeparam>
+        /// <param name="sql">sql语句</param>
+        /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
+        /// <returns>T的集合</returns>
         public List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
             var pars = SqlSugarTool.GetParameters(whereObj).ToList();
             return SqlQuery<T>(sql, pars);
         }
-        /// <summary>
+
+       /// <summary>
         /// 根据SQL语句将结果集映射到dynamic
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="whereObj"></param>
-        /// <returns></returns>
+       /// </summary>
+        /// <param name="sql">sql语句</param>
+        /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
+       /// <returns>动态集合</returns>
         public dynamic SqlQueryDynamic(string sql, object whereObj = null)
         {
             return JsonConverter.ConvertJson(SqlQueryJson(sql, whereObj));
         }
+       
         /// <summary>
         /// 根据SQL语句将结果集映射到json
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="whereObj"></param>
-        /// <returns></returns>
+        /// <param name="sql">sql语句</param>
+        /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
+        /// <returns>JSON数据</returns>
         public string SqlQueryJson(string sql, object whereObj = null)
         {
             return JsonConverter.DataTableToJson(GetDataTable(sql, whereObj), SerializerDateFormat);
@@ -255,22 +255,22 @@ namespace SqlSugar
         /// <summary>
         /// 根据SQL语句将结果集映射到List&lt;T&gt;
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="pars"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="sql">sql语句</param>
+        /// <param name="pars">SqlParameter的集合</param>
+        /// <returns>T的集合</returns>
         public List<T> SqlQuery<T>(string sql, SqlParameter[] pars)
         {
             return SqlQuery<T>(sql, pars.ToList());
         }
+
         /// <summary>
         /// 根据SQL语句将结果集映射到List&lt;T&gt;
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="reader"></param>
-        /// <param name="pars"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="sql">sql语句</param>
+        /// <param name="pars">SqlParameter集合</param>
+        /// <returns>T的集合</returns>
         public List<T> SqlQuery<T>(string sql, List<SqlParameter> pars)
         {
             SqlDataReader reader = null;
