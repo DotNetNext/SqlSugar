@@ -767,11 +767,11 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 删除,根据表达示
-        /// 使用说明:
-        /// Delete《T》(it=>it.id=100) 或者Delete《T》(3)
+        /// 根据表达示删除数据
         /// </summary>
-        /// <param name="expression">筛选表达示</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression">表达示条件</param>
+        /// <returns></returns>
         public bool Delete<T>(Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
@@ -785,11 +785,12 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 批量删除
-        /// 注意：whereIn 主键集合  
-        /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
+        /// 根据主键集合删除数据
         /// </summary>
-        /// <param name="whereIn"> delete ids </param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <typeparam name="FiledType">主键类型</typeparam>
+        /// <param name="whereIn">主键集合</param>
+        /// <returns></returns>
         public bool Delete<T, FiledType>(params FiledType[] whereIn)
         {
             Type type = typeof(T);
@@ -810,12 +811,12 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 批量删除
+        /// 根据主键集合加表达示条件删除数据
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="FiledType">whereIn里面元素的类型</typeparam>
-        /// <param name="expression">in 的字段名称</param>
-        /// <param name="whereIn">需要删除条件值的数组集合</param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <typeparam name="FiledType">主键类型</typeparam>
+        /// <param name="expression">表达示条件</param>
+        /// <param name="whereIn">主键集合</param>
         /// <returns></returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn)
         {
@@ -824,12 +825,12 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 批量删除
+        /// 根据主键集合加表达示条件删除数据
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="FiledType">whereIn里面元素的类型</typeparam>
-        /// <param name="expression">in 的字段名称</param>
-        /// <param name="whereIn">需要删除条件值的数组集合</param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <typeparam name="FiledType">主键类型</typeparam>
+        /// <param name="expression">表达示条件</param>
+        /// <param name="whereIn">主键集合</param>
         /// <returns></returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
         {
@@ -853,12 +854,13 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 批量假删除
-        /// 使用说明::
-        /// FalseDelete《T》("is_del",new int[]{1,2,3})或者Delete《T》("is_del",3)
+        /// 状态删除 
         /// </summary>
-        /// <param name="field">更新删除状态字段</param>
-        /// <param name="whereIn">delete ids</param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <typeparam name="FiledType">主键类型</typeparam>
+        /// <param name="field">标识删除的字段</param>
+        /// <param name="whereIn">主键集合</param>
+        /// <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
         public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)
         {
             Type type = typeof(T);
@@ -879,12 +881,12 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 假删除，根据表达示
-        /// 使用说明::
-        /// FalseDelete《T》(new int[]{1,2,3})或者Delete《T》(3)
+        /// 状态删除
         /// </summary>
-        /// <param name="field">更新删除状态字段</param>
-        /// <param name="expression">筛选表达示</param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="field">标识删除的字段</param>
+        /// <param name="expression">表达示条件</param>
+        /// <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
         public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression)
         {
             Type type = typeof(T);
