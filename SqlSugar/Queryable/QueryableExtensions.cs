@@ -12,7 +12,7 @@ namespace SqlSugar
     /// <summary>
     /// ** 描述：Queryable扩展函数
     /// ** 创始时间：2015-7-13
-    /// ** 修改时间：-
+    /// ** 修改时间：2016-9-19
     /// ** 作者：sunkaixuan
     /// ** 使用说明：
     /// </summary>
@@ -759,11 +759,11 @@ namespace SqlSugar
         /// <summary>
         /// 获取最大值
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="maxField">列</param>
-        /// <returns></returns>
+        /// <typeparam name="TSource">实体类型</typeparam>
+        /// <typeparam name="TResult">返回类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="maxField">列名</param>
+        /// <returns>TResult</returns>
         public static TResult Max<TSource, TResult>(this Queryable<TSource> queryable, string maxField)
         {
             StringBuilder sbSql = new StringBuilder();
@@ -777,11 +777,10 @@ namespace SqlSugar
         /// <summary>
         /// 获取最大值
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="maxField">列</param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="expression">查询字段 (例如：it=>it.fieldName)</param>
+        /// <returns>object</returns>
         public static object Max<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
 
@@ -793,11 +792,11 @@ namespace SqlSugar
         /// <summary>
         /// 获取最小值
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="minField">列</param>
-        /// <returns></returns>
+        /// <typeparam name="TSource">实体类型</typeparam>
+        /// <typeparam name="TResult">返回类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="minField">列名</param>
+        /// <returns>TResult</returns>
         public static TResult Min<TSource, TResult>(this Queryable<TSource> queryable, string minField)
         {
             StringBuilder sbSql = new StringBuilder();
@@ -811,11 +810,10 @@ namespace SqlSugar
         /// <summary>
         /// 获取最小值
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <param name="minField">列</param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="expression">查询字段 (例如：it=>it.fieldName)</param>
+        /// <returns>object</returns>
         public static object Min<T>(this Queryable<T> queryable, Expression<Func<T, object>> expression)
         {
             ResolveExpress re = new ResolveExpress();
@@ -825,11 +823,11 @@ namespace SqlSugar
 
 
         /// <summary>
-        /// 将Queryable转换为List《T》集合
+        /// 将Queryable转换T的集合
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <returns>T的集合</returns>
         public static List<T> ToList<T>(this Queryable<T> queryable)
         {
             StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
@@ -845,18 +843,19 @@ namespace SqlSugar
         /// <summary>
         /// 将Queryable转换为Json
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <returns>json字符串</returns>
         public static string ToJson<T>(this Queryable<T> queryable)
         {
             return JsonConverter.DataTableToJson(ToDataTable<T>(queryable), queryable.DB.SerializerDateFormat);
         }
+
         /// <summary>
-        /// 返回Sql和SqlParameter []
+        /// 返回Sql和参数信息
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
         /// <returns></returns>
         public static KeyValuePair<string, string[]> ToSql<T>(this Queryable<T> queryable)
         {
@@ -870,9 +869,9 @@ namespace SqlSugar
         /// <summary>
         /// 将Queryable转换为Dynamic
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <returns>dynamic</returns>
         public static dynamic ToDynamic<T>(this Queryable<T> queryable)
         {
             return JsonConverter.ConvertJson(ToJson<T>(queryable));
@@ -881,9 +880,9 @@ namespace SqlSugar
         /// <summary>
         /// 将Queryable转换为DataTable
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <returns>DataTable</returns>
         public static DataTable ToDataTable<T>(this Queryable<T> queryable)
         {
             StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
@@ -896,11 +895,11 @@ namespace SqlSugar
         /// <summary>
         /// 将Queryable转换为分页后的List&lt;T&gt;集合
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
         /// <param name="pageIndex">当前页码</param>
         /// <param name="pageSize">每页显示数量</param>
-        /// <returns></returns>
+        /// <returns>T的集合</returns>
         public static List<T> ToPageList<T>(this Queryable<T> queryable, int pageIndex, int pageSize)
         {
             if (queryable.OrderBy.IsNullOrEmpty())
@@ -921,8 +920,8 @@ namespace SqlSugar
         /// <typeparam name="T2">联接的表对象</typeparam>
         /// <param name="queryable"></param>
         /// <param name="expression">表达示</param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">Join的类型</param>
+        /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
         {
 
@@ -952,10 +951,10 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">第一个表的对象</typeparam>
         /// <typeparam name="T2">联接表的对象</typeparam>
-        /// <param name="queryable"></param>
+        /// <param name="queryable">查询对象</param>
         /// <param name="expression">条件表达示</param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">Join的类型</param>
+        /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T, T2,T3>(this Queryable<T> queryable, Expression<Func<T, T2,T3, object>> expression, JoinType type = JoinType.LEFT)
         {
 
@@ -982,13 +981,13 @@ namespace SqlSugar
         /// <summary>
         /// 联表查询根据字符串
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryable"></param>
+        /// <typeparam name="T">第一个表的对象</typeparam>
+        /// <param name="queryable">查询对象</param>
         /// <param name="tableName">表名（可是以表或也可以是SQL语句加括号）</param>
         /// <param name="shortName">表名简写</param>
         /// <param name="onWhere">on后面的条件</param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">Join的类型</param>
+        /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T>(this Queryable<T> queryable, string tableName,string shortName,string onWhere,object whereObj, JoinType type = JoinType.LEFT)
         {
 
