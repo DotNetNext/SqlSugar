@@ -10,7 +10,13 @@ namespace SqlSugar
     /// </summary>
     public class KeyValue
     {
+        /// <summary>
+        /// 键
+        /// </summary>
         public string Key { get; set; }
+        /// <summary>
+        /// 值
+        /// </summary>
         public string Value { get; set; }
     }
     /// <summary>
@@ -18,7 +24,13 @@ namespace SqlSugar
     /// </summary>
     public class KeyValueObj
     {
+        /// <summary>
+        /// 键
+        /// </summary>
         public string Key { get; set; }
+        /// <summary>
+        /// 值
+        /// </summary>
         public object Value { get; set; }
     }
 
