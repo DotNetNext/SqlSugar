@@ -21,9 +21,11 @@ namespace WebTest.Demo
                 //真删除
                 db.Delete<School, int>(10);//注意主键必需为实体类的第一个属性
                 db.Delete<School>(it => it.id > 100);
+                //批量删除
                 db.Delete<School, string>(new string[] { "100", "101", "102" });
                 //非主键批量删除
                 db.Delete<School, string>(it => it.name, new string[] { "" });
+                db.Delete<School, int>(it => it.id, new int[] { 20, 22 });
 
                 //假删除
                 //db.FalseDelete<school>("is_del", 100);

@@ -817,7 +817,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 根据主键集合删除数据
+        /// 根据主键集合批量删除数据
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <typeparam name="FiledType">主键类型</typeparam>
@@ -843,12 +843,12 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 根据主键集合加表达示条件删除数据
+        /// 根据指定列集合批量删除数据
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
-        /// <typeparam name="FiledType">主键类型</typeparam>
+        /// <typeparam name="FiledType">指定列的类型</typeparam>
         /// <param name="expression">表达示条件</param>
-        /// <param name="whereIn">主键集合</param>
+        /// <param name="whereIn">批定列值的集合</param>
         /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn)
         {
@@ -857,12 +857,12 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 根据主键集合加表达示条件删除数据
+        /// 根据指定列集合批量删除数据
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
-        /// <typeparam name="FiledType">主键类型</typeparam>
+        /// <typeparam name="FiledType">指定列的类型</typeparam>
         /// <param name="expression">表达示条件</param>
-        /// <param name="whereIn">主键集合</param>
+        /// <param name="whereIn">批定列值的集合</param>
         /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
         {
