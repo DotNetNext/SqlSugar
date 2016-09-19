@@ -77,7 +77,7 @@
     <Compile Include="Tool\SqlException.cs" />
     <Compile Include="Tool\SqlSugarToolExtensions.cs" />
     <Compile Include="Tool\SqlSugarTool.cs" />
-    <Compile Include="Tool\IHttpStorageObject.cs" />
+    <Compile Include="Tool\IStorageObject.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
