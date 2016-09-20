@@ -44,7 +44,8 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="whereString">匿名参数(例如:new{id=1,name="张三"})</param>
+        /// <param name="whereString">Where后面的Sql条件语句 (例如： id=@id )</param>
+        /// <param name="whereObj"> 匿名参数 (例如：new{id=1,name="张三"})</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> Where<T>(this Queryable<T> queryable, string whereString, object whereObj = null)
         {
