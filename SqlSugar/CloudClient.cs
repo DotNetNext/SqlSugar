@@ -134,11 +134,11 @@ namespace SqlSugar
             return tasks.Any(it => it.Result);
         }
         /// <summary>
-        /// 删除,根据表达示
+        /// 删除,根据表达式
         /// 使用说明:
         /// Delete《T》(it=>it.id=100) 或者Delete《T》(3)
         /// </summary>
-        /// <param name="expression">筛选表达示</param>
+        /// <param name="expression">筛选表达式</param>
         public bool Delete<T>(System.Linq.Expressions.Expression<Func<T, bool>> expression)
         {
             var tasks = new Task<bool>[configList.Count];
@@ -181,12 +181,12 @@ namespace SqlSugar
             return tasks.Any(it => it.Result);
         }
         /// <summary>
-        /// 假删除，根据表达示
+        /// 假删除，根据表达式
         /// 使用说明::
         /// FalseDelete《T》(new int[]{1,2,3})或者Delete《T》(3)
         /// </summary>
         /// <param name="field">更新删除状态字段</param>
-        /// <param name="expression">筛选表达示</param>
+        /// <param name="expression">筛选表达式</param>
         public bool FalseDelete<T>(string field, System.Linq.Expressions.Expression<Func<T, bool>> expression)
         {
             var tasks = new Task<bool>[configList.Count];

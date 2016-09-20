@@ -68,3 +68,11 @@ C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\bin\SqlSugar.xml
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\obj\Debug\WebTest.dll
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\WebTest\obj\Debug\WebTest.pdb
+D:\MyOpenSource\SqlSugar\WebTest\bin\WebTest.dll
+D:\MyOpenSource\SqlSugar\WebTest\bin\WebTest.pdb
+D:\MyOpenSource\SqlSugar\WebTest\bin\SqlSugar.dll
+D:\MyOpenSource\SqlSugar\WebTest\bin\SqlSugar.pdb
+D:\MyOpenSource\SqlSugar\WebTest\bin\SqlSugar.xml
+D:\MyOpenSource\SqlSugar\WebTest\obj\Debug\WebTest.csprojResolveAssemblyReference.cache
+D:\MyOpenSource\SqlSugar\WebTest\obj\Debug\WebTest.dll
+D:\MyOpenSource\SqlSugar\WebTest\obj\Debug\WebTest.pdb

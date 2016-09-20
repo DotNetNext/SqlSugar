@@ -23,7 +23,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> Where<T>(this Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
@@ -62,7 +62,7 @@ namespace SqlSugar
         /// <typeparam name="T">表实体类型</typeparam>
         /// <typeparam name="T2">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> Where<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression)
         {
@@ -83,7 +83,7 @@ namespace SqlSugar
         /// <typeparam name="T2">表实体类型</typeparam>
         /// <typeparam name="T3">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> Where<T, T2, T3>(this Queryable<T> queryable, Expression<Func<T, T2, T3, object>> expression)
         {
@@ -105,7 +105,7 @@ namespace SqlSugar
         /// <typeparam name="T3">表实体类型</typeparam>
         /// <typeparam name="T4">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> Where<T, T2, T3, T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, object>> expression)
         {
@@ -128,7 +128,7 @@ namespace SqlSugar
         /// <typeparam name="T4">表实体类型</typeparam>
         /// <typeparam name="T5">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> Where<T, T2, T3, T4, T5>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, T5, object>> expression)
         {
@@ -372,7 +372,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>T</returns>
         public static T Single<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
@@ -390,7 +390,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>T</returns>
         public static T SingleOrDefault<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
@@ -448,7 +448,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>T</returns>
         public static T First<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
@@ -467,7 +467,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>T</returns>
         public static T FirstOrDefault<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
@@ -487,7 +487,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">表实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>count>0返回true</returns>
         public static bool Any<T>(this  Queryable<T> queryable, Expression<Func<T, bool>> expression)
         {
@@ -518,7 +518,7 @@ namespace SqlSugar
         /// <typeparam name="T2">原数据实体类型</typeparam>
         /// <typeparam name="TResult">返回值的新实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">给新实体赋值的表达示</param>
+        /// <param name="expression">给新实体赋值的表达式</param>
         /// <returns>Queryable</returns>
         public static Queryable<TResult> Select<T, T2, TResult>(this Queryable<T> queryable, Expression<Func<T, T2, TResult>> expression)
         {
@@ -553,7 +553,7 @@ namespace SqlSugar
         /// <typeparam name="T3">原数据实体类型</typeparam>
         /// <typeparam name="TResult">返回值的新实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">给新实体赋值的表达示</param>
+        /// <param name="expression">给新实体赋值的表达式</param>
         /// <returns>Queryable</returns>
         public static Queryable<TResult> Select<T, T2 ,T3, TResult>(this Queryable<T> queryable, Expression<Func<T, T2,T3, TResult>> expression)
         {
@@ -589,7 +589,7 @@ namespace SqlSugar
         /// <typeparam name="T4">原数据实体类型</typeparam>
         /// <typeparam name="TResult">返回值的新实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">给新实体赋值的表达示</param>
+        /// <param name="expression">给新实体赋值的表达式</param>
         /// <returns>Queryable</returns>
         public static Queryable<TResult> Select<T, T2, T3,T4, TResult>(this Queryable<T> queryable, Expression<Func<T, T2, T3,T4, TResult>> expression)
         {
@@ -626,7 +626,7 @@ namespace SqlSugar
         /// <typeparam name="T5">原数据实体类型</typeparam>
         /// <typeparam name="TResult">返回值的新实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">给新实体赋值的表达示</param>
+        /// <param name="expression">给新实体赋值的表达式</param>
         /// <returns>Queryable</returns>
         public static Queryable<TResult> Select<T, T2, T3, T4,T5, TResult>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4,T5, TResult>> expression)
         {
@@ -659,7 +659,7 @@ namespace SqlSugar
         /// <typeparam name="TSource">原数据实体类型</typeparam>
         /// <typeparam name="TResult">返回值的新实体类型</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">给新实体赋值的表达示</param>
+        /// <param name="expression">给新实体赋值的表达式</param>
         /// <returns>Queryable</returns>
         public static Queryable<TResult> Select<TSource, TResult>(this Queryable<TSource> queryable, Expression<Func<TSource, TResult>> expression)
         {
@@ -919,7 +919,7 @@ namespace SqlSugar
         /// <typeparam name="T">第一个表的对象</typeparam>
         /// <typeparam name="T2">联接的表对象</typeparam>
         /// <param name="queryable"></param>
-        /// <param name="expression">表达示</param>
+        /// <param name="expression">表达式</param>
         /// <param name="type">Join的类型</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
@@ -952,7 +952,7 @@ namespace SqlSugar
         /// <typeparam name="T">第一个表的对象</typeparam>
         /// <typeparam name="T2">联接表的对象</typeparam>
         /// <param name="queryable">查询对象</param>
-        /// <param name="expression">条件表达示</param>
+        /// <param name="expression">条件表达式</param>
         /// <param name="type">Join的类型</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T, T2,T3>(this Queryable<T> queryable, Expression<Func<T, T2,T3, object>> expression, JoinType type = JoinType.LEFT)

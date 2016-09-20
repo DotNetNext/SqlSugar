@@ -606,11 +606,11 @@ namespace SqlSugar
         #region update
 
         /// <summary>
-        /// 根据表达示条件将实体对象更新到数据库
+        /// 根据表达式条件将实体对象更新到数据库
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>更新成功返回true</returns>
         public bool Update<T>(object rowObj, Expression<Func<T, bool>> expression) where T : class
         {
@@ -799,10 +799,10 @@ namespace SqlSugar
 
         #region delete
         /// <summary>
-        /// 根据表达示删除数据
+        /// 根据表达式删除数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>删除成功返回true</returns>
         public bool Delete<T>(Expression<Func<T, bool>> expression)
         {
@@ -847,7 +847,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <typeparam name="FiledType">指定列的类型</typeparam>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <param name="whereIn">批定列值的集合</param>
         /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn)
@@ -861,7 +861,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <typeparam name="FiledType">指定列的类型</typeparam>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <param name="whereIn">批定列值的集合</param>
         /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
@@ -917,7 +917,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="field">标识删除的字段</param>
-        /// <param name="expression">表达示条件</param>
+        /// <param name="expression">表达式条件</param>
         /// <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
         public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression)
         {

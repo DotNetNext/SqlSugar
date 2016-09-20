@@ -34,7 +34,7 @@ namespace SqlSugar
         private int SameIndex = 1;
 
         /// <summary>
-        /// 获取拉姆达表达示的字段值
+        /// 获取拉姆达表达式的字段值
         /// </summary>
         /// <param name="exp"></param>
         /// <returns></returns>
@@ -59,7 +59,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 获取拉姆达表达示的字段值多个T模式
+        /// 获取拉姆达表达式的字段值多个T模式
         /// </summary>
         /// <param name="exp"></param>
         /// <returns></returns>
@@ -84,13 +84,13 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 解析表达示
+        /// 解析表达式
         /// </summary>
         /// <param name="re">当前解析对象</param>
-        /// <param name="exp">要解析的表达示</param>
+        /// <param name="exp">要解析的表达式</param>
         public void ResolveExpression(ResolveExpress re, Expression exp)
         {
-            //初始化表达示
+            //初始化表达式
             Init(re, exp);
 
             //设置PageSize
@@ -101,7 +101,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 初始化表达示
+        /// 初始化表达式
         /// </summary>
         /// <param name="re"></param>
         /// <param name="exp"></param>
@@ -117,7 +117,7 @@ namespace SqlSugar
             }
             else if (isNotBool)
             {
-                //解析表达示
+                //解析表达式
                 this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
             }
             else
@@ -134,7 +134,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    //解析表达示
+                    //解析表达式
                     this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
                 }
             }
