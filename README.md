@@ -105,6 +105,37 @@ ASP.NET 4.0+ ORACLE https://github.com/sunkaixuan/OracleSugar
                 List<SexTotal> list5 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
                 List<SexTotal> list6 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
                 //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex 
+                
+                
+                //join
+                var jList = db.Queryable<Student>()
+                .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //默认left join
+                .Where<Student, School>((s1, s2) => s1.id == 1)
+                .Select("s1.*,s2.name as schName")
+                .ToDynamic();
+                
+                //join by page
+                var jList2 = db.Queryable<Student>()
+                .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //default left join
+               //inner join
+               //.JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id  ,JoinType.INNER)
+                .Where<Student, School>((s1, s2) => s1.id > 1)
+                .OrderBy<Student, School>((s1, s2) => s1.name)
+                .Skip(10)
+                .Take(20)
+                .Select("s1.*,s2.name as schName")
+                .ToDynamic();
+                
+                //join select new 
+                 var jList3 = db.Queryable<Student>()
+                 .JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) // left join  School s2  on s1.id=s2.id
+                 .Where<Student, School>((s1, s2) => s1.id > 1)  // where s1.id>1
+                 .OrderBy<Student, School>((s1, s2) => s1.id) //order by s1.id no one  ordder   .oderBy().orderby  
+                 .Skip(1)
+                 .Take(2)
+                 .Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s2.name, xx_name = s1.name }) 
+                 .ToList();
+                
       }
 
 # Complex query  Sqlable
