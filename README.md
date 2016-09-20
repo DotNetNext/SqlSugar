@@ -16,7 +16,7 @@ ASP.NET 4.0+ Sqlite  https://github.com/sunkaixuan/SqliteSugar
 # Select Queryable<T>
 
 
-     using (var db = SqlSugarClient("sever=.;sa=saxxxxxxxx"))
+     using (var db =  new SqlSugarClient("sever=.;sa=saxxxxxxxx"))
      {
                 //select all
                 var student = db.Queryable<Student>().ToList();
