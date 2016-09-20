@@ -39,17 +39,40 @@ namespace SqlSugar
         /// <param name="message">错误信息</param>
         /// <param name="sql">ORM生成的SQL</param>
         /// <param name="pars">错误函数的参数</param>
-        public SqlSugarException(string message, string sql,object pars)
-            : base(GetMessage(message, sql,pars))
+        public SqlSugarException(string message, string sql, object pars)
+            : base(GetMessage(message, sql, pars))
         {
 
         }
+        /// <summary>
+        /// SqlSugar异常
+        /// </summary>
+        /// <param name="message">错误信息</param>
+        /// <param name="pars">错误函数的参数</param>
+        public SqlSugarException(string message,object pars)
+            : base(GetMessage(message,pars))
+        {
+
+        }
+
+        private static string GetMessage(string message, object pars)
+        {
+            var parsStr = string.Empty; ;
+            if (pars != null)
+            {
+                parsStr = JsonConverter.Serialize(pars);
+            }
+            var reval = GetLineMessage("错误信息", message) + GetLineMessage("函数参数", parsStr);
+            return reval;
+
+        }
+
 
         private static string GetMessage(string message, string sql, object pars)
         {
             if (pars == null)
             {
-                return GetMessage(message,sql);
+                return GetMessage(message, sql);
             }
             else
             {
@@ -61,7 +84,7 @@ namespace SqlSugar
 
         private static string GetMessage(string message, string sql)
         {
-            var reval= GetLineMessage("错误信息         ", message) + GetLineMessage("ORM生成的Sql", sql);
+            var reval = GetLineMessage("错误信息         ", message) + GetLineMessage("ORM生成的Sql", sql);
             return reval;
         }
 

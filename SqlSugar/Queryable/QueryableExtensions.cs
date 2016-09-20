@@ -663,7 +663,7 @@ namespace SqlSugar
                 ResolveSelect.GetResult<TResult>(expStr, reval);
             }
             else {
-               
+                reval.Select =expStr;
                 ResolveSelect.GetResult<TResult>(reval);
             }
             return reval;
