@@ -349,12 +349,12 @@ namespace WebTest.Demo
 
 
                 //查看生成的sql和参数
-                var id=1;
+                var id = 1;
                 var sqlAndPars = db.Queryable<Student>().Where(it => it.id == id).OrderBy(it => it.id).ToSql();
 
 
 
-                //函数的支持(字段暂不支持函数,只有参数支持) 目前只支持这么多
+                //条件函数的支持(字段暂不支持函数,只有参数支持) 目前只支持这么多
                 var par1 = "2015-1-1"; var par2 = "   我 有空格, ";
                 var r1 = db.Queryable<Student>().Where(it => it.name == par1.ObjToString()).ToSql(); //ObjToString会将null转转成""
                 var r2 = db.Queryable<InsertTest>().Where(it => it.d1 == par1.ObjToDate()).ToSql();
@@ -365,10 +365,59 @@ namespace WebTest.Demo
                 var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();
                 var convert2 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();// 
                 var convert3 = db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();
-                var convert4 = db.Queryable<Student>().Where(c => DateTime.Now > DateTime.Now).ToList();
-                var c1 = db.Queryable<Student>().Where(c =>c.name.Contains("a")).ToList();
+                var c1 = db.Queryable<Student>().Where(c => c.name.Contains("a")).ToList();
                 var c2 = db.Queryable<Student>().Where(c => c.name.StartsWith("a")).ToList();
                 var c3 = db.Queryable<Student>().Where(c => c.name.EndsWith("a")).ToList();
+
+
+                //新容器转换函数的支持,例子外其它写法暂不支持 
+                var f1 = db.Queryable<InsertTest>().Select<InsertTest, Student>(it => new Student()
+                {
+                    name = it.d1.ObjToString(),
+                    id = it.int1.ObjToInt() // 支持ObjToXXX 所有函数
+
+                }).ToList();
+
+                var f2 = db.Queryable<InsertTest>().Select<InsertTest, Student>(it => new Student()
+                {
+                    name = Convert.ToString(it.d1),//支持Convet.ToXX所有函数
+                    id = it.int1.ObjToInt(),
+                    sex = Convert.ToString(it.d1),
+
+                }).ToList();
+
+                var f3 = db.Queryable<InsertTest>()
+                    .JoinTable<InsertTest, InsertTest>((i1, i2) => i1.id == i2.id)
+                    .Select<InsertTest, InsertTest, Student>((i1, i2) => new Student()
+                {
+                    name = Convert.ToString( i1.d1), //多表查询例子
+                    id = i1.int1.ObjToInt( ),
+                    sex = Convert.ToString( i2.d1 ),
+
+                }).ToList();
+
+                //Select 外部参数用法
+                var f4 = db.Queryable<InsertTest>().Where("1=1", new { id = id + 100 }).Select<InsertTest, Student>(it => new Student()
+               {
+                   id = "@id".ObjToInt(), //取的是 id+100 的值
+                   name = "张三",//内部参数可以直接写
+                   sex = it.txt,
+                   sch_id=it.id
+
+               }).ToList();
+                var f6 = db.Queryable<InsertTest>()
+               .JoinTable<InsertTest, InsertTest>((i1, i2) => i1.id == i2.id)
+               .Where("1=1", new { id = 100, name = "张三",isOk=true }) //外部传参给@id
+               .Select<InsertTest, InsertTest, Student>((i1, i2) => new Student()
+               {
+                   name = "@name".ObjToString(), //多表查询例子
+                   id = "@id".ObjToInt(),
+                   sex = i2.txt,
+                   sch_id = 1,
+                   isOk = "@isOk".ObjToBool()
+
+               }).ToList();
+
             }
         }
     }

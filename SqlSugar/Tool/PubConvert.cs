@@ -176,5 +176,24 @@ namespace SqlSugar
             return errorValue;
         }
         #endregion
+
+
+        #region 强转成Bool 如果失败返回 false
+        /// <summary>
+        /// 强转成Bool 如果失败返回 false
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <param name="errorValue"></param>
+        /// <returns></returns>
+        public static bool ObjToBool(this object thisValue)
+        {
+            bool reval = false;
+            if (thisValue != null && thisValue != DBNull.Value && bool.TryParse(thisValue.ToString(), out reval))
+            {
+                return reval;
+            }
+            return reval;
+        }
+        #endregion
     }
 }
