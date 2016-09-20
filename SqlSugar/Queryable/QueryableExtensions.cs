@@ -537,15 +537,10 @@ namespace SqlSugar
                 GroupBy = queryable.GroupBy,
                 JoinTable=queryable.JoinTable
             };
-            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
-            if (reval.Select.IsNullOrEmpty())
-            {
-                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
-            }
-            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            ResolveSelect.GetResult<TResult>(expStr, reval);
             return reval;
         }
-
+ 
         /// <summary>
         /// 将源数据对象转换到新对象中
         /// </summary>
@@ -572,12 +567,7 @@ namespace SqlSugar
                 GroupBy = queryable.GroupBy,
                 JoinTable = queryable.JoinTable
             };
-            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
-            if (reval.Select.IsNullOrEmpty())
-            {
-                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
-            }
-            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            ResolveSelect.GetResult<TResult>(expStr, reval);
             return reval;
         }
 
@@ -608,12 +598,7 @@ namespace SqlSugar
                 GroupBy = queryable.GroupBy,
                 JoinTable = queryable.JoinTable
             };
-            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
-            if (reval.Select.IsNullOrEmpty())
-            {
-                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
-            }
-            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            ResolveSelect.GetResult<TResult>(expStr, reval);
             return reval;
         }
 
@@ -645,12 +630,7 @@ namespace SqlSugar
                 GroupBy = queryable.GroupBy,
                 JoinTable = queryable.JoinTable
             };
-            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
-            if (reval.Select.IsNullOrEmpty())
-            {
-                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
-            }
-            //reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+            ResolveSelect.GetResult<TResult>(expStr, reval);
             return reval;
         }
 
@@ -675,22 +655,21 @@ namespace SqlSugar
                 Take = queryable.Take,
                 Where = queryable.Where,
                 TableName = type.Name,
-                GroupBy = queryable.GroupBy
+                GroupBy = queryable.GroupBy,
+                JoinTable=queryable.JoinTable
             };
-            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
-            if (reval.Select.IsNullOrEmpty())
+            if (queryable.JoinTable.IsValuable())
             {
-                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
-            }
-            if (queryable.JoinTable.IsValuable() == false)
-            {
-                reval.Select = Regex.Replace(reval.Select, @"(?<=\=).*?\.", "");
+                ResolveSelect.GetResult<TResult>(expStr, reval);
             }
             else {
-                reval.JoinTable = queryable.JoinTable;
+               
+                ResolveSelect.GetResult<TResult>(reval);
             }
             return reval;
         }
+
+   
 
         /// <summary>
         /// 将源数据对象转换到新对象中
