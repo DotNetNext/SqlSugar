@@ -41,7 +41,7 @@ namespace WebTest.Demos
 
             }
             /// <summary>
-            /// 页面所需要的过滤函数
+            /// 页面所需要设置流水号的对象
             /// </summary>
             private static List<PubModel.SerialNumber> _nums = new List<PubModel.SerialNumber>(){
               new PubModel.SerialNumber(){TableName="Student", FieldName="name", GetNumFunc=()=>{ //GetNumFunc在没有事中使用
