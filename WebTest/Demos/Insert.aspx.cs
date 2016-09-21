@@ -37,6 +37,17 @@ namespace WebTest.Demos
                 };
 
                 db.InsertRange(list); //批量插入
+
+
+                //设置不更新列
+                db.DisableInsertColumns = new string[] { "CreateTime" };//设置CreateTime不更新
+                
+                Student s2 = new Student()
+                {
+                    name = "张" + new Random().Next(1, int.MaxValue)
+                };
+
+                db.Insert(s); //插入一
             }
         }
     }

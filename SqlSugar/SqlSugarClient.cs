@@ -89,6 +89,11 @@ namespace SqlSugar
         public string[] DisableUpdateColumns { get; set; }
 
         /// <summary>
+        /// 设置禁止插入的列
+        /// </summary>
+        public string[] DisableInsertColumns { get; set; }
+
+        /// <summary>
         ///设置Queryable或者Sqlable转换成JSON字符串时的日期格式
         /// </summary>
         public string SerializerDateFormat = null;
@@ -362,10 +367,14 @@ namespace SqlSugar
             isIdentity = identities != null && identities.Count > 0;
             //sql语句缓存
             string cacheSqlKey = "db.Insert." + type.FullName;
+            if (this.DisableInsertColumns.IsValuable()) {
+                cacheSqlKey = cacheSqlKey+string.Join("", this.DisableInsertColumns);
+            }
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
 
             //属性缓存
             string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
+
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
 
             PropertyInfo[] props = null;
@@ -406,6 +415,14 @@ namespace SqlSugar
                             continue;
                         }
                     }
+                    if (this.DisableInsertColumns.IsValuable()) 
+                    {
+                        if (this.DisableInsertColumns.Any(it => it.ToLower() == prop.Name.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
+
                     //EntityState,@EntityKey
                     if (!isIdentity || identities.Any(it => it.Value.ToLower() != prop.Name.ToLower()))
                     {
@@ -428,6 +445,13 @@ namespace SqlSugar
                     if (this.IsIgnoreErrorColumns)
                     {
                         if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == prop.Name.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
+                    if (this.DisableInsertColumns.IsValuable())
+                    {
+                        if (this.DisableInsertColumns.Any(it => it.ToLower() == prop.Name.ToLower()))
                         {
                             continue;
                         }
