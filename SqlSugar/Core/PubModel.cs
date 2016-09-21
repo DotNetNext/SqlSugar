@@ -51,6 +51,10 @@ namespace SqlSugar
             /// 是否允许为null
             /// </summary>
             public object IS_NULLABLE { get; set; }
+            /// <summary>
+            /// 是否是主键
+            /// </summary>
+            public object IS_PRIMARYKEY { get; set; }
         }
 
         /// <summary>

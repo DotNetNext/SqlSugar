@@ -75,7 +75,7 @@ namespace SqlSugar
             string _ns = nameSpace;
             string _foreach = "";
             string _className = className;
-
+            List<string> _primaryKeyName = new List<string>();
             foreach (DataColumn r in dt.Columns)
             {
                 propertiesValue.AppendLine();
@@ -88,6 +88,10 @@ namespace SqlSugar
                     if (isAny)
                     {
                         columnInfo = dataTableMapList.First(it => it.COLUMN_NAME.ToString() == r.ColumnName);
+                        if (columnInfo.IS_PRIMARYKEY.ToString() == "1")
+                        {
+                            _primaryKeyName.Add(r.ColumnName);
+                        }
                         propertiesValue.AppendFormat(@"     /// <summary>
      /// Desc:{0} 
      /// Default:{1} 
@@ -98,7 +102,6 @@ namespace SqlSugar
    columnInfo.COLUMN_DEFAULT.IsValuable() ? columnInfo.COLUMN_DEFAULT.ToString() : "-", //{1}
    Convert.ToBoolean(columnInfo.IS_NULLABLE));//{2}
                     }
-
                 }
                 propertiesValue.AppendFormat(
                     ClassTemplate.ItemTemplate,
@@ -109,7 +112,7 @@ namespace SqlSugar
             }
             _foreach = propertiesValue.ToString();
 
-            template = ClassTemplate.Replace(template, _ns, _foreach, _className);
+            template = ClassTemplate.Replace(template, _ns, _foreach, _className, _primaryKeyName);
             return template;
         }
 
@@ -356,7 +359,12 @@ namespace SqlSugar
 								syscolumns.length AS CHARACTER_MAXIMUM_LENGTH ,
 								sys.extended_properties.[value] AS COLUMN_DESCRIPTION ,
 								syscomments.text AS COLUMN_DEFAULT ,
-								syscolumns.isnullable AS IS_NULLABLE
+								syscolumns.isnullable AS IS_NULLABLE,
+                                (case when exists(SELECT 1 FROM sysobjects where xtype= 'PK' and name in ( 
+                                SELECT name FROM sysindexes WHERE indid in( 
+                                SELECT indid FROM sysindexkeys WHERE id = syscolumns.id AND colid=syscolumns.colid 
+                                ))) then 1 else 0 end) as IS_PRIMARYKEY
+
 								FROM    syscolumns
 								INNER JOIN systypes ON syscolumns.xtype = systypes.xtype
 								LEFT JOIN sysobjects ON syscolumns.id = sysobjects.id

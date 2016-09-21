@@ -76,6 +76,7 @@
     <Content Include="Demos\Ado.aspx" />
     <Content Include="Demos\Cloud.aspx" />
     <Content Include="Demos\CreateModelFile.aspx" />
+    <Content Include="Demos\CreateModelFile2.aspx" />
     <Content Include="Demos\Delete.aspx" />
     <Content Include="Demos\EnumType.aspx" />
     <Content Include="Demos\Filter.aspx" />
@@ -130,6 +131,13 @@
     </Compile>
     <Compile Include="Demos\CreateModelFile.aspx.designer.cs">
       <DependentUpon>CreateModelFile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Demos\CreateModelFile2.aspx.cs">
+      <DependentUpon>CreateModelFile2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Demos\CreateModelFile2.aspx.designer.cs">
+      <DependentUpon>CreateModelFile2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Demos\Delete.aspx.cs">
       <DependentUpon>Delete.aspx</DependentUpon>
