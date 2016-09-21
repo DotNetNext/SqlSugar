@@ -13,12 +13,12 @@ namespace WebTest.Demos
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //自定义实体模板引擎模块
+            //自定义生成实体文件的格式
             ClassTemplate.Template = "using System;\r\nusing System.Linq;\r\nusing System.Text;\r\n\r\nnamespace $namespace\r\n{\r\n    public class $className\r\n    {\r\n        public $className() \r\n        { \r\n            this.CreateTime = DateTime.Now;\r\n            this.IsRemove = 0;\r\n            this.UpdateTime=DateTime.Now;\r\n            this.$primaryKeyName=Guid.NewGuid().ToString(\"N\").ToUpper();\r\n        }\r\n        $foreach\r\n    }\r\n}\r\n";
             using (var db = SugarDao.GetInstance())
             {
                 db.ClassGenerating.CreateClassFiles(db, "e:/TestModel", "Models");
-                //生成的Model带构造函数并且赋了默认值 ，如下注释
+                //生成的Model带构造函数 ,并且给指定属性赋了默认值 ，如下注释部分
 
             }
         }
