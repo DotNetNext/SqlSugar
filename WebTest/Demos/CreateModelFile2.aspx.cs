@@ -18,7 +18,7 @@ namespace WebTest.Demos
             using (var db = SugarDao.GetInstance())
             {
                 db.ClassGenerating.CreateClassFiles(db, "e:/TestModel", "Models");
-                //生成的Model带构造函数并且赋了默认值 ，生成的实体结构如下注释
+                //生成的Model带构造函数并且赋了默认值 ，如下注释
 
             }
         }
