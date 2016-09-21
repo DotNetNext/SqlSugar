@@ -13,7 +13,7 @@ namespace WebTest.Demos
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //自定义模板引擎模块
+            //自定义实体模板引擎模块
             ClassTemplate.Template = "using System;\r\nusing System.Linq;\r\nusing System.Text;\r\n\r\nnamespace $namespace\r\n{\r\n    public class $className\r\n    {\r\n        public $className() \r\n        { \r\n            this.CreateTime = DateTime.Now;\r\n            this.IsRemove = 0;\r\n            this.UpdateTime=DateTime.Now;\r\n            this.$primaryKeyName=Guid.NewGuid().ToString(\"N\").ToUpper();\r\n        }\r\n        $foreach\r\n    }\r\n}\r\n";
             using (var db = SugarDao.GetInstance())
             {
