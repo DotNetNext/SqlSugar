@@ -54,7 +54,6 @@ C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.dl
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
-C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
 D:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
 D:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 D:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll

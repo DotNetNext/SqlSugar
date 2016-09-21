@@ -131,7 +131,7 @@ namespace SqlSugar
                 }
             }
             if (selectStr.Contains("+<>")) {
-                throw new SqlSugarException("Select中的拉姆达表达式,不支持外部传参数,目前支持的写法 Where(\"1=1\",new {id=1}).Select(it=>{ id=\"@id\"}");
+                throw new SqlSugarException("Select中的拉姆达表达式,不支持外部传参数,目前支持的写法 Where(\"1=1\",new {id=1}).Select(it=>{ id=\"@id\".ObjToInt()}");
             }
             return selectStr;
         }
