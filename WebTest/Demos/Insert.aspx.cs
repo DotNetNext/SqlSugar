@@ -40,11 +40,11 @@ namespace WebTest.Demos
 
 
                 //设置不更新列
-                db.DisableInsertColumns = new string[] { "CreateTime" };//设置CreateTime不更新
+                db.DisableInsertColumns = new string[] { "sex" };//设置sex不插入
                 
                 Student s2 = new Student()
                 {
-                    name = "张" + new Random().Next(1, int.MaxValue)
+                    name = "张" + new Random().Next(1, int.MaxValue)    
                 };
 
                 db.Insert(s); //插入一
