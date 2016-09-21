@@ -39,7 +39,7 @@ namespace WebTest.Demos
                 db.InsertRange(list); //批量插入
 
 
-                //设置不更新列
+                //设置不插入
                 db.DisableInsertColumns = new string[] { "sex" };//设置sex不插入
                 
                 Student s2 = new Student()
