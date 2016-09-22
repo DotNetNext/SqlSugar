@@ -413,8 +413,9 @@ SET QUOTED_IDENTIFIER ON
 GO
 create proc [dbo].[sp_school]
 @p1 int,
-@p2 int
+@p2 int output
 as
+set @p2=100
 select * from  School
 
 

@@ -8,6 +8,7 @@ using Models;
 using WebTest.Dao;
 using SqlSugar;
 using System.Data;
+using System.Data.SqlClient;
 namespace WebTest.Demo
 {
     /// <summary>
@@ -98,6 +99,15 @@ namespace WebTest.Demo
                 var list7 = db.SqlQuery<string[]>("select top 1 id,name from Student").SingleOrDefault();
                 //存储过程
                 var spResult = db.SqlQuery<School>("exec sp_school @p1,@p2", new { p1 = 1, p2 = 2 });
+
+                //存储过程加Output 
+                SqlParameter par2 = new SqlParameter("p2", 0);
+                par2.Direction = ParameterDirection.Output;
+                SqlParameter par1 = new SqlParameter("p1", 10);
+                db.IsClearParameters = false;//禁止清除参数
+                var spResult2 = db.SqlQuery<School>("exec sp_school @p1,@p2 output", new SqlParameter[]{par2,par1});
+                db.IsClearParameters = true;
+                var outPutValue = par2.Value;
 
                 //获取第一行第一列的值
                 string v1 = db.GetString("select '张三' as name");
