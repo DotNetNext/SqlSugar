@@ -19,7 +19,6 @@ namespace SqlSugar
         /// 强转成int 如果失败返回 0
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="i"></param>
         /// <returns></returns>
         public static int ObjToInt(this object thisValue)
         {
@@ -36,7 +35,7 @@ namespace SqlSugar
         /// 强转成int 如果失败返回 errorValue
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="i"></param>
+        /// <param name="errorValue"></param>
         /// <returns></returns>
         public static int ObjToInt(this object thisValue, int errorValue)
         {
@@ -53,7 +52,6 @@ namespace SqlSugar
         /// 强转成money 如果失败返回 0
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="i"></param>
         /// <returns></returns>
         public static double ObjToMoney(this object thisValue)
         {
@@ -87,7 +85,6 @@ namespace SqlSugar
         /// 强转成string 如果失败返回 ""
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="i"></param>
         /// <returns></returns>
         public static string ObjToString(this object thisValue)
         {
@@ -113,7 +110,6 @@ namespace SqlSugar
         /// 强转成Decimal 如果失败返回 0
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="i"></param>
         /// <returns></returns>
         public static Decimal ObjToDecimal(this object thisValue)
         {
@@ -147,7 +143,6 @@ namespace SqlSugar
         /// 强转成DateTime 如果失败返回 DateTime.MinValue
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="i"></param>
         /// <returns></returns>
         public static DateTime ObjToDate(this object thisValue)
         {
@@ -176,14 +171,11 @@ namespace SqlSugar
             return errorValue;
         }
         #endregion
-
-
         #region 强转成Bool 如果失败返回 false
         /// <summary>
         /// 强转成Bool 如果失败返回 false
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="errorValue"></param>
         /// <returns></returns>
         public static bool ObjToBool(this object thisValue)
         {
