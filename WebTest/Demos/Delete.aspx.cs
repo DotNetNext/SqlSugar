@@ -19,7 +19,7 @@ namespace WebTest.Demo
             using (var db = SugarDao.GetInstance())
             {
                 //删除
-                db.Delete<School, int>(10);//注意主键必需为实体类的第一个属性
+                db.Delete<School, int>(10);
                 db.Delete<School>(it => it.id > 100);
                 //主键批量删除
                 db.Delete<School, string>(new string[] { "100", "101", "102" });
