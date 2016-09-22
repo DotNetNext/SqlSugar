@@ -60,3 +60,4 @@ D:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
 D:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
 D:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
 D:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.XML

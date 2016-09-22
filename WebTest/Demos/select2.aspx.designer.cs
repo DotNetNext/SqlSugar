@@ -10,7 +10,7 @@
 namespace WebTest.Demos {
     
     
-    public partial class select2 {
+    public partial class Select2 {
         
         /// <summary>
         /// form1 控件。

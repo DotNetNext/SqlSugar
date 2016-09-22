@@ -13,7 +13,7 @@ namespace WebTest.Demos
     /// <summary>
     /// 高级查询例子
     /// </summary>
-    public partial class select2 : System.Web.UI.Page
+    public partial class Select2 : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
