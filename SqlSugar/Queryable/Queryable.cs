@@ -144,5 +144,29 @@ namespace SqlSugar
         }
 
 
+
+        public Queryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues)
+        {
+            return this.In<T, FieldType>(InFieldName, inValues);
+        }
+
+
+        public Queryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
+        {
+            return this.In<T, FieldType>(expression, inValues);
+        }
+
+
+        public Queryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues)
+        {
+            return this.In<T, FieldType>(expression, inValues);
+        }
+
+        public Queryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues)
+        {
+            return this.In<T, FieldType>(InFieldName, inValues);
+        }
+
+
     }
 }
