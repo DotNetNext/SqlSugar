@@ -224,7 +224,7 @@ namespace WebTest.Demo
                 //取10-20条
                 var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).Skip(10).Take(10).ToList();
 
-                //上一句的简化写法，同样取10-20条
+                //取11-20条  等于 Skip(pageIndex-1)*pageSize).Take(pageSize) 等于  between (pageIndex-1)*pageSize and  pageIndex*pageSize
                 var page2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).ToPageList(2, 10);
 
                 //查询条数
