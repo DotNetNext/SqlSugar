@@ -157,12 +157,6 @@ namespace SqlSugar
         {
             return this.Min<T, TResult>(minField);
         }
-
-
-        public List<T2> ToList<T2>()
-        {
-            return this.ToList<T2>();
-        }
-
+ 
     }
 }
