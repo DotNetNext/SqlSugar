@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 
 namespace SqlSugar
 {
@@ -31,7 +32,7 @@ namespace SqlSugar
         /// <summary>
         /// Where临时数据
         /// </summary>
-        internal List<string> Where = new List<string>();
+        internal List<string> WhereValue = new List<string>();
         /// <summary>
         /// Skip临时数据
         /// </summary>
@@ -43,11 +44,11 @@ namespace SqlSugar
         /// <summary>
         /// Order临时数据
         /// </summary>
-        internal string OrderBy { get; set; }
+        internal string OrderByValue { get; set; }
         /// <summary>
         /// Select临时数据
         /// </summary>
-        internal string Select { get; set; }
+        internal string SelectValue { get; set; }
         /// <summary>
         /// SqlParameter临时数据
         /// </summary>
@@ -59,7 +60,7 @@ namespace SqlSugar
         /// <summary>
         /// 分组查询临时数据
         /// </summary>
-        internal string GroupBy { get; set; }
+        internal string GroupByValue { get; set; }
         /// <summary>
         /// 条件索引临时数据
         /// </summary>
@@ -68,5 +69,30 @@ namespace SqlSugar
         /// 联表查询临时数据
         /// </summary>
         internal List<string> JoinTableValue = new List<string>();
+
+        /// <summary>
+        /// 联表查询
+        /// </summary>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Queryable<T> JoinTable<T2>(Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
+        {
+            return this.JoinTable<T, T2>(expression, type);
+        }
+
+        /// <summary>
+        /// 联表查询
+        /// </summary>
+        /// <typeparam name="T2"></typeparam>
+        /// <typeparam name="T3"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Queryable<T> JoinTable<T2, T3>(Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.LEFT)
+        {
+            return this.JoinTable<T, T2, T3>(expression, type);
+        }
     }
 }

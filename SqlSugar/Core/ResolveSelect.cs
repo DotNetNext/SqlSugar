@@ -25,10 +25,10 @@ namespace SqlSugar
         /// <param name="reval">查旬对象</param>
         internal static void GetResult<TResult>(string expStr, Queryable<TResult> reval)
         {
-            reval.Select = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
-            if (reval.Select.IsNullOrEmpty())
+            reval.SelectValue = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
+            if (reval.SelectValue.IsNullOrEmpty())
             {
-                reval.Select = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
+                reval.SelectValue = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
             }
             var hasOutPar = expStr.Contains("@");
             if (hasOutPar)//有
@@ -36,16 +36,16 @@ namespace SqlSugar
                 var ms = Regex.Matches(expStr, @"""(\@[a-z,A-Z]+)?""\.ObjTo[a-z,A-Z]+?\(\)").Cast<Match>().ToList();
                 foreach (var m in ms)
                 {
-                    reval.Select = reval.Select.Replace(m.Groups[0].Value, m.Groups[1].Value);
+                    reval.SelectValue = reval.SelectValue.Replace(m.Groups[0].Value, m.Groups[1].Value);
                 }
             }
-            if (reval.Select.IsNullOrEmpty())
+            if (reval.SelectValue.IsNullOrEmpty())
             {
-                throw new SqlSugarException("Select 解析失败 ", new { selectString = reval.Select });
+                throw new SqlSugarException("Select 解析失败 ", new { selectString = reval.SelectValue });
             }
-            reval.Select = reval.Select.Replace("\"", "'");
-            reval.Select = reval.Select.Replace("DateTime.Now", "GETDATE()");
-            reval.Select = ConvertFuns(reval.Select, false);
+            reval.SelectValue = reval.SelectValue.Replace("\"", "'");
+            reval.SelectValue = reval.SelectValue.Replace("DateTime.Now", "GETDATE()");
+            reval.SelectValue = ConvertFuns(reval.SelectValue, false);
         }
         /// <summary>
         /// 单表情况
@@ -54,7 +54,7 @@ namespace SqlSugar
         /// <param name="reval">查旬对象</param>
         internal static void GetResult<TResult>(Queryable<TResult> reval)
         {
-            string expStr = reval.Select;
+            string expStr = reval.SelectValue;
             expStr = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
             var hasOutPar = expStr.Contains("@");
             if (hasOutPar)//有
@@ -66,14 +66,14 @@ namespace SqlSugar
                 }
             }
             expStr = Regex.Replace(expStr, @"(?<=\=)[^\,]*?\.", "");
-            if (reval.Select.IsNullOrEmpty())
+            if (reval.SelectValue.IsNullOrEmpty())
             {
-                throw new SqlSugarException("Select 解析失败 ", new { selectString = reval.Select });
+                throw new SqlSugarException("Select 解析失败 ", new { selectString = reval.SelectValue });
             }
             expStr = expStr.Replace("\"", "'");
             expStr = expStr.Replace("DateTime.Now", "GETDATE()");
             expStr = ConvertFuns(expStr);
-            reval.Select = expStr;
+            reval.SelectValue = expStr;
         }
 
         /// <summary>

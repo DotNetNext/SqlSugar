@@ -213,14 +213,14 @@ namespace SqlSugar
                     var filterInfo = _filterFuns[CurrentFilterKey];
                     var filterValue = filterInfo();
                     string whereStr = string.Format(" AND {0} ", filterValue.Key);
-                    queryable.Where.Add(whereStr);
+                    queryable.WhereValue.Add(whereStr);
                     if (filterValue.Value != null)
                         queryable.Params.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
                 }
                 if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey))
                 {
                     var columns = _filterColumns[CurrentFilterKey];
-                    queryable.Select = string.Join(",", columns);
+                    queryable.SelectValue = string.Join(",", columns);
                 }
             }
             return queryable;
