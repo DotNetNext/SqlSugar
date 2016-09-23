@@ -143,16 +143,6 @@ namespace SqlSugar
             return this.Where<T, T2, T3, T4, T5>(expression);
         }
 
-
-        public  Queryable<T2> In<T2, FieldType>(Expression<Func<T2, object>> expression, params FieldType[] inValues)
-        {
-            return this.In<T2,FieldType>(expression,inValues);
-        }
-
-        public  Queryable<T2> In<T2, FieldType>(Expression<Func<T2, object>> expression, List<FieldType> inValues)
-        {
-            return this.In<T2, FieldType>(expression,inValues);
-        }
-
+ 
     }
 }
