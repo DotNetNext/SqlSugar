@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{46A17E67-7E3E-4369-9B1F-43BA34BBDAEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTest", "WebTest\WebTest.csproj", "{0D188C9D-7921-4EBC-AEB7-184639398B1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OldTest", "WebTest\OldTest.csproj", "{0D188C9D-7921-4EBC-AEB7-184639398B1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

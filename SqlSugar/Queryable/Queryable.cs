@@ -17,6 +17,7 @@ namespace SqlSugar
     /// </summary>
     public class Queryable<T>
     {
+        #region 临时变量
         /// <summary>
         /// T的名称
         /// </summary>
@@ -69,65 +70,32 @@ namespace SqlSugar
         /// 联表查询临时数据
         /// </summary>
         internal List<string> JoinTableValue = new List<string>();
+        
+        #endregion
 
-        /// <summary>
-        /// 联表查询
-        /// </summary>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="expression"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+
+        #region 公开函数
         public Queryable<T> JoinTable<T2>(Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
         {
             return this.JoinTable<T, T2>(expression, type);
         }
 
-        /// <summary>
-        /// 联表查询
-        /// </summary>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <param name="expression"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public Queryable<T> JoinTable<T2, T3>(Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.LEFT)
         {
             return this.JoinTable<T, T2, T3>(expression, type);
         }
 
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达式条件</param>
-        /// <returns>Queryable</returns>
+
         public Queryable<T> Where<T2>(Expression<Func<T, T2, bool>> expression)
         {
             return this.Where<T, T2>(expression);
         }
 
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="queryable">查询对象</param>
-        /// <param name="whereString">Where后面的Sql条件语句 (例如： id=@id )</param>
-        /// <param name="whereObj"> 匿名参数 (例如：new{id=1,name="张三"})</param>
-        /// <returns>Queryable</returns>
         public Queryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             return this.Where(whereString, whereObj);
         }
 
-        /// <summary>
-        /// 条件筛选
-        /// </summary>
-        /// <typeparam name="T">表实体类型</typeparam>
-        /// <typeparam name="T2">表实体类型</typeparam>
-        /// <param name="queryable">查询对象</param>
-        /// <param name="expression">表达式条件</param>
-        /// <returns>Queryable</returns>
         public Queryable<T> Where<T2, T3>(Expression<Func<T, T2, T3, bool>> expression)
         {
             return this.Where<T, T2, T3>(expression);
@@ -143,20 +111,49 @@ namespace SqlSugar
             return this.Where<T, T2, T3, T4, T5>(expression);
         }
 
-        public  Queryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
+        public Queryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
         {
-            return this.OrderBy<T,T2>(expression,type);
+            return this.OrderBy<T, T2>(expression, type);
         }
 
-        public  TResult Max<TResult>(string maxField)
+
+        public TResult Max<TResult>(string maxField)
         {
             return this.Max<T, TResult>(maxField);
         }
 
-        public  TResult Min<TResult>(string minField)
+        public TResult Min<TResult>(string minField)
         {
             return this.Min<T, TResult>(minField);
         }
- 
+
+
+        public Queryable<TResult> Select<T2, TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return this.Select<T, T2, TResult>(expression);
+        }
+
+        public Queryable<TResult> Select<T2, T3, TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return this.Select<T, T2, T3, TResult>(expression);
+        }
+
+        public Queryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
+        {
+            return this.Select<T, T2, T3, T4, TResult>(expression);
+        }
+
+        public Queryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
+        {
+            return this.Select<T, T2, T3, T4, T5, TResult>(expression);
+        }
+
+        public Queryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            return this.Select<T, TResult>(expression);
+        } 
+        #endregion
+
+
     }
 }
