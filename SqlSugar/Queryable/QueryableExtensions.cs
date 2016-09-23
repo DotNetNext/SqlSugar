@@ -65,7 +65,7 @@ namespace SqlSugar
         /// <param name="queryable">查询对象</param>
         /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
-        public static Queryable<T> Where<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression)
+        public static Queryable<T> Where<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, bool>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -86,7 +86,7 @@ namespace SqlSugar
         /// <param name="queryable">查询对象</param>
         /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
-        public static Queryable<T> Where<T, T2, T3>(this Queryable<T> queryable, Expression<Func<T, T2, T3, object>> expression)
+        public static Queryable<T> Where<T, T2, T3>(this Queryable<T> queryable, Expression<Func<T, T2, T3, bool>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -108,7 +108,7 @@ namespace SqlSugar
         /// <param name="queryable">查询对象</param>
         /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
-        public static Queryable<T> Where<T, T2, T3, T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, object>> expression)
+        public static Queryable<T> Where<T, T2, T3, T4>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -131,7 +131,7 @@ namespace SqlSugar
         /// <param name="queryable">查询对象</param>
         /// <param name="expression">表达式条件</param>
         /// <returns>Queryable</returns>
-        public static Queryable<T> Where<T, T2, T3, T4, T5>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        public static Queryable<T> Where<T, T2, T3, T4, T5>(this Queryable<T> queryable, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
         {
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
