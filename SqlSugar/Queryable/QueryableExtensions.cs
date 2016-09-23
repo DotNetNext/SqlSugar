@@ -819,8 +819,12 @@ namespace SqlSugar
             queryable = null;
             sbSql = null;
             return reval;
+        }
 
 
+        internal static List<T> ToList2<T>(this Queryable<T> queryable)
+        {
+            return queryable.ToList();
         }
 
         /// <summary>
