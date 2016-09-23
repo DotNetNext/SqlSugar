@@ -143,6 +143,26 @@ namespace SqlSugar
             return this.Where<T, T2, T3, T4, T5>(expression);
         }
 
- 
+        public  Queryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
+        {
+            return this.OrderBy<T,T2>(expression,type);
+        }
+
+        public  TResult Max<TResult>(string maxField)
+        {
+            return this.Max<T, TResult>(maxField);
+        }
+
+        public  TResult Min<TResult>(string minField)
+        {
+            return this.Min<T, TResult>(minField);
+        }
+
+
+        public List<T2> ToList<T2>()
+        {
+            return this.ToList<T2>();
+        }
+
     }
 }
