@@ -222,7 +222,7 @@ namespace WebTest.Demo
                 var first2 = db.Queryable<Student>().Where(c => c.id == 1).FirstOrDefault();
 
                 //取10-20条
-                var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).Skip(10).Take(20).ToList();
+                var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).Skip(10).Take(10).ToList();
 
                 //上一句的简化写法，同样取10-20条
                 var page2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).ToPageList(2, 10);
