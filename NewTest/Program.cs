@@ -10,24 +10,26 @@ namespace NewTest
     {
         static void Main(string[] args)
         {
- 
-                //设置执行的DEMO
-                string switch_on = "select";
-                IDemos demo = null;
-                switch (switch_on)
-                {
 
-                    case "select": demo = new Select(); break;
-                    default: Console.WriteLine("switch_on没有找到"); break;
+            //设置执行的DEMO
+            string switch_on = "createclass";
+            IDemos demo = null;
+            switch (switch_on)
+            {
 
-                }
-                //执行DEMO
-                demo.Init();
+                case "select": demo = new Select(); break;
+                case "ado": demo = new Ado(); break;
+                case "createclass": demo = new CreateClass(); break;
+                default: Console.WriteLine("switch_on没有找到"); break;
 
-                //更多例子请查看API
-                //http://www.cnblogs.com/sunkaixuan/p/5654695.html
-                Console.WriteLine("执行成功请关闭窗口 ,更多例子请查看API:http://www.cnblogs.com/sunkaixuan/p/5654695.html");
-                Console.ReadKey();
+            }
+            //执行DEMO
+            demo.Init();
+
+            //更多例子请查看API
+            //http://www.cnblogs.com/sunkaixuan/p/5654695.html
+            Console.WriteLine("执行成功请关闭窗口 ,更多例子请查看API:http://www.cnblogs.com/sunkaixuan/p/5654695.html");
+            Console.ReadKey();
         }
     }
 }

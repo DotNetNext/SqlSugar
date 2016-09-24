@@ -240,6 +240,10 @@ namespace SqlSugar
         {
             string sql = GetCreateClassSql(null);
             var tables = db.GetDataTable(sql);
+            if (!FileSugar.IsExistDirectory(fileDirectory))
+            {
+                FileSugar.CreateDirectory(fileDirectory);
+            }
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
@@ -248,8 +252,10 @@ namespace SqlSugar
                     if (tableNames.Any(it => it.ToLower() == tableName))
                     {
                         var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
-                        var classCode = DataTableToClass(currentTable, tableName, nameSpace);
-                        FileSugar.WriteText(fileDirectory.TrimEnd('\\') + "\\" + tableName + ".cs", classCode);
+                        var tableColumns = GetTableColumns(db, tableName);
+                        string className = db.GetClassTypeByTableName(tableName);
+                        var classCode = DataTableToClass(currentTable, className, nameSpace, tableColumns);
+                        FileSugar.CreateFile(fileDirectory.TrimEnd('\\') + "\\" + className + ".cs", classCode, Encoding.UTF8);
                     }
                 }
             }
