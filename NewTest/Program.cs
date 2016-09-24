@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "insert";
+            string switchOn = "update";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -23,6 +23,8 @@ namespace NewTest
                 case "delete": demo = new Delete(); break;
                 //插入
                 case "insert": demo = new Insert(); break;
+                //更新
+                case "update": demo = new Update(); break;
                 //基层函数的用法
                 case "ado": demo = new Ado(); break;
                 //创建实体函数
