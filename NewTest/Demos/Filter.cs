@@ -16,7 +16,7 @@ namespace NewTest.Demos
 
         public void Init()
         {
-            Console.WriteLine("启动Ado.Filter");
+            Console.WriteLine("启动Filter.Init");
             using (SqlSugarClient db = SugarDaoFilter.GetInstance())//开启数据库连接
             {
                 //设置走哪个过滤器

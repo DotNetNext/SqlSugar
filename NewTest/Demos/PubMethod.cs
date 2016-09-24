@@ -14,7 +14,7 @@ namespace NewTest.Demos
 
         public void Init()
         {
-            Console.WriteLine("启动Ado.PubMethod");
+            Console.WriteLine("启动PubMethod.Init");
             using (var db = SugarDao.GetInstance())
             {
                 //ToJoinSqlInVal

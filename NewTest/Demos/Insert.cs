@@ -14,7 +14,7 @@ namespace NewTest.Demos
 
         public void Init()
         {
-            Console.WriteLine("启动Ado.Inset");
+            Console.WriteLine("启动Inset.Init");
             using (var db = SugarDao.GetInstance())
             {
 

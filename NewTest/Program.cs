@@ -12,11 +12,10 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "mappingtable";
+            string switchOn = "serializerdateformat";
             IDemos demo = null;
             switch (switchOn)
             {
-
                 //查询
                 case "select": demo = new Select(); break;
                 //删除
@@ -27,6 +26,8 @@ namespace NewTest
                 case "update": demo = new Update(); break;
                 //基层函数的用法
                 case "ado": demo = new Ado(); break;
+                //事务
+                case "tran": demo = new Tran(); break;
                 //创建实体函数
                 case "createclass": demo = new CreateClass(); break;
                 //枚举支持
@@ -39,9 +40,15 @@ namespace NewTest
                 case "filter2": demo = new Filter2(); break;
                 //自动排除非数据库列
                 case "ignoreerrorcolumns" :demo =new IgnoreErrorColumns(); break;
+                //流水号功能
+                case "serialnumber": demo = new SerialNumber(); break;
                 //公开含数
                 case "pubmethod": demo = new PubMethod(); break;
-                
+                //Sql2012分页的支持
+                case "sqlpagemodel": demo=new SqlPageModel(); break;
+                //设置ToJson的日期格式
+                case "serializerdateformat":demo =new SerializerDateFormat();break;
+
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
             }

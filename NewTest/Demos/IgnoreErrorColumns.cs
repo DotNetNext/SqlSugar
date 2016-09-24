@@ -15,7 +15,7 @@ namespace NewTest.Demos
 
         public void Init()
         {
-            Console.WriteLine("启动Ado.IgnoreErrorColumns");
+            Console.WriteLine("启动IgnoreErrorColumns.Init");
             using (var db = SugarDao.GetInstance())
             {
                 db.IsIgnoreErrorColumns = true;
