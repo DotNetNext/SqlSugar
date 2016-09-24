@@ -151,7 +151,11 @@ namespace SqlSugar
         public Queryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             return this.Select<T, TResult>(expression);
-        } 
+        }
+        public Queryable<T2> Select<T2>(string select)
+        {
+            return this.Select<T,T2>(select);
+        }
         #endregion
 
 

@@ -56,6 +56,9 @@ namespace SqlSugar
         {
             string expStr = reval.SelectValue;
             expStr = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
+            if (expStr.IsNullOrEmpty()) {
+                expStr=Regex.Match(reval.SelectValue, @"c =>.*?\((.+)\)").Groups[1].Value;
+            }
             var hasOutPar = expStr.Contains("@");
             if (hasOutPar)//有
             {

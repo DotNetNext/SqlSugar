@@ -11,7 +11,8 @@
     <RootNamespace>NewTest</RootNamespace>
     <AssemblyName>NewTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -51,6 +52,7 @@
     <Compile Include="Models\LanguageTest.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\StudentGroup.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />
     <Compile Include="Models\V_LanguageTest.cs" />
@@ -71,6 +73,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="api_cn.htm" />
+    <Content Include="api_en.htm" />
     <Content Include="DataBase\TestDB.sql" />
     <Content Include="T4\SugarTemplate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -79,6 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

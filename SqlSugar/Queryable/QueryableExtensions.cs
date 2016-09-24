@@ -717,6 +717,11 @@ namespace SqlSugar
             return queryable;
         }
 
+        public static Queryable<Result> Select<T, Result>(this Queryable<Result> queryable, string select)
+        {
+            queryable.SelectValue = select;
+            return queryable;
+        }
 
         /// <summary>
         /// 获取序列总记录数
