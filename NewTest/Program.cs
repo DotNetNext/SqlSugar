@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "enum";
+            string switchOn = "filter";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -27,6 +27,8 @@ namespace NewTest
                 case "createclass": demo = new CreateClass(); break;
                 //枚举支持
                 case "enum": demo = new EnumDemo(); break;
+                //过滤器
+                case "filter": demo = new Filter(); break;
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
             }
