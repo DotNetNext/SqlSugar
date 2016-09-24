@@ -12,14 +12,21 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "createclass";
+            string switchOn = "enum";
             IDemos demo = null;
             switch (switchOn)
             {
 
+                //查询
                 case "select": demo = new Select(); break;
+                //删除
+                case "delete": demo = new Delete(); break;
+                //基层函数的用法
                 case "ado": demo = new Ado(); break;
+                //创建实体函数
                 case "createclass": demo = new CreateClass(); break;
+                //枚举支持
+                case "enum": demo = new EnumDemo(); break;
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
             }

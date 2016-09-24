@@ -10,6 +10,7 @@ using System.Data;
 
 namespace NewTest.Demos
 {
+    //查询的例子
     public class Select : IDemos
     {
 
