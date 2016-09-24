@@ -48,7 +48,9 @@
     <Compile Include="Demos\Ado.cs" />
     <Compile Include="Demos\CreateClass.cs" />
     <Compile Include="Demos\IDemos.cs" />
+    <Compile Include="Demos\IgnoreErrorColumns.cs" />
     <Compile Include="Demos\Insert.cs" />
+    <Compile Include="Demos\MappingTable.cs" />
     <Compile Include="Demos\Select.cs" />
     <Compile Include="Demos\Delete.cs" />
     <Compile Include="Demos\EnumDemo.cs" />

@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "update";
+            string switchOn = "mappingtable";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -31,12 +31,17 @@ namespace NewTest
                 case "createclass": demo = new CreateClass(); break;
                 //枚举支持
                 case "enum": demo = new EnumDemo(); break;
+                //另名表
+                case "mappingtable":demo=new MappingTable(); break;
                 //过滤器
                 case "filter": demo = new Filter(); break;
                 //过滤器2
                 case "filter2": demo = new Filter2(); break;
+                //自动排除非数据库列
+                case "ignoreerrorcolumns" :demo =new IgnoreErrorColumns(); break;
                 //公开含数
                 case "pubmethod": demo = new PubMethod(); break;
+                
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
             }
