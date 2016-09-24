@@ -48,10 +48,13 @@
     <Compile Include="Demos\Ado.cs" />
     <Compile Include="Demos\CreateClass.cs" />
     <Compile Include="Demos\IDemos.cs" />
+    <Compile Include="Demos\Insert.cs" />
     <Compile Include="Demos\Select.cs" />
     <Compile Include="Demos\Delete.cs" />
     <Compile Include="Demos\EnumDemo.cs" />
     <Compile Include="Demos\Filter.cs" />
+    <Compile Include="Demos\Filter2.cs" />
+    <Compile Include="Demos\PubMethod.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\InsertTest.cs" />
     <Compile Include="Models\LanguageTest.cs" />

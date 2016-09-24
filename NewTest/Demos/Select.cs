@@ -367,13 +367,12 @@ namespace NewTest.Demos
                 var spResult = db.SqlQuery<School>("exec sp_school @p1,@p2", new { p1 = 1, p2 = 2 });
 
                 //存储过程加Output 
-                SqlParameter par2 = new SqlParameter("p2", 0);
-                par2.Direction = ParameterDirection.Output;
-                SqlParameter par1 = new SqlParameter("p1", 10);
+                var pars = SqlSugarTool.GetParameters(new { p1 = 1,p2=0 }); //将匿名对象转成SqlParameter
                 db.IsClearParameters = false;//禁止清除参数
-                var spResult2 = db.SqlQuery<School>("exec sp_school @p1,@p2 output", new SqlParameter[] { par2, par1 });
-                db.IsClearParameters = true;
-                var outPutValue = par2.Value;
+                pars[1].Direction = ParameterDirection.Output; //将p2设为 output
+                var spResult2 = db.SqlQuery<School>("exec sp_school @p1,@p2 output", pars);
+                db.IsClearParameters = true;//启动请动清除参数
+                var outPutValue = pars[1].Value;//获取output @p2的值
 
                 //获取第一行第一列的值
                 string v1 = db.GetString("select '张三' as name");

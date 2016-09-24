@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "filter";
+            string switchOn = "insert";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -21,6 +21,8 @@ namespace NewTest
                 case "select": demo = new Select(); break;
                 //删除
                 case "delete": demo = new Delete(); break;
+                //插入
+                case "insert": demo = new Insert(); break;
                 //基层函数的用法
                 case "ado": demo = new Ado(); break;
                 //创建实体函数
@@ -29,6 +31,10 @@ namespace NewTest
                 case "enum": demo = new EnumDemo(); break;
                 //过滤器
                 case "filter": demo = new Filter(); break;
+                //过滤器2
+                case "filter2": demo = new Filter2(); break;
+                //公开含数
+                case "pubmethod": demo = new PubMethod(); break;
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
             }
