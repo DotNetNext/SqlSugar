@@ -62,7 +62,7 @@ namespace NewTest.Demos
                 var first = db.Queryable<Student>().Where(c => c.id == 1).First();
                 var first2 = db.Queryable<Student>().Where(c => c.id == 1).FirstOrDefault();
 
-                //取10-20条
+                //取11-20条
                 var page1 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).Skip(10).Take(10).ToList();
 
                 //取11-20条  等于 Skip(pageIndex-1)*pageSize).Take(pageSize) 等于  between (pageIndex-1)*pageSize and  pageIndex*pageSize
