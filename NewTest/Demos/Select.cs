@@ -15,6 +15,7 @@ namespace NewTest.Demos
 
         public void Init()
         {
+            Console.WriteLine("启动Select.Init");
             //使用拉姆达查询 基于Queryable
             QueryableDemo();
 

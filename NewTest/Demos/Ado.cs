@@ -14,7 +14,7 @@ namespace NewTest.Demos
 
         public void Init()
         {
-
+            Console.WriteLine("启动Ado.Init");
             using (var db = SugarDao.GetInstance())
             {
                 var r1 = db.GetDataTable("select * from student");
