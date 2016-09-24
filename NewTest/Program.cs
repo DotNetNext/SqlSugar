@@ -32,7 +32,7 @@ namespace NewTest
                 case "createclass": demo = new CreateClass(); break;
                 //枚举支持
                 case "enum": demo = new EnumDemo(); break;
-                //另名表
+                //别名表
                 case "mappingtable":demo=new MappingTable(); break;
                 //过滤器
                 case "filter": demo = new Filter(); break;
