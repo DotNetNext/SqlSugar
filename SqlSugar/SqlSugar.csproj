@@ -61,7 +61,7 @@
     <Compile Include="Core\LanguageHelper.cs" />
     <Compile Include="Tool\PubConvert.cs" />
     <Compile Include="Core\PubModel.cs" />
-    <Compile Include="Core\ResolveExpress.cs" />
+    <Compile Include="Core\ResolveExpressCore\ResolveExpress.cs" />
     <Compile Include="Core\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queryable\Queryable.cs" />

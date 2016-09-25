@@ -17,7 +17,7 @@ namespace SqlSugar
     /// ** qq：610262374 
     /// ** 使用说明：使用请注名作者
     /// </summary>
-    internal class ResolveExpress
+    internal partial class ResolveExpress
     {
         /// <summary>
         /// 解析拉姆达
