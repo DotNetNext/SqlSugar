@@ -42,6 +42,13 @@ namespace SqlSugar
                     }
                 }
             }
+            public string ConditionalValue
+            {
+                get
+                {
+                    return Convert.ToBoolean(OldValue) ? "1=1" : "1=2";
+                }
+            }
         }
     }
 }

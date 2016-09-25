@@ -25,7 +25,10 @@ namespace NewTest.Dao
         }
         public static SqlSugarClient GetInstance()
         {
-            return new SqlSugarClient(ConnectionString);
+            var db = new SqlSugarClient(ConnectionString);
+            db.IsEnableLogEvent = true;//启用日志事件
+            db.LogEventStarting = (sql, par) => { Console.WriteLine(sql + " " + par+"\r\n"); };
+            return db;
         }
     }
 }

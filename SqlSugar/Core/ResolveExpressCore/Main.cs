@@ -12,7 +12,7 @@ namespace SqlSugar
     /// <summary>
     /// ** 描述：拉姆达解析类
     /// ** 创始时间：2015-7-20
-    /// ** 修改时间：-
+    /// ** 修改时间：2016-9-26
     /// ** 作者：sunkaixuan
     /// ** qq：610262374 
     /// ** 使用说明：使用请注名作者
@@ -59,36 +59,17 @@ namespace SqlSugar
         private void Init(ResolveExpress re, Expression exp)
         {
             ResolveExpress.MemberType type = ResolveExpress.MemberType.None;
-            var expStr = exp.ToString();
-            var isNotBool = !expStr.Contains("True") && !expStr.Contains("False");
-            var isContainsNot = expStr.Contains("Not");
-            if (isContainsNot && expStr.IsMatch(@" => Not\(.+?\)") && !expStr.Contains("Contains"))
+            //解析表达式
+            this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
+            //还原bool值
+            foreach (var item in ConstantBoolDictionary)
             {
-                this.SqlWhere = string.Format(" AND {0}=0 or {0} is null ", Regex.Match(expStr, @" => Not\(.+\.(.+?)\)").Groups[1].Value);
-            }
-            else if (isNotBool)
-            {
-                //解析表达式
-                this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
-            }
-            else
-            {
-                var isTrue = Regex.IsMatch(expStr, @"\=\> True$");
-                var isFalse = Regex.IsMatch(expStr, @"\=\> False$");
-                if (isFalse)
+                if (this.SqlWhere.IsValuable())
                 {
-                    this.SqlWhere = string.Format(" AND 1<>1 ");
+                    this.SqlWhere = this.SqlWhere.Replace(item.Key.ToString(), item.ConditionalValue);
                 }
-                else if (isTrue)
-                {
+            }
 
-                }
-                else
-                {
-                    //解析表达式
-                    this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
-                }
-            }
         }
 
         /// <summary>
@@ -117,6 +98,16 @@ namespace SqlSugar
                 var isKeyOperValue = leftType == MemberType.Key && rightType == MemberType.Value;
                 var isValueOperKey = rightType == MemberType.Key && leftType == MemberType.Value;
                 #region 处理 null
+
+                if (isKeyOperValue && right.IsGuid() && ConstantBoolDictionary.Any(it => it.Key.ToString() == right))
+                {
+                    right = ConstantBoolDictionary.Single(it => it.Key.ToString() == right).NewValue;
+                }
+                if (isValueOperKey && ConstantBoolDictionary.Any(it => it.Key.ToString() == left))
+                {
+                    left = ConstantBoolDictionary.Single(it => it.Key.ToString() == left).NewValue;
+                }
+
                 if (isKeyOperValue & (right == "null" || right == null) && oper.Trim() == "=")
                 {
                     var oldLeft = AddParas(ref left, right);
@@ -203,7 +194,10 @@ namespace SqlSugar
                     type = MemberType.Value;
                     return MethodToString(methodName, mce, ref type);
                 }
-                else
+                else if (methodName == "IsNullOrEmpty") {
+                    type = MemberType.Value;
+                    return IsNullOrEmpty(methodName, mce,isTure);
+                }else
                 {
                     type = MemberType.Value;
                     return MethodTo(methodName, mce, ref type);
@@ -216,6 +210,13 @@ namespace SqlSugar
                 ConstantExpression ce = ((ConstantExpression)exp);
                 if (ce.Value == null)
                     return "null";
+                else if (ce.Value.ToString().IsIn("True", "False"))//是bool值
+                {
+                    var ceType = ce.Value.GetType();
+                    var ceValue = ce.Value.ToString();
+                    var ceNewValue = ConstantBoolDictionary.Single(it => it.Type == ceType && it.OldValue.ToLower() == ceValue.ToLower());
+                    return ceNewValue.Key.ToString();
+                }
                 else
                 {
                     return ce.Value.ToString();
