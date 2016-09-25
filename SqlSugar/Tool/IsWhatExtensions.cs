@@ -153,6 +153,18 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 是GUID?
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsGuid(this object thisValue)
+        {
+            if (thisValue == null) return false;
+            Guid outValue =Guid.Empty;
+            return Guid.TryParse(thisValue.ToString(), out outValue);
+        }
+
+        /// <summary>
         /// 是时间?
         /// </summary>
         /// <param name="thisValue"></param>
