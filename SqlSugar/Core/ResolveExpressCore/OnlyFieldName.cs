@@ -28,7 +28,7 @@ namespace SqlSugar
             }
             else
             {
-                Check.Exception(true, "不是有效拉姆达格式" + exp.ToString());
+                Check.Exception(true, "不是有效拉姆达格式 ，正确格式 it=>it.name " + exp.ToString());
                 return null;
             }
         }
@@ -53,7 +53,7 @@ namespace SqlSugar
             }
             else
             {
-                Check.Exception(true, "不是有效拉姆达格式" + exp.ToString());
+                Check.Exception(true, "不是有效拉姆达格式 ，正确格式 it=>it.name " + exp.ToString());
                 return null;
             }
         }
