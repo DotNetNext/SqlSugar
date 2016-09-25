@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace SqlSugar.Core.ResolveExpressCore
+namespace SqlSugar
 {
     internal partial class ResolveExpress
     {
