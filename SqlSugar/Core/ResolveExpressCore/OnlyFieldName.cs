@@ -9,6 +9,11 @@ namespace SqlSugar
     internal partial class ResolveExpress
     {
         /// <summary>
+        /// 错误信息
+        /// </summary>
+        public const string ErrorMessage = "OrderBy、GroupBy、In、Min和Max等操作不是有效拉姆达格式 ，正确格式 it=>it.name ";
+
+        /// <summary>
         /// 获取拉姆达表达式的字段值
         /// </summary>
         /// <param name="exp"></param>
@@ -18,18 +23,31 @@ namespace SqlSugar
             LambdaExpression lambda = exp as LambdaExpression;
             if (lambda.Body.NodeType.IsIn(ExpressionType.Convert))
             {
-                var memberExpr =
-                      ((UnaryExpression)lambda.Body).Operand as MemberExpression;
-                return memberExpr.Member.Name;
+                try
+                {
+                    var memberExpr =
+                  ((UnaryExpression)lambda.Body).Operand as MemberExpression;
+                    return memberExpr.Member.Name;
+                }
+                catch (Exception)
+                {
+                    throw new SqlSugarException(ErrorMessage);
+                }
             }
             else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
             {
-                return (lambda.Body as MemberExpression).Member.Name;
+                try
+                {
+                    return (lambda.Body as MemberExpression).Member.Name;
+                }
+                catch (Exception)
+                {
+                    throw new SqlSugarException(ErrorMessage);
+                }
             }
             else
             {
-                Check.Exception(true, "不是有效拉姆达格式 ，正确格式 it=>it.name " + exp.ToString());
-                return null;
+                throw new SqlSugarException(ErrorMessage);
             }
         }
 
@@ -43,18 +61,31 @@ namespace SqlSugar
             LambdaExpression lambda = exp as LambdaExpression;
             if (lambda.Body.NodeType.IsIn(ExpressionType.Convert))
             {
-                var memberExpr =
-                      ((UnaryExpression)lambda.Body).Operand as MemberExpression;
-                return memberExpr.ToString();
+                try
+                {
+                    var memberExpr =
+                             ((UnaryExpression)lambda.Body).Operand as MemberExpression;
+                    return memberExpr.ToString();
+                }
+                catch (Exception)
+                {
+                    throw new SqlSugarException(ErrorMessage);
+                }
             }
             else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
             {
-                return lambda.Body.ToString();
+                try
+                {
+                    return lambda.Body.ToString();
+                }
+                catch (Exception)
+                {
+                    throw new SqlSugarException(ErrorMessage);
+                }
             }
             else
             {
-                Check.Exception(true, "不是有效拉姆达格式 ，正确格式 it=>it.name " + exp.ToString());
-                return null;
+                throw new SqlSugarException(ErrorMessage);
             }
         }
     }
