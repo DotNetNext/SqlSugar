@@ -19,6 +19,18 @@ namespace SqlSugar
         SqlConnection _sqlConnection;
         SqlTransaction _tran = null;
         /// <summary>
+        /// 用来存储日志的一个集事对象
+        /// </summary>
+        public List<string> LogList = null;
+        /// <summary>
+        /// 执行访数据库前的回调函数  (sql,pars)=>{}
+        /// </summary>
+        public Action<string, string> LogEventStarting = null;
+        /// <summary>
+        /// 执行访数据库后的回调函数  (sql,pars)=>{}
+        /// </summary>
+        public Action<string, string> LogEventCompleted = null;
+        /// <summary>
         /// 是否清空SqlParameters
         /// </summary>
         public bool IsClearParameters = true;
@@ -207,6 +219,7 @@ namespace SqlSugar
         /// <returns></returns>
         public object GetScalar(string sql, params SqlParameter[] pars)
         {
+            ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
             if (_tran != null)
             {
@@ -222,6 +235,7 @@ namespace SqlSugar
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
             sqlCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars,false);
             return scalar;
         }
 
@@ -244,6 +258,7 @@ namespace SqlSugar
         /// <returns></returns>
         public int ExecuteCommand(string sql, params SqlParameter[] pars)
         {
+            ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
@@ -258,6 +273,7 @@ namespace SqlSugar
             }
             int count = sqlCommand.ExecuteNonQuery();
             sqlCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars,false);
             return count;
         }
 
@@ -280,6 +296,7 @@ namespace SqlSugar
         /// <returns></returns>
         public SqlDataReader GetReader(string sql, params SqlParameter[] pars)
         {
+            ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
@@ -295,6 +312,7 @@ namespace SqlSugar
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
             if (IsClearParameters)
                 sqlCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars,false);
             return sqlDataReader;
         }
 
@@ -367,6 +385,7 @@ namespace SqlSugar
         /// <returns></returns>
         public DataTable GetDataTable(string sql, params SqlParameter[] pars)
         {
+            ExecLogEvent(sql, pars, true);
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             if (IsGetPageParas)
@@ -381,6 +400,7 @@ namespace SqlSugar
             DataTable dt = new DataTable();
             _sqlDataAdapter.Fill(dt);
             _sqlDataAdapter.SelectCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars,false);
             return dt;
         }
         /// <summary>
@@ -401,6 +421,7 @@ namespace SqlSugar
         /// <returns></returns>
         public DataSet GetDataSetAll(string sql, params SqlParameter[] pars)
         {
+            ExecLogEvent(sql, pars, true);
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             if (_tran != null)
             {
@@ -415,7 +436,28 @@ namespace SqlSugar
             DataSet ds = new DataSet();
             _sqlDataAdapter.Fill(ds);
             _sqlDataAdapter.SelectCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars,false);
             return ds;
+        }
+
+        private void ExecLogEvent(string sql, SqlParameter[] pars,bool isStarting=true)
+        {
+            Action<string,string> action=isStarting?LogEventStarting:LogEventCompleted;
+            if (action != null)
+            {
+                if (LogList == null)
+                {
+                    LogList = new List<string>();
+                }
+                if (pars == null || pars.Length == 0)
+                {
+                    action(sql, null);
+                }
+                else
+                {
+                    action(sql, JsonConverter.Serialize(pars.Select(it => new { key = it.ParameterName, value = it.Value })));
+                }
+            }
         }
         /// <summary>
         /// 释放数据库连接对象

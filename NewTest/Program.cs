@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "serializerdateformat";
+            string switchOn = "log";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -30,6 +30,8 @@ namespace NewTest
                 case "tran": demo = new Tran(); break;
                 //创建实体函数
                 case "createclass": demo = new CreateClass(); break;
+                //日志记录
+                case "log": demo = new Log(); break;
                 //枚举支持
                 case "enum": demo = new EnumDemo(); break;
                 //别名表
