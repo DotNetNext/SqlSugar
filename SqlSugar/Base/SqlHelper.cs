@@ -19,9 +19,9 @@ namespace SqlSugar
         SqlConnection _sqlConnection;
         SqlTransaction _tran = null;
         /// <summary>
-        /// 用来存储日志的一个集事对象
+        /// 是否启用日志事件(默认为:false)
         /// </summary>
-        public List<string> LogList = null;
+        public bool IsEnableLogEvent = false;
         /// <summary>
         /// 执行访数据库前的回调函数  (sql,pars)=>{}
         /// </summary>
@@ -442,20 +442,19 @@ namespace SqlSugar
 
         private void ExecLogEvent(string sql, SqlParameter[] pars,bool isStarting=true)
         {
-            Action<string,string> action=isStarting?LogEventStarting:LogEventCompleted;
-            if (action != null)
+            if (IsEnableLogEvent)
             {
-                if (LogList == null)
+                Action<string, string> action = isStarting ? LogEventStarting : LogEventCompleted;
+                if (action != null)
                 {
-                    LogList = new List<string>();
-                }
-                if (pars == null || pars.Length == 0)
-                {
-                    action(sql, null);
-                }
-                else
-                {
-                    action(sql, JsonConverter.Serialize(pars.Select(it => new { key = it.ParameterName, value = it.Value })));
+                    if (pars == null || pars.Length == 0)
+                    {
+                        action(sql, null);
+                    }
+                    else
+                    {
+                        action(sql, JsonConverter.Serialize(pars.Select(it => new { key = it.ParameterName, value = it.Value })));
+                    }
                 }
             }
         }

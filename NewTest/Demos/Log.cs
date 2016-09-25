@@ -12,7 +12,7 @@ namespace NewTest.Demos
     //日志记录功能
     public class Log : IDemos
     {
-
+       
         public void Init()
         {
             Console.WriteLine("启动Log.Init");
@@ -20,11 +20,27 @@ namespace NewTest.Demos
             {
 
                 var a1 = db.Queryable<Student>().Where(it => it.id == 1).ToList();
-                var a2 = db.Queryable<Student>().OrderBy(it=>it.id).ToList();
-
-               var logList=db.LogList; //可以查看当前操作域的所有 SQL记录
-
+                var a2 = db.Queryable<Student>().OrderBy(it => it.id).ToList();
             }
+        }
+
+        public class SugarConfigs
+        {
+            public static Action<string, string> LogEventStarting = (sql, pars) =>
+            {
+                Console.WriteLine("starting:" + sql + " " + pars);
+                
+                using (var db = SugarDemoDao.GetInstance())
+                {
+                    //日志记录件事件里面用到数据库操作 IsEnableLogEvent一定要为false否则将引起死循环，并且要新开一个数据实例 像我这样写就没问题。
+                    db.IsEnableLogEvent = false;
+                    db.ExecuteCommand("select 1");
+                }
+            };
+            public static Action<string, string> LogEventCompleted = (sql, pars) =>
+            {
+                Console.WriteLine("completed:" + sql + " " + pars);
+            };
         }
 
         /// <summary>
@@ -35,16 +51,10 @@ namespace NewTest.Demos
 
             public static SqlSugarClient GetInstance()
             {
-                var db= new SqlSugarClient(SugarDao.ConnectionString);
-                db.LogEventStarting = (sql, pars) =>
-                {
-                    db.LogList.Add("starting:"+sql+"\r\n"+pars);//也可以直接写入数据库和文件,
-                };
-
-                db.LogEventCompleted = (sql, pars) =>
-                {
-                    db.LogList.Add("completed:"+sql + "\r\n" + pars);//也可以直接写入数据库和文件,
-                };
+                var db = new SqlSugarClient(SugarDao.ConnectionString);
+                db.IsEnableLogEvent = true;//启用日志事件
+                db.LogEventStarting = SugarConfigs.LogEventStarting;
+                db.LogEventCompleted = SugarConfigs.LogEventCompleted;
                 return db;
             }
         }
