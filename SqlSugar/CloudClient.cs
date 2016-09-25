@@ -17,7 +17,7 @@ namespace SqlSugar
     /// ** 作者：sunkaixuan
     /// ** 使用说明：
     /// </summary>
-    public partial class CloudClient : IDisposable, IClient
+    public partial class CloudClient : IDisposable
     {
         #region private variables
         private object tranLock = new object();

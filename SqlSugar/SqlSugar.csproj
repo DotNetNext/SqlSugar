@@ -52,7 +52,6 @@
     <Compile Include="Cloud\TaskExtensions.cs" />
     <Compile Include="Core\ResolveSelect.cs" />
     <Compile Include="Generating\ClassTemplate.cs" />
-    <Compile Include="IClient.cs" />
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Core\IDataRecordExtensions.cs" />
     <Compile Include="Tool\JsonConverter.cs" />
