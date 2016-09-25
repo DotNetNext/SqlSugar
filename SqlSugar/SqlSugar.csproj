@@ -50,6 +50,7 @@
     <Compile Include="Cloud\CloudModels.cs" />
     <Compile Include="Cloud\CloudPubMethod.cs" />
     <Compile Include="Cloud\TaskExtensions.cs" />
+    <Compile Include="Core\ResolveExpressCore\Constant.cs" />
     <Compile Include="Core\ResolveExpressCore\OnlyFieldName.cs" />
     <Compile Include="Core\ResolveExpressCore\Method.cs" />
     <Compile Include="Core\ResolveExpressCore\Model.cs" />
