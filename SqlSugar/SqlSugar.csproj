@@ -54,7 +54,7 @@
     <Compile Include="Core\ResolveExpressCore\OnlyFieldName.cs" />
     <Compile Include="Core\ResolveExpressCore\Method.cs" />
     <Compile Include="Core\ResolveExpressCore\Models.cs" />
-    <Compile Include="Core\ResolveSelect.cs" />
+    <Compile Include="Core\ResolveExpressCore\ResolveSelect.cs" />
     <Compile Include="Generating\ClassTemplate.cs" />
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Core\IDataRecordExtensions.cs" />
