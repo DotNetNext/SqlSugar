@@ -61,12 +61,12 @@
     <Compile Include="Tool\JsonConverter.cs" />
     <Compile Include="Tool\IEnumerableExtensions.cs" />
     <Compile Include="Core\IDataReaderEntityBuilder.cs" />
-    <Compile Include="Tool\KeyValue.cs" />
+    <Compile Include="PubModel\KeyValue.cs" />
     <Compile Include="Tool\LanguageHelper.cs" />
     <Compile Include="Tool\PubConvert.cs" />
-    <Compile Include="Core\PubModel.cs" />
+    <Compile Include="PubModel\PubModel.cs" />
     <Compile Include="Core\ResolveExpress\Main.cs" />
-    <Compile Include="Core\PubEnum.cs" />
+    <Compile Include="PubModel\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queryable\Queryable.cs" />
     <Compile Include="Queryable\QueryableExtensions.cs" />
