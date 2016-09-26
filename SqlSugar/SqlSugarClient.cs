@@ -908,20 +908,17 @@ namespace SqlSugar
                 sbSql.Append(" UPDATE ");
                 sbSql.Append(typeName);
                 sbSql.Append(" SET ");
+                pkValue= props.Single(it => it.Name.ToLower() == pkName.ToLower()).GetValue(entity, null).ToString();
                 foreach (var name in columnNames)
                 {
                     var isPk = pkName != null && pkName.ToLower() == name.ToLower();
-                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower());
+                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
                     var isLastName = name == columnNames.Last();
                     var prop = props.Single(it => it.Name == name);
                     var objValue = prop.GetValue(entity, null);
-                    if (isPk)
-                    {
-                        pkValue = objValue.ToString();
-                    }
                     if (this.IsIgnoreErrorColumns)
                     {
-                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == r.Key.ToLower()))
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == name.ToLower()))
                         {
                             continue;
                         }
@@ -952,9 +949,12 @@ namespace SqlSugar
                     else
                     {
                         objValue = "'" + objValue.ToString() + "'";
+                    }     
+                    sbSql.AppendFormat(" [{0}]={1}{2}  ", name, objValue,isLastName?"":",");
+                    if (isLastName)
+                    {
+                        sbSql.AppendFormat("WHERE [{0}]='{1}' ", pkName, pkValue.ToSuperSqlFilter());
                     }
-                    string lastSql = isLastName ? string.Format(" [0]='{1}' ", pkName, pkValue.ToSuperSqlFilter()) : "";
-                    sbSql.AppendFormat(" [{0}]={1} WHERE {2} ", name, objValue, lastSql);
                 }
                 var isLastEntity = entities.Last() == entity;
             }

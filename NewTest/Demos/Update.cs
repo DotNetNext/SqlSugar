@@ -56,8 +56,11 @@ namespace NewTest.Demos
 
 
 
-                //批量更新  支持（别名表等功能）
+                //批量更新   数据量小时建议使用
                 var updateResult = db.UpdateRange(GetUpdateList());
+
+                //批量更新  数据量大时建议使用
+                var updateResult2 = db.SqlBulkReplace(GetUpdateList2());
 
             }
         }
@@ -71,12 +74,35 @@ namespace NewTest.Demos
                      new Student()
                 {
                     id=1001,
-                     name="张1001"+new Random().Next(1,int.MaxValue)
+                     name="1张1001"+new Random().Next(1,int.MaxValue)
                 },
                  new Student()
                 {
                     id=1002,
-                     name="张1002"+new Random().Next(1,int.MaxValue)
+                    name="1张1002"+new Random().Next(1,int.MaxValue)
+                }
+                };
+            return list;
+        }
+        private static List<Student> GetUpdateList2()
+        {
+            List<Student> list = new List<Student>()
+                {
+                     new Student()
+                {
+                    id=1010,
+                    name="小妹"+new Random().Next(1,int.MaxValue),
+                    isOk=false,
+                    sch_id=2,
+                    sex="gril"
+                },
+                 new Student()
+                {
+                    id=1011,
+                    name="小子"+new Random().Next(1,int.MaxValue),
+                    isOk=true,
+                    sch_id=3,
+                    sex="boy"
                 }
                 };
             return list;
