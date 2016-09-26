@@ -17,31 +17,25 @@ namespace SqlSugar
         public string GetExpressionRightField(Expression exp)
         {
             LambdaExpression lambda = exp as LambdaExpression;
-            if (lambda.Body.NodeType.IsIn(ExpressionType.Convert))
+            var isConvet = lambda.Body.NodeType.IsIn(ExpressionType.Convert);
+            var isMember = lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess);
+            if (!isConvet && !isMember)
             {
-                try
+                throw new SqlSugarException(FileldErrorMessage);
+            }
+            try
+            {
+                if (isConvet)
                 {
-                    var memberExpr =
-                  ((UnaryExpression)lambda.Body).Operand as MemberExpression;
+                    var memberExpr =((UnaryExpression)lambda.Body).Operand as MemberExpression;
                     return memberExpr.Member.Name;
                 }
-                catch (Exception)
-                {
-                    throw new SqlSugarException(FileldErrorMessage);
-                }
-            }
-            else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
-            {
-                try
+                else//isMember
                 {
                     return (lambda.Body as MemberExpression).Member.Name;
                 }
-                catch (Exception)
-                {
-                    throw new SqlSugarException(FileldErrorMessage);
-                }
             }
-            else
+            catch (Exception)
             {
                 throw new SqlSugarException(FileldErrorMessage);
             }
@@ -55,33 +49,27 @@ namespace SqlSugar
         public string GetExpressionRightFieldByNT(Expression exp)
         {
             LambdaExpression lambda = exp as LambdaExpression;
-            if (lambda.Body.NodeType.IsIn(ExpressionType.Convert))
+            var isConvet = lambda.Body.NodeType.IsIn(ExpressionType.Convert);
+            var isMember = lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess);
+            if (!isConvet && !isMember)
             {
-                try
+                throw new SqlSugarException(FileldErrorMessage);
+            }
+            try
+            {
+                if (isConvet)
                 {
-                    var memberExpr =
-                             ((UnaryExpression)lambda.Body).Operand as MemberExpression;
+                    var memberExpr = ((UnaryExpression)lambda.Body).Operand as MemberExpression;
                     return memberExpr.ToString();
                 }
-                catch (Exception)
-                {
-                    throw new SqlSugarException(FileldErrorMessage);
-                }
-            }
-            else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
-            {
-                try
+                else//isMember
                 {
                     return lambda.Body.ToString();
                 }
-                catch (Exception)
-                {
-                    throw new SqlSugarException(FileldErrorMessage);
-                }
             }
-            else
+            catch (Exception)
             {
-                throw new SqlSugarException(FileldErrorMessage);
+                 throw new SqlSugarException(FileldErrorMessage);
             }
         }
     }
