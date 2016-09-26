@@ -950,13 +950,10 @@ namespace SqlSugar
                     {
                         objValue = "'" + objValue.ToString() + "'";
                     }     
-                    sbSql.AppendFormat(" [{0}]={1}{2}  ", name, objValue,isLastName?"":",");
-                    if (isLastName)
-                    {
-                        sbSql.AppendFormat("WHERE [{0}]='{1}' ", pkName, pkValue.ToSuperSqlFilter());
-                    }
+                    sbSql.AppendFormat(" [{0}]={1}{2}  ", name, objValue,",");
                 }
-                var isLastEntity = entities.Last() == entity;
+                sbSql.Remove(sbSql.ToString().LastIndexOf(","), 1);
+                sbSql.AppendFormat("WHERE [{0}]='{1}' ", pkName, pkValue.ToSuperSqlFilter());
             }
             var reval = base.ExecuteCommand(sbSql.ToString());
             sbSql = null;
