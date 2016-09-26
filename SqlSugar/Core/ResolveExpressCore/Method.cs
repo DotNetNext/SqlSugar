@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 
 namespace SqlSugar
 {
+    //局部类：解析函数
     internal partial class ResolveExpress
     {
         /// <summary>

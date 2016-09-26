@@ -5,6 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
+    //局部类：解析用到的实体
     internal partial class ResolveExpress
     {
         /// <summary>
@@ -21,13 +22,21 @@ namespace SqlSugar
         /// </summary>
         public class ExpressConstantBoolModel
         {
-
+            /// <summary>
+            /// 唯一标识
+            /// </summary>
             public Guid Key { get; set; }
-
+            /// <summary>
+            /// 数据类型
+            /// </summary>
             public Type Type { get; set; }
-
+            /// <summary>
+            /// 原始值
+            /// </summary>
             public string OldValue { get; set; }
-
+            /// <summary>
+            /// 处事后的值
+            /// </summary>
             public string NewValue
             {
                 get
@@ -42,6 +51,9 @@ namespace SqlSugar
                     }
                 }
             }
+            /// <summary>
+            /// 处理后的运算对象
+            /// </summary>
             public string ConditionalValue
             {
                 get
