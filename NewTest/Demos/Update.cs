@@ -54,7 +54,32 @@ namespace NewTest.Demos
                 db.Update(updObj);
                 //以前实现这种更新需要用指定列的方式实现，现在就简单多了。
 
+
+
+                //批量更新  支持（别名表等功能）
+                var updateResult = db.UpdateRange(GetUpdateList());
+
             }
+        }
+
+
+
+        private static List<Student> GetUpdateList()
+        {
+            List<Student> list = new List<Student>()
+                {
+                     new Student()
+                {
+                    id=1001,
+                     name="张1001"+new Random().Next(1,int.MaxValue)
+                },
+                 new Student()
+                {
+                    id=1002,
+                     name="张1002"+new Random().Next(1,int.MaxValue)
+                }
+                };
+            return list;
         }
     }
 }
