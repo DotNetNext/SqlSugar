@@ -633,7 +633,7 @@ namespace SqlSugar
         /// <summary>
         /// 根据表达式条件将实体对象更新到数据库
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">实体类型</typeparam>
         /// <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
         /// <param name="expression">表达式条件</param>
         /// <returns>更新成功返回true</returns>
@@ -731,11 +731,15 @@ namespace SqlSugar
         /// <summary>
         /// 将实体对象更新到数据库
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="rowObj">更新实体，rowObj必需包含主键， rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="rowObj">rowObj必需包含主键并且不能为匿名对象</param>
         /// <returns>更新成功返回true</returns>
         public bool Update<T>(T rowObj) where T : class
         {
+            var isDynamic = typeof(T).IsAnonymousType();
+            if (isDynamic) {
+                throw new SqlSugarException("Update(T)不支持匿名类型，请使用Update<T,Expression>方法。");
+            }
             var reval = Update<T, object>(rowObj);
             return reval;
         }
@@ -744,7 +748,7 @@ namespace SqlSugar
         /// 批量插入
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="rowObjList">更新实体的集合，rowObj必需包含主键</param>
+        /// <param name="rowObjList">更新实体的集合，rowObj必需包含主键并且不能为匿名对象</param>
         /// <returns>执行成功将返回bool的集合</returns>
         public List<bool> UpdateRange<T>(List<T> rowObjList) where T : class
         {

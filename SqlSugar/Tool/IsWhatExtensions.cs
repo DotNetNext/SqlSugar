@@ -243,5 +243,16 @@ namespace SqlSugar
             Regex reg = new Regex(pattern);
             return reg.IsMatch(thisValue.ToString());
         }
+
+        /// <summary>
+        /// 是否是动态类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsAnonymousType(this Type type)
+        {
+            string typeName = type.Name;
+            return typeName.Contains("<>") && typeName.Contains("__") && typeName.Contains("AnonymousType");
+        }
     }
 }
