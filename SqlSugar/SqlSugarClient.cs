@@ -746,7 +746,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 批量插入
+        /// 批量插入(说明：一次更新超过10条以上建议使用SqlBulkReplace)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="rowObjList">更新实体的集合，rowObj必需包含主键并且不能为匿名对象</param>
@@ -846,7 +846,7 @@ namespace SqlSugar
 
 
         /// <summary>
-        /// 大数据更新(结构体必须和数据库一致)
+        /// 大数据更新 支持IsIgnoreErrorColumns和isDisableUpdateColumns
         /// </summary>
         /// <param name="entities"></param>
         /// <returns>全部更新成功返回true</returns>
