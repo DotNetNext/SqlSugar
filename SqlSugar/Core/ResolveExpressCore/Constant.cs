@@ -18,5 +18,10 @@ namespace SqlSugar
                new ExpressConstantBoolModel(){ Key=Guid.NewGuid(), OldValue="False",Type=SqlSugarTool.BoolType}
 
         };
+        /// <summary>
+        /// 错误信息
+        /// </summary>
+        public const string OnlyFileldErrorMessage = "OrderBy、GroupBy、In、Min和Max等操作不是有效拉姆达格式 ，正确格式 it=>it.name ";
+
     }
 }

@@ -6,13 +6,9 @@ using System.Linq.Expressions;
 
 namespace SqlSugar
 {
+    //局部类 解析字段名
     internal partial class ResolveExpress
     {
-        /// <summary>
-        /// 错误信息
-        /// </summary>
-        public const string ErrorMessage = "OrderBy、GroupBy、In、Min和Max等操作不是有效拉姆达格式 ，正确格式 it=>it.name ";
-
         /// <summary>
         /// 获取拉姆达表达式的字段值
         /// </summary>
@@ -31,7 +27,7 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(ErrorMessage);
+                    throw new SqlSugarException(OnlyFileldErrorMessage);
                 }
             }
             else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
@@ -42,12 +38,12 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(ErrorMessage);
+                    throw new SqlSugarException(OnlyFileldErrorMessage);
                 }
             }
             else
             {
-                throw new SqlSugarException(ErrorMessage);
+                throw new SqlSugarException(OnlyFileldErrorMessage);
             }
         }
 
@@ -69,7 +65,7 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(ErrorMessage);
+                    throw new SqlSugarException(OnlyFileldErrorMessage);
                 }
             }
             else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
@@ -80,12 +76,12 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(ErrorMessage);
+                    throw new SqlSugarException(OnlyFileldErrorMessage);
                 }
             }
             else
             {
-                throw new SqlSugarException(ErrorMessage);
+                throw new SqlSugarException(OnlyFileldErrorMessage);
             }
         }
     }
