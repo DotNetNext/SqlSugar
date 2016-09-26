@@ -882,6 +882,7 @@ namespace SqlSugar
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            Check.Exception(pkName.IsNullOrEmpty(), "没有找到主键。");
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             var isIdentity = identityNames != null && identityNames.Count > 0;
             var columnNames = SqlSugarTool.GetColumnsByTableName(this, typeName);
