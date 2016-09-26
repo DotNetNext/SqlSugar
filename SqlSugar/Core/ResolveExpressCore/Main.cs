@@ -305,7 +305,12 @@ namespace SqlSugar
             {
                 UnaryExpression ue = ((UnaryExpression)exp);
                 var mex = ue.Operand;
-                return CreateSqlElements(mex, ref type, false);
+                var cse= CreateSqlElements(mex, ref type, false);
+                if (type == MemberType.None && ue.NodeType.ToString()=="Not")
+                {
+                    cse =" NOT "+cse;
+                }
+                return cse;
             }
             return null;
         }

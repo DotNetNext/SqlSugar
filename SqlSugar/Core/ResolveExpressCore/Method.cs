@@ -22,7 +22,7 @@ namespace SqlSugar
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
             var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE @{2}+'%')", oldLeft, isTure == false ? "  NOT " : null, left);
+            return string.Format("({0} {1} LIKE @{2}+'%')", oldLeft,null, left);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace SqlSugar
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
             var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE '%'+@{2})", oldLeft, isTure == false ? "  NOT " : null, left);
+            return string.Format("({0} {1} LIKE '%'+@{2})", oldLeft,null, left);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace SqlSugar
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
             var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE '%'+@{2}+'%')", oldLeft, isTure == false ? "  NOT " : null, left);
+            return string.Format("({0} {1} LIKE '%'+@{2}+'%')", oldLeft, null, left);
         }
 
         /// <summary>
