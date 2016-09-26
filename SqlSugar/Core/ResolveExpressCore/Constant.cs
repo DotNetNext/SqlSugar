@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    //局部类：公用常量
+    //局部类：拉姆达解析公用常量
     internal partial class ResolveExpress
     {
         /// <summary>
