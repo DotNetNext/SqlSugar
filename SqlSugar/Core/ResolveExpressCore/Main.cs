@@ -281,7 +281,7 @@ namespace SqlSugar
                         {
                             return DateTime.Now.ToString();
                         }
-                        Check.Exception(true, "错误信息:{0} \r\n message:{1}", "拉姆达解析出错，例如(it=>it.id==a.id) it.id是字段，a.id就是参数,字段不支持任何函数,参数可支持的函数有 Trim 、Contains 、ObjToXXX、 Convert.ToXXX、Contains、String.IsNullOrEmpty、StartsWith和StartsEnd。 ", ex.Message);
+                        Check.Exception(true, "错误信息:{0} \r\n message:{1}",ExpToSqlError, ex.Message);
                     }
 
                     if (dynInv == null) return null;
@@ -406,7 +406,7 @@ namespace SqlSugar
                 case ExpressionType.MultiplyChecked:
                     return "*";
                 default:
-                    throw new SqlSugarException(string.Format("拉姆达解析出错：不支持{0}此种运算符查找！" + expressiontype));
+                    throw new SqlSugarException(string.Format(OperatorError + expressiontype));
             }
         }
 
