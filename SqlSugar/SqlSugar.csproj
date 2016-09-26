@@ -62,7 +62,7 @@
     <Compile Include="Tool\IEnumerableExtensions.cs" />
     <Compile Include="Core\IDataReaderEntityBuilder.cs" />
     <Compile Include="Tool\KeyValue.cs" />
-    <Compile Include="Core\LanguageHelper.cs" />
+    <Compile Include="Tool\LanguageHelper.cs" />
     <Compile Include="Tool\PubConvert.cs" />
     <Compile Include="Core\PubModel.cs" />
     <Compile Include="Core\ResolveExpress\Main.cs" />
