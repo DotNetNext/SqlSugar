@@ -93,11 +93,11 @@ namespace SqlSugar
             {
                 if (isTure)
                 {
-                    return string.Format("{0} is null OR {0}='' ", right);
+                    return string.Format("'{0}' is null OR '{0}'='' ", right.ToSqlFilter());
                 }
                 else
                 {
-                    return string.Format("{0} is not null AND {0}<>'' ", right);
+                    return string.Format("'{0}' is not null AND '{0}'<>'' ", right.ToSqlFilter());
                 }
 
             }
