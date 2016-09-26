@@ -50,11 +50,11 @@
     <Compile Include="Cloud\CloudModels.cs" />
     <Compile Include="Cloud\CloudPubMethod.cs" />
     <Compile Include="Cloud\TaskExtensions.cs" />
-    <Compile Include="Core\ResolveExpressCore\Constant.cs" />
-    <Compile Include="Core\ResolveExpressCore\ResolveFieldName.cs" />
-    <Compile Include="Core\ResolveExpressCore\Method.cs" />
-    <Compile Include="Core\ResolveExpressCore\Models.cs" />
-    <Compile Include="Core\ResolveExpressCore\ResolveSelect.cs" />
+    <Compile Include="Core\ResolveExpress\Constant.cs" />
+    <Compile Include="Core\ResolveExpress\ResolveFieldName.cs" />
+    <Compile Include="Core\ResolveExpress\Method.cs" />
+    <Compile Include="Core\ResolveExpress\Models.cs" />
+    <Compile Include="Core\ResolveExpress\ResolveSelect.cs" />
     <Compile Include="Generating\ClassTemplate.cs" />
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Core\IDataRecordExtensions.cs" />
@@ -65,7 +65,7 @@
     <Compile Include="Core\LanguageHelper.cs" />
     <Compile Include="Tool\PubConvert.cs" />
     <Compile Include="Core\PubModel.cs" />
-    <Compile Include="Core\ResolveExpressCore\Main.cs" />
+    <Compile Include="Core\ResolveExpress\Main.cs" />
     <Compile Include="Core\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queryable\Queryable.cs" />
