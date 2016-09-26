@@ -737,7 +737,8 @@ namespace SqlSugar
         public bool Update<T>(T rowObj) where T : class
         {
             var isDynamic = typeof(T).IsAnonymousType();
-            if (isDynamic) {
+            if (isDynamic)
+            {
                 throw new SqlSugarException("Update(T)不支持匿名类型，请使用Update<T,Expression>方法。");
             }
             var reval = Update<T, object>(rowObj);
@@ -841,6 +842,125 @@ namespace SqlSugar
             {
                 throw new SqlSugarException(ex.Message, sbSql.ToString(), new { rowObj = rowObj, whereIn = whereIn });
             }
+        }
+
+
+        /// <summary>
+        /// 大数据更新(结构体必须和数据库一致)
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns>全部更新成功返回true</returns>
+        public bool SqlBulkReplace<T>(List<T> entities) where T : class
+        {
+            int actionNum = 100;
+            var reval = true;
+            while (entities.Count > 0)
+            {
+                var insertRes = SqlBulkReplace<T>(entities.Take(actionNum));
+                if (reval && insertRes)
+                {
+                    reval = true;
+                }
+                else
+                {
+                    reval = false;
+                }
+                if (actionNum > entities.Count)
+                {
+                    actionNum = entities.Count;
+                }
+                entities.RemoveRange(0, actionNum);
+            }
+            return reval;
+        }
+
+        private bool SqlBulkReplace<T>(IEnumerable<T> entities) where T : class
+        {
+            if (entities == null) { return false; };
+            StringBuilder sbSql = new StringBuilder("");
+            Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTableNameByClassType(typeName);
+            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
+            var isIdentity = identityNames != null && identityNames.Count > 0;
+            var columnNames = SqlSugarTool.GetColumnsByTableName(this, typeName);
+            if (isIdentity)
+            {
+                columnNames = columnNames.Where(c => !identityNames.Any(it => it.Value == c)).ToList();//去掉自添列
+            }
+            //属性缓存
+            string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = null;
+            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+            {
+                props = cachePropertiesManager[cachePropertiesKey];
+            }
+            else
+            {
+                props = type.GetProperties();
+                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+            }
+            foreach (var entity in entities)
+            {
+                string pkValue = string.Empty;
+                sbSql.Append(" UPDATE ");
+                sbSql.Append(typeName);
+                sbSql.Append(" SET ");
+                foreach (var name in columnNames)
+                {
+                    var isPk = pkName != null && pkName.ToLower() == name.ToLower();
+                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower());
+                    var isLastName = name == columnNames.Last();
+                    var prop = props.Single(it => it.Name == name);
+                    var objValue = prop.GetValue(entity, null);
+                    if (isPk)
+                    {
+                        pkValue = objValue.ToString();
+                    }
+                    if (this.IsIgnoreErrorColumns)
+                    {
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == r.Key.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
+                    if (isPk || isDisableUpdateColumns)
+                    {
+                        continue;
+                    }
+                    bool isNullable = false;
+                    var underType = SqlSugarTool.GetUnderType(prop, ref isNullable);
+                    if (objValue == null)
+                    {
+                        objValue = "NULL";
+                    }
+                    else if (underType == SqlSugarTool.DateType)
+                    {
+                        objValue = "'" + objValue.ToString() + "'";
+                    }
+                    else if (underType == SqlSugarTool.BoolType)
+                    {
+                        objValue = Convert.ToBoolean(objValue) ? 1 : 0;
+                    }
+                    else if (underType == SqlSugarTool.StringType)
+                    {
+                        //string参数需要处理注入 (因为SqlParameter参数上限为2100所以无法使用参数化)
+                        objValue = "'" + objValue.ToString().ToSqlFilter() + "'";
+                    }
+                    else
+                    {
+                        objValue = "'" + objValue.ToString() + "'";
+                    }
+                    string lastSql = isLastName ? string.Format(" [0]='{1}' ", pkName, pkValue.ToSuperSqlFilter()) : "";
+                    sbSql.AppendFormat(" [{0}]={1} WHERE {2} ", name, objValue, lastSql);
+                }
+                var isLastEntity = entities.Last() == entity;
+            }
+            var reval = base.ExecuteCommand(sbSql.ToString());
+            sbSql = null;
+            return reval > 0;
         }
         #endregion
 
