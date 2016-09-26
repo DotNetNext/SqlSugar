@@ -28,7 +28,7 @@ namespace SqlSugar
         {
             ConnectionString = connectionString;
             IsNoLock = false;
-        } 
+        }
         #endregion
 
 
@@ -60,7 +60,7 @@ namespace SqlSugar
                 }
             }
             return tableName;
-        } 
+        }
         #endregion
 
 
@@ -68,7 +68,7 @@ namespace SqlSugar
         /// <summary>
         /// 当前连接字符串
         /// </summary>
-        public  string ConnectionString { get;internal set; } 
+        public string ConnectionString { get; internal set; }
         #endregion
 
 
@@ -157,7 +157,7 @@ namespace SqlSugar
             {
                 _serialNumber = serNum;
             }
-        } 
+        }
         #endregion
 
 
@@ -183,7 +183,7 @@ namespace SqlSugar
                 }
             }
             return sqlable;
-        } 
+        }
         #endregion
 
 
@@ -236,7 +236,7 @@ namespace SqlSugar
         public Queryable<T> Queryable<T>(string tableName) where T : new()
         {
             return new Queryable<T>() { DB = this, TableName = tableName };
-        } 
+        }
         #endregion
 
 
@@ -325,7 +325,7 @@ namespace SqlSugar
             fields = null;
             sql = null;
             return reval;
-        } 
+        }
         #endregion
 
 
@@ -367,8 +367,9 @@ namespace SqlSugar
             isIdentity = identities != null && identities.Count > 0;
             //sql语句缓存
             string cacheSqlKey = "db.Insert." + type.FullName;
-            if (this.DisableInsertColumns.IsValuable()) {
-                cacheSqlKey = cacheSqlKey+string.Join("", this.DisableInsertColumns);
+            if (this.DisableInsertColumns.IsValuable())
+            {
+                cacheSqlKey = cacheSqlKey + string.Join("", this.DisableInsertColumns);
             }
             var cacheSqlManager = CacheManager<StringBuilder>.GetInstance();
 
@@ -415,7 +416,7 @@ namespace SqlSugar
                             continue;
                         }
                     }
-                    if (this.DisableInsertColumns.IsValuable()) 
+                    if (this.DisableInsertColumns.IsValuable())
                     {
                         if (this.DisableInsertColumns.Any(it => it.ToLower() == prop.Name.ToLower()))
                         {
@@ -514,7 +515,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new SqlSugarException(ex.Message,sql,entity);
+                throw new SqlSugarException(ex.Message, sql, entity);
             }
 
         }
@@ -623,7 +624,7 @@ namespace SqlSugar
             var reval = base.ExecuteCommand(sbSql.ToString());
             sbSql = null;
             return reval > 0;
-        } 
+        }
         #endregion
 
 
@@ -723,7 +724,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new SqlSugarException(ex.Message, sbSql.ToString(), new { rowObj = rowObj, expression = expression+"" });
+                throw new SqlSugarException(ex.Message, sbSql.ToString(), new { rowObj = rowObj, expression = expression + "" });
             }
         }
 
@@ -731,11 +732,30 @@ namespace SqlSugar
         /// 将实体对象更新到数据库
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="rowObj">rowObj必需包含主键， rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
+        /// <param name="rowObj">更新实体，rowObj必需包含主键， rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
         /// <returns>更新成功返回true</returns>
         public bool Update<T>(T rowObj) where T : class
         {
             var reval = Update<T, object>(rowObj);
+            return reval;
+        }
+
+        /// <summary>
+        /// 批量插入
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rowObjList">更新实体的集合，rowObj必需包含主键</param>
+        /// <returns>执行成功将返回bool的集合</returns>
+        public List<bool> UpdateRange<T>(List<T> rowObjList) where T : class
+        {
+            var reval = new List<bool>();
+            if (rowObjList.IsValuable())
+            {
+                foreach (T item in rowObjList)
+                {
+                    reval.Add(Update<T>(item));
+                }
+            }
             return reval;
         }
 
@@ -817,7 +837,7 @@ namespace SqlSugar
             {
                 throw new SqlSugarException(ex.Message, sbSql.ToString(), new { rowObj = rowObj, whereIn = whereIn });
             }
-        } 
+        }
         #endregion
 
 
@@ -968,7 +988,7 @@ namespace SqlSugar
             int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;
             return isSuccess;
-        } 
+        }
         #endregion
 
 
@@ -977,7 +997,7 @@ namespace SqlSugar
         /// <summary>
         /// 生成实体的对象
         /// </summary>
-        public ClassGenerating ClassGenerating = new ClassGenerating(); 
+        public ClassGenerating ClassGenerating = new ClassGenerating();
         #endregion
 
 
@@ -989,7 +1009,7 @@ namespace SqlSugar
         public void RemoveAllCache<T>()
         {
             CacheManager<T>.GetInstance().RemoveAll(c => true);
-        } 
+        }
 
         #endregion
 
