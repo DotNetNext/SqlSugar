@@ -99,7 +99,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        return string.Format("'({0}' is null OR '{0}'='' )", right.ToSqlFilter());
+                        return string.Format("('{0}' is null OR '{0}'='' )", right.ToSqlFilter());
                     }
                 }
                 else
