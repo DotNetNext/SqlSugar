@@ -27,7 +27,7 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(OnlyFileldErrorMessage);
+                    throw new SqlSugarException(FileldErrorMessage);
                 }
             }
             else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
@@ -38,12 +38,12 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(OnlyFileldErrorMessage);
+                    throw new SqlSugarException(FileldErrorMessage);
                 }
             }
             else
             {
-                throw new SqlSugarException(OnlyFileldErrorMessage);
+                throw new SqlSugarException(FileldErrorMessage);
             }
         }
 
@@ -65,7 +65,7 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(OnlyFileldErrorMessage);
+                    throw new SqlSugarException(FileldErrorMessage);
                 }
             }
             else if (lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess))
@@ -76,12 +76,12 @@ namespace SqlSugar
                 }
                 catch (Exception)
                 {
-                    throw new SqlSugarException(OnlyFileldErrorMessage);
+                    throw new SqlSugarException(FileldErrorMessage);
                 }
             }
             else
             {
-                throw new SqlSugarException(OnlyFileldErrorMessage);
+                throw new SqlSugarException(FileldErrorMessage);
             }
         }
     }

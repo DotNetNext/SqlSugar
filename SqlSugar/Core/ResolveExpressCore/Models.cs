@@ -18,9 +18,9 @@ namespace SqlSugar
             Value = 2
         }
         /// <summary>
-        /// 表达式常量用来处理bool的实体
+        /// 用来处理bool类型的实体
         /// </summary>
-        public class ExpressConstantBoolModel
+        public class ExpressBoolModel
         {
             /// <summary>
             /// 唯一标识
