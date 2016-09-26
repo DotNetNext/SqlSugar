@@ -82,11 +82,11 @@ namespace SqlSugar
                 var oldLeft = AddParas(ref left, right);
                 if (isTure)
                 {
-                    return string.Format("@{0} is null OR @{0}='' ", left);
+                    return string.Format("(@{0} is null OR @{0}='' )", left);
                 }
                 else
                 {
-                    return string.Format("@{0} is not null AND @{0}<>'' ", left);
+                    return string.Format("(@{0} is not null AND @{0}<>'' )", left);
                 }
             }
             else
@@ -95,22 +95,22 @@ namespace SqlSugar
                 {
                     if (rightType == MemberType.Key)
                     {
-                        return string.Format("{0} is null OR {0}='' ", right.ToSqlFilter());
+                        return string.Format("({0} is null OR {0}='' )", right.ToSqlFilter());
                     }
                     else
                     {
-                        return string.Format("'{0}' is null OR '{0}'='' ", right.ToSqlFilter());
+                        return string.Format("'({0}' is null OR '{0}'='' )", right.ToSqlFilter());
                     }
                 }
                 else
                 {
                     if (rightType == MemberType.Key)
                     {
-                        return string.Format("{0} is not null AND {0}<>'' ", right.ToSqlFilter());
+                        return string.Format("({0} is not null AND {0}<>'' )", right.ToSqlFilter());
                     }
                     else {
 
-                        return string.Format("'{0}' is not null AND '{0}'<>'' ", right.ToSqlFilter());
+                        return string.Format("('{0}' is not null AND '{0}'<>'' )", right.ToSqlFilter());
                     }
                 }
 
