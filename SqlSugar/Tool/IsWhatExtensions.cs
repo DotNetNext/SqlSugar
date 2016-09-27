@@ -96,7 +96,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static bool IsValuable(this object thisValue)
         {
-            if (thisValue == null||thisValue==DBNull.Value) return false;
+            if (thisValue == null || thisValue == DBNull.Value) return false;
             return thisValue.ToString() != "";
         }
         /// <summary>
@@ -160,7 +160,7 @@ namespace SqlSugar
         public static bool IsGuid(this object thisValue)
         {
             if (thisValue == null) return false;
-            Guid outValue =Guid.Empty;
+            Guid outValue = Guid.Empty;
             return Guid.TryParse(thisValue.ToString(), out outValue);
         }
 
@@ -270,8 +270,16 @@ namespace SqlSugar
         /// <returns></returns>
         public static bool IsStringArray(this string thisValue)
         {
-            return (thisValue + "")==("System.String[]");
+            return (thisValue + "") == ("System.String[]");
         }
-        
+        /// <summary>
+        /// 是Enumerable
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsEnumerable(this string thisValue)
+        {
+            return (thisValue + "").StartsWith("System.Linq.Enumerable");
+        }
     }
 }

@@ -56,7 +56,7 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            if (left.IsCollectionsList() || right.IsStringArray())
+            if (left.IsCollectionsList() || right.IsStringArray()||right.IsEnumerable())
             {
                 throw new SqlSugarException("list.contains将在下一个版本更新,请先使用In的用法来实现该功能");
             }
