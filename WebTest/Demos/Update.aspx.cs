@@ -16,18 +16,30 @@ namespace WebTest.Demo
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            int id = 1;
+            int id = 11;
             using (var db = SugarDao.GetInstance())
             {
                 //指定列更新
+                db.Update<School>(new { name = "蓝翔14" }, it => it.id == 14);
+                db.Update<School, int>(new { name = "蓝翔11 23 12", areaId=2 }, 11, 23, 12);
+                db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "11", "21" });
                 db.Update<School>(new { name = "蓝翔2" }, it => it.id == id);
-                db.Update<School, int>(new { name = "蓝翔2" }, 1, 3, 12);
-                db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "1", "2" });
+
+   
+
+                //支持字段指定列更新，适合动态权限
+                var dic =new Dictionary<string, string>();
+                dic.Add("name","第十三条");
+                dic.Add("areaId", "1");
+                db.Update<School,int>(dic, 13);
+                db.Update<School>(dic, it => it.id == 13);
+
+
 
                 //整个实体更新
-                db.Update(new School { id = id, name = "蓝翔2" });
-                db.Update<School>(new School { id = id, name = "蓝翔2" }, it => it.id == id);
-
+                db.Update(new School { id = 16, name = "蓝翔16", AreaId=1 });
+                db.Update<School>(new School { id = id, name = "蓝翔18", AreaId=2 }, it => it.id == 18);
+                db.Update<School>(new School() { id = 11, name = "xx" });
 
                 //设置不更新列
                 db.DisableUpdateColumns = new string[] { "CreateTime" };//设置CreateTime不更新

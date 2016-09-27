@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using WebTest.Dao;
+using Models;
 namespace WebTest.Demo
 {
     /// <summary>

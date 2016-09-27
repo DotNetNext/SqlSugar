@@ -31,7 +31,7 @@ namespace WebTest.Demo
                 //同上
 
                 //sqlQuery
-                var list3 = db.SqlQuery<Student>("select * from Student");
+                var list3 = db.SqlQuery<Student>("select * from Student WHERE 1=1");
                 //同上
             }
         }

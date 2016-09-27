@@ -96,7 +96,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static bool IsValuable(this object thisValue)
         {
-            if (thisValue == null||thisValue==DBNull.Value) return false;
+            if (thisValue == null || thisValue == DBNull.Value) return false;
             return thisValue.ToString() != "";
         }
         /// <summary>
@@ -150,6 +150,18 @@ namespace SqlSugar
             if (thisValue == null) return false;
             double outValue = 0;
             return double.TryParse(thisValue.ToString(), out outValue);
+        }
+
+        /// <summary>
+        /// 是GUID?
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsGuid(this object thisValue)
+        {
+            if (thisValue == null) return false;
+            Guid outValue = Guid.Empty;
+            return Guid.TryParse(thisValue.ToString(), out outValue);
         }
 
         /// <summary>
@@ -230,6 +242,44 @@ namespace SqlSugar
             if (thisValue == null) return false;
             Regex reg = new Regex(pattern);
             return reg.IsMatch(thisValue.ToString());
+        }
+
+        /// <summary>
+        /// 是否是动态类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsAnonymousType(this Type type)
+        {
+            string typeName = type.Name;
+            return typeName.Contains("<>") && typeName.Contains("__") && typeName.Contains("AnonymousType");
+        }
+        /// <summary>
+        /// 是List类型
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsCollectionsList(this string thisValue)
+        {
+            return (thisValue + "").StartsWith("System.Collections.Generic.List");
+        }
+        /// <summary>
+        /// 是string[]类型
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsStringArray(this string thisValue)
+        {
+            return (thisValue + "").IsMatch(@"System\.[a-z,A-Z,0-9]+?\[\]");
+        }
+        /// <summary>
+        /// 是Enumerable
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsEnumerable(this string thisValue)
+        {
+            return (thisValue + "").StartsWith("System.Linq.Enumerable");
         }
     }
 }

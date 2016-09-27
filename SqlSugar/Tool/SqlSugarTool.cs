@@ -36,9 +36,11 @@ namespace SqlSugar
         internal static Type DicOO = typeof(KeyValuePair<object, object>);
         internal static Type DicSo = typeof(KeyValuePair<string, object>);
         internal static Type DicIS = typeof(KeyValuePair<int, string>);
+        internal static Type DicArraySS = typeof(Dictionary<string, string>);
+        internal static Type DicArraySO = typeof(Dictionary<string, object>);
 
         /// <summary>
-        /// Reader转成List《T》
+        /// Reader转成T的集合
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="dr"></param>
@@ -92,32 +94,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                if (isTry)//解决实体变更缓存引起的错误
-                {
-
-                    try
-                    {
-                        if (cacheManager.ContainsKey(key))
-                        {
-                            //清除实体缓存 
-                            cacheManager.Remove(key);
-                            return DataReaderToList<T>(type, dr, fields, isClose, false);
-                        }
-                    }
-                    catch (Exception innerEx)
-                    {
-                        throw new Exception("可能实体与数据库类型不匹配，请用 var str = db.ClassGenerating.TableNameToClass(db, \"类名\") 查看正确的实体！！\r\n具体错误信息:"+innerEx.Message);
-                    }
-                    finally {
-                        if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
-                    }
-
-                }
-                else
-                {
-                    if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
-                    throw ex;
-                }
+                if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
+                Check.Exception(true,"错误信息：实体映射出错。\r\n错误详情：{0}",ex.Message);
             }
             return list;
         }
@@ -205,6 +183,16 @@ namespace SqlSugar
                 }
             }
         }
+
+        public static void SetParSize(SqlParameter par)
+        {
+            int size = par.Size;
+            if (size < 4000)
+            {
+                par.Size = 4000;
+            }
+        }
+
         /// <summary>
         /// 将实体对象转换成SqlParameter[] 
         /// </summary>
@@ -216,25 +204,55 @@ namespace SqlSugar
             if (obj != null)
             {
                 var type = obj.GetType();
-                var propertiesObj = type.GetProperties();
-                string replaceGuid = Guid.NewGuid().ToString();
-                foreach (PropertyInfo r in propertiesObj)
+                var isDic = type.IsIn(SqlSugarTool.DicArraySO, SqlSugarTool.DicArraySS);
+                if (isDic)
                 {
-                    var value = r.GetValue(obj, null);
-                    if (r.PropertyType.IsEnum) {
-                        value = (int)value;
-                    }
-                    if (value == null) value = DBNull.Value;
-                    if (r.Name.ToLower().Contains("hierarchyid"))
+                    if (type == SqlSugarTool.DicArraySO)
                     {
-                        var par = new SqlParameter("@" + r.Name, SqlDbType.Udt);
-                        par.UdtTypeName = "HIERARCHYID";
-                        par.Value = value;
-                        listParams.Add(par);
+                        var newObj = (Dictionary<string, object>)obj;
+                        var pars = newObj.Select(it=>new SqlParameter("@"+it.Key,it.Value));
+                        foreach (var par in pars)
+                        {
+                            SetParSize(par);
+                        }
+                        listParams.AddRange(pars);
                     }
-                    else
+                    else {
+
+                        var newObj = (Dictionary<string, string>)obj;
+                        var pars = newObj.Select(it => new SqlParameter("@" + it.Key, it.Value));
+                        foreach (var par in pars)
+                        {
+                            SetParSize(par);
+                        }
+                        listParams.AddRange(pars); ;
+                    }
+                }
+                else
+                {
+                    var propertiesObj = type.GetProperties();
+                    string replaceGuid = Guid.NewGuid().ToString();
+                    foreach (PropertyInfo r in propertiesObj)
                     {
-                        listParams.Add(new SqlParameter("@" + r.Name, value));
+                        var value = r.GetValue(obj, null);
+                        if (r.PropertyType.IsEnum)
+                        {
+                            value = (int)value;
+                        }
+                        if (value == null) value = DBNull.Value;
+                        if (r.Name.ToLower().Contains("hierarchyid"))
+                        {
+                            var par = new SqlParameter("@" + r.Name, SqlDbType.Udt);
+                            par.UdtTypeName = "HIERARCHYID";
+                            par.Value = value;
+                            listParams.Add(par);
+                        }
+                        else
+                        {
+                            var par = new SqlParameter("@" + r.Name, value);
+                            SetParSize(par);
+                            listParams.Add(par);
+                        }
                     }
                 }
             }
@@ -252,18 +270,39 @@ namespace SqlSugar
             Dictionary<string, object> reval = new Dictionary<string, object>();
             if (obj == null) return reval;
             var type = obj.GetType();
-            var propertiesObj = type.GetProperties();
-            string replaceGuid = Guid.NewGuid().ToString();
-            foreach (PropertyInfo r in propertiesObj)
+            var isDic = type.IsIn(SqlSugarTool.DicArraySO, SqlSugarTool.DicArraySS);
+            if (isDic)
             {
-                var val = r.GetValue(obj, null);
-                if (r.PropertyType.IsEnum) {
-                    val = (int)val;
+                if (type == SqlSugarTool.DicArraySO)
+                {
+                    return (Dictionary<string, object>)obj;
                 }
-                reval.Add(r.Name, val == null ? DBNull.Value : val);
+                else
+                {
+                    var newObj = (Dictionary<string, string>)obj;
+                    foreach (var item in newObj)
+                    {
+                        reval.Add(item.Key, item.Value);
+                    }
+                    return reval;
+                }
             }
+            else
+            {
+                var propertiesObj = type.GetProperties();
+                string replaceGuid = Guid.NewGuid().ToString();
+                foreach (PropertyInfo r in propertiesObj)
+                {
+                    var val = r.GetValue(obj, null);
+                    if (r.PropertyType.IsEnum)
+                    {
+                        val = (int)val;
+                    }
+                    reval.Add(r.Name, val == null ? DBNull.Value : val);
+                }
 
-            return reval;
+                return reval;
+            }
         }
 
         /// <summary>
@@ -349,7 +388,28 @@ namespace SqlSugar
                 return identityInfo;
             }
         }
-
+        /// <summary>
+        /// 根据表名获取列名
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        internal static List<string> GetColumnsByTableName(SqlSugarClient db, string tableName)
+        {
+            string key = "GetColumnNamesByTableName" + tableName;
+            var cm = CacheManager<List<string>>.GetInstance();
+            if (cm.ContainsKey(key))
+            {
+                return cm[key];
+            }
+            else
+            {
+                string sql = " SELECT Name FROM SysColumns WHERE id=Object_Id('" + tableName + "')";
+                var reval = db.SqlQuery<string>(sql);
+                cm.Add(key, reval, cm.Day);
+                return reval;
+            }
+        }
 
         /// <summary>
         /// 根据表获取主键
@@ -520,6 +580,7 @@ namespace SqlSugar
 
         internal static StringBuilder GetQueryableSql<T>(SqlSugar.Queryable<T> queryable)
         {
+            string joinInfo = string.Join(" ", queryable.JoinTableValue);
             StringBuilder sbSql = new StringBuilder();
             string tableName = queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName;
             if (queryable.DB.Language.IsValuable() && queryable.DB.Language.Suffix.IsValuable())
@@ -539,22 +600,43 @@ namespace SqlSugar
             {
                 #region  rowNumber
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-                var order = queryable.OrderBy.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderBy + " )") : null;
+                var order = queryable.OrderByValue.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderByValue + " )") : null;
 
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", tableName, order, withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
+                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName, order, withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
                 if (queryable.Skip == null && queryable.Take != null)
                 {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    if (joinInfo.IsValuable())
+                    {
+                        sbSql.Insert(0, "SELECT * FROM ( ");
+                    }
+                    else
+                    {
+                        sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
+                    }
                     sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
                 }
                 else if (queryable.Skip != null && queryable.Take == null)
                 {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    if (joinInfo.IsValuable())
+                    {
+                        sbSql.Insert(0, "SELECT * FROM ( ");
+                    }
+                    else
+                    {
+                        sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
+                    }
                     sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
                 }
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
-                    sbSql.Insert(0, "SELECT " + queryable.Select.GetSelectFiles() + " FROM ( ");
+                    if (joinInfo.IsValuable())
+                    {
+                        sbSql.Insert(0, "SELECT * FROM ( ");
+                    }
+                    else
+                    {
+                        sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
+                    }
                     sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
                 }
                 #endregion
@@ -564,13 +646,30 @@ namespace SqlSugar
 
                 #region offset
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-                var order = queryable.OrderBy.IsValuable() ? ("ORDER BY " + queryable.OrderBy + " ") : null;
-                sbSql.AppendFormat("SELECT " + queryable.Select.GetSelectFiles() + " {1} FROM {0} {2} WHERE 1=1 {3} {4} ", tableName, "", withNoLock, string.Join("", queryable.Where), queryable.GroupBy.GetGroupBy());
+                var order = queryable.OrderByValue.IsValuable() ? ("ORDER BY " + queryable.OrderByValue + " ") : null;
+                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName, "", withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
                 sbSql.Append(order);
-                sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY", queryable.Skip, queryable.Take);
+                if (queryable.Skip != null || queryable.Take != null)
+                {
+                    sbSql.AppendFormat("OFFSET {0} ROW FETCH NEXT {1} ROWS ONLY", Convert.ToInt32(queryable.Skip), Convert.ToInt32(queryable.Take));
+                }
                 #endregion
             }
             return sbSql;
+        }
+
+        /// <summary>
+        /// 获取最底层类型
+        /// </summary>
+        /// <param name="propertyInfo"></param>
+        /// <param name="isNullable"></param>
+        /// <returns></returns>
+        internal static Type GetUnderType(PropertyInfo propertyInfo, ref bool isNullable)
+        {
+            Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+            isNullable = unType != null;
+            unType = unType ?? propertyInfo.PropertyType;
+            return unType;
         }
     }
 }

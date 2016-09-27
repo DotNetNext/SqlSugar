@@ -361,6 +361,9 @@ namespace SqlSugar
         {
             try
             {
+                if (IsExistFile(filePath)) {
+                    DeleteFile(filePath);
+                }
                 //如果文件不存在则创建该文件
                 if (!IsExistFile(filePath))
                 {

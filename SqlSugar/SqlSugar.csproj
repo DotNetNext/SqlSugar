@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\SqlSugar.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,18 +50,23 @@
     <Compile Include="Cloud\CloudModels.cs" />
     <Compile Include="Cloud\CloudPubMethod.cs" />
     <Compile Include="Cloud\TaskExtensions.cs" />
-    <Compile Include="IClient.cs" />
+    <Compile Include="Core\ResolveExpress\Constant.cs" />
+    <Compile Include="Core\ResolveExpress\ResolveFieldName.cs" />
+    <Compile Include="Core\ResolveExpress\Method.cs" />
+    <Compile Include="Core\ResolveExpress\Models.cs" />
+    <Compile Include="Core\ResolveExpress\ResolveSelect.cs" />
+    <Compile Include="Generating\ClassTemplate.cs" />
     <Compile Include="Tool\Check.cs" />
-    <Compile Include="Tool\EnumMethod.cs" />
-    <Compile Include="Tool\IDataRecordExtensions.cs" />
+    <Compile Include="Core\IDataRecordExtensions.cs" />
     <Compile Include="Tool\JsonConverter.cs" />
     <Compile Include="Tool\IEnumerableExtensions.cs" />
-    <Compile Include="Tool\IDataReaderEntityBuilder.cs" />
-    <Compile Include="Tool\KeyValue.cs" />
+    <Compile Include="Core\IDataReaderEntityBuilder.cs" />
+    <Compile Include="PubModel\KeyValue.cs" />
     <Compile Include="Tool\LanguageHelper.cs" />
-    <Compile Include="Tool\PubModel.cs" />
-    <Compile Include="Tool\ResolveExpress.cs" />
-    <Compile Include="Tool\PubEnum.cs" />
+    <Compile Include="Tool\PubConvert.cs" />
+    <Compile Include="PubModel\PubModel.cs" />
+    <Compile Include="Core\ResolveExpress\Main.cs" />
+    <Compile Include="PubModel\PubEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queryable\Queryable.cs" />
     <Compile Include="Queryable\QueryableExtensions.cs" />
@@ -71,11 +77,11 @@
     <Compile Include="Tool\CacheManager.cs" />
     <Compile Include="Generating\ClassGenerating.cs" />
     <Compile Include="Tool\FileSugar.cs" />
-    <Compile Include="Tool\IHttpStorageObject.cs" />
     <Compile Include="Tool\IsWhatExtensions.cs" />
     <Compile Include="Tool\SqlException.cs" />
     <Compile Include="Tool\SqlSugarToolExtensions.cs" />
     <Compile Include="Tool\SqlSugarTool.cs" />
+    <Compile Include="Tool\IStorageObject.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

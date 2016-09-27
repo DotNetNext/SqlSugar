@@ -1,5 +1,0 @@
-﻿<xml>
-  <appString>
-    <add key="connectionString">server=.;uid=sa;pwd=sasa;database=SqlSugarTest</add>
-  </appString>
-</xml>

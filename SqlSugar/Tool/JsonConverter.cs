@@ -12,7 +12,11 @@ using System.Text.RegularExpressions;
 namespace SqlSugar
 {
     /// <summary>
-    /// 作者热心的：dukang
+    /// ** 描述：Json转换类
+    /// ** 创始时间：2010-2-28
+    /// ** 修改时间：-
+    /// ** 作者：热心的dakang
+    /// ** 使用说明：
     /// </summary>
     public class JsonConverter
     {
@@ -39,7 +43,13 @@ namespace SqlSugar
             }
             return jsSerializer.Serialize(parentRow);
         }
-
+        /// <summary>
+        /// dataTable转成JSON
+        ///  add sunkaixuan 
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="dateFormat">设置序列化的时间格式</param>
+        /// <returns></returns>
         public static string DataTableToJson(DataTable table, string dateFormat)
         {
             var reval = DataTableToJson(table);

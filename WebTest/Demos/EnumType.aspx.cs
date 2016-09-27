@@ -6,9 +6,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SqlSugar;
 using WebTest.Dao;
-
+using SqlSugar;
 namespace WebTest.Demos
 {
+    //支持枚举
     public partial class EnumType : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
@@ -16,9 +17,9 @@ namespace WebTest.Demos
             using (SqlSugarClient db = SugarDao.GetInstance())
             {
                 var stuList= db.Queryable<Student>().ToList();
-                db.Insert<Student>(new Student() { sch_id = SchoolEnum.蓝翔2 });
-                db.Update<Student>(new Student() { sch_id = SchoolEnum.蓝翔2, id = 1 });
-                var stuList2 = db.Queryable<Student>().Where(it => it.sch_id == SchoolEnum.蓝翔1).ToList();
+                db.Insert<Student>(new Student() { sch_id = SchoolEnum.北大青鸟 });
+                db.Update<Student>(new Student() { sch_id = SchoolEnum.it清华, id = 11 });
+                var stuList2 = db.Queryable<Student>().Where(it => it.sch_id == SchoolEnum.全智).ToList();
             }
         }
 
@@ -31,7 +32,7 @@ namespace WebTest.Demos
             /// 默认:- 
             /// 可空:False 
             /// </summary>
-            public int id { get; set; }
+              public int id { get; set; }
 
             /// <summary>
             /// 说明:- 
@@ -59,14 +60,15 @@ namespace WebTest.Demos
             /// 默认:- 
             /// 可空:False 
             /// </summary>
-            public Boolean isOk { get; set; }
+            public bool isOk { get; set; }
 
         }
 
         public enum SchoolEnum
         {
-            蓝翔1 = 1,
-            蓝翔2 = 2
+            北大青鸟 = 1,
+            it清华 = 2,
+            全智=3
         }
     }
 }

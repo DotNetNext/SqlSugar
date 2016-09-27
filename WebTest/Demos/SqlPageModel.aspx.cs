@@ -9,6 +9,9 @@ using Models;
 using WebTest.Dao;
 namespace WebTest.Demos
 {
+    /// <summary>
+    /// 设置分页模式
+    /// </summary>
     public partial class SqlPageModel : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
