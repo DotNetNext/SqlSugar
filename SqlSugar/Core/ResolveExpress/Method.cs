@@ -95,7 +95,7 @@ namespace SqlSugar
                 //SetMemberValueToDynInv(ref exp, mbx, ref containsValue);
                 //var fieldName = CreateSqlElements(mce.Arguments[1], ref rightType);
                 //return null;
-                throw new SqlSugarException("请将数组提取成变量，不能直拉写在表达示中。");
+                throw new SqlSugarException("请将数组提取成变量，不能直接写在表达式中。");
             }
             else
             {
