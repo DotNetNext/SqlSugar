@@ -26,7 +26,20 @@ namespace SqlSugar
         /// <summary>
         /// 拉姆达解析错误
         /// </summary>
-        public const string ExpToSqlError= "拉姆达解析出错，例如(it=>it.id==a.id) it.id是字段，a.id就是参数,字段不支持任何函数,参数可支持的函数有 Trim 、Contains 、ObjToXXX、 Convert.ToXXX、Contains、String.IsNullOrEmpty、StartsWith和StartsEnd。 ";
+        public const string ExpToSqlError= @"拉姆达解析出错，不是有效的函数，现在支持的函数有:
+                db.Queryable<T>().Where(it => it.field == parValue.ObjToString()); 
+                db.Queryable<T>().Where(it => it.field == parValue.ObjToDate());
+                db.Queryable<T>().Where(it => it.field == parValue.ObjToInt())
+                db.Queryable<T>().Where(it => it.field == parValue.ObjToDecimal())
+                db.Queryable<T>().Where(it => it.field == parValue.ObjToMoney())
+                db.Queryable<T>().Where(it => it.field == parValue.Trim())
+                db.Queryable<T>().Where(it => it.field == parValue.ToString())
+                db.Queryable<T>().Where(it => it.field == Convert.ToXXX(parValue))
+                db.Queryable<T>().Where(it => it.field.Contains(parValue))
+                db.Queryable<T>().Where(it => it.field.StartsWith(parValue))
+                db.Queryable<T>().Where(it => it.field.EndsWith(parValue))
+                db.Queryable<T>().Where(it => !string.IsNullOrEmpty(it.parValue))         
+            ";
         /// <summary>
         /// 运算符错误
         /// </summary>
