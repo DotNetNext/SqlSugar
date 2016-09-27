@@ -112,6 +112,7 @@ namespace NewTest.Demos
                 //In
                 var intArray = new[] { "5", "2", "3" };
                 var intList = intArray.ToList();
+                var listnew = db.Queryable<Student>().Where(it => intArray.Contains(it.name)).ToList();
                 var list0 = db.Queryable<Student>().In(it => it.id, 1, 2, 3).ToList();
                 var list1 = db.Queryable<Student>().In(it => it.id, intArray).ToList();
                 var list2 = db.Queryable<Student>().In("id", intArray).ToList();

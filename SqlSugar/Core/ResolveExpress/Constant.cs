@@ -38,7 +38,8 @@ namespace SqlSugar
                 db.Queryable<T>().Where(it => it.field.Contains(parValue))
                 db.Queryable<T>().Where(it => it.field.StartsWith(parValue))
                 db.Queryable<T>().Where(it => it.field.EndsWith(parValue))
-                db.Queryable<T>().Where(it => !string.IsNullOrEmpty(it.parValue))         
+                db.Queryable<T>().Where(it => !string.IsNullOrEmpty(it.parValue))
+                db.Queryable<T>().Where(it => arrayOrList.Contains(it.parValue))         
             ";
         /// <summary>
         /// 运算符错误
