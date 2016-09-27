@@ -115,6 +115,15 @@ namespace SqlSugar
             var reval = dr.GetInt64(i);
             return reval;
         }
+        public static float? GetConvertFloat(this IDataRecord dr, int i)
+        {
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            var reval = dr.GetFloat(i);
+            return reval;
+        }
         public static Nullable<T> GetOtherNull<T>(this IDataReader dr, int i) where T : struct
         {
             if (dr.IsDBNull(i))

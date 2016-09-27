@@ -40,6 +40,7 @@ namespace SqlSugar
 
 
         //convert method
+        private static readonly MethodInfo getConvertFloat = typeof(IDataRecordExtensions).GetMethod("GetConvertFloat");
         private static readonly MethodInfo getConvertBoolean = typeof(IDataRecordExtensions).GetMethod("GetConvertBoolean");
         private static readonly MethodInfo getConvertByte = typeof(IDataRecordExtensions).GetMethod("GetConvertByte");
         private static readonly MethodInfo getConvertChar = typeof(IDataRecordExtensions).GetMethod("GetConvertChar");
@@ -49,7 +50,7 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertGuid = typeof(IDataRecordExtensions).GetMethod("GetConvertGuid");
         private static readonly MethodInfo getConvertInt16 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt16");
         private static readonly MethodInfo getConvertInt32 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt32");
-        private static readonly MethodInfo getConvetInt64 = typeof(IDataRecordExtensions).GetMethod("getConvetInt64");
+        private static readonly MethodInfo getConvetInt64 = typeof(IDataRecordExtensions).GetMethod("GetConvetInt64");
         private static readonly MethodInfo getConvertToEnum_Nullable = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Nullable");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
@@ -103,7 +104,7 @@ namespace SqlSugar
                     if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                     {
                         bool isNullable = false;
-                        var underType =SqlSugarTool.GetUnderType(propertyInfo, ref isNullable);
+                        var underType = SqlSugarTool.GetUnderType(propertyInfo, ref isNullable);
 
                         generator.Emit(OpCodes.Ldarg_0);
                         generator.Emit(OpCodes.Ldc_I4, i);
@@ -158,7 +159,7 @@ namespace SqlSugar
             {
                 typeName = "ENUMNAME";
             }
-            else if (dbTypeName.Contains("hierarchyid") || typeName == "byte[]"||objTypeName== "object")
+            else if (dbTypeName.Contains("hierarchyid") || typeName == "byte[]" || objTypeName == "object")
             {
                 generator.Emit(OpCodes.Call, getValueMethod);
                 generator.Emit(OpCodes.Unbox_Any, pro.PropertyType);//找不到类型才执行拆箱（类型转换）
@@ -175,6 +176,13 @@ namespace SqlSugar
                             method = getOtherNull.MakeGenericMethod(type);
                         else
                             method = getConvertInt32; break;
+                    case "long":
+                        CheckType(intThrow, objTypeName, typeName, fieldName);
+                        var isNotLong = objTypeName != "int64";
+                        if (isNotLong)
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvetInt64; break;
                     case "bool":
                         if (objTypeName != "bool" && objTypeName != "boolean")
                             method = getOtherNull.MakeGenericMethod(type);
@@ -203,6 +211,12 @@ namespace SqlSugar
                             method = getOtherNull.MakeGenericMethod(type);
                         else
                             method = getConvertDouble; break;
+                    case "float":
+                        CheckType(decimalThrow, objTypeName, typeName, fieldName);
+                        if (objTypeName != "float" && objTypeName != "single")
+                            method = getOtherNull.MakeGenericMethod(type);
+                        else
+                            method = getConvertFloat; break;
                     case "guid":
                         CheckType(guidThrow, objTypeName, typeName, fieldName);
                         if (objTypeName != "guid")
@@ -243,6 +257,13 @@ namespace SqlSugar
                             method = getOther.MakeGenericMethod(type);
                         else
                             method = getInt32; break;
+                    case "long":
+                        CheckType(intThrow, objTypeName, typeName, fieldName);
+                        var isNotLong = objTypeName != "int64";
+                        if (isNotLong)
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getInt64; break;
                     case "bool":
                         if (objTypeName != "bool" && objTypeName != "boolean")
                             method = getOther.MakeGenericMethod(type);
@@ -271,6 +292,12 @@ namespace SqlSugar
                             method = getOther.MakeGenericMethod(type);
                         else
                             method = getDouble; break;
+                    case "float":
+                        CheckType(decimalThrow, objTypeName, typeName, fieldName);
+                        if (objTypeName != "float" && objTypeName != "single")
+                            method = getOther.MakeGenericMethod(type);
+                        else
+                            method = getFloat; break;
                     case "guid":
                         CheckType(guidThrow, objTypeName, typeName, fieldName);
                         if (objTypeName != "guid")
@@ -293,7 +320,9 @@ namespace SqlSugar
                         else
                             method = getInt16;
                         break;
-                    default: method = getOther.MakeGenericMethod(type); break; ;
+                    default:
+                        method = getOther.MakeGenericMethod(type);
+                        break; ;
 
                 }
 
