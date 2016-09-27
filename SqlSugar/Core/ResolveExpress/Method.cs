@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace SqlSugar
 {
@@ -56,9 +57,36 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            if (left.IsCollectionsList() || right.IsStringArray()||right.IsEnumerable())
+            if (left.IsCollectionsList() || right.IsStringArray() || right.IsEnumerable())
             {
-                throw new SqlSugarException("list.contains将在下一个版本更新,请先使用In的用法来实现该功能");
+                object containsValue = null;
+                string fieldName = "";
+                if (left.IsCollectionsList())
+                {
+                    fieldName = right;
+                    MemberExpression mbx = ((MemberExpression)mce.Object);
+                    Expression exp = mce.Object;
+                    SetMemberValueToDynInv(ref exp, mbx, ref containsValue);
+
+                }
+                else
+                {
+                    MemberExpression mbx = ((MemberExpression)mce.Arguments[0]);
+                    Expression exp = mce.Arguments[0];
+                    SetMemberValueToDynInv(ref exp, mbx, ref containsValue);
+                    fieldName = CreateSqlElements(mce.Arguments[1], ref rightType);
+                }
+                List<string> inArray = new List<string>();
+                foreach (var item in (IEnumerable)containsValue)
+                {
+                    inArray.Add(item.ObjToString());
+                }
+                if (inArray.Count == 0)
+                {
+                    return (" (1=2) ");
+                }
+                var inValue = inArray.ToArray().ToJoinSqlInVal();
+                return string.Format("({0} IN ({1}))", fieldName, inValue);
             }
             else
             {
@@ -162,7 +190,7 @@ namespace SqlSugar
             }
             else
             {
-                throw new SqlSugarException("不支持当前函数：" + methodName +"\r\n"+ ResolveExpress.ExpToSqlError);
+                throw new SqlSugarException("不支持当前函数：" + methodName + "\r\n" + ResolveExpress.ExpToSqlError);
             }
         }
 

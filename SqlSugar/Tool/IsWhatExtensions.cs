@@ -270,7 +270,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static bool IsStringArray(this string thisValue)
         {
-            return (thisValue + "") == ("System.String[]");
+            return (thisValue + "").IsMatch(@"System\.[a-z,A-Z,0-9]+?\[\]");
         }
         /// <summary>
         /// 是Enumerable
