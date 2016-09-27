@@ -254,5 +254,24 @@ namespace SqlSugar
             string typeName = type.Name;
             return typeName.Contains("<>") && typeName.Contains("__") && typeName.Contains("AnonymousType");
         }
+        /// <summary>
+        /// 是List类型
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsCollectionsList(this string thisValue)
+        {
+            return (thisValue + "").StartsWith("System.Collections.Generic.List");
+        }
+        /// <summary>
+        /// 是string[]类型
+        /// </summary>
+        /// <param name="thisValue"></param>
+        /// <returns></returns>
+        public static bool IsStringArray(this string thisValue)
+        {
+            return (thisValue + "")==("System.String[]");
+        }
+        
     }
 }

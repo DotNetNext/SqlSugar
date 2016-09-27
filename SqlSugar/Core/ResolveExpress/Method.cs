@@ -56,8 +56,15 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE '%'+@{2}+'%')", oldLeft, null, left);
+            if (left.IsCollectionsList() || right.IsStringArray())
+            {
+                throw new SqlSugarException("list.contains将在下一个版本更新,请先使用In的用法来实现该功能");
+            }
+            else
+            {
+                var oldLeft = AddParas(ref left, right);
+                return string.Format("({0} {1} LIKE '%'+@{2}+'%')", oldLeft, null, left);
+            }
         }
 
         /// <summary>
