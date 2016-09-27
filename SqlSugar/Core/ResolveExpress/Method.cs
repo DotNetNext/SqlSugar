@@ -88,6 +88,15 @@ namespace SqlSugar
                 var inValue = inArray.ToArray().ToJoinSqlInVal();
                 return string.Format("({0} IN ({1}))", fieldName, inValue);
             }
+            else if (mce.Arguments.Count == 2) { //两个值
+                //object containsValue = null;
+                //MemberExpression mbx = ((MemberExpression)mce.Arguments[0]);
+                //Expression exp = mce.Arguments[0];
+                //SetMemberValueToDynInv(ref exp, mbx, ref containsValue);
+                //var fieldName = CreateSqlElements(mce.Arguments[1], ref rightType);
+                //return null;
+                throw new SqlSugarException("请将数组提取成变量，不能直拉写在表达示中。");
+            }
             else
             {
                 var oldLeft = AddParas(ref left, right);

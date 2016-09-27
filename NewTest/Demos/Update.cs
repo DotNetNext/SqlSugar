@@ -23,7 +23,8 @@ namespace NewTest.Demos
                 db.Update<School, int>(new { name = "蓝翔11 23 12", areaId = 2 }, 11, 23, 12);
                 db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "11", "21" });
                 db.Update<School>(new { name = "蓝翔2" }, it => it.id == 100);
-
+                var array=new int[]{1,2,3};
+                db.Update<School>(new { name = "蓝翔2" }, it => array.Contains(it.id));// id in 1,2,3
 
 
                 //支持字典更新，适合动态权限
