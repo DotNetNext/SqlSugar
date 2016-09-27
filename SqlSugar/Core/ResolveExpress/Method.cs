@@ -197,6 +197,17 @@ namespace SqlSugar
             {
                 return value;
             }
+            else if (methodName == "ToLower") {
+                if (value == null) return value;
+                else
+                    return value.ToLower();
+            }
+            else if (methodName == "ToUpper")
+            {
+                if (value == null) return value;
+                else
+                    return value.ToUpper();
+            }
             else
             {
                 throw new SqlSugarException("不支持当前函数：" + methodName + "\r\n" + ResolveExpress.ExpToSqlError);

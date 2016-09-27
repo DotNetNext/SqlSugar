@@ -194,10 +194,12 @@ namespace SqlSugar
                     type = MemberType.Value;
                     return MethodToString(methodName, mce, ref type);
                 }
-                else if (methodName == "IsNullOrEmpty") {
+                else if (methodName == "IsNullOrEmpty")
+                {
                     type = MemberType.Value;
-                    return IsNullOrEmpty(methodName, mce,isTure);
-                }else
+                    return IsNullOrEmpty(methodName, mce, isTure);
+                }
+                else
                 {
                     type = MemberType.Value;
                     return MethodTo(methodName, mce, ref type);
@@ -241,7 +243,7 @@ namespace SqlSugar
                         {
                             return DateTime.Now.ToString();
                         }
-                        Check.Exception(true, "错误信息:{0} \r\n message:{1}",ExpToSqlError, ex.Message);
+                        Check.Exception(true, "错误信息:{0} \r\n message:{1}", ExpToSqlError, ex.Message);
                     }
 
                     if (dynInv == null) return null;
@@ -265,12 +267,16 @@ namespace SqlSugar
             {
                 UnaryExpression ue = ((UnaryExpression)exp);
                 var mex = ue.Operand;
-                var cse= CreateSqlElements(mex, ref type, false);
-                if (type == MemberType.None && ue.NodeType.ToString()=="Not")
+                var cse = CreateSqlElements(mex, ref type, false);
+                if (type == MemberType.None && ue.NodeType.ToString() == "Not")
                 {
-                    cse =" NOT "+cse;
+                    cse = " NOT " + cse;
                 }
                 return cse;
+            }
+            else if (exp!=null&&exp.NodeType.IsIn(ExpressionType.New, ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
+            {
+                throw new SqlSugarException("拉姆达表达式内不支持new对象，请提取变量后在赋值，错误信息" + exp.ToString());
             }
             return null;
         }
