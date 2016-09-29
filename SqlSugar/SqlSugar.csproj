@@ -55,6 +55,7 @@
     <Compile Include="Core\ResolveExpress\Method.cs" />
     <Compile Include="Core\ResolveExpress\Models.cs" />
     <Compile Include="Core\ResolveExpress\ResolveSelect.cs" />
+    <Compile Include="Generating\SugarAttribute.cs" />
     <Compile Include="Generating\ClassTemplate.cs" />
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Core\IDataRecordExtensions.cs" />
