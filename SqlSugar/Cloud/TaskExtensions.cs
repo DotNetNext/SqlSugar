@@ -195,7 +195,7 @@ namespace SqlSugar
         public static IEnumerable<DataRow> MergeTable<DataTable>(this Taskable<DataTable> thisValue)
         {
 
-            var isDataTable = typeof(DataTable) == typeof(DataTable);
+            var isDataTable = typeof(System.Data.DataTable) == typeof(DataTable);
             if (!isDataTable)
             {
                 Check.Exception(isDataTable, "TaskExtensions.MergeTable.thisValue T只能为DataTable。");
