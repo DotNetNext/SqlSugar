@@ -61,6 +61,9 @@ namespace SqlSugar
             }
             return tableName;
         }
+        internal void InitAttribute<T>() { 
+        
+        }
         #endregion
 
 
@@ -73,6 +76,11 @@ namespace SqlSugar
 
 
         #region setting
+        /// <summary>
+        /// 是否启用属性映射
+        /// </summary>
+        public bool IsEnableAttributeMapping = false;
+
         /// <summary>
         /// 查询是否允许脏读（默认为:true）
         /// </summary>
