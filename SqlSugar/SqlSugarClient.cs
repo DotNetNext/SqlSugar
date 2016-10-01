@@ -61,11 +61,11 @@ namespace SqlSugar
             }
             return tableName;
         }
-        internal void InitAttribute<T>()
+        internal void InitAttributes<T>()
         {
             if (IsEnableAttributeMapping)
             {
-                var mappingInfo = ReflectionSugarMapping.DisplaySelfAttribute<T>();
+                var mappingInfo = ReflectionSugarMapping.GetMappingInfo<T>();
                 if (_mappingTableList==null) {
                     _mappingTableList = new List<KeyValue>();
                 }
@@ -211,7 +211,7 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>() where T : new()
         {
-            InitAttribute<T>();
+            InitAttributes<T>();
             var queryable = new Queryable<T>() { DB = this };
             //别名表
             if (_mappingTableList.IsValuable())

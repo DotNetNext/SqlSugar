@@ -39,7 +39,7 @@ namespace SqlSugar
         /// 通过反射取自定义属性
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static SugarMappingModel DisplaySelfAttribute<T>()
+        public static SugarMappingModel GetMappingInfo<T>()
         {
             Type objType = typeof(T);
             string cacheKey = "ReflectionSugarMapping.DisplaySelfAttribute" + objType.FullName;

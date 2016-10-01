@@ -15,15 +15,17 @@ namespace NewTest.Demos
         public void Init()
         {
             Console.WriteLine("启动AttributesMapping.Init");
-            using (var db = SugarDao.GetInstance())
+            using (var db = DBManager.GetInstance())
             {
-                db.IsIgnoreErrorColumns = true;//忽略非数据库列
 
                 var list = db.Queryable<TestStudent>().ToList();
 
             }
         }
 
+        /// <summary>
+        /// 属性只作为初始化映射，SetMappingTables和SetMappingColumns可以覆盖
+        /// </summary>
         [SugarMapping(TableName = "Student")]
         public class TestStudent
         {
@@ -33,6 +35,18 @@ namespace NewTest.Demos
 
 
             public string name { get; set; }
+        }
+    }
+
+    public class DBManager
+    {
+
+        public static SqlSugarClient GetInstance()
+        {
+            var db = new SqlSugarClient(SugarDao.ConnectionString);
+            db.IsEnableAttributeMapping = true;//启用属性映射
+            db.IsIgnoreErrorColumns = true;//忽略非数据库列
+            return db;
         }
     }
 }
