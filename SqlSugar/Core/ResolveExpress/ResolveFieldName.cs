@@ -18,6 +18,7 @@ namespace SqlSugar
         public string GetExpressionRightField(Expression exp, SqlSugarClient db)
         {
             DB = db;
+            string reval = "";
             LambdaExpression lambda = exp as LambdaExpression;
             var isConvet = lambda.Body.NodeType.IsIn(ExpressionType.Convert);
             var isMember = lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess);
@@ -30,17 +31,26 @@ namespace SqlSugar
                 if (isConvet)
                 {
                     var memberExpr =((UnaryExpression)lambda.Body).Operand as MemberExpression;
-                    return memberExpr.Member.Name;
+                    reval= memberExpr.Member.Name;
                 }
                 else//isMember
                 {
-                    return (lambda.Body as MemberExpression).Member.Name;
+                    reval= (lambda.Body as MemberExpression).Member.Name;
                 }
             }
             catch (Exception)
             {
                 throw new SqlSugarException(FileldErrorMessage);
             }
+            if (DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+            {
+                if (DB._mappingColumns.Any(it => it.Key == reval))
+                {
+                    var dbName = DB._mappingColumns.Single(it => it.Key == reval).Value;
+                    return dbName;
+                }
+            }
+            return reval;
         }
 
         /// <summary>
@@ -52,6 +62,7 @@ namespace SqlSugar
         public string GetExpressionRightFieldByNT(Expression exp, SqlSugarClient db)
         {
             DB = db;
+            string reval = "";
             LambdaExpression lambda = exp as LambdaExpression;
             var isConvet = lambda.Body.NodeType.IsIn(ExpressionType.Convert);
             var isMember = lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess);
@@ -64,17 +75,27 @@ namespace SqlSugar
                 if (isConvet)
                 {
                     var memberExpr = ((UnaryExpression)lambda.Body).Operand as MemberExpression;
-                    return memberExpr.ToString();
+                    reval= memberExpr.ToString();
                 }
                 else//isMember
                 {
-                    return lambda.Body.ToString();
+                    reval= lambda.Body.ToString();
                 }
             }
             catch (Exception)
             {
                  throw new SqlSugarException(FileldErrorMessage);
             }
+            if (DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+            {
+                if (DB._mappingColumns.Any(it => reval.EndsWith("."+it.Key)))
+                {
+                    var preName = reval.Split('.').First();
+                    var dbName = DB._mappingColumns.Single(it => reval.EndsWith("." + it.Key)).Value;
+                    return preName+"."+dbName;
+                }
+            }
+            return reval;
         }
     }
 }

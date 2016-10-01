@@ -102,7 +102,7 @@ namespace SqlSugar
                     var colsMapping = ReflectionSugarMapping.GetMappingInfo<T>().ColumnsMapping;
                     if (colsMapping.IsValuable() && colsMapping.Any(it => it.Value == fieldName))
                     {
-                        fieldName = colsMapping.Single().Key;
+                        fieldName = colsMapping.Single(it=>it.Value==fieldName).Key;
                     }
                     PropertyInfo propertyInfo = type.GetProperty(fieldName);
                     Label endIfLabel = generator.DefineLabel();

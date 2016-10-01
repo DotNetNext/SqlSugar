@@ -33,7 +33,8 @@ namespace SqlSugar
 
 
         #region private variables
-        private List<KeyValue> _mappingTableList = null;
+        internal List<KeyValue> _mappingTableList = null;
+        internal List<KeyValue> _mappingColumns = null;
         private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
         private Dictionary<string, List<string>> _filterColumns = null;
         private List<PubModel.SerialNumber> _serialNumber = null;
@@ -66,10 +67,33 @@ namespace SqlSugar
             if (IsEnableAttributeMapping)
             {
                 var mappingInfo = ReflectionSugarMapping.GetMappingInfo<T>();
-                if (_mappingTableList==null) {
+                if (_mappingTableList == null)
+                {
                     _mappingTableList = new List<KeyValue>();
                 }
-                _mappingTableList.Add(mappingInfo.TableMaping);
+                if (!_mappingTableList.Contains(mappingInfo.TableMaping))
+                {
+                    _mappingTableList.Add(mappingInfo.TableMaping);
+                    if (_mappingColumns == null)
+                    {
+                        _mappingColumns = new List<KeyValue>();
+                    }
+                    foreach (var item in mappingInfo.ColumnsMapping)
+                    {
+                        if (!_mappingColumns.Any(it => it.Key == item.Key))
+                        {
+                            _mappingColumns.Add(item);
+                        }
+                        else if (_mappingColumns.Any(it => it.Key == item.Key && it.Value != item.Value))
+                        {
+                            string throwMessage = string.Format("其它表已经存在{0}->{1}， Columns映射只能在 {0}->{1}和{0}->{2}二者选其一", 
+                                item.Key,
+                                _mappingColumns.Single(it => it.Key == item.Key).Value, 
+                                item.Value);
+                            new SqlSugarException(throwMessage);
+                        }
+                    }
+                }
             }
         }
         #endregion
@@ -678,7 +702,7 @@ namespace SqlSugar
 
 
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re, expression,this);
+            re.ResolveExpression(re, expression, this);
 
 
             StringBuilder sbSql = new StringBuilder();
@@ -993,7 +1017,7 @@ namespace SqlSugar
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re, expression,this);
+            re.ResolveExpression(re, expression, this);
             string sql = string.Format("DELETE FROM [{0}] WHERE 1=1 {1}", typeName, re.SqlWhere);
             bool isSuccess = ExecuteCommand(sql, re.Paras.ToArray()) > 0;
             return isSuccess;
@@ -1050,7 +1074,7 @@ namespace SqlSugar
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
         {
             ResolveExpress re = new ResolveExpress();
-            var fieldName = re.GetExpressionRightField(expression,this);
+            var fieldName = re.GetExpressionRightField(expression, this);
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
@@ -1122,7 +1146,7 @@ namespace SqlSugar
             }
             bool isSuccess = false;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re, expression,this);
+            re.ResolveExpression(re, expression, this);
             string sql = string.Format("UPDATE  [{0}] SET {1}=1 WHERE  1=1 {2}", typeName, field, re.SqlWhere);
             int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;

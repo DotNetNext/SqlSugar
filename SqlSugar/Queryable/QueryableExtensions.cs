@@ -910,6 +910,7 @@ namespace SqlSugar
         /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T, T2>(this Queryable<T> queryable, Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
         {
+            queryable.DB.InitAttributes<T2>();
 
             ResolveExpress re = new ResolveExpress();
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -919,10 +920,27 @@ namespace SqlSugar
             var shortName1 = exLeftArray.First();
             var shortName2 = exLeftArray.Last();
             re.ResolveExpression(re, expression,queryable.DB);
-            string joinTableName = type.ToString();
+            string joinTypeName = type.ToString();
+            string joinTableName = null;
+            if (queryable.DB._mappingTableList.IsValuable())
+            {
+                //别名表
+                if (queryable.DB._mappingTableList.IsValuable())
+                {
+                    string name = typeof(T2).Name;
+                    if (queryable.DB._mappingTableList.Any(it => it.Key == name))
+                    {
+                        joinTableName = queryable.DB._mappingTableList.First(it => it.Key == name).Value;
+                    }
+                }
+            }
+            if(joinTableName.IsNullOrEmpty())
+            {
+               joinTableName=typeof(T2).Name;
+            }
             string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
-                /*0*/queryable.JoinTableValue.Count == 0 ? (" " + shortName1 + " " + joinTableName) : joinTableName.ToString(),
-                /*1*/typeof(T2).Name,
+                /*0*/queryable.JoinTableValue.Count == 0 ? (" " + shortName1 + " " + joinTypeName) : joinTypeName.ToString(),
+                /*1*/joinTableName,
                 /*2*/shortName2,
                 /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
                 );
@@ -943,6 +961,7 @@ namespace SqlSugar
         /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T, T2, T3>(this Queryable<T> queryable, Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.LEFT)
         {
+            queryable.DB.InitAttributes<T3>();
 
             ResolveExpress re = new ResolveExpress();
             queryable.WhereIndex = queryable.WhereIndex + 100;
@@ -952,10 +971,27 @@ namespace SqlSugar
             var shortName1 = exLeftArray[1];
             var shortName2 = exLeftArray[2];
             re.ResolveExpression(re, expression,queryable.DB);
-            string joinTableName = type.ToString();
+            string joinTypeName = type.ToString();
+            string joinTableName = null;
+            if (queryable.DB._mappingTableList.IsValuable())
+            {
+                //别名表
+                if (queryable.DB._mappingTableList.IsValuable())
+                {
+                    string name = typeof(T3).Name;
+                    if (queryable.DB._mappingTableList.Any(it => it.Key == name))
+                    {
+                        joinTableName = queryable.DB._mappingTableList.First(it => it.Key == name).Value;
+                    }
+                }
+            }
+            if(joinTableName.IsNullOrEmpty())
+            {
+                joinTableName = typeof(T2).Name;
+            }
             string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
-                /*0*/queryable.JoinTableValue.Count == 0 ? (" " + shortName1 + " " + joinTableName) : joinTableName.ToString(),
-                /*1*/typeof(T3).Name,
+                /*0*/queryable.JoinTableValue.Count == 0 ? (" " + shortName1 + " " + joinTypeName) : joinTypeName.ToString(),
+                /*1*/joinTableName,
                 /*2*/shortName2,
                 /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
                 );
@@ -976,7 +1012,6 @@ namespace SqlSugar
         /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T>(this Queryable<T> queryable, string tableName, string shortName, string onWhere, object whereObj, JoinType type = JoinType.LEFT)
         {
-
             queryable.WhereIndex = queryable.WhereIndex + 100; ;
             string joinType = type.ToString();
             string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
