@@ -99,6 +99,11 @@ namespace SqlSugar
                 for (int i = 0; i < dataRecord.FieldCount; i++)
                 {
                     string fieldName = dataRecord.GetName(i);
+                    var colsMapping = ReflectionSugarMapping.GetMappingInfo<T>().ColumnsMapping;
+                    if (colsMapping.IsValuable() && colsMapping.Any(it => it.Value == fieldName))
+                    {
+                        fieldName = colsMapping.Single().Key;
+                    }
                     PropertyInfo propertyInfo = type.GetProperty(fieldName);
                     Label endIfLabel = generator.DefineLabel();
                     if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
