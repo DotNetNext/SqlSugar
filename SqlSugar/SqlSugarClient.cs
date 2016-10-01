@@ -61,8 +61,11 @@ namespace SqlSugar
             }
             return tableName;
         }
-        internal void InitAttribute<T>() { 
-        
+        internal void InitAttribute<T>() {
+            var classAttrs = typeof(T).GetType().GetCustomAttributes(true);
+            if (classAttrs.IsValuable()) { 
+      
+            }
         }
         #endregion
 
@@ -79,7 +82,7 @@ namespace SqlSugar
         /// <summary>
         /// 是否启用属性映射
         /// </summary>
-        public bool IsEnableAttributeMapping = false;
+        public bool IsEnableAttributeMapping = true;
 
         /// <summary>
         /// 查询是否允许脏读（默认为:true）
@@ -203,6 +206,9 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>() where T : new()
         {
+            if (IsEnableAttributeMapping) {
+                InitAttribute<T>();
+            }
             var queryable = new Queryable<T>() { DB = this };
             //别名表
             if (_mappingTableList.IsValuable())

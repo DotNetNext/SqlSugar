@@ -2,47 +2,98 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace SqlSugar
 {
     /// <summary>
     /// 表名属性
     /// </summary>
-    [Serializable]
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class SugarTableName : Attribute
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, Inherited = true)]
+    public class SugarMappingAttribute : Attribute
     {
+        private string tableName;
         /// <summary>
-        /// 表值
+        /// 据库对应的表名
         /// </summary>
-        public string value { get; private set; }
-        /// <summary>
-        /// 表名
-        /// </summary>
-        /// <param name="value"></param>
-        public SugarTableName(string tableName)
+        public string TableName
         {
-            value = tableName;
+            get { return tableName; }
+            set { tableName = value; }
+        }
+
+        private string columnName;
+        /// <summary>
+        /// 数据库对应的列名
+        /// </summary>
+        public string ColumnName
+        {
+            get { return columnName; }
+            set { columnName = value; }
+        }
+
+        private string ignore;
+        /// <summary>
+        /// 数据库对应的列名
+        /// </summary>
+        public string Ignore
+        {
+            get { return columnName; }
+            set { columnName = value; }
         }
     }
-    /// <summary>
-    /// 表字段属性
-    /// </summary>
-    [Serializable]
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-    public class SugarFieldName : Attribute
+
+    public class ReflectionSugarMapping
     {
         /// <summary>
-        /// 字段值
+        /// 通过反射取自定义属性
         /// </summary>
-        public string value { get; private set; }
-        /// <summary>
-        /// 字段名
-        /// </summary>
-        /// <param name="value"></param>
-        public SugarFieldName(string fieldName)
+        /// <typeparam name="T"></typeparam>
+        private static void DisplaySelfAttribute<T>() where T : class ,new()
         {
-            value = fieldName;
+            string tableName = string.Empty;
+            List<string> listColumnName = new List<string>();
+            Type objType = typeof(T);
+            //取属性上的自定义特性
+            foreach (PropertyInfo propInfo in objType.GetProperties())
+            {
+                object[] objAttrs = propInfo.GetCustomAttributes(typeof(SugarMapping), true);
+                if (objAttrs.Length > 0)
+                {
+                    SugarMapping attr = objAttrs[0] as SugarMapping;
+                    if (attr != null)
+                    {
+                        listColumnName.Add(attr.ColumnName); //列名
+                    }
+                }
+            }
+
+            //取类上的自定义特性
+            object[] objs = objType.GetCustomAttributes(typeof(SugarMapping), true);
+            foreach (object obj in objs)
+            {
+                SugarMapping attr = obj as SugarMapping;
+                if (attr != null)
+                {
+
+                    tableName = attr.TableName;//表名只有获取一次
+                    break;
+                }
+            }
+            if (string.IsNullOrEmpty(tableName))
+            {
+                tableName = objType.Name;
+            }
+            Console.WriteLine(string.Format("The tablename of the entity is:{0} ", tableName));
+            if (listColumnName.Count > 0)
+            {
+                Console.WriteLine("The columns of the table are as follows:");
+                foreach (string item in listColumnName)
+                {
+                    Console.WriteLine(item);
+                }
+            }
         }
     }
+   
 }
