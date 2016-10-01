@@ -678,7 +678,7 @@ namespace SqlSugar
 
 
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re, expression);
+            re.ResolveExpression(re, expression,this);
 
 
             StringBuilder sbSql = new StringBuilder();
@@ -993,7 +993,7 @@ namespace SqlSugar
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re, expression);
+            re.ResolveExpression(re, expression,this);
             string sql = string.Format("DELETE FROM [{0}] WHERE 1=1 {1}", typeName, re.SqlWhere);
             bool isSuccess = ExecuteCommand(sql, re.Paras.ToArray()) > 0;
             return isSuccess;
@@ -1050,7 +1050,7 @@ namespace SqlSugar
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
         {
             ResolveExpress re = new ResolveExpress();
-            var fieldName = re.GetExpressionRightField(expression);
+            var fieldName = re.GetExpressionRightField(expression,this);
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
@@ -1122,7 +1122,7 @@ namespace SqlSugar
             }
             bool isSuccess = false;
             ResolveExpress re = new ResolveExpress();
-            re.ResolveExpression(re, expression);
+            re.ResolveExpression(re, expression,this);
             string sql = string.Format("UPDATE  [{0}] SET {1}=1 WHERE  1=1 {2}", typeName, field, re.SqlWhere);
             int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;

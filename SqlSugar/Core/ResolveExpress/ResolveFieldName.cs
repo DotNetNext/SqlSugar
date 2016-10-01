@@ -14,8 +14,9 @@ namespace SqlSugar
         /// </summary>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public string GetExpressionRightField(Expression exp)
+        public string GetExpressionRightField(Expression exp, SqlSugarClient db)
         {
+            DB = db;
             LambdaExpression lambda = exp as LambdaExpression;
             var isConvet = lambda.Body.NodeType.IsIn(ExpressionType.Convert);
             var isMember = lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess);
@@ -46,8 +47,9 @@ namespace SqlSugar
         /// </summary>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public string GetExpressionRightFieldByNT(Expression exp)
+        public string GetExpressionRightFieldByNT(Expression exp, SqlSugarClient db)
         {
+            DB = db;
             LambdaExpression lambda = exp as LambdaExpression;
             var isConvet = lambda.Body.NodeType.IsIn(ExpressionType.Convert);
             var isMember = lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess);

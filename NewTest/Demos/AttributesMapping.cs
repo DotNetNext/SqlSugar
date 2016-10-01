@@ -18,7 +18,7 @@ namespace NewTest.Demos
             using (var db = DBManager.GetInstance())
             {
 
-                var list = db.Queryable<TestStudent>().ToList();
+                var list = db.Queryable<TestStudent>().Where(it=>it.classId==1).ToList();
 
             }
         }

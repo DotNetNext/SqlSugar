@@ -32,6 +32,7 @@ namespace SqlSugar
         public ResolveExpressType Type = ResolveExpressType.oneT;
         public List<SqlParameter> Paras = new List<SqlParameter>();
         private int SameIndex = 1;
+        private SqlSugarClient DB;
 
 
         /// <summary>
@@ -39,8 +40,9 @@ namespace SqlSugar
         /// </summary>
         /// <param name="re">当前解析对象</param>
         /// <param name="exp">要解析的表达式</param>
-        public void ResolveExpression(ResolveExpress re, Expression exp)
+        public void ResolveExpression(ResolveExpress re, Expression exp,SqlSugarClient db)
         {
+            DB = db;
             //初始化表达式
             Init(re, exp);
 
