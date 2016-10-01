@@ -31,69 +31,72 @@ namespace SqlSugar
             get { return columnName; }
             set { columnName = value; }
         }
-
-        private string ignore;
-        /// <summary>
-        /// 数据库对应的列名
-        /// </summary>
-        public string Ignore
-        {
-            get { return columnName; }
-            set { columnName = value; }
-        }
     }
 
-    public class ReflectionSugarMapping
+    internal class ReflectionSugarMapping
     {
         /// <summary>
         /// 通过反射取自定义属性
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        private static void DisplaySelfAttribute<T>() where T : class ,new()
+        public static SugarMappingModel DisplaySelfAttribute<T>()
         {
-            string tableName = string.Empty;
-            List<string> listColumnName = new List<string>();
             Type objType = typeof(T);
-            //取属性上的自定义特性
-            foreach (PropertyInfo propInfo in objType.GetProperties())
+            string cacheKey = "ReflectionSugarMapping.DisplaySelfAttribute" + objType.FullName;
+            var cm = CacheManager<SugarMappingModel>.GetInstance();
+            if (cm.ContainsKey(cacheKey))
             {
-                object[] objAttrs = propInfo.GetCustomAttributes(typeof(SugarMapping), true);
-                if (objAttrs.Length > 0)
+                return cm[cacheKey];
+            }
+            else
+            {
+                SugarMappingModel reval = new SugarMappingModel();
+                string tableName = string.Empty;
+                List<KeyValue> columnInfoList = new List<KeyValue>();
+                var oldName = objType.Name;
+                //取属性上的自定义特性
+                foreach (PropertyInfo propInfo in objType.GetProperties())
                 {
-                    SugarMapping attr = objAttrs[0] as SugarMapping;
-                    if (attr != null)
+                    object[] objAttrs = propInfo.GetCustomAttributes(typeof(SugarMappingAttribute), true);
+                    if (objAttrs.Length > 0)
                     {
-                        listColumnName.Add(attr.ColumnName); //列名
+                        SugarMappingAttribute attr = objAttrs[0] as SugarMappingAttribute;
+                        if (attr != null)
+                        {
+                            columnInfoList.Add(new KeyValue() { Key = propInfo.Name, Value = attr.ColumnName }); //列名
+                        }
                     }
                 }
-            }
 
-            //取类上的自定义特性
-            object[] objs = objType.GetCustomAttributes(typeof(SugarMapping), true);
-            foreach (object obj in objs)
-            {
-                SugarMapping attr = obj as SugarMapping;
-                if (attr != null)
+                //取类上的自定义特性
+                object[] objs = objType.GetCustomAttributes(typeof(SugarMappingAttribute), true);
+                foreach (object obj in objs)
                 {
+                    SugarMappingAttribute attr = obj as SugarMappingAttribute;
+                    if (attr != null)
+                    {
 
-                    tableName = attr.TableName;//表名只有获取一次
-                    break;
+                        tableName = attr.TableName;//表名只有获取一次
+                        break;
+                    }
                 }
-            }
-            if (string.IsNullOrEmpty(tableName))
-            {
-                tableName = objType.Name;
-            }
-            Console.WriteLine(string.Format("The tablename of the entity is:{0} ", tableName));
-            if (listColumnName.Count > 0)
-            {
-                Console.WriteLine("The columns of the table are as follows:");
-                foreach (string item in listColumnName)
+                if (string.IsNullOrEmpty(tableName))
                 {
-                    Console.WriteLine(item);
+                    tableName = objType.Name;
                 }
+                reval.TableMaping = new KeyValue() { Key = oldName, Value = tableName };
+                reval.ColumnsMapping = columnInfoList;
+                cm.Add(cacheKey,reval,cm.Day);
+                return reval;
             }
         }
     }
-   
+
+    public class SugarMappingModel
+    {
+
+        public KeyValue TableMaping { get; set; }
+        public List<KeyValue> ColumnsMapping { get; set; }
+    }
+
 }

@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "select";
+            string switchOn = "attributesmapping";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -50,7 +50,8 @@ namespace NewTest
                 case "sqlpagemodel": demo=new SqlPageModel(); break;
                 //设置ToJson的日期格式
                 case "serializerdateformat":demo =new SerializerDateFormat();break;
-
+                //通过属性的方法设置别名表和别名字段
+                case "attributesmapping": demo = new AttributesMapping(); break;
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
             }

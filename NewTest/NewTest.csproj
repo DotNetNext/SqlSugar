@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Dao\SugarDao.cs" />
     <Compile Include="Demos\Ado.cs" />
+    <Compile Include="Demos\AttributesMapping.cs" />
     <Compile Include="Demos\CreateClass.cs" />
     <Compile Include="Demos\IDemos.cs" />
     <Compile Include="Demos\IgnoreErrorColumns.cs" />

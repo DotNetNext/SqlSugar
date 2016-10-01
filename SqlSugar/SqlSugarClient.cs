@@ -61,10 +61,15 @@ namespace SqlSugar
             }
             return tableName;
         }
-        internal void InitAttribute<T>() {
-            var classAttrs = typeof(T).GetType().GetCustomAttributes(true);
-            if (classAttrs.IsValuable()) { 
-      
+        internal void InitAttribute<T>()
+        {
+            if (IsEnableAttributeMapping)
+            {
+                var mappingInfo = ReflectionSugarMapping.DisplaySelfAttribute<T>();
+                if (_mappingTableList==null) {
+                    _mappingTableList = new List<KeyValue>();
+                }
+                _mappingTableList.Add(mappingInfo.TableMaping);
             }
         }
         #endregion
@@ -82,7 +87,7 @@ namespace SqlSugar
         /// <summary>
         /// 是否启用属性映射
         /// </summary>
-        public bool IsEnableAttributeMapping = true;
+        public bool IsEnableAttributeMapping = false;
 
         /// <summary>
         /// 查询是否允许脏读（默认为:true）
@@ -206,9 +211,7 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>() where T : new()
         {
-            if (IsEnableAttributeMapping) {
-                InitAttribute<T>();
-            }
+            InitAttribute<T>();
             var queryable = new Queryable<T>() { DB = this };
             //别名表
             if (_mappingTableList.IsValuable())
@@ -923,7 +926,7 @@ namespace SqlSugar
                 sbSql.Append(" UPDATE ");
                 sbSql.Append(typeName);
                 sbSql.Append(" SET ");
-                pkValue= props.Single(it => it.Name.ToLower() == pkName.ToLower()).GetValue(entity, null).ToString();
+                pkValue = props.Single(it => it.Name.ToLower() == pkName.ToLower()).GetValue(entity, null).ToString();
                 foreach (var name in columnNames)
                 {
                     var isPk = pkName != null && pkName.ToLower() == name.ToLower();
@@ -964,8 +967,8 @@ namespace SqlSugar
                     else
                     {
                         objValue = "'" + objValue.ToString() + "'";
-                    }     
-                    sbSql.AppendFormat(" [{0}]={1}{2}  ", name, objValue,",");
+                    }
+                    sbSql.AppendFormat(" [{0}]={1}{2}  ", name, objValue, ",");
                 }
                 sbSql.Remove(sbSql.ToString().LastIndexOf(","), 1);
                 sbSql.AppendFormat("WHERE [{0}]='{1}' ", pkName, pkValue.ToSuperSqlFilter());
