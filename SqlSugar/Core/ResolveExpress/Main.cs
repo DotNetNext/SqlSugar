@@ -40,6 +40,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="re">当前解析对象</param>
         /// <param name="exp">要解析的表达式</param>
+        /// <param name="db">数据库访问对象</param>
         public void ResolveExpression(ResolveExpress re, Expression exp,SqlSugarClient db)
         {
             DB = db;

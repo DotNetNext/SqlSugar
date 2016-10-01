@@ -13,6 +13,7 @@ namespace SqlSugar
         /// 获取拉姆达表达式的字段值
         /// </summary>
         /// <param name="exp"></param>
+        /// <param name="db">数据库访问对象</param>
         /// <returns></returns>
         public string GetExpressionRightField(Expression exp, SqlSugarClient db)
         {
@@ -46,6 +47,7 @@ namespace SqlSugar
         /// 获取拉姆达表达式的字段值多个T模式
         /// </summary>
         /// <param name="exp"></param>
+        /// <param name="db">数据库访问对象</param>
         /// <returns></returns>
         public string GetExpressionRightFieldByNT(Expression exp, SqlSugarClient db)
         {
