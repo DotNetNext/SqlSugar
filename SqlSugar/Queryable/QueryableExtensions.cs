@@ -535,7 +535,7 @@ namespace SqlSugar
                 Skip = queryable.Skip,
                 Take = queryable.Take,
                 WhereValue = queryable.WhereValue,
-                TableName = type.Name,
+                TableName = queryable.TableName,
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
@@ -565,7 +565,7 @@ namespace SqlSugar
                 Skip = queryable.Skip,
                 Take = queryable.Take,
                 WhereValue = queryable.WhereValue,
-                TableName = type.Name,
+                TableName = queryable.TableName,
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
@@ -596,7 +596,7 @@ namespace SqlSugar
                 Skip = queryable.Skip,
                 Take = queryable.Take,
                 WhereValue = queryable.WhereValue,
-                TableName = type.Name,
+                TableName = queryable.TableName,
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
@@ -628,7 +628,7 @@ namespace SqlSugar
                 Skip = queryable.Skip,
                 Take = queryable.Take,
                 WhereValue = queryable.WhereValue,
-                TableName = type.Name,
+                TableName = queryable.TableName,
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
@@ -656,7 +656,7 @@ namespace SqlSugar
                 Skip = queryable.Skip,
                 Take = queryable.Take,
                 WhereValue = queryable.WhereValue,
-                TableName = type.Name,
+                TableName = queryable.TableName,
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
@@ -693,7 +693,7 @@ namespace SqlSugar
                 Skip = queryable.Skip,
                 Take = queryable.Take,
                 WhereValue = queryable.WhereValue,
-                TableName = type.Name,
+                TableName = queryable.TableName,
                 GroupByValue = queryable.GroupByValue,
                 SelectValue = select
             };
