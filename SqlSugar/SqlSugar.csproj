@@ -59,6 +59,7 @@
     <Compile Include="Generating\ClassTemplate.cs" />
     <Compile Include="Tool\Check.cs" />
     <Compile Include="Core\IDataRecordExtensions.cs" />
+    <Compile Include="Tool\SqlSugarToolCoreDiff.cs" />
     <Compile Include="Tool\JsonConverter.cs" />
     <Compile Include="Tool\IEnumerableExtensions.cs" />
     <Compile Include="Core\IDataReaderEntityBuilder.cs" />
