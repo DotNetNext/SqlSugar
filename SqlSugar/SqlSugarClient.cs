@@ -1050,7 +1050,7 @@ namespace SqlSugar
             {
                 string pkValue = string.Empty;
                 sbSql.Append(" UPDATE ");
-                sbSql.Append(typeName);
+                sbSql.Append("["+typeName+"]");
                 sbSql.Append(" SET ");
                 pkValue = props.Single(it => it.Name.ToLower() == pkClassPropName.ToLower()).GetValue(entity, null).ToString();
                 foreach (var name in columnNames)
