@@ -86,9 +86,9 @@ namespace SqlSugar
                         }
                         else if (_mappingColumns.Any(it => it.Key == item.Key && it.Value != item.Value))
                         {
-                            string throwMessage = string.Format(PubModel.SqlSugarClientConst.AttrMappingError, 
+                            string throwMessage = string.Format(PubModel.SqlSugarClientConst.AttrMappingError,
                                 item.Key,
-                                _mappingColumns.Single(it => it.Key == item.Key).Value, 
+                                _mappingColumns.Single(it => it.Key == item.Key).Value,
                                 item.Value);
                             throw new SqlSugarException(throwMessage);
                         }
@@ -449,26 +449,34 @@ namespace SqlSugar
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
                 {
+                    string propName = prop.Name;
+                    if (this.IsEnableAttributeMapping && _mappingColumns.IsValuable())
+                    {
+                        if (_mappingColumns.Any(it => it.Key == propName))
+                        {
+                            propName = this._mappingColumns.Single(it => it.Key == propName).Value;
+                        }
+                    }
                     if (this.IsIgnoreErrorColumns)
                     {
-                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == prop.Name.ToLower()))
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == propName.ToLower()))
                         {
                             continue;
                         }
                     }
                     if (this.DisableInsertColumns.IsValuable())
                     {
-                        if (this.DisableInsertColumns.Any(it => it.ToLower() == prop.Name.ToLower()))
+                        if (this.DisableInsertColumns.Any(it => it.ToLower() == propName.ToLower()))
                         {
                             continue;
                         }
                     }
 
                     //EntityState,@EntityKey
-                    if (!isIdentity || identities.Any(it => it.Value.ToLower() != prop.Name.ToLower()))
+                    if (!isIdentity || identities.Any(it => it.Value.ToLower() != propName.ToLower()))
                     {
                         //4.将属性的名字加入到字符串中 
-                        sbInsertSql.Append("[" + prop.Name + "],");
+                        sbInsertSql.Append("[" + propName + "],");
                     }
                 }
                 //**去掉最后一个逗号 
@@ -480,31 +488,41 @@ namespace SqlSugar
             //5.再次遍历，形成参数列表"(@xx,@xx@xx)"的形式 
             foreach (PropertyInfo prop in props)
             {
+                string propName = prop.Name;
+                if (this.IsEnableAttributeMapping && _mappingColumns.IsValuable())
+                {
+                    if (_mappingColumns.Any(it => it.Key == propName))
+                    {
+                        propName = this._mappingColumns.Single(it => it.Key == propName).Value;
+                    }
+                }
+
+
                 //EntityState,@EntityKey
-                if (!isIdentity || identities.Any(it => it.Value.ToLower() != prop.Name.ToLower()))
+                if (!isIdentity || identities.Any(it => it.Value.ToLower() != propName))
                 {
                     if (this.IsIgnoreErrorColumns)
                     {
-                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == prop.Name.ToLower()))
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == propName))
                         {
                             continue;
                         }
                     }
                     if (this.DisableInsertColumns.IsValuable())
                     {
-                        if (this.DisableInsertColumns.Any(it => it.ToLower() == prop.Name.ToLower()))
+                        if (this.DisableInsertColumns.Any(it => it.ToLower() == propName))
                         {
                             continue;
                         }
                     }
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
-                        sbInsertSql.Append("@" + prop.Name + ",");
+                        sbInsertSql.Append("@" + propName + ",");
                     object val = prop.GetValue(entity, null);
                     if (val == null)
                         val = DBNull.Value;
                     if (_serialNumber.IsValuable())
                     {
-                        Func<PubModel.SerialNumber, bool> serEexp = it => it.TableName.ToLower() == typeName.ToLower() && it.FieldName.ToLower() == prop.Name.ToLower();
+                        Func<PubModel.SerialNumber, bool> serEexp = it => it.TableName.ToLower() == typeName.ToLower() && it.FieldName.ToLower() == propName.ToLower();
                         var isAnyNum = _serialNumber.Any(serEexp);
                         if (isAnyNum && (val == DBNull.Value || val.IsNullOrEmpty()))
                         {
@@ -524,7 +542,7 @@ namespace SqlSugar
                         val = (int)(val);
                     }
 
-                    var par = new SqlParameter("@" + prop.Name, val);
+                    var par = new SqlParameter("@" + propName, val);
                     SqlSugarTool.SetParSize(par);
                     if (par.SqlDbType == SqlDbType.Udt)
                     {
@@ -550,6 +568,15 @@ namespace SqlSugar
             var sql = sbInsertSql.ToString();
             try
             {
+                if (this.IsEnableAttributeMapping && this._mappingColumns.IsValuable())
+                {
+                    foreach (var item in this._mappingColumns)
+                    {
+                        sql = sql.Replace("[" + item.Key + "]", "[" + item.Value + "]");
+                        sql = sql.Replace("@" + item.Key+",", "@" + item.Value+",");
+                        sql = sql.Replace("@" + item.Key + ")", "@" + item.Value + ")");
+                    }
+                }
                 var lastInsertRowId = GetScalar(sql, pars.ToArray());
                 return lastInsertRowId;
             }
