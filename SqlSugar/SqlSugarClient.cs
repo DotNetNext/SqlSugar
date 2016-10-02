@@ -588,7 +588,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 大数据插入(结构体必须和数据库一致)
+        /// 大数据插入(结构体必须和数据库一致,不支持属性映射和别名表)
         /// </summary>
         /// <param name="entities"></param>
         /// <returns>全部插入成功返回true</returns>
