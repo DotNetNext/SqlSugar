@@ -16,6 +16,7 @@ namespace NewTest
             IDemos demo = null;
             switch (switchOn)
             {
+                /****************************基本功能**************************************/
                 //查询
                 case "select": demo = new Select(); break;
                 //删除
@@ -34,24 +35,38 @@ namespace NewTest
                 case "log": demo = new Log(); break;
                 //枚举支持
                 case "enum": demo = new EnumDemo(); break;
+
+
+                
+                /****************************实体映射**************************************/
+                //自动排除非数据库列
+                case "ignoreerrorcolumns": demo = new IgnoreErrorColumns(); break;
                 //别名表
                 case "mappingtable":demo=new MappingTable(); break;
+                //别名列
+                case "mappingcolumns": demo = new MappingColumns(); break;
+                //通过属性的方法设置别名表和别名字段
+                case "attributesmapping": demo = new AttributesMapping(); break;
+
+
+
+                /****************************业务应用**************************************/
                 //过滤器
                 case "filter": demo = new Filter(); break;
                 //过滤器2
                 case "filter2": demo = new Filter2(); break;
-                //自动排除非数据库列
-                case "ignoreerrorcolumns" :demo =new IgnoreErrorColumns(); break;
                 //流水号功能
                 case "serialnumber": demo = new SerialNumber(); break;
+
+
+                /****************************支持**************************************/
                 //公开含数
                 case "pubmethod": demo = new PubMethod(); break;
                 //Sql2012分页的支持
                 case "sqlpagemodel": demo=new SqlPageModel(); break;
                 //设置ToJson的日期格式
                 case "serializerdateformat":demo =new SerializerDateFormat();break;
-                //通过属性的方法设置别名表和别名字段
-                case "attributesmapping": demo = new AttributesMapping(); break;
+
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
             }
