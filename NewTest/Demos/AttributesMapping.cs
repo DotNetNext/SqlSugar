@@ -22,7 +22,7 @@ namespace NewTest.Demos
                 var list = db.Queryable<TestStudent>()
                     .Where(it=>it.className.Contains("小")).OrderBy(it=>it.classSchoolId).ToList();
                 var list2 = db.Queryable<TestStudent>()
-                    .JoinTable<TestSchool>((s1,s2)=>s1.classSchoolId==s2.classId).Select("s1.name,s2.name as schname")
+                    .JoinTable<TestSchool>((s1,s2)=>s1.classSchoolId==s2.classId).Select("s1.name,s2.name as schname,s1.isok")
                     .OrderBy<TestSchool>((s1,s2)=>s1.classId).ToDynamic();
 
                 //添加
@@ -53,6 +53,8 @@ namespace NewTest.Demos
 
               [SugarMapping(ColumnName = "sch_id")]
              public int classSchoolId { get; set; }
+
+              public int isOk { get; set; }
         }
 
         /// <summary>
@@ -67,6 +69,8 @@ namespace NewTest.Demos
 
             [SugarMapping(ColumnName = "name")]
             public string className { get; set; }
+
+            public int AreaId = 1;
         }
     }
 
