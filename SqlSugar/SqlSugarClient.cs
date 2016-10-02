@@ -312,7 +312,7 @@ namespace SqlSugar
         public Queryable<T> Queryable<T>() where T : new()
         {
             InitAttributes<T>();
-            var queryable = new Queryable<T>() { DB = this };
+            var queryable = new Queryable<T>() { DB = this, TableName=typeof(T).Name };
             //别名表
             if (_mappingTableList.IsValuable())
             {
