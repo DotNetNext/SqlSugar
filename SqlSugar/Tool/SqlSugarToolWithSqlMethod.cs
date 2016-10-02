@@ -413,5 +413,10 @@ namespace SqlSugar
             }
             return reval;
         }
+
+        /// <summary>
+        /// par的符号
+        /// </summary>
+        public const string ParSymbol = "@";
     }
 }
