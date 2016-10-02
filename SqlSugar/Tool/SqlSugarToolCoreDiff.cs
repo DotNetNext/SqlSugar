@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Web;
+using System.Data.SqlClient;
 
 namespace SqlSugar
 {
@@ -50,6 +52,7 @@ namespace SqlSugar
                 }
             }
         }
+
         private static void FillValueTypeToArray<T>(Type type, IDataReader dr, List<T> strReval)
         {
             using (IDataReader re = dr)
@@ -83,6 +86,60 @@ namespace SqlSugar
                         Check.Exception(true, "暂时不支持该类型的Array 你可以试试 object[] 或者联系作者！！");
                 }
             }
+        }
+
+        /// <summary>
+        /// 获取参数到键值集合根据页面Request参数
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetParameterDictionary(bool isNotNullAndEmpty = false)
+        {
+            if (SpecialRequestForm == null)
+            {
+                Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
+                       .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
+
+                Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                    .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
+
+                var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
+                if (isNotNullAndEmpty)
+                {
+                    paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
+                }
+                return paraDictionarAll.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+            }
+            else
+            {
+
+                var pars = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                     .ToDictionary(k => k, v => SpecialRequestForm(v)).Where(it => true);
+                if (isNotNullAndEmpty)
+                {
+                    pars = pars.Where(it => !string.IsNullOrEmpty(it.Value));
+                }
+                return pars.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
+            }
+        }
+
+        /// <summary>
+        /// 获取参数到键值集合根据页面Request参数
+        /// </summary>
+        /// <returns></returns>
+        public static SqlParameter[] GetParameterArray(bool isNotNullAndEmpty = false)
+        {
+            Dictionary<string, string> paraDictionaryByGet = HttpContext.Current.Request.QueryString.Keys.Cast<string>()
+                   .ToDictionary(k => k, v => HttpContext.Current.Request.QueryString[v]);
+
+            Dictionary<string, string> paraDictionaryByPost = HttpContext.Current.Request.Form.Keys.Cast<string>()
+                .ToDictionary(k => k, v => HttpContext.Current.Request.Form[v]);
+
+            var paraDictionarAll = paraDictionaryByGet.Union(paraDictionaryByPost);
+            if (isNotNullAndEmpty)
+            {
+                paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
+            }
+            return paraDictionarAll.Select(it => new SqlParameter("@" + it.Key, it.Value)).ToArray();
         }
     }
 }
