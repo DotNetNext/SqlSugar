@@ -31,6 +31,8 @@ namespace NewTest
                 case "tran": demo = new Tran(); break;
                 //创建实体函数
                 case "createclass": demo = new CreateClass(); break;
+                //T4生成 http://www.cnblogs.com/sunkaixuan/p/5751503.html
+
                 //日志记录
                 case "log": demo = new Log(); break;
                 //枚举支持
@@ -57,8 +59,11 @@ namespace NewTest
                 case "filter2": demo = new Filter2(); break;
                 //流水号功能
                 case "serialnumber": demo = new SerialNumber(); break;
-                //多语言支持 没写例子
-                //多库并行计算 没写例子
+
+                //多语言支持 http://www.cnblogs.com/sunkaixuan/p/5709583.html
+                //多库并行计算 http://www.cnblogs.com/sunkaixuan/p/5046517.html
+
+
 
                 /****************************支持**************************************/
                 //公开函数数
