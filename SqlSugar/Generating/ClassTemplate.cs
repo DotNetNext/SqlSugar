@@ -6,6 +6,9 @@ using System.Text;
 namespace SqlSugar
 {
  
+    /// <summary>
+    /// 生成实体格式模版
+    /// </summary>
     public class ClassTemplate
     {
         /// <summary>
