@@ -140,11 +140,12 @@ namespace SqlSugar
         /// <returns></returns>
         public string TableNameToClass(SqlSugarClient db, string tableName)
         {
-            var dt = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
+            var dt = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
             var tableColumns = GetTableColumns(db, tableName);
             var reval = DataTableToClass(dt, tableName, null, tableColumns);
             return reval;
         }
+
 
 
 
@@ -157,14 +158,14 @@ namespace SqlSugar
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
         public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null)
         {
-            string sql = GetCreateClassSql(tableOrView);
+            string sql = SqlSugarTool.GetCreateClassSql(tableOrView);
             var tables = db.GetDataTable(sql);
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
                 {
                     string tableName = dr["name"].ToString();
-                    var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
+                    var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
                     if (callBack != null)
                     {
                         var tableColumns = GetTableColumns(db, tableName);
@@ -196,49 +197,27 @@ namespace SqlSugar
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
         public void CreateClassFilesInterface(SqlSugarClient db, bool? tableOrView, Action<DataTable, string, string> callBack)
         {
-            string sql = GetCreateClassSql(tableOrView);
+            string sql = SqlSugarTool.GetCreateClassSql(tableOrView);
             var tables = db.GetDataTable(sql);
             if (tables != null && tables.Rows.Count > 0)
             {
                 foreach (DataRow dr in tables.Rows)
                 {
                     string tableName = dr["name"].ToString();
-                    var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
+                    var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
                     string className = db.GetClassTypeByTableName(tableName);
                     callBack(tables, className, tableName);
                 }
             }
         }
-        /// <summary>
-        ///tableOrView  null=u,v , true=u , false=v
-        /// </summary>
-        /// <param name="tableOrView"></param>
-        /// <returns></returns>
-        private static string GetCreateClassSql(bool? tableOrView)
-        {
-            string sql = null;
-            if (tableOrView == null)
-            {
-                sql = "select name from sysobjects where xtype in ('U','V') ";
-            }
-            else if (tableOrView == true)
-            {
-                sql = "select name from sysobjects where xtype in ('U') ";
-            }
-            else
-            {
-                sql = "select name from sysobjects where xtype in ('V') ";
-            }
-            return sql;
-        }
-
+     
 
         /// <summary>
         ///  创建SQL实体文件,指定表名
         /// </summary>
         public void CreateClassFilesByTableNames(SqlSugarClient db, string fileDirectory, string nameSpace, params string[] tableNames)
         {
-            string sql = GetCreateClassSql(null);
+            string sql = SqlSugarTool.GetCreateClassSql(null);
             var tables = db.GetDataTable(sql);
             if (!FileSugar.IsExistDirectory(fileDirectory))
             {
@@ -251,7 +230,7 @@ namespace SqlSugar
                     string tableName = dr["name"].ToString().ToLower();
                     if (tableNames.Any(it => it.ToLower() == tableName))
                     {
-                        var currentTable = db.GetDataTable(string.Format("select top 1 * from {0}", tableName));
+                        var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
                         var tableColumns = GetTableColumns(db, tableName);
                         string className = db.GetClassTypeByTableName(tableName);
                         var classCode = DataTableToClass(currentTable, className, nameSpace, tableColumns);
@@ -268,7 +247,7 @@ namespace SqlSugar
         /// <returns></returns>
         public List<string> GetTableNames(SqlSugarClient db)
         {
-            string sql = GetCreateClassSql(null);
+            string sql = SqlSugarTool.GetCreateClassSql(null);
             var tableNameList = db.SqlQuery<string>(sql).ToList();
             for (int i = 0; i < tableNameList.Count; i++)
             {
@@ -358,33 +337,8 @@ namespace SqlSugar
         // 获取表结构信息
         public List<PubModel.DataTableMap> GetTableColumns(SqlSugarClient db, string tableName)
         {
-            string sql = @"SELECT  Sysobjects.name AS TABLE_NAME ,
-								syscolumns.Id  AS TABLE_ID,
-								syscolumns.name AS COLUMN_NAME ,
-								systypes.name AS DATA_TYPE ,
-								syscolumns.length AS CHARACTER_MAXIMUM_LENGTH ,
-								sys.extended_properties.[value] AS COLUMN_DESCRIPTION ,
-								syscomments.text AS COLUMN_DEFAULT ,
-								syscolumns.isnullable AS IS_NULLABLE,
-                                (case when exists(SELECT 1 FROM sysobjects where xtype= 'PK' and name in ( 
-                                SELECT name FROM sysindexes WHERE indid in( 
-                                SELECT indid FROM sysindexkeys WHERE id = syscolumns.id AND colid=syscolumns.colid 
-                                ))) then 1 else 0 end) as IS_PRIMARYKEY
-
-								FROM    syscolumns
-								INNER JOIN systypes ON syscolumns.xtype = systypes.xtype
-								LEFT JOIN sysobjects ON syscolumns.id = sysobjects.id
-								LEFT OUTER JOIN sys.extended_properties ON ( sys.extended_properties.minor_id = syscolumns.colid
-																			 AND sys.extended_properties.major_id = syscolumns.id
-																		   )
-								LEFT OUTER JOIN syscomments ON syscolumns.cdefault = syscomments.id
-								WHERE   syscolumns.id IN ( SELECT   id
-												   FROM     SYSOBJECTS
-												   WHERE    xtype in( 'U','V') )
-								AND ( systypes.name <> 'sysname' ) AND Sysobjects.name='" + tableName + "'  AND systypes.name<>'geometry' AND systypes.name<>'geography'  ORDER BY syscolumns.colid";
-
+            string sql = SqlSugarTool.GetTtableColumnsInfo(tableName);
             return db.SqlQuery<PubModel.DataTableMap>(sql);
         }
     }
-
 }

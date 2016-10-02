@@ -264,5 +264,62 @@ namespace SqlSugar
                 return reval;
             }
         }
+
+        /// <summary>
+        ///tableOrView  null=u,v , true=u , false=v
+        /// </summary>
+        /// <param name="tableOrView"></param>
+        /// <returns></returns>
+        internal static string GetCreateClassSql(bool? tableOrView)
+        {
+            string sql = null;
+            if (tableOrView == null)
+            {
+                sql = "select name from sysobjects where xtype in ('U','V') ";
+            }
+            else if (tableOrView == true)
+            {
+                sql = "select name from sysobjects where xtype in ('U') ";
+            }
+            else
+            {
+                sql = "select name from sysobjects where xtype in ('V') ";
+            }
+            return sql;
+        }
+
+        internal static string GetTtableColumnsInfo(string tableName)
+        {
+            string sql = @"SELECT  Sysobjects.name AS TABLE_NAME ,
+								syscolumns.Id  AS TABLE_ID,
+								syscolumns.name AS COLUMN_NAME ,
+								systypes.name AS DATA_TYPE ,
+								syscolumns.length AS CHARACTER_MAXIMUM_LENGTH ,
+								sys.extended_properties.[value] AS COLUMN_DESCRIPTION ,
+								syscomments.text AS COLUMN_DEFAULT ,
+								syscolumns.isnullable AS IS_NULLABLE,
+                                (case when exists(SELECT 1 FROM sysobjects where xtype= 'PK' and name in ( 
+                                SELECT name FROM sysindexes WHERE indid in( 
+                                SELECT indid FROM sysindexkeys WHERE id = syscolumns.id AND colid=syscolumns.colid 
+                                ))) then 1 else 0 end) as IS_PRIMARYKEY
+
+								FROM    syscolumns
+								INNER JOIN systypes ON syscolumns.xtype = systypes.xtype
+								LEFT JOIN sysobjects ON syscolumns.id = sysobjects.id
+								LEFT OUTER JOIN sys.extended_properties ON ( sys.extended_properties.minor_id = syscolumns.colid
+																			 AND sys.extended_properties.major_id = syscolumns.id
+																		   )
+								LEFT OUTER JOIN syscomments ON syscolumns.cdefault = syscomments.id
+								WHERE   syscolumns.id IN ( SELECT   id
+												   FROM     SYSOBJECTS
+												   WHERE    xtype in( 'U','V') )
+								AND ( systypes.name <> 'sysname' ) AND Sysobjects.name='" + tableName + "'  AND systypes.name<>'geometry' AND systypes.name<>'geography'  ORDER BY syscolumns.colid";
+            return sql;
+        }
+
+        internal static string GetSelectTopSql()
+        {
+            return "select top 1 * from {0}";
+        }
     }
 }
