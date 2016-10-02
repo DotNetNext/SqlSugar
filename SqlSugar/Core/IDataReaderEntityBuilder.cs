@@ -94,13 +94,14 @@ namespace SqlSugar
                 LocalBuilder result = generator.DeclareLocal(type);
                 generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
                 generator.Emit(OpCodes.Stloc, result);
+                string cacheKey = "SqlSugarClient.InitAttributes";
+                var cm = CacheManager<List<KeyValue>>.GetInstance();
                 for (int i = 0; i < dataRecord.FieldCount; i++)
                 {
                     string fieldName = dataRecord.GetName(i);
-                    var colsMapping = ReflectionSugarMapping.GetMappingInfo<T>().ColumnsMapping;
-                    if (colsMapping.IsValuable() && colsMapping.Any(it => it.Value == fieldName))
+                    if (cm.ContainsKey(cacheKey) && cm[cacheKey].Any(it => it.Value == fieldName))
                     {
-                        fieldName = colsMapping.Single(it=>it.Value==fieldName).Key;
+                        fieldName = cm[cacheKey].Single(it => it.Value == fieldName).Key;
                     }
                     PropertyInfo propertyInfo = type.GetProperty(fieldName);
                     Label endIfLabel = generator.DefineLabel();

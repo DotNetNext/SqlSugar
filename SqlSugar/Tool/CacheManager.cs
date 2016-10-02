@@ -67,7 +67,10 @@ namespace SqlSugar
         /// <returns></returns>         
         public override V Get(string key)
         {
-            return this.InstanceCache[key];
+            if (this.ContainsKey(key))
+                return this.InstanceCache[key];
+            else
+                return default(V);
         }
 
         /// <summary>         

@@ -34,7 +34,16 @@ namespace SqlSugar
 
         #region private variables
         internal List<KeyValue> _mappingTableList = null;
-        internal List<KeyValue> _mappingColumns = null;
+        internal List<KeyValue> _mappingColumns
+        {
+            get
+            {
+                string cacheKey = "SqlSugarClient.InitAttributes";
+                var cm = CacheManager<List<KeyValue>>.GetInstance();
+                return cm[cacheKey];
+
+            }
+        }
         private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
         private Dictionary<string, List<string>> _filterColumns = null;
         private List<PubModel.SerialNumber> _serialNumber = null;
@@ -66,6 +75,8 @@ namespace SqlSugar
         {
             if (IsEnableAttributeMapping)
             {
+                string cacheKey = "SqlSugarClient.InitAttributes";
+                var cm = CacheManager<List<KeyValue>>.GetInstance();
                 var mappingInfo = ReflectionSugarMapping.GetMappingInfo<T>();
                 if (_mappingTableList == null)
                 {
@@ -74,23 +85,25 @@ namespace SqlSugar
                 if (!_mappingTableList.Contains(mappingInfo.TableMaping))
                 {
                     _mappingTableList.Add(mappingInfo.TableMaping);
-                    if (_mappingColumns == null)
+                    if (mappingInfo.ColumnsMapping.IsValuable())
                     {
-                        _mappingColumns = new List<KeyValue>();
-                    }
-                    foreach (var item in mappingInfo.ColumnsMapping)
-                    {
-                        if (!_mappingColumns.Any(it => it.Key == item.Key))
+                        foreach (var item in mappingInfo.ColumnsMapping)
                         {
-                            _mappingColumns.Add(item);
-                        }
-                        else if (_mappingColumns.Any(it => it.Key == item.Key && it.Value != item.Value))
-                        {
-                            string throwMessage = string.Format(PubModel.SqlSugarClientConst.AttrMappingError,
-                                item.Key,
-                                _mappingColumns.Single(it => it.Key == item.Key).Value,
-                                item.Value);
-                            throw new SqlSugarException(throwMessage);
+                            if (_mappingColumns == null || !_mappingColumns.Any(it => it.Key == item.Key))
+                            {
+                                List<KeyValue> cmList = cm.ContainsKey(cacheKey) ? cm[cacheKey] : new List<KeyValue>();
+                                cmList.Add(item);
+                                cm.Add(cacheKey, cmList,cm.Day);
+                            }
+                            else if (_mappingColumns.Any(it => it.Key == item.Key && it.Value != item.Value))
+                            {
+                                string throwMessage = string.Format(PubModel.SqlSugarClientConst.AttrMappingError,
+                                    item.Key,
+                                    _mappingColumns.Single(it => it.Key == item.Key).Value,
+                                    item.Value);
+                                throw new SqlSugarException(throwMessage);
+                            }
+
                         }
                     }
                 }
@@ -212,7 +225,7 @@ namespace SqlSugar
         /// <summary>
         /// 添加实体类与表名的映射， Key为实体类 Value为表名
         /// </summary>
-        /// <param name="mappingTables"></param>
+        /// <param name="mappingTable"></param>
         public void AddMappingTable(KeyValue mappingTable)
         {
             Check.ArgumentNullException(mappingTable, "AddMappingTables.mappingTable不能为null。");
@@ -225,23 +238,29 @@ namespace SqlSugar
         /// 设置实体字段与数据库字段的映射，Key为实体字段 Value为表字段名称 （注意：不区分表，设置后所有表通用）
         /// </summary>
         /// <param name="mappingColumns"></param>
-        public void SetMappingColumns(List<KeyValue> mappingColumns) {
+        public void SetMappingColumns(List<KeyValue> mappingColumns)
+        {
 
-            if (mappingColumns.IsValuable()) {
-                _mappingColumns = mappingColumns;
+            if (mappingColumns.IsValuable())
+            {
+                string cacheKey = "SqlSugarClient.InitAttributes";
+                var cm = CacheManager<List<KeyValue>>.GetInstance();
+                cm.RemoveAll();
+                cm.Add(cacheKey, mappingColumns, cm.Day);
             }
         }
         /// <summary>
         /// 添加实体字段与数据库字段的映射，Key为实体字段 Value为表字段名称 （注意：不区分表，设置后所有表通用）
         /// </summary>
-        /// <param name="mappingTables"></param>
+        /// <param name="mappingColumns"></param>
         public void AddMappingColum(KeyValue mappingColumns)
         {
             Check.ArgumentNullException(mappingColumns, "AddMappingTables.mappingColumns不能为null。");
-            if (_mappingColumns == null)
-                _mappingColumns = new List<KeyValue>();
             Check.Exception(_mappingColumns.Any(it => it.Key == mappingColumns.Key), "mappingColumns的Key已经存在。");
             _mappingColumns.Add(mappingColumns);
+            string cacheKey = "SqlSugarClient.InitAttributes";
+            var cm = CacheManager<List<KeyValue>>.GetInstance();
+            cm.Add(cacheKey, _mappingColumns, cm.Day);
         }
 
         /// <summary>
@@ -898,7 +917,7 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
-            string pkClassPropName =pkClassPropName = GetMappingColumnClassName(pkName);
+            string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             foreach (var r in rows)
             {
@@ -964,7 +983,7 @@ namespace SqlSugar
             }
         }
 
-    
+
 
         /// <summary>
         /// 大数据更新 支持IsIgnoreErrorColumns和isDisableUpdateColumns
@@ -1033,7 +1052,7 @@ namespace SqlSugar
                 sbSql.Append(" UPDATE ");
                 sbSql.Append(typeName);
                 sbSql.Append(" SET ");
-                pkValue = props.Single(it => it.Name.ToLower() ==pkClassPropName.ToLower()).GetValue(entity, null).ToString();
+                pkValue = props.Single(it => it.Name.ToLower() == pkClassPropName.ToLower()).GetValue(entity, null).ToString();
                 foreach (var name in columnNames)
                 {
                     var dbName = GetMappingColumnDbName(name);
