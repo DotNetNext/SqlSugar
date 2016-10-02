@@ -187,6 +187,10 @@ namespace SqlSugar
             }
         }
 
+        /// <summary>
+        /// 设置参数Size
+        /// </summary>
+        /// <param name="par"></param>
         public static void SetParSize(SqlParameter par)
         {
             int size = par.Size;
