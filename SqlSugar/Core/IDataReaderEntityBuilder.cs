@@ -87,8 +87,6 @@ namespace SqlSugar
         /// <returns></returns>
         public static IDataReaderEntityBuilder<T> CreateBuilder(Type type, IDataRecord dataRecord)
         {
-
-            {
                 IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
                 DynamicMethod method = new DynamicMethod("DynamicCreateEntity", type,
                         new Type[] { typeof(IDataRecord) }, type, true);
@@ -127,7 +125,6 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Ret);
                 dynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
                 return dynamicBuilder;
-            }
         }
 
 
