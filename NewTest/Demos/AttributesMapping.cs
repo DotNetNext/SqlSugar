@@ -61,6 +61,11 @@ namespace NewTest.Demos
             public int classSchoolId { get; set; }
 
             public int isOk { get; set; }
+
+            /// <summary>
+            /// 数据库并没有这一列
+            /// </summary>
+            public string errorField { get; set; }
         }
 
         /// <summary>
