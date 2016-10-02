@@ -319,7 +319,7 @@ namespace SqlSugar
 
         internal static string GetSelectTopSql()
         {
-            return "select top 1 * from {0}";
+            return "select top 1 * from [{0}]";
         }
 
         /// <summary>
