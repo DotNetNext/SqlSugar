@@ -987,7 +987,7 @@ namespace SqlSugar
             }
             if(joinTableName.IsNullOrEmpty())
             {
-                joinTableName = typeof(T2).Name;
+                joinTableName = typeof(T3).Name;
             }
             string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
                 /*0*/queryable.JoinTableValue.Count == 0 ? (" " + shortName1 + " " + joinTypeName) : joinTypeName.ToString(),

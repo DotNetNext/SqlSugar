@@ -260,7 +260,7 @@ namespace SqlSugar
                     {
                         type = MemberType.Key;
                         var dbName= exp.ToString();
-                        if (DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+                        if (DB != null &&DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
                         {
                             var preName = dbName.Split('.').First();
                             if (DB._mappingColumns.Any(it => it.Key==dbName.Split('.').Last()))
@@ -274,7 +274,7 @@ namespace SqlSugar
 
                     string name = me.Member.Name;
                     type = MemberType.Key;
-                    if (DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+                    if (DB!=null&&DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
                     {
                         if (DB._mappingColumns.Any(it => it.Key == name))
                         {

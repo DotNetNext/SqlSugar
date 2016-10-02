@@ -103,5 +103,20 @@ namespace SqlSugar
             public string ReplaceViewStringValue = "LanguageId = {0}";
 
         }
+        /// <summary>
+        /// SqlSugarClient通用常量
+        /// </summary>
+        internal class SqlSugarClientConst {
+            /// <summary>
+            /// 属性设置错误信息
+            /// </summary>
+            public const string AttrMappingError = @"[SugarMapping(ColumnName = ""{1}"")]
+  public string {0} {{ get; set; }}已经在其存在于其它表， Columns映射只能在 {0}->{1}和{0}->{2}二者选其一";
+            /// <summary>
+            /// SqlQuery查询的SQL模板
+            /// </summary>
+            public const string SqlQuerySqlTemplate = @"--{0}
+{1}";
+        }
     }
 }

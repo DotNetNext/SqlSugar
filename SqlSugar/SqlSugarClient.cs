@@ -86,11 +86,11 @@ namespace SqlSugar
                         }
                         else if (_mappingColumns.Any(it => it.Key == item.Key && it.Value != item.Value))
                         {
-                            string throwMessage = string.Format("其它表已经存在{0}->{1}， Columns映射只能在 {0}->{1}和{0}->{2}二者选其一", 
+                            string throwMessage = string.Format(PubModel.SqlSugarClientConst.AttrMappingError, 
                                 item.Key,
                                 _mappingColumns.Single(it => it.Key == item.Key).Value, 
                                 item.Value);
-                            new SqlSugarException(throwMessage);
+                            throw new SqlSugarException(throwMessage);
                         }
                     }
                 }
@@ -354,8 +354,7 @@ namespace SqlSugar
                 }
             }
             var type = typeof(T);
-            sql = string.Format(@"--{0}
-{1}", type.Name, sql);
+            sql = string.Format(PubModel.SqlSugarClientConst.SqlQuerySqlTemplate, type.Name, sql);
             reader = GetReader(sql, pars.ToArray());
             string fields = sql;
             if (sql.Length > 101)

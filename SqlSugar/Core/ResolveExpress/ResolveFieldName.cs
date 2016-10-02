@@ -42,7 +42,7 @@ namespace SqlSugar
             {
                 throw new SqlSugarException(FileldErrorMessage);
             }
-            if (DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+            if (DB != null && DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
             {
                 if (DB._mappingColumns.Any(it => it.Key == reval))
                 {
@@ -86,7 +86,7 @@ namespace SqlSugar
             {
                  throw new SqlSugarException(FileldErrorMessage);
             }
-            if (DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+            if (DB != null && DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
             {
                 if (DB._mappingColumns.Any(it => reval.EndsWith("."+it.Key)))
                 {
