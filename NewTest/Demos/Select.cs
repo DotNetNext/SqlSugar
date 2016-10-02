@@ -195,7 +195,7 @@ namespace NewTest.Demos
 
                 var list = queryable.Select<School, Area, V_Student>((s1, s2, a1) => new V_Student { id = s1.id, name = s1.name, SchoolName = s2.name, AreaName = a1.name })
                     .ToPageList(0, 200);
-                var count2 = list.Count;
+                var count2 = queryable.Count();
 
 
                 //拼接例子
