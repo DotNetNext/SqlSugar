@@ -84,6 +84,7 @@
     <Compile Include="Tool\SqlSugarToolExtensions.cs" />
     <Compile Include="Tool\SqlSugarTool.cs" />
     <Compile Include="Tool\IStorageObject.cs" />
+    <Compile Include="Tool\SqlSugarToolWithSqlMethod.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
