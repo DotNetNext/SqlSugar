@@ -9,6 +9,7 @@ using SqlSugar;
 namespace NewTest.Demos
 {
     //通过属性的方法设置别名表和别名字段（主键和自添列都无需设置 SQLSUGAR会帮你自动处理）
+    //注意:【属性映射和 (SetMappingTables、SetMappingColumns)方式映射 2种选其中一，不清楚底层缓存机质不建议同时使用】
     public class AttributesMapping : IDemos
     {
 
@@ -68,9 +69,7 @@ namespace NewTest.Demos
             public string errorField { get; set; }
         }
 
-        /// <summary>
-        /// 属性只作为初始化映射，SetMappingTables和SetMappingColumns可以覆盖
-        /// </summary>
+ 
         [SugarMapping(TableName = "School")]
         public class TestSchool
         {
