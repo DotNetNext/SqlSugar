@@ -61,7 +61,7 @@ namespace NewTest
                 //多库并行计算 没写例子
 
                 /****************************支持**************************************/
-                //公开含数
+                //公开函数数
                 case "pubmethod": demo = new PubMethod(); break;
                 //Sql2012分页的支持
                 case "sqlpagemodel": demo=new SqlPageModel(); break;
