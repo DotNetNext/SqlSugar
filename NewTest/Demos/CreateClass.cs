@@ -23,6 +23,23 @@ namespace NewTest.Demos
 
                 db.ClassGenerating.CreateClassFiles(db, ("e:/TestModels"), "Models");
 
+
+                //批量设置别名表,可以方便生成指定格式的实体对象
+                db.ClassGenerating.ForeachTables(db, tableName =>
+                {
+                    db.AddMappingTable(new KeyValue() { Key = "Rename_"+tableName, Value =  tableName });
+                });
+
+                //生成的文件都Rename_开头
+                db.ClassGenerating.CreateClassFiles(db, ("e:/TestModels"), "Models",
+                    null, 
+                    className => { 
+                      //生成文件之后的回调
+                    }, tableName => {
+                      //生成文件之前的回调
+                    });
+
+
                 //只生成student和school表的实体
                 db.ClassGenerating.CreateClassFilesByTableNames(db, "e:/TestModels2", "Models", new string[] { "student", "school" });
 

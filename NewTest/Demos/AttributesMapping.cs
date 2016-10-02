@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using SqlSugar;
 namespace NewTest.Demos
 {
-    //通过属性的方法设置别名表和别名字段
+    //通过属性的方法设置别名表和别名字段（主键和自添列都无需设置 SQLSUGAR会帮你自动处理）
     public class AttributesMapping : IDemos
     {
 

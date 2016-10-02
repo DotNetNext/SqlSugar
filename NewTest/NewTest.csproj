@@ -52,6 +52,7 @@
     <Compile Include="Demos\IgnoreErrorColumns.cs" />
     <Compile Include="Demos\Insert.cs" />
     <Compile Include="Demos\Log.cs" />
+    <Compile Include="Demos\MappingColumns.cs" />
     <Compile Include="Demos\MappingTable.cs" />
     <Compile Include="Demos\Select.cs" />
     <Compile Include="Demos\Delete.cs" />

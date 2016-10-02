@@ -144,7 +144,7 @@ namespace SqlSugar
         }
 
 
- 
+
         /// <summary>
         /// 创建实体文件
         /// </summary>
@@ -152,8 +152,9 @@ namespace SqlSugar
         /// <param name="fileDirectory"></param>
         /// <param name="nameSpace">命名空间（默认：system）</param>
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
-        /// <param name="callBack"></param>
-        public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null)
+        /// <param name="callBack">生成文件后的处理，参数string为实体名</param>
+        /// <param name="callBack">生成文件前的处理，参数string为表名</param>
+        public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null, Action<string> preAction = null)
         {
             string sql = SqlSugarTool.GetCreateClassSql(tableOrView);
             var tables = db.GetDataTable(sql);
@@ -162,6 +163,10 @@ namespace SqlSugar
                 foreach (DataRow dr in tables.Rows)
                 {
                     string tableName = dr["name"].ToString();
+                    if (preAction != null)
+                    {
+                        preAction(tableName);
+                    }
                     var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
                     if (callBack != null)
                     {
@@ -297,5 +302,35 @@ namespace SqlSugar
             string sql = SqlSugarTool.GetTtableColumnsInfo(tableName);
             return db.SqlQuery<PubModel.DataTableMap>(sql);
         }
+
+        /// <summary>
+        ///遍历表名和视图名
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="action">string为表名</param>
+        public void ForeachTables(SqlSugarClient db, Action<string> action)
+        {
+            Check.ArgumentNullException(action,"ForeachTables.action不能为null。");
+            string cacgeKey = "ClassGenerating.ForeachTables";
+            var cm = CacheManager<List<string>>.GetInstance();
+            List<string> tables = null;
+            if (cm.ContainsKey(cacgeKey))
+            {
+                tables = cm[cacgeKey];
+            }
+            else
+            {
+                tables = GetTableNames(db);
+            }
+            if (tables.IsValuable())
+            {
+                foreach (var item in tables)
+                {
+                    action(item);
+                }
+            }
+
+        }
+
     }
 }

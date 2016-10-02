@@ -59,7 +59,18 @@ namespace NewTest.Demos
             {
                 string connection = SugarDao.ConnectionString; //这里可以动态根据cookies或session实现多库切换
                 var db = new SqlSugarClient(connection);
+
                 db.SetMappingTables(SugarConfigs.MpList);//设置关联表 (引用地址赋值，每次赋值都只是存储一个内存地址)
+
+
+
+                //批量设置别名表
+                //db.ClassGenerating.ForeachTables(db, tableName =>
+                //{
+                //    db.AddMappingTable(new KeyValue() { Key = tableName.Replace("bbs.",""), Value =  tableName }); //key实体名，value表名
+                //});
+
+
                 return db;
             }
         }

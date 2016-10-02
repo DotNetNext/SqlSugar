@@ -209,6 +209,40 @@ namespace SqlSugar
                 _mappingTableList = mappingTables;
             }
         }
+        /// <summary>
+        /// 添加实体类与表名的映射， Key为实体类 Value为表名
+        /// </summary>
+        /// <param name="mappingTables"></param>
+        public void AddMappingTable(KeyValue mappingTable)
+        {
+            Check.ArgumentNullException(mappingTable, "AddMappingTables.mappingTable不能为null。");
+            if (_mappingTableList == null)
+                _mappingTableList = new List<KeyValue>();
+            Check.Exception(_mappingTableList.Any(it => it.Key == mappingTable.Key), "mappingTable的Key已经存在。");
+            _mappingTableList.Add(mappingTable);
+        }
+        /// <summary>
+        /// 设置实体字段与数据库字段的映射，Key为实体字段 Value为表字段名称 （注意：不区分表，设置后所有表通用）
+        /// </summary>
+        /// <param name="mappingColumns"></param>
+        public void SetMappingColumns(List<KeyValue> mappingColumns) {
+
+            if (mappingColumns.IsValuable()) {
+                _mappingColumns = mappingColumns;
+            }
+        }
+        /// <summary>
+        /// 添加实体字段与数据库字段的映射，Key为实体字段 Value为表字段名称 （注意：不区分表，设置后所有表通用）
+        /// </summary>
+        /// <param name="mappingTables"></param>
+        public void AddMappingColum(KeyValue mappingColumns)
+        {
+            Check.ArgumentNullException(mappingColumns, "AddMappingTables.mappingColumns不能为null。");
+            if (_mappingColumns == null)
+                _mappingColumns = new List<KeyValue>();
+            Check.Exception(_mappingColumns.Any(it => it.Key == mappingColumns.Key), "mappingColumns的Key已经存在。");
+            _mappingColumns.Add(mappingColumns);
+        }
 
         /// <summary>
         /// 设置流水号 
