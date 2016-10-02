@@ -96,14 +96,19 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Stloc, result);
                 string cacheKey = "SqlSugarClient.InitAttributes";
                 var cm = CacheManager<List<KeyValue>>.GetInstance();
+                var tFieldNames = typeof(T).GetProperties().Select(it => it.Name).ToList();
                 for (int i = 0; i < dataRecord.FieldCount; i++)
                 {
-                    string fieldName = dataRecord.GetName(i);
-                    if (cm.ContainsKey(cacheKey) && cm[cacheKey].Any(it => it.Value == fieldName))
+                    string dbFieldName = dataRecord.GetName(i);
+                    if (cm.ContainsKey(cacheKey) && cm[cacheKey].Any(it => it.Value == dbFieldName))
                     {
-                        fieldName = cm[cacheKey].Single(it => it.Value == fieldName).Key;
+                        var classFieldName= cm[cacheKey].Single(it => it.Value == dbFieldName).Key;
+                        if (tFieldNames.Any(it => it == classFieldName))//T包含映射属性
+                        {
+                            dbFieldName = classFieldName;
+                        }
                     }
-                    PropertyInfo propertyInfo = type.GetProperty(fieldName);
+                    PropertyInfo propertyInfo = type.GetProperty(dbFieldName);
                     Label endIfLabel = generator.DefineLabel();
                     if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                     {
@@ -117,7 +122,7 @@ namespace SqlSugar
                         generator.Emit(OpCodes.Ldloc, result);
                         generator.Emit(OpCodes.Ldarg_0);
                         generator.Emit(OpCodes.Ldc_I4, i);
-                        GeneratorCallMethod(generator, underType, isNullable, propertyInfo, dataRecord.GetDataTypeName(i), fieldName);
+                        GeneratorCallMethod(generator, underType, isNullable, propertyInfo, dataRecord.GetDataTypeName(i), dbFieldName);
                         generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
                         generator.MarkLabel(endIfLabel);
                     }

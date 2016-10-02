@@ -65,6 +65,7 @@ namespace NewTest.Demos
             {
                 string connection = SugarDao.ConnectionString; //这里可以动态根据cookies或session实现多库切换
                 var db = new SqlSugarClient(connection);
+                //注意：只有启动属性映射才可以使用SetMappingColumns
                 db.IsEnableAttributeMapping = true;
                 db.SetMappingColumns(SugarConfigs.MpList);//设置关联列 (引用地址赋值，每次赋值都只是存储一个内存地址)
                 return db;
