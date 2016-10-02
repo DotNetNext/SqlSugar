@@ -299,6 +299,7 @@ namespace SqlSugar
         /// <returns></returns>
         public Queryable<T> Queryable<T>(string tableName) where T : new()
         {
+            InitAttributes<T>();
             return new Queryable<T>() { DB = this, TableName = tableName };
         }
         #endregion
@@ -419,7 +420,7 @@ namespace SqlSugar
         /// <returns>默认返回Identity，如果没有Identity执行成功将返回true</returns>
         public object Insert<T>(T entity, bool isIdentity = true) where T : class
         {
-
+            InitAttributes<T>();
             Type type = entity.GetType();
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
@@ -715,6 +716,7 @@ namespace SqlSugar
         /// <returns>更新成功返回true</returns>
         public bool Update<T>(object rowObj, Expression<Func<T, bool>> expression) where T : class
         {
+            InitAttributes<T>();
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
             if (expression == null) { throw new ArgumentNullException("SqlSugarClient.Update.expression"); }
 
@@ -814,6 +816,7 @@ namespace SqlSugar
         /// <returns>更新成功返回true</returns>
         public bool Update<T>(T rowObj) where T : class
         {
+            InitAttributes<T>();
             var isDynamic = typeof(T).IsAnonymousType();
             if (isDynamic)
             {
@@ -852,6 +855,7 @@ namespace SqlSugar
         /// <returns>更新成功返回true</returns>
         public bool Update<T, FiledType>(object rowObj, params FiledType[] whereIn) where T : class
         {
+            InitAttributes<T>();
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
 
             Type type = typeof(T);
@@ -935,6 +939,7 @@ namespace SqlSugar
         /// <returns>全部更新成功返回true</returns>
         public bool SqlBulkReplace<T>(List<T> entities) where T : class
         {
+            InitAttributes<T>();
             int actionNum = 100;
             var reval = true;
             while (entities.Count > 0)
@@ -1060,6 +1065,7 @@ namespace SqlSugar
         /// <returns>删除成功返回true</returns>
         public bool Delete<T>(Expression<Func<T, bool>> expression)
         {
+            InitAttributes<T>();
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
@@ -1079,6 +1085,7 @@ namespace SqlSugar
         /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(params FiledType[] whereIn)
         {
+            InitAttributes<T>();
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
@@ -1106,6 +1113,7 @@ namespace SqlSugar
         /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn)
         {
+            InitAttributes<T>();
             if (whereIn == null) return false;
             return Delete<T, FiledType>(expression, whereIn.ToArray());
         }
@@ -1120,6 +1128,7 @@ namespace SqlSugar
         /// <returns>删除成功返回true</returns>
         public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
         {
+            InitAttributes<T>();
             ResolveExpress re = new ResolveExpress();
             var fieldName = re.GetExpressionRightField(expression, this);
             Type type = typeof(T);
@@ -1149,6 +1158,7 @@ namespace SqlSugar
         /// <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
         public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)
         {
+            InitAttributes<T>();
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
@@ -1175,6 +1185,7 @@ namespace SqlSugar
         /// <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
         public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression)
         {
+            InitAttributes<T>();
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
