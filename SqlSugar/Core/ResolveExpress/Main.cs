@@ -143,7 +143,7 @@ namespace SqlSugar
                         parValue = right;
                     }
                     var oldLeft = AddParas(ref left, parValue);
-                    return string.Format(" ({0} {1} @{2}) ", oldLeft, oper, left);
+                    return string.Format(" ({0} {1} "+SqlSugarTool.ParSymbol+"{2}) ", oldLeft, oper, left);
                 }
                 else if (isValueOperKey)
                 {
@@ -157,7 +157,7 @@ namespace SqlSugar
                         parValue = left;
                     }
                     var oldRight = AddParasReturnRight(parValue, ref  right);
-                    return string.Format("( @{0} {1} {2} )", right, oper, oldRight);
+                    return string.Format("( " + SqlSugarTool.ParSymbol + "{0} {1} {2} )", right, oper, oldRight);
                 }
                 else if (leftType == MemberType.Value && rightType == MemberType.Value)
                 {
@@ -366,11 +366,11 @@ namespace SqlSugar
             }
             if (right == null)
             {
-                this.Paras.Add(new SqlParameter("@" + left, DBNull.Value));
+                this.Paras.Add(new SqlParameter(SqlSugarTool.ParSymbol + left, DBNull.Value));
             }
             else
             {
-                this.Paras.Add(new SqlParameter("@" + left, right));
+                this.Paras.Add(new SqlParameter(SqlSugarTool.ParSymbol + left, right));
             }
             return oldLeft;
         }
@@ -392,11 +392,11 @@ namespace SqlSugar
             }
             if (left == null)
             {
-                this.Paras.Add(new SqlParameter("@" + right, DBNull.Value));
+                this.Paras.Add(new SqlParameter(SqlSugarTool.ParSymbol + right, DBNull.Value));
             }
             else
             {
-                this.Paras.Add(new SqlParameter("@" + right, left));
+                this.Paras.Add(new SqlParameter(SqlSugarTool.ParSymbol + right, left));
             }
             return oldRight;
         }

@@ -417,6 +417,6 @@ namespace SqlSugar
         /// <summary>
         /// par的符号
         /// </summary>
-        public const string ParSymbol = "@";
+        public const char ParSymbol = '@';
     }
 }

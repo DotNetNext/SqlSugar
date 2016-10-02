@@ -526,7 +526,7 @@ namespace SqlSugar
                         }
                     }
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
-                        sbInsertSql.Append("@" + propName + ",");
+                        sbInsertSql.Append(SqlSugarTool.ParSymbol + propName + ",");
                     object val = prop.GetValue(entity, null);
                     if (val == null)
                         val = DBNull.Value;
@@ -552,7 +552,7 @@ namespace SqlSugar
                         val = (int)(val);
                     }
 
-                    var par = new SqlParameter("@" + propName, val);
+                    var par = new SqlParameter(SqlSugarTool.ParSymbol + propName, val);
                     SqlSugarTool.SetParSize(par);
                     if (par.SqlDbType == SqlDbType.Udt)
                     {
@@ -583,8 +583,8 @@ namespace SqlSugar
                     foreach (var item in this._mappingColumns)
                     {
                         sql = sql.Replace("[" + item.Key + "]", "[" + item.Value + "]");
-                        sql = sql.Replace("@" + item.Key+",", "@" + item.Value+",");
-                        sql = sql.Replace("@" + item.Key + ")", "@" + item.Value + ")");
+                        sql = sql.Replace(SqlSugarTool.ParSymbol + item.Key + ",", SqlSugarTool.ParSymbol + item.Value + ",");
+                        sql = sql.Replace(SqlSugarTool.ParSymbol + item.Key + ")", SqlSugarTool.ParSymbol + item.Value + ")");
                     }
                 }
                 var lastInsertRowId = GetScalar(sql, pars.ToArray());
@@ -752,7 +752,7 @@ namespace SqlSugar
                 sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
                 foreach (var r in rows)
                 {
-                    var name = r.ParameterName.TrimStart('@');
+                    var name = r.ParameterName.TrimStart(SqlSugarTool.ParSymbol);
                     name = GetMappingColumnDbName(name);
                     var isPk = pkName != null && pkName.ToLower() == name.ToLower();
                     var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
@@ -773,7 +773,7 @@ namespace SqlSugar
                             continue;
                         }
                     }
-                    sbSql.Append(string.Format(" [{0}] =@{0}  ,", name));
+                    sbSql.Append(string.Format(" [{0}] =" + SqlSugarTool.ParSymbol + "{0}  ,", name));
                 }
                 sbSql.Remove(sbSql.Length - 1, 1);
                 sbSql.Append(" WHERE  1=1  ");
@@ -792,7 +792,7 @@ namespace SqlSugar
                     {
                         par.UdtTypeName = "HIERARCHYID";
                     }
-                    par.ParameterName = "@"+GetMappingColumnDbName(par.ParameterName.TrimStart('@'));
+                    par.ParameterName = SqlSugarTool.ParSymbol + GetMappingColumnDbName(par.ParameterName.TrimStart(SqlSugarTool.ParSymbol));
                     SqlSugarTool.SetParSize(par);
                     parsList.Add(par);
                 }
@@ -888,7 +888,7 @@ namespace SqlSugar
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" [{0}] =@{0}  ,", name));
+                sbSql.Append(string.Format(" [{0}] =" + SqlSugarTool.ParSymbol + "{0}  ,", name));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             if (whereIn.Count() == 0)
@@ -901,13 +901,13 @@ namespace SqlSugar
                 sbSql.AppendFormat("WHERE {1} IN ({2})", typeName, pkName, whereIn.ToJoinSqlInVal());
             }
             List<SqlParameter> parsList = new List<SqlParameter>();
-            var pars = rows.Select(c => new SqlParameter("@" + c.Key, c.Value));
+            var pars = rows.Select(c => new SqlParameter(SqlSugarTool.ParSymbol + c.Key, c.Value));
             if (pars != null)
             {
                 foreach (var par in pars)
                 {
-                    string name ="@"+GetMappingColumnDbName( par.ParameterName.TrimStart('@'));
-                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.TrimStart('@').ToLower());
+                    string name = SqlSugarTool.ParSymbol + GetMappingColumnDbName(par.ParameterName.TrimStart(SqlSugarTool.ParSymbol));
+                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.TrimStart(SqlSugarTool.ParSymbol).ToLower());
                     if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
                         par.UdtTypeName = "HIERARCHYID";

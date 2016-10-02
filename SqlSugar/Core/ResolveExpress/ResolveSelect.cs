@@ -29,10 +29,10 @@ namespace SqlSugar
             {
                 reval.SelectValue = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
             }
-            var hasOutPar = expStr.Contains("@");
+            var hasOutPar = expStr.Contains(SqlSugarTool.ParSymbol);
             if (hasOutPar)//有
             {
-                var ms = Regex.Matches(expStr, @"""(\@[a-z,A-Z]+)?""\.ObjTo[a-z,A-Z]+?\(\)").Cast<Match>().ToList();
+                var ms = Regex.Matches(expStr, @"""(\"+SqlSugarTool.ParSymbol+@"[a-z,A-Z]+)?""\.ObjTo[a-z,A-Z]+?\(\)").Cast<Match>().ToList();
                 foreach (var m in ms)
                 {
                     reval.SelectValue = reval.SelectValue.Replace(m.Groups[0].Value, m.Groups[1].Value);
@@ -58,10 +58,10 @@ namespace SqlSugar
             if (expStr.IsNullOrEmpty()) {
                 expStr=Regex.Match(reval.SelectValue, @"c =>.*?\((.+)\)").Groups[1].Value;
             }
-            var hasOutPar = expStr.Contains("@");
+            var hasOutPar = expStr.Contains(SqlSugarTool.ParSymbol);
             if (hasOutPar)//有
             {
-                var ms = Regex.Matches(expStr, @"""(\@[a-z,A-Z]+)?""\.ObjTo[a-z,A-Z]+?\(\)").Cast<Match>().ToList();
+                var ms = Regex.Matches(expStr, @"""(\"+SqlSugarTool.ParSymbol+@"[a-z,A-Z]+)?""\.ObjTo[a-z,A-Z]+?\(\)").Cast<Match>().ToList();
                 foreach (var m in ms)
                 {
                     expStr = expStr.Replace(m.Groups[0].Value, m.Groups[1].Value);
@@ -133,7 +133,7 @@ namespace SqlSugar
                 }
             }
             if (selectStr.Contains("+<>")) {
-                throw new SqlSugarException("Select中的拉姆达表达式,不支持外部传参数,目前支持的写法 Where(\"1=1\",new {id=1}).Select(it=>{ id=\"@id\".ObjToInt()}");
+                throw new SqlSugarException("Select中的拉姆达表达式,不支持外部传参数,目前支持的写法 Where(\"1=1\",new {id=1}).Select(it=>{ id=\"" + SqlSugarTool.ParSymbol + "id\".ObjToInt()}");
             }
             return selectStr;
         }
