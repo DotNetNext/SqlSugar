@@ -7,7 +7,7 @@ using System.Data;
 namespace SqlSugar
 {
     /// <summary>
-    /// SqlSugarTool局部类存放具有拼接SQL的函数
+    /// SqlSugarTool局部类存放具有拼接SQL的函数(方便工具移植到其它数据库版本)
     /// </summary>
     public partial class SqlSugarTool
     {
