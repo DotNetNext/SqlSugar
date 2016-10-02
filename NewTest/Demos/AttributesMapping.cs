@@ -29,8 +29,12 @@ namespace NewTest.Demos
                 TestStudent s = new TestStudent();
                 s.className = "属性名";
                 s.classSchoolId = 1;
-                db.Insert(s);
-
+                var id= db.Insert(s);
+                s.classId = id.ObjToInt();
+                db.Update(s);
+                db.Update<TestStudent,int>(s,100);
+                db.Update<TestStudent>(s,it=>it.classId==100);
+                db.SqlBulkReplace(new List<TestStudent>() { s });
             }
         }
 

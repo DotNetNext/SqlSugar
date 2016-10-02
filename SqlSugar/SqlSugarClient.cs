@@ -96,6 +96,29 @@ namespace SqlSugar
                 }
             }
         }
+        private string GetMappingColumnDbName(string name)
+        {
+            if (this.IsEnableAttributeMapping && _mappingColumns.IsValuable())
+            {
+                if (_mappingColumns.Any(it => it.Key == name))
+                {
+                    name = this._mappingColumns.Single(it => it.Key == name).Value;
+                }
+            }
+            return name;
+        }
+        private string GetMappingColumnClassName(string name)
+        {
+            if (this.IsEnableAttributeMapping && _mappingColumns.IsValuable())
+            {
+                if (_mappingColumns.Any(it => it.Value == name))
+                {
+                    name = _mappingColumns.Single(it => it.Value == name).Key;
+                }
+            }
+            return name;
+        }
+
         #endregion
 
 
@@ -449,14 +472,7 @@ namespace SqlSugar
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
                 {
-                    string propName = prop.Name;
-                    if (this.IsEnableAttributeMapping && _mappingColumns.IsValuable())
-                    {
-                        if (_mappingColumns.Any(it => it.Key == propName))
-                        {
-                            propName = this._mappingColumns.Single(it => it.Key == propName).Value;
-                        }
-                    }
+                    string propName = GetMappingColumnDbName(prop.Name);
                     if (this.IsIgnoreErrorColumns)
                     {
                         if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == propName.ToLower()))
@@ -488,14 +504,7 @@ namespace SqlSugar
             //5.再次遍历，形成参数列表"(@xx,@xx@xx)"的形式 
             foreach (PropertyInfo prop in props)
             {
-                string propName = prop.Name;
-                if (this.IsEnableAttributeMapping && _mappingColumns.IsValuable())
-                {
-                    if (_mappingColumns.Any(it => it.Key == propName))
-                    {
-                        propName = this._mappingColumns.Single(it => it.Key == propName).Value;
-                    }
-                }
+                string propName = GetMappingColumnDbName(prop.Name);
 
 
                 //EntityState,@EntityKey
@@ -742,6 +751,7 @@ namespace SqlSugar
                 foreach (var r in rows)
                 {
                     var name = r.ParameterName.TrimStart('@');
+                    name = GetMappingColumnDbName(name);
                     var isPk = pkName != null && pkName.ToLower() == name.ToLower();
                     var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
                     var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
@@ -780,6 +790,7 @@ namespace SqlSugar
                     {
                         par.UdtTypeName = "HIERARCHYID";
                     }
+                    par.ParameterName = "@"+GetMappingColumnDbName(par.ParameterName.TrimStart('@'));
                     SqlSugarTool.SetParSize(par);
                     parsList.Add(par);
                 }
@@ -849,16 +860,18 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            string pkClassPropName =pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             foreach (var r in rows)
             {
-                var isPk = pkName != null && pkName.ToLower() == r.Key.ToLower();
-                var isIdentity = identityNames.Any(it => it.Value.ToLower() == r.Key.ToLower());
-                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == r.Key.ToLower());
+                string name = GetMappingColumnDbName(r.Key);
+                var isPk = pkName != null && pkName.ToLower() == name.ToLower();
+                var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
+                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
 
                 if (this.IsIgnoreErrorColumns)
                 {
-                    if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == r.Key.ToLower()))
+                    if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == name.ToLower()))
                     {
                         continue;
                     }
@@ -871,12 +884,12 @@ namespace SqlSugar
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" [{0}] =@{0}  ,", r.Key));
+                sbSql.Append(string.Format(" [{0}] =@{0}  ,", name));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             if (whereIn.Count() == 0)
             {
-                var value = type.GetProperties().Cast<PropertyInfo>().Single(it => it.Name == pkName).GetValue(rowObj, null);
+                var value = type.GetProperties().Cast<PropertyInfo>().Single(it => it.Name == (pkClassPropName == null ? pkName : pkClassPropName)).GetValue(rowObj, null);
                 sbSql.AppendFormat("WHERE {1} IN ('{2}')", typeName, pkName, value);
             }
             else
@@ -889,6 +902,7 @@ namespace SqlSugar
             {
                 foreach (var par in pars)
                 {
+                    string name ="@"+GetMappingColumnDbName( par.ParameterName.TrimStart('@'));
                     var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.TrimStart('@').ToLower());
                     if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
@@ -896,6 +910,7 @@ namespace SqlSugar
                     }
                     if (!isDisableUpdateColumns)
                     {
+                        par.ParameterName = name;
                         parsList.Add(par);
                     }
                 }
@@ -911,6 +926,7 @@ namespace SqlSugar
             }
         }
 
+    
 
         /// <summary>
         /// 大数据更新 支持IsIgnoreErrorColumns和isDisableUpdateColumns
@@ -949,6 +965,8 @@ namespace SqlSugar
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            pkName = GetMappingColumnDbName(pkName);
+            string pkClassPropName = GetMappingColumnClassName(pkName);
             Check.Exception(pkName.IsNullOrEmpty(), "没有找到主键。");
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             var isIdentity = identityNames != null && identityNames.Count > 0;
@@ -976,17 +994,20 @@ namespace SqlSugar
                 sbSql.Append(" UPDATE ");
                 sbSql.Append(typeName);
                 sbSql.Append(" SET ");
-                pkValue = props.Single(it => it.Name.ToLower() == pkName.ToLower()).GetValue(entity, null).ToString();
+                pkValue = props.Single(it => it.Name.ToLower() ==pkClassPropName.ToLower()).GetValue(entity, null).ToString();
                 foreach (var name in columnNames)
                 {
-                    var isPk = pkName != null && pkName.ToLower() == name.ToLower();
-                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
+                    var dbName = GetMappingColumnDbName(name);
+                    var className = GetMappingColumnClassName(name);
+                    var isPk = pkName != null && pkName.ToLower() == dbName.ToLower();
+                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == dbName.ToLower());
                     var isLastName = name == columnNames.Last();
-                    var prop = props.Single(it => it.Name == name);
+                    var prop = props.FirstOrDefault(it => it.Name == className);
+                    if (prop == null) continue;
                     var objValue = prop.GetValue(entity, null);
                     if (this.IsIgnoreErrorColumns)
                     {
-                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == name.ToLower()))
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == dbName.ToLower()))
                         {
                             continue;
                         }
@@ -1018,7 +1039,7 @@ namespace SqlSugar
                     {
                         objValue = "'" + objValue.ToString() + "'";
                     }
-                    sbSql.AppendFormat(" [{0}]={1}{2}  ", name, objValue, ",");
+                    sbSql.AppendFormat(" [{0}]={1}{2}  ", dbName, objValue, ",");
                 }
                 sbSql.Remove(sbSql.ToString().LastIndexOf(","), 1);
                 sbSql.AppendFormat("WHERE [{0}]='{1}' ", pkName, pkValue.ToSuperSqlFilter());

@@ -375,7 +375,10 @@ namespace SqlSugar
             }
             else
             {
+                var isLog = db.IsEnableLogEvent;
+                db.IsEnableLogEvent = false;
                 var dt = db.GetDataTable(sql);
+                db.IsEnableLogEvent = isLog;
                 identityInfo = new List<KeyValue>();
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -404,8 +407,11 @@ namespace SqlSugar
             }
             else
             {
+                var isLog = db.IsEnableLogEvent;
+                db.IsEnableLogEvent = false;
                 string sql = " SELECT Name FROM SysColumns WHERE id=Object_Id('" + tableName + "')";
                 var reval = db.SqlQuery<string>(sql);
+                db.IsEnableLogEvent = isLog;
                 cm.Add(key, reval, cm.Day);
                 return reval;
             }
@@ -436,7 +442,10 @@ namespace SqlSugar
   SELECT name  FROM sysindexes   WHERE indid in(  
   SELECT indid FROM sysindexkeys WHERE id = a.id AND colid=a.colid  
 )))";
+                var isLog = db.IsEnableLogEvent;
+                db.IsEnableLogEvent = false;
                 var dt = db.GetDataTable(sql);
+                db.IsEnableLogEvent = isLog;
                 primaryInfo = new List<KeyValue>();
                 if (dt != null && dt.Rows.Count > 0)
                 {
