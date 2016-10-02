@@ -40,11 +40,14 @@ namespace SqlSugar
         internal static Type DicArraySO = typeof(Dictionary<string, object>);
 
         /// <summary>
-        /// Reader转成T的集合
+        ///  Reader转成T的集合
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
         /// <param name="dr"></param>
+        /// <param name="fields"></param>
         /// <param name="isClose"></param>
+        /// <param name="isTry"></param>
         /// <returns></returns>
         internal static List<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true, bool isTry = true)
         {
@@ -95,7 +98,7 @@ namespace SqlSugar
             catch (Exception ex)
             {
                 if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
-                Check.Exception(true,"错误信息：实体映射出错。\r\n错误详情：{0}",ex.Message);
+                Check.Exception(true, "错误信息：实体映射出错。\r\n错误详情：{0}", ex.Message);
             }
             return list;
         }
@@ -210,14 +213,15 @@ namespace SqlSugar
                     if (type == SqlSugarTool.DicArraySO)
                     {
                         var newObj = (Dictionary<string, object>)obj;
-                        var pars = newObj.Select(it=>new SqlParameter("@"+it.Key,it.Value));
+                        var pars = newObj.Select(it => new SqlParameter("@" + it.Key, it.Value));
                         foreach (var par in pars)
                         {
                             SetParSize(par);
                         }
                         listParams.AddRange(pars);
                     }
-                    else {
+                    else
+                    {
 
                         var newObj = (Dictionary<string, string>)obj;
                         var pars = newObj.Select(it => new SqlParameter("@" + it.Key, it.Value));
