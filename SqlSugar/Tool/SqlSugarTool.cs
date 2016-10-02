@@ -481,6 +481,11 @@ namespace SqlSugar
             return Regex.Replace(word, @"(\[|\%)", "[$1]");
         }
 
+        /// <summary>
+        /// 获取 WITH(NOLOCK)
+        /// </summary>
+        /// <param name="isNoLock"></param>
+        /// <returns></returns>
         public static string GetLockString(bool isNoLock)
         {
             return isNoLock ? " WITH(NOLOCK) " : "";
