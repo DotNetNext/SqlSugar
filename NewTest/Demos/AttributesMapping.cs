@@ -20,7 +20,7 @@ namespace NewTest.Demos
 
                 //查询
                 var list = db.Queryable<TestStudent>()
-                    .Where(it=>it.className.Contains("杰")).OrderBy(it=>it.classSchoolId).ToList();
+                    .Where(it=>it.className.Contains("小")).OrderBy(it=>it.classSchoolId).ToList();
                 var list2 = db.Queryable<TestStudent>()
                     .JoinTable<TestSchool>((s1,s2)=>s1.classSchoolId==s2.classId).Select("s1.name,s2.name as schname")
                     .OrderBy<TestSchool>((s1,s2)=>s1.classId).ToDynamic();

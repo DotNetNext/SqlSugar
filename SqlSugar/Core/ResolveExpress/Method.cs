@@ -23,8 +23,8 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE @{2}+'%')", oldLeft, null, left);
+            var oldLeft = AddParas(ref left, right + '%');
+            return string.Format("({0} {1} LIKE @{2})", oldLeft, null, left);
         }
 
         /// <summary>
@@ -40,8 +40,8 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE '%'+@{2})", oldLeft, null, left);
+            var oldLeft = AddParas(ref left, '%' + right);
+            return string.Format("({0} {1} LIKE @{2})", oldLeft, null, left);
         }
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace SqlSugar
             }
             else
             {
-                var oldLeft = AddParas(ref left, right);
-                return string.Format("({0} {1} LIKE '%'+@{2}+'%')", oldLeft, null, left);
+                var oldLeft = AddParas(ref left, '%' + right + '%');
+                return string.Format("({0} {1} LIKE @{2})", oldLeft, null, left);
             }
         }
 
