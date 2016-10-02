@@ -94,7 +94,7 @@ namespace SqlSugar
                         {
                             _primaryKeyName.Add(r.ColumnName);
                         }
-                        propertiesValue.AppendFormat(ClassTemplate.ClassFieldSummary,
+                        propertiesValue.AppendFormat(ClassTemplate.ClassFieldSummaryTemplate,
                         columnInfo.COLUMN_DESCRIPTION.IsValuable() ? columnInfo.COLUMN_DESCRIPTION.ToString() : "-", //{0}
                         columnInfo.COLUMN_DEFAULT.IsValuable() ? columnInfo.COLUMN_DEFAULT.ToString() : "-", //{1}
                         Convert.ToBoolean(columnInfo.IS_NULLABLE));//{2}
