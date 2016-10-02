@@ -18,11 +18,19 @@ namespace NewTest.Demos
             using (var db = DBManager.GetInstance())
             {
 
+                //查询
                 var list = db.Queryable<TestStudent>()
                     .Where(it=>it.className.Contains("杰")).OrderBy(it=>it.classSchoolId).ToList();
                 var list2 = db.Queryable<TestStudent>()
                     .JoinTable<TestSchool>((s1,s2)=>s1.classSchoolId==s2.classId).Select("s1.name,s2.name as schname")
                     .OrderBy<TestSchool>((s1,s2)=>s1.classId).ToDynamic();
+
+                //添加
+                TestStudent s = new TestStudent();
+                s.className = "属性名";
+                s.classSchoolId = 1;
+                db.Insert(s);
+
             }
         }
 
