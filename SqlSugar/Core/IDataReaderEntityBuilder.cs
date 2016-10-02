@@ -157,7 +157,7 @@ namespace SqlSugar
             List<string> shortThrow = new List<string>() { "datetime", "guid" };
             List<string> byteThrow = new List<string>() { "datetime", "guid" };
             MethodInfo method = null;
-            var typeName = ChangeDBTypeToCSharpType(dbTypeName);
+            var typeName = SqlSugarTool.ChangeDBTypeToCSharpType(dbTypeName);
             var objTypeName = type.Name.ToLower();
             var isEnum = type.IsEnum;
             if (isEnum)
@@ -341,97 +341,6 @@ namespace SqlSugar
 
 
         }
-        /// <summary>
-        /// 将SqlType转成C#Type
-        /// </summary>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        public static string ChangeDBTypeToCSharpType(string typeName)
-        {
-            string reval = string.Empty;
-            switch (typeName.ToLower())
-            {
-                case "int":
-                    reval = "int";
-                    break;
-                case "text":
-                    reval = "string";
-                    break;
-                case "bigint":
-                    reval = "long";
-                    break;
-                case "binary":
-                    reval = "object";
-                    break;
-                case "bit":
-                    reval = "bool";
-                    break;
-                case "char":
-                    reval = "string";
-                    break;
-                case "datetime":
-                    reval = "dateTime";
-                    break;
-                case "decimal":
-                    reval = "decimal";
-                    break;
-                case "float":
-                    reval = "double";
-                    break;
-                case "image":
-                    reval = "byte[]";
-                    break;
-                case "money":
-                    reval = "decimal";
-                    break;
-                case "nchar":
-                    reval = "string";
-                    break;
-                case "ntext":
-                    reval = "string";
-                    break;
-                case "numeric":
-                    reval = "decimal";
-                    break;
-                case "nvarchar":
-                    reval = "string";
-                    break;
-                case "real":
-                    reval = "float";
-                    break;
-                case "smalldatetime":
-                    reval = "dateTime";
-                    break;
-                case "smallint":
-                    reval = "short";
-                    break;
-                case "smallmoney":
-                    reval = "decimal";
-                    break;
-                case "timestamp":
-                    reval = "dateTime";
-                    break;
-                case "tinyint":
-                    reval = "byte";
-                    break;
-                case "uniqueidentifier":
-                    reval = "guid";
-                    break;
-                case "varbinary":
-                    reval = "byte[]";
-                    break;
-                case "varchar":
-                    reval = "string";
-                    break;
-                case "Variant":
-                    reval = "object";
-                    break;
-                default:
-                    reval = "string";
-                    break;
-            }
-            return reval;
-        }
-
+  
     }
 }
