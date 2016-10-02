@@ -225,12 +225,12 @@ namespace NewTest.Demos
 
                 //条件函数的支持(字段暂不支持函数,只有参数支持) 目前只支持这么多
                 var par1 = "2015-1-1"; var par2 = "   我 有空格A, ";
-                var r1 = db.Queryable<Student>().Where(it => it.name == par1.ObjToString()).ToSql(); //ObjToString会将null转转成""
-                var r2 = db.Queryable<InsertTest>().Where(it => it.d1 == par1.ObjToDate()).ToSql();
-                var r3 = db.Queryable<InsertTest>().Where(it => it.id == 1.ObjToInt()).ToSql();//ObjToInt会将null转转成0
-                var r4 = db.Queryable<InsertTest>().Where(it => it.id == 2.ObjToDecimal()).ToSql();
-                var r5 = db.Queryable<InsertTest>().Where(it => it.id == 3.ObjToMoney()).ToSql();
-                var r6 = db.Queryable<InsertTest>().Where(it => it.v1 == par2.Trim()).ToSql();
+                var r1 = db.Queryable<Student>().Where(it => it.name == par1.ObjToString()).ToList(); //ObjToString会将null转转成""
+                var r2 = db.Queryable<InsertTest>().Where(it => it.d1 == par1.ObjToDate()).ToList();
+                var r3 = db.Queryable<InsertTest>().Where(it => it.id == 1.ObjToInt()).ToList();//ObjToInt会将null转转成0
+                var r4 = db.Queryable<InsertTest>().Where(it => it.id == 2.ObjToDecimal()).ToList();
+                var r5 = db.Queryable<InsertTest>().Where(it => it.id == 3.ObjToMoney()).ToList();
+                var r6 = db.Queryable<InsertTest>().Where(it => it.v1 == par2.Trim()).ToList();
                 var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();
                 var convert2 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();
                 var convert3 = db.Queryable<Student>().Where(c => c.name == par2.ToLower()).ToList();
