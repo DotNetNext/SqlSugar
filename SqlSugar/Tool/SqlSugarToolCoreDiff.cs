@@ -139,7 +139,7 @@ namespace SqlSugar
             {
                 paraDictionarAll = paraDictionarAll.Where(it => !string.IsNullOrEmpty(it.Value));
             }
-            return paraDictionarAll.Select(it => new SqlParameter("@" + it.Key, it.Value)).ToArray();
+            return paraDictionarAll.Select(it => new SqlParameter(SqlSugarTool.ParSymbol + it.Key, it.Value)).ToArray();
         }
     }
 }
