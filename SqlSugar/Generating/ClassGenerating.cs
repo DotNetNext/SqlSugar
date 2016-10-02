@@ -62,8 +62,10 @@ namespace SqlSugar
         /// <summary>
         /// 根据DataTable获取实体类的字符串
         /// </summary>
-        /// <param name="sql"></param>
+        /// <param name="dt"></param>
         /// <param name="className"></param>
+        /// <param name="nameSpace"></param>
+        /// <param name="dataTableMapList"></param>
         /// <returns></returns>
         public string DataTableToClass(DataTable dt, string className, string nameSpace = null, List<PubModel.DataTableMap> dataTableMapList = null)
         {
@@ -126,12 +128,12 @@ namespace SqlSugar
             return reval;
 
         }
+
         /// <summary>
         /// 根据表名获取实体类的字符串
         /// </summary>
         /// <param name="db"></param>
-        /// <param name="sql"></param>
-        /// <param name="className"></param>
+        /// <param name="tableName">表名</param>
         /// <returns></returns>
         public string TableNameToClass(SqlSugarClient db, string tableName)
         {
@@ -142,15 +144,15 @@ namespace SqlSugar
         }
 
 
-
-
+ 
         /// <summary>
-        /// 创建SQL实体文件
+        /// 创建实体文件
         /// </summary>
         /// <param name="db"></param>
         /// <param name="fileDirectory"></param>
-        /// <param name="nameSpace">命名空间（默认：null）</param>
+        /// <param name="nameSpace">命名空间（默认：system）</param>
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
+        /// <param name="callBack"></param>
         public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null)
         {
             string sql = SqlSugarTool.GetCreateClassSql(tableOrView);
@@ -181,15 +183,12 @@ namespace SqlSugar
             }
         }
 
-
-
         /// <summary>
         /// 创建SQL实体文件
         /// </summary>
         /// <param name="db"></param>
-        /// <param name="fileDirectory"></param>
-        /// <param name="nameSpace">命名空间（默认：null）</param>
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
+        /// <param name="callBack">回调函数</param>
         public void CreateClassFilesInterface(SqlSugarClient db, bool? tableOrView, Action<DataTable, string, string> callBack)
         {
             string sql = SqlSugarTool.GetCreateClassSql(tableOrView);
@@ -257,7 +256,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public string ChangeType(Type type)
+        private string ChangeType(Type type)
         {
             string typeName = type.Name;
             switch (typeName)
@@ -268,7 +267,7 @@ namespace SqlSugar
             return typeName;
         }
 
-        public string ChangeNullable(string typeName, bool isNull)
+        private string ChangeNullable(string typeName, bool isNull)
         {
             if (isNull)
             {
@@ -287,7 +286,12 @@ namespace SqlSugar
             return typeName;
         }
 
-        // 获取表结构信息
+        /// <summary>
+        /// 获取表结构信息
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
         public List<PubModel.DataTableMap> GetTableColumns(SqlSugarClient db, string tableName)
         {
             string sql = SqlSugarTool.GetTtableColumnsInfo(tableName);
