@@ -57,7 +57,7 @@ namespace NewTest
                 case "filter2": demo = new Filter2(); break;
                 //流水号功能
                 case "serialnumber": demo = new SerialNumber(); break;
-
+                //多语言支持 没写例子
 
                 /****************************支持**************************************/
                 //公开含数
