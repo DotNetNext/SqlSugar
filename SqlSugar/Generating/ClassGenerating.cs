@@ -92,15 +92,10 @@ namespace SqlSugar
                         {
                             _primaryKeyName.Add(r.ColumnName);
                         }
-                        propertiesValue.AppendFormat(@"     /// <summary>
-     /// Desc:{0} 
-     /// Default:{1} 
-     /// Nullable:{2} 
-     /// </summary>
-",
-   columnInfo.COLUMN_DESCRIPTION.IsValuable() ? columnInfo.COLUMN_DESCRIPTION.ToString() : "-", //{0}
-   columnInfo.COLUMN_DEFAULT.IsValuable() ? columnInfo.COLUMN_DEFAULT.ToString() : "-", //{1}
-   Convert.ToBoolean(columnInfo.IS_NULLABLE));//{2}
+                        propertiesValue.AppendFormat(ClassTemplate.ClassFieldSummary,
+                        columnInfo.COLUMN_DESCRIPTION.IsValuable() ? columnInfo.COLUMN_DESCRIPTION.ToString() : "-", //{0}
+                        columnInfo.COLUMN_DEFAULT.IsValuable() ? columnInfo.COLUMN_DEFAULT.ToString() : "-", //{1}
+                        Convert.ToBoolean(columnInfo.IS_NULLABLE));//{2}
                     }
                 }
                 propertiesValue.AppendFormat(
@@ -210,7 +205,7 @@ namespace SqlSugar
                 }
             }
         }
-     
+
 
         /// <summary>
         ///  创建SQL实体文件,指定表名

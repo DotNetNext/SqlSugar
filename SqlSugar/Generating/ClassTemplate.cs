@@ -59,5 +59,11 @@ namespace $namespace
     }
 }
 ";
+        public static string ClassFieldSummary = @"     /// <summary>
+     /// Desc:{0} 
+     /// Default:{1} 
+     /// Nullable:{2} 
+     /// </summary>
+";
     }
 }
