@@ -562,7 +562,7 @@ namespace SqlSugar
 
 
                 //EntityState,@EntityKey
-                if (!isIdentity || identities.Any(it => it.Value.ToLower() != propName))
+                if (!isIdentity || identities.Any(it => it.Value.ToLower() != propName.ToLower()))
                 {
                     if (this.IsIgnoreErrorColumns)
                     {
@@ -573,7 +573,7 @@ namespace SqlSugar
                     }
                     if (this.DisableInsertColumns.IsValuable())
                     {
-                        if (this.DisableInsertColumns.Any(it => it.ToLower() == propName))
+                        if (this.DisableInsertColumns.Any(it => it.ToLower() == propName.ToLower()))
                         {
                             continue;
                         }
