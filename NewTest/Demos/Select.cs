@@ -375,7 +375,7 @@ namespace NewTest.Demos
                 db.IsClearParameters = false;//禁止清除参数
                 pars[1].Direction = ParameterDirection.Output; //将p2设为 output
                 var spResult2 = db.SqlQuery<School>("exec sp_school @p1,@p2 output", pars);
-                db.IsClearParameters = true;//启动请动清除参数
+                db.IsClearParameters = true;//启用清除参数
                 var outPutValue = pars[1].Value;//获取output @p2的值
 
                 //获取第一行第一列的值
