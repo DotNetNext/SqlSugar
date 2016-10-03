@@ -124,7 +124,7 @@ namespace SqlSugar
                 }
             }
         }
-        internal static string GetSqlTableName(this string tableName)
+        public static string GetSqlTableName(this string tableName)
         {
             return SqlSugarTool.GetSqlTableName(tableName);
         }

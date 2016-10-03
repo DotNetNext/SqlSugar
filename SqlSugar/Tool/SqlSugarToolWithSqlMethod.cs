@@ -426,18 +426,19 @@ namespace SqlSugar
         /// <returns></returns>
         internal static string GetSqlTableName(string tableName)
         {
-            Check.ArgumentNullException(tableName, "表中不能为空。");
+            Check.ArgumentNullException(tableName, "表名不能为空。");
             var hasScheme = tableName.Contains(".");
+            if (tableName.Contains("[")) return tableName;
             if (hasScheme)
             {
-                var array = tableName.Split(',');
+                var array = tableName.Split('.');
                 if (array.Length == 2)
                 {
-                    return string.Format("[0].[1]", array.First(), array.Last());
+                    return string.Format("[{0}].[{1}]", array.First(), array.Last());
                 }
                 else
                 {
-                    throw new SqlSugarException(tableName + "不是有效的表名。");
+                  return  string.Join(".", array.Select(it => "[" + it + "]"));
                 }
             }
             else
