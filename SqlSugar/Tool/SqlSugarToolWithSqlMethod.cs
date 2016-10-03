@@ -45,7 +45,7 @@ namespace SqlSugar
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderByValue.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderByValue + " )") : null;
 
-                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName, order, withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
+                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM {0} {5} {2} WHERE 1=1 {3} {4} ", tableName.GetTranslationSqlName(), order, withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
                 if (queryable.Skip == null && queryable.Take != null)
                 {
                     if (joinInfo.IsValuable())
@@ -90,7 +90,7 @@ namespace SqlSugar
                 #region offset
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderByValue.IsValuable() ? ("ORDER BY " + queryable.OrderByValue + " ") : null;
-                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM [{0}] {5} {2} WHERE 1=1 {3} {4} ", tableName, "", withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
+                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM {0} {5} {2} WHERE 1=1 {3} {4} ", tableName.GetTranslationSqlName(), "", withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
                 sbSql.Append(order);
                 if (queryable.Skip != null || queryable.Take != null)
                 {
@@ -318,7 +318,7 @@ namespace SqlSugar
 
         internal static string GetSelectTopSql()
         {
-            return "select top 1 * from [{0}]";
+            return "select top 1 * from {0}";
         }
 
         /// <summary>

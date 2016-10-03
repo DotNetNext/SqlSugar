@@ -137,7 +137,7 @@ namespace SqlSugar
         /// <returns></returns>
         public string TableNameToClass(SqlSugarClient db, string tableName)
         {
-            var dt = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
+            var dt = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName.GetTranslationSqlName()));
             var tableColumns = GetTableColumns(db, tableName);
             var reval = DataTableToClass(dt, tableName, null, tableColumns);
             return reval;
@@ -167,7 +167,7 @@ namespace SqlSugar
                     {
                         preAction(tableName);
                     }
-                    var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
+                    var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName.GetTranslationSqlName()));
                     if (callBack != null)
                     {
                         var tableColumns = GetTableColumns(db, tableName);
@@ -203,7 +203,7 @@ namespace SqlSugar
                 foreach (DataRow dr in tables.Rows)
                 {
                     string tableName = dr["name"].ToString();
-                    var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
+                    var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName.GetTranslationSqlName()));
                     string className = db.GetClassTypeByTableName(tableName);
                     callBack(tables, className, tableName);
                 }
@@ -229,7 +229,7 @@ namespace SqlSugar
                     string tableName = dr["name"].ToString().ToLower();
                     if (tableNames.Any(it => it.ToLower() == tableName))
                     {
-                        var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName));
+                        var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), tableName.GetTranslationSqlName()));
                         var tableColumns = GetTableColumns(db, tableName);
                         string className = db.GetClassTypeByTableName(tableName);
                         var classCode = DataTableToClass(currentTable, className, nameSpace, tableColumns);
