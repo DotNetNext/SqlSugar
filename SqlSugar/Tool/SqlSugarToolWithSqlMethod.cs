@@ -420,31 +420,50 @@ namespace SqlSugar
         public const char ParSymbol = '@';
 
         /// <summary>
-        /// 获取查询语句的表名
+        /// 获取转释后的表名和列名
         /// </summary>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        internal static string GetSqlTableName(string tableName)
+        internal static string GetTranslationSqlName(string name)
         {
-            Check.ArgumentNullException(tableName, "表名不能为空。");
-            var hasScheme = tableName.Contains(".");
-            if (tableName.Contains("[")) return tableName;
+            Check.ArgumentNullException(name, "表名不能为空。");
+            var hasScheme = name.Contains(".");
+            if (name.Contains("[")) return name;
             if (hasScheme)
             {
-                var array = tableName.Split('.');
+                var array = name.Split('.');
                 if (array.Length == 2)
                 {
                     return string.Format("[{0}].[{1}]", array.First(), array.Last());
                 }
                 else
                 {
-                  return  string.Join(".", array.Select(it => "[" + it + "]"));
+                    return string.Join(".", array.Select(it => "[" + it + "]"));
                 }
             }
             else
             {
-                return "[" + tableName + "]";
+                return "[" + name + "]";
             }
+        }
+        /// <summary>
+        /// 获取参数名
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal static string GetSqlParameterName(string name)
+        {
+            return ParSymbol + name;
+        }
+
+        /// <summary>
+        ///获取没有符号的参数名称
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal static string GetSqlParameterNameNoParSymbol(string name)
+        {
+            return name.TrimStart(ParSymbol);
         }
     }
 }

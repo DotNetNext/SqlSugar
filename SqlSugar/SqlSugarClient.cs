@@ -802,7 +802,7 @@ namespace SqlSugar
             }
             else
             {
-                sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
+                sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName.GetTranslationSqlName()));
                 foreach (var r in rows)
                 {
                     var name = r.ParameterName.TrimStart(SqlSugarTool.ParSymbol);
@@ -826,7 +826,7 @@ namespace SqlSugar
                             continue;
                         }
                     }
-                    sbSql.Append(string.Format(" [{0}] =" + SqlSugarTool.ParSymbol + "{0}  ,", name));
+                    sbSql.Append(string.Format(" {0}={1},", name.GetTranslationSqlName(),name.GetSqlParameterName()));
                 }
                 sbSql.Remove(sbSql.Length - 1, 1);
                 sbSql.Append(" WHERE  1=1  ");

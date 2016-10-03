@@ -124,9 +124,33 @@ namespace SqlSugar
                 }
             }
         }
-        public static string GetSqlTableName(this string tableName)
+        /// <summary>
+        /// 获取转释后的表名和列名
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public static string GetTranslationSqlName(this string tableName)
         {
-            return SqlSugarTool.GetSqlTableName(tableName);
+            return SqlSugarTool.GetTranslationSqlName(tableName);
+        }
+        /// <summary>
+        /// 获取参数名
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal static string GetSqlParameterName(this string name)
+        {
+            return SqlSugarTool.GetSqlParameterName(name);
+        }
+
+        /// <summary>
+        ///获取没有符号的参数名称
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal static string GetSqlParameterNameNoParSymbol(this string name)
+        {
+            return SqlSugarTool.GetSqlParameterNameNoParSymbol(name);
         }
     }
 }
