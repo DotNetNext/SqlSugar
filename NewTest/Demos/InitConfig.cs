@@ -94,7 +94,7 @@ namespace NewTest.Demos
                     DaoInitConfig.tableMappingList = new List<KeyValue>();
                     db.ClassGenerating.ForeachTables(db, name =>//内置遍历表名和视图名函数
                     {
-                        DaoInitConfig.tableMappingList.Add(new KeyValue() { Key = name, Value = name });
+                        DaoInitConfig.tableMappingList.Add(new KeyValue() { Key = name, Value ="dbo."+name });
                     });
                 }
                 return DaoInitConfig.tableMappingList;
