@@ -63,6 +63,9 @@ namespace NewTest
                 //多语言支持 http://www.cnblogs.com/sunkaixuan/p/5709583.html
                 //多库并行计算 http://www.cnblogs.com/sunkaixuan/p/5046517.html
 
+                //配置与实例的用法
+                case "initconfig": demo = new InitConfig(); break;
+
 
 
                 /****************************支持**************************************/

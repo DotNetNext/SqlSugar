@@ -521,7 +521,7 @@ namespace SqlSugar
                 //实例化一个StringBuilder做字符串的拼接 
 
 
-                sbInsertSql.Append("insert into [" + typeName + "] (");
+                sbInsertSql.Append("insert into " + typeName.GetTranslationSqlName() + " (");
 
                 //3.遍历实体的属性集合 
                 foreach (PropertyInfo prop in props)
@@ -546,7 +546,7 @@ namespace SqlSugar
                     if (!isIdentity || identities.Any(it => it.Value.ToLower() != propName.ToLower()))
                     {
                         //4.将属性的名字加入到字符串中 
-                        sbInsertSql.Append("[" + propName + "],");
+                        sbInsertSql.Append( propName.GetTranslationSqlName() + ",");
                     }
                 }
                 //**去掉最后一个逗号 
@@ -579,7 +579,7 @@ namespace SqlSugar
                         }
                     }
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
-                        sbInsertSql.Append(SqlSugarTool.ParSymbol + propName + ",");
+                        sbInsertSql.Append( propName.GetSqlParameterName() + ",");
                     object val = prop.GetValue(entity, null);
                     if (val == null)
                         val = DBNull.Value;
@@ -695,8 +695,8 @@ namespace SqlSugar
                 columnNames = columnNames.Where(c => !identityNames.Any(it => it.Value == c)).ToList();//去掉自添列
             }
             StringBuilder sbSql = new StringBuilder("INSERT INTO ");
-            sbSql.AppendLine(typeName);
-            sbSql.AppendFormat("({0})", string.Join(",", columnNames.Select(it => "[" + it + "]")));
+            sbSql.AppendLine(typeName.GetTranslationSqlName());
+            sbSql.AppendFormat("({0})", string.Join(",", columnNames.Select(it => it.GetTranslationSqlName())));
 
             //属性缓存
             string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
