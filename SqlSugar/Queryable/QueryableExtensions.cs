@@ -763,7 +763,12 @@ namespace SqlSugar
         {
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-            sbSql.AppendFormat("SELECT MAX({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", queryable.TName.GetTranslationSqlName(), withNoLock, string.Join("", queryable.WhereValue), maxField, queryable.GroupByValue.GetGroupBy());
+            var tableName = queryable.TName;
+            if (queryable.TableName.IsValuable())
+            {
+                tableName = queryable.TableName;
+            }
+            sbSql.AppendFormat("SELECT MAX({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", tableName.GetTranslationSqlName(), withNoLock, string.Join("", queryable.WhereValue), maxField, queryable.GroupByValue.GetGroupBy());
             var objValue = queryable.DB.GetScalar(sbSql.ToString(), queryable.Params.ToArray());
             var reval = Convert.ChangeType(objValue, typeof(TResult));
             return (TResult)reval;
@@ -796,7 +801,12 @@ namespace SqlSugar
         {
             StringBuilder sbSql = new StringBuilder();
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-            sbSql.AppendFormat("SELECT MIN({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", queryable.TName.GetTranslationSqlName(), withNoLock, string.Join("", queryable.WhereValue), minField, queryable.GroupByValue.GetGroupBy());
+            var tableName = queryable.TName;
+            if (queryable.TableName.IsValuable())
+            {
+                tableName = queryable.TableName;
+            }
+            sbSql.AppendFormat("SELECT MIN({3})  FROM {0} {1} WHERE 1=1 {2} {4} ", tableName.GetTranslationSqlName(), withNoLock, string.Join("", queryable.WhereValue), minField, queryable.GroupByValue.GetGroupBy());
             var objValue = queryable.DB.GetScalar(sbSql.ToString(), queryable.Params.ToArray());
             var reval = Convert.ChangeType(objValue, typeof(TResult));
             return (TResult)reval;
