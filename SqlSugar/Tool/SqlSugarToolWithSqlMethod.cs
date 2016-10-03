@@ -17,9 +17,9 @@ namespace SqlSugar
         /// <param name="sql"></param>
         /// <param name="shortName"></param>
         /// <returns></returns>
-        internal static string PackagingSQL(string sql, string shortName)
+        public static string PackagingSQL(string sql)
         {
-            return string.Format(" SELECT * FROM ({0}) {1} ", sql, shortName);
+            return string.Format("({0})", sql);
         }
 
         internal static StringBuilder GetQueryableSql<T>(SqlSugar.Queryable<T> queryable)
