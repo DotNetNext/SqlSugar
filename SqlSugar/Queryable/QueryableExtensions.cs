@@ -947,7 +947,7 @@ namespace SqlSugar
             }
             string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
                 /*0*/queryable.JoinTableValue.Count == 0 ? (" " + shortName1 + " " + joinTypeName) : joinTypeName.ToString(),
-                /*1*/joinTableName,
+                /*1*/joinTableName.GetTranslationSqlName(),
                 /*2*/shortName2,
                 /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
                 );
@@ -999,7 +999,7 @@ namespace SqlSugar
             }
             string joinStr = string.Format(" {0} JOIN {1} {2} ON {3}  ",
                 /*0*/queryable.JoinTableValue.Count == 0 ? (" " + shortName1 + " " + joinTypeName) : joinTypeName.ToString(),
-                /*1*/joinTableName,
+                /*1*/joinTableName.GetTranslationSqlName(),
                 /*2*/shortName2,
                 /*3*/re.SqlWhere.Trim().TrimStart('A').TrimStart('N').TrimStart('D')
                 );
