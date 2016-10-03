@@ -418,5 +418,32 @@ namespace SqlSugar
         /// par的符号
         /// </summary>
         public const char ParSymbol = '@';
+
+        /// <summary>
+        /// 获取查询语句的表名
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        internal static string GetSqlTableName(string tableName)
+        {
+            Check.ArgumentNullException(tableName, "表中不能为空。");
+            var hasScheme = tableName.Contains(".");
+            if (hasScheme)
+            {
+                var array = tableName.Split(',');
+                if (array.Length == 2)
+                {
+                    return string.Format("[0].[1]", array.First(), array.Last());
+                }
+                else
+                {
+                    throw new SqlSugarException(tableName + "不是有效的表名。");
+                }
+            }
+            else
+            {
+                return "[" + tableName + "]";
+            }
+        }
     }
 }

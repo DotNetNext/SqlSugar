@@ -106,24 +106,27 @@ namespace SqlSugar
         /// 将Request里的参数转成SqlParameter[]
         /// </summary>
         /// <returns></returns>
-        internal static void RequestParasToSqlParameters(SqlParameterCollection  oldParas)
+        internal static void RequestParasToSqlParameters(SqlParameterCollection oldParas)
         {
-            var oldParaList= oldParas.Cast<SqlParameter>().ToList();
-            var paraDictionarAll =SqlSugarTool.GetParameterDictionary();
+            var oldParaList = oldParas.Cast<SqlParameter>().ToList();
+            var paraDictionarAll = SqlSugarTool.GetParameterDictionary();
             if (paraDictionarAll != null && paraDictionarAll.Count() > 0)
             {
-            
+
                 foreach (KeyValuePair<string, string> it in paraDictionarAll)
                 {
-                 
-                    var par=new SqlParameter("@" + it.Key, it.Value);
-                    if (!oldParaList.Any(oldPara=>oldPara.ParameterName==("@"+it.Key)))
+
+                    var par = new SqlParameter("@" + it.Key, it.Value);
+                    if (!oldParaList.Any(oldPara => oldPara.ParameterName == ("@" + it.Key)))
                     {
                         oldParas.Add(par);
                     }
                 }
             }
         }
-
+        internal static string GetSqlTableName(this string tableName)
+        {
+            return SqlSugarTool.GetSqlTableName(tableName);
+        }
     }
 }
