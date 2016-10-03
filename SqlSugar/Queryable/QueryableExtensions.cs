@@ -716,7 +716,14 @@ namespace SqlSugar
             queryable.SelectValue = select;
             return queryable;
         }
-
+        /// <summary>
+        /// 将select的字段映射到T对象
+        /// </summary>
+        /// <typeparam name="T">数据实体类型</typeparam>
+        /// <typeparam name="Result">数据实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="select">查询字符串（例如 id,name）</param>
+        /// <returns></returns>
         public static Queryable<Result> Select<T, Result>(this Queryable<Result> queryable, string select)
         {
             queryable.SelectValue = select;
