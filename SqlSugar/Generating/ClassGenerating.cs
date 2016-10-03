@@ -156,6 +156,8 @@ namespace SqlSugar
         /// <param name="callBack">生成文件前的处理，参数string为表名</param>
         public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null, Action<string> preAction = null)
         {
+            var isLog = db.IsEnableLogEvent;
+            db.IsEnableLogEvent = false;
             string sql = SqlSugarTool.GetCreateClassSql(tableOrView);
             var tables = db.GetDataTable(sql);
             if (tables != null && tables.Rows.Count > 0)
@@ -186,6 +188,7 @@ namespace SqlSugar
                     }
                 }
             }
+            db.IsEnableLogEvent = isLog;
         }
 
         /// <summary>
@@ -196,6 +199,8 @@ namespace SqlSugar
         /// <param name="callBack">回调函数</param>
         public void CreateClassFilesInterface(SqlSugarClient db, bool? tableOrView, Action<DataTable, string, string> callBack)
         {
+            var isLog = db.IsEnableLogEvent;
+            db.IsEnableLogEvent = false;
             string sql = SqlSugarTool.GetCreateClassSql(tableOrView);
             var tables = db.GetDataTable(sql);
             if (tables != null && tables.Rows.Count > 0)
@@ -208,6 +213,7 @@ namespace SqlSugar
                     callBack(tables, className, tableName);
                 }
             }
+            db.IsEnableLogEvent = isLog;
         }
 
 
@@ -216,6 +222,8 @@ namespace SqlSugar
         /// </summary>
         public void CreateClassFilesByTableNames(SqlSugarClient db, string fileDirectory, string nameSpace, params string[] tableNames)
         {
+            var isLog = db.IsEnableLogEvent;
+            db.IsEnableLogEvent = false;
             string sql = SqlSugarTool.GetCreateClassSql(null);
             var tables = db.GetDataTable(sql);
             if (!FileSugar.IsExistDirectory(fileDirectory))
@@ -237,6 +245,7 @@ namespace SqlSugar
                     }
                 }
             }
+            db.IsEnableLogEvent = isLog;
         }
 
         /// <summary>
@@ -246,6 +255,8 @@ namespace SqlSugar
         /// <returns></returns>
         public List<string> GetTableNames(SqlSugarClient db)
         {
+            var isLog = db.IsEnableLogEvent;
+            db.IsEnableLogEvent = false;
             string sql = SqlSugarTool.GetCreateClassSql(null);
             var tableNameList = db.SqlQuery<string>(sql).ToList();
             for (int i = 0; i < tableNameList.Count; i++)
@@ -253,6 +264,7 @@ namespace SqlSugar
                 var tableName = tableNameList[i];
                 tableNameList[i] = db.GetClassTypeByTableName(tableName);
             }
+            db.IsEnableLogEvent = isLog;
             return tableNameList;
         }
 
