@@ -914,7 +914,7 @@ namespace SqlSugar
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE [{0}] SET ", typeName));
+            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName.GetTranslationSqlName()));
             Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
@@ -941,17 +941,17 @@ namespace SqlSugar
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" [{0}] =" + SqlSugarTool.ParSymbol + "{0}  ,", name));
+                sbSql.Append(string.Format(" {0}={1}  ,", name.GetTranslationSqlName(),name.GetSqlParameterName()));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             if (whereIn.Count() == 0)
             {
                 var value = type.GetProperties().Cast<PropertyInfo>().Single(it => it.Name == (pkClassPropName == null ? pkName : pkClassPropName)).GetValue(rowObj, null);
-                sbSql.AppendFormat("WHERE {1} IN ('{2}')", typeName, pkName, value);
+                sbSql.AppendFormat("WHERE {1} IN ('{2}')", typeName, pkName.GetTranslationSqlName(), value);
             }
             else
             {
-                sbSql.AppendFormat("WHERE {1} IN ({2})", typeName, pkName, whereIn.ToJoinSqlInVal());
+                sbSql.AppendFormat("WHERE {1} IN ({2})", typeName, pkName.GetTranslationSqlName(), whereIn.ToJoinSqlInVal());
             }
             List<SqlParameter> parsList = new List<SqlParameter>();
             var pars = rows.Select(c => new SqlParameter(SqlSugarTool.ParSymbol + c.Key, c.Value));
