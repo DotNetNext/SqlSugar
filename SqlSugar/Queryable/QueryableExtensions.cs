@@ -955,6 +955,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T">第一个表的对象</typeparam>
         /// <typeparam name="T2">联接表的对象</typeparam>
+        /// <typeparam name="T3">联接表的对象</typeparam>
         /// <param name="queryable">查询对象</param>
         /// <param name="expression">条件表达式</param>
         /// <param name="type">Join的类型</param>
