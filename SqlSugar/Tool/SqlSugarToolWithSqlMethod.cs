@@ -12,10 +12,9 @@ namespace SqlSugar
     public partial class SqlSugarTool
     {
         /// <summary>
-        /// 包装SQL
+        /// 将参数sql转成 '('+sql+')'
         /// </summary>
         /// <param name="sql"></param>
-        /// <param name="shortName"></param>
         /// <returns></returns>
         public static string PackagingSQL(string sql)
         {
