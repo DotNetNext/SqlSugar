@@ -1050,7 +1050,7 @@ namespace SqlSugar
             {
                 string pkValue = string.Empty;
                 sbSql.Append(" UPDATE ");
-                sbSql.Append("["+typeName+"]");
+                sbSql.Append(typeName.GetTranslationSqlName());
                 sbSql.Append(" SET ");
                 pkValue = props.Single(it => it.Name.ToLower() == pkClassPropName.ToLower()).GetValue(entity, null).ToString();
                 foreach (var name in columnNames)
@@ -1097,10 +1097,10 @@ namespace SqlSugar
                     {
                         objValue = "'" + objValue.ToString() + "'";
                     }
-                    sbSql.AppendFormat(" [{0}]={1}{2}  ", dbName, objValue, ",");
+                    sbSql.AppendFormat(" {0}={1}{2}  ", dbName.GetTranslationSqlName(), objValue, ",");
                 }
                 sbSql.Remove(sbSql.ToString().LastIndexOf(","), 1);
-                sbSql.AppendFormat("WHERE [{0}]='{1}' ", pkName, pkValue.ToSuperSqlFilter());
+                sbSql.AppendFormat("WHERE {0}='{1}' ", pkName.GetTranslationSqlName(), pkValue.ToSuperSqlFilter());
             }
             var reval = base.ExecuteCommand(sbSql.ToString());
             sbSql = null;
