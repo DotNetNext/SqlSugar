@@ -358,6 +358,7 @@ namespace SqlSugar
                         if (_filterColumns.ContainsKey(key))
                         {
                             var columns = _filterColumns[key];
+                            Check.Exception(queryable.SelectValue.IsValuable(), "对不起列过滤只能设一个，行过滤可以设多个。");
                             queryable.SelectValue = string.Join(",", columns);
                         }
                     }
@@ -397,6 +398,7 @@ namespace SqlSugar
                         if (_filterColumns.ContainsKey(key))
                         {
                             var columns = _filterColumns[key];
+                            Check.Exception(queryable.SelectValue.IsValuable(), "对不起列过滤只能设一个，行过滤可以设多个。");
                             queryable.SelectValue = string.Join(",", columns);
                         }
                     }
