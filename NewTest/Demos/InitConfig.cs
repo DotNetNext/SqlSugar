@@ -94,7 +94,11 @@ namespace NewTest.Demos
                     DaoInitConfig.tableMappingList = new List<KeyValue>();
                     db.ClassGenerating.ForeachTables(db, name =>//内置遍历表名和视图名函数
                     {
+                        //给所有表名加dbo.
                         DaoInitConfig.tableMappingList.Add(new KeyValue() { Key = name, Value ="dbo."+name });
+
+                        //动态获取sechma
+                        //DaoInitConfig.tableMappingList.Add(new KeyValue() { Key = name, Value = db.ClassGenerating.GetTableNameWithSechma(db,name) });
                     });
                 }
                 return DaoInitConfig.tableMappingList;
