@@ -44,7 +44,7 @@ namespace SqlSugar
 
             }
         }
-        private Dictionary<string, Func<KeyValueObj>> _filterFuns = null;
+        private Dictionary<string, Func<KeyValueObj>> _filterRows = null;
         private Dictionary<string, List<string>> _filterColumns = null;
         private List<PubModel.SerialNumber> _serialNumber = null;
         internal string GetTableNameByClassType(string typeName)
@@ -133,9 +133,9 @@ namespace SqlSugar
         }
         private void AddFilter<T>(SqlSugar.Queryable<T> queryable, string key) where T : new()
         {
-            if (_filterFuns.ContainsKey(key))
+            if (_filterRows.ContainsKey(key))
             {
-                var filterInfo = _filterFuns[key];
+                var filterInfo = _filterRows[key];
                 var filterValue = filterInfo();
                 string whereStr = string.Format(" AND {0} ", filterValue.Key);
                 queryable.WhereValue.Add(whereStr);
@@ -203,10 +203,10 @@ namespace SqlSugar
         /// <summary>
         /// 设置过滤器（用户权限过滤）
         /// </summary>
-        /// <param name="filters">参数Dictionary string 为过滤器的名称 , Dictionary Func&lt;KeyValueObj&gt; 为过滤函数 (KeyValueObj 中的 Key为Sql条件,Value为Sql参数)</param>
-        public void SetFilterFilterParas(Dictionary<string, Func<KeyValueObj>> filters)
+        /// <param name="filterRows">参数Dictionary string 为过滤器的名称 , Dictionary Func&lt;KeyValueObj&gt; 为过滤函数 (KeyValueObj 中的 Key为Sql条件,Value为Sql参数)</param>
+        public void SetFilterFilterParas(Dictionary<string, Func<KeyValueObj>> filterRows)
         {
-            _filterFuns = filters;
+            _filterRows = filterRows;
         }
 
         /// <summary>
@@ -298,14 +298,14 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable())
+                if (_filterRows.IsValuable())
                 {
                     var keys = CurrentFilterKey.Split(',');
                     foreach (var key in keys)
                     {
-                        if (_filterFuns.ContainsKey(key))
+                        if (_filterRows.ContainsKey(key))
                         {
-                            var filterInfo = _filterFuns[key];
+                            var filterInfo = _filterRows[key];
                             var filterVlue = filterInfo();
                             string whereStr = string.Format(" AND {0} ", filterVlue.Key);
                             sqlable.Where.Add(whereStr);
@@ -342,7 +342,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable())
+                if (_filterRows.IsValuable())
                 {
                     string keys = CurrentFilterKey;
                     foreach (var key in keys.Split(','))
@@ -382,7 +382,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable())
+                if (_filterRows.IsValuable())
                 {
                     string keys = CurrentFilterKey;
                     foreach (var key in keys.Split(','))
@@ -470,14 +470,14 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable())
+                if (_filterRows.IsValuable())
                 {
                     var keys = CurrentFilterKey.Split(',');
                     foreach (var key in keys)
                     {
-                        if (_filterFuns.ContainsKey(key))
+                        if (_filterRows.ContainsKey(key))
                         {
-                            var filterInfo = _filterFuns[key];
+                            var filterInfo = _filterRows[key];
                             var filterValue = filterInfo();
                             sql += string.Format(" AND {0} ", filterValue.Key);
                             if (filterValue.Value != null)
