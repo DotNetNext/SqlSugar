@@ -69,14 +69,18 @@ namespace NewTest.Demos
             public static SqlSugarClient GetInstance()
             {
                 string connection = SugarDao.ConnectionString; //这里可以动态根据cookies或session实现多库切换
-                var reval = new SqlSugarClient(connection);
+                var db = new SqlSugarClient(connection);
 
                 //支持sqlable和queryable
-                reval.SetFilterFilterParas(_filterParas);
+                db.SetFilterFilterParas(_filterParas);
 
                 //列过滤只支持queryable
-                reval.SetFilterFilterParas(_filterColumns);
-                return reval;
+                db.SetFilterFilterParas(_filterColumns);
+
+
+                db.IsEnableLogEvent = true;//启用日志事件
+                db.LogEventStarting = (sql, par) => { Console.WriteLine(sql + " " + par + "\r\n"); };
+                return db;
             }
         }
     }
