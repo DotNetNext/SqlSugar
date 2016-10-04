@@ -131,7 +131,18 @@ namespace SqlSugar
             }
             return name;
         }
-
+        private void AddFilter<T>(SqlSugar.Queryable<T> queryable, string key) where T : new()
+        {
+            if (_filterFuns.ContainsKey(key))
+            {
+                var filterInfo = _filterFuns[key];
+                var filterValue = filterInfo();
+                string whereStr = string.Format(" AND {0} ", filterValue.Key);
+                queryable.WhereValue.Add(whereStr);
+                if (filterValue.Value != null)
+                    queryable.Params.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
+            }
+        }
         #endregion
 
 
@@ -325,14 +336,13 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable() && _filterFuns.ContainsKey(CurrentFilterKey))
+                if (_filterFuns.IsValuable()&&CurrentFilterKey.IsValuable())
                 {
-                    var filterInfo = _filterFuns[CurrentFilterKey];
-                    var filterValue = filterInfo();
-                    string whereStr = string.Format(" AND {0} ", filterValue.Key);
-                    queryable.WhereValue.Add(whereStr);
-                    if (filterValue.Value != null)
-                        queryable.Params.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
+                    string keys = CurrentFilterKey;
+                    foreach (var key in keys.Split(','))
+                    {
+                        AddFilter<T>(queryable, key);
+                    }
                 }
                 if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey))
                 {
@@ -344,6 +354,7 @@ namespace SqlSugar
 
         }
 
+
         /// <summary>
         /// 创建拉姆达查询对象
         /// </summary>
@@ -353,7 +364,25 @@ namespace SqlSugar
         public Queryable<T> Queryable<T>(string tableName) where T : new()
         {
             InitAttributes<T>();
-            return new Queryable<T>() { DB = this, TableName = tableName };
+            var queryable= new Queryable<T>() { DB = this, TableName = tableName };
+            //全局过滤器
+            if (CurrentFilterKey.IsValuable())
+            {
+                if (_filterFuns.IsValuable() && CurrentFilterKey.IsValuable())
+                {
+                    string keys = CurrentFilterKey;
+                    foreach (var key in keys.Split(','))
+                    {
+                        AddFilter<T>(queryable, key);
+                    }
+                }
+                if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey))
+                {
+                    var columns = _filterColumns[CurrentFilterKey];
+                    queryable.SelectValue = string.Join(",", columns);
+                }
+            }
+            return queryable;
         }
         #endregion
 

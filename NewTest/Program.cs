@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "select";
+            string switchOn = "filter";
             IDemos demo = null;
             switch (switchOn)
             {
