@@ -350,10 +350,17 @@ namespace SqlSugar
                         AddFilter<T>(queryable, key);
                     }
                 }
-                if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey))
+                if (_filterColumns.IsValuable())
                 {
-                    var columns = _filterColumns[CurrentFilterKey];
-                    queryable.SelectValue = string.Join(",", columns);
+                    var keys = CurrentFilterKey.Split(',');
+                    foreach (var key in keys)
+                    {
+                        if (_filterColumns.ContainsKey(key))
+                        {
+                            var columns = _filterColumns[key];
+                            queryable.SelectValue = string.Join(",", columns);
+                        }
+                    }
                 }
             }
             return queryable;
@@ -382,10 +389,17 @@ namespace SqlSugar
                         AddFilter<T>(queryable, key);
                     }
                 }
-                if (_filterColumns.IsValuable() && _filterColumns.ContainsKey(CurrentFilterKey))
+                if (_filterColumns.IsValuable())
                 {
-                    var columns = _filterColumns[CurrentFilterKey];
-                    queryable.SelectValue = string.Join(",", columns);
+                    var keys = CurrentFilterKey.Split(',');
+                    foreach (var key in keys)
+                    {
+                        if (_filterColumns.ContainsKey(key))
+                        {
+                            var columns = _filterColumns[key];
+                            queryable.SelectValue = string.Join(",", columns);
+                        }
+                    }
                 }
             }
             return queryable;
