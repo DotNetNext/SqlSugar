@@ -45,7 +45,7 @@ namespace NewTest.Demos
             /// <summary>
             /// 页面所需要的过滤行
             /// </summary>
-            private static Dictionary<string, Func<KeyValueObj>> _filterParas = new Dictionary<string, Func<KeyValueObj>>()
+            private static Dictionary<string, Func<KeyValueObj>> _filterRos = new Dictionary<string, Func<KeyValueObj>>()
             {
               { "role1",()=>{
                         return new KeyValueObj(){ Key=" id=@id" , Value=new{ id=1}};
@@ -72,7 +72,7 @@ namespace NewTest.Demos
                 var db = new SqlSugarClient(connection);
 
                 //支持sqlable和queryable
-                db.SetFilterFilterParas(_filterParas);
+                db.SetFilterFilterParas(_filterRos);
 
                 //列过滤只支持queryable
                 db.SetFilterFilterParas(_filterColumns);
