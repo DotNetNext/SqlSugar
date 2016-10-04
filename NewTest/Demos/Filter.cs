@@ -20,7 +20,7 @@ namespace NewTest.Demos
             using (SqlSugarClient db = SugarDaoFilter.GetInstance())//开启数据库连接
             {
                 //设置走哪个过滤器
-                db.CurrentFilterKey = "role";
+                db.CurrentFilterKey = "role,role2"; //支持多个过滤器以逗号隔开
 
                 //queryable
                 var list = db.Queryable<Student>().ToList(); //通过全局过滤器对需要权限验证的数据进行过滤
@@ -55,17 +55,20 @@ namespace NewTest.Demos
                     return new KeyValueObj(){ Key=" id=@id" , Value=new{ id=1}};
                }
           },
-          { "org",()=>{ 
-                    return new KeyValueObj(){ Key=" orgId=@orgId" , Value=new{ orgId=1}};
+          { "role2",()=>{ 
+                    return new KeyValueObj(){ Key=" id>0"};
               }
           },
         };
             public static SqlSugarClient GetInstance()
             {
                 string connection = SugarDao.ConnectionString; //这里可以动态根据cookies或session实现多库切换
-                var reval = new SqlSugarClient(connection);
-                reval.SetFilterFilterParas(_filterParas);
-                return reval;
+                var db = new SqlSugarClient(connection);
+                db.SetFilterFilterParas(_filterParas);
+
+                db.IsEnableLogEvent = true;//启用日志事件
+                db.LogEventStarting = (sql, par) => { Console.WriteLine(sql + " " + par + "\r\n"); };
+                return db;
             }
         }
     }

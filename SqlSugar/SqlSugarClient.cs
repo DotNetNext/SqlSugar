@@ -93,7 +93,7 @@ namespace SqlSugar
                             {
                                 List<KeyValue> cmList = cm.ContainsKey(cacheKey) ? cm[cacheKey] : new List<KeyValue>();
                                 cmList.Add(item);
-                                cm.Add(cacheKey, cmList,cm.Day);
+                                cm.Add(cacheKey, cmList, cm.Day);
                             }
                             else if (_mappingColumns.Any(it => it.Key == item.Key && it.Value != item.Value))
                             {
@@ -298,15 +298,21 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable() && _filterFuns.ContainsKey(CurrentFilterKey))
+                if (_filterFuns.IsValuable())
                 {
-                    var filterInfo = _filterFuns[CurrentFilterKey];
-                    var filterVlue = filterInfo();
-                    string whereStr = string.Format(" AND {0} ", filterVlue.Key);
-                    sqlable.Where.Add(whereStr);
-                    if (filterVlue.Value != null)
-                        sqlable.Params.AddRange(SqlSugarTool.GetParameters(filterVlue.Value));
-                    return sqlable;
+                    var keys = CurrentFilterKey.Split(',');
+                    foreach (var key in keys)
+                    {
+                        if (_filterFuns.ContainsKey(key))
+                        {
+                            var filterInfo = _filterFuns[key];
+                            var filterVlue = filterInfo();
+                            string whereStr = string.Format(" AND {0} ", filterVlue.Key);
+                            sqlable.Where.Add(whereStr);
+                            if (filterVlue.Value != null)
+                                sqlable.Params.AddRange(SqlSugarTool.GetParameters(filterVlue.Value));
+                        }
+                    }
                 }
             }
             return sqlable;
@@ -323,7 +329,7 @@ namespace SqlSugar
         public Queryable<T> Queryable<T>() where T : new()
         {
             InitAttributes<T>();
-            var queryable = new Queryable<T>() { DB = this, TableName=typeof(T).Name };
+            var queryable = new Queryable<T>() { DB = this, TableName = typeof(T).Name };
             //别名表
             if (_mappingTableList.IsValuable())
             {
@@ -364,7 +370,7 @@ namespace SqlSugar
         public Queryable<T> Queryable<T>(string tableName) where T : new()
         {
             InitAttributes<T>();
-            var queryable= new Queryable<T>() { DB = this, TableName = tableName };
+            var queryable = new Queryable<T>() { DB = this, TableName = tableName };
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
@@ -448,14 +454,21 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable() && _filterFuns.ContainsKey(CurrentFilterKey))
+                if (_filterFuns.IsValuable())
                 {
-                    var filterInfo = _filterFuns[CurrentFilterKey];
-                    var filterValue = filterInfo();
-                    sql += string.Format(" AND {0} ", filterValue.Key);
-                    if (filterValue.Value != null)
+                    var keys = CurrentFilterKey.Split(',');
+                    foreach (var key in keys)
                     {
-                        pars.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
+                        if (_filterFuns.ContainsKey(key))
+                        {
+                            var filterInfo = _filterFuns[key];
+                            var filterValue = filterInfo();
+                            sql += string.Format(" AND {0} ", filterValue.Key);
+                            if (filterValue.Value != null)
+                            {
+                                pars.AddRange(SqlSugarTool.GetParameters(filterValue.Value));
+                            }
+                        }
                     }
                 }
             }
@@ -575,7 +588,7 @@ namespace SqlSugar
                     if (!isIdentity || identities.Any(it => it.Value.ToLower() != propName.ToLower()))
                     {
                         //4.将属性的名字加入到字符串中 
-                        sbInsertSql.Append( propName.GetTranslationSqlName() + ",");
+                        sbInsertSql.Append(propName.GetTranslationSqlName() + ",");
                     }
                 }
                 //**去掉最后一个逗号 
@@ -608,7 +621,7 @@ namespace SqlSugar
                         }
                     }
                     if (!cacheSqlManager.ContainsKey(cacheSqlKey))
-                        sbInsertSql.Append( propName.GetSqlParameterName() + ",");
+                        sbInsertSql.Append(propName.GetSqlParameterName() + ",");
                     object val = prop.GetValue(entity, null);
                     if (val == null)
                         val = DBNull.Value;
@@ -855,7 +868,7 @@ namespace SqlSugar
                             continue;
                         }
                     }
-                    sbSql.Append(string.Format(" {0}={1},", name.GetTranslationSqlName(),name.GetSqlParameterName()));
+                    sbSql.Append(string.Format(" {0}={1},", name.GetTranslationSqlName(), name.GetSqlParameterName()));
                 }
                 sbSql.Remove(sbSql.Length - 1, 1);
                 sbSql.Append(" WHERE  1=1  ");
@@ -970,7 +983,7 @@ namespace SqlSugar
                         continue;
                     }
                 }
-                sbSql.Append(string.Format(" {0}={1}  ,", name.GetTranslationSqlName(),name.GetSqlParameterName()));
+                sbSql.Append(string.Format(" {0}={1}  ,", name.GetTranslationSqlName(), name.GetSqlParameterName()));
             }
             sbSql.Remove(sbSql.Length - 1, 1);
             if (whereIn.Count() == 0)
