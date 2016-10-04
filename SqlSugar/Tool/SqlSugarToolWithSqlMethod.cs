@@ -464,5 +464,23 @@ namespace SqlSugar
         {
             return name.TrimStart(ParSymbol);
         }
+
+        /// <summary>
+        /// 获取Schema和表名的集合
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        internal static List<KeyValue> GetSchemaList(SqlSugarClient db)
+        {
+            var cm = CacheManager<List<KeyValue>>.GetInstance();
+            string cacheKey = "SqlSugarTool.GetSchemaList";
+            if (cm.ContainsKey(cacheKey)) return cm[cacheKey];
+            else
+            {
+                var reval = db.SqlQuery<KeyValue>(@"select  s.name as [Key],t.name as [Value] from sys.tables t , sys.schemas s where t.schema_id = s.schema_id");
+                cm.Add(cacheKey, reval, cm.Day);
+                return reval;
+            }
+        }
     }
 }

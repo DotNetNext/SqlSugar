@@ -344,5 +344,21 @@ namespace SqlSugar
 
         }
 
+        /// <summary>
+        /// 获取带schema的表名
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public string GetTableNameWithSechme(SqlSugarClient db,string tableName) {
+          
+            var list=SqlSugarTool.GetSchemaList(db).Where(it => it.Value == tableName).ToList();
+            if (list.Any()) {
+                Check.Exception(list.Count != 1,tableName+"不能同时存在两个Schema,请重命名表名。");
+                return string.Format("{0}.{1}",list.Single().Key,list.Single().Value);
+            }
+            return tableName;
+        }
+
     }
 }
