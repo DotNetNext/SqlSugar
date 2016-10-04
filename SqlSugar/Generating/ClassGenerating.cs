@@ -350,7 +350,7 @@ namespace SqlSugar
         /// <param name="db"></param>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        public string GetTableNameWithSechma(SqlSugarClient db,string tableName) {
+        public string GetTableNameWithSchema(SqlSugarClient db,string tableName) {
           
             var list=SqlSugarTool.GetSchemaList(db).Where(it => it.Value == tableName).ToList();
             if (list.Any()) {

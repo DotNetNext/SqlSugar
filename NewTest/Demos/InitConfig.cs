@@ -98,7 +98,7 @@ namespace NewTest.Demos
                         DaoInitConfig.tableMappingList.Add(new KeyValue() { Key = name, Value ="dbo."+name });
 
                         //动态获取sechma
-                        //DaoInitConfig.tableMappingList.Add(new KeyValue() { Key = name, Value = db.ClassGenerating.GetTableNameWithSechma(db,name) });
+                        // DaoInitConfig.tableMappingList.Add(new KeyValue() { Key = name, Value = db.ClassGenerating.GetTableNameWithSchema(db,name) });
                     });
                 }
                 return DaoInitConfig.tableMappingList;
