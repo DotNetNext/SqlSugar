@@ -336,7 +336,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable()&&CurrentFilterKey.IsValuable())
+                if (_filterFuns.IsValuable())
                 {
                     string keys = CurrentFilterKey;
                     foreach (var key in keys.Split(','))
@@ -368,7 +368,7 @@ namespace SqlSugar
             //全局过滤器
             if (CurrentFilterKey.IsValuable())
             {
-                if (_filterFuns.IsValuable() && CurrentFilterKey.IsValuable())
+                if (_filterFuns.IsValuable())
                 {
                     string keys = CurrentFilterKey;
                     foreach (var key in keys.Split(','))
