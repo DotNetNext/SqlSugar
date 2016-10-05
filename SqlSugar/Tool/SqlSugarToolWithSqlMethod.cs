@@ -477,7 +477,7 @@ namespace SqlSugar
             if (cm.ContainsKey(cacheKey)) return cm[cacheKey];
             else
             {
-                var reval = db.SqlQuery<KeyValue>(@"select  s.name as [Key],t.name as [Value] from sys.tables t , sys.schemas s where t.schema_id = s.schema_id");
+                var reval = db.SqlQuery<KeyValue>(@"select  s.name as [Key],t.name as [Value] from sys.sysobjects t , sys.schemas s where t.xtype in ('U','V') and t.uid = s.schema_id");
                 cm.Add(cacheKey, reval, cm.Day);
                 return reval;
             }
