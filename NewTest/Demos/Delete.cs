@@ -26,6 +26,11 @@ namespace NewTest.Demos
                 db.Delete<School, string>(it => it.name, new string[] { "" });
                 db.Delete<School, int>(it => it.id, new int[] { 20, 22 });
 
+
+                //根据实体赋值实体一定要有主键，并且要有值。
+                db.Delete(new School() { id = 200 });
+
+
                 //假删除
                 //db.FalseDelete<school>("is_del", 100);
                 //等同于 update school set is_del=1 where id in(100)

@@ -1169,6 +1169,36 @@ namespace SqlSugar
 
         #region delete
         /// <summary>
+        /// 根据实体删除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="deleteObj"></param>
+        /// <returns></returns>
+        public bool Delete<T>(T deleteObj)
+        {
+            InitAttributes<T>();
+            var isDynamic = typeof(T).IsAnonymousType();
+            if (isDynamic)
+            {
+                throw new SqlSugarException("Delete(T)不支持匿名类型。");
+            }
+            Type type = typeof(T);
+            if (deleteObj == null) { throw new ArgumentNullException("SqlSugarClient.Delete.deleteObj"); }
+            string typeName = type.Name;
+            typeName = GetTableNameByClassType(typeName);
+            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            Check.ArgumentNullException(pkName, typeName+"没有找到主键。");
+            string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
+            var pkValue=type.GetProperty(pkClassPropName).GetValue(deleteObj,null);
+            Check.Exception(pkValue == DBNull.Value, typeName + "主键的值不能为DBNull.Value。");
+            string sql = string.Format("DELETE FROM {0} WHERE {1}={2}", typeName.GetTranslationSqlName(),pkName.GetTranslationSqlName(), pkName.GetSqlParameterName());
+            var par = new SqlParameter(pkName.GetSqlParameterName(), pkValue);
+            SqlSugarTool.SetParSize(par);
+            bool isSuccess = ExecuteCommand(sql,par) > 0;
+            return isSuccess;
+        }
+
+        /// <summary>
         /// 根据表达式删除数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
