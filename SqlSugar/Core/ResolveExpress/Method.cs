@@ -11,6 +11,21 @@ namespace SqlSugar
     internal partial class ResolveExpress
     {
         /// <summary>
+        /// 是否相等
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="mce"></param>
+        /// <returns></returns>
+        private string Equals(string methodName, MethodCallExpression mce) {
+            MemberType leftType = MemberType.None;
+            MemberType rightType = MemberType.None;
+            var left = CreateSqlElements(mce.Object, ref leftType);
+            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
+            var oldLeft = AddParas(ref left,right);
+            return string.Format("({0} = " + SqlSugarTool.ParSymbol + "{1})", oldLeft, left);
+        }
+
+        /// <summary>
         /// 拉姆达StartsWith函数处理
         /// </summary>
         /// <param name="methodName"></param>

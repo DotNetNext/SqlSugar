@@ -203,6 +203,9 @@ namespace SqlSugar
                     type = MemberType.Value;
                     return IsNullOrEmpty(methodName, mce, isTure);
                 }
+                else if (methodName == "Equals") {
+                    return Equals(methodName, mce);
+                }
                 else
                 {
                     type = MemberType.Value;
