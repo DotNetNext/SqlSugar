@@ -143,7 +143,7 @@ namespace SqlSugar
                         parValue = right;
                     }
                     var oldLeft = AddParas(ref left, parValue);
-                    return string.Format(" ({0} {1} "+SqlSugarTool.ParSymbol+"{2}) ", oldLeft, oper, left);
+                    return string.Format(" ({0} {1} " + SqlSugarTool.ParSymbol + "{2}) ", oldLeft, oper, left);
                 }
                 else if (isValueOperKey)
                 {
@@ -240,8 +240,13 @@ namespace SqlSugar
                         // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
                         // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
                         SetMemberValueToDynInv(ref exp, me, ref dynInv);
-                        if (dynInv.ObjToString()== ExpErrorUniqueKey.ToString()) {
+                        if (dynInv.ObjToString() == ExpErrorUniqueKey.ToString())
+                        {
                             dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
+                            if (dynInv != null && dynInv.GetType().IsClass)
+                            {
+                                dynInv = Expression.Lambda(me).Compile().DynamicInvoke();
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -262,13 +267,13 @@ namespace SqlSugar
                     if (Type == ResolveExpressType.nT)
                     {
                         type = MemberType.Key;
-                        var dbName= exp.ToString();
-                        if (DB != null &&DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+                        var dbName = exp.ToString();
+                        if (DB != null && DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
                         {
                             var preName = dbName.Split('.').First();
-                            if (DB._mappingColumns.Any(it => it.Key==dbName.Split('.').Last()))
+                            if (DB._mappingColumns.Any(it => it.Key == dbName.Split('.').Last()))
                             {
-                                dbName =preName+"."+DB._mappingColumns.Single(it => dbName.EndsWith("."+it.Key)).Value;
+                                dbName = preName + "." + DB._mappingColumns.Single(it => dbName.EndsWith("." + it.Key)).Value;
                             }
 
                         }
@@ -277,7 +282,7 @@ namespace SqlSugar
 
                     string name = me.Member.Name;
                     type = MemberType.Key;
-                    if (DB!=null&&DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
+                    if (DB != null && DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
                     {
                         if (DB._mappingColumns.Any(it => it.Key == name))
                         {
