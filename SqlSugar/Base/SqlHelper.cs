@@ -234,8 +234,9 @@ namespace SqlSugar
             }
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
-            sqlCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars,false);
+            if (IsClearParameters)
+                sqlCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars, false);
             return scalar;
         }
 
@@ -272,8 +273,9 @@ namespace SqlSugar
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
             int count = sqlCommand.ExecuteNonQuery();
-            sqlCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars,false);
+            if (IsClearParameters)
+                sqlCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars, false);
             return count;
         }
 
@@ -312,7 +314,7 @@ namespace SqlSugar
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
             if (IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars,false);
+            ExecLogEvent(sql, pars, false);
             return sqlDataReader;
         }
 
@@ -399,8 +401,9 @@ namespace SqlSugar
             }
             DataTable dt = new DataTable();
             _sqlDataAdapter.Fill(dt);
-            _sqlDataAdapter.SelectCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars,false);
+            if (IsClearParameters)
+                _sqlDataAdapter.SelectCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars, false);
             return dt;
         }
         /// <summary>
@@ -435,12 +438,13 @@ namespace SqlSugar
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             DataSet ds = new DataSet();
             _sqlDataAdapter.Fill(ds);
-            _sqlDataAdapter.SelectCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars,false);
+            if (IsClearParameters)
+                _sqlDataAdapter.SelectCommand.Parameters.Clear();
+            ExecLogEvent(sql, pars, false);
             return ds;
         }
 
-        private void ExecLogEvent(string sql, SqlParameter[] pars,bool isStarting=true)
+        private void ExecLogEvent(string sql, SqlParameter[] pars, bool isStarting = true)
         {
             if (IsEnableLogEvent)
             {
