@@ -489,7 +489,10 @@ namespace SqlSugar
                 }
             }
             var type = typeof(T);
-            sql = string.Format(PubModel.SqlSugarClientConst.SqlQuerySqlTemplate, type.Name, sql);
+            if (CommandType == CommandType.Text)
+            {
+                sql = string.Format(PubModel.SqlSugarClientConst.SqlQuerySqlTemplate, type.Name, sql);
+            }
             reader = GetReader(sql, pars.ToArray());
             string fields = sql;
             if (sql.Length > 101)

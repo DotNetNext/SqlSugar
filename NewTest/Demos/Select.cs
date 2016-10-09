@@ -379,6 +379,14 @@ namespace NewTest.Demos
                 db.IsClearParameters = true;//启用清除参数
                 var outPutValue = pars[1].Value;//获取output @p2的值
 
+
+                //存储过程优化操作
+                var pars2 = SqlSugarTool.GetParameters(new { p1 = 1, p2 = 0 }); //将匿名对象转成SqlParameter
+                db.CommandType = CommandType.StoredProcedure;//指定为存储过程可比上面少写EXEX和参数
+                var spResult3 = db.SqlQuery<School>("sp_school", pars2);
+                db.CommandType = CommandType.Text;//还原回默认
+
+
                 //获取第一行第一列的值
                 string v1 = db.GetString("select '张三' as name");
                 int v2 = db.GetInt("select 1 as name");

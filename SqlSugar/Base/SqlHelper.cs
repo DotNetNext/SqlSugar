@@ -19,6 +19,10 @@ namespace SqlSugar
         SqlConnection _sqlConnection;
         SqlTransaction _tran = null;
         /// <summary>
+        /// 如何解释命令字符串 默认为Text 
+        /// </summary>
+        public CommandType CommandType = CommandType.Text;
+        /// <summary>
         /// 是否启用日志事件(默认为:false)
         /// </summary>
         public bool IsEnableLogEvent = false;
@@ -221,6 +225,7 @@ namespace SqlSugar
         {
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
+            sqlCommand.CommandType = CommandType;
             if (_tran != null)
             {
                 sqlCommand.Transaction = _tran;
@@ -261,6 +266,7 @@ namespace SqlSugar
         {
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
+            sqlCommand.CommandType = CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
@@ -300,6 +306,7 @@ namespace SqlSugar
         {
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
+            sqlCommand.CommandType = CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
@@ -389,6 +396,7 @@ namespace SqlSugar
         {
             ExecLogEvent(sql, pars, true);
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
+            _sqlDataAdapter.SelectCommand.CommandType = CommandType;
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             if (IsGetPageParas)
             {
@@ -435,6 +443,7 @@ namespace SqlSugar
                 SqlSugarToolExtensions.RequestParasToSqlParameters(_sqlDataAdapter.SelectCommand.Parameters);
             }
             _sqlDataAdapter.SelectCommand.CommandTimeout = this.CommandTimeOut;
+            _sqlDataAdapter.SelectCommand.CommandType = CommandType;
             _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             DataSet ds = new DataSet();
             _sqlDataAdapter.Fill(ds);
