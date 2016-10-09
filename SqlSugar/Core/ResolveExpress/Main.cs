@@ -240,6 +240,9 @@ namespace SqlSugar
                         // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
                         // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
                         SetMemberValueToDynInv(ref exp, me, ref dynInv);
+                        if (dynInv.ObjToString()== ExpErrorUniqueKey.ToString()) {
+                            dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -321,6 +324,11 @@ namespace SqlSugar
                 {
                     var memberExpr = exp as MemberExpression;
                     memberInfos.Push(memberExpr.Member);
+                    if (memberExpr.Expression == null)
+                    {
+                        dynInv = ExpErrorUniqueKey;
+                        return;
+                    }
                     exp = memberExpr.Expression;
                 }
 

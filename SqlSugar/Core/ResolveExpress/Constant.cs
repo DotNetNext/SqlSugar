@@ -45,5 +45,10 @@ namespace SqlSugar
         /// 运算符错误
         /// </summary>
         public const string OperatorError = "拉姆达解析出错：不支持{0}此种运算符查找！";
+
+        /// <summary>
+        /// 拉姆达解析唯一标识
+        /// </summary>
+        public static Guid ExpErrorUniqueKey = Guid.NewGuid();
     }
 }
