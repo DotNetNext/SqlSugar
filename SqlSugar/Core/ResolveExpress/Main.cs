@@ -326,6 +326,24 @@ namespace SqlSugar
                         {
                             PropertyInfo pro = (PropertyInfo)memberExpr.Member;
                             dynInv = pro.GetValue(memberExpr.Member, null);
+                            if (dynInv != null && dynInv.GetType().IsClass)
+                            {
+                                var fieldName = me.Member.Name;
+                                var proInfo = dynInv.GetType().GetProperty(fieldName);
+                                if (proInfo != null)
+                                {
+                                    dynInv = proInfo.GetValue(dynInv, null);
+                                }
+                                var fieInfo = dynInv.GetType().GetField(fieldName);
+                                if (fieInfo != null)
+                                {
+                                    dynInv = fieInfo.GetValue(dynInv);
+                                }
+                                if (fieInfo == null && proInfo == null)
+                                {
+                                    throw new SqlSugarException("拉姆达解析不支持" + dynInv.GetType().FullName + "对象，或该" + dynInv.GetType().FullName + "的属性。");
+                                }
+                            }
                             return;
                         }
                         else if (memberExpr.Member.MemberType == MemberTypes.Field)
