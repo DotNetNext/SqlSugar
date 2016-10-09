@@ -49,6 +49,6 @@ namespace SqlSugar
         /// <summary>
         /// 拉姆达解析唯一标识
         /// </summary>
-        public static Guid ExpErrorUniqueKey = Guid.NewGuid();
+        public static object ExpErrorUniqueKey = Guid.NewGuid();
     }
 }

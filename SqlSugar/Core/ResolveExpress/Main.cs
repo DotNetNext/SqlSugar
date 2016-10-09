@@ -238,7 +238,7 @@ namespace SqlSugar
                     // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
                     // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
                     SetMemberValueToDynInv(ref exp, me, ref dynInv);
-                    if (dynInv.ObjToString() == ExpErrorUniqueKey.ToString())//特殊情况走原始写法
+                    if (dynInv == ExpErrorUniqueKey)//特殊情况走原始写法
                     {
                         dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
                         if (dynInv != null && dynInv.GetType().IsClass)
