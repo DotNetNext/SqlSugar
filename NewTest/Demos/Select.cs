@@ -382,7 +382,7 @@ namespace NewTest.Demos
 
                 //存储过程优化操作
                 var pars2 = SqlSugarTool.GetParameters(new { p1 = 1, p2 = 0 }); //将匿名对象转成SqlParameter
-                db.CommandType = CommandType.StoredProcedure;//指定为存储过程可比上面少写EXEX和参数
+                db.CommandType = CommandType.StoredProcedure;//指定为存储过程可比上面少写EXEC和参数
                 var spResult3 = db.SqlQuery<School>("sp_school", pars2);
                 db.CommandType = CommandType.Text;//还原回默认
 
