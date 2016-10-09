@@ -156,6 +156,11 @@ namespace SqlSugar
 
         #region setting
         /// <summary>
+        /// 设置批量操作的数量
+        /// </summary>
+        public int BulkNum = 100;
+
+        /// <summary>
         /// 是否启用属性映射
         /// </summary>
         public bool IsEnableAttributeMapping = false;
@@ -718,7 +723,7 @@ namespace SqlSugar
         /// <returns>全部插入成功返回true</returns>
         public bool SqlBulkCopy<T>(List<T> entities) where T : class
         {
-            int actionNum = 100;
+            int actionNum = BulkNum;
             var reval = true;
             while (entities.Count > 0)
             {
@@ -1054,7 +1059,7 @@ namespace SqlSugar
         public bool SqlBulkReplace<T>(List<T> entities) where T : class
         {
             InitAttributes<T>();
-            int actionNum = 100;
+            int actionNum = BulkNum;
             var reval = true;
             while (entities.Count > 0)
             {
