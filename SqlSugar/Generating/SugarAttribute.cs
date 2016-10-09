@@ -60,10 +60,13 @@ namespace SqlSugar
                     object[] objAttrs = propInfo.GetCustomAttributes(typeof(SugarMappingAttribute), true);
                     if (objAttrs.Length > 0)
                     {
-                        SugarMappingAttribute attr = objAttrs[0] as SugarMappingAttribute;
-                        if (attr != null)
+                        if (objAttrs[0] is SugarMappingAttribute)
                         {
-                            columnInfoList.Add(new KeyValue() { Key = propInfo.Name, Value = attr.ColumnName }); //列名
+                            SugarMappingAttribute attr = objAttrs[0] as SugarMappingAttribute;
+                            if (attr != null)
+                            {
+                                columnInfoList.Add(new KeyValue() { Key = propInfo.Name, Value = attr.ColumnName }); //列名
+                            }
                         }
                     }
                 }
@@ -72,12 +75,15 @@ namespace SqlSugar
                 object[] objs = objType.GetCustomAttributes(typeof(SugarMappingAttribute), true);
                 foreach (object obj in objs)
                 {
-                    SugarMappingAttribute attr = obj as SugarMappingAttribute;
-                    if (attr != null)
+                    if (obj is SugarMappingAttribute)
                     {
+                        SugarMappingAttribute attr = obj as SugarMappingAttribute;
+                        if (attr != null)
+                        {
 
-                        tableName = attr.TableName;//表名只有获取一次
-                        break;
+                            tableName = attr.TableName;//表名只有获取一次
+                            break;
+                        }
                     }
                 }
                 if (string.IsNullOrEmpty(tableName))
