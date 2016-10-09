@@ -235,29 +235,17 @@ namespace SqlSugar
                 {
                     type = MemberType.Value;
                     object dynInv = null;
-                    try
+                    // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
+                    // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
+                    SetMemberValueToDynInv(ref exp, me, ref dynInv);
+                    if (dynInv.ObjToString() == ExpErrorUniqueKey.ToString())//特殊情况走原始写法
                     {
-                        // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
-                        // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
-                        SetMemberValueToDynInv(ref exp, me, ref dynInv);
-                        if (dynInv.ObjToString() == ExpErrorUniqueKey.ToString())
+                        dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
+                        if (dynInv != null && dynInv.GetType().IsClass)
                         {
-                            dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
-                            if (dynInv != null && dynInv.GetType().IsClass)
-                            {
-                                dynInv = Expression.Lambda(me).Compile().DynamicInvoke();
-                            }
+                            dynInv = Expression.Lambda(me).Compile().DynamicInvoke();
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        if (me.ToString() == "DateTime.Now")
-                        {
-                            return DateTime.Now.ToString();
-                        }
-                        Check.Exception(true, "错误信息:{0} \r\n message:{1}", ExpToSqlError, ex.Message);
-                    }
-
                     if (dynInv == null) return null;
                     else
                         return dynInv.ToString();
@@ -329,6 +317,22 @@ namespace SqlSugar
                 {
                     var memberExpr = exp as MemberExpression;
                     memberInfos.Push(memberExpr.Member);
+                    if (memberExpr.Expression == null)
+                    {
+                        if (memberExpr.Member.MemberType == MemberTypes.Property)
+                        {
+                            PropertyInfo pro = (PropertyInfo)memberExpr.Member;
+                            dynInv = pro.GetValue(memberExpr.Member, null);
+                            return;
+                        }
+                        else if (memberExpr.Member.MemberType == MemberTypes.Field)
+                        {
+                            FieldInfo field = (FieldInfo)memberExpr.Member;
+                            dynInv = field.GetValue(memberExpr.Member);
+                            return;
+                        }
+
+                    }
                     if (memberExpr.Expression == null)
                     {
                         dynInv = ExpErrorUniqueKey;
