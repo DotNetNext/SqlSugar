@@ -484,6 +484,7 @@ namespace SqlSugar
                         _tran.Commit();
                     _sqlConnection.Close();
                 }
+                _sqlConnection = null;
             }
         }
     }
