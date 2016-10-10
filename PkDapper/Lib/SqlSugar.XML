@@ -1,0 +1,3810 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SqlSugar</name>
+    </assembly>
+    <members>
+        <member name="T:SqlSugar.SqlSugarException">
+            <summary>
+            ** 描述：SqlSugar自定义异常
+            ** 创始时间：2015-7-13
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlSugarException.#ctor(System.String)">
+            <summary>
+            SqlSugar异常
+            </summary>
+            <param name="message">错误信息</param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarException.#ctor(System.String,System.String)">
+            <summary>
+            SqlSugar异常
+            </summary>
+            <param name="message">错误信息</param>
+            <param name="sql">ORM生成的SQL</param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarException.#ctor(System.String,System.String,System.Object)">
+            <summary>
+            SqlSugar异常
+            </summary>
+            <param name="message">错误信息</param>
+            <param name="sql">ORM生成的SQL</param>
+            <param name="pars">错误函数的参数</param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarException.#ctor(System.String,System.Object)">
+            <summary>
+            SqlSugar异常
+            </summary>
+            <param name="message">错误信息</param>
+            <param name="pars">错误函数的参数</param>
+        </member>
+        <member name="T:SqlSugar.IsWhatExtensions">
+            <summary>
+            ** 描述：逻辑判段是什么？
+            ** 创始时间：2015-5-29
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：http://www.cnblogs.com/sunkaixuan/p/4539654.html
+            </summary>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsInRange(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            值在的范围？
+            </summary>
+            <param name="thisValue"></param>
+            <param name="begin">大于等于begin</param>
+            <param name="end">小于等于end</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsInRange(System.DateTime,System.DateTime,System.DateTime)">
+            <summary>
+            值在的范围？
+            </summary>
+            <param name="thisValue"></param>
+            <param name="begin">大于等于begin</param>
+            <param name="end">小于等于end</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsIn``1(``0,``0[])">
+            <summary>
+            在里面吗?
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsContainsIn(System.String,System.String[])">
+            <summary>
+            在里面吗?
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsNullOrEmpty(System.Object)">
+            <summary>
+            是null或""?
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsNullOrEmpty(System.Nullable{System.Guid})">
+            <summary>
+            是null或""?
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsNullOrEmpty(System.Guid)">
+            <summary>
+            是null或""?
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsValuable(System.Object)">
+            <summary>
+            有值?(与IsNullOrEmpty相反)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsValuable(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            有值?(与IsNullOrEmpty相反)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsZero(System.Object)">
+            <summary>
+            是零?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsInt(System.Object)">
+            <summary>
+            是INT?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsNoInt(System.Object)">
+            <summary>
+            不是INT?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsMoney(System.Object)">
+            <summary>
+            是金钱?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsGuid(System.Object)">
+            <summary>
+            是GUID?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsDate(System.Object)">
+            <summary>
+            是时间?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsEamil(System.Object)">
+            <summary>
+            是邮箱?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsMobile(System.Object)">
+            <summary>
+            是手机?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsTelephone(System.Object)">
+            <summary>
+            是座机?
+            </summary>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsIDcard(System.Object)">
+            <summary>
+            是身份证?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsFax(System.Object)">
+            <summary>
+            是传真?
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsMatch(System.Object,System.String)">
+             <summary>
+            是适合正则匹配?
+             </summary>
+             <param name="thisValue"></param>
+             <param name="begin">大于等于begin</param>
+             <param name="end">小于等于end</param>
+             <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsAnonymousType(System.Type)">
+            <summary>
+            是否是动态类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsCollectionsList(System.String)">
+            <summary>
+            是List类型
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsStringArray(System.String)">
+            <summary>
+            是string[]类型
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IsWhatExtensions.IsEnumerable(System.String)">
+            <summary>
+            是Enumerable
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.JoinType">
+            <summary>
+            join类型
+            </summary>
+        </member>
+        <member name="T:SqlSugar.ApplyType">
+            <summary>
+            Apply类型
+            </summary>
+        </member>
+        <member name="T:SqlSugar.OrderByType">
+            <summary>
+            排序类型
+            </summary>
+        </member>
+        <member name="T:SqlSugar.PageModel">
+            <summary>
+            分页类型
+            </summary>
+        </member>
+        <member name="T:SqlSugar.ResolveExpressType">
+            <summary>
+            解析类型
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ResolveExpressType.oneT">
+            <summary>
+            单个T
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ResolveExpressType.nT">
+            <summary>
+            多个T
+            </summary>
+        </member>
+        <member name="T:SqlSugar.Sqlable">
+            <summary>
+            ** 描述：Queryable是多表查询基类，基于拥有大量查询扩展函数
+            ** 创始时间：2015-7-13
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Sqlable.DB">
+            <summary>
+            数据接口
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Sqlable.Where">
+            <summary>
+            Where临时数据
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Sqlable.Params">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Sqlable.Sql">
+            <summary>
+            sql临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Sqlable.OrderBy">
+            <summary>
+            OrderBy临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Sqlable.GroupBy">
+            <summary>
+            GroupBy临时数据
+            </summary>
+        </member>
+        <member name="T:SqlSugar.ResolveExpress">
+            <summary>
+            ** 描述：拉姆达解析类
+            ** 创始时间：2015-7-20
+            ** 修改时间：2016-9-26
+            ** 作者：sunkaixuan
+            ** qq：610262374 
+            ** 使用说明：使用请注名作者
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ResolveExpress.FileldErrorMessage">
+            <summary>
+            字段名解析错误
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ResolveExpress.ExpToSqlError">
+            <summary>
+            拉姆达解析错误
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ResolveExpress.OperatorError">
+            <summary>
+            运算符错误
+            </summary>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.#ctor(System.Int32)">
+            <summary>
+            解析拉姆达
+            </summary>
+            <param name="sameIndex">区分相同参数名的索引号</param>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.ResolveExpression(SqlSugar.ResolveExpress,System.Linq.Expressions.Expression,SqlSugar.SqlSugarClient)">
+            <summary>
+            解析表达式
+            </summary>
+            <param name="re">当前解析对象</param>
+            <param name="exp">要解析的表达式</param>
+            <param name="db">数据库访问对象</param>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.Init(SqlSugar.ResolveExpress,System.Linq.Expressions.Expression)">
+            <summary>
+            初始化表达式
+            </summary>
+            <param name="re"></param>
+            <param name="exp"></param>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.CreateSqlElements(System.Linq.Expressions.Expression,SqlSugar.ResolveExpress.MemberType@,System.Boolean)">
+            <summary>
+            递归解析表达式路由计算
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.AddParas(System.String@,System.Object)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.AddParasReturnRight(System.Object,System.String@)">
+            <summary>
+            添加参数并返回右边值
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.GetOperator(System.Linq.Expressions.ExpressionType)">
+            <summary>
+            根据条件生成对应的sql查询操作符
+            </summary>
+            <param name="expressiontype"></param>
+            <returns></returns>
+        </member>
+        <member name="F:SqlSugar.ResolveExpress.ConstantBoolDictionary">
+            <summary>
+            解析bool类型用到的字典
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ResolveExpress.ExpErrorUniqueKey">
+            <summary>
+            拉姆达解析唯一标识
+            </summary>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.Equals(System.String,System.Linq.Expressions.MethodCallExpression)">
+            <summary>
+            是否相等
+            </summary>
+            <param name="methodName"></param>
+            <param name="mce"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.StartsWith(System.String,System.Linq.Expressions.MethodCallExpression,System.Boolean)">
+            <summary>
+            拉姆达StartsWith函数处理
+            </summary>
+            <param name="methodName"></param>
+            <param name="mce"></param>
+            <param name="isTure"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.EndWith(System.String,System.Linq.Expressions.MethodCallExpression,System.Boolean)">
+            <summary>
+            拉姆达EndWith函数处理
+            </summary>
+            <param name="methodName"></param>
+            <param name="mce"></param>
+            <param name="isTure"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.Contains(System.String,System.Linq.Expressions.MethodCallExpression,System.Boolean)">
+            <summary>
+            拉姆达Contains函数处理
+            </summary>
+            <param name="methodName"></param>
+            <param name="mce"></param>
+            <param name="isTure"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.IsNullOrEmpty(System.String,System.Linq.Expressions.MethodCallExpression,System.Boolean)">
+            <summary>
+            非空验证
+            </summary>
+            <param name="methodName"></param>
+            <param name="mce"></param>
+            <param name="isTure"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.MethodTo(System.String,System.Linq.Expressions.MethodCallExpression,SqlSugar.ResolveExpress.MemberType@)">
+            <summary>
+            拉姆达函数处理
+            </summary>
+            <param name="methodName"></param>
+            <param name="mce"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.MethodToString(System.String,System.Linq.Expressions.MethodCallExpression,SqlSugar.ResolveExpress.MemberType@)">
+            <summary>
+            拉姆达ToString函数处理
+            </summary>
+            <param name="methodName"></param>
+            <param name="mce"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.GetExpressionRightField(System.Linq.Expressions.Expression,SqlSugar.SqlSugarClient)">
+            <summary>
+            获取拉姆达表达式的字段值
+            </summary>
+            <param name="exp"></param>
+            <param name="db">数据库访问对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ResolveExpress.GetExpressionRightFieldByNT(System.Linq.Expressions.Expression,SqlSugar.SqlSugarClient)">
+            <summary>
+            获取拉姆达表达式的字段值多个T模式
+            </summary>
+            <param name="exp"></param>
+            <param name="db">数据库访问对象</param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.ResolveExpress.MemberType">
+            <summary>
+            拉姆达成员类型
+            </summary>
+        </member>
+        <member name="T:SqlSugar.ResolveExpress.ExpressBoolModel">
+            <summary>
+            用来处理bool类型的实体
+            </summary>
+        </member>
+        <member name="P:SqlSugar.ResolveExpress.ExpressBoolModel.Key">
+            <summary>
+            唯一标识
+            </summary>
+        </member>
+        <member name="P:SqlSugar.ResolveExpress.ExpressBoolModel.Type">
+            <summary>
+            数据类型
+            </summary>
+        </member>
+        <member name="P:SqlSugar.ResolveExpress.ExpressBoolModel.OldValue">
+            <summary>
+            原始值
+            </summary>
+        </member>
+        <member name="P:SqlSugar.ResolveExpress.ExpressBoolModel.NewValue">
+            <summary>
+            处事后的值
+            </summary>
+        </member>
+        <member name="P:SqlSugar.ResolveExpress.ExpressBoolModel.ConditionalValue">
+            <summary>
+            处理后的运算对象
+            </summary>
+        </member>
+        <member name="T:SqlSugar.LanguageHelper">
+            <summary>
+            ** 描述：多语言视图帮助类
+            ** 创始时间：2016-8-7
+            ** 修改时间：-
+            ** 作者：孙凯旋
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="F:SqlSugar.LanguageHelper.PreSuffix">
+            <summary>
+            多语言视图的前缀
+            </summary>
+        </member>
+        <member name="M:SqlSugar.LanguageHelper.GetLanguageViewNameList(SqlSugar.SqlSugarClient)">
+            <summary>
+            获取所有需要生成多语言的视图名称
+            </summary>
+            <param name="db"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.LanguageHelper.UpdateView(SqlSugar.PubModel.Language,SqlSugar.SqlSugarClient)">
+            <summary>
+            创建多语言视图，带有LanguageId=1的所有有视图1替换成languageValue 并且新创视图 名称为 原有视图名+_$_+suffix
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.ResolveSelect">
+            <summary>
+            ** 描述：解析Queryable.Select函数的参数
+            ** 创始时间：2016-9-21
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** qq：610262374 
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.ResolveSelect.GetResult``1(System.String,SqlSugar.Queryable{``0})">
+            <summary>
+            多表情况
+            </summary>
+            <typeparam name="TResult">实体类型</typeparam>
+            <param name="expStr">拉姆达字符串</param>
+            <param name="reval">查旬对象</param>
+        </member>
+        <member name="M:SqlSugar.ResolveSelect.GetResult``1(SqlSugar.Queryable{``0})">
+            <summary>
+            单表情况
+            </summary>
+            <typeparam name="TResult">实体类型</typeparam>
+            <param name="reval">查旬对象</param>
+        </member>
+        <member name="M:SqlSugar.ResolveSelect.ConvertFuns(System.String,System.Boolean)">
+            <summary>
+            替换函数
+            </summary>
+            <param name="selectStr">拉姆达字符串</param>
+            <param name="isOneT">true为单表，false为多表</param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.CloudConnectionConfig">
+            <summary>
+            云计算连接配置
+            </summary>
+        </member>
+        <member name="P:SqlSugar.CloudConnectionConfig.Rate">
+            <summary>
+            处理机率,值越大机率越高
+            </summary>
+        </member>
+        <member name="P:SqlSugar.CloudConnectionConfig.ConnectionString">
+            <summary>
+            链接字符串名称
+            </summary>
+        </member>
+        <member name="T:SqlSugar.CloudSearchResult`1">
+            <summary>
+            云搜索Task反回类
+            </summary>
+        </member>
+        <member name="P:SqlSugar.CloudSearchResult`1.Entities">
+            <summary>
+            集合
+            </summary>
+        </member>
+        <member name="P:SqlSugar.CloudSearchResult`1.Value">
+            <summary>
+            单个对象
+            </summary>
+        </member>
+        <member name="P:SqlSugar.CloudSearchResult`1.DataTable">
+            <summary>
+            DataTable
+            </summary>
+        </member>
+        <member name="P:SqlSugar.CloudSearchResult`1.ConnectionString">
+            <summary>
+            连接字符串
+            </summary>
+        </member>
+        <member name="P:SqlSugar.CloudSearchResult`1.Count">
+            <summary>
+            数量
+            </summary>
+        </member>
+        <member name="T:SqlSugar.Taskable`1">
+            <summary>
+            云计扩展类
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:SqlSugar.Taskable`1.Tasks">
+            <summary>
+            任务
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Taskable`1.Sql">
+            <summary>
+            sql
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Taskable`1.WhereObj">
+            <summary>
+            数据库参数(例如:new{id=1,name="张三"})
+            </summary>
+        </member>
+        <member name="T:SqlSugar.TaskableWithCount`1">
+            <summary>
+            云计扩展类
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:SqlSugar.TaskableWithCount`1.Tasks">
+            <summary>
+            任务
+            </summary>
+        </member>
+        <member name="P:SqlSugar.TaskableWithCount`1.Sql">
+            <summary>
+            sql
+            </summary>
+        </member>
+        <member name="P:SqlSugar.TaskableWithCount`1.WhereObj">
+            <summary>
+            数据库参数(例如:new{id=1,name="张三"})
+            </summary>
+        </member>
+        <member name="T:SqlSugar.Queryable`1">
+            <summary>
+            ** 描述：Queryable拉姆达查询对象
+            ** 创始时间：2015-7-13
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Queryable`1.DB">
+            <summary>
+            数据接口
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Queryable`1.WhereValue">
+            <summary>
+            Where临时数据
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Queryable`1.Params">
+            <summary>
+            SqlParameter临时数据
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Queryable`1.WhereIndex">
+            <summary>
+            条件索引临时数据
+            </summary>
+        </member>
+        <member name="F:SqlSugar.Queryable`1.JoinTableValue">
+            <summary>
+            联表查询临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.TName">
+            <summary>
+            T的名称
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.Type">
+            <summary>
+            实体类型
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.Skip">
+            <summary>
+            Skip临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.Take">
+            <summary>
+            Take临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.OrderByValue">
+            <summary>
+            Order临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.SelectValue">
+            <summary>
+            Select临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.TableName">
+            <summary>
+            表名临时数据
+            </summary>
+        </member>
+        <member name="P:SqlSugar.Queryable`1.GroupByValue">
+            <summary>
+            分组查询临时数据
+            </summary>
+        </member>
+        <member name="T:SqlSugar.CloudClient">
+            <summary>
+            ** 描述：SQL糖 ORM 核心类升级版 分布式存储和云计算框架
+            ** 创始时间：2015-12-14
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="F:SqlSugar.CloudClient.Tran">
+            <summary>
+            分布式事务
+            </summary>
+        </member>
+        <member name="F:SqlSugar.CloudClient.PageMaxHandleNumber">
+            <summary>
+            内存中处理数据的最大值（默认：1000）
+            </summary>
+        </member>
+        <member name="F:SqlSugar.CloudClient.FormatTimeByDataBase">
+            <summary>
+            将时间格式化成数据库格式,如果数据库格式和默认值不相同需要重新设置(默认:yyyy-MM-dd hh:mm:ss.ms)
+            </summary>
+        </member>
+        <member name="M:SqlSugar.CloudClient.InsertRange``1(System.Collections.Generic.List{``0},System.Boolean)">
+            <summary>
+            批量插入
+            使用说明:sqlSugar.Insert(List《entity》);
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="entity">插入对象</param>
+            <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Insert``1(``0,System.Boolean)">
+            <summary>
+            插入
+            使用说明:sqlSugar.Insert(entity);
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="entity">插入对象</param>
+            <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.#ctor">
+            <summary>
+            私有禁止无参实例
+            </summary>
+        </member>
+        <member name="M:SqlSugar.CloudClient.#ctor(System.Collections.Generic.List{SqlSugar.CloudConnectionConfig})">
+            <summary>
+            ** 描述：SQL糖 ORM 核心类升级版 分布式存储和云计算框架
+            ** 创始时间：2015-12-14
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+            <param name="configList">云计算连接配置</param>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Delete``2(``1[])">
+            <summary>
+            批量删除
+            注意：whereIn 主键集合  
+            使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
+            </summary>
+            <param name="whereIn"> delete ids </param>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Delete``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            删除,根据表达式
+            使用说明:
+            Delete《T》(it=>it.id=100) 或者Delete《T》(3)
+            </summary>
+            <param name="expression">筛选表达式</param>
+        </member>
+        <member name="M:SqlSugar.CloudClient.FalseDelete``2(System.String,``1[])">
+            <summary>
+            批量删除
+            注意：whereIn 主键集合  
+            使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
+            </summary>
+            <param name="whereIn"> delete ids </param>
+        </member>
+        <member name="M:SqlSugar.CloudClient.FalseDelete``1(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            假删除，根据表达式
+            使用说明::
+            FalseDelete《T》(new int[]{1,2,3})或者Delete《T》(3)
+            </summary>
+            <param name="field">更新删除状态字段</param>
+            <param name="expression">筛选表达式</param>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Taskable``1(System.String,System.Object)">
+            <summary>
+            多线程请求所有数据库节点，同步汇总结果
+            </summary>
+            <typeparam name="T">支持DataTable、实体类和值类型</typeparam>
+            <param name="sql"></param>
+            <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Taskable``1(System.String,System.Collections.Generic.List{System.String},System.Object)">
+            <summary>
+            多线程请求所有数据库节点，同步汇总结果
+            </summary>
+            <typeparam name="T">支持DataTable、实体类和值类型</typeparam>
+            <param name="sql"></param>
+            <param name="connectionStringList">连接字符串数组</param>
+            <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.TaskableWithCount``1(System.String,System.String,System.Object)">
+            <summary>
+            多线程请求所有数据库节点，同步汇总结果
+            </summary>
+            <typeparam name="T">支持DataTable、实体类和值类型</typeparam>
+            <param name="sqlSelect">sql from之前（例如： "select count(*)" ）</param>
+            <param name="sqlEnd">sql from之后（例如： "from table where id=1" </param>
+            <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.TaskableWithPage``1(System.String,System.String,System.Int32,System.Int32,System.Int32@,System.String,SqlSugar.OrderByType,System.Object)">
+            <summary>
+            获取分页数据(注意：该函数不可以在事务内使用)
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="unqueField">数据库中数据唯一的列（建议：主键GUID）</param>
+            <param name="sql"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="pageCount"></param>
+            <param name="orderByField"></param>
+            <param name="orderByType"></param>
+            <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.TaskableWithPage``1(System.String,System.String,System.Int32,System.Int32,System.Int32@,System.Collections.Generic.List{SqlSugar.OrderByDictionary},System.Object)">
+            <summary>
+            获取分页数据(注意：该函数不可以在事务内使用)
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="unqueField">数据库中数据唯一的列（建议：主键GUID）</param>
+            <param name="sql"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="pageCount"></param>
+            <param name="orderByTypes">排序信息集合</param>
+            <param name="whereObj">参数 例如: new { id="1",name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Update``2(System.Object,``1[])">
+            <summary>
+            更新
+            注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
+            使用说明:sqlSugar.Update《T》(rowObj,whereObj);
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
+            <param name="whereIn">new int[]{1,2,3}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Update``1(System.Object,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            更新
+            注意：rowObj为T类型将更新该实体的非主键所有列，如果rowObj类型为匿名类将更新指定列
+            使用说明:sqlSugar.Update《T》(rowObj,whereObj);
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
+            <param name="expression">it.id=100</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:SqlSugar.CloudClient.RemoveAllCache``1">
+            <summary>
+            清除所有缓存
+            </summary>
+        </member>
+        <member name="M:SqlSugar.CloudClient.TranDispose">
+            <summary>
+            清空事务
+            </summary>
+        </member>
+        <member name="M:SqlSugar.CloudClient.SettingConnection(SqlSugar.SqlSugarClient)">
+            <summary>
+            设置连接
+            </summary>
+            <param name="db"></param>
+        </member>
+        <member name="M:SqlSugar.CloudClient.GetWhereCompare(System.String,System.Collections.Generic.List{SqlSugar.OrderByDictionary},System.Data.DataRow,System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            获取Where比较条件
+            </summary>
+            <param name="whereCompare"></param>
+            <param name="sampleRow"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.GetSqlSampleRowSql(System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            获取样品SQL
+            </summary>
+            <param name="unqueField"></param>
+            <param name="sql"></param>
+            <param name="fullOrderByString"></param>
+            <param name="orderByFieldsString"></param>
+            <param name="dataSampleIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.GetSampleIndexSql(System.String,System.String,System.String,System.String,System.String,System.Data.DataRow)">
+            <summary>
+            获取样品索引SQL
+            </summary>
+            <param name="unqueField"></param>
+            <param name="sql"></param>
+            <param name="fullOrderByString"></param>
+            <param name="whereCompare"></param>
+            <param name="sqlOtherPage"></param>
+            <param name="sampleRow"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudClient.InitSampleRow(System.String,System.String,System.Collections.Generic.List{SqlSugar.OrderByDictionary},System.Object,System.Int32,System.String,System.String@,System.Int32,System.String@,System.Data.DataRow@,System.Int32@,System.Int32@,System.Collections.Generic.List{System.Data.DataRow}@)">
+            <summary>
+            初始化样品数据
+            </summary>
+            <param name="unqueField"></param>
+            <param name="sql"></param>
+            <param name="orderByTypes"></param>
+            <param name="whereObj"></param>
+            <param name="configCount"></param>
+            <param name="fullOrderByString"></param>
+            <param name="whereCompare"></param>
+            <param name="pageBegin"></param>
+            <param name="sqlOtherPage"></param>
+            <param name="sampleRow"></param>
+            <param name="sampleRowIndex"></param>
+            <param name="sampleEachIndex"></param>
+            <param name="innerDataSampleList"></param>
+        </member>
+        <member name="T:SqlSugar.KeyValue">
+            <summary>
+            自定义键值类 key is string, value is string
+            </summary>
+        </member>
+        <member name="P:SqlSugar.KeyValue.Key">
+            <summary>
+            键
+            </summary>
+        </member>
+        <member name="P:SqlSugar.KeyValue.Value">
+            <summary>
+            值
+            </summary>
+        </member>
+        <member name="T:SqlSugar.KeyValueObj">
+            <summary>
+            自定义键值类 key is string, value is object
+            </summary>
+        </member>
+        <member name="P:SqlSugar.KeyValueObj.Key">
+            <summary>
+            键
+            </summary>
+        </member>
+        <member name="P:SqlSugar.KeyValueObj.Value">
+            <summary>
+            值
+            </summary>
+        </member>
+        <member name="T:SqlSugar.Check">
+            <summary>
+            ** 描述：验证失败，则抛出异常
+            ** 创始时间：2015-7-19
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 修改人：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.Check.ArgumentNullException(System.Object,System.String)">
+            <summary>
+            使用导致此异常的参数的名称初始化 System.ArgumentNullException 类的新实例。
+            </summary>
+            <param name="checkObj"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:SqlSugar.Check.Exception(System.Boolean,System.String,System.String[])">
+            <summary>
+            使用指定的错误消息初始化 System.Exception 类的新实例。
+            </summary>
+            <param name="isException">true则引发异常</param>
+            <param name="message">错误信息</param>
+            <param name="args">参数</param>
+        </member>
+        <member name="T:SqlSugar.QueryableExtensions">
+            <summary>
+            ** 描述：Queryable扩展函数
+            ** 创始时间：2015-7-13
+            ** 修改时间：2016-9-19
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Where``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            条件筛选
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Where``1(SqlSugar.Queryable{``0},System.String,System.Object)">
+            <summary>
+            条件筛选
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="whereString">Where后面的Sql条件语句 (例如： id=@id )</param>
+            <param name="whereObj"> 匿名参数 (例如：new{id=1,name="张三"})</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Where``2(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,System.Boolean}})">
+            <summary>
+            条件筛选
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="T2">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Where``3(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2,System.Boolean}})">
+            <summary>
+            条件筛选
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="T2">表实体类型</typeparam>
+            <typeparam name="T3">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Where``4(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,System.Boolean}})">
+            <summary>
+            条件筛选
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="T2">表实体类型</typeparam>
+            <typeparam name="T3">表实体类型</typeparam>
+            <typeparam name="T4">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Where``5(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,System.Boolean}})">
+            <summary>
+            条件筛选
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="T2">表实体类型</typeparam>
+            <typeparam name="T3">表实体类型</typeparam>
+            <typeparam name="T4">表实体类型</typeparam>
+            <typeparam name="T5">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.In``2(SqlSugar.Queryable{``0},System.String,``1[])">
+            <summary>
+            条件筛选 ( 例如：InFieldName 为 id, inValues 值为 new string[]{"1" ,"2"} 生成的SQL就是 id in('1','2')  )
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="FieldType">In的字段类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="InFieldName">In的字段名称</param>
+            <param name="inValues">In的值的数组集合</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.In``2(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},``1[])">
+            <summary>
+             条件筛选 ( 例如：expression 为 it=>it.id,  inValues值为 new string[]{"1" ,"2"} 生成的SQL就是  id in('1','2') )
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="FieldType">In的字段类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">In的字段（例如：it=>it.id）</param>
+            <param name="inValues">In的值的数组集合</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.In``2(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{``1})">
+            <summary>
+             条件筛选 ( 例如：expression 为 it=>it.id,  inValues值为 new string[]{"1" ,"2"} 生成的SQL就是  id in('1','2') )
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="FieldType">In的字段类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">In的字段（例如：it=>it.id）</param>
+            <param name="inValues">In的值的集合</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.In``2(SqlSugar.Queryable{``0},System.String,System.Collections.Generic.List{``1})">
+            <summary>
+            条件筛选 ( 例如：InFieldName 为 id,  inValues值为 new string[]{"1" ,"2"} 生成的SQL就是  id in('1','2') )
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="FieldType">In的字段类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="InFieldName">In的字段名称</param>
+            <param name="inValues">In的值的集合</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.OrderBy``1(SqlSugar.Queryable{``0},System.String)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="orderFileds">排序字符串（例如：id asc,name desc) </param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.OrderBy``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},SqlSugar.OrderByType)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">排序字段 it=>it.fieldName </param>
+            <param name="type">排序类型</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.OrderBy``2(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,System.Object}},SqlSugar.OrderByType)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <typeparam name="T2">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">例如 (s1,s2)=>s1.id,相当于 order by s1.id</param>
+            <param name="type">排序类型</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.GroupBy``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            分组
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">分组字段 (例如：it=>it.fieldName)</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.GroupBy``1(SqlSugar.Queryable{``0},System.String)">
+            <summary>
+            分组
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="groupFileds">分组字段 (例如：id,name) </param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Skip``1(SqlSugar.Queryable{``0},System.Int32)">
+            <summary>
+             跳过序列中指定数量的元素，然后返回剩余的元素。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="index">指定数量的索引</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Take``1(SqlSugar.Queryable{``0},System.Int32)">
+            <summary>
+            从起始点向后取指定条数的数据
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="num">指定条数</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Single``1(SqlSugar.Queryable{``0})">
+            <summary>
+             返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.SingleOrDefault``1(SqlSugar.Queryable{``0})">
+            <summary>
+             返回序列的唯一元素；如果该序列为空返回Default(T),序列超过1条返则抛出异常。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Single``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+             返回序列的唯一元素；如果该序列并非恰好包含一个元素，则会引发异常。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.SingleOrDefault``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+             返回序列的唯一元素；如果该序列并非恰好包含一个元素，否则返回null。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.First``1(SqlSugar.Queryable{``0})">
+            <summary>
+             返回序列中的第一个元素。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.FirstOrDefault``1(SqlSugar.Queryable{``0})">
+            <summary>
+              返回序列中的第一个元素,如果序列为NULL返回default(T)
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.First``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            返回序列中的第一个元素。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.FirstOrDefault``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            返回序列中的第一个元素,如果序列为NULL返回default(T)
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>T</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Any``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+             确定序列是否包含任何元素。
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">表达式条件</param>
+            <returns>count>0返回true</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Any``1(SqlSugar.Queryable{``0})">
+            <summary>
+             确定序列是否包含任何元素
+            </summary>
+            <typeparam name="T">表实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>count>0返回true</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``3(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2}})">
+            <summary>
+            将源数据对象转换到新对象中
+            </summary>
+            <typeparam name="T">原数据实体类型</typeparam>
+            <typeparam name="T2">原数据实体类型</typeparam>
+            <typeparam name="TResult">返回值的新实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">给新实体赋值的表达式</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``4(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3}})">
+            <summary>
+            将源数据对象转换到新对象中
+            </summary>
+            <typeparam name="T">原数据实体类型</typeparam>
+            <typeparam name="T2">原数据实体类型</typeparam>
+            <typeparam name="T3">原数据实体类型</typeparam>
+            <typeparam name="TResult">返回值的新实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">给新实体赋值的表达式</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``5(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4}})">
+            <summary>
+            将源数据对象转换到新对象中
+            </summary>
+            <typeparam name="T">原数据实体类型</typeparam>
+            <typeparam name="T2">原数据实体类型</typeparam>
+            <typeparam name="T3">原数据实体类型</typeparam>
+            <typeparam name="T4">原数据实体类型</typeparam>
+            <typeparam name="TResult">返回值的新实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">给新实体赋值的表达式</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``6(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2,``3,``4,``5}})">
+            <summary>
+            将源数据对象转换到新对象中
+            </summary>
+            <typeparam name="T">原数据实体类型</typeparam>
+            <typeparam name="T2">原数据实体类型</typeparam>
+            <typeparam name="T3">原数据实体类型</typeparam>
+            <typeparam name="T4">原数据实体类型</typeparam>
+            <typeparam name="T5">原数据实体类型</typeparam>
+            <typeparam name="TResult">返回值的新实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">给新实体赋值的表达式</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``2(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            将源数据对象转换到新对象中
+            </summary>
+            <typeparam name="TSource">原数据实体类型</typeparam>
+            <typeparam name="TResult">返回值的新实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">给新实体赋值的表达式</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``2(SqlSugar.Queryable{``0},System.String)">
+            <summary>
+            将源数据对象转换到新对象中
+            </summary>
+            <typeparam name="TSource">原数据实体类型</typeparam>
+            <typeparam name="TResult">返回值的新实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="select">查询字符串（例如 id,name）</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``1(SqlSugar.Queryable{``0},System.String)">
+            <summary>
+            将select的字段映射到T对象
+            </summary>
+            <typeparam name="T">数据实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="select">查询字符串（例如 id,name）</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Select``2(SqlSugar.Queryable{``1},System.String)">
+            <summary>
+            将select的字段映射到T对象
+            </summary>
+            <typeparam name="T">数据实体类型</typeparam>
+            <typeparam name="Result">数据实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="select">查询字符串（例如 id,name）</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Count``1(SqlSugar.Queryable{``0})">
+            <summary>
+            获取序列总记录数
+            </summary>
+            <param name="queryable">查询对象</param>
+            <returns>int</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Max``2(SqlSugar.Queryable{``0},System.String)">
+            <summary>
+            获取最大值
+            </summary>
+            <typeparam name="TSource">实体类型</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="maxField">列名</param>
+            <returns>TResult</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Max``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            获取最大值
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">查询字段 (例如：it=>it.fieldName)</param>
+            <returns>object</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Min``2(SqlSugar.Queryable{``0},System.String)">
+            <summary>
+            获取最小值
+            </summary>
+            <typeparam name="TSource">实体类型</typeparam>
+            <typeparam name="TResult">返回类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="minField">列名</param>
+            <returns>TResult</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.Min``1(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            获取最小值
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">查询字段 (例如：it=>it.fieldName)</param>
+            <returns>object</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.ToList``1(SqlSugar.Queryable{``0})">
+            <summary>
+            将Queryable转换T的集合
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>T的集合</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.ToJson``1(SqlSugar.Queryable{``0})">
+            <summary>
+            将Queryable转换为Json
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>json字符串</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.ToSql``1(SqlSugar.Queryable{``0})">
+            <summary>
+            返回Sql和参数信息
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.ToDynamic``1(SqlSugar.Queryable{``0})">
+            <summary>
+            将Queryable转换为Dynamic
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>dynamic</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.ToDataTable``1(SqlSugar.Queryable{``0})">
+            <summary>
+            将Queryable转换为DataTable
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <returns>DataTable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.ToPageList``1(SqlSugar.Queryable{``0},System.Int32,System.Int32)">
+            <summary>
+            将Queryable转换为分页后的List&lt;T&gt;集合
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="pageIndex">当前页码</param>
+            <param name="pageSize">每页显示数量</param>
+            <returns>T的集合</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.JoinTable``2(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,System.Object}},SqlSugar.JoinType)">
+            <summary>
+            联表查询
+            </summary>
+            <typeparam name="T">第一个表的对象</typeparam>
+            <typeparam name="T2">联接的表对象</typeparam>
+            <param name="queryable"></param>
+            <param name="expression">表达式</param>
+            <param name="type">Join的类型</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.JoinTable``3(SqlSugar.Queryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1,``2,System.Object}},SqlSugar.JoinType)">
+            <summary>
+            联表查询
+            </summary>
+            <typeparam name="T">第一个表的对象</typeparam>
+            <typeparam name="T2">联接表的对象</typeparam>
+            <typeparam name="T3">联接表的对象</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="expression">条件表达式</param>
+            <param name="type">Join的类型</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.JoinTable``1(SqlSugar.Queryable{``0},System.String,System.String,System.String,System.Object,SqlSugar.JoinType)">
+            <summary>
+            联表查询根据字符串
+            </summary>
+            <typeparam name="T">第一个表的对象</typeparam>
+            <param name="queryable">查询对象</param>
+            <param name="tableName">表名（可是以表或也可以是SQL语句加括号）</param>
+            <param name="shortName">表名简写</param>
+            <param name="onWhere">on后面的条件</param>
+            <param name="type">Join的类型</param>
+            <returns>Queryable</returns>
+        </member>
+        <member name="T:SqlSugar.PubConvert">
+            <summary>
+            ** 描述：公用转换函数
+            ** 创始时间：2015-6-9
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToInt(System.Object)">
+            <summary>
+            强转成int 如果失败返回 0
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToInt(System.Object,System.Int32)">
+            <summary>
+            强转成int 如果失败返回 errorValue
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToMoney(System.Object)">
+            <summary>
+            强转成money 如果失败返回 0
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToMoney(System.Object,System.Double)">
+            <summary>
+            强转成double 如果失败返回 errorValue
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToString(System.Object)">
+            <summary>
+            强转成string 如果失败返回 ""
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToString(System.Object,System.String)">
+            <summary>
+            强转成string 如果失败返回 str
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToDecimal(System.Object)">
+            <summary>
+            强转成Decimal 如果失败返回 0
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToDecimal(System.Object,System.Decimal)">
+            <summary>
+            强转成Decimal 如果失败返回 errorValue
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToDate(System.Object)">
+            <summary>
+            强转成DateTime 如果失败返回 DateTime.MinValue
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToDate(System.Object,System.DateTime)">
+            <summary>
+            强转成DateTime 如果失败返回 errorValue
+            </summary>
+            <param name="thisValue"></param>
+            <param name="errorValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.PubConvert.ObjToBool(System.Object)">
+            <summary>
+            强转成Bool 如果失败返回 false
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.SqlSugarTool">
+            <summary>
+            ** 描述：SqlSugar工具类
+            ** 创始时间：2015-7-13
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+            <summary>
+            SqlSugarTool局部类与Core有差异的部分(方便工具移植到.NetCore版本)
+            </summary>
+            <summary>
+            SqlSugarTool局部类存放具有拼接SQL的函数(方便工具移植到其它数据库版本)
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlSugarTool.ParSymbol">
+            <summary>
+            par的符号
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.DataReaderToList``1(System.Type,System.Data.IDataReader,System.String,System.Boolean,System.Boolean)">
+            <summary>
+             Reader转成T的集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="type"></param>
+            <param name="dr"></param>
+            <param name="fields"></param>
+            <param name="isClose"></param>
+            <param name="isTry"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.SetParSize(System.Data.SqlClient.SqlParameter)">
+            <summary>
+            设置参数Size
+            </summary>
+            <param name="par"></param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetParameters(System.Object)">
+            <summary>
+            将实体对象转换成SqlParameter[] 
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetObjectToDictionary(System.Object)">
+            <summary>
+            将实体对象转换成 Dictionary《string, string》
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetGetPropertiesByCache(System.Type,System.String,SqlSugar.CacheManager{System.Reflection.PropertyInfo[]})">
+            <summary>
+            获取type属性cache
+            </summary>
+            <param name="type"></param>
+            <param name="cachePropertiesKey"></param>
+            <param name="cachePropertiesManager"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.IsPrimaryKey(SqlSugar.SqlSugarClient,System.String)">
+            <summary>
+            判段是否包含主键
+            </summary>
+            <param name="db"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.SqlLikeWordEncode(System.String)">
+            <summary>
+            处理like条件的通配符
+            </summary>
+            <param name="word"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetPropertyValue(System.Object,System.String)">
+            <summary>
+            获取属性值
+            </summary>
+            <param name="obj"></param>
+            <param name="property"></param>
+            <returns></returns>
+        </member>
+        <member name="F:SqlSugar.SqlSugarTool.SpecialRequestForm">
+            <summary>
+            使用页面自动填充sqlParameter时 Request.Form出现特殊字符时可以重写Request.Form方法，使用时注意加锁并且用到将该值设为null
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetUnderType(System.Reflection.PropertyInfo,System.Boolean@)">
+            <summary>
+            获取最底层类型
+            </summary>
+            <param name="propertyInfo"></param>
+            <param name="isNullable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetParameterDictionary(System.Boolean)">
+            <summary>
+            获取参数到键值集合根据页面Request参数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetParameterArray(System.Boolean)">
+            <summary>
+            获取参数到键值集合根据页面Request参数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.PackagingSQL(System.String)">
+            <summary>
+            将参数sql转成 '('+sql+')'
+            </summary>
+            <param name="sql"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetLockString(System.Boolean)">
+            <summary>
+            获取 WITH(NOLOCK)
+            </summary>
+            <param name="isNoLock"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetPrimaryKeyByTableName(SqlSugar.SqlSugarClient,System.String)">
+            <summary>
+            根据表获取主键
+            </summary>
+            <param name="db"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetIdentitiesKeyByTableName(SqlSugar.SqlSugarClient,System.String)">
+             <summary>
+            根据表名获取自添列 keyTableName Value columnName
+             </summary>
+             <param name="db"></param>
+             <param name="tableName"></param>
+             <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetColumnsByTableName(SqlSugar.SqlSugarClient,System.String)">
+            <summary>
+            根据表名获取列名
+            </summary>
+            <param name="db"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetCreateClassSql(System.Nullable{System.Boolean})">
+             <summary>
+            tableOrView  null=u,v , true=u , false=v
+             </summary>
+             <param name="tableOrView"></param>
+             <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.ChangeDBTypeToCSharpType(System.String)">
+            <summary>
+            将SqlType转成C#Type
+            </summary>
+            <param name="typeName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetTranslationSqlName(System.String)">
+            <summary>
+            获取转释后的表名和列名
+            </summary>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetSqlParameterName(System.String)">
+            <summary>
+            获取参数名
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetSqlParameterNameNoParSymbol(System.String)">
+             <summary>
+            获取没有符号的参数名称
+             </summary>
+             <param name="name"></param>
+             <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarTool.GetSchemaList(SqlSugar.SqlSugarClient)">
+            <summary>
+            获取Schema和表名的集合
+            </summary>
+            <param name="db"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.IStorageObject`1">
+            <summary>
+            ** 描述：存储对象接口
+            ** 创始时间：2015-5-29
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            </summary>
+        </member>
+        <member name="T:SqlSugar.SqlableExtensions">
+            <summary>
+            ** 描述：Sqlable扩展函数
+            ** 创始时间：2015-7-13
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.From(SqlSugar.Sqlable,System.String,System.String)">
+            <summary>
+            Form
+            </summary>
+            <param name="sqlable"></param>
+            <param name="modelObj">表名</param>
+            <param name="shortName">表名简写</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.From``1(SqlSugar.Sqlable,System.String)">
+            <summary>
+            Form
+            </summary>
+            <param name="sqlable"></param>
+            <param name="modelObj">表名</param>
+            <param name="shortName">表名简写</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.Join(SqlSugar.Sqlable,System.String,System.String,System.String,System.String,SqlSugar.JoinType)">
+            <summary>
+            Join
+            </summary>
+            <param name="sqlable"></param>
+            <param name="leftFiled">join左边连接字段</param>
+            <param name="RightFiled">join右边连接字段</param>
+            <param name="type">join类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.Join``1(SqlSugar.Sqlable,System.String,System.String,System.String,SqlSugar.JoinType)">
+            <summary>
+            Join
+            </summary>
+            <param name="sqlable"></param>
+            <param name="leftFiled">join左边连接字段</param>
+            <param name="RightFiled">join右边连接字段</param>
+            <param name="type">join类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.Where(SqlSugar.Sqlable,System.String)">
+            <summary>
+            Where
+            </summary>
+            <param name="sqlable"></param>
+            <param name="where">查询条件、开头无需写 AND或者WHERE</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.OrderBy(SqlSugar.Sqlable,System.String)">
+            <summary>
+            OrderBy
+            </summary>
+            <param name="sqlable"></param>
+            <param name="orderBy">排序字段，可以多个</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.Apply(SqlSugar.Sqlable,System.String,System.String,SqlSugar.ApplyType)">
+            <summary>
+            Apply
+            </summary>
+            <param name="sqlable"></param>
+            <param name="applySql">apply主体内容</param>
+            <param name="shotName">apply简写</param>
+            <param name="type">Apply类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.GroupBy(SqlSugar.Sqlable,System.String)">
+            <summary>
+            GroupBy
+            </summary>
+            <param name="sqlable"></param>
+            <param name="groupBy">GroupBy字段，可以多个</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToList``1(SqlSugar.Sqlable,System.String,System.Object,System.String,System.String)">
+            <summary>
+            设置查询列执行查询，并且将结果集转成List《T》
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.GetAllParas(SqlSugar.Sqlable,System.Object)">
+            <summary>
+            获取页面参数
+            </summary>
+            <param name="sqlable"></param>
+            <param name="whereObj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToDataTable(SqlSugar.Sqlable,System.String,System.Object)">
+            <summary>
+            设置查询列执行查询，并且将结果集转成DataTable
+            </summary>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToJson(SqlSugar.Sqlable,System.String,System.Object)">
+            <summary>
+            设置查询列执行查询，并且将结果集转成json
+            </summary>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToDynamic(SqlSugar.Sqlable,System.String,System.Object)">
+            <summary>
+            设置查询列执行查询，并且将结果集转成dynamic
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.ToClass(SqlSugar.Sqlable,System.String,System.Object)">
+            <summary>
+            生成查询结果对应的实体类字符串
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.Count(SqlSugar.Sqlable,System.Object,System.String,System.String)">
+            <summary>
+            反回记录数
+            </summary>
+            <param name="sqlable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToPageList``1(SqlSugar.Sqlable,System.String,System.String,System.Int32,System.Int32,System.Object)">
+            <summary>
+            设置查询列和分页参数执行查询，并且将结果集转成List《T》
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="orderByFiled">Order By字段，可以多个</param>
+            <param name="pageIndex">页码</param>
+            <param name="pageSize">每页显示数量</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToPageTable(SqlSugar.Sqlable,System.String,System.String,System.Int32,System.Int32,System.Object)">
+            <summary>
+            设置查询列和分页参数执行查询，并且将结果集转成DataTable
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="orderByFiled">Order By字段，可以多个</param>
+            <param name="pageIndex">页码</param>
+            <param name="pageSize">每页显示数量</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToPageJson(SqlSugar.Sqlable,System.String,System.String,System.Int32,System.Int32,System.Object)">
+            <summary>
+            设置查询列和分页参数执行查询，并且将结果集转成json
+            </summary>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="orderByFiled">Order By字段，可以多个</param>
+            <param name="pageIndex">页码</param>
+            <param name="pageSize">每页显示数量</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlableExtensions.SelectToPageDynamic(SqlSugar.Sqlable,System.String,System.String,System.Int32,System.Int32,System.Object)">
+            <summary>
+            设置查询列和分页参数执行查询，并且将结果集转成dynamic
+            </summary>
+            <param name="sqlable"></param>
+            <param name="fileds">查询列</param>
+            <param name="orderByFiled">Order By字段，可以多个</param>
+            <param name="pageIndex">页码</param>
+            <param name="pageSize">每页显示数量</param>
+            <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.PubModel">
+            <summary>
+            ** 描述：公共参数表
+            ** 创始时间：2015-7-20
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="T:SqlSugar.PubModel.DataTableMap">
+            <summary>
+            用于存储数据表与列的映射信息
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.TABLE_NAME">
+            <summary>
+            表名
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.TABLE_ID">
+            <summary>
+            表ID
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.COLUMN_NAME">
+            <summary>
+            列名
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.DATA_TYPE">
+            <summary>
+            数据类型
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.CHARACTER_MAXIMUM_LENGTH">
+            <summary>
+            字符最大长度
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.COLUMN_DESCRIPTION">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.COLUMN_DEFAULT">
+            <summary>
+            默认值
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.IS_NULLABLE">
+            <summary>
+            是否允许为null
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.DataTableMap.IS_PRIMARYKEY">
+            <summary>
+            是否是主键
+            </summary>
+        </member>
+        <member name="T:SqlSugar.PubModel.SerialNumber">
+            <summary>
+            流水号设置实体
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.SerialNumber.TableName">
+            <summary>
+            表名
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.SerialNumber.FieldName">
+            <summary>
+            字段名
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.SerialNumber.GetNumFunc">
+            <summary>
+            获取流水号函数
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.SerialNumber.GetNumFuncWithDb">
+            <summary>
+            获取流水号函数(解决事务中死锁BUG)
+            </summary>
+        </member>
+        <member name="T:SqlSugar.PubModel.Language">
+            <summary>
+            多语言设置的参数表
+            </summary>
+        </member>
+        <member name="F:SqlSugar.PubModel.Language.ReplaceViewStringKey">
+            <summary>
+            需要全局替换的字符串Key(用于替换默认语言)
+            </summary>
+        </member>
+        <member name="F:SqlSugar.PubModel.Language.ReplaceViewStringValue">
+            <summary>
+            需要全局替换的字符串Value(用于替换默认语言)
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.Language.Suffix">
+            <summary>
+            数据库里面的语言后缀
+            </summary>
+        </member>
+        <member name="P:SqlSugar.PubModel.Language.LanguageValue">
+            <summary>
+            数据库语言的VALUE
+            </summary>
+        </member>
+        <member name="T:SqlSugar.PubModel.SqlSugarClientConst">
+            <summary>
+            SqlSugarClient通用常量
+            </summary>
+        </member>
+        <member name="F:SqlSugar.PubModel.SqlSugarClientConst.AttrMappingError">
+            <summary>
+            属性设置错误信息
+            </summary>
+        </member>
+        <member name="F:SqlSugar.PubModel.SqlSugarClientConst.SqlQuerySqlTemplate">
+            <summary>
+            SqlQuery查询的SQL模板
+            </summary>
+        </member>
+        <member name="T:SqlSugar.IDataRecordExtensions">
+            <summary>
+            ** 描述：IDataRecord扩展类
+            ** 创始时间：2016-8-7
+            ** 修改时间：-
+            ** 作者：孙凯旋
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="T:SqlSugar.ClassGenerating">
+            <summary>
+            ** 描述：实体生成类
+            ** 创始时间：2015-4-17
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** qq：610262374 欢迎交流,共同提高 ,命名语法等写的不好的地方欢迎大家的给出宝贵建议
+            ** 使用说明：http://www.cnblogs.com/sunkaixuan/p/4482152.html
+            </summary>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.DynamicToClass(System.Object,System.String)">
+            <summary>
+            根据匿名类获取实体类的字符串
+            </summary>
+            <param name="entity">匿名对象</param>
+            <param name="className">生成的类名</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.DataTableToClass(System.Data.DataTable,System.String,System.String,System.Collections.Generic.List{SqlSugar.PubModel.DataTableMap})">
+            <summary>
+            根据DataTable获取实体类的字符串
+            </summary>
+            <param name="dt"></param>
+            <param name="className"></param>
+            <param name="nameSpace"></param>
+            <param name="dataTableMapList"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.SqlToClass(SqlSugar.SqlSugarClient,System.String,System.String)">
+            <summary>
+            根据SQL语句获取实体类的字符串
+            </summary>
+            <param name="db"></param>
+            <param name="sql"></param>
+            <param name="className"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.TableNameToClass(SqlSugar.SqlSugarClient,System.String)">
+            <summary>
+            根据表名获取实体类的字符串
+            </summary>
+            <param name="db"></param>
+            <param name="tableName">表名</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.CreateClassFiles(SqlSugar.SqlSugarClient,System.String,System.String,System.Nullable{System.Boolean},System.Action{System.String},System.Action{System.String})">
+            <summary>
+            创建实体文件
+            </summary>
+            <param name="db"></param>
+            <param name="fileDirectory"></param>
+            <param name="nameSpace">命名空间（默认：system）</param>
+            <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
+            <param name="callBack">生成文件后的处理，参数string为实体名</param>
+            <param name="callBack">生成文件前的处理，参数string为表名</param>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.CreateClassFilesInterface(SqlSugar.SqlSugarClient,System.Nullable{System.Boolean},System.Action{System.Data.DataTable,System.String,System.String})">
+            <summary>
+            创建SQL实体文件
+            </summary>
+            <param name="db"></param>
+            <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
+            <param name="callBack">回调函数</param>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.CreateClassFilesByTableNames(SqlSugar.SqlSugarClient,System.String,System.String,System.String[])">
+            <summary>
+             创建SQL实体文件,指定表名
+            </summary>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.GetTableNames(SqlSugar.SqlSugarClient)">
+            <summary>
+            获取所有数据库表名
+            </summary>
+            <param name="db"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.ChangeType(System.Type)">
+            <summary>
+            匹配类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.GetTableColumns(SqlSugar.SqlSugarClient,System.String)">
+            <summary>
+            获取表结构信息
+            </summary>
+            <param name="db"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.ForeachTables(SqlSugar.SqlSugarClient,System.Action{System.String})">
+             <summary>
+            遍历表名和视图名
+             </summary>
+             <param name="db"></param>
+             <param name="action">string为表名</param>
+        </member>
+        <member name="M:SqlSugar.ClassGenerating.GetTableNameWithSchema(SqlSugar.SqlSugarClient,System.String)">
+            <summary>
+            获取带schema的表名
+            </summary>
+            <param name="db"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.SqlSugarClient">
+            <summary>
+            ** 描述：SQL糖 ORM 核心类
+            ** 创始时间：2015-7-13
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：http://www.cnblogs.com/sunkaixuan/p/4649904.html
+            </summary>
+        </member>
+        <member name="T:SqlSugar.SqlHelper">
+            <summary>
+            ** 描述：底层SQL辅助函数
+            ** 创始时间：2015-7-13
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlHelper.CommandType">
+            <summary>
+            如何解释命令字符串 默认为Text 
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlHelper.IsEnableLogEvent">
+            <summary>
+            是否启用日志事件(默认为:false)
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlHelper.LogEventStarting">
+            <summary>
+            执行访数据库前的回调函数  (sql,pars)=>{}
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlHelper.LogEventCompleted">
+            <summary>
+            执行访数据库后的回调函数  (sql,pars)=>{}
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlHelper.IsClearParameters">
+            <summary>
+            是否清空SqlParameters
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlHelper.CommandTimeOut">
+            <summary>
+            设置在终止执行命令的尝试并生成错误之前的等待时间。（单位：秒）
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlHelper.IsGetPageParas">
+            <summary>
+            将页面参数自动填充到SqlParameter []，无需在程序中指定参数
+            例如：
+                var list = db.Queryable&lt;Student&gt;().Where("id=@id").ToList();
+                以前写法
+                var list = db.Queryable&lt;Student&gt;().Where("id=@id", new { id=Request["id"] }).ToList();
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.#ctor(System.String)">
+            <summary>
+            初始化 SqlHelper 类的新实例
+            </summary>
+            <param name="connectionString"></param>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetConnection">
+            <summary>
+            获取当前数据库连接对象
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.BeginTran">
+            <summary>
+            开始事务
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.BeginTran(System.Data.IsolationLevel)">
+            <summary>
+            开始事务
+            </summary>
+            <param name="iso">指定事务行为</param>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.BeginTran(System.String)">
+            <summary>
+            开始事务
+            </summary>
+            <param name="transactionName"></param>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.BeginTran(System.Data.IsolationLevel,System.String)">
+            <summary>
+            开始事务
+            </summary>
+            <param name="iso">指定事务行为</param>
+            <param name="transactionName"></param>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.RollbackTran">
+            <summary>
+            回滚事务
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.CommitTran">
+            <summary>
+            提交事务
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetString(System.String,System.Object)">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetString(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetInt(System.String,System.Object)">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetInt(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetDouble(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetDecimal(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetDateTime(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetScalar(System.String,System.Object)">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetScalar(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取第一行第一列
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.ExecuteCommand(System.String,System.Object)">
+            <summary>
+            执行SQL返回受影响行数
+            </summary>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.ExecuteCommand(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            执行SQL返回受影响行数
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetReader(System.String,System.Object)">
+            <summary>
+            获取DataReader
+            </summary>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetReader(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取DataReader
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetList``1(System.String,System.Object)">
+            <summary>
+            根据SQL获取T的集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetList``1(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            根据SQL获取T的集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetSingle``1(System.String,System.Object)">
+            <summary>
+            根据SQL获取T
+            </summary>
+            <typeparam name="T">可以是int、string等，也可以是类或者数组、字典</typeparam>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetSingle``1(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            根据SQL获取T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetDataTable(System.String,System.Object)">
+            <summary>
+            获取DataTable
+            </summary>
+            <param name="sql"></param>
+            <param name="pars">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetDataTable(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取DataTable
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetDataSetAll(System.String,System.Object)">
+            <summary>
+            获取DataSet
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.GetDataSetAll(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            获取DataSet
+            </summary>
+            <param name="sql"></param>
+            <param name="pars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlHelper.Dispose">
+            <summary>
+            释放数据库连接对象
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.#ctor(System.String)">
+            <summary>
+            初始化 SqlSugarClient 类的新实例
+            </summary>
+            <param name="connectionString">数据库连接字符串</param>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.BulkNum">
+            <summary>
+            设置批量操作的数量
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.IsEnableAttributeMapping">
+            <summary>
+            是否启用属性映射
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.IsIgnoreErrorColumns">
+            <summary>
+            忽略非数据库列 （默认为:false）
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.SerializerDateFormat">
+             <summary>
+            设置Queryable或者Sqlable转换成JSON字符串时的日期格式
+             </summary>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.PageModel">
+            <summary>
+            设置分页类型
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.Language">
+            <summary>
+            设置多语言配置
+            </summary>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.CurrentFilterKey">
+            <summary>
+            当前滤器名称
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SetFilterFilterParas(System.Collections.Generic.Dictionary{System.String,System.Func{SqlSugar.KeyValueObj}})">
+            <summary>
+            设置过滤器（用户权限过滤）
+            </summary>
+            <param name="filterRows">参数Dictionary string 为过滤器的名称 , Dictionary Func&lt;KeyValueObj&gt; 为过滤函数 (KeyValueObj 中的 Key为Sql条件,Value为Sql参数)</param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SetFilterFilterParas(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}})">
+            <summary>
+            设置过滤器（用户权限过滤）
+            </summary>
+            <param name="filterColumns">参数Dictionary string 为过滤器的名称 , Dictionary List&lt;string&gt;为允许查询的列的集合</param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SetMappingTables(System.Collections.Generic.List{SqlSugar.KeyValue})">
+            <summary>
+            设置实体类与表名的映射， Key为实体类 Value为表名
+            </summary>
+            <param name="mappingTables"></param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.AddMappingTable(SqlSugar.KeyValue)">
+            <summary>
+            添加实体类与表名的映射， Key为实体类 Value为表名
+            </summary>
+            <param name="mappingTable"></param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SetMappingColumns(System.Collections.Generic.List{SqlSugar.KeyValue})">
+            <summary>
+            设置实体字段与数据库字段的映射，Key为实体字段 Value为表字段名称 （注意：不区分表，设置后所有表通用）
+            </summary>
+            <param name="mappingColumns"></param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.AddMappingColum(SqlSugar.KeyValue)">
+            <summary>
+            添加实体字段与数据库字段的映射，Key为实体字段 Value为表字段名称 （注意：不区分表，设置后所有表通用）
+            </summary>
+            <param name="mappingColumns"></param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SetSerialNumber(System.Collections.Generic.List{SqlSugar.PubModel.SerialNumber})">
+            <summary>
+            设置流水号 
+            </summary>
+            <param name="serNum">设置流水号所需要的参数集合</param>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Sqlable">
+            <summary>
+            创建更接近Sql语句的查询对象
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Queryable``1">
+            <summary>
+            创建拉姆达查询对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Queryable``1(System.String)">
+            <summary>
+            创建拉姆达查询对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">T类型对应的真实表名</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SqlQuery``1(System.String,System.Object)">
+            <summary>
+            根据SQL语句将结果集映射到List&lt;T&gt;
+            </summary>
+            <typeparam name="T">实体对象</typeparam>
+            <param name="sql">sql语句</param>
+            <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns>T的集合</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SqlQueryDynamic(System.String,System.Object)">
+            <summary>
+            根据SQL语句将结果集映射到dynamic
+            </summary>
+            <param name="sql">sql语句</param>
+            <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns>动态集合</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SqlQueryJson(System.String,System.Object)">
+            <summary>
+            根据SQL语句将结果集映射到json
+            </summary>
+            <param name="sql">sql语句</param>
+            <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
+            <returns>JSON数据</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SqlQuery``1(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            根据SQL语句将结果集映射到List&lt;T&gt;
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="sql">sql语句</param>
+            <param name="pars">SqlParameter的集合</param>
+            <returns>T的集合</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SqlQuery``1(System.String,System.Collections.Generic.List{System.Data.SqlClient.SqlParameter})">
+            <summary>
+            根据SQL语句将结果集映射到List&lt;T&gt;
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="sql">sql语句</param>
+            <param name="pars">SqlParameter集合</param>
+            <returns>T的集合</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.InsertRange``1(System.Collections.Generic.List{``0},System.Boolean)">
+            <summary>
+            批量插入
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="entities">插入对象的集合</param>
+            <param name="isIdentity">过期参数无需填写</param>
+            <returns>默认返回Identity的集合，如果没有Identity执行成功将返回bool的集合</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Insert``1(``0,System.Boolean)">
+            <summary>
+            插入
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="entity">插入对象</param>
+            <param name="isIdentity">过期参数无需填写</param>
+            <returns>默认返回Identity，如果没有Identity执行成功将返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SqlBulkCopy``1(System.Collections.Generic.List{``0})">
+            <summary>
+            大数据插入
+            </summary>
+            <param name="entities"></param>
+            <returns>全部插入成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Update``1(System.Object,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            根据表达式条件将实体对象更新到数据库
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
+            <param name="expression">表达式条件</param>
+            <returns>更新成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Update``1(``0)">
+            <summary>
+            将实体对象更新到数据库
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="rowObj">rowObj必需包含主键并且不能为匿名对象</param>
+            <returns>更新成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.UpdateRange``1(System.Collections.Generic.List{``0})">
+            <summary>
+            批量插入(说明：一次更新超过10条以上建议使用SqlBulkReplace)
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="rowObjList">更新实体的集合，rowObj必需包含主键并且不能为匿名对象</param>
+            <returns>执行成功将返回bool的集合</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Update``2(System.Object,``1[])">
+            <summary>
+            将实体对象更新到数据库
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="FiledType"></typeparam>
+            <param name="rowObj">rowObj为匿名对象时只更新指定列( 例如:new{ name='abc'}只更新name )，为T类型将更新整个实体(排除主键、自增列和禁止更新列)</param>
+            <param name="whereIn">主键集合</param>
+            <returns>更新成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.SqlBulkReplace``1(System.Collections.Generic.List{``0})">
+            <summary>
+            大数据更新 支持IsIgnoreErrorColumns和isDisableUpdateColumns
+            </summary>
+            <param name="entities"></param>
+            <returns>全部更新成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Delete``1(``0)">
+            <summary>
+            根据实体删除
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="deleteObj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Delete``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            根据表达式删除数据
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="expression">表达式条件</param>
+            <returns>删除成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Delete``2(``1[])">
+            <summary>
+            根据主键集合批量删除数据
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <typeparam name="FiledType">主键类型</typeparam>
+            <param name="whereIn">主键集合</param>
+            <returns>删除成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Delete``2(System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{``1})">
+            <summary>
+            根据指定列集合批量删除数据
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <typeparam name="FiledType">指定列的类型</typeparam>
+            <param name="expression">表达式条件</param>
+            <param name="whereIn">批定列值的集合</param>
+            <returns>删除成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.Delete``2(System.Linq.Expressions.Expression{System.Func{``0,System.Object}},``1[])">
+            <summary>
+            根据指定列集合批量删除数据
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <typeparam name="FiledType">指定列的类型</typeparam>
+            <param name="expression">表达式条件</param>
+            <param name="whereIn">批定列值的集合</param>
+            <returns>删除成功返回true</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.FalseDelete``2(System.String,``1[])">
+            <summary>
+            状态删除 
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <typeparam name="FiledType">主键类型</typeparam>
+            <param name="field">标识删除的字段</param>
+            <param name="whereIn">主键集合</param>
+            <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.FalseDelete``1(System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>
+            状态删除
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="field">标识删除的字段</param>
+            <param name="expression">表达式条件</param>
+            <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
+        </member>
+        <member name="F:SqlSugar.SqlSugarClient.ClassGenerating">
+            <summary>
+            生成实体的对象
+            </summary>
+        </member>
+        <member name="M:SqlSugar.SqlSugarClient.RemoveAllCache``1">
+            <summary>
+            清除所有缓存
+            </summary>
+        </member>
+        <member name="P:SqlSugar.SqlSugarClient.ConnectionString">
+            <summary>
+            当前连接字符串
+            </summary>
+        </member>
+        <member name="P:SqlSugar.SqlSugarClient.IsNoLock">
+            <summary>
+            查询是否允许脏读（默认为:true）
+            </summary>
+        </member>
+        <member name="P:SqlSugar.SqlSugarClient.DisableUpdateColumns">
+            <summary>
+            设置禁止更新的列
+            </summary>
+        </member>
+        <member name="P:SqlSugar.SqlSugarClient.DisableInsertColumns">
+            <summary>
+            设置禁止插入的列
+            </summary>
+        </member>
+        <member name="T:SqlSugar.IDataReaderEntityBuilder`1">
+            <summary>
+            ** 描述：DataReader实体生成
+            ** 创始时间：2016-8-7
+            ** 修改时间：-
+            ** 作者：孙凯旋
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="F:SqlSugar.IDataReaderEntityBuilder`1.handler">
+            <summary>
+            声名事件，当执行CreateBuilder后，EMIT将动态创建最高性能的实体绑定对象
+            </summary>
+        </member>
+        <member name="M:SqlSugar.IDataReaderEntityBuilder`1.Build(System.Data.IDataRecord)">
+            <summary>
+            将dataRecord的值绑定到T
+            </summary>
+            <param name="dataRecord"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IDataReaderEntityBuilder`1.CreateBuilder(System.Type,System.Data.IDataRecord)">
+            <summary>
+            
+            </summary>
+            <param name="type"></param>
+            <param name="dataRecord"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IDataReaderEntityBuilder`1.GeneratorCallMethod(System.Reflection.Emit.ILGenerator,System.Type,System.Boolean,System.Reflection.PropertyInfo,System.String,System.String)">
+            <summary>
+            动态获取IDataRecord里面的函数
+            </summary>
+            <param name="generator"></param>
+            <param name="pro"></param>
+        </member>
+        <member name="T:SqlSugar.IDataReaderEntityBuilder`1.Load">
+            <summary>
+            声名委托类型
+            </summary>
+            <param name="dataRecord"></param>
+            <returns></returns>
+        </member>
+        <!-- 对于成员“T:SqlSugar.SqlSugarToolExtensions”忽略有格式错误的 XML 注释 -->
+        <member name="M:SqlSugar.SqlSugarToolExtensions.ToJoinSqlInVal``1(``0[])">
+            <summary>
+            将数组转换成Where In 需要的格式(例如:参数 new int{1,2,3} 反回 "'1','2','3'")
+            </summary>
+            <param name="array"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.ToSqlValue(System.String)">
+            <summary>
+            将字符串转换成SQL参数所需要的格式(例如: 参数value返回'value')
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.ToSqlFilter(System.String)">
+             <summary>
+            SQL注入过滤
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.ToSuperSqlFilter(System.String)">
+            <summary>
+             指定数据类型，如果不在指定类当中则引发异常(只允许输入指定字母、数字、下划线、时间、GUID)
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.GetLockString(System.Boolean)">
+            <summary>
+            获取锁字符串
+            </summary>
+            <param name="isNoLock"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.GetSelectFiles(System.String)">
+            <summary>
+            获取Select需要的字段
+            </summary>
+            <param name="selectFileds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.GetGroupBy(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="groupByFileds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.RequestParasToSqlParameters(System.Data.SqlClient.SqlParameterCollection)">
+            <summary>
+            将Request里的参数转成SqlParameter[]
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.GetTranslationSqlName(System.String)">
+            <summary>
+            获取转释后的表名和列名
+            </summary>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.GetSqlParameterName(System.String)">
+            <summary>
+            获取参数名
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.SqlSugarToolExtensions.GetSqlParameterNameNoParSymbol(System.String)">
+             <summary>
+            获取没有符号的参数名称
+             </summary>
+             <param name="name"></param>
+             <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudPubMethod.GetPageIndex(System.Int32,System.Double)">
+            <summary>
+            获取pageIndex
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="configCount"></param>
+        </member>
+        <member name="M:SqlSugar.CloudPubMethod.GetConnection(System.Collections.Generic.List{SqlSugar.CloudConnectionConfig})">
+            <summary>
+            根据rate获取随机Connection
+            </summary>
+            <param name="configList"></param>
+        </member>
+        <member name="M:SqlSugar.CloudPubMethod.TaskFactory``1(System.Func{System.Int32,``0},System.Threading.Tasks.Task{``0}[],System.Int32)">
+            <summary>
+            并行执行任务并且传入索引
+            </summary>
+            <param name="method">函数参数i</param>
+            <param name="tasks">task数组</param>
+            <param name="i">索引</param>
+        </member>
+        <member name="M:SqlSugar.CloudPubMethod.GetIsSmallPageIndex(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            分页索引是否很小
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="configCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.CloudPubMethod.GetIsSmallPageIndexByReverse(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            倒数分页索引是否很小
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="configCount"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.FileSugar">
+            <summary>
+            ** 描述：文件公共类
+            ** 创始时间：2010-2-28
+            ** 修改时间：-
+            ** 修改人：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFiePathAndCreateDirectoryByCode``1(System.String,``0,System.String)">
+            <summary>
+            根据文件目录、编号、文件名生成文件路径，并且创建文件存放目录
+            格式为:/directory/code/filename
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="directory"></param>
+            <param name="code"></param>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFiePathAndCreateDirectoryByDate``1(System.String,System.String)">
+            <summary>
+            根据文件目录、日期、文件名生成文件路径，并且创建文件存放目录
+            格式为:/directory/2015/01/01/filename
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="directory"></param>
+            <param name="code"></param>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetMapPath(System.String)">
+            <summary>
+            获得当前绝对路径
+            </summary>
+            <param name="strPath">指定的路径</param>
+            <returns>绝对路径</returns>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetMinPic(System.String,System.String,System.Int32)">
+            <summary>
+            获取缩略图片路径
+            </summary>
+            <param name="dir"></param>
+            <param name="filename"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="F:SqlSugar.FileSugar.sync">
+            <summary>
+            同步标识
+            </summary>
+        </member>
+        <member name="M:SqlSugar.FileSugar.IsExistDirectory(System.String)">
+            <summary>
+            检测指定目录是否存在
+            </summary>
+            <param name="directoryPath">目录的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.IsExistFile(System.String)">
+            <summary>
+            检测指定文件是否存在,如果存在则返回true。
+            </summary>
+            <param name="filePath">文件的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.IsEmptyDirectory(System.String)">
+            <summary>
+            检测指定目录是否为空
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.Contains(System.String,System.String)">
+            <summary>
+            检测指定目录中是否存在指定的文件,若要搜索子目录请使用重载方法.
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>
+            <param name="searchPattern">模式字符串，"*"代表0或N个字符，"?"代表1个字符。
+            范例："Log*.xml"表示搜索所有以Log开头的Xml文件。</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.Contains(System.String,System.String,System.Boolean)">
+            <summary>
+            检测指定目录中是否存在指定的文件
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>
+            <param name="searchPattern">模式字符串，"*"代表0或N个字符，"?"代表1个字符。
+            范例："Log*.xml"表示搜索所有以Log开头的Xml文件。</param> 
+            <param name="isSearchChild">是否搜索子目录</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.CreateDirectory(System.String)">
+            <summary>
+            创建一个目录
+            </summary>
+            <param name="directoryPath">目录的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.CreateFile(System.String)">
+            <summary>
+            创建一个文件
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.CreateFile(System.String,System.Byte[])">
+            <summary>
+            创建一个文件,并将字节流写入文件。
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="buffer">二进制流数据</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.CreateFile(System.String,System.String)">
+            <summary>
+            创建一个文件,并将字符串写入文件。
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="text">字符串数据</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.CreateFile(System.String,System.String,System.Text.Encoding)">
+            <summary>
+            创建一个文件,并将字符串写入文件。
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="text">字符串数据</param>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.OpenDirectory(System.String)">
+            <summary>
+            打开目录
+            </summary>
+            <param name="directoryPath">目录的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.OpenFile(System.String)">
+            <summary>
+            打开文件
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetDirectoryFromFilePath(System.String)">
+            <summary>
+            从文件绝对路径中获取目录路径
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetLineCount(System.String)">
+            <summary>
+            获取文本文件的行数
+            </summary>
+            <param name="filePath">文件的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileSize(System.String)">
+            <summary>
+            获取一个文件的长度,单位为Byte
+            </summary>
+            <param name="filePath">文件的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileSizeByKB(System.String)">
+            <summary>
+            获取一个文件的长度,单位为KB
+            </summary>
+            <param name="filePath">文件的路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileSizeByMB(System.String)">
+            <summary>
+            获取一个文件的长度,单位为MB
+            </summary>
+            <param name="filePath">文件的路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileNames(System.String)">
+            <summary>
+            获取指定目录中所有文件列表
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileNames(System.String,System.String,System.Boolean)">
+            <summary>
+            获取指定目录及子目录中所有文件列表
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>
+            <param name="searchPattern">模式字符串，"*"代表0或N个字符，"?"代表1个字符。
+            范例："Log*.xml"表示搜索所有以Log开头的Xml文件。</param>
+            <param name="isSearchChild">是否搜索子目录</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetDirectories(System.String)">
+            <summary>
+            获取指定目录中所有子目录列表,若要搜索嵌套的子目录列表,请使用重载方法.
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetDirectories(System.String,System.String,System.Boolean)">
+            <summary>
+            获取指定目录及子目录中所有子目录列表
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>
+            <param name="searchPattern">模式字符串，"*"代表0或N个字符，"?"代表1个字符。
+            范例："Log*.xml"表示搜索所有以Log开头的Xml文件。</param>
+            <param name="isSearchChild">是否搜索子目录</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.WriteText(System.String,System.String)">
+            <summary>
+            向文本文件中写入内容
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="text">写入的内容</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.WriteText(System.String,System.String,System.Text.Encoding)">
+            <summary>
+            向文本文件中写入内容
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="text">写入的内容</param>
+            <param name="encoding">编码</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.AppendText(System.String,System.String)">
+            <summary>
+            向文本文件的尾部追加内容
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="text">写入的内容</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.CopyTo(System.String,System.String)">
+            <summary>
+            将源文件的内容复制到目标文件中
+            </summary>
+            <param name="sourceFilePath">源文件的绝对路径</param>
+            <param name="destFilePath">目标文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.MoveToDirectory(System.String,System.String)">
+            <summary>
+            将文件移动到指定目录( 剪切 )
+            </summary>
+            <param name="sourceFilePath">需要移动的源文件的绝对路径</param>
+            <param name="descDirectoryPath">移动到的目录的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.Move(System.String,System.String)">
+            <summary>
+            将文件移动到指定目录，并指定新的文件名( 剪切并改名 )
+            </summary>
+            <param name="sourceFilePath">需要移动的源文件的绝对路径</param>
+            <param name="descFilePath">目标文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.StreamToBytes(System.IO.Stream)">
+            <summary>
+            将流读取到缓冲区中
+            </summary>
+            <param name="stream">原始流</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.FileToBytes(System.String)">
+            <summary>
+            将文件读取到缓冲区中
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.FileToString(System.String)">
+            <summary>
+            将文件读取到字符串中
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.FileToString(System.String,System.Text.Encoding)">
+            <summary>
+            将文件读取到字符串中
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+            <param name="encoding">字符编码</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileName(System.String)">
+            <summary>
+            从文件的绝对路径中获取文件名( 包含扩展名 )
+            </summary>
+            <param name="filePath">文件的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileNameNoExtension(System.String)">
+            <summary>
+            从文件的绝对路径中获取文件名( 不包含扩展名 )
+            </summary>
+            <param name="filePath">文件的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetExtension(System.String)">
+            <summary>
+            从文件的绝对路径中获取扩展名
+            </summary>
+            <param name="filePath">文件的绝对路径</param>        
+        </member>
+        <member name="M:SqlSugar.FileSugar.ClearDirectory(System.String)">
+            <summary>
+            清空指定目录下所有文件及子目录,但该目录依然保存.
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.ClearFile(System.String)">
+            <summary>
+            清空文件内容
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.DeleteFile(System.String)">
+            <summary>
+            删除指定文件
+            </summary>
+            <param name="filePath">文件的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.DeleteDirectory(System.String)">
+            <summary>
+            删除指定目录及其所有子目录
+            </summary>
+            <param name="directoryPath">指定目录的绝对路径</param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.WriteFile(System.String,System.String)">
+            <summary>
+            写文件
+            </summary>
+            <param name="strFilePath"></param>
+            <param name="strValue"></param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.WriteFile(System.String,System.String,System.String)">
+            <summary>
+            写文件
+            </summary>
+            <param name="strFilePath"></param>
+            <param name="strValue"></param>
+            <param name="charset"></param>
+        </member>
+        <member name="M:SqlSugar.FileSugar.ShowWord(System.String)">
+            <summary>
+            在网页中显示WORD文档
+            </summary>
+        </member>
+        <member name="M:SqlSugar.FileSugar.GetFileSream(System.String)">
+            <summary>
+            根据路径得到文件流
+            </summary>
+            <param name="strFilePath"></param>
+            <param name="strValue"></param>
+        </member>
+        <member name="T:SqlSugar.IEnumerableExtensions">
+            <summary>
+            ** 描述：IEnumerable扩展类
+            ** 创始时间：2015-6-9
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.String,SqlSugar.OrderByType)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.ThenBy``1(System.Linq.IOrderedEnumerable{``0},System.String,SqlSugar.OrderByType)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.OrderByDataRow``1(System.Collections.Generic.IEnumerable{``0},System.String,SqlSugar.OrderByType)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.ThenByDataRow``1(System.Linq.IOrderedEnumerable{``0},System.String,SqlSugar.OrderByType)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.ThenBy``1(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.OrderByDataRow``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.OrderByDataRow(System.Collections.Generic.IEnumerable{System.Data.DataRow},System.Collections.Generic.List{SqlSugar.OrderByDictionary},SqlSugar.OrderByDictionary)">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.ThenByDataRow``1(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.OrderByReverse``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.ThenByReverse``1(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.OrderByDataRowReverse``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.ThenByDataRowReverse``1(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.List{SqlSugar.OrderByDictionary})">
+            <summary>
+            排序
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="sortField"></param>
+            <param name="orderByType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.IEnumerableExtensions.ConvertField(System.Object)">
+            <summary>
+            解决GUID在SQL和C#中，排序方式不一致
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlSugar.JsonConverter">
+            <summary>
+            ** 描述：Json转换类
+            ** 创始时间：2010-2-28
+            ** 修改时间：-
+            ** 作者：热心的dakang
+            ** 使用说明：
+            </summary>
+        </member>
+        <member name="M:SqlSugar.JsonConverter.DataTableToJson(System.Data.DataTable)">
+            <summary>
+            dataTable转成JSON
+            add sunkaixuan 
+            </summary>
+            <param name="table"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.JsonConverter.DataTableToJson(System.Data.DataTable,System.String)">
+            <summary>
+            dataTable转成JSON
+             add sunkaixuan 
+            </summary>
+            <param name="table"></param>
+            <param name="dateFormat">设置序列化的时间格式</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.JsonConverter.JsonClass(System.Object)">
+            <summary>
+            自定义查询对象转换动态类
+            add dukang by 2016-05-19
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.JsonConverter.Serialize(System.Object,System.Boolean)">
+            <summary>
+            object动态类转换json包
+            add dukang by 2016-05-19
+            </summary>
+            <param name="obj">对象</param>
+            <param name="DateConvert">时间戳是否转换成日期类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.JsonConverter.ConvertJson(System.String)">
+            <summary>
+            json转换object动态类
+            add duk by 2016-05-19
+            </summary>
+            <param name="json"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.JsonConverter.ToJson(System.Data.IDataReader)">
+            <summary>   
+            DataReader转换为Json   
+            </summary>   
+            <param name="dataReader">DataReader对象</param>   
+            <returns>Json字符串</returns>   
+        </member>
+        <member name="M:SqlSugar.JsonConverter.ToJson(System.Data.DataSet)">
+            <summary>   
+            DataSet转换为Json   
+            add dukang by 2016-05-19
+            </summary>   
+            <param name="dataSet">DataSet对象</param>   
+            <returns>Json字符串</returns>   
+        </member>
+        <member name="M:SqlSugar.JsonConverter.ToJson(System.Data.DataTable,System.String)">
+            <summary>  
+            DataTable转成Json   
+            add dukang by 2016-05-19
+            </summary>  
+            <param name="jsonName"></param>  
+            <param name="dt"></param>  
+            <returns></returns>  
+        </member>
+        <member name="M:SqlSugar.JsonConverter.ToJson(System.Data.DataTable)">
+            <summary>   
+            Datatable转换为Json   
+            add dukang by 2016-05-19
+            </summary>   
+            <param name="table">Datatable对象</param>   
+            <returns>Json字符串</returns>   
+        </member>
+        <member name="M:SqlSugar.JsonConverter.StringFormat(System.String,System.Type)">
+            <summary>  
+            格式化字符型、日期型、布尔型  
+            add dukang by 2016-05-19
+            </summary>  
+            <param name="str"></param>  
+            <param name="type"></param>  
+            <returns></returns>  
+        </member>
+        <member name="M:SqlSugar.JsonConverter.String2Json(System.String)">
+            <summary>  
+            过滤特殊字符  
+            add dukang by 2016-05-19
+            </summary>  
+            <param name="s"></param>  
+            <returns></returns>  
+        </member>
+        <member name="T:SqlSugar.DynamicJsonObject">
+            <summary>
+            动态JSON解析
+            add dukang by 2016-05-19
+            </summary>
+        </member>
+        <member name="T:SqlSugar.DynamicJsonConverter">
+            <summary>
+            动态JSON转换
+            add dukang by 2016-05-19
+            </summary>
+        </member>
+        <member name="T:SqlSugar.ClassTemplate">
+            <summary>
+            生成实体格式模版
+            </summary>
+        </member>
+        <member name="M:SqlSugar.ClassTemplate.Replace(System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
+             <summary>
+            替换模版
+             </summary>
+             <param name="templateStr"></param>
+             <param name="nameSpaceStr"></param>
+             <param name="foreachStr"></param>
+             <param name="classNameStr"></param>
+             <param name="primaryKeyName"></param>
+             <returns></returns>
+        </member>
+        <member name="F:SqlSugar.ClassTemplate.ItemTemplate">
+            <summary>
+            字段模版
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ClassTemplate.Template">
+            <summary>
+            生成的实体类模版
+            </summary>
+        </member>
+        <member name="F:SqlSugar.ClassTemplate.ClassFieldSummaryTemplate">
+            <summary>
+            生成实体类字段摘要模版
+            </summary>
+        </member>
+        <member name="T:SqlSugar.SugarMappingAttribute">
+            <summary>
+            表名属性
+            </summary>
+        </member>
+        <member name="P:SqlSugar.SugarMappingAttribute.TableName">
+            <summary>
+            据库对应的表名
+            </summary>
+        </member>
+        <member name="P:SqlSugar.SugarMappingAttribute.ColumnName">
+            <summary>
+            数据库对应的列名
+            </summary>
+        </member>
+        <member name="M:SqlSugar.ReflectionSugarMapping.GetMappingInfo``1">
+            <summary>
+            通过反射取自定义属性
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:SqlSugar.CacheManager`1">
+            <summary>
+            ** 描述：缓存操作类
+            ** 创始时间：2015-6-9
+            ** 修改时间：-
+            ** 作者：sunkaixuan
+            ** 使用说明：http://www.cnblogs.com/sunkaixuan/p/4563462.html
+            </summary>
+            <typeparam name="K">键</typeparam>
+            <typeparam name="V">值</typeparam>
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.ContainsKey(System.String)">
+            <summary>         
+            验证key是否存在       
+            </summary>         
+            <param name="key">key</param>         
+            <returns> /// 	存在<c>true</c> 不存在<c>false</c>.        /// /// </returns>         
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.Get(System.String)">
+            <summary>         
+            根据key获取value  
+            </summary>         
+            <param name="key">key</param>         
+            <returns></returns>         
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.GetInstance">
+            <summary>         
+            获取实例 （单例模式）       
+            </summary>         
+            <returns></returns>         
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.Add(System.String,`0)">
+            <summary>         
+            插入缓存(默认20分钟)        
+            </summary>         
+            <param name="key"> key</param>         
+            <param name="value">value</param>          
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.Add(System.String,`0,System.Int32)">
+            <summary>         
+            插入缓存        
+            </summary>         
+            <param name="key"> key</param>         
+            <param name="value">value</param>         
+            <param name="cacheDurationInSeconds">过期时间单位秒</param>         
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.Remove(System.String)">
+            <summary>         
+            删除缓存         
+            </summary>         
+            <param name="key">key</param>         
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.RemoveAll">
+            <summary>
+            清除所有缓存
+            </summary>
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.RemoveAll(System.Func{System.String,System.Boolean})">
+            <summary>
+            清除所有包含关键字的缓存
+            </summary>
+            <param name="removeKey">关键字</param>
+        </member>
+        <member name="M:SqlSugar.CacheManager`1.GetAllKey">
+            <summary>
+            获取所有缓存key
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:SqlSugar.CacheManager`1.Item(System.String)">
+             <summary>         
+            根据key获取value     
+             </summary>         
+             <value></value>      
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.Count(SqlSugar.Taskable{System.Int32})">
+            <summary>
+            获取count
+            </summary>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.Any(SqlSugar.Taskable{System.Int32})">
+             <summary>
+            是否存在这条记录
+             </summary>
+             <param name="thisValue"></param>
+             <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.Max``1(SqlSugar.Taskable{``0})">
+            <summary>
+            获取最大值 
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.Avg(SqlSugar.TaskableWithCount{System.Int32})">
+            <summary>
+            获取平均值
+            </summary>
+            <param name="thisValue"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.Avg(SqlSugar.TaskableWithCount{System.Decimal})">
+            <summary>
+            获取平均值
+            </summary>
+            <param name="thisValue"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.Avg(SqlSugar.TaskableWithCount{System.Double})">
+            <summary>
+            获取平均值
+            </summary>
+            <param name="thisValue"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.Min``1(SqlSugar.Taskable{``0})">
+            <summary>
+            获取最小值
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.ToList``1(SqlSugar.Taskable{``0})">
+            <summary>
+            将Task中的结果集合并成List集成
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.ToSingle``1(SqlSugar.Taskable{``0})">
+            <summary>
+             返回序列中的唯一元素；如果该序列为空，此方法将引发异常；如果该序列包含多个元素，此方法将引发异常。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.ToSingleOrDefault``1(SqlSugar.Taskable{``0})">
+            <summary>
+             返回序列中的唯一元素；如果该序列为空，则返回默认值；如果该序列包含多个元素，此方法将引发异常。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.ToFirst``1(SqlSugar.Taskable{``0})">
+            <summary>
+            获取第一行数据,，如果序列中不包含任何元素,则会抛出异常
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.ToFirstOrDefault``1(SqlSugar.Taskable{``0})">
+            <summary>
+            如果序列中不包含任何元素，则返回默认值。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.MergeTable``1(SqlSugar.Taskable{``0})">
+            <summary>
+            将结果集合并到一个集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.MergeEntities``1(SqlSugar.Taskable{``0})">
+            <summary>
+            将结果集合并到一个集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.TaskExtensions.MergeValue``1(SqlSugar.Taskable{``0})">
+            <summary>
+            将结果集合并到一个集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="thisValue"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

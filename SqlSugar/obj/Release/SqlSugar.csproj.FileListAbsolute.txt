@@ -31,3 +31,8 @@ C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\bin\Release\SqlSuga
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\bin\Release\SqlSugar.pdb
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\obj\Release\SqlSugar.dll
 C:\Users\ss去\OneDrive\Asp.net\Project\SqlSugar2.5\SqlSugar\obj\Release\SqlSugar.pdb
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Release\SqlSugar.XML
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Release\SqlSugar.dll
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Release\SqlSugar.pdb
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\obj\Release\SqlSugar.dll
+C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\obj\Release\SqlSugar.pdb
