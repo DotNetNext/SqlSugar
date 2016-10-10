@@ -751,12 +751,27 @@ namespace SqlSugar
             if (entities == null) { return false; };
 
             Type type = typeof(T);
+
+            //属性缓存
+            string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = null;
+            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+            {
+                props = cachePropertiesManager[cachePropertiesKey];
+            }
+            else
+            {
+                props = type.GetProperties();
+                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+            }
+
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             var isIdentity = identityNames != null && identityNames.Count > 0;
-            var columnNames = SqlSugarTool.GetColumnsByTableName(this, typeName);
+            var columnNames =props.Select(it=>it.Name).ToList();
             if (DisableInsertColumns.IsValuable())
             {//去除禁止插入列
                 columnNames.RemoveAll(it=>DisableInsertColumns.Any(dc=>dc.ToLower().Contains(it.ToLower())));
@@ -773,6 +788,7 @@ namespace SqlSugar
             if (this.IsIgnoreErrorColumns)
             {//去除非数据库列
                var tableColumns=SqlSugarTool.GetColumnsByTableName(this, typeName);
+               columnNames = columnNames.Where(it => tableColumns.Any(tc => tc.ToLower() == it.ToLower())).ToList();
             }
             if (isIdentity)
             {
@@ -785,19 +801,7 @@ namespace SqlSugar
             sbSql.AppendLine(typeName.GetTranslationSqlName());
             sbSql.AppendFormat("({0})", string.Join(",", columnNames.Select(it => it.GetTranslationSqlName())));
 
-            //属性缓存
-            string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
-            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = null;
-            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
-            {
-                props = cachePropertiesManager[cachePropertiesKey];
-            }
-            else
-            {
-                props = type.GetProperties();
-                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
-            }
+
             foreach (var entity in entities)
             {
 

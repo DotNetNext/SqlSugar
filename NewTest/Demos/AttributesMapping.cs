@@ -34,6 +34,10 @@ namespace NewTest.Demos
                 var id = db.Insert(s);
                 s.classId = id.ObjToInt();
 
+
+                db.SqlBulkCopy(new List<TestStudent>() { s });
+
+
                 //更新
                 db.Update(s);
                 db.Update<TestStudent, int>(s, 100);

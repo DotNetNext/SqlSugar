@@ -12,7 +12,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "insert";
+            string switchOn = "attributesmapping";
             IDemos demo = null;
             switch (switchOn)
             {
