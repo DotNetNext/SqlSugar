@@ -23,7 +23,7 @@ namespace PkDapper
                 case "2": demo = new SelectSingle(); break;
                 //比拼海量数据更新
                 case "3": demo = new UpdateList(); break;
-                //比拼海量数据挺入
+                //比拼海量数据插入
                 case "4": demo = new InsertList(); break;
                 //比拼批量删除
                 case "5": demo = new DeleteArray(); break;
