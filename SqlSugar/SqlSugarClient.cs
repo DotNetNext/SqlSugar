@@ -717,7 +717,7 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 大数据插入(结构体必须和数据库一致,不支持属性映射和别名表)
+        /// 大数据插入
         /// </summary>
         /// <param name="entities"></param>
         /// <returns>全部插入成功返回true</returns>
@@ -747,6 +747,7 @@ namespace SqlSugar
 
         private bool SqlBulkCopy<T>(IEnumerable<T> entities) where T : class
         {
+            InitAttributes<T>();
             if (entities == null) { return false; };
 
             Type type = typeof(T);
@@ -756,10 +757,30 @@ namespace SqlSugar
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             var isIdentity = identityNames != null && identityNames.Count > 0;
             var columnNames = SqlSugarTool.GetColumnsByTableName(this, typeName);
+            if (DisableInsertColumns.IsValuable())
+            {//去除禁止插入列
+                columnNames.RemoveAll(it=>DisableInsertColumns.Any(dc=>dc.ToLower().Contains(it.ToLower())));
+            }
+            //启用别名列
+            if (this.IsEnableAttributeMapping = true && _mappingColumns.IsValuable()) {
+                //将别名列转换成数据列
+                columnNames = columnNames.Select(it =>
+                {
+                    var cmInfo=_mappingColumns.Where(mc => mc.Key == it).ToList();
+                    return cmInfo.IsValuable()?cmInfo.Single().Value:it;
+                }).ToList();
+            }
+            if (this.IsIgnoreErrorColumns)
+            {//去除非数据库列
+               var tableColumns=SqlSugarTool.GetColumnsByTableName(this, typeName);
+            }
             if (isIdentity)
             {
                 columnNames = columnNames.Where(c => !identityNames.Any(it => it.Value == c)).ToList();//去掉自添列
+            
             }
+            Check.Exception(columnNames == null || columnNames.Count == 0, "没有可插入的列，请查看实体和插入配置。");
+
             StringBuilder sbSql = new StringBuilder("INSERT INTO ");
             sbSql.AppendLine(typeName.GetTranslationSqlName());
             sbSql.AppendFormat("({0})", string.Join(",", columnNames.Select(it => it.GetTranslationSqlName())));
@@ -779,11 +800,20 @@ namespace SqlSugar
             }
             foreach (var entity in entities)
             {
+
                 sbSql.AppendLine("SELECT ");
                 foreach (var name in columnNames)
                 {
+                    var className = name;
+                      //启用别名列
+                    if (this.IsEnableAttributeMapping = true && _mappingColumns.IsValuable()) {
+                        var mappInfo = _mappingColumns.Where(mc => mc.Value.ToLower() == name.ToLower()).ToList();
+                        if (mappInfo.IsValuable()) {
+                            className = mappInfo.Single().Key;
+                        }
+                    }
                     var isLastName = name == columnNames.Last();
-                    var prop = props.Single(it => it.Name == name);
+                    var prop = props.Single(it => it.Name == className);
                     var objValue = prop.GetValue(entity, null);
                     bool isNullable = false;
                     var underType = SqlSugarTool.GetUnderType(prop, ref isNullable);
