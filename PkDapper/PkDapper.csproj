@@ -51,6 +51,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\Dapper.Contrib.dll</HintPath>
     </Reference>
+    <Reference Include="SqlSugar, Version=3.1.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\SqlSugar.dll</HintPath>
+    </Reference>
     <Reference Include="SyntacticSugar, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\SyntacticSugar.dll</HintPath>
@@ -93,12 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
-      <Project>{46A17E67-7E3E-4369-9B1F-43BA34BBDAEF}</Project>
-      <Name>SqlSugar</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
