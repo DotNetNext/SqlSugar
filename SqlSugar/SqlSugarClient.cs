@@ -969,7 +969,6 @@ namespace SqlSugar
         /// <returns>更新成功返回true</returns>
         public bool Update<T>(T rowObj) where T : class
         {
-            InitAttributes<T>();
             var isDynamic = typeof(T).IsAnonymousType();
             if (isDynamic)
             {
