@@ -1012,21 +1012,23 @@ namespace SqlSugar
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
             StringBuilder sbSql = new StringBuilder();
             Type type = typeof(T);
-
+            var isClassUpdate=whereIn.Length==0;
+            PropertyInfo[] props = null;
             //属性缓存
             string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
             var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
-            PropertyInfo[] props = null;
-            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
-            {
-                props = cachePropertiesManager[cachePropertiesKey];
-            }
-            else
-            {
-                props = type.GetProperties();
-                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
-            }
+            if (isClassUpdate) {
+                if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+                {
+                    props = cachePropertiesManager[cachePropertiesKey];
+                }
+                else
+                {
+                    props = type.GetProperties();
+                    cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+                }
 
+            }
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             var pars = SqlSugarTool.GetParameters(rowObj, props);
@@ -1034,7 +1036,7 @@ namespace SqlSugar
             string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             string cacheKey = typeName + this.IsIgnoreErrorColumns;
-            var isClassUpdate=whereIn.Length==0;
+
             if (!isClassUpdate)
             {
                 cacheKey += string.Join("", pars.Select(it => it.ParameterName));
