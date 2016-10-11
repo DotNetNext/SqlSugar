@@ -1018,8 +1018,8 @@ namespace SqlSugar
             string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             string cacheKey = typeName + this.IsIgnoreErrorColumns;
-            var isClassUpdate=whereIn.Length> 0;
-            if (isClassUpdate)
+            var isClassUpdate=whereIn.Length==0;
+            if (!isClassUpdate)
             {
                 cacheKey += string.Join("", pars.Select(it => it.ParameterName));
             }
@@ -1061,7 +1061,7 @@ namespace SqlSugar
                 sbSql.Remove(sbSql.Length - 1, 1);
                 cm.Add(cacheKey, sbSql.ToString(), cm.Day);
             }
-            if (whereIn.Count() == 0)
+            if (isClassUpdate)
             {
                 sbSql.AppendFormat("WHERE {0} = @{1}",pkName.GetTranslationSqlName(),pkName);
             }
