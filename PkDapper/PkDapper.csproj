@@ -67,6 +67,7 @@
     <Compile Include="Demos\InsertItem.cs" />
     <Compile Include="Demos\DeleteArray.cs" />
     <Compile Include="Demos\InsertList.cs" />
+    <Compile Include="Demos\Page.cs" />
     <Compile Include="Demos\PerHelper.cs" />
     <Compile Include="Demos\IDemos.cs" />
     <Compile Include="Demos\PubConst.cs" />
