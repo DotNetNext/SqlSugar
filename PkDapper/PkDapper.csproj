@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Demos\InsertItem.cs" />
     <Compile Include="Demos\DeleteArray.cs" />
     <Compile Include="Demos\InsertList.cs" />
     <Compile Include="Demos\PerHelper.cs" />

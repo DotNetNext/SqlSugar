@@ -11,14 +11,14 @@ using SqlSugar;
 using SyntacticSugar;
 namespace PkDapper.Demos
 {
-    public class InsertList : IDemos
+    public class InsertItem : IDemos
     {
- 
+
         public void Init()
         {
-            Console.WriteLine("测试插入1000条记录的集合");
+            Console.WriteLine("测试插入单条记录");
 
-            var eachCount = 10;
+            var eachCount = 1000;
 
             /*******************车轮战是性能评估最准确的一种方式***********************/
             for (int i = 0; i < 10; i++)
@@ -37,7 +37,6 @@ namespace PkDapper.Demos
                 SqlSugar(eachCount);
 
             }
-            Console.WriteLine("SqlSugar批量插入性能，秒杀Dapper一条街。(Dapper并没有优化过)");
         }
 
         private static void DeleteAddDatas()
@@ -47,13 +46,10 @@ namespace PkDapper.Demos
                 conn.Delete<Test>(it => it.F_String == "Test");
             }
         }
-        private static List<Test> GetList
+        private static Test GetItem
         {
             get
             {
-                List<Test> list = new List<Test>();
-                for (int i = 0; i < 1000; i++)
-                {
                     Test t = new Test()
                     {
                         F_Int32 = 1,
@@ -63,9 +59,7 @@ namespace PkDapper.Demos
                         F_Byte = 1,
                         F_Bool = true
                     };
-                    list.Add(t);
-                }
-                return list;
+                return t;
             }
         }
 
@@ -78,7 +72,7 @@ namespace PkDapper.Demos
             {
                 using (SqlSugarClient conn = new SqlSugarClient(PubConst.connectionString))
                 {
-                    var list = conn.SqlBulkCopy(GetList);
+                    var list = conn.Insert(GetItem);
                 }
             });
         }
@@ -93,7 +87,7 @@ namespace PkDapper.Demos
             {
                 using (SqlConnection conn = new SqlConnection(PubConst.connectionString))
                 {
-                    var list = conn.Insert(GetList);
+                    var list = conn.Insert(GetItem);
                 }
             });
         }
