@@ -168,7 +168,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static T InSingle<T>(this Queryable<T> queryable,object pkValue)
         {
-            return queryable.In(pkValue).SingleOrDefault();
+            return queryable.In(pkValue).ToList().SingleOrDefault();
         }
 
         /// <summary>
