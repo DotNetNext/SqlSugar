@@ -38,7 +38,7 @@ namespace PkDapper.Demos
             get
             {
                 List<Test> list = new List<Test>();
-                for (int i = 1; i < 1000; i++)
+                for (int i = 1000; i < 2000; i++)
                 {
                     Test t = new Test()
                     {
