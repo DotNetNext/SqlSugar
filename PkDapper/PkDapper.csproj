@@ -35,6 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Chloe, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\Chloe.dll</HintPath>
+    </Reference>
+    <Reference Include="Chloe.SqlServer, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\Chloe.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\Dapper.dll</HintPath>
@@ -73,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dabase\test.sql" />
+    <Content Include="Lib\Chloe.dll" />
+    <Content Include="Lib\Chloe.SqlServer.dll" />
     <Content Include="Lib\Dapper.Contrib.dll" />
     <Content Include="Lib\Dapper.dll" />
     <Content Include="Lib\Dapper.xml" />
