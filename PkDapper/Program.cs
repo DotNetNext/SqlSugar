@@ -18,7 +18,7 @@ namespace PkDapper
             WarmUp wu = new WarmUp();//预热处理
 
              //设置执行的DEMO
-            string switchOn = "7";
+            string switchOn = "1";
             IDemos demo = null;
             switch (switchOn)
             {
