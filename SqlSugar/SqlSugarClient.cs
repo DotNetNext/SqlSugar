@@ -1007,13 +1007,29 @@ namespace SqlSugar
         /// <returns>更新成功返回true</returns>
         public bool Update<T, FiledType>(object rowObj, params FiledType[] whereIn) where T : class
         {
+
             InitAttributes<T>();
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
             StringBuilder sbSql = new StringBuilder();
             Type type = typeof(T);
+
+            //属性缓存
+            string cachePropertiesKey = "db." + type.FullName + ".GetProperties";
+            var cachePropertiesManager = CacheManager<PropertyInfo[]>.GetInstance();
+            PropertyInfo[] props = null;
+            if (cachePropertiesManager.ContainsKey(cachePropertiesKey))
+            {
+                props = cachePropertiesManager[cachePropertiesKey];
+            }
+            else
+            {
+                props = type.GetProperties();
+                cachePropertiesManager.Add(cachePropertiesKey, props, cachePropertiesManager.Day);
+            }
+
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            var pars = SqlSugarTool.GetParameters(rowObj);
+            var pars = SqlSugarTool.GetParameters(rowObj, props);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
