@@ -1059,7 +1059,7 @@ namespace SqlSugar
             }
             if (whereIn.Count() == 0)
             {
-                sbSql.AppendFormat("WHERE {0} = @{1}",pkName.GetTranslationSqlName(),pkClassPropName==null?pkName:pkClassPropName);
+                sbSql.AppendFormat("WHERE {0} = @{1}",pkName.GetTranslationSqlName(),pkName);
             }
             else
             {
