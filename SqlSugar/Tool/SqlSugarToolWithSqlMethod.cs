@@ -196,7 +196,14 @@ namespace SqlSugar
             string key = "GetIdentityKeyByTableName" + tableName;
             var cm = CacheManager<List<KeyValue>>.GetInstance();
             List<KeyValue> identityInfo = null;
-            string sql = string.Format(@"
+            if (cm.ContainsKey(key))
+            {
+                identityInfo = cm[key];
+                return identityInfo;
+            }
+            else
+            {
+                string sql = string.Format(@"
                             declare @Table_name varchar(60)
                             set @Table_name = '{0}';
 
@@ -214,13 +221,6 @@ namespace SqlSugar
 
                             Where upper(so.name) = upper(@Table_name)
          ", tableName);
-            if (cm.ContainsKey(key))
-            {
-                identityInfo = cm[key];
-                return identityInfo;
-            }
-            else
-            {
                 var isLog = db.IsEnableLogEvent;
                 db.IsEnableLogEvent = false;
                 var dt = db.GetDataTable(sql);
