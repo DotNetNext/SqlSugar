@@ -1017,7 +1017,10 @@ namespace SqlSugar
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
-            string cacheKey = typeName + string.Join("", pars.Select(it => it.ParameterName)) + this.IsIgnoreErrorColumns;
+            string cacheKey = typeName + this.IsIgnoreErrorColumns;
+            if (whereIn.Length> 0) {
+                cacheKey += string.Join("", pars.Select(it => it.ParameterName));
+            }
             if (_mappingColumns.IsValuable()) {
                 cacheKey +=string.Join("", _mappingColumns.Select(it => it.Key)); ;
             }
