@@ -8,6 +8,10 @@ namespace NewTest
 {
     class Program
     {
+        /// <summary>
+        /// SqlSugar的功能介绍
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
 

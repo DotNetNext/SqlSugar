@@ -8,6 +8,11 @@ namespace PkDapper
 {
     class Program
     {
+     
+        /// <summary>
+        /// SqlSugar与Dapper的性能比较
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             WarmUp wu = new WarmUp();//预热处理
