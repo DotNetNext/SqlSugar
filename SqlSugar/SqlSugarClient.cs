@@ -1018,7 +1018,9 @@ namespace SqlSugar
             string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             string cacheKey = typeName + this.IsIgnoreErrorColumns;
-            if (whereIn.Length> 0) {
+            var isClassUpdate=whereIn.Length> 0;
+            if (isClassUpdate)
+            {
                 cacheKey += string.Join("", pars.Select(it => it.ParameterName));
             }
             if (_mappingColumns.IsValuable()) {
