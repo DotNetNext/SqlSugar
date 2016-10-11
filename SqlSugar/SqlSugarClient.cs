@@ -1172,9 +1172,9 @@ namespace SqlSugar
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             var isIdentity = identityNames != null && identityNames.Count > 0;
             var columnNames = props.Select(it => it.Name).ToList();
-            if (DisableInsertColumns.IsValuable())
+            if (DisableUpdateColumns.IsValuable())
             {//去除禁止插入列
-                columnNames.RemoveAll(it => DisableInsertColumns.Any(dc => dc.ToLower().Contains(it.ToLower())));
+                columnNames.RemoveAll(it => DisableUpdateColumns.Any(dc => dc.ToLower().Contains(it.ToLower())));
             }
             //启用别名列
             if (this.IsEnableAttributeMapping = true && _mappingColumns.IsValuable())
