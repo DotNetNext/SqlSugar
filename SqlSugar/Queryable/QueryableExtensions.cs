@@ -144,6 +144,20 @@ namespace SqlSugar
             return queryable;
         }
 
+        /// <summary>
+        /// 根据主键查询
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="pkValues">主键集合</param>
+        /// <returns></returns>
+        public static Queryable<T> In<T>(this Queryable<T> queryable, params object[] pkValues) {
+            Check.Exception(pkValues == null || pkValues.Length==0, "In.pkValues的Count不能为0");
+            var pkName =SqlSugarTool.GetPrimaryKeyByTableName(queryable.DB, queryable.TableName);
+            queryable.OrderByValue = null;
+            Check.ArgumentNullException(pkName, "In(params object[]PkValue)查询表中不存在主键,请换In的其它重载方法。");
+            return In<T, string>(queryable, pkName, pkValues.Select(it=>it.ToString()).ToArray());
+        }
 
         /// <summary>
         /// 条件筛选 ( 例如：InFieldName 为 id, inValues 值为 new string[]{"1" ,"2"} 生成的SQL就是 id in('1','2')  )

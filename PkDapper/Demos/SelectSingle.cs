@@ -44,7 +44,7 @@ namespace PkDapper.Demos
             {
                 using (SqlSugarClient conn = new SqlSugarClient(PubConst.connectionString))
                 {
-                    var list = conn.Queryable<Test>().In("id",10).Single();
+                    var list = conn.Queryable<Test>().In(1000).Single();
                 }
             });
         }
@@ -59,7 +59,7 @@ namespace PkDapper.Demos
             {
                 using (SqlConnection conn = new SqlConnection(PubConst.connectionString))
                 {
-                    var list = conn.Get<Test>(10);
+                    var list = conn.Get<Test>(1000);
                 }
             });
         }

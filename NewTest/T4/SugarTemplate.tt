@@ -10,7 +10,7 @@
 <#@ import namespace="SqlSugar" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Web" #>
-<#@ assembly name="$(SolutionDir)\WebTest\App_Lib\SqlSugar.dll" #>
+<#@ assembly name="$(SolutionDir)\PkDapper\Lib\SqlSugar.dll" #>
 
 <# 
      
