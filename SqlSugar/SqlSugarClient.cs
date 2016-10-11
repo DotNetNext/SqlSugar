@@ -1075,6 +1075,7 @@ namespace SqlSugar
             try
             {
                 var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
+                sbSql = null;
                 return updateRowCount > 0;
             }
             catch (Exception ex)
