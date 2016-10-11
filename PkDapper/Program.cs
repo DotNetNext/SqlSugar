@@ -24,7 +24,7 @@ namespace PkDapper
             {
                 //查询所有
                 case "1": demo = new SelectBigData(); break;
-                //查询单单
+                //查询单条
                 case "2": demo = new SelectSingle(); break;
                 //比拼海量数据更新
                 case "3": demo = new UpdateList(); break;
