@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.SqlClient;
+using System.Collections;
 
 namespace SqlSugar
 {
@@ -152,7 +153,16 @@ namespace SqlSugar
         /// <param name="pkValues">主键集合</param>
         /// <returns></returns>
         public static Queryable<T> In<T>(this Queryable<T> queryable, params object[] pkValues) {
-            Check.Exception(pkValues == null || pkValues.Length==0, "In.pkValues的Count不能为0");
+            Check.Exception(pkValues == null || pkValues.Length == 0, "In.pkValues的Count不能为0");
+            if (pkValues[0].GetType().FullName.IsCollectionsList()) {
+                var newList=new List<object>();
+                foreach (var item in (IEnumerable)pkValues[0])
+                {
+                    newList.Add(item);
+                }
+                pkValues = newList.ToArray();
+                Check.Exception(pkValues == null || pkValues.Length == 0, "In.pkValues的Count不能为0");
+            }
             var pkName =SqlSugarTool.GetPrimaryKeyByTableName(queryable.DB, queryable.TableName);
             queryable.OrderByValue = null;
             Check.ArgumentNullException(pkName, "In(params object[]PkValue)查询表中不存在主键,请换In的其它重载方法。");

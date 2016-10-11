@@ -120,6 +120,7 @@ namespace NewTest.Demos
                 var list2 = db.Queryable<Student>().In("id", intArray).ToList();
                 var list3 = db.Queryable<Student>().In(it => it.id, intList).ToList();
                 var list4 = db.Queryable<Student>().In("id", intList).ToList();
+                var list6 = db.Queryable<Student>().In(intList).ToList();
 
                 //分组查询
                 var list7 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select("sex,count(*) Count").ToDynamic();
