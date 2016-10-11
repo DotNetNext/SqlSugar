@@ -18,7 +18,7 @@ namespace PkDapper
             WarmUp wu = new WarmUp();//预热处理
 
              //设置执行的DEMO
-            string switchOn = "2";
+            string switchOn = "7";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -34,8 +34,8 @@ namespace PkDapper
                 case "5": demo = new DeleteArray(); break;
                 //比拼普通插入
                 case "6": demo = new InsertItem(); break;
-                //比拼普通插入
-                case "7": demo = new InsertItem(); break;
+                //比拼普通更新
+                case "7": demo = new UpdateItem(); break;
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
             }
             demo.Init();

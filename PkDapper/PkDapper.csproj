@@ -66,6 +66,7 @@
     <Compile Include="Demos\SelectSingle.cs" />
     <Compile Include="Demos\WarmUp.cs" />
     <Compile Include="Demos\UpdateList.cs" />
+    <Compile Include="Demos\UpdateItem.cs" />
     <Compile Include="Models\TestEntity.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
