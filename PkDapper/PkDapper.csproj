@@ -77,7 +77,6 @@
     <Content Include="Lib\Dapper.dll" />
     <Content Include="Lib\Dapper.xml" />
     <Content Include="Lib\SqlSugar.dll" />
-    <Content Include="Lib\SqlSugar.pdb" />
     <Content Include="Lib\SqlSugar.XML" />
     <Content Include="Lib\SyntacticSugar.dll" />
   </ItemGroup>
