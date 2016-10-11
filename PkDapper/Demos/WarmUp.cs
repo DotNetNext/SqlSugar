@@ -21,11 +21,13 @@ namespace PkDapper.Demos
                 using (SqlConnection conn = new SqlConnection(PubConst.connectionString))
                 {
                     var list = conn.QueryFirst<Test>("select top 1 * from Test");
+                    conn.Update(new Test());
                 }
 
                 using (SqlSugarClient conn = new SqlSugarClient(PubConst.connectionString))
                 {
                     var list = conn.Queryable<Test>().Where(it => 1 == 2).ToList();
+                    conn.Update(new Test());
                 }
             }
             Console.WriteLine("预热完毕");

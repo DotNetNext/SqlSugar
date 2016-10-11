@@ -1010,73 +1010,79 @@ namespace SqlSugar
         {
             InitAttributes<T>();
             if (rowObj == null) { throw new ArgumentNullException("SqlSugarClient.Update.rowObj"); }
-
+            StringBuilder sbSql = new StringBuilder();
             Type type = typeof(T);
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            StringBuilder sbSql = new StringBuilder(string.Format(" UPDATE {0} SET ", typeName.GetTranslationSqlName()));
-            Dictionary<string, object> rows = SqlSugarTool.GetObjectToDictionary(rowObj);
+            var pars = SqlSugarTool.GetParameters(rowObj);
             string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
             string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
-            foreach (var r in rows)
-            {
-                string name = GetMappingColumnDbName(r.Key);
-                var isPk = pkName != null && pkName.ToLower() == name.ToLower();
-                var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
-                var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
-
-                if (this.IsIgnoreErrorColumns)
-                {
-                    if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == name.ToLower()))
-                    {
-                        continue;
-                    }
-                }
-
-                if (isPk || isIdentity || isDisableUpdateColumns)
-                {
-                    if (rowObj.GetType() == type)
-                    {
-                        continue;
-                    }
-                }
-                sbSql.Append(string.Format(" {0}={1}  ,", name.GetTranslationSqlName(), name.GetSqlParameterName()));
+            string cacheKey = typeName + string.Join("", pars.Select(it => it.ParameterName)) + this.IsIgnoreErrorColumns;
+            if (_mappingColumns.IsValuable()) {
+                cacheKey +=string.Join("", _mappingColumns.Select(it => it.Key)); ;
             }
-            sbSql.Remove(sbSql.Length - 1, 1);
-            if (whereIn.Count() == 0)
+            var cm=CacheManager<string>.GetInstance();
+            if (cm.ContainsKey(cacheKey))
             {
-                var value = type.GetProperties().Cast<PropertyInfo>().Single(it => it.Name == (pkClassPropName == null ? pkName : pkClassPropName)).GetValue(rowObj, null);
-                sbSql.AppendFormat("WHERE {1} IN ('{2}')", typeName, pkName.GetTranslationSqlName(), value);
+                sbSql.Append(cm[cacheKey]);
             }
             else
             {
-                sbSql.AppendFormat("WHERE {1} IN ({2})", typeName, pkName.GetTranslationSqlName(), whereIn.ToJoinSqlInVal());
+                sbSql.Append(string.Format(" UPDATE {0} SET ", typeName.GetTranslationSqlName()));
+                foreach (var r in pars)
+                {
+                    string name = GetMappingColumnDbName(r.ParameterName.GetSqlParameterNameNoParSymbol());
+                    var isPk = pkName != null && pkName.ToLower() == name.ToLower();
+                    var isIdentity = identityNames.Any(it => it.Value.ToLower() == name.ToLower());
+                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == name.ToLower());
+
+                    if (this.IsIgnoreErrorColumns)
+                    {
+                        if (!SqlSugarTool.GetColumnsByTableName(this, typeName).Any(it => it.ToLower() == name.ToLower()))
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (isPk || isIdentity || isDisableUpdateColumns)
+                    {
+                        if (rowObj.GetType() == type)
+                        {
+                            continue;
+                        }
+                    }
+                    sbSql.Append(string.Format(" {0}={1}  ,", name.GetTranslationSqlName(), name.GetSqlParameterName()));
+                }
+                sbSql.Remove(sbSql.Length - 1, 1);
+                cm.Add(cacheKey, sbSql.ToString(), cm.Day);
             }
-            List<SqlParameter> parsList = new List<SqlParameter>();
-            var pars = rows.Select(c => new SqlParameter(SqlSugarTool.ParSymbol + c.Key, c.Value));
+            if (whereIn.Count() == 0)
+            {
+                sbSql.AppendFormat("WHERE {0} = @{1}",pkName.GetTranslationSqlName(),pkClassPropName==null?pkName:pkClassPropName);
+            }
+            else
+            {
+                sbSql.AppendFormat("WHERE {0} IN ({1})",  pkName.GetTranslationSqlName(), whereIn.ToJoinSqlInVal());
+            }
             if (pars != null)
             {
-                foreach (var par in pars)
+                pars = pars.Select(par =>
                 {
                     string name = SqlSugarTool.ParSymbol + GetMappingColumnDbName(par.ParameterName.TrimStart(SqlSugarTool.ParSymbol));
-                    var isDisableUpdateColumns = DisableUpdateColumns != null && DisableUpdateColumns.Any(it => it.ToLower() == par.ParameterName.TrimStart(SqlSugarTool.ParSymbol).ToLower());
                     if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
                         par.UdtTypeName = "HIERARCHYID";
                     }
-                    if (!isDisableUpdateColumns)
-                    {
-                        par.ParameterName = name;
-                        parsList.Add(par);
-                    }
-                }
+                    par.ParameterName = name;
+                    return par;
+
+                }).ToArray();
             }
             try
             {
-                var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
+                var updateRowCount = ExecuteCommand(sbSql.ToString(),pars);
                 sbSql = null;
-                parsList = null;
                 return updateRowCount > 0;
             }
             catch (Exception ex)
