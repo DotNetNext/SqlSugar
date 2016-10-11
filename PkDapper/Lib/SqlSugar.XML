@@ -1092,6 +1092,24 @@
             <param name="expression">表达式条件</param>
             <returns>Queryable</returns>
         </member>
+        <member name="M:SqlSugar.QueryableExtensions.In``1(SqlSugar.Queryable{``0},System.Object[])">
+            <summary>
+            根据主键查询
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="queryable"></param>
+            <param name="pkValues">主键集合</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlSugar.QueryableExtensions.InSingle``1(SqlSugar.Queryable{``0},System.Object[])">
+            <summary>
+            根据主键查询
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="queryable"></param>
+            <param name="pkValues">主键集合</param>
+            <returns></returns>
+        </member>
         <member name="M:SqlSugar.QueryableExtensions.In``2(SqlSugar.Queryable{``0},System.String,``1[])">
             <summary>
             条件筛选 ( 例如：InFieldName 为 id, inValues 值为 new string[]{"1" ,"2"} 生成的SQL就是 id in('1','2')  )

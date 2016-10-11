@@ -156,7 +156,19 @@ namespace SqlSugar
             var pkName =SqlSugarTool.GetPrimaryKeyByTableName(queryable.DB, queryable.TableName);
             queryable.OrderByValue = null;
             Check.ArgumentNullException(pkName, "In(params object[]PkValue)查询表中不存在主键,请换In的其它重载方法。");
-            return In<T, string>(queryable, pkName, pkValues.Select(it=>it.ToString()).ToArray());
+            return queryable.In<T,string>(pkName, pkValues.Select(it=>it.ToString()).ToArray());
+        }
+
+        /// <summary>
+        /// 根据主键查询
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="pkValue">主键</param>
+        /// <returns></returns>
+        public static T InSingle<T>(this Queryable<T> queryable,object pkValue)
+        {
+            return queryable.In(pkValue).SingleOrDefault();
         }
 
         /// <summary>
