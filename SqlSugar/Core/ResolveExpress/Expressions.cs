@@ -78,7 +78,7 @@ namespace SqlSugar
             }
             else if (isComparisonOperator == false)
             {
-                return "(1=1)";
+                return "(" + me.Member.Name + "=1)";
             }
             else
             {
@@ -295,7 +295,7 @@ namespace SqlSugar
             var expression = lambda.Body;
             MemberType EleType = MemberType.None;
             if (expression.NodeType == ExpressionType.MemberAccess) {
-                return "(1=1)";
+                return "("+((MemberExpression)expression).Member.Name+"=1)";
             }
             return CreateSqlElements(expression, ref EleType, true);
         }
