@@ -39,17 +39,12 @@ namespace SqlSugar
             {
                 type = MemberType.Value;
                 object dynInv = null;
-                // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
-                // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
-                SetMemberValueToDynInv(ref exp, me, ref dynInv);
-                if (dynInv == ExpErrorUniqueKey)//特殊情况走原始写法
-                {
-                    dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
-                    if (dynInv != null && dynInv.GetType().IsClass)
-                    {
-                        dynInv = Expression.Lambda(me).Compile().DynamicInvoke();
-                    }
-                }
+
+
+                GetMemberValue(ref exp, me, ref dynInv);
+
+
+
                 if (isPro)return GetProMethod(me.Member.Name,dynInv.ObjToString(),false);
                 if (dynInv == null) return null;
                 else
@@ -95,6 +90,21 @@ namespace SqlSugar
                 }
                 if (isPro) return GetProMethod(me.Member.Name, name, true);
                 return name;
+            }
+        }
+
+        private static void GetMemberValue(ref Expression exp, MemberExpression me, ref object dynInv)
+        {
+            // var dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();原始写法性能极慢，下面写法性能提高了几十倍
+            // var dynInv= Expression.Lambda(me.Expression as ConstantExpression).Compile().DynamicInvoke();
+            SetMemberValueToDynInv(ref exp, me, ref dynInv);
+            if (dynInv == ExpErrorUniqueKey)//特殊情况走原始写法
+            {
+                dynInv = Expression.Lambda(exp).Compile().DynamicInvoke();
+                if (dynInv != null && dynInv.GetType().IsClass)
+                {
+                    dynInv = Expression.Lambda(me).Compile().DynamicInvoke();
+                }
             }
         }
 
