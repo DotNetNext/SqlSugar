@@ -64,7 +64,7 @@ namespace SqlSugar
         {
             ResolveExpress.MemberType type = ResolveExpress.MemberType.None;
             //解析表达式
-            this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type));
+            this.SqlWhere = string.Format(" AND {0} ", re.CreateSqlElements(exp, ref type,true));
             //还原bool值
             foreach (var item in ConstantBoolDictionary)
             {
@@ -80,14 +80,14 @@ namespace SqlSugar
         /// 递归解析表达式路由计算
         /// </summary>
         /// <returns></returns>
-        private string CreateSqlElements(Expression exp, ref MemberType type, bool isTure = true)
+        private string CreateSqlElements(Expression exp, ref MemberType type, bool isTure)
         {
             if (exp is LambdaExpression)
             {
                 LambdaExpression lambda = exp as LambdaExpression;
                 var expression = lambda.Body;
                 MemberType EleType = MemberType.None;
-                return CreateSqlElements(expression, ref EleType);
+                return CreateSqlElements(expression, ref EleType,true);
             }
             else if (exp is BinaryExpression)
             {
@@ -96,8 +96,8 @@ namespace SqlSugar
                 MemberType rightType = MemberType.None;
                 var leftIsDateTime = expression.Left.Type.ToString().Contains("System.DateTime");
                 var rightIsDateTime = expression.Right.Type.ToString().Contains("System.DateTime");
-                var left = CreateSqlElements(expression.Left, ref leftType);
-                var right = CreateSqlElements(expression.Right, ref rightType);
+                var left = CreateSqlElements(expression.Left, ref leftType,true);
+                var right = CreateSqlElements(expression.Right, ref rightType,true);
                 var oper = GetOperator(expression.NodeType);
                 var isKeyOperValue = leftType == MemberType.Key && rightType == MemberType.Value;
                 var isValueOperKey = rightType == MemberType.Key && leftType == MemberType.Value;

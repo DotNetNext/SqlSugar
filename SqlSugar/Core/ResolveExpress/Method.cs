@@ -19,8 +19,8 @@ namespace SqlSugar
         private string Equals(string methodName, MethodCallExpression mce) {
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
-            var left = CreateSqlElements(mce.Object, ref leftType);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
+            var left = CreateSqlElements(mce.Object, ref leftType,true);
+            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
             var oldLeft = AddParas(ref left,right);
             return string.Format("({0} = " + SqlSugarTool.ParSymbol + "{1})", oldLeft, left);
         }
@@ -36,8 +36,8 @@ namespace SqlSugar
         {
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
-            var left = CreateSqlElements(mce.Object, ref leftType);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
+            var left = CreateSqlElements(mce.Object, ref leftType,true);
+            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
             var oldLeft = AddParas(ref left, right + '%');
             return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft, null, left);
         }
@@ -53,8 +53,8 @@ namespace SqlSugar
         {
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
-            var left = CreateSqlElements(mce.Object, ref leftType);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
+            var left = CreateSqlElements(mce.Object, ref leftType,true);
+            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
             var oldLeft = AddParas(ref left, '%' + right);
             return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft, null, left);
         }
@@ -70,8 +70,8 @@ namespace SqlSugar
         {
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
-            var left = CreateSqlElements(mce.Object, ref leftType);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
+            var left = CreateSqlElements(mce.Object, ref leftType,true);
+            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
             if (left.IsCollectionsList() || right.IsStringArray() || right.IsEnumerable())
             {
                 object containsValue = null;
@@ -89,7 +89,7 @@ namespace SqlSugar
                     MemberExpression mbx = ((MemberExpression)mce.Arguments[0]);
                     Expression exp = mce.Arguments[0];
                     SetMemberValueToDynInv(ref exp, mbx, ref containsValue);
-                    fieldName = CreateSqlElements(mce.Arguments[1], ref rightType);
+                    fieldName = CreateSqlElements(mce.Arguments[1], ref rightType,true);
                 }
                 List<string> inArray = new List<string>();
                 foreach (var item in (IEnumerable)containsValue)
@@ -131,8 +131,8 @@ namespace SqlSugar
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
             var isConstant = mce.Arguments.First().NodeType == ExpressionType.Constant;
-            var left = CreateSqlElements(mce.Object, ref leftType);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType);
+            var left = CreateSqlElements(mce.Object, ref leftType,true);
+            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
             if (right == "null")
             {
                 right = "";
@@ -190,7 +190,7 @@ namespace SqlSugar
             string value = string.Empty;
             if (mce.Arguments.IsValuable())
             {
-                value = CreateSqlElements(mce.Arguments.FirstOrDefault(), ref type);
+                value = CreateSqlElements(mce.Arguments.FirstOrDefault(), ref type,true);
             }
             else
             {
@@ -238,7 +238,7 @@ namespace SqlSugar
         /// <returns></returns>
         private string MethodToString(string methodName, MethodCallExpression mce, ref MemberType type)
         {
-            return CreateSqlElements(mce.Object, ref type);
+            return CreateSqlElements(mce.Object, ref type,true);
         }
     }
 }
