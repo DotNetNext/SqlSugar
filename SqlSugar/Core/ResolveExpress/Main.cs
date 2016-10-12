@@ -82,6 +82,7 @@ namespace SqlSugar
         /// <returns></returns>
         private string CreateSqlElements(Expression exp, ref MemberType type, bool isTure)
         {
+            //主入口
             if (exp is LambdaExpression)
             {
                 return LambdaExpression(exp);
