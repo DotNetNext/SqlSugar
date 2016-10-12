@@ -14,8 +14,14 @@ namespace SqlSugar
         {
             UnaryExpression ue = ((UnaryExpression)exp);
             var mex = ue.Operand;
-            var cse = CreateSqlElements(mex, ref type, false);
-            if (type == MemberType.None && ue.NodeType.ToString() == "Not")
+            bool? isComparisonOperator = null;
+            var isNot = ue.NodeType==ExpressionType.Not;
+            if (mex.NodeType == ExpressionType.MemberAccess && isNot)
+            {
+                isComparisonOperator = false;
+            }
+            var cse = CreateSqlElements(mex, ref type, false,isComparisonOperator);
+            if (type == MemberType.None && isNot)
             {
                 cse = " NOT " + cse;
             }
