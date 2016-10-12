@@ -89,20 +89,18 @@ namespace SqlSugar
             else if (exp is BinaryExpression)
             {
                 return BinaryExpression(exp);
-
             }
             else if (exp is BlockExpression)
             {
-
+                throw new SqlSugarException("表达式不支持解析BlockExpression,错误信息:" + exp.ToString());
             }
             else if (exp is ConditionalExpression)
             {
-
+                throw new SqlSugarException("表达式不支解析ConditionalExpression,错误信息:" + exp.ToString());
             }
             else if (exp is MethodCallExpression)
             {
                 return MethodCallExpression(exp, ref type, isTure);
-
             }
             else if (exp is ConstantExpression)
             {
