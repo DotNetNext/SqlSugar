@@ -43,8 +43,9 @@ namespace NewTest.Demos
 
                 //特殊拉姆达写法测试
                 var ts1 = db.Queryable<Student2>("Student").Where(it => it.isOk).ToList();
-
-
+                var ts2 = db.Queryable<Student2>("Student").Where(it => it.isOk&&!it.isOk).ToList();
+                var ts3= db.Queryable<Student2>("Student").Where(it => it.isOk && it.isOk).ToList();
+                var ts4 = db.Queryable<Student2>("Student").Where(it => !it.isOk).ToList();
 
                 //查询所有
                 var student = db.Queryable<Student>().ToList();
