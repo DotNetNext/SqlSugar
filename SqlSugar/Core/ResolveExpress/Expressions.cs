@@ -40,9 +40,14 @@ namespace SqlSugar
                 type = MemberType.Value;
                 object dynInv = null;
 
-
-                GetMemberValue(ref exp, me, ref dynInv);
-
+                if (isPro)
+                {
+                    exp = me.Expression;
+                    GetMemberValue(ref exp, me, ref dynInv);
+                }
+                else {
+                    GetMemberValue(ref exp, me, ref dynInv);
+                }
 
 
                 if (isPro)return GetProMethod(me.Member.Name,dynInv.ObjToString(),false);
