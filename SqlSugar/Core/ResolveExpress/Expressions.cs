@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -78,6 +79,10 @@ namespace SqlSugar
                 }
                 //single T
                 string name = me.Member.Name;
+                if (isPro)
+                {
+                    name = ((me.Expression) as MemberExpression).Member.Name;
+                }
                 type = MemberType.Key;
                 if (DB != null && DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
                 {
@@ -207,8 +212,15 @@ namespace SqlSugar
                 {
                     parValue = right;
                 }
-                var oldLeft = AddParas(ref left, parValue);
-                return string.Format(" ({0} {1} " + SqlSugarTool.ParSymbol + "{2}) ", oldLeft, oper, left);
+                if (left.Contains("("))
+                {
+                    return string.Format(" ({0} {1} {2}) ",left, oper, right.ToSqlValue());
+                }
+                else
+                {
+                    var oldLeft = AddParas(ref left, parValue);
+                    return string.Format(" ({0} {1} " + SqlSugarTool.ParSymbol + "{2}) ", oldLeft, oper, left);
+                }
             }
             else if (isValueOperKey)
             {
@@ -221,8 +233,15 @@ namespace SqlSugar
                 {
                     parValue = left;
                 }
-                var oldRight = AddParasReturnRight(parValue, ref  right);
-                return string.Format("( " + SqlSugarTool.ParSymbol + "{0} {1} {2} )", right, oper, oldRight);
+                if (right.Contains("("))
+                {
+                    return string.Format(" ({0} {1} {2}) ", left.ToSqlValue(), oper, right);
+                }
+                else
+                {
+                    var oldRight = AddParasReturnRight(parValue, ref  right);
+                    return string.Format("( " + SqlSugarTool.ParSymbol + "{0} {1} {2} )", right, oper, oldRight);
+                }
             }
             else if (leftType == MemberType.Value && rightType == MemberType.Value)
             {
