@@ -137,6 +137,11 @@ namespace SqlSugar
         private string BinaryExpression(Expression exp)
         {
             var expression = exp as BinaryExpression;
+            var isComparisonOperator =
+            expression.NodeType != ExpressionType.And &&
+            expression.NodeType != ExpressionType.AndAlso &&
+            expression.NodeType != ExpressionType.Or &&
+            expression.NodeType != ExpressionType.OrElse;
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
             var leftIsDateTime = expression.Left.Type.ToString().Contains("System.DateTime");
@@ -144,11 +149,6 @@ namespace SqlSugar
             var left = CreateSqlElements(expression.Left, ref leftType, true);
             var right = CreateSqlElements(expression.Right, ref rightType, true);
             var oper = GetOperator(expression.NodeType);
-            var isComparisonOperator =
-                expression.NodeType != ExpressionType.And && 
-                expression.NodeType != ExpressionType.AndAlso && 
-                expression.NodeType != ExpressionType.Or && 
-                expression.NodeType != ExpressionType.OrElse;
             var isKeyOperValue = leftType == MemberType.Key && rightType == MemberType.Value;
             var isValueOperKey = rightType == MemberType.Key && leftType == MemberType.Value;
             #region 处理 null
