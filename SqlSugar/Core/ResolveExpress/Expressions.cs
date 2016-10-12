@@ -48,6 +48,7 @@ namespace SqlSugar
                         dynInv = Expression.Lambda(me).Compile().DynamicInvoke();
                     }
                 }
+                if (isPro)return GetProMethod(me.Member.Name,dynInv.ObjToString(),false);
                 if (dynInv == null) return null;
                 else
                     return dynInv.ToString();
@@ -71,9 +72,10 @@ namespace SqlSugar
                         }
 
                     }
+                    if (isPro) return GetProMethod(me.Member.Name, dbName, true);
                     return dbName;
                 }
-
+                //single T
                 string name = me.Member.Name;
                 type = MemberType.Key;
                 if (DB != null && DB.IsEnableAttributeMapping && DB._mappingColumns.IsValuable())
@@ -81,10 +83,11 @@ namespace SqlSugar
                     if (DB._mappingColumns.Any(it => it.Key == name))
                     {
                         var dbName = DB._mappingColumns.Single(it => it.Key == name).Value;
-                        return dbName;
+                        name= dbName;
                     }
 
                 }
+                if (isPro) return GetProMethod(me.Member.Name, name, true);
                 return name;
             }
         }
