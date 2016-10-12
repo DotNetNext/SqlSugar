@@ -41,9 +41,11 @@ namespace NewTest.Demos
             using (var db = SugarDao.GetInstance())
             {
 
+
                 //特殊拉姆达写法测试
+               // var ts0 = db.Queryable<Student>().Where(it =>it.name.Length==1).ToList();
                 var ts1 = db.Queryable<Student2>("Student").Where(it => it.isOk).ToList();
-                var ts2 = db.Queryable<Student2>("Student").Where(it => it.isOk&&!it.isOk).ToList();
+                var ts2 = db.Queryable<Student2>("Student").Where(it => it.isOk&&!it.isOk&&true&&!true).ToList();
                 var ts3= db.Queryable<Student2>("Student").Where(it => it.isOk && it.isOk).ToList();
                 var ts4 = db.Queryable<Student2>("Student").Where(it => !it.isOk).ToList();
 
