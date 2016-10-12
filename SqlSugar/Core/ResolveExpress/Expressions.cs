@@ -22,7 +22,7 @@ namespace SqlSugar
             return cse;
         }
 
-        private string MemberExpression(ref Expression exp, ref MemberType type, bool isComparisonOperator)
+        private string MemberExpression(ref Expression exp, ref MemberType type, bool? isComparisonOperator)
         {
 
             MemberExpression me = ((MemberExpression)exp);
