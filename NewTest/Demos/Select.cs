@@ -42,7 +42,7 @@ namespace NewTest.Demos
             {
 
                 //特殊拉姆达写法测试
-                var ts1 = db.Queryable<Student>().Where(it=>it.).ToList();
+                var ts1 = db.Queryable<Student2>("Student").Where(it => it.isOk).ToList();
 
 
 
