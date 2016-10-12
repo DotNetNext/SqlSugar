@@ -57,7 +57,7 @@ namespace SqlSugar
         /// 使用说明:sqlSugar.Insert(List《entity》);
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="entity">插入对象</param>
+        /// <param name="entities">插入对象</param>
         /// <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
         /// <returns></returns>
         public List<object> InsertRange<T>(List<T> entities, bool isIdentity = true) where T : class
