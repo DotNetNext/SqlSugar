@@ -146,8 +146,8 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var leftIsDateTime = expression.Left.Type.ToString().Contains("System.DateTime");
             var rightIsDateTime = expression.Right.Type.ToString().Contains("System.DateTime");
-            var left = CreateSqlElements(expression.Left, ref leftType, true);
-            var right = CreateSqlElements(expression.Right, ref rightType, true);
+            var left = CreateSqlElements(expression.Left, ref leftType, true, isComparisonOperator);
+            var right = CreateSqlElements(expression.Right, ref rightType, true, isComparisonOperator);
             var oper = GetOperator(expression.NodeType);
             var isKeyOperValue = leftType == MemberType.Key && rightType == MemberType.Value;
             var isValueOperKey = rightType == MemberType.Key && leftType == MemberType.Value;
