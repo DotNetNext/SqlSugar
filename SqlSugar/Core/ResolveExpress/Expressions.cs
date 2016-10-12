@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 namespace SqlSugar
 {
     //局部类：拉姆达解析分类处理
-    public partial class ResolveExpress
+    internal partial class ResolveExpress
     {
 
         private string UnaryExpression(Expression exp, ref MemberType type)
