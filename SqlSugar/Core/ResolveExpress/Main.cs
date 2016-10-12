@@ -109,7 +109,7 @@ namespace SqlSugar
             }
             else if (exp is MemberExpression)
             {
-                return MemberExpression(ref exp, ref type);
+                return MemberExpression(ref exp, ref type,isComparisonOperator);
             }
             else if (exp is UnaryExpression)
             {
