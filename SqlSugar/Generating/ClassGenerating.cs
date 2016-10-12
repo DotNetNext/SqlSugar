@@ -153,7 +153,7 @@ namespace SqlSugar
         /// <param name="nameSpace">命名空间（默认：system）</param>
         /// <param name="tableOrView">是生成视图文件还是表文件,null生成表和视图，true生成表，false生成视图(默认为：null)</param>
         /// <param name="callBack">生成文件后的处理，参数string为实体名</param>
-        /// <param name="callBack">生成文件前的处理，参数string为表名</param>
+        /// <param name="preAction">生成文件前的处理，参数string为表名</param>
         public void CreateClassFiles(SqlSugarClient db, string fileDirectory, string nameSpace = null, bool? tableOrView = null, Action<string> callBack = null, Action<string> preAction = null)
         {
             var isLog = db.IsEnableLogEvent;

@@ -1065,6 +1065,7 @@ namespace SqlSugar
         /// <param name="tableName">表名（可是以表或也可以是SQL语句加括号）</param>
         /// <param name="shortName">表名简写</param>
         /// <param name="onWhere">on后面的条件</param>
+        /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
         /// <param name="type">Join的类型</param>
         /// <returns>Queryable</returns>
         public static Queryable<T> JoinTable<T>(this Queryable<T> queryable, string tableName, string shortName, string onWhere, object whereObj, JoinType type = JoinType.LEFT)
