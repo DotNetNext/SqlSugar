@@ -22,7 +22,7 @@ namespace SqlSugar
                 isComparisonOperator = false;
             }
             var cse = CreateSqlElements(mex, ref type, false,isComparisonOperator);
-            if (type == MemberType.Value && isNot) 
+            if (type == MemberType.Value && isNot && cse.IsIn("1","0")) 
             {
                 cse = cse == "1" ? "0" : "1";
 
