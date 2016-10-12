@@ -29,12 +29,33 @@ namespace SqlSugar
             return cse;
         }
 
+        private bool UnderNodeTypeIsConstantExpression(MemberExpression exp)
+        {
+            while (exp.Expression != null)
+            {
+                if (exp != null && exp.Expression != null)
+                {
+                    if (exp.Expression is MemberExpression)
+                    {
+                        exp = (MemberExpression)exp.Expression;
+                    }
+                    else
+                    {
+
+                        break;
+                    }
+                }
+            }
+            return exp.Expression is ConstantExpression;
+        }
+
         private string MemberExpression(ref Expression exp, ref MemberType type, bool? isComparisonOperator)
         {
 
             MemberExpression me = ((MemberExpression)exp);
             var isPro = (me.Member.Name == "Length") && me.Member.DeclaringType == SqlSugarTool.StringType;
-            var proIsField = me.Expression != null && me.Expression.NodeType == ExpressionType.MemberAccess && isPro;
+            var proIsField = false;
+            if (isPro) proIsField = me.Expression != null && !UnderNodeTypeIsConstantExpression(me);
             if (proIsField==false&&(me.Expression == null || me.Expression.NodeType != ExpressionType.Parameter))
             {
                 type = MemberType.Value;
@@ -43,7 +64,7 @@ namespace SqlSugar
                 if (isPro)
                 {
                     exp = me.Expression;
-                    GetMemberValue(ref exp, me, ref dynInv);
+                    dynInv = CreateSqlElements(exp, ref type, true);
                 }
                 else {
                     GetMemberValue(ref exp, me, ref dynInv);
