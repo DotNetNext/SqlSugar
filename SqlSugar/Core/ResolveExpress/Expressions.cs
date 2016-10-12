@@ -33,7 +33,7 @@ namespace SqlSugar
 
             MemberExpression me = ((MemberExpression)exp);
             var isPro = me.Member.MemberType == System.Reflection.MemberTypes.Property;
-            if (me.Expression == null || me.Expression.NodeType.ToString() != "Parameter")
+            if (me.Expression == null || me.Expression.NodeType!= ExpressionType.Parameter)
             {
                 type = MemberType.Value;
                 object dynInv = null;
