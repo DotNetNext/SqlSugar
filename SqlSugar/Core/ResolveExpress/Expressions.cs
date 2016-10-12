@@ -234,6 +234,9 @@ namespace SqlSugar
             LambdaExpression lambda = exp as LambdaExpression;
             var expression = lambda.Body;
             MemberType EleType = MemberType.None;
+            if (expression.NodeType == ExpressionType.MemberAccess) {
+                return "(1=1)";
+            }
             return CreateSqlElements(expression, ref EleType, true);
         }
     }
