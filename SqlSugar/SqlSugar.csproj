@@ -51,6 +51,7 @@
     <Compile Include="Cloud\CloudPubMethod.cs" />
     <Compile Include="Cloud\TaskExtensions.cs" />
     <Compile Include="Core\ResolveExpress\Constant.cs" />
+    <Compile Include="Core\ResolveExpress\Expressions.cs" />
     <Compile Include="Core\ResolveExpress\ResolveFieldName.cs" />
     <Compile Include="Core\ResolveExpress\Method.cs" />
     <Compile Include="Core\ResolveExpress\Models.cs" />
