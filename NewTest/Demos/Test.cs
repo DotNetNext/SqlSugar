@@ -38,8 +38,10 @@ namespace NewTest.Demos
                 var t41 = db.Queryable<Student2>("Student").Where(it => it.isOk==true).ToList();
                 var t51 = db.Queryable<Student2>("Student").Where(it =>it.isOk==false).ToList();
                 var t61 = db.Queryable<Student2>("Student").Where(it => it.isOk == _p.isOk).ToList();
-                var t71 = db.Queryable<Student2>("Student").Where(it => it.isOk == !p.isOk).ToList();
-
+                var t71 = db.Queryable<Student2>("Student").Where(it => !it.isOk&& !p.isOk==it.isOk).ToList();
+                var t91 = db.Queryable<Student2>("Student").Where(it =>_p.isOk == false).ToList();
+                var t81 = db.Queryable<Student>().Where(it => it.isOk==false).ToList();
+                var t111 = db.Queryable<Student2>("Student").Where(it => it.isOk && false).ToList();
             }
         }
     }

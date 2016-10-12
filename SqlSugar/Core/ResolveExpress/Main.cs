@@ -105,7 +105,7 @@ namespace SqlSugar
             }
             else if (exp is ConstantExpression)
             {
-                return ConstantExpression(exp, ref type);
+                return ConstantExpression(exp, ref type,isComparisonOperator);
             }
             else if (exp is MemberExpression)
             {

@@ -22,7 +22,11 @@ namespace SqlSugar
                 isComparisonOperator = false;
             }
             var cse = CreateSqlElements(mex, ref type, false,isComparisonOperator);
-            if (type == MemberType.None && isNot)
+            if (type == MemberType.Value && isNot) 
+            {
+                cse = cse == "1" ? "0" : "1";
+
+            }else if (type == MemberType.None && isNot)
             {
                 cse = " NOT " + cse;
             }
@@ -69,9 +73,10 @@ namespace SqlSugar
                 else {
                     GetMemberValue(ref exp, me, ref dynInv);
                 }
-
-
                 if (isPro)return GetProMethod(me.Member.Name,dynInv.ObjToString(),false);
+                if (dynInv.GetType() == SqlSugarTool.BoolType) {
+                    dynInv = ConstantBoolDictionary.Where(it => it.Type == SqlSugarTool.BoolType).Single(it => it.OldValue.ToLower() == dynInv.ObjToString().ToLower()).NewValue;
+                }
                 if (dynInv == null) return null;
                 else
                     return dynInv.ToString();
@@ -134,7 +139,7 @@ namespace SqlSugar
             }
         }
 
-        private static string ConstantExpression(Expression exp, ref MemberType type)
+        private static string ConstantExpression(Expression exp, ref MemberType type, bool? isComparisonOperator)
         {
             type = MemberType.Value;
             ConstantExpression ce = ((ConstantExpression)exp);
@@ -144,8 +149,16 @@ namespace SqlSugar
             {
                 var ceType = ce.Value.GetType();
                 var ceValue = ce.Value.ToString();
-                var ceNewValue = ConstantBoolDictionary.Single(it => it.Type == ceType && it.OldValue.ToLower() == ceValue.ToLower());
-                return ceNewValue.Key.ToString();
+                if (isComparisonOperator==true)
+                {
+                    var ceNewValue = ConstantBoolDictionary.Single(it => it.Type == ceType && it.OldValue.ToLower() == ceValue.ToLower());
+                    return ceNewValue.NewValue;
+                }
+                else
+                {
+                    var ceNewValue = ConstantBoolDictionary.Single(it => it.Type == ceType && it.OldValue.ToLower() == ceValue.ToLower());
+                    return ceNewValue.Key.ToString();
+                }
             }
             else
             {

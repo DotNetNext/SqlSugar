@@ -58,7 +58,7 @@ namespace SqlSugar
             {
                 get
                 {
-                    return Convert.ToBoolean(OldValue) ? "1=1" : "1=2";
+                    return Convert.ToBoolean(OldValue) ? "(1=1)" : "(1=2)";
                 }
             }
         }
