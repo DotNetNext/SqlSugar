@@ -44,7 +44,9 @@ namespace SqlSugar
                 if (dynInv == null) return null;
                 else
                     return dynInv.ToString();
-            }else if(isComparisonOperator==false){
+            }
+            else if (isComparisonOperator == false)
+            {
                 return "(1=1)";
             }
             else
