@@ -80,7 +80,7 @@ namespace SqlSugar
         /// 递归解析表达式路由计算
         /// </summary>
         /// <returns></returns>
-        private string CreateSqlElements(Expression exp, ref MemberType type, bool isTure)
+        private string CreateSqlElements(Expression exp, ref MemberType type, bool isTure, bool isComparisonOperator=true)
         {
             //主入口
             if (exp is LambdaExpression)
