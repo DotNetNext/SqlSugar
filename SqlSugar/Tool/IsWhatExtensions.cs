@@ -50,13 +50,12 @@ namespace SqlSugar
             return values.Contains(thisValue);
         }
 
-        /// <summary>
+       /// <summary>
         /// 在里面吗?
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="thisValue"></param>
-        /// <param name="values"></param>
-        /// <returns></returns>
+       /// </summary>
+       /// <param name="thisValue"></param>
+       /// <param name="inValues"></param>
+       /// <returns></returns>
         public static bool IsContainsIn(this string thisValue, params string[] inValues)
         {
             return inValues.Any(it => thisValue.Contains(it));
