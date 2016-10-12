@@ -32,7 +32,7 @@ namespace SqlSugar
         {
 
             MemberExpression me = ((MemberExpression)exp);
-            var isPro = me.Member.MemberType == System.Reflection.MemberTypes.Property;
+            var isPro = (me.Member.Name == "Length") && me.Member.DeclaringType == SqlSugarTool.StringType;
             if (me.Expression == null || me.Expression.NodeType!= ExpressionType.Parameter)
             {
                 type = MemberType.Value;
