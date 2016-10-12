@@ -241,6 +241,7 @@ namespace NewTest.Demos
                 var c3 = db.Queryable<Student>().Where(c => c.name.EndsWith("a")).ToList();
                 var c4 = db.Queryable<Student>().Where(c => !string.IsNullOrEmpty(c.name)).ToList();
                 var c5 = db.Queryable<Student>().Where(c => c.name.Equals("小杰")).ToList();
+                var c6 = db.Queryable<Student>().Where(c => c.name.Length > 4).ToList();
 
             }
         }
