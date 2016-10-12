@@ -71,6 +71,7 @@
     <Compile Include="Models\LanguageTest.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\Student2.cs" />
     <Compile Include="Models\StudentGroup.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\TestUpdateColumns.cs" />

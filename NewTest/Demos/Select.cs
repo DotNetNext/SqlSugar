@@ -41,15 +41,16 @@ namespace NewTest.Demos
             using (var db = SugarDao.GetInstance())
             {
 
+                //特殊拉姆达写法测试
+                var ts1 = db.Queryable<Student>().Where(it=>it.).ToList();
 
-                //---------Queryable<T>,扩展函数查询---------//
 
-                //针对单表或者视图查询
 
                 //查询所有
                 var student = db.Queryable<Student>().ToList();
                 var studentDynamic = db.Queryable<Student>().ToDynamic();
                 var studentJson = db.Queryable<Student>().ToJson();
+
 
                 //查询单条
                 var single = db.Queryable<Student>().Single(c => c.id == 1);
