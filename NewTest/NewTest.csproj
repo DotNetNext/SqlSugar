@@ -64,6 +64,7 @@
     <Compile Include="Demos\SerializerDateFormat.cs" />
     <Compile Include="Demos\SerialNumber.cs" />
     <Compile Include="Demos\SqlPageModel.cs" />
+    <Compile Include="Demos\Test.cs" />
     <Compile Include="Demos\Tran.cs" />
     <Compile Include="Demos\Update.cs" />
     <Compile Include="Models\Area.cs" />

@@ -16,7 +16,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "select";
+            string switchOn = "test";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -79,6 +79,11 @@ namespace NewTest
                 case "sqlpagemodel": demo=new SqlPageModel(); break;
                 //设置ToJson的日期格式
                 case "serializerdateformat":demo =new SerializerDateFormat();break;
+
+    
+
+                /****************************测试用例**************************************/
+                case "test": demo = new Test(); break;
 
                 default: Console.WriteLine("switchOn的值错误，请输入正确的 case"); break;
 
