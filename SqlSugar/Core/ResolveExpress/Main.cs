@@ -204,6 +204,10 @@ namespace SqlSugar
 
                 // fetch the root object reference:
                 var constExpr = exp as ConstantExpression;
+                if (constExpr == null) {
+                    dynInv = ExpErrorUniqueKey;
+                    return;
+                }
                 var objReference = constExpr.Value;
 
                 // "ascend" back whence we came from and resolve object references along the way:
