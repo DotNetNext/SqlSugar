@@ -130,6 +130,7 @@ namespace SqlSugar
         /// 将实体对象转换成SqlParameter[] 
         /// </summary>
         /// <param name="obj"></param>
+        /// <param name="pis"></param>
         /// <returns></returns>
         public static SqlParameter[] GetParameters(object obj,PropertyInfo [] pis=null)
         {

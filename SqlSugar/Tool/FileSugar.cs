@@ -1065,8 +1065,8 @@ namespace SqlSugar
         /// <summary>
         /// 根据路径得到文件流
         /// </summary>
-        /// <param name="strFilePath"></param>
-        /// <param name="strValue"></param>
+        /// <param name="Path"></param>
+        /// <returns></returns>
         public static byte[] GetFileSream(string Path)
         {
             byte[] buffer = null;

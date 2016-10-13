@@ -156,9 +156,9 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 清除所有包含关键字的缓存
+        /// 清除所有缓存
         /// </summary>
-        /// <param name="removeKey">关键字</param>
+        /// <param name="removeExpression">表达式条件</param>
         public override void RemoveAll(Func<string, bool> removeExpression)
         {
             //throw new NotImplementedException();

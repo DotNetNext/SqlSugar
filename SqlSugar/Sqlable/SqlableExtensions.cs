@@ -62,6 +62,7 @@ namespace SqlSugar
         /// Join
         /// </summary>
         /// <param name="sqlable"></param>
+        /// <param name="shortName">表名简写</param>
         /// <param name="leftFiled">join左边连接字段</param>
         /// <param name="RightFiled">join右边连接字段</param>
         /// <param name="type">join类型</param>
@@ -134,6 +135,8 @@ namespace SqlSugar
         /// <param name="sqlable"></param>
         /// <param name="fileds">查询列</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
+        /// <param name="preSql">在这语句之前可插入自定义SQL</param>
+        /// <param name="nextSql">在这语句之后可以插自定义SQL</param>
         /// <returns></returns>
         public static List<T> SelectToList<T>(this Sqlable sqlable, string fileds, object whereObj = null, string preSql = null, string nextSql = null) where T : class
         {

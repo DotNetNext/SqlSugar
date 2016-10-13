@@ -230,11 +230,10 @@ namespace SqlSugar
         }
 
         /// <summary>
-        ///是适合正则匹配?
+        /// 是适合正则匹配?
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="begin">大于等于begin</param>
-        /// <param name="end">小于等于end</param>
+        /// <param name="pattern"></param>
         /// <returns></returns>
         public static bool IsMatch(this object thisValue, string pattern)
         {
