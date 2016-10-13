@@ -194,7 +194,7 @@ namespace SqlSugar
             //参数函数
             MemberType rightType = MemberType.None;
             object right =null;
-            if (mce.Arguments.IsValuable())
+            if (mce.Arguments.IsValuable() && !methodName.IsIn("AddDays", "AddYears", "AddMonths"))
             {
                 right = CreateSqlElements(mce.Arguments[0], ref rightType, true);
             }
@@ -213,14 +213,14 @@ namespace SqlSugar
             }
             if (methodName.IsIn("AddDays", "AddYears", "AddMonths"))
             {
-                value = CreateSqlElements(mce.Object, ref rightType, true);
                 if (value.IsValuable())
                 {
+                    var parValue = CreateSqlElements(mce.Arguments[0], ref rightType, true).ObjToInt();
                     switch (methodName)
                     {
-                        case "AddDays": value = value.ObjToDate().AddDays(right.ObjToInt()).ObjToString(); break;
-                        case "AddYears": value = value.ObjToDate().AddYears(right.ObjToInt()).ObjToString(); break;
-                        case "AddMonths": value = value.ObjToDate().AddMonths(right.ObjToInt()).ObjToString(); break;
+                        case "AddDays": value = value.ObjToDate().AddDays(parValue).ObjToString(); break;
+                        case "AddYears": value = value.ObjToDate().AddYears(parValue).ObjToString(); break;
+                        case "AddMonths": value = value.ObjToDate().AddMonths(parValue).ObjToString(); break;
 
                     }
                 }
