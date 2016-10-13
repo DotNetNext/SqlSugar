@@ -162,6 +162,7 @@ namespace SqlSugar
         /// 注意：whereIn 主键集合  
         /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
         /// </summary>
+        ///<param name="field">  </param>
         /// <param name="whereIn"> delete ids </param>
         public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)
         {

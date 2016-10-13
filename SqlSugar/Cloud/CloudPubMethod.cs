@@ -84,6 +84,7 @@ namespace SqlSugar
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="configCount"></param>
+        /// <param name="maxHandleNumber"></param>
         /// <returns></returns>
         public static bool GetIsSmallPageIndex(int pageIndex, int pageSize, int configCount, int maxHandleNumber)
         {
