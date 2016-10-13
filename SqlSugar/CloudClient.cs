@@ -508,6 +508,7 @@ namespace SqlSugar
         /// 使用说明:sqlSugar.Update《T》(rowObj,whereObj);
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <typeparam name="FiledType">主键类型</typeparam>
         /// <param name="rowObj">new T(){name="张三",sex="男"}或者new {name="张三",sex="男"}</param>
         /// <param name="whereIn">new int[]{1,2,3}</param>
         /// <returns></returns>
@@ -578,6 +579,11 @@ namespace SqlSugar
                 this.configList = null;
             }
         }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        /// <param name="isAll"></param>
         public void Dispose(bool isAll)
         {
             lock (this.dbsLock)
