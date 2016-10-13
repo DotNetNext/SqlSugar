@@ -53,9 +53,9 @@ namespace NewTest.Demos
 
                 //equgals
                 var a1 = db.Queryable<Student>().Where(c => c.name.Equals(null)).ToList();
-                string ep = null;
-                var a2 = db.Queryable<Student>().Where(c => c.name.Equals(ep)).ToList();
-                var a3 = db.Queryable<Student>().Where(c => _p.name.Equals(c.name)).ToList();
+                var x = new InsertTest() { };
+                var x1 = db.Queryable<Student>().Where(c => c.name.Equals(x.int1)).ToList();
+                var a2 = db.Queryable<Student>().Where(c => c.name.Equals(p.name)).ToList();
                 var a4 = db.Queryable<Student>().Where(c => c.name.Equals(Getp().name)).ToList();
             }
         }
