@@ -191,10 +191,21 @@ namespace SqlSugar
         /// <returns></returns>
         private string MethodTo(string methodName, MethodCallExpression mce, ref MemberType type)
         {
+            //参数函数
+            MemberType rightType = MemberType.None;
+            object right =null;
+            if (mce.Arguments.IsValuable())
+            {
+                right = CreateSqlElements(mce.Arguments[0], ref rightType, true);
+            }
+            else {
+                right = CreateSqlElements(mce.Object, ref rightType, true);
+            }
+            Check.Exception(rightType != MemberType.Value, string.Format(ExpMethodError2, methodName));
             string value = string.Empty;
             if (mce.Arguments.IsValuable())
             {
-                value = CreateSqlElements(mce.Arguments.FirstOrDefault(), ref type,true);
+                value = right.ToString();
             }
             else
             {

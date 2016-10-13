@@ -59,5 +59,11 @@ namespace SqlSugar
         /// 拉姆达函数错误
         /// </summary>
         public const string ExpMethodError = "拉姆达表达式中的函数用法不正确，正确写法 it=>it.name.{0}(参数) ,不支持的写法it=> 参数.{0}(it.name)。";
+
+
+        /// <summary>
+        /// 拉姆达函数错误2
+        /// </summary>
+        public const string ExpMethodError2 = "拉姆达表达式中的函数用法不正确，正确写法 it=>it.name==参数.{0} ,不支持的写法it=>it.name.{0}==参数。";
     }
 }
