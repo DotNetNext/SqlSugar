@@ -1321,6 +1321,26 @@ namespace SqlSugar
             return isSuccess;
         }
 
+
+        /// <summary>
+        /// 根据Where字符串删除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="SqlWhereStr">不包含Where的字符串</param>
+        /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
+        /// <returns>删除成功返回true</returns>
+        public bool Delete<T>(string SqlWhereString, object whereObj = null)
+        {
+            InitAttributes<T>();
+            Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTableNameByClassType(typeName);
+            var pars = SqlSugarTool.GetParameters(whereObj).ToList();
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1} AND ", typeName, SqlWhereString);
+            bool isSuccess = ExecuteCommand(sql,pars) > 0;
+            return isSuccess;
+        }
+
         /// <summary>
         /// 根据主键集合批量删除数据
         /// </summary>
