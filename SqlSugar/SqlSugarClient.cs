@@ -1304,6 +1304,26 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 根据实体集合删除（对性能没有要求可以使用,否则请使用其它重载方法）
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="deleteObjList"></param>
+        /// <returns>全部删除成功返回true</returns>
+        public bool Delete<T>(List<T> deleteObjList) 
+        {
+            if (deleteObjList == null || deleteObjList.Count == 0) return false;
+            var reval=true;
+            foreach (var item in deleteObjList)
+            {
+                if (Delete(item)==false) {
+                    reval = false;
+                    break;
+                }
+            }
+            return reval;
+        }
+
+        /// <summary>
         /// 根据表达式删除数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
