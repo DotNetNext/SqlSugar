@@ -49,6 +49,14 @@ namespace NewTest.Demos
                 var c2 = db.Queryable<Student>().Where(c => c.name.Length > _p.name.Length).ToList();
                 var c3 = db.Queryable<Student>().Where(c => c.name.Length > "aa".Length).ToList();
                 var c4 = db.Queryable<Student>().Where(c => c.name.Length > Getp().id).ToList();
+
+
+                //equgals
+                var a1 = db.Queryable<Student>().Where(c => c.name.Equals(null)).ToList();
+                string ep = null;
+                var a2 = db.Queryable<Student>().Where(c => c.name.Equals(ep)).ToList();
+                var a3 = db.Queryable<Student>().Where(c => _p.name.Equals(c.name)).ToList();
+                var a4 = db.Queryable<Student>().Where(c => c.name.Equals(Getp().name)).ToList();
             }
         }
     }

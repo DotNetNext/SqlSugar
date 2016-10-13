@@ -74,7 +74,8 @@ namespace SqlSugar
                     GetMemberValue(ref exp, me, ref dynInv);
                 }
                 if (isPro)return GetProMethod(me.Member.Name,dynInv.ObjToString(),false);
-                if (dynInv.GetType() == SqlSugarTool.BoolType) {
+                if (dynInv!=null&&dynInv.GetType() == SqlSugarTool.BoolType)
+                {
                     dynInv = ConstantBoolDictionary.Where(it => it.Type == SqlSugarTool.BoolType).Single(it => it.OldValue.ToLower() == dynInv.ObjToString().ToLower()).NewValue;
                 }
                 if (dynInv == null) return null;

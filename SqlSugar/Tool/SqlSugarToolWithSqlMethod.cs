@@ -352,6 +352,7 @@ namespace SqlSugar
                 case "datetime":
                     reval = "dateTime";
                     break;
+                case "single":
                 case "decimal":
                     reval = "decimal";
                     break;
