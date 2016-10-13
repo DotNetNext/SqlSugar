@@ -310,8 +310,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="sortField"></param>
-        /// <param name="orderByType"></param>
+        /// <param name="orderByTypes"></param>
         /// <returns></returns>
         public static IOrderedEnumerable<T> ThenByDataRowReverse<T>(this IOrderedEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
         {
