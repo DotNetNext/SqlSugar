@@ -146,17 +146,35 @@ namespace SqlSugar
             return this.Where<T, T2, T3, T4, T5>(expression);
         }
 
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <typeparam name="T2">表实体类型</typeparam>
+        /// <param name="expression">例如 (s1,s2)=>s1.id,相当于 order by s1.id</param>
+        /// <param name="type">排序类型</param>
+        /// <returns></returns>
         public Queryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
         {
             return this.OrderBy<T, T2>(expression, type);
         }
 
-
+        /// <summary>
+        /// 获取最大值
+        /// </summary>
+        /// <typeparam name="TResult">返回类型</typeparam>
+        /// <param name="maxField">列名</param>
+        /// <returns></returns>
         public TResult Max<TResult>(string maxField)
         {
             return this.Max<T, TResult>(maxField);
         }
 
+        /// <summary>
+        /// 获取最小值
+        /// </summary>
+        /// <typeparam name="TResult">返回类型</typeparam>
+        /// <param name="minField">列名</param>
+        /// <returns></returns>
         public TResult Min<TResult>(string minField)
         {
             return this.Min<T, TResult>(minField);
