@@ -200,7 +200,7 @@ namespace SqlSugar
             else
             {
                 type = MemberType.Value;
-                return MethodTo(methodName, mce, ref type);
+                return ParMethodTo(methodName, mce, ref type);
             }
         }
 

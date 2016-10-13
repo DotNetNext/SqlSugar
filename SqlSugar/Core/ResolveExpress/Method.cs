@@ -183,13 +183,13 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// 拉姆达函数处理
+        /// 参数函数
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="mce"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        private string MethodTo(string methodName, MethodCallExpression mce, ref MemberType type)
+        private string ParMethodTo(string methodName, MethodCallExpression mce, ref MemberType type)
         {
             //参数函数
             MemberType rightType = MemberType.None;
