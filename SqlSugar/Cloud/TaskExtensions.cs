@@ -51,7 +51,6 @@ namespace SqlSugar
         /// 获取平均值
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="count"></param>
         /// <returns></returns>
         public static int Avg(this TaskableWithCount<int> thisValue)
         {
@@ -64,7 +63,6 @@ namespace SqlSugar
         /// 获取平均值
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="count"></param>
         /// <returns></returns>
         public static decimal Avg(this TaskableWithCount<decimal> thisValue)
         {
@@ -77,7 +75,6 @@ namespace SqlSugar
         /// 获取平均值
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="count"></param>
         /// <returns></returns>
         public static double Avg(this TaskableWithCount<double> thisValue)
         {

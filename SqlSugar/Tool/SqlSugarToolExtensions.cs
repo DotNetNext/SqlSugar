@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 
 namespace SqlSugar
 {
-
+    ///<summary>
     /// ** 描述：SqlSugar扩展工具类
     /// ** 创始时间：2015-7-19
     /// ** 修改时间：-

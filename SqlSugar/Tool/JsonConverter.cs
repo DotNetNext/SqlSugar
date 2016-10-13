@@ -225,7 +225,7 @@ namespace SqlSugar
         /// Datatable转换为Json   
         /// add dukang by 2016-05-19
         /// </summary>   
-        /// <param name="table">Datatable对象</param>   
+        /// <param name="dt">Datatable对象</param>   
         /// <returns>Json字符串</returns>   
         public static string ToJson(DataTable dt)
         {

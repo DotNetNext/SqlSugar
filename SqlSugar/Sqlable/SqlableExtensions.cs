@@ -242,7 +242,6 @@ namespace SqlSugar
         /// <summary>
         /// 设置查询列执行查询，并且将结果集转成dynamic
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="sqlable"></param>
         /// <param name="fileds">查询列</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
@@ -255,7 +254,6 @@ namespace SqlSugar
         /// <summary>
         /// 生成查询结果对应的实体类字符串
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="sqlable"></param>
         /// <param name="fileds">查询列</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
@@ -349,7 +347,6 @@ namespace SqlSugar
         /// <summary>
         /// 设置查询列和分页参数执行查询，并且将结果集转成DataTable
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="sqlable"></param>
         /// <param name="fileds">查询列</param>
         /// <param name="orderByFiled">Order By字段，可以多个</param>
