@@ -118,7 +118,7 @@ namespace NewTest.Demos
             //组合测试
             var z= db.Queryable<Student>().Where(c => (c.name.Equals(Getp().name)||c.name==p.name)&&true&&c.id>1).ToList();
             var z23 = db.Queryable<Student>().Where(c => !string.IsNullOrEmpty(c.name) || (c.id==1||c.name.Contains(p.name))).ToList();
-            var z2 = db.Queryable<Student>().Where(c =>!string.IsNullOrEmpty(c.name)||string.IsNullOrEmpty( p.name)).ToList();
+            var z2 = db.Queryable<Student>().Where(c => !string.IsNullOrEmpty(c.name) ||!string.IsNullOrEmpty(c.name)).ToList();
         }
     }
 }

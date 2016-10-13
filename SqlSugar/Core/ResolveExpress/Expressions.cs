@@ -295,7 +295,15 @@ namespace SqlSugar
             }
             else if (leftType == MemberType.Value && rightType == MemberType.Value)
             {
-                return string.Format("( '{0}' {1} '{2}' )", left, oper, right);
+                var isAndOr = oper.ObjToString().IsIn("AND","OR");
+                if (isAndOr)
+                {
+                    return string.Format("( {0} {1} {2} )", left, oper, right);
+                }
+                else
+                {
+                    return string.Format("( '{0}' {1} '{2}' )", left, oper, right);
+                }
             }
             else
             {
