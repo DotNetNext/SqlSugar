@@ -422,7 +422,7 @@ namespace SqlSugar
         /// <summary>
         /// 获取转释后的表名和列名
         /// </summary>
-        /// <param name="tableName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
         internal static string GetTranslationSqlName(string name)
         {

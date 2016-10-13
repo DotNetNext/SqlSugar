@@ -152,8 +152,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="sortField"></param>
-        /// <param name="orderByType"></param>
+        /// <param name="orderByTypes"></param>
         /// <returns></returns>
         public static IOrderedEnumerable<T> OrderByDataRow<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
         {
@@ -281,13 +280,13 @@ namespace SqlSugar
             return list;
         }
 
+       
         /// <summary>
         /// 排序
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="sortField"></param>
-        /// <param name="orderByType"></param>
+        /// <param name="orderByTypes"></param>
         /// <returns></returns>
         public static IOrderedEnumerable<T> OrderByDataRowReverse<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes) where T : DataRow
         {
