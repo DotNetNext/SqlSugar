@@ -707,7 +707,12 @@ namespace SqlSugar
         /// 获取Where比较条件
         /// </summary>
         /// <param name="whereCompare"></param>
+        /// <param name="orderByTypes"></param>
         /// <param name="sampleRow"></param>
+        /// <param name="unqueField"></param>
+        /// <param name="unqueValue"></param>
+        /// <param name="isReverse"></param>
+        /// <param name="isEqual"></param>
         /// <returns></returns>
         private string GetWhereCompare(string whereCompare, List<OrderByDictionary> orderByTypes, DataRow sampleRow, string unqueField, string unqueValue, bool isReverse = false, bool isEqual = false)
         {

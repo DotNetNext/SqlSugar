@@ -267,6 +267,9 @@ namespace SqlSugar
         /// 反回记录数
         /// </summary>
         /// <param name="sqlable"></param>
+        /// <param name="whereObj">匿名参数 (例如：new{id=1,name="张三"})</param>
+        /// <param name="preSql">在这语句之前可插入自定义SQL</param>
+        /// <param name="nextSql">在这语句之后可以插自定义SQL</param>
         /// <returns></returns>
         public static int Count(this Sqlable sqlable, object whereObj = null, string preSql = null, string nextSql = null)
         {

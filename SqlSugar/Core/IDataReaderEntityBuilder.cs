@@ -148,7 +148,11 @@ namespace SqlSugar
         /// 动态获取IDataRecord里面的函数
         /// </summary>
         /// <param name="generator"></param>
+        /// <param name="type"></param>
+        /// <param name="isNullable"></param>
         /// <param name="pro"></param>
+        /// <param name="dbTypeName"></param>
+        /// <param name="fieldName"></param>
         private static void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName)
         {
             List<string> guidThrow = new List<string>() { "int32", "datetime", "decimal", "double", "byte", "string" };//数据库为GUID有错的实体类形

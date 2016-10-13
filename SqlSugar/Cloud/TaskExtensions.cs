@@ -189,12 +189,12 @@ namespace SqlSugar
 
 
      
-        /// <summary>
+       /// <summary>
         /// 将结果集合并到一个集合
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
+       /// </summary>
+       /// <typeparam name="DataTable"></typeparam>
+       /// <param name="thisValue"></param>
+       /// <returns></returns>
         public static IEnumerable<DataRow> MergeTable<DataTable>(this Taskable<DataTable> thisValue)
         {
 
