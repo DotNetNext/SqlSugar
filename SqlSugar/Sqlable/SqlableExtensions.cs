@@ -20,7 +20,7 @@ namespace SqlSugar
         /// Form
         /// </summary>
         /// <param name="sqlable"></param>
-        /// <param name="modelObj">表名</param>
+        /// <param name="tableName">表名</param>
         /// <param name="shortName">表名简写</param>
         /// <returns></returns>
         public static Sqlable From(this Sqlable sqlable, string tableName, string shortName)
@@ -33,7 +33,6 @@ namespace SqlSugar
         /// Form
         /// </summary>
         /// <param name="sqlable"></param>
-        /// <param name="modelObj">表名</param>
         /// <param name="shortName">表名简写</param>
         /// <returns></returns>
         public static Sqlable From<T>(this Sqlable sqlable, string shortName)
@@ -47,6 +46,8 @@ namespace SqlSugar
         /// Join
         /// </summary>
         /// <param name="sqlable"></param>
+        /// <param name="tableName">表名字符串</param>
+        /// <param name="shortName">表名简写</param>
         /// <param name="leftFiled">join左边连接字段</param>
         /// <param name="RightFiled">join右边连接字段</param>
         /// <param name="type">join类型</param>
