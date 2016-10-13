@@ -39,7 +39,9 @@ namespace SqlSugar
                 db.Queryable<T>().Where(it => it.field.StartsWith(parValue))
                 db.Queryable<T>().Where(it => it.field.EndsWith(parValue))
                 db.Queryable<T>().Where(it => !string.IsNullOrEmpty(it.parValue))
-                db.Queryable<T>().Where(it => arrayOrList.Contains(it.parValue))         
+                db.Queryable<T>().Where(it => arrayOrList.Contains(it.parValue))     
+                db.Queryable<T>().Where(it => it.field.Equals(it.parValue))  
+                db.Queryable<T>().Where(it => it.field.Length>10)       
             ";
         /// <summary>
         /// 运算符错误
@@ -50,5 +52,10 @@ namespace SqlSugar
         /// 拉姆达解析唯一标识
         /// </summary>
         public static object ExpErrorUniqueKey = Guid.NewGuid();
+
+        /// <summary>
+        /// 拉姆达函数错误
+        /// </summary>
+        public const string ExpMethodError = "拉姆达表达式中的函数用法不正确，正确写法 it=>it.name.{0}(参数) ,不支持的写法it=> 参数.{0}(it.name)。";
     }
 }

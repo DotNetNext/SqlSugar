@@ -67,7 +67,9 @@ namespace NewTest.Demos
                 var s3 = db.Queryable<Student>().Where(c => c.name.Contains(p.name)).ToList();
                 var s4 = db.Queryable<Student>().Where(c => c.name.Contains(Getp().name)).ToList();
 
-                var s5 = db.Queryable<Student>().Where(c => p.name.Contains(c.name)).ToList();
+
+                var sss = db.Queryable<Student>().Where(c => p.name.Equals(c.name)).ToList();
+                var xx = db.Queryable<Student>().Where(c => p.name.Contains(c.name)).ToList();
             }
         }
     }
