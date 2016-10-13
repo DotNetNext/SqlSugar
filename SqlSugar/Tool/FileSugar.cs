@@ -52,7 +52,6 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="directory"></param>
-        /// <param name="code"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
         public string GetFiePathAndCreateDirectoryByDate<T>(string directory, string fileName)
