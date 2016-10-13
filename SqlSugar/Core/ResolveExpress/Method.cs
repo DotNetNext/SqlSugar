@@ -211,6 +211,21 @@ namespace SqlSugar
             {
                 value = MethodToString(methodName, mce, ref type); ;
             }
+            if (methodName.IsIn("AddDays", "AddYears", "AddMonths"))
+            {
+                value = CreateSqlElements(mce.Object, ref rightType, true);
+                if (value.IsValuable())
+                {
+                    switch (methodName)
+                    {
+                        case "AddDays": value = value.ObjToDate().AddDays(right.ObjToInt()).ObjToString(); break;
+                        case "AddYears": value = value.ObjToDate().AddYears(right.ObjToInt()).ObjToString(); break;
+                        case "AddMonths": value = value.ObjToDate().AddMonths(right.ObjToInt()).ObjToString(); break;
+
+                    }
+                }
+                return value;
+            }
             if (methodName == "ToDateTime" || methodName == "ObjToDate")
             {
                 return Convert.ToDateTime(value).ToString();

@@ -244,6 +244,7 @@ namespace NewTest.Demos
                 var c6 = db.Queryable<Student>().Where(c => c.name.Length > 4).ToList();
                 var time = db.Queryable<InsertTest>().Where(c => c.d1>DateTime.Now.AddDays(1)).ToList();
                 var time2 = db.Queryable<InsertTest>().Where(c => c.d1 > DateTime.Now.AddYears(1)).ToList();
+                var time3 = db.Queryable<InsertTest>().Where(c => c.d1 > DateTime.Now.AddMonths(1)).ToList();
             }
         }
 
