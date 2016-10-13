@@ -259,6 +259,13 @@ namespace SqlSugar
         {
             return this.Select<T, TResult>(expression);
         }
+
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="T2">返回值的新实体类型</typeparam>
+        /// <param name="select">查询字符串（例如 id,name）</param>
+        /// <returns></returns>
         public Queryable<T2> Select<T2>(string select)
         {
             return this.Select<T,T2>(select);
