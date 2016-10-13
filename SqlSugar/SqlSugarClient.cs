@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Reflection;
 using System.Data;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -1326,7 +1327,7 @@ namespace SqlSugar
         /// 根据Where字符串删除
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="SqlWhereStr">不包含Where的字符串</param>
+        /// <param name="SqlWhereString">不包含Where的字符串</param>
         /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
         /// <returns>删除成功返回true</returns>
         public bool Delete<T>(string SqlWhereString, object whereObj = null)
@@ -1336,8 +1337,11 @@ namespace SqlSugar
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
             var pars = SqlSugarTool.GetParameters(whereObj).ToList();
-            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1} AND ", typeName, SqlWhereString);
-            bool isSuccess = ExecuteCommand(sql,pars) > 0;
+            if (SqlWhereString.IsValuable()) {
+                SqlWhereString = Regex.Replace(SqlWhereString,@"^\s*(and|where)\s*","",RegexOptions.IgnoreCase);
+            }
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 AND {1}", typeName, SqlWhereString);
+            bool isSuccess = ExecuteCommand(sql,pars.ToArray()) > 0;
             return isSuccess;
         }
 
