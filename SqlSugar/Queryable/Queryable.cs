@@ -75,11 +75,26 @@ namespace SqlSugar
 
 
         #region 公开函数
+        /// <summary>
+        /// 联表查询
+        /// </summary>
+        /// <typeparam name="T2">联接的表对象</typeparam>
+        /// <param name="expression">表达式</param>
+        /// <param name="type">Join的类型</param>
+        /// <returns></returns>
         public Queryable<T> JoinTable<T2>(Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
         {
             return this.JoinTable<T, T2>(expression, type);
         }
 
+        /// <summary>
+        /// 联表查询
+        /// </summary>
+        /// <typeparam name="T2">联接表的对象</typeparam>
+        /// <typeparam name="T3">联接表的对象</typeparam>
+        /// <param name="expression">表达式</param>
+        /// <param name="type">Join的类型</param>
+        /// <returns></returns>
         public Queryable<T> JoinTable<T2, T3>(Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.LEFT)
         {
             return this.JoinTable<T, T2, T3>(expression, type);
