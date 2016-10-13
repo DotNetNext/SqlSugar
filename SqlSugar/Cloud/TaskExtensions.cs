@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Data;
 namespace SqlSugar
 {
+    /// <summary>
+    /// Taskable扩展类
+    /// </summary>
     public static class TaskExtensions
     {
         /// <summary>

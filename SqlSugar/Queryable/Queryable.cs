@@ -85,27 +85,62 @@ namespace SqlSugar
             return this.JoinTable<T, T2, T3>(expression, type);
         }
 
-
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T2">表实体类型</typeparam>
+        /// <param name="expression">表达式条件</param>
+        /// <returns></returns>
         public Queryable<T> Where<T2>(Expression<Func<T, T2, bool>> expression)
         {
             return this.Where<T, T2>(expression);
         }
-
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T2">表实体类型</typeparam>
+        /// <param name="whereString">Where后面的Sql条件语句 (例如： id=@id )</param>
+        /// <param name="whereObj">匿名参数 (例如：new{id=1,name="张三"})</param>
+        /// <returns></returns>
         public Queryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             return this.Where(whereString, whereObj);
         }
 
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T2">表实体类型</typeparam>
+        /// <typeparam name="T3">表实体类型</typeparam>
+        /// <param name="expression">表达式条件</param>
+        /// <returns></returns>
         public Queryable<T> Where<T2, T3>(Expression<Func<T, T2, T3, bool>> expression)
         {
             return this.Where<T, T2, T3>(expression);
         }
 
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T2">表实体类型</typeparam>
+        /// <typeparam name="T3">表实体类型</typeparam>
+        /// <typeparam name="T4">表实体类型</typeparam>
+        /// <param name="expression">表达式条件</param>
+        /// <returns></returns>
         public Queryable<T> Where<T2, T3, T4>(Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             return this.Where<T, T2, T3, T4>(expression);
         }
 
+        /// <summary>
+        /// 条件筛选
+        /// </summary>
+        /// <typeparam name="T2">表实体类型</typeparam>
+        /// <typeparam name="T3">表实体类型</typeparam>
+        /// <typeparam name="T4">表实体类型</typeparam>
+        /// <typeparam name="T5">表实体类型</typeparam>
+        /// <param name="expression">表达式条件</param>
+        /// <returns></returns>
         public Queryable<T> Where<T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
         {
             return this.Where<T, T2, T3, T4, T5>(expression);

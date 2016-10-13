@@ -98,7 +98,7 @@ namespace SqlSugar
         }
     }
 
-    public class SugarMappingModel
+    internal class SugarMappingModel
     {
 
         public KeyValue TableMaping { get; set; }
