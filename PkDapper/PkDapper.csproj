@@ -87,6 +87,7 @@
     <Content Include="Lib\Dapper.Contrib.dll" />
     <Content Include="Lib\Dapper.dll" />
     <Content Include="Lib\Dapper.xml" />
+    <Content Include="Lib\SyntacticSugar.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
