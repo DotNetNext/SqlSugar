@@ -195,27 +195,66 @@ namespace SqlSugar
             return this.Min<T, TResult>(minField);
         }
 
-
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="T2">原数据实体类型</typeparam>
+        /// <typeparam name="TResult">返回值的新实体类型</typeparam>
+        /// <param name="expression">给新实体赋值的表达式</param>
+        /// <returns></returns>
         public Queryable<TResult> Select<T2, TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             return this.Select<T, T2, TResult>(expression);
         }
 
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="T2">原数据实体类型</typeparam>
+        /// <typeparam name="T3">原数据实体类型</typeparam>
+        /// <typeparam name="TResult">返回值的新实体类型</typeparam>
+        /// <param name="expression">给新实体赋值的表达式</param>
+        /// <returns></returns>
         public Queryable<TResult> Select<T2, T3, TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
             return this.Select<T, T2, T3, TResult>(expression);
         }
 
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="T2">原数据实体类型</typeparam>
+        /// <typeparam name="T3">原数据实体类型</typeparam>
+        /// <typeparam name="T4">原数据实体类型</typeparam>
+        /// <typeparam name="TResult">返回值的新实体类型</typeparam>
+        /// <param name="expression">给新实体赋值的表达式</param>
+        /// <returns></returns>
         public Queryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
         {
             return this.Select<T, T2, T3, T4, TResult>(expression);
         }
 
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="T2">原数据实体类型</typeparam>
+        /// <typeparam name="T3">原数据实体类型</typeparam>
+        /// <typeparam name="T4">原数据实体类型</typeparam>
+        /// <typeparam name="T5">原数据实体类型</typeparam>
+        /// <typeparam name="TResult">返回值的新实体类型</typeparam>
+        /// <param name="expression">给新实体赋值的表达式</param>
+        /// <returns></returns>
         public Queryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
         {
             return this.Select<T, T2, T3, T4, T5, TResult>(expression);
         }
 
+        /// <summary>
+        /// 将源数据对象转换到新对象中
+        /// </summary>
+        /// <typeparam name="TResult">返回值的新实体类型</typeparam>
+        /// <param name="expression">给新实体赋值的表达式</param>
+        /// <returns></returns>
         public Queryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             return this.Select<T, TResult>(expression);
