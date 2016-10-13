@@ -347,11 +347,21 @@ namespace SqlSugar
     {
         private IDictionary<string, object> Dictionary { get; set; }
 
+        /// <summary>
+        /// 动态JSON解析
+        /// </summary>
+        /// <param name="dictionary"></param>
         public DynamicJsonObject(IDictionary<string, object> dictionary)
         {
             this.Dictionary = dictionary;
         }
 
+        /// <summary>
+        /// TryGetMember
+        /// </summary>
+        /// <param name="binder"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
         {
             result = this.Dictionary[binder.Name];
@@ -378,6 +388,13 @@ namespace SqlSugar
     /// </summary>
     public class DynamicJsonConverter : JavaScriptConverter
     {
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <param name="type"></param>
+        /// <param name="serializer"></param>
+        /// <returns></returns>
         public override object Deserialize(IDictionary<string, object> dictionary, Type type, JavaScriptSerializer serializer)
         {
             if (dictionary == null)
@@ -391,11 +408,20 @@ namespace SqlSugar
             return null;
         }
 
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="serializer"></param>
+        /// <returns></returns>
         public override IDictionary<string, object> Serialize(object obj, JavaScriptSerializer serializer)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 支持的类型
+        /// </summary>
         public override IEnumerable<Type> SupportedTypes
         {
             get { return new System.Collections.ObjectModel.ReadOnlyCollection<Type>(new List<Type>(new Type[] { typeof(object) })); }
