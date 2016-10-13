@@ -26,7 +26,7 @@ namespace SqlSugar
         /// <summary>
         /// 拉姆达解析错误
         /// </summary>
-        public const string ExpToSqlError= @"拉姆达解析出错，不是有效的函数，现在支持的函数有:
+        public const string ExpToSqlError= @"拉姆达解析出错，不是有效的函数，现在支持的函数有(请复制到本地查看数量比较多):
                 db.Queryable<T>().Where(it => it.field == parValue.ObjToString()); 
                 db.Queryable<T>().Where(it => it.field == parValue.ObjToDate());
                 db.Queryable<T>().Where(it => it.field == parValue.ObjToInt())
@@ -41,7 +41,9 @@ namespace SqlSugar
                 db.Queryable<T>().Where(it => !string.IsNullOrEmpty(it.parValue))
                 db.Queryable<T>().Where(it => arrayOrList.Contains(it.parValue))     
                 db.Queryable<T>().Where(it => it.field.Equals(it.parValue))  
-                db.Queryable<T>().Where(it => it.field.Length>10)       
+                db.Queryable<T>().Where(it => it.field.Length>10)
+                db.Queryable<Student>().Where(c => c.field == parValue.ToLower()).ToList();
+                db.Queryable<Student>().Where(c => c.field == parValue.ToUpper()).ToList();       
             ";
         /// <summary>
         /// 运算符错误
