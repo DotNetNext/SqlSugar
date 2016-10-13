@@ -57,6 +57,17 @@ namespace NewTest.Demos
                 var x1 = db.Queryable<Student>().Where(c => c.name.Equals(x.int1)).ToList();
                 var a2 = db.Queryable<Student>().Where(c => c.name.Equals(p.name)).ToList();
                 var a4 = db.Queryable<Student>().Where(c => c.name.Equals(Getp().name)).ToList();
+
+
+
+                //Contains
+                var s = db.Queryable<Student>().Where(c => c.name.Contains(null)).ToList();
+                var s0 = new InsertTest() { };
+                var s1 = db.Queryable<Student>().Where(c => c.name.Contains(x.v1)).ToList();
+                var s3 = db.Queryable<Student>().Where(c => c.name.Contains(p.name)).ToList();
+                var s4 = db.Queryable<Student>().Where(c => c.name.Contains(Getp().name)).ToList();
+
+                var s5 = db.Queryable<Student>().Where(c => p.name.Contains(c.name)).ToList();
             }
         }
     }
