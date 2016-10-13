@@ -242,8 +242,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="sortField"></param>
-        /// <param name="orderByType"></param>
+        /// <param name="orderByTypes"></param>
         /// <returns></returns>
         public static IOrderedEnumerable<T> OrderByReverse<T>(this IEnumerable<T> list, List<OrderByDictionary> orderByTypes)
         {
@@ -260,13 +259,13 @@ namespace SqlSugar
             }
             return reval;
         }
+
         /// <summary>
         /// 排序
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="sortField"></param>
-        /// <param name="orderByType"></param>
+        /// <param name="orderByTypes"></param>
         /// <returns></returns>
         public static IOrderedEnumerable<T> ThenByReverse<T>(this IOrderedEnumerable<T> list, List<OrderByDictionary> orderByTypes)
         {
