@@ -20,7 +20,7 @@ namespace SqlSugar
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType,true);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
+            var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError,methodName));
             var oldLeft = AddParas(ref left,right);
             return string.Format("({0} = " + SqlSugarTool.ParSymbol + "{1})", oldLeft, left);
@@ -38,7 +38,7 @@ namespace SqlSugar
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType,true);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
+            var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError, methodName));
             var oldLeft = AddParas(ref left, right + '%');
             return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft, null, left);
@@ -56,7 +56,7 @@ namespace SqlSugar
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType,true);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
+            var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError, methodName));
             var oldLeft = AddParas(ref left, '%' + right);
             return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft, null, left);
@@ -74,7 +74,7 @@ namespace SqlSugar
             MemberType leftType = MemberType.None;
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType,true);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
+            var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError, methodName));
             if (left.IsCollectionsList() || right.IsStringArray() || right.IsEnumerable())
             {
@@ -136,7 +136,7 @@ namespace SqlSugar
             MemberType rightType = MemberType.None;
             var isConstant = mce.Arguments.First().NodeType == ExpressionType.Constant;
             var left = CreateSqlElements(mce.Object, ref leftType,true);
-            var right = CreateSqlElements(mce.Arguments[0], ref rightType,true);
+            var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             if (right == "null")
             {
                 right = "";
