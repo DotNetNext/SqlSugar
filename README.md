@@ -15,6 +15,58 @@ ASP.NET 4.0+ Sqlite  https://github.com/sunkaixuan/SqliteSugar
 
 ASP.NET 4.0+ ORACLE https://github.com/sunkaixuan/OracleSugar
 
+
+# Instance SqlSugar object
+
+```csharp
+using(var db = new SqlSugarClient(ConnectionString)){
+
+	//use object
+	var list=db.Queryable<T>().ToList();
+	
+}
+
+```
+
+# Package instance 
+```csharp
+/// <summary>
+/// SqlSugar
+/// </summary>
+public class SugarDao
+{
+	private SugarDao()
+	{
+
+	}
+	public static string ConnectionString
+	{
+		get
+		{
+			string reval = "server=.;uid=sa;pwd=sasa;database=SqlSugarTest"; 
+			return reval;
+		}
+	}
+	public static SqlSugarClient GetInstance()
+	{
+		var db = new SqlSugarClient(ConnectionString);
+		db.IsEnableLogEvent = true;//Enable log events
+		db.LogEventStarting = (sql, par) => { Console.WriteLine(sql + " " + par+"\r\n"); };
+		return db;
+	}
+}
+
+```
+##### use SugarDao
+```csharp
+using (var db = SugarDao.GetInstance())
+{
+	var list=db.Queryable<T>().ToList();
+}
+```
+
+
+
 # 1.Select 
 
 ##### 1.1 queryable
