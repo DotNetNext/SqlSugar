@@ -57,7 +57,7 @@ public class SugarDao
 }
 
 ```
-##### use SugarDao
+##### Use SugarDao
 ```csharp
 using (var db = SugarDao.GetInstance())
 {
@@ -426,7 +426,7 @@ int pageCount = sable.Count(pars);
 var list7 = sable.SelectToPageList<Student>("s.*", "l.id desc", 1, 20, pars);
 ```
 
-# Insert
+# 2.Insert
 ````csharp
 //insert item
 db.Insert(GetInsertItem());  
@@ -450,7 +450,7 @@ var id = db.Insert(s); // insert  with no 【sex】
 
 ````
 
-# Update 
+# 3.Update 
 ```csharp
 //update specified column
 db.Update<School>(new { name = "蓝翔14" }, it => it.id == 14); //only update name
@@ -495,7 +495,7 @@ db.Update(updObj);
 
 ```
 
-# Delete
+# 4.Delete
 ```csharp
 //delete by primary key
 db.Delete<School, int>(10);
@@ -523,3 +523,178 @@ db.Delete<School>("id=@id", new { id = 100 });
 //db.FalseDelete<school>("is_del", it=>it.id==100);
 
 ```
+
+# 5.Tran
+```csharp
+using (SqlSugarClient db = SugarDao.GetInstance())
+{
+	db.IsNoLock = true; 
+	db.CommandTimeOut = 30000; 
+	try
+	{
+		db.BeginTran();
+		//db.BeginTran(IsolationLevel.ReadCommitted);+3
+
+		db.CommitTran();
+	}
+	catch (Exception)
+	{
+		db.RollbackTran();
+		throw;
+	}
+}
+```
+
+# 6.Rename tables
+```csharp
+public class MappingTable : IDemos
+{
+
+	public void Init()
+	{
+		Console.WriteLine("启动MappingTable.Init");
+
+		//单个设置
+		using (var db = SugarDao.GetInstance())
+		{
+			var list = db.Queryable<V_Student>("Student").ToList();//查询的是 select * from student 而我的实体名称为V_Student
+		}
+
+
+		//全局设置
+		using (var db = SugarFactory.GetInstance())
+		{
+			var list = db.Queryable<V_Student>().ToList();//查询的是 select * from student 而我的实体名称为V_Student
+		}
+	}
+
+
+	/// <summary>
+	/// 全局配置类
+	/// </summary>
+	public class SugarConfigs
+	{
+		//key类名 value表名
+		public static List<KeyValue> MpList = new List<KeyValue>(){
+			new KeyValue(){ Key="FormAttr", Value="Flow_FormAttr"},
+				new KeyValue(){ Key="Student3", Value="Student"},
+				new KeyValue(){ Key="V_Student", Value="Student"}
+		};
+	}
+
+	/// <summary>
+	/// SqlSugar实例工厂
+	/// </summary>
+	public class SugarFactory
+	{
+
+		//禁止实例化
+		private SugarFactory()
+		{
+
+		}
+		public static SqlSugarClient GetInstance()
+		{
+			string connection = SugarDao.ConnectionString; //这里可以动态根据cookies或session实现多库切换
+			var db = new SqlSugarClient(connection);
+
+			db.SetMappingTables(SugarConfigs.MpList);//设置关联表 (引用地址赋值，每次赋值都只是存储一个内存地址)
+
+
+
+			//批量设置别名表
+			//db.ClassGenerating.ForeachTables(db, tableName =>
+			//{
+			//    db.AddMappingTable(new KeyValue() { Key = tableName.Replace("bbs.",""), Value =  tableName }); //key实体名，value表名
+			//});
+
+
+			return db;
+		}
+	}
+}
+```
+
+# 7.Rename Columns
+```csharp
+//别名列的功能
+public class MappingColumns : IDemos
+{
+
+	public void Init()
+	{
+		Console.WriteLine("启动MappingColumns.Init");
+
+		//全局设置
+		using (var db = SugarFactory.GetInstance())
+		{
+			var list = db.Queryable<Student>().Where(it=>it.classId==1).ToList();
+		}
+	}
+
+	public class Student
+	{
+
+		//id
+		public int classId { get; set; }
+
+		//name
+		public string className { get; set; }
+
+		//sch_id
+		public int classSchoolId { get; set; }
+
+		public int isOk { get; set; }
+	}
+
+	/// <summary>
+	/// 全局配置别名列（不区分表）
+	/// </summary>
+	public class SugarConfigs
+	{
+		//key实体字段名 value表字段名 ，KEY唯一否则异常
+		public static List<KeyValue> MpList = new List<KeyValue>(){
+			new KeyValue(){ Key="classId", Value="id"},
+				new KeyValue(){ Key="className", Value="name"},
+				new KeyValue(){ Key="classSchoolId", Value="sch_id"}
+		};
+	}
+
+	/// <summary>
+	/// SqlSugar实例工厂
+	/// </summary>
+	public class SugarFactory
+	{
+
+		//禁止实例化
+		private SugarFactory()
+		{
+
+		}
+		public static SqlSugarClient GetInstance()
+		{
+			string connection = SugarDao.ConnectionString; //这里可以动态根据cookies或session实现多库切换
+			var db = new SqlSugarClient(connection);
+			//注意：只有启动属性映射才可以使用SetMappingColumns
+			db.IsEnableAttributeMapping = true;
+			db.SetMappingColumns(SugarConfigs.MpList);//设置关联列 (引用地址赋值，每次赋值都只是存储一个内存地址)
+			return db;
+		}
+	}
+}
+```
+
+#8.Ignore error columns
+```csharp
+using (var db = SugarDao.GetInstance())
+{
+	db.IsIgnoreErrorColumns = true;
+}
+```
+
+#9.Create class files
+```csharp
+db.ClassGenerating.CreateClassFiles(db, ("e:/TestModels"), "Models");
+```
+
+# More [http://www.cnblogs.com/sunkaixuan/p/5911334.html](http://www.cnblogs.com/sunkaixuan/p/5911334.html)
