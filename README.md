@@ -212,31 +212,31 @@ ASP.NET 4.0+ ORACLE https://github.com/sunkaixuan/OracleSugar
                 var r6 = db.Queryable<InsertTest>().Where(it => it.v1 == par2.Trim()).ToList();
                 var convert1 = db.Queryable<Student>().Where(c => c.name == "a".ToString()).ToList();
                 var convert2 = db.Queryable<Student>().Where(c => c.id == Convert.ToInt32("1")).ToList();
-                var convert3 = db.Queryable<Student>().Where(c => c.name == par2.ToLower()).ToList();
-                var convert4 = db.Queryable<Student>().Where(c => c.name == par2.ToUpper()).ToList();
-                var convert5= db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();
-                var c1 = db.Queryable<Student>().Where(c => c.name.Contains("a")).ToList();
-                var c2 = db.Queryable<Student>().Where(c => c.name.StartsWith("a")).ToList();
-                var c3 = db.Queryable<Student>().Where(c => c.name.EndsWith("a")).ToList();
-                var c4 = db.Queryable<Student>().Where(c => !string.IsNullOrEmpty(c.name)).ToList();
-                var c5 = db.Queryable<Student>().Where(c => c.name.Equals("小杰")).ToList();
-                var c6 = db.Queryable<Student>().Where(c => c.name.Length > 4).ToList();
-                var time = db.Queryable<InsertTest>().Where(c => c.d1>DateTime.Now.AddDays(1)).ToList();
-                var time2 = db.Queryable<InsertTest>().Where(c => c.d1 > DateTime.Now.AddYears(1)).ToList();
-                var time3 = db.Queryable<InsertTest>().Where(c => c.d1 > DateTime.Now.AddMonths(1)).ToList();
-                var intList = intArray.ToList();
-                var list0 = db.Queryable<Student>().In(it => it.id, 1,2,3).ToList();
-                var list1 = db.Queryable<Student>().In(it=>it.id, intArray).ToList();
-                var list2 = db.Queryable<Student>().In("id", intArray).ToList();
-                var list3 = db.Queryable<Student>().In(it => it.id, intList).ToList();
-                var list4 = db.Queryable<Student>().In("id", intList).ToList();
+      var convert3 = db.Queryable<Student>().Where(c => c.name == par2.ToLower()).ToList();
+      var convert4 = db.Queryable<Student>().Where(c => c.name == par2.ToUpper()).ToList();
+      var convert5= db.Queryable<Student>().Where(c => DateTime.Now > Convert.ToDateTime("2015-1-1")).ToList();
+      var c1 = db.Queryable<Student>().Where(c => c.name.Contains("a")).ToList();
+      var c2 = db.Queryable<Student>().Where(c => c.name.StartsWith("a")).ToList();
+      var c3 = db.Queryable<Student>().Where(c => c.name.EndsWith("a")).ToList();
+      var c4 = db.Queryable<Student>().Where(c => !string.IsNullOrEmpty(c.name)).ToList();
+      var c5 = db.Queryable<Student>().Where(c => c.name.Equals("小杰")).ToList();
+      var c6 = db.Queryable<Student>().Where(c => c.name.Length > 4).ToList();
+      var time = db.Queryable<InsertTest>().Where(c => c.d1>DateTime.Now.AddDays(1)).ToList();
+      var time2 = db.Queryable<InsertTest>().Where(c => c.d1 > DateTime.Now.AddYears(1)).ToList();
+      var time3 = db.Queryable<InsertTest>().Where(c => c.d1 > DateTime.Now.AddMonths(1)).ToList();
+      var intList = intArray.ToList();
+      var list0 = db.Queryable<Student>().In(it => it.id, 1,2,3).ToList();
+      var list1 = db.Queryable<Student>().In(it=>it.id, intArray).ToList();
+      var list2 = db.Queryable<Student>().In("id", intArray).ToList();
+      var list3 = db.Queryable<Student>().In(it => it.id, intList).ToList();
+      var list4 = db.Queryable<Student>().In("id", intList).ToList();
 
-                //group by
-                var list7 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select("sex,Count=count(*)").ToDynamic();
-                var list8 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).GroupBy(it=>it.id).Select("id,sex,Count=count(*)").ToDynamic();
-                List<SexTotal> list5 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
-                List<SexTotal> list6 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
-                //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex 
+      //group by
+      var list7 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select("sex,Count=count(*)").ToDynamic();
+      var list8 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).GroupBy(it=>it.id).Select("id,sex,Count=count(*)").ToDynamic();
+      List<SexTotal> list5 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy(it => it.sex).Select<Student, SexTotal>("Sex,Count=count(*)").ToList();
+      List<SexTotal> list6 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy("sex").Select<Student, SexTotal>    ("Sex,Count=count(*)").ToList();
+      //SELECT Sex,Count=count(*)  FROM Student  WHERE 1=1  AND  (id < 20)    GROUP BY Sex 
                 
                 
       //join
