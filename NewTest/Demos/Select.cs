@@ -76,9 +76,10 @@ namespace NewTest.Demos
                 //取前2条
                 var take = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).Take(2).ToList();
 
-                // Not like 
+                //Not like 
                 string conval = "a";
                 var notLike = db.Queryable<Student>().Where(c => !c.name.Contains(conval.ToString())).ToList();
+
                 //Like
                 conval = "三";
                 var like = db.Queryable<Student>().Where(c => c.name.Contains(conval)).ToList();
@@ -223,7 +224,7 @@ namespace NewTest.Demos
 
 
 
-                //条件函数的支持(字段暂不支持函数,只有参数支持) 目前只支持这么多
+                //拉姆达支持的函数操作
                 var par1 = "2015-1-1"; var par2 = "   我 有空格A, ";
                 var r1 = db.Queryable<Student>().Where(it => it.name == par1.ObjToString()).ToList(); //ObjToString会将null转转成""
                 var r2 = db.Queryable<InsertTest>().Where(it => it.d1 == par1.ObjToDate()).ToList();
