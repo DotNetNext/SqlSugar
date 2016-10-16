@@ -2,7 +2,7 @@
 
 Email 610262374@qq.com
 QQ Group 225982985
-cnblog http://www.cnblogs.com/sunkaixuan
+Blog http://www.cnblogs.com/sunkaixuan
 
 
 #Other versions
@@ -15,7 +15,11 @@ ASP.NET 4.0+ Sqlite  https://github.com/sunkaixuan/SqliteSugar
 
 ASP.NET 4.0+ ORACLE https://github.com/sunkaixuan/OracleSugar
 
+# 1.Select 
+
+##### 1.1 queryable
 ```csharp
+
 //select all
 var student = db.Queryable<Student>().ToList();
 var studentDynamic = db.Queryable<Student>().ToDynamic();
@@ -263,4 +267,47 @@ var jList3 = db.Queryable<Student>()
 				.Take(2)
 				.Select<Student, School, classNew>((s1, s2) => new classNew() { newid = s1.id, newname = s2.name, xx_name = s1.name }) 
 					.ToList();
+```
+
+1.2 SqlQuery
+```csharp
+//to list
+List<Student> list1 = db.SqlQuery<Student>("select * from Student");
+//to list with par
+List<Student> list2 = db.SqlQuery<Student>("select * from Student where id=@id", new { id = 1 });
+//to dynamic
+dynamic list3 = db.SqlQueryDynamic("select * from student");
+//to json
+string list4 = db.SqlQueryJson("select * from student");
+//get int
+var list5 = db.SqlQuery<int>("select top 1 id from Student").SingleOrDefault();
+//get dictionary
+Dictionary<string, string> list6 = db.SqlQuery<KeyValuePair<string, string>>("select id,name from Student").ToDictionary(it => it.Key, it => it.Value);
+//get List<string[]>
+var list7 = db.SqlQuery<string[]>("select top 1 id,name from Student").SingleOrDefault();
+//get sp result
+var spResult = db.SqlQuery<School>("exec sp_school @p1,@p2", new { p1 = 1, p2 = 2 });
+
+//get sp and output 
+var pars = SqlSugarTool.GetParameters(new { p1 = 1,p2=0 }); //dynmaic to SqlParameter
+db.IsClearParameters = false;//close clear parametrs
+pars[1].Direction = ParameterDirection.Output; //set  output
+var spResult2 = db.SqlQuery<School>("exec sp_school @p1,@p2 output", pars);
+db.IsClearParameters = true;//open  clear parameters
+var outPutValue = pars[1].Value;//get output @p2 value
+
+
+//sp 
+var pars2 = SqlSugarTool.GetParameters(new { p1 = 1, p2 = 0 }); 
+db.CommandType = CommandType.StoredProcedure;
+var spResult3 = db.SqlQuery<School>("sp_school", pars2);
+db.CommandType = CommandType.Text;
+
+
+//get first row first column
+string v1 = db.GetString("select '张三' as name");
+int v2 = db.GetInt("select 1 as name");
+double v3 = db.GetDouble("select 1 as name");
+decimal v4 = db.GetDecimal("select 1 as name");
+//....
 ```
