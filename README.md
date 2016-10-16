@@ -138,10 +138,10 @@ var jList3 = db.Queryable<Student>()
 	.JoinTable<School>((s1, s3) => s1.sch_id == s3.id) // left join  School s3  on s1.id=s3.id
 	.Where<School>((s1, s2) => s1.id > 1)  // where s1.id>1
 	.Where(s1 => s1.id > 0)
-	.OrderBy<School>((s1, s2) => s1.id) //order by s1.id 多个order可以  .oderBy().orderby 叠加 
+	.OrderBy<School>((s1, s2) => s1.id) 
 	.Skip(10)
 	.Take(20)
-	.Select("s1.*,s2.name as schName,s3.name as schName2")//select目前只支持这种写法
+	.Select("s1.*,s2.name as schName,s3.name as schName2")//select string
 	.ToDynamic();
 
 
@@ -203,10 +203,10 @@ var sqlAndPars = db.Queryable<Student>().Where(it => it.id == id).OrderBy(it => 
 
 
 //express functions
-var par1 = "2015-1-1"; var par2 = "   我 有空格A, ";
-var r1 = db.Queryable<Student>().Where(it => it.name == par1.ObjToString()).ToList(); //ObjToString会将null转转成""
+var par1 = "2015-1-1"; var par2 = "   I have a trim  ";
+var r1 = db.Queryable<Student>().Where(it => it.name == par1.ObjToString()).ToList(); //ObjToString if null return ""
 var r2 = db.Queryable<InsertTest>().Where(it => it.d1 == par1.ObjToDate()).ToList();
-var r3 = db.Queryable<InsertTest>().Where(it => it.id == 1.ObjToInt()).ToList();//ObjToInt会将null转转成0
+var r3 = db.Queryable<InsertTest>().Where(it => it.id == 1.ObjToInt()).ToList();//ObjToInt if null return 0
 var r4 = db.Queryable<InsertTest>().Where(it => it.id == 2.ObjToDecimal()).ToList();
 var r5 = db.Queryable<InsertTest>().Where(it => it.id == 3.ObjToMoney()).ToList();
 var r6 = db.Queryable<InsertTest>().Where(it => it.v1 == par2.Trim()).ToList();
@@ -241,7 +241,7 @@ List<SexTotal> list6 = db.Queryable<Student>().Where(c => c.id < 20).GroupBy("se
 
 //join
 var jList = db.Queryable<Student>()
-	.JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //默认left join
+	.JoinTable<Student, School>((s1, s2) => s1.sch_id == s2.id) //detault left join
 		.Where<Student, School>((s1, s2) => s1.id == 1)
 			.Select("s1.*,s2.name as schName")
 			.ToDynamic();
@@ -296,7 +296,6 @@ var spResult2 = db.SqlQuery<School>("exec sp_school @p1,@p2 output", pars);
 db.IsClearParameters = true;//open  clear parameters
 var outPutValue = pars[1].Value;//get output @p2 value
 
-
 //sp 
 var pars2 = SqlSugarTool.GetParameters(new { p1 = 1, p2 = 0 }); 
 db.CommandType = CommandType.StoredProcedure;
@@ -311,3 +310,67 @@ double v3 = db.GetDouble("select 1 as name");
 decimal v4 = db.GetDecimal("select 1 as name");
 //....
 ```
+##### 1.3 Sqlable
+```csharp
+//join
+List<School> dataList = db.Sqlable()
+	.From("school", "s")
+	.Join("student", "st", "st.id", "s.id", JoinType.INNER)
+	.Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
+	.Where("s.id>100 and s.id<@id")
+	.Where("1=1")
+	.OrderBy("id")
+	.SelectToList<School/*new model*/>("st.*", new { id = 1 });
+
+//join page
+List<School> dataPageList = db.Sqlable()
+	.From("school", "s")
+	.Join("student", "st", "st.id", "s.id", JoinType.INNER)
+	.Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
+	.Where("s.id>100 and s.id<100")
+	.SelectToPageList<School>("st.*", "s.id", 1, 10);
+
+//page where
+List<School> dataPageList2 = db.Sqlable()
+	.From("school", "s")
+	.Join("student", "st", "st.id", "s.id", JoinType.INNER)
+	.Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
+	.Where("s.id>100 and s.id<100 and s.id in (select 1 )" )
+	.SelectToPageList<School>("st.*", "s.id", 1, 10);
+
+
+
+//-------- Dynmaic OR Json-----//
+
+//join
+var list1 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDynamic("*", new { id = 1 });
+var list2 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToJson("*", new { id = 1 });
+var list3 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToDataTable("*", new { id = 1 });
+
+//page
+var list4 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
+var list5 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageTable("s.*", "l.id", 1, 10, new { id = 1 });
+var list6 = db.Sqlable().From("student", "s").Join("school", "l", "s.sch_id", "l.id and l.id=@id", JoinType.INNER).SelectToPageDynamic("s.*", "l.id", 1, 10, new { id = 1 });
+
+
+//--------append sqlable-----//
+Sqlable sable = db.Sqlable().From<Student>("s").Join<School>("l", "s.sch_id", "l.id", JoinType.INNER);
+string name = "a";
+int id = 1;
+if (!string.IsNullOrEmpty(name))
+{
+	sable = sable.Where("s.name=@name");
+}
+if (!string.IsNullOrEmpty(name))
+{
+	sable = sable.Where("s.id=@id or s.id=100");
+}
+if (id > 0)
+{
+	sable = sable.Where("l.id in (select top 10 id from school)");
+}
+var pars = new { id = id, name = name };
+int pageCount = sable.Count(pars);
+var list7 = sable.SelectToPageList<Student>("s.*", "l.id desc", 1, 20, pars);
+```
+
