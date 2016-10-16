@@ -442,3 +442,32 @@ db.Update(updObj);
 
 
 ```
+
+# Delete
+```csharp
+//delete by primary key
+db.Delete<School, int>(10);
+
+//delete by exp
+db.Delete<School>(it => it.id > 100);//support it=>array.contains(it.id)
+
+//delete by primary key values
+db.Delete<School, string>(new string[] { "100", "101", "102" });
+
+//delete by field values
+db.Delete<School, string>(it => it.name, new string[] { "" });
+db.Delete<School, int>(it => it.id, new int[] { 20, 22 });
+
+
+//delete by entity
+db.Delete(new School() { id = 200 });
+
+//delete by sql where  string
+db.Delete<School>("id=@id", new { id = 100 });
+
+//false delete
+//db.FalseDelete<school>("is_del", 100);
+//sql: update school set is_del=1 where id in(100)
+//db.FalseDelete<school>("is_del", it=>it.id==100);
+
+```
