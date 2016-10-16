@@ -374,3 +374,71 @@ int pageCount = sable.Count(pars);
 var list7 = sable.SelectToPageList<Student>("s.*", "l.id desc", 1, 20, pars);
 ```
 
+# Insert
+````csharp
+//insert item
+db.Insert(GetInsertItem());  
+
+//insert list
+db.InsertRange(GetInsertList()); 
+
+//insert list (so fast)
+db.SqlBulkCopy(GetInsertList()); 
+
+
+//setting disable insert columns
+db.DisableInsertColumns = new string[] { "sex" };
+Student s = new Student()
+{
+	name = "mr" + new Random().Next(1, int.MaxValue),
+	sex = "gril"
+};
+
+var id = db.Insert(s); // insert  with no 【sex】
+
+````
+
+# Update 
+```csharp
+//update specified column
+db.Update<School>(new { name = "蓝翔14" }, it => it.id == 14); //only update name
+db.Update<School, int>(new { name = "蓝翔11 23 12", areaId = 2 }, 11, 23, 12);
+db.Update<School, string>(new { name = "蓝翔2" }, new string[] { "11", "21" });
+db.Update<School>(new { name = "蓝翔2" }, it => it.id == 100);
+var array=new int[]{1,2,3};
+db.Update<School>(new { name = "蓝翔2" }, it => array.Contains(it.id));// id in 1,2,3
+
+//update list  by enity primary key
+var updateResult = db.UpdateRange(GetUpdateList());a
+
+//update list  by enity primary key (so fast)
+var updateResult2 = db.SqlBulkReplace(GetUpdateList2());
+
+//update by dictionary
+var dic = new Dictionary<string, string>();
+dic.Add("name", "第十三条");
+dic.Add("areaId", "1");
+db.Update<School, int>(dic, 13);
+
+
+//update  by  entity
+db.Update(new School { id = 16, name = "蓝翔16", AreaId = 1 });
+db.Update<School>(new School { id = 12, name = "蓝翔12", AreaId = 2 }, it => it.id == 18);
+db.Update<School>(new School() { id = 11, name = "青鸟11" });
+
+//settig disable Update Columns
+db.DisableUpdateColumns = new string[] { "CreateTime" };//CreateTime no update
+
+TestUpdateColumns updObj = new TestUpdateColumns()
+{
+	VGUID = Guid.Parse("542b5a27-6984-47c7-a8ee-359e483c8470"),
+	Name = "xx",
+	Name2 = "xx2",
+	IdentityField = 0,
+	CreateTime = null
+};
+
+db.Update(updObj);
+
+
+```
