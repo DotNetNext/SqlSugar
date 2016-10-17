@@ -131,9 +131,10 @@ namespace SqlSugar
         private static void SetMemberValueToDynInv(ref Expression exp, MemberExpression me, ref object dynInv)
         {
             var conExp = me.Expression as ConstantExpression;
-            if (conExp != null)
+            var fieldInfo = me.Member as System.Reflection.FieldInfo;
+            if (conExp != null&&fieldInfo!=null)
             {
-                dynInv = (me.Member as System.Reflection.FieldInfo).GetValue((me.Expression as ConstantExpression).Value);
+                dynInv = (fieldInfo).GetValue((me.Expression as ConstantExpression).Value);
             }
             else
             {
