@@ -1070,10 +1070,7 @@ namespace SqlSugar
 
                     if (isPk || isIdentity || isDisableUpdateColumns)
                     {
-                        if (rowObj.GetType() == type)
-                        {
                             continue;
-                        }
                     }
                     sbSql.Append(string.Format(" {0}={1}  ,", name.GetTranslationSqlName(), name.GetSqlParameterName()));
                 }
