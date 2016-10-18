@@ -59,7 +59,7 @@ namespace SqlSugar
 
         private static bool IsComplexAnalysis(string expStr)
         {
-            if (expStr.IsValuable()&Regex.IsMatch(expStr,@"(\.[a-z,A-Z][a-z,A-Z,0-9]\()|[\+,\-,\*,\/]"))
+            if (expStr.IsValuable() & Regex.IsMatch(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]+?\()|\+|\-|\*|\/|\=\s*[a-z,A-Z][a-z,A-Z,0-9]+?\("))
             {
                 throw new SqlSugarException("Select中不支持变量的运算和函数。");
             }
