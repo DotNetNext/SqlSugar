@@ -147,6 +147,10 @@ namespace SqlSugar
                     selectStr = selectStr.Replace("(", "");
                 }
             }
+            if (selectStr.Contains(".ToString"))
+            {
+                throw new SqlSugarException("Select中不支持ToString函数，请使用ObjectToString");
+            }
             if (selectStr.Contains("+<>"))
             {
                 throw new SqlSugarException("Select中的拉姆达表达式,不支持外部传参数,目前支持的写法 Where(\"1=1\",new {id=1}).Select(it=>{ id=\"" + SqlSugarTool.ParSymbol + "id\".ObjToInt()}");
