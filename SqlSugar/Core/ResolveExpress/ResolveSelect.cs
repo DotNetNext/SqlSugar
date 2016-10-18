@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq.Expressions;
 
 namespace SqlSugar
 {
@@ -22,7 +23,8 @@ namespace SqlSugar
         /// <typeparam name="TResult">实体类型</typeparam>
         /// <param name="expStr">拉姆达字符串</param>
         /// <param name="reval">查旬对象</param>
-        internal static void GetResult<TResult>(string expStr, Queryable<TResult> reval)
+        /// <param name="exp"></param>
+        internal static void GetResult<TResult>(string expStr, Queryable<TResult> reval, Expression exp)
         {
             reval.SelectValue = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
             if (reval.SelectValue.IsNullOrEmpty())
@@ -58,7 +60,8 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="TResult">实体类型</typeparam>
         /// <param name="reval">查旬对象</param>
-        internal static void GetResult<TResult>(Queryable<TResult> reval)
+        /// <param name="exp"></param>
+        internal static void GetResult<TResult>(Queryable<TResult> reval, Expression exp)
         {
             string expStr = reval.SelectValue;
             expStr = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;

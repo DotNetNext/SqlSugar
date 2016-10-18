@@ -578,7 +578,7 @@ namespace SqlSugar
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
-            ResolveSelect.GetResult<TResult>(expStr, reval);
+            ResolveSelect.GetResult<TResult>(expStr, reval,expression);
             return reval;
         }
 
@@ -608,7 +608,7 @@ namespace SqlSugar
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
-            ResolveSelect.GetResult<TResult>(expStr, reval);
+            ResolveSelect.GetResult<TResult>(expStr, reval,expression);
             return reval;
         }
 
@@ -639,7 +639,7 @@ namespace SqlSugar
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
-            ResolveSelect.GetResult<TResult>(expStr, reval);
+            ResolveSelect.GetResult<TResult>(expStr, reval,expression);
             return reval;
         }
 
@@ -671,7 +671,7 @@ namespace SqlSugar
                 GroupByValue = queryable.GroupByValue,
                 JoinTableValue = queryable.JoinTableValue
             };
-            ResolveSelect.GetResult<TResult>(expStr, reval);
+            ResolveSelect.GetResult<TResult>(expStr, reval,expression);
             return reval;
         }
 
@@ -701,12 +701,12 @@ namespace SqlSugar
             };
             if (queryable.JoinTableValue.IsValuable())
             {
-                ResolveSelect.GetResult<TResult>(expStr, reval);
+                ResolveSelect.GetResult<TResult>(expStr, reval,expression);
             }
             else
             {
                 reval.SelectValue = expStr;
-                ResolveSelect.GetResult<TResult>(reval);
+                ResolveSelect.GetResult<TResult>(reval,expression);
             }
             return reval;
         }
