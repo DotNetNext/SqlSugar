@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>sqlSugar</id>
-    <version>3.1.0.7</version>
+    <version>3.1.0.8</version>
     <title>SqlSugar ORM</title>
     <authors>sun kaixuan</authors>
     <owners>landa</owners>
@@ -16,6 +16,6 @@
 
   </metadata>
     <files>
-     <file src="F:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML"  target=""></file>
+     <file src="E:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML"  target=""></file>
     </files>
 </package>
