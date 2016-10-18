@@ -66,11 +66,11 @@ namespace $namespace
         /// <summary>
         /// 生成实体类字段摘要模版
         /// </summary>
-        public static string ClassFieldSummaryTemplate = @"     /// <summary>
-     /// Desc:{0} 
-     /// Default:{1} 
-     /// Nullable:{2} 
-     /// </summary>
+        public static string ClassFieldSummaryTemplate = @"        /// <summary>
+        /// Desc:{0} 
+        /// Default:{1} 
+        /// Nullable:{2} 
+        /// </summary>
 ";
     }
 }
