@@ -26,6 +26,7 @@ namespace SqlSugar
         /// <param name="exp"></param>
         internal static void GetResult<TResult>(string expStr, Queryable<TResult> reval, Expression exp)
         {
+            var isComplexAnalysis = IsComplexAnalysis(expStr);
             reval.SelectValue = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
             if (reval.SelectValue.IsNullOrEmpty())
             {
@@ -55,6 +56,15 @@ namespace SqlSugar
                 }
             }
         }
+
+        private static bool IsComplexAnalysis(string expStr)
+        {
+            if (expStr.IsValuable()&Regex.IsMatch(expStr,@"(\.[a-z,A-Z][a-z,A-Z,0-9]\()|[\+,\-,\*,\/]"))
+            {
+                throw new SqlSugarException("Select中不支持变量的运算和函数。");
+            }
+            return false;
+        }
         /// <summary>
         /// 单表情况
         /// </summary>
@@ -64,6 +74,7 @@ namespace SqlSugar
         internal static void GetResult<TResult>(Queryable<TResult> reval, Expression exp)
         {
             string expStr = reval.SelectValue;
+            var isComplexAnalysis = IsComplexAnalysis(expStr);
             expStr = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
             if (expStr.IsNullOrEmpty())
             {
