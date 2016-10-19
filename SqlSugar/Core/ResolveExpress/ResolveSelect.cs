@@ -59,27 +59,30 @@ namespace SqlSugar
 
         private static bool IsComplexAnalysis(string expStr)
         {
+            string errorFunName = null;
             if(expStr.IsValuable()&&Regex.IsMatch(expStr, @"\+|\-|\*|\/")){
                 throw new SqlSugarException("Select中不支持变量的运算。");
             }
-            if (expStr.IsValuable() & Regex.IsMatch(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]+?\()|=\s*[a-z,A-Z][a-z,A-Z,0-9]+?\("))
+            if (expStr.IsValuable() & Regex.IsMatch(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\))|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\)"))
             {
-                var ms = Regex.Matches(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]+?\()|=\s*[a-z,A-Z][a-z,A-Z,0-9]+?\(.*?\)[a-z,A-Z][a-z,A-Z,0-9]+");
+                var ms = Regex.Matches(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\))|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\)[a-z,A-Z][a-z,A-Z,0-9]+|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\)");
                 var errorNum = 0;
                 foreach (Match item in ms)
                 {
                     if (item.Value == null) {
-                        errorNum = 0;
+                        errorNum++;
                         break;
                     }
-                    if (!item.Value.IsMatch(@"\.ObjTo")) {
-                        errorNum = 0;
+                    if (!item.Value.IsMatch(@"\.ObjTo|Convert"))
+                    {
+                        errorNum++;
+                        errorFunName = item.Value;
                         break;
                     }
                 }
                 if (errorNum > 0)
                 {
-                    throw new SqlSugarException("Select中不支持变量的运算和函数。");
+                    throw new SqlSugarException("Select中不支持函数"+errorFunName);
                 }
             }
             return false;
