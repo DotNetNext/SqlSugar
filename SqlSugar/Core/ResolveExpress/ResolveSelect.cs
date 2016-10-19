@@ -60,20 +60,25 @@ namespace SqlSugar
         private static bool IsComplexAnalysis(string expStr)
         {
             string errorFunName = null;
+            if (expStr.IsValuable()&&expStr.Contains("+<>"))
+            {
+                throw new SqlSugarException("Select中的拉姆达表达式,不支持外部传参数,目前支持的写法 Where(\"1=1\",new {id=1}).Select(it=>{ id=\"" + SqlSugarTool.ParSymbol + "id\".ObjToInt()}");
+            }
             if(expStr.IsValuable()&&Regex.IsMatch(expStr, @"\+|\-|\*|\/")){
                 throw new SqlSugarException("Select中不支持变量的运算。");
             }
-            if (expStr.IsValuable() & Regex.IsMatch(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\))|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\)|\=[a-z,A-Z][a-z,A-Z,0-9]*.[a-z,A-Z][a-z,A-Z,0-9]*.[a-z,A-Z][a-z,A-Z,0-9]*"))
+            string reg= @"(\.[a-z,A-Z,_]\w*?\(.*?\))|\=\s*[a-z,A-Z,_]\w*?\(.*?\)|\=\s*[a-z,A-Z,_]\w*?\(.*?\)|\=[a-z,A-Z,_]\w*.[a-z,A-Z,_]\w*.[a-z,A-Z,_]\w*";
+            if (expStr.IsValuable() & Regex.IsMatch(expStr,reg))
             {
-                var ms = Regex.Matches(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\))|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\)[a-z,A-Z][a-z,A-Z,0-9]+|\=\s*[a-z,A-Z][a-z,A-Z,0-9]*?\(.*?\)|\=[a-z,A-Z][a-z,A-Z,0-9]*.[a-z,A-Z][a-z,A-Z,0-9]*.[a-z,A-Z][a-z,A-Z,0-9]*");
+                var ms = Regex.Matches(expStr, reg);
                 var errorNum = 0;
-                foreach (Match item in ms)
+                foreach (Match item in ms.Cast<Match>().OrderBy(it=>it.Value.Split('.').Length))
                 {
                     if (item.Value == null) {
                         errorNum++;
                         break;
                     }
-                    if (!item.Value.IsMatch(@"\.ObjTo|Convert"))
+                    if (!item.Value.IsMatch(@"\.ObjTo|Convert|ToString"))
                     {
                         errorNum++;
                         errorFunName = item.Value;
