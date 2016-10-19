@@ -21,20 +21,226 @@ namespace NewTest.Demos
             Console.WriteLine("启动Test.Init");
             using (var db = SugarDao.GetInstance())
             {
+                //初始化数据
+                InitData(db);
+
+                //查询测试
+                Select(p,db);
 
                 //拉姆达测试 
-                // Exp(p, db);
+                 Exp(p, db);
+                
+                //新容器转换测试
+                SelectNew(p, db);
 
-                Select(p, db);
+                //更新测试
+                Update(p, db);
+
+                //删除测试
+                Delete(p,db);
 
             }
         }
+
+        /// <summary>
+        /// 删除测试
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="db"></param>
+        private void Delete(Student2 p, SqlSugarClient db)
+        {
+            db.Delete<Student>(it => it.id == 1);
+            db.Delete<Student>(new Student() {  id=2});
+            db.Delete<Student,int>(3,4);
+            db.Delete<Student, int>(it=>it.id,5,6);
+            var list = db.Queryable<Student>().ToList();
+        }
+
+        /// <summary>
+        /// 批量更新
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="db"></param>
+        private void Update(Student2 p, SqlSugarClient db)
+        {
+            db.UpdateRange(StudentListUpd);
+            var list = db.Queryable<Student>().ToList();
+            db.SqlBulkReplace(StudentListUpd2);
+            list = db.Queryable<Student>().ToList();
+        }
+
+        /// <summary>
+        /// 查询测试
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="d"></param>
+        private void Select(Student2 p, SqlSugarClient db)
+        {
+
+            //查询第一条
+            var select1= db.Queryable<Student>().Single(it => it.id == p.id);
+            var select2 = db.Queryable<Student>().Single(it => it.id == _p.id);
+
+
+            //查询分页 id3-id5
+            var select3 = db.Queryable<Student>().OrderBy(it=>it.id).Skip(2).Take(3).ToList();
+            //查询分页 id4-id6
+            var select4 = db.Queryable<Student>().OrderBy(it => it.id).ToPageList(2,3).ToList();
+
+            //2表join
+            var join1 = db.Queryable<Student>().JoinTable<School>((st, sc) => st.sch_id == sc.id)
+                .Select<School,V_Student>((st, sc) => new V_Student() {SchoolName=sc.name,id=st.id, name=st.name}).ToList();
+
+            //3表join
+            var join2 = db.Queryable<Student>()
+                .JoinTable<School>((st, sc) => st.sch_id == sc.id)
+                .JoinTable<School,Area>((st,sc,a)=>sc.AreaId==a.id)
+               .Select<School,Area, V_Student>((st, sc,a) => new V_Student() { SchoolName = sc.name, id = st.id, name = st.name,AreaName=a.name }).ToList();
+        
+        }
+
+
+        #region 初始化数据
+        private void InitData(SqlSugarClient db)
+        {
+            db.ExecuteCommand("truncate table Subject");
+            db.ExecuteCommand("truncate table student");
+            db.ExecuteCommand("truncate table school");
+            db.ExecuteCommand("truncate table area");
+
+            db.SqlBulkCopy(SchoolList);
+            db.SqlBulkCopy(StudentList);
+            db.SqlBulkCopy(SubjectList);
+            db.InsertRange(AreaList);
+        }
+
+
+        public List<Area> AreaList
+        {
+            get
+            {
+                List<Area> areaList = new List<Area>()
+                {
+                    new Area(){ name="上海"},
+                    new Area(){ name="北京"},
+                    new Area(){ name="南通"},
+                    new Area(){ name="日本"}
+                };
+                return areaList;
+            }
+        }
+
+        public List<Subject> SubjectList
+        {
+            get
+            {
+                List<Subject> subList = new List<Subject>()
+                {
+                    new Subject(){ name="语文", studentId=1},
+                    new Subject(){name="数学", studentId=2},
+                    new Subject(){name=".NET", studentId=4},
+                    new Subject(){name="JAVA", studentId=5},
+                    new Subject(){name="IOS", studentId=6},
+                    new Subject(){name="PHP", studentId=7}
+
+                };
+                return subList;
+            }
+        }
+
+        /// <summary>
+        ///插入学生表数据
+        /// </summary>
+        public List<Student> StudentList
+        {
+            get
+            {
+                List<Student> student = new List<Student>()
+                {
+                    new Student(){ isOk=true, name="小杰", sch_id=1, sex="boy"},
+                     new Student(){ isOk=false, name="小明", sch_id=2, sex="grid"},
+                      new Student(){ isOk=true, name="张三", sch_id=3, sex="boy"},
+                       new Student(){ isOk=false, name="李四", sch_id=2, sex="grid"},
+                        new Student(){ isOk=true, name="王五", sch_id=3, sex="boy"},
+                         new Student(){ isOk=false, name="小姐", sch_id=1, sex="grid"},
+                          new Student(){ isOk=true, name="小捷", sch_id=3, sex="grid"},
+                           new Student(){ isOk=true, name="小J", sch_id=1, sex="grid"}
+                };
+
+                return student;
+            }
+        }
+
+        /// <summary>
+        /// 学校表数据
+        /// </summary>
+        public List<School> SchoolList
+        {
+            get
+            {
+                List<School> school = new List<School>()
+                {
+                    new School(){ AreaId=1,  name="北大青鸟"},
+                    new School(){ AreaId=2,  name="IT清华"},
+                    new School(){ AreaId=3,  name="全智"},
+                    new School(){ AreaId=2,  name="黑马"},
+                    new School(){ AreaId=3,  name="幼儿园"},
+                    new School(){ AreaId=1,  name="蓝翔"}
+                };
+                return school;
+            }
+        } 
+        #endregion
+
+        #region 修改数据
+        public List<Student> StudentListUpd
+        {
+            get
+            {
+                List<Student> student = new List<Student>()
+                {
+                    new Student(){  id=1,isOk=true, name="小杰1", sch_id=1, sex="1"},
+                     new Student(){ id=2,isOk=true, name="小明1", sch_id=1, sex="1"},
+                      new Student(){id=3, isOk=true, name="张三1", sch_id=1, sex="1"},
+                       new Student(){id=4, isOk=true, name="李四1", sch_id=1, sex="1"},
+                        new Student(){ id=5,isOk=true, name="王五1", sch_id=1, sex="1"},
+                         new Student(){id=6, isOk=true, name="小姐1", sch_id=1, sex="1"},
+                          new Student(){id=7, isOk=true, name="小捷1", sch_id=1, sex="1"},
+                           new Student(){ id=8,isOk=false, name="小J1", sch_id=1, sex="1"}
+                };
+
+                return student;
+            }
+        }
+        public List<Student> StudentListUpd2
+        {
+            get
+            {
+                List<Student> student = new List<Student>()
+                {
+                    new Student(){  id=1,isOk=false, name="x1", sch_id=1, sex="2"},
+                     new Student(){ id=2,isOk=true, name="小明1", sch_id=1, sex="1"},
+                      new Student(){id=3, isOk=true, name="张三1", sch_id=1, sex="1"},
+                       new Student(){id=4, isOk=true, name="李四1", sch_id=1, sex="1"},
+                        new Student(){ id=5,isOk=true, name="王五1", sch_id=1, sex="1"},
+                         new Student(){id=6, isOk=true, name="小姐1", sch_id=1, sex="1"},
+                          new Student(){id=7, isOk=true, name="小捷1", sch_id=1, sex="1"},
+                           new Student(){ id=8,isOk=false, name="小J1", sch_id=1, sex="1"}
+                };
+
+                return student;
+            }
+        }
+
+
+        #endregion
+
         /// <summary>
         /// 测试select new
         /// </summary>
         /// <param name="p"></param>
         /// <param name="db"></param>
-        private void Select(Student2 p, SqlSugarClient db)
+        private void SelectNew(Student2 p, SqlSugarClient db)
         {
 
             //测试用例
@@ -241,7 +447,7 @@ namespace NewTest.Demos
                      .Select<InsertTest, Student>((i1, i2) => new Student()
                      {
                          name = Getp().name, //多表查询例子
-                         id = i1.int1.ObjToInt()+1,
+                         id = i1.int1.ObjToInt() + 1,
                          sex = Convert.ToString(i2.d1),
 
                      }).ToList();
