@@ -1090,6 +1090,10 @@ namespace SqlSugar
                 pars = pars.Select(par =>
                 {
                     string name = SqlSugarTool.ParSymbol + GetMappingColumnDbName(par.ParameterName.TrimStart(SqlSugarTool.ParSymbol));
+                    if (par.Value != null && par.Value.GetType().IsClass && par.Value.GetType() != SqlSugarTool.StringType)
+                    {
+                        par.Value = DBNull.Value;
+                    }
                     if (par.SqlDbType == SqlDbType.Udt || par.ParameterName.ToLower().Contains("hierarchyid"))
                     {
                         par.UdtTypeName = "HIERARCHYID";

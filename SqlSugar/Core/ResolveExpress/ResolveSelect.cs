@@ -59,9 +59,28 @@ namespace SqlSugar
 
         private static bool IsComplexAnalysis(string expStr)
         {
-            if (expStr.IsValuable() & Regex.IsMatch(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]+?\()|\+|\-|\*|\/|\=\s*[a-z,A-Z][a-z,A-Z,0-9]+?\("))
+            if(expStr.IsValuable()&&Regex.IsMatch(expStr, @"\+|\-|\*|\/")){
+                throw new SqlSugarException("Select中不支持变量的运算。");
+            }
+            if (expStr.IsValuable() & Regex.IsMatch(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]+?\()|=\s*[a-z,A-Z][a-z,A-Z,0-9]+?\("))
             {
-                throw new SqlSugarException("Select中不支持变量的运算和函数。");
+                var ms = Regex.Matches(expStr, @"(\.[a-z,A-Z][a-z,A-Z,0-9]+?\()|=\s*[a-z,A-Z][a-z,A-Z,0-9]+?\(.*?\)[a-z,A-Z][a-z,A-Z,0-9]+");
+                var errorNum = 0;
+                foreach (Match item in ms)
+                {
+                    if (item.Value == null) {
+                        errorNum = 0;
+                        break;
+                    }
+                    if (!item.Value.IsMatch(@"\.ObjTo")) {
+                        errorNum = 0;
+                        break;
+                    }
+                }
+                if (errorNum > 0)
+                {
+                    throw new SqlSugarException("Select中不支持变量的运算和函数。");
+                }
             }
             return false;
         }
