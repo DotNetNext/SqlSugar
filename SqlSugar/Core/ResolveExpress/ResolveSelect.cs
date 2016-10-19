@@ -60,7 +60,7 @@ namespace SqlSugar
         private static bool IsComplexAnalysis(string expStr)
         {
             string errorFunName = null;
-            if (expStr.IsValuable()&&expStr.Contains("+<>"))
+            if (expStr.IsValuable() && (expStr.Contains("+<>") || Regex.IsMatch(expStr, @"\.[a-z,A-Z,_]\w*\.[a-z,A-Z,_]\w*?(\,|\})")))
             {
                 throw new SqlSugarException("Select中的拉姆达表达式,不支持外部传参数,目前支持的写法 Where(\"1=1\",new {id=1}).Select(it=>{ id=\"" + SqlSugarTool.ParSymbol + "id\".ObjToInt()}");
             }
