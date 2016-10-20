@@ -397,7 +397,8 @@ namespace SqlSugar
             ExecLogEvent(sql, pars, true);
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             _sqlDataAdapter.SelectCommand.CommandType = CommandType;
-            _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
+            if (pars != null)
+                _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             if (IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(_sqlDataAdapter.SelectCommand.Parameters);
@@ -444,7 +445,8 @@ namespace SqlSugar
             }
             _sqlDataAdapter.SelectCommand.CommandTimeout = this.CommandTimeOut;
             _sqlDataAdapter.SelectCommand.CommandType = CommandType;
-            _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
+            if (pars != null)
+                _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             DataSet ds = new DataSet();
             _sqlDataAdapter.Fill(ds);
             if (IsClearParameters)
