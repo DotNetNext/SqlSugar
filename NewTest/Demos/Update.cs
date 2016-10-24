@@ -63,6 +63,9 @@ namespace NewTest.Demos
                 //批量更新  数据量大时建议使用
                 var updateResult2 = db.SqlBulkReplace(GetUpdateList2());
 
+
+                //更新字符串
+                db.Update<Student>("sch_id=sch_id+1", it => it.id == 1);
             }
         }
 
