@@ -860,6 +860,28 @@ namespace SqlSugar
 
 
         #region update
+        /// <summary>
+        /// 根据表达式条件将实体对象更新到数据库
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="setValues">set后面的部分字符串 例如( id=@id,num=num+1 )</param>
+        /// <param name="whereObj"></param>
+        /// <returns></returns>
+        public bool Update<T>(string setValues, Expression<Func<T, bool>> expression, object whereObj=null)
+        {
+            Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTableNameByClassType(typeName);
+            Check.ArgumentNullException(setValues.IsNullOrEmpty(), "Update.setValues不为能空。");
+            ResolveExpress re = new ResolveExpress();
+            re.ResolveExpression(re, expression, this);
+            string sql =string.Format( "UPDATE {0} SET {1} WHERE 1=1 {2}",typeName.GetTranslationSqlName(),setValues,re.SqlWhere);
+            var pars = SqlSugarTool.GetParameters(whereObj).ToList();
+            pars.AddRange(re.Paras);
+            var reval= base.ExecuteCommand(sql, pars.ToArray())>0;
+            sql = null;
+            return reval;
+        }
 
         /// <summary>
         /// 根据表达式条件将实体对象更新到数据库
