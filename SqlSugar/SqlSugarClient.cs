@@ -775,7 +775,7 @@ namespace SqlSugar
             var columnNames =props.Select(it=>it.Name).ToList();
             if (DisableInsertColumns.IsValuable())
             {//去除禁止插入列
-                columnNames.RemoveAll(it=>DisableInsertColumns.Any(dc=>dc.ToLower().Contains(it.ToLower())));
+                columnNames.RemoveAll(it=>DisableInsertColumns.Any(dc=>dc.ToLower()==it.ToLower()));
             }
             //启用别名列
             if (this.IsEnableAttributeMapping = true && _mappingColumns.IsValuable()) {
@@ -1176,7 +1176,7 @@ namespace SqlSugar
             var columnNames = props.Select(it => it.Name).ToList();
             if (DisableUpdateColumns.IsValuable())
             {//去除禁止插入列
-                columnNames.RemoveAll(it => DisableUpdateColumns.Any(dc => dc.ToLower().Contains(it.ToLower())));
+                columnNames.RemoveAll(it => DisableUpdateColumns.Any(dc => dc.ToLower()==it.ToLower()));
             }
             //启用别名列
             if (this.IsEnableAttributeMapping = true && _mappingColumns.IsValuable())
