@@ -177,7 +177,8 @@ namespace SqlSugar
             if (thisValue == null) thisValue = new string[] { };
             var reval= thisValue.ToList();
             reval.AddRange(items);
-            return reval.ToArray();
+            items= reval.ToArray();
+            return items;
         }
 
         /// <summary>
@@ -191,7 +192,8 @@ namespace SqlSugar
             if (thisValue == null) thisValue = new string[] { };
             var reval = thisValue.ToList();
             reval.Remove(item);
-            return reval.ToArray();
+            thisValue= reval.ToArray();
+            return thisValue;
         }
     }
 }
