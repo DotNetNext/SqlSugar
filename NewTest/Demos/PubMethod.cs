@@ -39,7 +39,7 @@ namespace NewTest.Demos
 
 
                 //GetParameterArray 获取页面参数所有参数的键和值
-                var pars = SqlSugarTool.GetParameterArray();
+                //var pars = SqlSugarTool.GetParameterArray(); WEB项目中使用
 
 
                 //将匿名对象转成SqlParameter
@@ -49,6 +49,13 @@ namespace NewTest.Demos
                 //用于生成多语言的视图
                 //LanguageHelper.UpdateView()
 
+
+                //数组的操作,因为好多SqlSugar配置都是数组，所以提供更好的语法简化代码。
+                db.DisableUpdateColumns = new string[] { "id" };
+                db.DisableUpdateColumns.ArrayAdd("name");
+                db.DisableUpdateColumns.ArrayAdd("name","sex","student");
+                db.DisableUpdateColumns.ArrayRemove("id");
+                db.DisableUpdateColumns.ArrayWhere(it => it == "name");
             }
         }
     }
