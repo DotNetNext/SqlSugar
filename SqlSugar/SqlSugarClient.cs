@@ -182,9 +182,27 @@ namespace SqlSugar
         public string[] DisableUpdateColumns { get; set; }
 
         /// <summary>
+        /// 添加禁止更新列
+        /// </summary>
+        /// <param name="columns"></param>
+        public void AddDisableUpdateColumn(params string[] columns) {
+
+            this.DisableUpdateColumns = this.DisableUpdateColumns.ArrayAdd(columns);
+        }
+
+        /// <summary>
         /// 设置禁止插入的列
         /// </summary>
         public string[] DisableInsertColumns { get; set; }
+
+        /// <summary>
+        /// 添加禁止插入列
+        /// </summary>
+        /// <param name="columns"></param>
+        public void AddDisableInsertColumns(params string[] columns)
+        {
+            this.DisableInsertColumns = this.DisableInsertColumns.ArrayAdd(columns);
+        }
 
         /// <summary>
         ///设置Queryable或者Sqlable转换成JSON字符串时的日期格式

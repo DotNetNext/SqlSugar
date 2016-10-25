@@ -159,7 +159,7 @@ namespace SqlSugar
         /// <param name="thisValue"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static string[] ArrayWhere(this string[] thisValue, Func<string, bool> expression)
+        internal static string[] ArrayWhere(this string[] thisValue, Func<string, bool> expression)
         {
             if (thisValue == null) return null;
             thisValue= thisValue.Where(expression).ToArray();
@@ -172,13 +172,13 @@ namespace SqlSugar
         /// <param name="thisValue"></param>
         /// <param name="items"></param>
         /// <returns></returns>
-        public static string[] ArrayAdd(this string[] thisValue,params string  [] items)
+        internal static string[] ArrayAdd(this string[] thisValue, params string[] items)
         {
             if (thisValue == null) thisValue = new string[] { };
             var reval= thisValue.ToList();
             reval.AddRange(items);
-            items= reval.ToArray();
-            return items;
+            thisValue = reval.ToArray();
+            return thisValue;
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace SqlSugar
         /// <param name="thisValue"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public static string[] ArrayRemove(this string[] thisValue, string item)
+        internal static string[] ArrayRemove(this string[] thisValue, string item)
         {
             if (thisValue == null) thisValue = new string[] { };
             var reval = thisValue.ToList();

@@ -45,6 +45,11 @@ namespace NewTest.Demos
 
                 //SqlBulkCopy同样支持不挺入列设置
                 db.SqlBulkCopy(GetInsertList());
+
+                //清空禁止插入列
+                db.DisableInsertColumns = null;
+                //添加禁止插入列
+                db.AddDisableInsertColumns("name","id");
             }
         }
 
