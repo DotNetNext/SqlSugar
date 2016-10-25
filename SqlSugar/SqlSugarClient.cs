@@ -883,7 +883,8 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="setValues">set后面的部分字符串 例如( id=@id,num=num+1 )</param>
-        /// <param name="whereObj"></param>
+        /// <param name="expression">表达式条件</param>
+        /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
         /// <returns></returns>
         public bool Update<T>(string setValues, Expression<Func<T, bool>> expression, object whereObj=null)
         {
