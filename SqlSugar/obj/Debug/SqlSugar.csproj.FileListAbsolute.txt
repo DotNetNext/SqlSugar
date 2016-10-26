@@ -61,3 +61,9 @@ D:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
 C:\Users\孙凯旋\OneDrive\myOpenSource\sqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
 D:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
 D:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
+E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
+E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
+E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
+E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
+E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
+E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
