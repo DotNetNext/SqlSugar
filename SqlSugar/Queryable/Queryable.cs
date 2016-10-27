@@ -47,6 +47,10 @@ namespace SqlSugar
         /// </summary>
         internal string OrderByValue { get; set; }
         /// <summary>
+        /// Order排序字段
+        /// </summary>
+        internal string OrderByField { get; set; }
+        /// <summary>
         /// Select临时数据
         /// </summary>
         internal string SelectValue { get; set; }
@@ -70,7 +74,7 @@ namespace SqlSugar
         /// 联表查询临时数据
         /// </summary>
         internal List<string> JoinTableValue = new List<string>();
-        
+
         #endregion
 
 
@@ -154,7 +158,7 @@ namespace SqlSugar
         }
         public Queryable<T2> Select<T2>(string select)
         {
-            return this.Select<T,T2>(select);
+            return this.Select<T, T2>(select);
         }
         #endregion
 

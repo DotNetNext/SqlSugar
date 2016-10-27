@@ -373,7 +373,7 @@ namespace SqlSugar
         /// <returns></returns>
         public List<T> GetList<T>(string sql, params SqlParameter[] pars)
         {
-            List<T> reval = SqlSugarTool.DataReaderToList<T>(typeof(T), GetReader(sql, pars), null);
+            List<T> reval = SqlSugarTool.DataReaderToList<T>(typeof(T), GetReader(sql, pars), null).ToList();
             return reval;
         }
 

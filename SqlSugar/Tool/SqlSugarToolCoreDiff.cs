@@ -13,37 +13,36 @@ namespace SqlSugar
     /// </summary>
     public partial class SqlSugarTool
     {
-        private static void FillValueTypeToDictionary<T>(Type type, IDataReader dr, List<T> strReval)
+        private static IEnumerable<T> FillValueTypeToDictionary<T>(Type type, IDataReader dr)
         {
             using (IDataReader re = dr)
             {
-                Dictionary<string, string> reval = new Dictionary<string, string>();
                 while (re.Read())
                 {
                     if (SqlSugarTool.DicOO == type)
                     {
                         var kv = new KeyValuePair<object, object>((object)Convert.ChangeType(re.GetValue(0), typeof(object)), (int)Convert.ChangeType(re.GetValue(1), typeof(object)));
-                        strReval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<object, object>)));
+                        yield return (T)Convert.ChangeType(kv, typeof(KeyValuePair<object, object>));
                     }
                     else if (SqlSugarTool.Dicii == type)
                     {
                         var kv = new KeyValuePair<int, int>((int)Convert.ChangeType(re.GetValue(0), typeof(int)), (int)Convert.ChangeType(re.GetValue(1), typeof(int)));
-                        strReval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<int, int>)));
+                        yield return (T)Convert.ChangeType(kv, typeof(KeyValuePair<int, int>));
                     }
                     else if (SqlSugarTool.DicSi == type)
                     {
                         var kv = new KeyValuePair<string, int>((string)Convert.ChangeType(re.GetValue(0), typeof(string)), (int)Convert.ChangeType(re.GetValue(1), typeof(int)));
-                        strReval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, int>)));
+                        yield return (T)Convert.ChangeType(kv, typeof(KeyValuePair<string, int>));
                     }
                     else if (SqlSugarTool.DicSo == type)
                     {
                         var kv = new KeyValuePair<string, object>((string)Convert.ChangeType(re.GetValue(0), typeof(string)), (object)Convert.ChangeType(re.GetValue(1), typeof(object)));
-                        strReval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, object>)));
+                        yield return (T)Convert.ChangeType(kv, typeof(KeyValuePair<string, object>));
                     }
                     else if (SqlSugarTool.DicSS == type)
                     {
                         var kv = new KeyValuePair<string, string>((string)Convert.ChangeType(re.GetValue(0), typeof(string)), (string)Convert.ChangeType(re.GetValue(1), typeof(string)));
-                        strReval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, string>)));
+                        yield return (T)Convert.ChangeType(kv, typeof(KeyValuePair<string, string>));
                     }
                     else
                     {
@@ -53,7 +52,7 @@ namespace SqlSugar
             }
         }
 
-        private static void FillValueTypeToArray<T>(Type type, IDataReader dr, List<T> strReval)
+        private static IEnumerable<T> FillValueTypeToArray<T>(Type type, IDataReader dr)
         {
             using (IDataReader re = dr)
             {
@@ -67,21 +66,21 @@ namespace SqlSugar
                         array[i] = Convert.ChangeType(re.GetValue(i), childType);
                     }
                     if (childType == SqlSugarTool.StringType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (string)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (string)it).ToArray(), type);
                     else if (childType == SqlSugarTool.ObjType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (object)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (object)it).ToArray(), type);
                     else if (childType == SqlSugarTool.BoolType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (bool)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (bool)it).ToArray(), type);
                     else if (childType == SqlSugarTool.ByteType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (byte)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (byte)it).ToArray(), type);
                     else if (childType == SqlSugarTool.DecType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (decimal)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (decimal)it).ToArray(), type);
                     else if (childType == SqlSugarTool.GuidType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (Guid)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (Guid)it).ToArray(), type);
                     else if (childType == SqlSugarTool.DateType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (DateTime)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (DateTime)it).ToArray(), type);
                     else if (childType == SqlSugarTool.IntType)
-                        strReval.Add((T)Convert.ChangeType(array.Select(it => (int)it).ToArray(), type));
+                        yield return (T)Convert.ChangeType(array.Select(it => (int)it).ToArray(), type);
                     else
                         Check.Exception(true, "暂时不支持该类型的Array 你可以试试 object[] 或者联系作者！！");
                 }

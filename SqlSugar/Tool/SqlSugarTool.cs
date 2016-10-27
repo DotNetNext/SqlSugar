@@ -47,27 +47,30 @@ namespace SqlSugar
         /// <param name="isClose"></param>
         /// <param name="isTry"></param>
         /// <returns></returns>
-        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true, bool isTry = true)
+        internal static IEnumerable<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true, bool isTry = true)
         {
             if (type.Name.Contains("KeyValuePair"))
             {
-                List<T> strReval = new List<T>();
-                FillValueTypeToDictionary(type, dr, strReval);
-                return strReval;
+                foreach (var model in FillValueTypeToDictionary<T>(type, dr))
+                {
+                    yield return model;
+                }
             }
             //值类型
             else if (type.IsValueType || type == SqlSugarTool.StringType)
             {
-                List<T> strReval = new List<T>();
-                FillValueTypeToDr<T>(type, dr, strReval);
-                return strReval;
+                foreach (var model in FillValueTypeToDr<T>(type, dr))
+                {
+                    yield return model;
+                }
             }
             //数组类型
             else if (type.IsArray)
             {
-                List<T> strReval = new List<T>();
-                FillValueTypeToArray(type, dr, strReval);
-                return strReval;
+                foreach (var model in FillValueTypeToArray<T>(type, dr))
+                {
+                    yield return model;
+                }
             }
 
 
@@ -83,31 +86,28 @@ namespace SqlSugar
                 eblist = IDataReaderEntityBuilder<T>.CreateBuilder(type, dr);
                 cacheManager.Add(key, eblist, cacheManager.Day);
             }
-            List<T> list = new List<T>();
+
             try
             {
-                if (dr == null) return list;
+                if (dr == null) yield return default(T);
                 while (dr.Read())
                 {
-                    list.Add(eblist.Build(dr));
+                    yield return eblist.Build(dr);
                 }
-                if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
             }
-            catch (Exception ex)
+            finally
             {
                 if (isClose) { dr.Close(); dr.Dispose(); dr = null; }
-                Check.Exception(true, "错误信息：实体映射出错。\r\n错误详情：{0}", ex.Message);
             }
-            return list;
         }
 
-        private static void FillValueTypeToDr<T>(Type type, IDataReader dr, List<T> strReval)
+        private static IEnumerable<T> FillValueTypeToDr<T>(Type type, IDataReader dr)
         {
             using (IDataReader re = dr)
             {
                 while (re.Read())
                 {
-                    strReval.Add((T)Convert.ChangeType(re.GetValue(0), type));
+                    yield return (T)Convert.ChangeType(re.GetValue(0), type);
                 }
             }
         }
@@ -134,7 +134,13 @@ namespace SqlSugar
         public static SqlParameter[] GetParameters(object obj)
         {
             List<SqlParameter> listParams = new List<SqlParameter>();
-            if (obj != null)
+
+            var objList = obj as IEnumerable<SqlParameter>;
+            if (objList != null)
+            {
+                listParams.AddRange(objList);
+            }
+            else
             {
                 var type = obj.GetType();
                 var isDic = type.IsIn(SqlSugarTool.DicArraySO, SqlSugarTool.DicArraySS);
@@ -296,7 +302,7 @@ namespace SqlSugar
             PropertyInfo propertyInfo = obj.GetType().GetProperty(property);
             return (Guid)propertyInfo.GetValue(obj, null);
         }
-  
+
         /// <summary>
         /// 使用页面自动填充sqlParameter时 Request.Form出现特殊字符时可以重写Request.Form方法，使用时注意加锁并且用到将该值设为null
         /// </summary>

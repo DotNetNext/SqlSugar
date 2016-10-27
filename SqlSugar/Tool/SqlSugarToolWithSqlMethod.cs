@@ -43,44 +43,67 @@ namespace SqlSugar
             {
                 #region  rowNumber
                 string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
-                var order = queryable.OrderByValue.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderByValue + " )") : null;
 
-                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM {0} {5} {2} WHERE 1=1 {3} {4} ", tableName.GetTranslationSqlName(), order, withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
+                sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM {0} {4} {1} WHERE 1=1 {2} {3} ", tableName.GetTranslationSqlName(), withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
+
+                string strTmp = string.Empty;
+                string strOrder = string.Empty;
+                string strSql = string.Empty;
+                if (queryable.OrderByValue.IsValuable())
+                {
+                    strOrder = " order by " + queryable.OrderByValue;
+                    strTmp = queryable.OrderByValue.IndexOf("DESC") >= 0 ? " <(select min " : " >(select max ";
+                }
+
                 if (queryable.Skip == null && queryable.Take != null)
                 {
-                    if (joinInfo.IsValuable())
-                    {
-                        sbSql.Insert(0, "SELECT * FROM ( ");
-                    }
-                    else
-                    {
-                        sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
-                    }
-                    sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
+                    //if (joinInfo.IsValuable())
+                    //{
+                    //    sbSql.Insert(0, "SELECT * FROM ( ");
+                    //}
+                    //else
+                    //{
+                    //    sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
+                    //}
+                    //sbSql.Append(") t WHERE t.row_index<=" + queryable.Take);
+
+                    strSql = string.Format("select top {0} {1} from {2} {3} {4} where 1=1 {5} {6} {7}", queryable.Take, queryable.SelectValue.GetSelectFiles(), tableName.GetTranslationSqlName(), joinInfo, withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), strOrder);
                 }
                 else if (queryable.Skip != null && queryable.Take == null)
                 {
-                    if (joinInfo.IsValuable())
-                    {
-                        sbSql.Insert(0, "SELECT * FROM ( ");
-                    }
-                    else
-                    {
-                        sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
-                    }
-                    sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
+                    //if (joinInfo.IsValuable())
+                    //{
+                    //    sbSql.Insert(0, "SELECT * FROM ( ");
+                    //}
+                    //else
+                    //{
+                    //    sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
+                    //}
+                    //sbSql.Append(") t WHERE t.row_index>" + (queryable.Skip));
+                    strSql = string.Format("select {0} from {1}{2}{3} where 1=1 {4} and [{5}]{6}([{5}]) from (select top {7} [{5}] from {1}{2}{3} where 1=1 {4}{8}) as tblTmp) {8}", queryable.SelectValue.GetSelectFiles(), tableName.GetTranslationSqlName(), joinInfo, withNoLock, string.Join("", queryable.WhereValue), queryable.OrderByField, strTmp, queryable.Skip, strOrder);
                 }
                 else if (queryable.Skip != null && queryable.Take != null)
                 {
-                    if (joinInfo.IsValuable())
+                    if (queryable.Skip == 0)
                     {
-                        sbSql.Insert(0, "SELECT * FROM ( ");
+                        strSql = string.Format("select top {0} {1} from {2} {3} {4} where 1=1 {5} {6} {7}", queryable.Take, queryable.SelectValue.GetSelectFiles(), tableName.GetTranslationSqlName(), joinInfo, withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), strOrder);
                     }
                     else
                     {
-                        sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
+                        strSql = string.Format("select top {0} {1} from {2}{3}{4} where 1=1 {5} and [{6}]{7}([{6}]) from (select top {8} [{6}] from {2}{3}{4} where 1=1 {5}{9}) as tblTmp) {9}", queryable.Take, queryable.SelectValue.GetSelectFiles(), tableName.GetTranslationSqlName(), joinInfo, withNoLock, string.Join("", queryable.WhereValue), queryable.OrderByField, strTmp, queryable.Skip, strOrder);
                     }
-                    sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
+                    sbSql.Clear();
+                    sbSql.Append(strSql);
+                    //if (joinInfo.IsValuable())
+                    //{
+                    //    sbSql.Insert(0, "SELECT * FROM ( ");
+                    //}
+                    //else
+                    //{
+                    //    sbSql.Insert(0, "SELECT " + queryable.SelectValue.GetSelectFiles() + " FROM ( ");
+                    //}
+
+                    //sbSql.Append(") t WHERE t.row_index BETWEEN " + (queryable.Skip + 1) + " AND " + (queryable.Skip + queryable.Take));
                 }
                 #endregion
             }
@@ -105,14 +128,29 @@ namespace SqlSugar
         {
             if (sqlable.DB.PageModel == PageModel.RowNumber)
             {
-                sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
-                sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
-                sbSql.Append(sqlable.OrderBy);
-                sbSql.Append(sqlable.GroupBy);
-                int skip = (pageIndex - 1) * pageSize + 1;
+                //sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
+                //sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
+                //sbSql.Append(sqlable.OrderBy);
+                //sbSql.Append(sqlable.GroupBy);
+                int skip = (pageIndex - 1) * pageSize;
                 int take = pageSize;
-                sbSql.Insert(0, "SELECT * FROM ( ");
-                sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
+                //sbSql.Insert(0, "SELECT * FROM ( ");
+                //sbSql.AppendFormat(") t WHERE  t.row_index BETWEEN {0}  AND {1}   ", skip, skip + take - 1);
+
+                string strOrder = " order by " + orderByFiled;
+                string orderByFieldValue = orderByFiled.Replace("ASC", "").Replace("DESC", "").Trim();
+                string strTmp = orderByFiled.IndexOf("DESC") >= 0 ? " <(select min " : " >(select max ";
+                string strSql = string.Empty;
+                if (skip == 0)
+                {
+                    strSql = string.Format("select top {0} {1} {2} where 1=1 {3} {4} {5}", take, fileds, sbSql, string.Join("", sqlable.Where), sqlable.GroupBy, strOrder);
+                }
+                else
+                {
+                    strSql = string.Format("select top {0} {1} {2} where 1=1 {3} and [{4}]{5}([{4}]) from (select top {6} [{4}] {2} where 1=1 {3}{7}) as tblTmp) {7}", take, fileds, sbSql, string.Join("", sqlable.Where), orderByFieldValue, strTmp, skip, strOrder);
+                }
+                sbSql.Clear();
+                sbSql.Append(strSql);
             }
             else
             {

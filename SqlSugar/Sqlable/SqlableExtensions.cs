@@ -95,7 +95,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable OrderBy(this Sqlable sqlable, string orderBy)
         {
-            sqlable.OrderBy ="ORDER BY "+ orderBy+" ";
+            sqlable.OrderBy = "ORDER BY " + orderBy + " ";
             return sqlable;
         }
 
@@ -122,7 +122,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static Sqlable GroupBy(this Sqlable sqlable, string groupBy)
         {
-            sqlable.GroupBy ="GROUP BY "+ groupBy+" ";
+            sqlable.GroupBy = "GROUP BY " + groupBy + " ";
             return sqlable;
         }
 
@@ -153,8 +153,7 @@ namespace SqlSugar
                 {
                     sbSql.Append(nextSql);
                 }
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams), fileds);
-                return reval;
+                return SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams), fileds).ToList();
             }
             catch (Exception ex)
             {
@@ -232,7 +231,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static string SelectToJson(this Sqlable sqlable, string fileds, object whereObj = null)
         {
-            return JsonConverter.DataTableToJson(SelectToDataTable(sqlable, fileds, whereObj),sqlable.DB.SerializerDateFormat);
+            return JsonConverter.DataTableToJson(SelectToDataTable(sqlable, fileds, whereObj), sqlable.DB.SerializerDateFormat);
         }
 
         /// <summary>
@@ -321,8 +320,7 @@ namespace SqlSugar
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
                 SqlSugarTool.GetSqlableSql(sqlable, fileds, orderByFiled, pageIndex, pageSize, sbSql);
                 var sqlParams = GetAllParas(sqlable, whereObj);
-                var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams), fileds);
-                return reval;
+                return SqlSugarTool.DataReaderToList<T>(typeof(T), sqlable.DB.GetReader(sbSql.ToString(), sqlParams), fileds).ToList();
             }
             catch (Exception ex)
             {
@@ -336,7 +334,7 @@ namespace SqlSugar
             }
         }
 
-   
+
 
 
         /// <summary>
@@ -357,7 +355,7 @@ namespace SqlSugar
             {
                 if (pageIndex == 0) pageIndex = 1;
                 Check.ArgumentNullException(sqlable.Sql, "语法错误，SelectToSql必需要在.Form后面使用");
-                 SqlSugarTool.GetSqlableSql(sqlable, fileds, orderByFiled, pageIndex, pageSize, sbSql);
+                SqlSugarTool.GetSqlableSql(sqlable, fileds, orderByFiled, pageIndex, pageSize, sbSql);
                 var sqlParams = GetAllParas(sqlable, whereObj);
                 var reval = sqlable.DB.GetDataTable(sbSql.ToString(), sqlParams);
                 return reval;
@@ -374,7 +372,7 @@ namespace SqlSugar
             }
         }
 
-        
+
         /// <summary>
         /// 设置查询列和分页参数执行查询，并且将结果集转成json
         /// </summary>
@@ -385,11 +383,11 @@ namespace SqlSugar
         /// <param name="pageSize">每页显示数量</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
         /// <returns></returns>
-        public static string SelectToPageJson(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) 
+        public static string SelectToPageJson(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null)
         {
-           return  JsonConverter.DataTableToJson(SelectToPageTable(sqlable,fileds,orderByFiled,pageIndex,pageSize,whereObj),sqlable.DB.SerializerDateFormat);
+            return JsonConverter.DataTableToJson(SelectToPageTable(sqlable, fileds, orderByFiled, pageIndex, pageSize, whereObj), sqlable.DB.SerializerDateFormat);
         }
-            
+
         /// <summary>
         /// 设置查询列和分页参数执行查询，并且将结果集转成dynamic
         /// </summary>
@@ -400,9 +398,9 @@ namespace SqlSugar
         /// <param name="pageSize">每页显示数量</param>
         /// <param name="whereObj">SQL参数,例如:new{id=1,name="张三"}</param>
         /// <returns></returns>
-        public static dynamic SelectToPageDynamic(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null) 
+        public static dynamic SelectToPageDynamic(this Sqlable sqlable, string fileds, string orderByFiled, int pageIndex, int pageSize, object whereObj = null)
         {
-           return  JsonConverter.ConvertJson(SelectToPageJson(sqlable,fileds,orderByFiled,pageIndex,pageSize,whereObj));
+            return JsonConverter.ConvertJson(SelectToPageJson(sqlable, fileds, orderByFiled, pageIndex, pageSize, whereObj));
         }
 
 

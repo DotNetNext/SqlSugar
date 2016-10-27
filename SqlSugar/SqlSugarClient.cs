@@ -496,7 +496,7 @@ namespace SqlSugar
             {
                 fields = sql.Substring(0, 100);
             }
-            var reval = SqlSugarTool.DataReaderToList<T>(type, reader, fields);
+            var reval = SqlSugarTool.DataReaderToList<T>(type, reader, fields).ToList();
             fields = null;
             sql = null;
             return reval;

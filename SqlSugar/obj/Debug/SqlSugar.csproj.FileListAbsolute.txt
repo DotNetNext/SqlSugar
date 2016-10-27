@@ -66,4 +66,9 @@ E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\bin\Debug\SqlS
 E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
 E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
-E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
+E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\bin\Debug\SqlSugar.XML
+E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\bin\Debug\SqlSugar.dll
+E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\bin\Debug\SqlSugar.pdb
+E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\obj\Debug\SqlSugar.dll
+E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\obj\Debug\SqlSugar.pdb
+E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
