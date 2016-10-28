@@ -269,7 +269,7 @@ namespace SqlSugar
                 else
                 {
                     var oldLeft = AddParas(ref left, parValue);
-                    return string.Format(" ({0} {1} " + SqlSugarTool.ParSymbol + "{2}) ", oldLeft, oper, left);
+                    return string.Format(" ({0} {1} " + SqlSugarTool.ParSymbol + "{2}) ", oldLeft.GetTranslationSqlName(), oper, left);
                 }
             }
             else if (isValueOperKey)
@@ -290,7 +290,7 @@ namespace SqlSugar
                 else
                 {
                     var oldRight = AddParasReturnRight(parValue, ref  right);
-                    return string.Format("( " + SqlSugarTool.ParSymbol + "{0} {1} {2} )", right, oper, oldRight);
+                    return string.Format("( " + SqlSugarTool.ParSymbol + "{0} {1} {2} )", right, oper, oldRight.GetTranslationSqlName());
                 }
             }
             else if (leftType == MemberType.Value && rightType == MemberType.Value)

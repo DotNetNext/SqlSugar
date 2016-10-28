@@ -23,7 +23,7 @@ namespace SqlSugar
             var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError,methodName));
             var oldLeft = AddParas(ref left,right);
-            return string.Format("({0} = " + SqlSugarTool.ParSymbol + "{1})", oldLeft, left);
+            return string.Format("({0} = " + SqlSugarTool.ParSymbol + "{1})", oldLeft.GetTranslationSqlName(), left);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace SqlSugar
             var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError, methodName));
             var oldLeft = AddParas(ref left, right + '%');
-            return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft, null, left);
+            return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft.GetTranslationSqlName(), null, left);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace SqlSugar
             var right = mce.Arguments[0].NodeType.IsIn(ExpressionType.Constant, ExpressionType.MemberAccess) ? CreateSqlElements(mce.Arguments[0], ref rightType, true) : Expression.Lambda(mce.Arguments[0]).Compile().DynamicInvoke().ObjToString();
             Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError, methodName));
             var oldLeft = AddParas(ref left, '%' + right);
-            return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft, null, left);
+            return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft.GetTranslationSqlName(), null, left);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace SqlSugar
                     return (" (1=2) ");
                 }
                 var inValue = inArray.ToArray().ToJoinSqlInVal();
-                return string.Format("({0} IN ({1}))", fieldName, inValue);
+                return string.Format("({0} IN ({1}))", fieldName.GetTranslationSqlName(), inValue);
             }
             else if (mce.Arguments.Count == 2) { //两个值
                 //object containsValue = null;
@@ -119,7 +119,7 @@ namespace SqlSugar
             {
                 Check.Exception(leftType == MemberType.Value, string.Format(ExpMethodError, methodName));
                 var oldLeft = AddParas(ref left, '%' + right + '%');
-                return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft, null, left);
+                return string.Format("({0} {1} LIKE " + SqlSugarTool.ParSymbol + "{2})", oldLeft.GetTranslationSqlName(), null, left);
             }
         }
 

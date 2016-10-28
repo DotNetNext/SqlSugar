@@ -198,7 +198,7 @@ namespace SqlSugar
             var type = queryable.Type;
             queryable.WhereIndex = queryable.WhereIndex + 100;
             ResolveExpress re = new ResolveExpress(queryable.WhereIndex);
-            queryable.WhereValue.Add(string.Format(" AND {0} IN ({1})", InFieldName, inValues.ToJoinSqlInVal()));
+            queryable.WhereValue.Add(string.Format(" AND {0} IN ({1})", InFieldName.GetTranslationSqlName(), inValues.ToJoinSqlInVal()));
             return queryable;
         }
 
@@ -282,7 +282,7 @@ namespace SqlSugar
                 field = re.GetExpressionRightFieldByNT(expression, queryable.DB);
             }
             var pre = queryable.OrderByValue.IsValuable() ? "," : "";
-            queryable.OrderByValue += pre + field + " " + type.ToString().ToUpper();
+            queryable.OrderByValue += pre + field.GetTranslationSqlName() + " " + type.ToString().ToUpper();
             return queryable;
         }
 
@@ -300,7 +300,7 @@ namespace SqlSugar
             ResolveExpress re = new ResolveExpress();
             var field = re.GetExpressionRightFieldByNT(expression, queryable.DB);
             var pre = queryable.OrderByValue.IsValuable() ? "," : "";
-            queryable.OrderByValue += pre + field + " " + type.ToString().ToUpper();
+            queryable.OrderByValue += pre + field.GetTranslationSqlName() + " " + type.ToString().ToUpper();
             return queryable;
         }
 
