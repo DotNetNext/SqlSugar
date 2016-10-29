@@ -513,7 +513,7 @@ namespace SqlSugar
                 }
             }
             var type = typeof(T);
-            if (CommandType == CommandType.Text)
+            if (base.CommandType == CommandType.Text)
             {
                 sql = string.Format(PubModel.SqlSugarClientConst.SqlQuerySqlTemplate, type.Name, sql);
             }
