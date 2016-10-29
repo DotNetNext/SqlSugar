@@ -116,7 +116,7 @@ namespace SqlSugar
         /// 使用说明:Delete《T》(new int[]{1,2,3}) 或者  Delete《T》(3)
         /// </summary>
         /// <param name="whereIn"> delete ids </param>
-        public bool Delete<T, FiledType>(params FiledType[] whereIn)
+        public bool Delete<T, FiledType>(params FiledType[] whereIn) where T:class
         {
             var tasks = new Task<bool>[configList.Count];
             for (int i = 0; i < tasks.Length; i++)
@@ -139,7 +139,7 @@ namespace SqlSugar
         /// Delete《T》(it=>it.id=100) 或者Delete《T》(3)
         /// </summary>
         /// <param name="expression">筛选表达式</param>
-        public bool Delete<T>(System.Linq.Expressions.Expression<Func<T, bool>> expression)
+        public bool Delete<T>(System.Linq.Expressions.Expression<Func<T, bool>> expression)where T:class
         {
             var tasks = new Task<bool>[configList.Count];
             for (int i = 0; i < tasks.Length; i++)
@@ -164,7 +164,7 @@ namespace SqlSugar
         /// </summary>
         ///<param name="field">  </param>
         /// <param name="whereIn"> delete ids </param>
-        public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)
+        public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)where T:class
         {
             var tasks = new Task<bool>[configList.Count];
             for (int i = 0; i < tasks.Length; i++)
@@ -188,7 +188,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="field">更新删除状态字段</param>
         /// <param name="expression">筛选表达式</param>
-        public bool FalseDelete<T>(string field, System.Linq.Expressions.Expression<Func<T, bool>> expression)
+        public bool FalseDelete<T>(string field, System.Linq.Expressions.Expression<Func<T, bool>> expression) where T:class
         {
             var tasks = new Task<bool>[configList.Count];
             for (int i = 0; i < tasks.Length; i++)

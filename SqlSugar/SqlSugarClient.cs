@@ -350,7 +350,7 @@ namespace SqlSugar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public Queryable<T> Queryable<T>() where T : new()
+        public Queryable<T> Queryable<T>() where T : class,new()
         {
             InitAttributes<T>();
             var queryable = new Queryable<T>() { DB = this, TableName = typeof(T).Name };
@@ -399,7 +399,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">T类型对应的真实表名</param>
         /// <returns></returns>
-        public Queryable<T> Queryable<T>(string tableName) where T : new()
+        public Queryable<T> Queryable<T>(string tableName) where T : class,new()
         {
             InitAttributes<T>();
             var queryable = new Queryable<T>() { DB = this, TableName = tableName };
@@ -886,7 +886,7 @@ namespace SqlSugar
         /// <param name="expression">表达式条件</param>
         /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
         /// <returns></returns>
-        public bool Update<T>(string setValues, Expression<Func<T, bool>> expression, object whereObj=null)
+        public bool Update<T>(string setValues, Expression<Func<T, bool>> expression, object whereObj=null) where T:class
         {
             Type type = typeof(T);
             string typeName = type.Name;
@@ -1321,7 +1321,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="deleteObj"></param>
         /// <returns></returns>
-        public bool Delete<T>(T deleteObj)
+        public bool Delete<T>(T deleteObj) where T:class
         {
             InitAttributes<T>();
             var isDynamic = typeof(T).IsAnonymousType();
@@ -1351,7 +1351,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="deleteObjList"></param>
         /// <returns>全部删除成功返回true</returns>
-        public bool Delete<T>(List<T> deleteObjList) 
+        public bool Delete<T>(List<T> deleteObjList) where T:class
         {
             if (deleteObjList == null || deleteObjList.Count == 0) return false;
             var reval=true;
@@ -1371,7 +1371,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="expression">表达式条件</param>
         /// <returns>删除成功返回true</returns>
-        public bool Delete<T>(Expression<Func<T, bool>> expression)
+        public bool Delete<T>(Expression<Func<T, bool>> expression) where T:class
         {
             InitAttributes<T>();
             Type type = typeof(T);
@@ -1392,7 +1392,7 @@ namespace SqlSugar
         /// <param name="SqlWhereString">不包含Where的字符串</param>
         /// <param name="whereObj">匿名参数(例如:new{id=1,name="张三"})</param>
         /// <returns>删除成功返回true</returns>
-        public bool Delete<T>(string SqlWhereString, object whereObj = null)
+        public bool Delete<T>(string SqlWhereString, object whereObj = null) where T:class
         {
             InitAttributes<T>();
             Type type = typeof(T);
@@ -1414,7 +1414,7 @@ namespace SqlSugar
         /// <typeparam name="FiledType">主键类型</typeparam>
         /// <param name="whereIn">主键集合</param>
         /// <returns>删除成功返回true</returns>
-        public bool Delete<T, FiledType>(params FiledType[] whereIn)
+        public bool Delete<T, FiledType>(params FiledType[] whereIn) where T:class
         {
             InitAttributes<T>();
             Type type = typeof(T);
@@ -1442,7 +1442,7 @@ namespace SqlSugar
         /// <param name="expression">表达式条件</param>
         /// <param name="whereIn">批定列值的集合</param>
         /// <returns>删除成功返回true</returns>
-        public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn)
+        public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, List<FiledType> whereIn) where T:class
         {
             InitAttributes<T>();
             if (whereIn == null) return false;
@@ -1457,7 +1457,7 @@ namespace SqlSugar
         /// <param name="expression">表达式条件</param>
         /// <param name="whereIn">批定列值的集合</param>
         /// <returns>删除成功返回true</returns>
-        public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn)
+        public bool Delete<T, FiledType>(Expression<Func<T, object>> expression, params FiledType[] whereIn) where T:class
         {
             InitAttributes<T>();
             ResolveExpress re = new ResolveExpress();
@@ -1487,7 +1487,7 @@ namespace SqlSugar
         /// <param name="field">标识删除的字段</param>
         /// <param name="whereIn">主键集合</param>
         /// <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
-        public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn)
+        public bool FalseDelete<T, FiledType>(string field, params FiledType[] whereIn) where T:class
         {
             InitAttributes<T>();
             Type type = typeof(T);
@@ -1514,7 +1514,7 @@ namespace SqlSugar
         /// <param name="field">标识删除的字段</param>
         /// <param name="expression">表达式条件</param>
         /// <returns>将field的值更新为1,则返回true表示状态删除成功</returns>
-        public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression)
+        public bool FalseDelete<T>(string field, Expression<Func<T, bool>> expression) where T:class
         {
             InitAttributes<T>();
             Type type = typeof(T);
