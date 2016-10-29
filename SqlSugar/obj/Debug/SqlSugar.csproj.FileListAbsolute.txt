@@ -72,3 +72,4 @@ E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\bi
 E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\obj\Debug\SqlSugar.dll
 E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\obj\Debug\SqlSugar.pdb
 E:\SourceManage(.Net)\Master\温州消毒工作室项目\backup\CSSD\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
+E:\系统测试\腾耘\Winform\工具源码\ORM\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache

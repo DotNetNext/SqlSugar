@@ -396,7 +396,7 @@ namespace NewTest.Demos
             using (var db = SugarDao.GetInstance())
             {
                 //---------Sqlable,创建多表查询---------//
-
+                
                 //多表查询
                 List<School> dataList = db.Sqlable()
                    .From("school", "s")

@@ -95,6 +95,7 @@ namespace SqlSugar
         /// <param name="iso">指定事务行为</param>
         public void BeginTran(IsolationLevel iso)
         {
+            CheckConnect();
             _tran = _sqlConnection.BeginTransaction(iso);
         }
         /// <summary>
@@ -103,6 +104,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public void BeginTran(string transactionName)
         {
+            CheckConnect();
             _tran = _sqlConnection.BeginTransaction(transactionName);
         }
         /// <summary>
@@ -112,6 +114,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public void BeginTran(IsolationLevel iso, string transactionName)
         {
+            CheckConnect();
             _tran = _sqlConnection.BeginTransaction(iso, transactionName);
         }
 

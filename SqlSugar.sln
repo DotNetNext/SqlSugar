@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OldTest", "WebTest\OldTest.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewTest", "NewTest\NewTest.csproj", "{2F972F9F-CCCD-488C-A86E-B0BECACE0867}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrmTest", "OrmTest\OrmTest.csproj", "{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{2F972F9F-CCCD-488C-A86E-B0BECACE0867}.Release|Mixed Platforms.Build.0 = Release|x86
 		{2F972F9F-CCCD-488C-A86E-B0BECACE0867}.Release|x86.ActiveCfg = Release|x86
 		{2F972F9F-CCCD-488C-A86E-B0BECACE0867}.Release|x86.Build.0 = Release|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Debug|x86.ActiveCfg = Debug|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Debug|x86.Build.0 = Debug|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Release|Any CPU.ActiveCfg = Release|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Release|Mixed Platforms.Build.0 = Release|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Release|x86.ActiveCfg = Release|x86
+		{E422299A-5CFB-482C-9E2F-FD7BB1ADA578}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
