@@ -37,7 +37,7 @@ namespace NewTest.Demos
                 Update(p, db);
 
                 //删除测试
-                Delete(p,db);
+                //Delete(p,db);
 
             }
         }

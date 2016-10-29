@@ -57,7 +57,6 @@ namespace SqlSugar
         public SqlHelper(string connectionString)
         {
             _sqlConnection = new SqlConnection(connectionString);
-            _sqlConnection.Open();
         }
         /// <summary>
         /// 获取当前数据库连接对象
@@ -74,6 +73,7 @@ namespace SqlSugar
         /// </summary>
         public void BeginTran()
         {
+            CheckConnect();
             _tran = _sqlConnection.BeginTransaction();
         }
 
@@ -83,6 +83,7 @@ namespace SqlSugar
         /// <param name="iso">指定事务行为</param>
         public void BeginTran(IsolationLevel iso)
         {
+            CheckConnect();
             _tran = _sqlConnection.BeginTransaction(iso);
         }
         /// <summary>
@@ -91,6 +92,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public void BeginTran(string transactionName)
         {
+            CheckConnect();
             _tran = _sqlConnection.BeginTransaction(transactionName);
         }
         /// <summary>
@@ -100,6 +102,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public void BeginTran(IsolationLevel iso, string transactionName)
         {
+            CheckConnect();
             _tran = _sqlConnection.BeginTransaction(iso, transactionName);
         }
 
@@ -108,6 +111,7 @@ namespace SqlSugar
         /// </summary>
         public void RollbackTran()
         {
+            CheckConnect();
             if (_tran != null)
             {
                 _tran.Rollback();
@@ -120,6 +124,7 @@ namespace SqlSugar
         /// </summary>
         public void CommitTran()
         {
+            CheckConnect();
             if (_tran != null)
             {
                 _tran.Commit();
@@ -237,6 +242,7 @@ namespace SqlSugar
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
+            CheckConnect();
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
             if (IsClearParameters)
@@ -278,6 +284,7 @@ namespace SqlSugar
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
+            CheckConnect();
             int count = sqlCommand.ExecuteNonQuery();
             if (IsClearParameters)
                 sqlCommand.Parameters.Clear();
@@ -318,6 +325,7 @@ namespace SqlSugar
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
+            CheckConnect();
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
             if (IsClearParameters)
                 sqlCommand.Parameters.Clear();
@@ -408,6 +416,7 @@ namespace SqlSugar
             {
                 _sqlDataAdapter.SelectCommand.Transaction = _tran;
             }
+            CheckConnect();
             DataTable dt = new DataTable();
             _sqlDataAdapter.Fill(dt);
             if (IsClearParameters)
@@ -447,6 +456,7 @@ namespace SqlSugar
             _sqlDataAdapter.SelectCommand.CommandType = CommandType;
             if (pars != null)
                 _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
+            CheckConnect();
             DataSet ds = new DataSet();
             _sqlDataAdapter.Fill(ds);
             if (IsClearParameters)
@@ -487,6 +497,16 @@ namespace SqlSugar
                     _sqlConnection.Close();
                 }
                 _sqlConnection = null;
+            }
+        }
+        /// <summary>
+        /// 检查数据库连接，若未连接，连接数据库
+        /// </summary>
+        private void CheckConnect()
+        {
+            if (_sqlConnection.State != ConnectionState.Open)
+            {
+                _sqlConnection.Open();
             }
         }
     }
