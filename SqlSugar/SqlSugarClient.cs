@@ -1402,7 +1402,7 @@ namespace SqlSugar
             if (SqlWhereString.IsValuable()) {
                 SqlWhereString = Regex.Replace(SqlWhereString,@"^\s*(and|where)\s*","",RegexOptions.IgnoreCase);
             }
-            string sql = string.Format("DELETE FROM {0} WHERE 1=1 AND {1}", typeName, SqlWhereString);
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 AND {1}", typeName.GetTranslationSqlName(), SqlWhereString);
             bool isSuccess = ExecuteCommand(sql,pars.ToArray()) > 0;
             return isSuccess;
         }

@@ -16,7 +16,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "select";
+            string switchOn = "delete";
             IDemos demo = null;
             switch (switchOn)
             {
