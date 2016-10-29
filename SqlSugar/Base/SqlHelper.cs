@@ -238,14 +238,14 @@ namespace SqlSugar
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (pars != null)
                 sqlCommand.Parameters.AddRange(pars);
-            if (IsGetPageParas)
+            if (this.IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
             CheckConnect();
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
-            if (IsClearParameters)
+            if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
             return scalar;
@@ -272,7 +272,7 @@ namespace SqlSugar
         {
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
-            sqlCommand.CommandType = CommandType;
+            sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
@@ -280,13 +280,13 @@ namespace SqlSugar
             }
             if (pars != null)
                 sqlCommand.Parameters.AddRange(pars);
-            if (IsGetPageParas)
+            if (this.IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
             CheckConnect();
             int count = sqlCommand.ExecuteNonQuery();
-            if (IsClearParameters)
+            if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
             return count;
@@ -313,7 +313,7 @@ namespace SqlSugar
         {
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
-            sqlCommand.CommandType = CommandType;
+            sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (_tran != null)
             {
@@ -321,13 +321,13 @@ namespace SqlSugar
             }
             if (pars != null)
                 sqlCommand.Parameters.AddRange(pars);
-            if (IsGetPageParas)
+            if (this.IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(sqlCommand.Parameters);
             }
             CheckConnect();
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
-            if (IsClearParameters)
+            if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
             return sqlDataReader;
@@ -404,10 +404,10 @@ namespace SqlSugar
         {
             ExecLogEvent(sql, pars, true);
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
-            _sqlDataAdapter.SelectCommand.CommandType = CommandType;
+            _sqlDataAdapter.SelectCommand.CommandType = this.CommandType;
             if (pars != null)
                 _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
-            if (IsGetPageParas)
+            if (this.IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(_sqlDataAdapter.SelectCommand.Parameters);
             }
@@ -419,7 +419,7 @@ namespace SqlSugar
             CheckConnect();
             DataTable dt = new DataTable();
             _sqlDataAdapter.Fill(dt);
-            if (IsClearParameters)
+            if (this.IsClearParameters)
                 _sqlDataAdapter.SelectCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
             return dt;
@@ -448,18 +448,18 @@ namespace SqlSugar
             {
                 _sqlDataAdapter.SelectCommand.Transaction = _tran;
             }
-            if (IsGetPageParas)
+            if (this.IsGetPageParas)
             {
                 SqlSugarToolExtensions.RequestParasToSqlParameters(_sqlDataAdapter.SelectCommand.Parameters);
             }
             _sqlDataAdapter.SelectCommand.CommandTimeout = this.CommandTimeOut;
-            _sqlDataAdapter.SelectCommand.CommandType = CommandType;
+            _sqlDataAdapter.SelectCommand.CommandType = this.CommandType;
             if (pars != null)
                 _sqlDataAdapter.SelectCommand.Parameters.AddRange(pars);
             CheckConnect();
             DataSet ds = new DataSet();
             _sqlDataAdapter.Fill(ds);
-            if (IsClearParameters)
+            if (this.IsClearParameters)
                 _sqlDataAdapter.SelectCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
             return ds;
@@ -467,7 +467,7 @@ namespace SqlSugar
 
         private void ExecLogEvent(string sql, SqlParameter[] pars, bool isStarting = true)
         {
-            if (IsEnableLogEvent)
+            if (this.IsEnableLogEvent)
             {
                 Action<string, string> action = isStarting ? LogEventStarting : LogEventCompleted;
                 if (action != null)
