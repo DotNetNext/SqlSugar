@@ -478,7 +478,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        action(sql, JsonConverter.Serialize(pars.Select(it => new { key = it.ParameterName, value = it.Value })));
+                        action(sql, JsonConverter.Serialize(pars.Select(it => new { key = it.ParameterName, value = it.Value.ToString() })));
                     }
                 }
             }
