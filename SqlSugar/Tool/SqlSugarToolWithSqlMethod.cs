@@ -21,7 +21,7 @@ namespace SqlSugar
             return string.Format("({0})", sql);
         }
 
-        internal static StringBuilder GetQueryableSql<T>(SqlSugar.Queryable<T> queryable)
+        internal static StringBuilder GetQueryableSql<T>(Queryable<T> queryable)
         {
             string joinInfo = string.Join(" ", queryable.JoinTableValue);
             StringBuilder sbSql = new StringBuilder();

@@ -132,7 +132,7 @@ namespace SqlSugar
             }
             return name;
         }
-        private void AddFilter<T>(SqlSugar.Queryable<T> queryable, string key) where T : new()
+        private void AddFilter<T>(Queryable<T> queryable, string key) where T : new()
         {
             if (_filterRows.ContainsKey(key))
             {
