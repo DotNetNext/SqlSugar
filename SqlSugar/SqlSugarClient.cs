@@ -725,7 +725,7 @@ namespace SqlSugar
                         sql = sql.Replace(SqlSugarTool.ParSymbol + item.Key + ")", SqlSugarTool.ParSymbol + item.Value + ")");
                     }
                 }
-                var lastInsertRowId = GetScalar(sql, pars.ToArray());
+                var lastInsertRowId = base.GetScalar(sql, pars.ToArray());
                 return lastInsertRowId;
             }
             catch (Exception ex)
