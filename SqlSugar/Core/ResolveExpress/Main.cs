@@ -167,7 +167,7 @@ namespace SqlSugar
                                 }
                                 if (fieInfo == null && proInfo == null)
                                 {
-                                    throw new SqlSugarException(string.Format(ExpNoSupporObjectOrAttr, dynInv.GetType().FullName, dynInv.GetType().FullName));
+                                    throw new SqlSugarException(string.Format(ExpNoSupportObjectOrAttr, dynInv.GetType().FullName, dynInv.GetType().FullName));
                                 }
                             }
                             return;
@@ -188,7 +188,7 @@ namespace SqlSugar
                                 }
                                 if (fieInfo == null && proInfo == null)
                                 {
-                                    throw new SqlSugarException(string.Format(ExpNoSupporObjectOrAttr, dynInv.GetType().FullName, dynInv.GetType().FullName));
+                                    throw new SqlSugarException(string.Format(ExpNoSupportObjectOrAttr, dynInv.GetType().FullName, dynInv.GetType().FullName));
                                 }
                             }
                             return;

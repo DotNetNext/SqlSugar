@@ -84,6 +84,11 @@ namespace SqlSugar
         /// <summary>
         /// 不支持对象或属性
         /// </summary>
-        public const string ExpNoSupporObjectOrAttr = "拉姆达解析不支持{0}对象，或该{1}的属性。";
+        public const string ExpNoSupportObjectOrAttr = "拉姆达解析不支持{0}对象，或该{1}的属性。";
+
+        /// <summary>
+        /// 不支持属性扩展方法
+        /// </summary>
+        public const string ExpNoSupportAttExtMethod = "不支持属性扩展方法{0}。";
     }
 }

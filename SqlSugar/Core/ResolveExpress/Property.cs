@@ -14,7 +14,7 @@ namespace SqlSugar
             {
                 case "Length":
                     return ProLength(value, isField);
-                default: throw new SqlSugarException("不支持属性扩展方法" + methodName + "。");
+                default: throw new SqlSugarException(string.Format(ExpNoSupportAttExtMethod, methodName));
             }
         }
         private string ProLength(string value, bool isField)
