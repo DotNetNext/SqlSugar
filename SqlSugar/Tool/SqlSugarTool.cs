@@ -45,9 +45,8 @@ namespace SqlSugar
         /// <param name="dr"></param>
         /// <param name="fields"></param>
         /// <param name="isClose"></param>
-        /// <param name="isTry"></param>
         /// <returns></returns>
-        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true, bool isTry = true)
+        internal static List<T> DataReaderToList<T>(Type type, IDataReader dr, string fields, bool isClose = true)
         {
             if (type.Name.Contains("KeyValuePair"))
             {
