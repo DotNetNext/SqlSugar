@@ -994,7 +994,7 @@ namespace SqlSugar
             }
             try
             {
-                var updateRowCount = ExecuteCommand(sbSql.ToString(), parsList.ToArray());
+                var updateRowCount = base.ExecuteCommand(sbSql.ToString(), parsList.ToArray());
                 return updateRowCount > 0;
             }
             catch (Exception ex)
@@ -1146,7 +1146,7 @@ namespace SqlSugar
             }
             try
             {
-                var updateRowCount = ExecuteCommand(sbSql.ToString(),pars);
+                var updateRowCount = base.ExecuteCommand(sbSql.ToString(), pars);
                 sbSql = null;
                 return updateRowCount > 0;
             }
@@ -1341,7 +1341,7 @@ namespace SqlSugar
             string sql = string.Format("DELETE FROM {0} WHERE {1}={2}", typeName.GetTranslationSqlName(),pkName.GetTranslationSqlName(), pkName.GetSqlParameterName());
             var par = new SqlParameter(pkName.GetSqlParameterName(), pkValue);
             SqlSugarTool.SetParSize(par);
-            bool isSuccess = ExecuteCommand(sql,par) > 0;
+            bool isSuccess = base.ExecuteCommand(sql, par) > 0;
             return isSuccess;
         }
 
@@ -1380,7 +1380,7 @@ namespace SqlSugar
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression, this);
             string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", typeName.GetTranslationSqlName(), re.SqlWhere);
-            bool isSuccess = ExecuteCommand(sql, re.Paras.ToArray()) > 0;
+            bool isSuccess = base.ExecuteCommand(sql, re.Paras.ToArray()) > 0;
             return isSuccess;
         }
 
@@ -1403,7 +1403,7 @@ namespace SqlSugar
                 SqlWhereString = Regex.Replace(SqlWhereString,@"^\s*(and|where)\s*","",RegexOptions.IgnoreCase);
             }
             string sql = string.Format("DELETE FROM {0} WHERE 1=1 AND {1}", typeName.GetTranslationSqlName(), SqlWhereString);
-            bool isSuccess = ExecuteCommand(sql,pars.ToArray()) > 0;
+            bool isSuccess = base.ExecuteCommand(sql, pars.ToArray()) > 0;
             return isSuccess;
         }
 
@@ -1428,7 +1428,7 @@ namespace SqlSugar
             if (whereIn != null && whereIn.Length > 0)
             {
                 string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", typeName.GetTranslationSqlName(), SqlSugarTool.GetPrimaryKeyByTableName(this, typeName).GetTranslationSqlName(), whereIn.ToJoinSqlInVal());
-                int deleteRowCount = ExecuteCommand(sql);
+                int deleteRowCount = base.ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
             return isSuccess;
@@ -1473,7 +1473,7 @@ namespace SqlSugar
             if (whereIn != null && whereIn.Length > 0)
             {
                 string sql = string.Format("DELETE FROM {0} WHERE {1} IN ({2})", typeName.GetTranslationSqlName(), fieldName.GetTranslationSqlName(), whereIn.ToJoinSqlInVal());
-                int deleteRowCount = ExecuteCommand(sql);
+                int deleteRowCount = base.ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
             return isSuccess;
@@ -1501,7 +1501,7 @@ namespace SqlSugar
             if (whereIn != null && whereIn.Length > 0)
             {
                 string sql = string.Format("UPDATE  {0} SET {3}=1 WHERE {1} IN ({2})", typeName.GetTranslationSqlName(), SqlSugarTool.GetPrimaryKeyByTableName(this, typeName), whereIn.ToJoinSqlInVal(), field);
-                int deleteRowCount = ExecuteCommand(sql);
+                int deleteRowCount = base.ExecuteCommand(sql);
                 isSuccess = deleteRowCount > 0;
             }
             return isSuccess;
@@ -1537,7 +1537,7 @@ namespace SqlSugar
             ResolveExpress re = new ResolveExpress();
             re.ResolveExpression(re, expression, this);
             string sql = string.Format("UPDATE  {0} SET {1}=1 WHERE  1=1 {2}", typeName.GetTranslationSqlName(), field, re.SqlWhere);
-            int deleteRowCount = ExecuteCommand(sql, re.Paras.ToArray());
+            int deleteRowCount = base.ExecuteCommand(sql, re.Paras.ToArray());
             isSuccess = deleteRowCount > 0;
             return isSuccess;
         }
