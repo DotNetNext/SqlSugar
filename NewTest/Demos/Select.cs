@@ -56,6 +56,8 @@ namespace NewTest.Demos
                 var singleOrDefault = db.Queryable<Student>().SingleOrDefault(c => c.id == 11111111);
                 //查询单条没有记录返回空对象
                 var single2 = db.Queryable<Student>().Where(c => c.id == 1).SingleOrDefault();
+                //查询所有的Id
+                var singleFieldList = db.Queryable<Student>().Select<int>(it=>it.id).ToList();
 
                 //查询第一条
                 var first = db.Queryable<Student>().Where(c => c.id == 1).First();
