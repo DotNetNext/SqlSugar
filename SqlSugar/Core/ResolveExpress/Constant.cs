@@ -22,7 +22,7 @@ namespace SqlSugar
         /// <summary>
         /// 字段名解析错误
         /// </summary>
-        public const string FileldErrorMessage = "OrderBy、GroupBy、In、Min和Max等操作不是有效拉姆达格式 ，正确格式 it=>it.name ";
+        public const string FileldErrorMessage = "OrderBy、GroupBy、In、Min和Max等操作不是有效拉姆达格式 ，正确格式 it=>it.name 。";
         /// <summary>
         /// 拉姆达解析错误
         /// </summary>
@@ -92,6 +92,7 @@ namespace SqlSugar
         public const string ExpNoSupportAttExtMethod = "不支持属性扩展方法{0}。";
     }
 
+
      //局部类:Select表达式对象解析公用常量
     internal partial class ResolveSelect {
 
@@ -99,5 +100,25 @@ namespace SqlSugar
         /// 解析对象不能为null
         /// </summary>
         public const string ExpSelectValueIsNull = "解析对象不能为null。";
+
+        /// <summary>
+        ///Select中不支持函数
+        /// </summary>
+        public const string ExpNoSupportMethod = "Select中不支持函数{0}。";
+
+        /// <summary>
+        /// Select中不支持变量的运算
+        /// </summary>
+        public const string ExpNoSupportOperation = "Select中不支持变量的运算。";
+
+        /// <summary>
+        /// 不支持外部传参
+        /// </summary>
+        public static string ExpNoSupportOutPars = "Select中的拉姆达表达式,不支持外部传参数,目前支持的写法: Where(\"1=1\",new {id=1}).Select(it=>{ id=\"" + SqlSugarTool.ParSymbol + "id\".ObjToInt()} 。";
+
+        /// <summary>
+        /// 不支持ToString
+        /// </summary>
+        public static string ExpNoSupportToString = "Select中不支持ToString函数，请使用ObjectToString。";
     }
 }
