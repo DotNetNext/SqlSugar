@@ -93,11 +93,11 @@ namespace SqlSugar
             }
             else if (exp is BlockExpression)
             {
-                throw new SqlSugarException("表达式不支持解析BlockExpression,错误信息:" + exp.ToString());
+                throw new SqlSugarException(ExpBlockExpression + exp.ToString());
             }
             else if (exp is ConditionalExpression)
             {
-                throw new SqlSugarException("表达式不支解析ConditionalExpression,错误信息:" + exp.ToString());
+                throw new SqlSugarException(ExpConditionalExpression + exp.ToString());
             }
             else if (exp is MethodCallExpression)
             {
@@ -117,7 +117,7 @@ namespace SqlSugar
             }
             else if (exp != null && exp.NodeType.IsIn(ExpressionType.New, ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
             {
-                throw new SqlSugarException("拉姆达表达式内不支持new对象，请提取变量后在赋值，错误信息" + exp.ToString());
+                throw new SqlSugarException(ExpNew+ exp.ToString());
             }
             return null;
         }
@@ -167,7 +167,7 @@ namespace SqlSugar
                                 }
                                 if (fieInfo == null && proInfo == null)
                                 {
-                                    throw new SqlSugarException("拉姆达解析不支持" + dynInv.GetType().FullName + "对象，或该" + dynInv.GetType().FullName + "的属性。");
+                                    throw new SqlSugarException(string.Format(ExpNoSupporObjectOrAttr, dynInv.GetType().FullName, dynInv.GetType().FullName));
                                 }
                             }
                             return;
@@ -188,7 +188,7 @@ namespace SqlSugar
                                 }
                                 if (fieInfo == null && proInfo == null)
                                 {
-                                    throw new SqlSugarException("拉姆达解析不支持" + dynInv.GetType().FullName+ "对象，或该"+ dynInv.GetType().FullName+"的属性。");
+                                    throw new SqlSugarException(string.Format(ExpNoSupporObjectOrAttr, dynInv.GetType().FullName, dynInv.GetType().FullName));
                                 }
                             }
                             return;

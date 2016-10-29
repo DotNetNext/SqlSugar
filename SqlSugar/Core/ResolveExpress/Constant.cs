@@ -61,10 +61,29 @@ namespace SqlSugar
         /// </summary>
         public const string ExpMethodError = "拉姆达表达式中的函数用法不正确，正确写法 it=>it.name.{0}(参数) ,不支持的写法it=> 参数.{0}(it.name)。";
 
-
         /// <summary>
         /// 拉姆达函数错误2
         /// </summary>
         public const string ExpMethodError2 = "拉姆达表达式中的函数用法不正确，正确写法 it=>it.name==参数.{0} ,不支持的写法it=>it.name.{0}==参数。";
+
+        /// <summary>
+        /// 表达式不支持解析BlockExpression
+        /// </summary>
+        public const string ExpBlockExpression = "表达式不支持解析BlockExpression,错误信息:";
+
+        /// <summary>
+        /// 表达式不支解析ConditionalExpression
+        /// </summary>
+        public const string ExpConditionalExpression = "表达式不支解析ConditionalExpression,错误信息:";
+
+        /// <summary>
+        /// 拉姆达表达式内不支持new对象
+        /// </summary>
+        public const string ExpNew = "拉姆达表达式内不支持new对象，请提取变量后在赋值，错误信息:";
+
+        /// <summary>
+        /// 不支持对象或属性
+        /// </summary>
+        public const string ExpNoSupporObjectOrAttr = "拉姆达解析不支持{0}对象，或该{1}的属性。";
     }
 }
