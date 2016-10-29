@@ -42,7 +42,7 @@ namespace PkDapper.Demos
             {
                 using (SqlSugarClient conn = new SqlSugarClient(PubConst.connectionString))
                 {
-                    var list = conn.SqlQuery<Test>("select * from(select *,row_number() over(order by id) as r from test  ) t where t.r between @b and @e ", new { b = 1000, e = 1010 });
+                    var list = conn.Queryable<Test>().OrderBy("id").ToPageList(1, 10);
                 }
             });
         }
@@ -57,7 +57,7 @@ namespace PkDapper.Demos
             {
                 using (SqlConnection conn = new SqlConnection(PubConst.connectionString))
                 {
-                    var list = conn.Query<Test>("select * from(select *,row_number() over(order by id) as r from test  ) t where t.r between @b and @e ", new { b = 1000, e = 1010 });
+                    var list = conn.Query<Test>("select * from(select *,row_number() over(order by id) as r from test  ) t where t.r between @b and @e ", new { b = 1, e = 10 });
                 }
             });
         }
