@@ -91,4 +91,13 @@ namespace SqlSugar
         /// </summary>
         public const string ExpNoSupportAttExtMethod = "不支持属性扩展方法{0}。";
     }
+
+     //局部类:Select表达式对象解析公用常量
+    internal partial class ResolveSelect {
+
+        /// <summary>
+        /// 解析对象不能为null
+        /// </summary>
+        public const string ExpSelectValueIsNull = "解析对象不能为null。";
+    }
 }

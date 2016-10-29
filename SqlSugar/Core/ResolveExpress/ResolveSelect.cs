@@ -15,7 +15,7 @@ namespace SqlSugar
     /// ** qq：610262374 
     /// ** 使用说明：
     /// </summary>
-    internal class ResolveSelect
+    internal partial class ResolveSelect
     {
         /// <summary>
         /// 多表情况
@@ -43,7 +43,7 @@ namespace SqlSugar
             }
             if (reval.SelectValue.IsNullOrEmpty())
             {
-                throw new SqlSugarException("Select 解析失败 ", new { selectString = reval.SelectValue });
+                throw new SqlSugarException(ExpSelectValueIsNull, new { selectString = reval.SelectValue });
             }
             reval.SelectValue = reval.SelectValue.Replace("\"", "'");
             reval.SelectValue = reval.SelectValue.Replace("DateTime.Now", "GETDATE()");
@@ -119,7 +119,7 @@ namespace SqlSugar
             expStr = Regex.Replace(expStr, @"(?<=\=)[^\,]*?\.", "");
             if (reval.SelectValue.IsNullOrEmpty())
             {
-                throw new SqlSugarException("Select 解析失败 ", new { selectString = reval.SelectValue });
+                throw new SqlSugarException(ExpSelectValueIsNull, new { selectString = reval.SelectValue });
             }
             expStr = expStr.Replace("\"", "'");
             expStr = expStr.Replace("DateTime.Now", "GETDATE()");
