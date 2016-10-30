@@ -234,8 +234,8 @@ namespace SqlSugar
             {
                 foreach (DataRow dr in tables.Rows)
                 {
-                    string tableName = dr["name"].ToString().ToLower();
-                    if (tableNames.Any(it => it.ToLower() == tableName))
+                    string tableName = dr["name"].ToString();
+                    if (tableNames.Any(it => it.ToLower() == tableName.ToLower()))
                     {
                         var currentTable = db.GetDataTable(string.Format(SqlSugarTool.GetSelectTopSql(), GetTableNameWithSchema(db,tableName).GetTranslationSqlName()));
                         var tableColumns = GetTableColumns(db, tableName);
