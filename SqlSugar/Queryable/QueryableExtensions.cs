@@ -330,7 +330,7 @@ namespace SqlSugar
         /// <returns>Queryable</returns>
         public static Queryable<T> GroupBy<T>(this Queryable<T> queryable, string groupFileds)
         {
-            queryable.GroupByValue = groupFileds.ToSuperSqlFilter();
+            queryable.GroupByValue = groupFileds.ToSqlFilter();
             return queryable;
         }
 
