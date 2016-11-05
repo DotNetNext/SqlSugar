@@ -217,15 +217,21 @@ namespace SqlSugar
                     var mi = memberInfos.Pop();
                     if (mi.MemberType == MemberTypes.Property)
                     {
-                        objReference = objReference.GetType()
-                                                   .GetProperty(mi.Name)
-                                                   .GetValue(objReference, null);
+                        var objProp= objReference.GetType().GetProperty(mi.Name);
+                        if (objProp == null) {
+                            dynInv = ExpErrorUniqueKey;
+                            return;
+                        }
+                        objReference = objProp.GetValue(objReference, null);
                     }
                     else if (mi.MemberType == MemberTypes.Field)
                     {
-                        objReference = objReference.GetType()
-                                                   .GetField(mi.Name)
-                                                   .GetValue(objReference);
+                        var objField=objReference.GetType().GetField(mi.Name);
+                        if (objField == null) {
+                            dynInv = ExpErrorUniqueKey;
+                            return;
+                        }
+                        objReference = objField.GetValue(objReference);
                     }
                 }
                 dynInv = objReference;
