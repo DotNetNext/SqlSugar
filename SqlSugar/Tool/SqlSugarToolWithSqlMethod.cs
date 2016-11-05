@@ -350,6 +350,7 @@ namespace SqlSugar
                     reval = "string";
                     break;
                 case "datetime":
+                case "date":
                 case "datetime2":
                     reval = "dateTime";
                     break;
@@ -409,7 +410,7 @@ namespace SqlSugar
                     reval = "object";
                     break;
                 default:
-                    reval = "string";
+                    reval = "other";
                     break;
             }
             return reval;
