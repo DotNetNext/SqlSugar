@@ -1,5 +1,4 @@
 F:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
-F:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
 F:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.dll
 F:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 F:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll

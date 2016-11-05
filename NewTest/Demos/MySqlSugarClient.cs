@@ -11,6 +11,11 @@ namespace NewTest.Demos
     /// </summary>
     public class MySqlSugarClient:SqlSugarClient
     {
+        public MySqlSugarClient(string connectionString)
+            : base(connectionString)
+        { 
+        
+        }
         public override System.Data.DataSet GetDataSetAll(string sql, object pars)
         {
             return base.GetDataSetAll(sql, pars);
