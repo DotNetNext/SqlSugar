@@ -192,6 +192,10 @@ namespace SqlSugar
                         {
                             var par = new SqlParameter("@" + r.Name, value);
                             SetParSize(par);
+                            if (value == DBNull.Value)
+                            {//防止文件类型报错
+                                SqlSugarTool.SetSqlDbType(r, par);
+                            }
                             listParams.Add(par);
                         }
                     }
@@ -322,6 +326,21 @@ namespace SqlSugar
             isNullable = unType != null;
             unType = unType ?? propertyInfo.PropertyType;
             return unType;
+        }
+
+        /// <summary>
+        /// 设置Sql类型
+        /// </summary>
+        /// <param name="prop"></param>
+        /// <param name="par"></param>
+        internal static void SetSqlDbType(PropertyInfo prop, SqlParameter par)
+        {
+            var isNullable = false;
+            var isByteArray = SqlSugarTool.GetUnderType(prop, ref isNullable) == typeof(byte[]);
+            if (isByteArray)
+            {
+                par.SqlDbType = SqlDbType.VarBinary;
+            }
         }
     }
 }

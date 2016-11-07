@@ -696,6 +696,9 @@ namespace SqlSugar
                     {
                         par.UdtTypeName = "HIERARCHYID";
                     }
+                    if (val == DBNull.Value) {//防止文件类型报错
+                        SqlSugarTool.SetSqlDbType(prop,par);
+                    }
                     pars.Add(par);
                 }
             }
