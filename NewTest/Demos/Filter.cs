@@ -64,7 +64,7 @@ namespace NewTest.Demos
             {
                 string connection = SugarDao.ConnectionString; //这里可以动态根据cookies或session实现多库切换
                 var db = new SqlSugarClient(connection);
-                db.SetFilterFilterParas(_filterParas);
+                db.SetFilterItems(_filterParas);
 
                 db.IsEnableLogEvent = true;//启用日志事件
                 db.LogEventStarting = (sql, par) => { Console.WriteLine(sql + " " + par + "\r\n"); };

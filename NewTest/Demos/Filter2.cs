@@ -72,10 +72,10 @@ namespace NewTest.Demos
                 var db = new SqlSugarClient(connection);
 
                 //支持sqlable和queryable
-                db.SetFilterFilterParas(_filterRos);
+                db.SetFilterItems(_filterRos);
 
                 //列过滤只支持queryable
-                db.SetFilterFilterParas(_filterColumns);
+                db.SetFilterItems(_filterColumns);
 
 
                 db.IsEnableLogEvent = true;//启用日志事件
