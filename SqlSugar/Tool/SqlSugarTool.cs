@@ -180,7 +180,7 @@ namespace SqlSugar
                         {
                             value = (int)value;
                         }
-                        if (value == null) value = DBNull.Value;
+                        if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
                         if (r.Name.ToLower().Contains("hierarchyid"))
                         {
                             var par = new SqlParameter("@" + r.Name, SqlDbType.Udt);
