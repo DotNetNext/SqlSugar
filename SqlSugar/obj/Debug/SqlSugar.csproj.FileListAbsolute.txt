@@ -14,4 +14,3 @@ E:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
 E:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
 E:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
 F:\MyOpenSource\SqlSugar\SqlSugar\bin\Debug\SqlSugar.XML
-F:\MyOpenSource\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache
