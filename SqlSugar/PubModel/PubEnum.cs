@@ -31,7 +31,7 @@ namespace SqlSugar
         /// <summary>
         /// 笛卡尔积
         /// </summary>
-        Corss = 1,
+        Cross = 1,
         /// <summary>
         /// 外连
         /// </summary>
