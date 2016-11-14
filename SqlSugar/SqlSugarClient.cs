@@ -309,6 +309,11 @@ namespace SqlSugar
                 _serialNumber = serNum;
             }
         }
+
+        /// <summary>
+        /// 在同一个会话中可以存储一些临时数据
+        /// </summary>
+        public object TempDate = null;
         #endregion
 
 
