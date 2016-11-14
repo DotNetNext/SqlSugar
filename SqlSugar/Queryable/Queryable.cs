@@ -82,7 +82,7 @@ namespace SqlSugar
         /// <param name="expression">表达式</param>
         /// <param name="type">Join的类型</param>
         /// <returns></returns>
-        public Queryable<T> JoinTable<T2>(Expression<Func<T, T2, object>> expression, JoinType type = JoinType.LEFT)
+        public Queryable<T> JoinTable<T2>(Expression<Func<T, T2, object>> expression, JoinType type = JoinType.Left)
         {
             return this.JoinTable<T, T2>(expression, type);
         }
@@ -95,7 +95,7 @@ namespace SqlSugar
         /// <param name="expression">表达式</param>
         /// <param name="type">Join的类型</param>
         /// <returns></returns>
-        public Queryable<T> JoinTable<T2, T3>(Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.LEFT)
+        public Queryable<T> JoinTable<T2, T3>(Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.Left)
         {
             return this.JoinTable<T, T2, T3>(expression, type);
         }
@@ -168,7 +168,7 @@ namespace SqlSugar
         /// <param name="expression">例如 (s1,s2)=>s1.id,相当于 order by s1.id</param>
         /// <param name="type">排序类型</param>
         /// <returns></returns>
-        public Queryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.asc)
+        public Queryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
             return this.OrderBy<T, T2>(expression, type);
         }

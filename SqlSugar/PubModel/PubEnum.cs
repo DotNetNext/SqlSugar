@@ -13,15 +13,15 @@ namespace SqlSugar
         /// <summary>
         /// 等值连接
         /// </summary>
-        INNER = 0,
+        Inner = 0,
         /// <summary>
         /// 左外连
         /// </summary>
-        LEFT = 1,
+        Left = 1,
         /// <summary>
         /// 右外连
         /// </summary>
-        RIGHT = 2
+        Right = 2
     }
     /// <summary>
     /// Apply类型
@@ -31,11 +31,11 @@ namespace SqlSugar
         /// <summary>
         /// 笛卡尔积
         /// </summary>
-        CORSS = 1,
+        Corss = 1,
         /// <summary>
         /// 外连
         /// </summary>
-        OUTRE = 2
+        Outer = 2
     }
     /// <summary>
     /// 排序类型
@@ -45,11 +45,11 @@ namespace SqlSugar
         /// <summary>
         /// 升序
         /// </summary>
-        asc = 0,
+        Asc = 0,
         /// <summary>
         /// 降序
         /// </summary>
-        desc = 1
+        Desc = 1
     }
     /// <summary>
     /// 分页类型
@@ -73,11 +73,11 @@ namespace SqlSugar
         /// <summary>
         /// 单个T
         /// </summary>
-        oneT = 0,
+        OneT = 0,
         /// <summary>
         /// 多个T
         /// </summary>
-        nT = 1,
+        NT = 1,
 
     }
 }

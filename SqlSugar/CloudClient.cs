@@ -416,7 +416,7 @@ namespace SqlSugar
                                                                                         SELECT *,ROW_NUMBER()OVER(ORDER BY {1}) AS  ROWINDEX  FROM ({0}) as sqlstr ) t WHERE t.rowIndex BETWEEN {2} AND {3}
                                                                                         ", sql, fullOrderByString, 1, pageSize * configCount);
                 var tasks = Taskable<T>(sqlPage, whereObj);
-                return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByTypes).ThenBy(unqueField, OrderByType.asc).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                return tasks.Tasks.SelectMany(it => it.Result.Entities).OrderBy(orderByTypes).ThenBy(unqueField, OrderByType.Asc).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             }
             #endregion
 
@@ -433,15 +433,15 @@ namespace SqlSugar
                 var lastPageSize = pageCount % pageSize;
                 if (lastPageSize == 0) lastPageSize = pageSize;
 
-                var list = tasks.Tasks.SelectMany(it => it.Result.Entities).OrderByReverse(orderByTypes).ThenBy(unqueField, OrderByType.desc);
+                var list = tasks.Tasks.SelectMany(it => it.Result.Entities).OrderByReverse(orderByTypes).ThenBy(unqueField, OrderByType.Desc);
                 if (isLast)
                 {
-                    return list.Skip(0).Take(lastPageSize).OrderBy(orderByTypes).ThenBy(unqueField, OrderByType.asc).ToList();
+                    return list.Skip(0).Take(lastPageSize).OrderBy(orderByTypes).ThenBy(unqueField, OrderByType.Asc).ToList();
                 }
                 else
                 {
                     var skipIndex = (lastPage - 1) * pageSize + lastPageSize - pageSize;
-                    return list.Skip(skipIndex).Take(pageSize).OrderBy(orderByTypes).ThenBy(unqueField, OrderByType.asc).ToList();
+                    return list.Skip(skipIndex).Take(pageSize).OrderBy(orderByTypes).ThenBy(unqueField, OrderByType.Asc).ToList();
                 }
             }
             #endregion
@@ -937,11 +937,11 @@ namespace SqlSugar
                     var rows2 = Taskable<DataTable>(AnotherPartSql, paras.WhereObj).MergeTable().ToList();
                     rows.AddRange(rows2);
                 }
-                rows = rows.OrderByDataRow(paras.OrderByTypes, new OrderByDictionary() { OrderByField = paras.UnqueField, OrderByType = OrderByType.asc });
+                rows = rows.OrderByDataRow(paras.OrderByTypes, new OrderByDictionary() { OrderByField = paras.UnqueField, OrderByType = OrderByType.Asc });
                 var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
                 var revalRows = rows.Skip(maxRowIndex - createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
                 sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());
-                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByTypes).ThenBy(paras.UnqueField, OrderByType.asc).Take(paras.PageSize).ToList();
+                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByTypes).ThenBy(paras.UnqueField, OrderByType.Asc).Take(paras.PageSize).ToList();
 
             }
             else
@@ -957,11 +957,11 @@ namespace SqlSugar
                                                              whereCompareReverseEqual/*4*/,
                                                              paras.FullOrderByString/*5*/
                                                              );
-                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByTypes, new OrderByDictionary() { OrderByField = paras.UnqueField, OrderByType = OrderByType.asc });
+                var rows = Taskable<DataTable>(sql, paras.WhereObj).MergeTable().OrderByDataRow(paras.OrderByTypes, new OrderByDictionary() { OrderByField = paras.UnqueField, OrderByType = OrderByType.Asc });
                 var maxRowIndex = rows.IndexOf(rows.Single(it => it[0].ToString().ToLower() == paras.UnqueValue.ToString().ToLower()));
                 var revalRows = rows.Skip(maxRowIndex + createrValue).Take(paras.PageSize).Select(it => it[0]).ToArray();
                 sql = string.Format("SELECT * FROM ({0}) as  t WHERE {1} IN ({2})", paras.Sql, paras.UnqueField, revalRows.ToJoinSqlInVal());
-                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByTypes).ThenBy(paras.UnqueField, OrderByType.asc).Take(paras.PageSize).ToList();
+                return Taskable<T>(sql, paras.WhereObj).MergeEntities().OrderBy(paras.OrderByTypes).ThenBy(paras.UnqueField, OrderByType.Asc).Take(paras.PageSize).ToList();
 
             }
         }
@@ -1035,7 +1035,7 @@ namespace SqlSugar
             sampleRowIndex = 0;
             sampleEachIndex = 0;
             int nodeSpacing = 1;
-            innerDataSampleList = Taskable<DataTable>(sqlOtherPage, whereObj).MergeTable().OrderByDataRow(orderByTypes).ThenByDataRow(unqueField, OrderByType.asc).ToList();
+            innerDataSampleList = Taskable<DataTable>(sqlOtherPage, whereObj).MergeTable().OrderByDataRow(orderByTypes).ThenByDataRow(unqueField, OrderByType.Asc).ToList();
 
             for (int i = 0; i < configCount; i++)
             {

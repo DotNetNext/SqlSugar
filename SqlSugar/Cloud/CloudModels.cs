@@ -185,7 +185,7 @@ namespace SqlSugar
         {
             get
             {
-                return IsAsc ? OrderByType.desc : OrderByType.asc;
+                return IsAsc ? OrderByType.Desc : OrderByType.Asc;
             }
         }
         /// <summary>
@@ -195,7 +195,7 @@ namespace SqlSugar
         {
             get
             {
-                return OrderByType == OrderByType.asc;
+                return OrderByType == OrderByType.Asc;
             }
         }
         /// <summary>

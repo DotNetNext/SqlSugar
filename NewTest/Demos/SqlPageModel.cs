@@ -28,8 +28,8 @@ namespace NewTest.Demos
 
                     List<School> dataPageList = db.Sqlable()
                     .From("school", "s")
-                    .Join("student", "st", "st.id", "s.id", JoinType.INNER)
-                    .Join("student", "st2", "st2.id", "st.id", JoinType.LEFT)
+                    .Join("student", "st", "st.id", "s.id", JoinType.Inner)
+                    .Join("student", "st2", "st2.id", "st.id", JoinType.Left)
                     .Where("s.id>100 and s.id<100")
                     .SelectToPageList<School>("st.*", "s.id", 1, 10);
 

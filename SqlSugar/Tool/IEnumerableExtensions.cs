@@ -34,7 +34,7 @@ namespace SqlSugar
             var type = typeof(T);
             PropertyInfo prop = type.GetProperty(sortField);
             Check.Exception(prop == null, "No property '" + sortField + "' in + " + typeof(T).Name + "'");
-            if (orderByType == OrderByType.desc)
+            if (orderByType == OrderByType.Desc)
                 return list.OrderByDescending(it => ConvertField(prop.GetValue(it, null)));
             else
                 return list.OrderBy(it => ConvertField(prop.GetValue(it, null)));
@@ -54,7 +54,7 @@ namespace SqlSugar
             var type = typeof(T);
             PropertyInfo prop = type.GetProperty(sortField);
             Check.Exception(prop == null, "No property '" + sortField + "' in + " + typeof(T).Name + "'");
-            if (orderByType == OrderByType.desc)
+            if (orderByType == OrderByType.Desc)
                 return list.ThenByDescending(it => ConvertField(prop.GetValue(it, null)));
             else
                 return list.ThenBy(it => ConvertField(prop.GetValue(it, null)));
@@ -73,7 +73,7 @@ namespace SqlSugar
         {
             var type = typeof(T);
             PropertyInfo prop = type.GetProperty(sortField);
-            if (orderByType == OrderByType.desc)
+            if (orderByType == OrderByType.Desc)
                 return list.OrderByDescending(it => ConvertField(it[sortField]));
             else
                 return list.OrderBy(it => ConvertField(it[sortField]));
@@ -92,7 +92,7 @@ namespace SqlSugar
         {
             var type = typeof(T);
             PropertyInfo prop = type.GetProperty(sortField);
-            if (orderByType == OrderByType.desc)
+            if (orderByType == OrderByType.Desc)
                 return list.ThenByDescending(it => ConvertField(it[sortField]));
             else
                 return list.ThenBy(it => ConvertField(it[sortField]));

@@ -29,7 +29,7 @@ namespace SqlSugar
         }
 
         public string SqlWhere = null;
-        public ResolveExpressType Type = ResolveExpressType.oneT;
+        public ResolveExpressType Type = ResolveExpressType.OneT;
         public List<SqlParameter> Paras = new List<SqlParameter>();
         private int SameIndex = 1;
         private SqlSugarClient DB;
@@ -249,7 +249,7 @@ namespace SqlSugar
             string oldLeft = left;
             left = left + SameIndex;
             SameIndex++;
-            if (Type != ResolveExpressType.oneT)
+            if (Type != ResolveExpressType.OneT)
             {
                 left = left.Replace(".", "_");
             }
@@ -275,7 +275,7 @@ namespace SqlSugar
             string oldRight = right;
             right = right + SameIndex;
             SameIndex++;
-            if (Type != ResolveExpressType.oneT)
+            if (Type != ResolveExpressType.OneT)
             {
                 right = right.Replace(".", "_");
             }
