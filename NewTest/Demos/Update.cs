@@ -71,7 +71,7 @@ namespace NewTest.Demos
                 //清空禁止更新列
                 db.DisableUpdateColumns = null;
                 //新语法添加禁止更新列
-                db.AddDisableUpdateColumn("id", "name");//添加禁止更新列
+                db.AddDisableUpdateColumns("id", "name");//添加禁止更新列
             }
         }
 

@@ -185,7 +185,7 @@ namespace SqlSugar
         /// 添加禁止更新列
         /// </summary>
         /// <param name="columns"></param>
-        public void AddDisableUpdateColumn(params string[] columns) {
+        public void AddDisableUpdateColumns(params string[] columns) {
 
             this.DisableUpdateColumns = this.DisableUpdateColumns.ArrayAdd(columns);
         }
@@ -288,7 +288,7 @@ namespace SqlSugar
         /// 添加实体字段与数据库字段的映射，Key为实体字段 Value为表字段名称 （注意：不区分表，设置后所有表通用）
         /// </summary>
         /// <param name="mappingColumn"></param>
-        public void AddMappingColum(KeyValue mappingColumn)
+        public void AddMappingColumn(KeyValue mappingColumn)
         {
             Check.ArgumentNullException(mappingColumn, "AddMappingTables.mappingColumns不能为null。");
             Check.Exception(_mappingColumns.Any(it => it.Key == mappingColumn.Key), "mappingColumns的Key已经存在。");
