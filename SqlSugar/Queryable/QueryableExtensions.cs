@@ -877,7 +877,11 @@ namespace SqlSugar
         {
             StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
             var reader = queryable.DB.GetReader(sbSql.ToString(), queryable.Params.ToArray());
-            var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader, queryable.SelectValue.GetSelectFiles());
+            string fields=queryable.SelectValue.GetSelectFiles();
+            if(queryable.JoinTableValue.IsValuable()){
+                fields += string.Join("", queryable.JoinTableValue.Count);
+            }
+            var reval = SqlSugarTool.DataReaderToList<T>(typeof(T), reader, fields);
             queryable.SelectValue = null;
             queryable = null;
             sbSql = null;
