@@ -156,7 +156,9 @@ namespace SqlSugar
         {
             Check.Exception(pkValues == null || pkValues.Length == 0, "In.pkValues的Count不能为0");
             var type=pkValues[0].GetType();
-            if (type!=SqlSugarTool.IntType&&type!=SqlSugarTool.GuidType&&type.FullName.IsCollectionsList())
+            var childIsArray = pkValues[0].GetType().IsArray;
+            var isList=type!=SqlSugarTool.IntType&&type!=SqlSugarTool.GuidType&&type.FullName.IsCollectionsList();
+            if (isList||childIsArray)
             {
                 var newList = new List<object>();
                 foreach (var item in (IEnumerable)pkValues[0])
