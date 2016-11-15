@@ -941,6 +941,47 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 将Queryable转换为分页后的DataTable
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="pageIndex">当前页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <returns>DataTable</returns>
+        public static DataTable ToDataTablePage<T>(this Queryable<T> queryable,int pageIndex,int pageSize)
+        {
+            if (queryable.OrderByValue.IsNullOrEmpty())
+            {
+                throw new Exception("分页必需使用.Order排序");
+            }
+            if (pageIndex == 0)
+                pageIndex = 1;
+            queryable.Skip = (pageIndex - 1) * pageSize;
+            queryable.Take = pageSize;
+            StringBuilder sbSql = SqlSugarTool.GetQueryableSql<T>(queryable);
+            var dataTable = queryable.DB.GetDataTable(sbSql.ToString(), queryable.Params.ToArray());
+            queryable = null;
+            sbSql = null;
+            return dataTable;
+        }
+
+        /// <summary>
+        /// 将Queryable转换为分页后的DataTable
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="pageIndex">当前页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="pageCount">pageCount无需赋值，函数执行完自动赋值</param>
+        /// <returns>DataTable</returns>
+        public static DataTable ToDataTablePage<T>(this Queryable<T> queryable, int pageIndex, int pageSize, ref int pageCount)
+        {
+            var reval = queryable.ToDataTablePage(pageIndex, pageSize);
+            pageCount = queryable.Count();
+            return reval;
+        }
+
+        /// <summary>
         /// 将Queryable转换为分页后的List&lt;T&gt;集合
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
