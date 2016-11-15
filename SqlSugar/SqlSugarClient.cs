@@ -884,6 +884,31 @@ namespace SqlSugar
         }
         #endregion
 
+        #region InsertOrUpdate
+        /// <summary>
+        /// 主键有值则更新，无值则插入，不支持复合主键。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="operationObj">操作的实体对象</param>
+        /// <returns>更新返回bool,插入如果有自增列返回自增列的值否则也返回bool</returns>
+        public object InsertOrUpdate<T>(T operationObj) where T : class
+        {
+            Type type = typeof(T);
+            string typeName = type.Name;
+            typeName = GetTableNameByClassType(typeName);
+            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            string pkClassName = GetMappingColumnClassName(pkName);
+            Check.Exception(pkName == null, string.Format("InsertOrUpdate操作失败，因为表{0}中不存在主键。", typeName));
+            var prop= type.GetProperties().Single(it => it.Name.ToLower() == pkClassName.ToLower());
+            var value= prop.GetValue(operationObj,null);
+            var isAdd = value == null || value.ToString() == "" || value.ToString() == "0" || value.ToString() == Guid.Empty.ToString();
+            if (isAdd) {
+                return Insert(operationObj); 
+            } else { 
+                return Update(operationObj); 
+            }
+        }
+        #endregion
 
         #region update
         /// <summary>
