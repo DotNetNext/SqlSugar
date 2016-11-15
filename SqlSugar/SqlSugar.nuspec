@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>sqlSugar</id>
-    <version>3.5.1.7</version>
+    <version>3.5.1.9</version>
     <title>SqlSugar SqlServer ORM</title>
     <authors>sun kaixuan</authors>
     <owners>landa</owners>
