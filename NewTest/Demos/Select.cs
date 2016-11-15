@@ -69,6 +69,12 @@ namespace NewTest.Demos
                 //取11-20条  等于 Skip(pageIndex-1)*pageSize).Take(pageSize) 等于  between (pageIndex-1)*pageSize and  pageIndex*pageSize
                 var page2 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).ToPageList(2, 10);
 
+
+                //取11-20条并且返回PageCount
+                int pageCount = 0;
+                var page3 = db.Queryable<Student>().Where(c => c.id > 10).OrderBy(it => it.id).ToPageList(2, 10, ref pageCount);
+
+
                 //查询条数
                 var count = db.Queryable<Student>().Where(c => c.id > 10).Count();
 
