@@ -962,6 +962,22 @@ namespace SqlSugar
         }
 
         /// <summary>
+        /// 将Queryable转换为分页后的List&lt;T&gt;集合
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="queryable">查询对象</param>
+        /// <param name="pageIndex">当前页码</param>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="pageCount">pageCount无需赋值，函数执行完自动赋值</param>
+        /// <returns>T的集合</returns>
+        public static List<T> ToPageList<T>(this Queryable<T> queryable, int pageIndex, int pageSize,ref int pageCount)
+        {
+            var reval = queryable.ToPageList(pageIndex, pageSize);
+            pageCount = queryable.Count();
+            return reval;
+        }
+
+        /// <summary>
         /// 联表查询
         /// </summary>
         /// <typeparam name="T">第一个表的对象</typeparam>
