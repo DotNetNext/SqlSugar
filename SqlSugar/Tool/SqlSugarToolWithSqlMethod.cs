@@ -24,6 +24,13 @@ namespace SqlSugar
         internal static StringBuilder GetQueryableSql<T>(Queryable<T> queryable)
         {
             string joinInfo = string.Join(" ", queryable.JoinTableValue);
+            string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
+            if (joinInfo.IsValuable()) {
+                withNoLock = null;
+                if (queryable.DB.IsNoLock) {
+                   
+                }
+            }
             StringBuilder sbSql = new StringBuilder();
             string tableName = queryable.TableName.IsNullOrEmpty() ? queryable.TName : queryable.TableName;
             if (queryable.DB.Language.IsValuable() && queryable.DB.Language.Suffix.IsValuable())
@@ -42,7 +49,6 @@ namespace SqlSugar
             if (queryable.DB.PageModel == PageModel.RowNumber)
             {
                 #region  rowNumber
-                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderByValue.IsValuable() ? (",row_index=ROW_NUMBER() OVER(ORDER BY " + queryable.OrderByValue + " )") : null;
 
                 sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM {0} {5} {2} WHERE 1=1 {3} {4} ", tableName.GetTranslationSqlName(), order, withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
@@ -88,7 +94,6 @@ namespace SqlSugar
             {
 
                 #region offset
-                string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
                 var order = queryable.OrderByValue.IsValuable() ? ("ORDER BY " + queryable.OrderByValue + " ") : null;
                 sbSql.AppendFormat("SELECT " + queryable.SelectValue.GetSelectFiles() + " {1} FROM {0} {5} {2} WHERE 1=1 {3} {4} ", tableName.GetTranslationSqlName(), "", withNoLock, string.Join("", queryable.WhereValue), queryable.GroupByValue.GetGroupBy(), joinInfo);
                 sbSql.Append(order);
