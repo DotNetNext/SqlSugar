@@ -105,7 +105,7 @@ namespace SqlSugar
             expStr = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
             if (expStr.IsNullOrEmpty())
             {
-                expStr = Regex.Match(reval.SelectValue, @"c =>.*?\((.+)\)").Groups[1].Value;
+                expStr = Regex.Match(reval.SelectValue, @"[a-z,A-Z]\W* =>.*?\((.+)\)").Groups[1].Value;
             }
             var hasOutPar = expStr.Contains(SqlSugarTool.ParSymbol);
             if (hasOutPar)//有
