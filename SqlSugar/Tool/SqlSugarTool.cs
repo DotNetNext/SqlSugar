@@ -178,7 +178,7 @@ namespace SqlSugar
                         var value = r.GetValue(obj, null);
                         if (r.PropertyType.IsEnum)
                         {
-                            value = (int)value;
+                            value = value.ObjToInt();
                         }
                         if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
                         if (r.Name.ToLower().Contains("hierarchyid"))
