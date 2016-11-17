@@ -781,6 +781,9 @@ namespace SqlSugar
             StringBuilder sbSql = new StringBuilder();
             string joinInfo = string.Join(" ", queryable.JoinTableValue);
             string withNoLock = queryable.DB.IsNoLock ? "WITH(NOLOCK)" : null;
+            if (queryable.JoinTableValue.IsValuable()) {
+                withNoLock = null;
+            }
             var tableName = queryable.TName;
             if (queryable.TableName.IsValuable())
             {
@@ -1117,7 +1120,15 @@ namespace SqlSugar
             var exLeftStr = Regex.Match(expression.ToString(), @"\((.+?)\).+").Groups[1].Value;
             var exLeftArray = exLeftStr.Split(',');
             var shortName1 = exLeftArray.First();
+            if (shortName1.IsValuable())
+            {
+                shortName1 = shortName1 + " " + queryable.DB.IsNoLock.GetLockString();
+            }
             var shortName2 = exLeftArray.Last();
+            if (shortName2.IsValuable())
+            {
+                shortName2 = shortName2 + " " + queryable.DB.IsNoLock.GetLockString();
+            }
             re.ResolveExpression(re, expression, queryable.DB);
             string joinTypeName = type.ToString();
             string joinTableName = null;
@@ -1169,7 +1180,14 @@ namespace SqlSugar
             var exLeftStr = Regex.Match(expression.ToString(), @"\((.+?)\).+").Groups[1].Value;
             var exLeftArray = exLeftStr.Split(',');
             var shortName1 = exLeftArray[1];
+            if (shortName1.IsValuable()) {
+                shortName1 = shortName1 +" "+ queryable.DB.IsNoLock.GetLockString();
+            }
             var shortName2 = exLeftArray[2];
+            if (shortName2.IsValuable())
+            {
+                shortName2 = shortName2 + " " + queryable.DB.IsNoLock.GetLockString();
+            }
             re.ResolveExpression(re, expression, queryable.DB);
             string joinTypeName = type.ToString();
             string joinTableName = null;

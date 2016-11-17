@@ -40,7 +40,7 @@ namespace NewTest.Demos
 
             using (var db = SugarDao.GetInstance())
             {
-
+                db.IsNoLock = true;
 
                 //查询所有
                 var student = db.Queryable<Student>().ToList();
