@@ -30,7 +30,7 @@ namespace SqlSugar
             reval.SelectValue = Regex.Match(expStr, @"(?<=\{).*?(?=\})").Value;
             if (reval.SelectValue.IsNullOrEmpty())
             {
-                reval.SelectValue = Regex.Match(expStr, @"c =>.*?\((.+)\)").Groups[1].Value;
+                reval.SelectValue = Regex.Match(expStr, @"[a-z,A-Z]\W* =>.*?\((.+)\)").Groups[1].Value;
             }
             var hasOutPar = expStr.Contains(SqlSugarTool.ParSymbol);
             if (hasOutPar)//有
