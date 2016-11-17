@@ -195,7 +195,7 @@ namespace NewTest.Demos
 
 
                 //Join子查询语句加分页的写法
-                var childQuery = db.Queryable<Area>().Where("id=@id").Select(it => new { id = it.id }).ToSql();//创建子查询SQL
+                var childQuery = db.Queryable<Area>().Where("id=@id").Select(it => new { id = it.id,name=it.name }).ToSql();//创建子查询SQL
                 string childTableName =SqlSugarTool.PackagingSQL(childQuery.Key);//将SQL语句用()包成表
                 var queryable = db.Queryable<Student>()
                  .JoinTable<School>((s1, s2) => s1.sch_id == s2.id)  //LEFT JOIN School  s2 ON  ( s1.sch_id  = s2.id )  
