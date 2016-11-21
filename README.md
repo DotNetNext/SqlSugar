@@ -9,6 +9,7 @@ Blog http://www.cnblogs.com/sunkaixuan
 
 #All versions
 
+ASP.NET 4.0+ (MSSQL , MYSQL ORACLE ,SQLITE Four in one) https://github.com/sunkaixuan/SqlSugarRepository
 
 ASP.NET 4.0+ MSSQL   https://github.com/sunkaixuan/SqlSugar
 
