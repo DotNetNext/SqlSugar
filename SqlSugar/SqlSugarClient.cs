@@ -1374,6 +1374,9 @@ namespace SqlSugar
             {
               string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
               var pkValue=type.GetProperty(pkClassPropName).GetValue(deleteObj,null);
+              if (pkValue.GetType().IsEnum) {
+                  pkValue = pkValue.ObjToInt();
+              }
               Check.Exception(pkValue == DBNull.Value, typeName + "主键的值不能为DBNull.Value。");
               whereString += string.Format(" AND {0}={1} ",pkName.GetTranslationSqlName(),pkName.GetSqlParameterName());
               SqlParameter par= new SqlParameter(pkName.GetSqlParameterName(), pkValue);
