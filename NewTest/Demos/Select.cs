@@ -271,9 +271,10 @@ namespace NewTest.Demos
                     .Select<V_Student>(c => new V_Student { id = c.id, name = c.name, AreaName = "默认地区", SchoolName = "默认学校", SubjectName = "NET" });
 
                 var list = queryable.ToList();
-                var json = queryable.ToJson();
-                var dynamic = queryable.ToDynamic();
 
+
+                var list4 = db.Queryable<Student>().Where(c => c.id < 10)
+                    .Select<V_Student>(c => new V_Student { id = c.id, name = c.name, AreaName = "默认地区", SchoolName = "默认学校", SubjectName = "NET" }).First();
 
                 //多表操作将Student转换成V_Student
                 var queryable2 = db.Queryable<Student>()
