@@ -140,14 +140,26 @@ namespace SqlSugar
         {
             return isNoLock ? " WITH(NOLOCK) " : "";
         }
-
+                /// <summary>
+        /// 根据表获取主键
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        internal static string GetPrimaryKeyByTableName(SqlSugarClient db, string tableName) {
+            var pkValues = GetPrimaryKeyByTableNames(db, tableName);
+            if (pkValues.IsValuable()) {
+                return pkValues.First();
+            }
+            return null;
+        }
         /// <summary>
         /// 根据表获取主键
         /// </summary>
         /// <param name="db"></param>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        internal static string GetPrimaryKeyByTableName(SqlSugarClient db, string tableName)
+        internal static List<string> GetPrimaryKeyByTableNames(SqlSugarClient db, string tableName)
         {
             string key = "GetPrimaryKeyByTableName" + tableName;
             tableName = tableName.ToLower();
@@ -186,7 +198,7 @@ namespace SqlSugar
             {
                 return null;
             }
-            return primaryInfo.First(it => it.Key == tableName).Value;
+            return primaryInfo.Where(it => it.Key == tableName).Select(it=>it.Value).ToList();
 
         }
 

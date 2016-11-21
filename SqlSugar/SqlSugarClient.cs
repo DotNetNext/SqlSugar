@@ -1366,15 +1366,22 @@ namespace SqlSugar
             if (deleteObj == null) { throw new ArgumentNullException("SqlSugarClient.Delete.deleteObj"); }
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
-            Check.ArgumentNullException(pkName, typeName+"没有找到主键。");
-            string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
-            var pkValue=type.GetProperty(pkClassPropName).GetValue(deleteObj,null);
-            Check.Exception(pkValue == DBNull.Value, typeName + "主键的值不能为DBNull.Value。");
-            string sql = string.Format("DELETE FROM {0} WHERE {1}={2}", typeName.GetTranslationSqlName(),pkName.GetTranslationSqlName(), pkName.GetSqlParameterName());
-            var par = new SqlParameter(pkName.GetSqlParameterName(), pkValue);
-            SqlSugarTool.SetParSize(par);
-            bool isSuccess = base.ExecuteCommand(sql, par) > 0;
+            var pkNames = SqlSugarTool.GetPrimaryKeyByTableNames(this, typeName);
+            Check.ArgumentNullException(pkNames == null || pkNames.Count==0, typeName + "没有找到主键。");
+            string whereString = "";
+            var pars=new List<SqlParameter>();
+            foreach (var pkName in pkNames)
+            {
+              string pkClassPropName = pkClassPropName = GetMappingColumnClassName(pkName);
+              var pkValue=type.GetProperty(pkClassPropName).GetValue(deleteObj,null);
+              Check.Exception(pkValue == DBNull.Value, typeName + "主键的值不能为DBNull.Value。");
+              whereString += string.Format(" AND {0}={1} ",pkName.GetTranslationSqlName(),pkName.GetSqlParameterName());
+              SqlParameter par= new SqlParameter(pkName.GetSqlParameterName(), pkValue);
+              pars.Add(par);
+              SqlSugarTool.SetParSize(par);
+            }
+            string sql = string.Format("DELETE FROM {0} WHERE 1=1 {1}", typeName.GetTranslationSqlName(),whereString);
+            bool isSuccess = base.ExecuteCommand(sql, pars.ToArray()) > 0;
             return isSuccess;
         }
 
