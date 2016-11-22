@@ -13,8 +13,6 @@ ASP.NET 4.0+ (MSSQL , MYSQL ORACLE ,SQLITE Four in one) https://github.com/sunka
 
 ASP.NET 4.0+ MSSQL   https://github.com/sunkaixuan/SqlSugar
 
-ASP.NET 4.0+ (MSSQL , MYSQL ORACLE ,SQLITE) https://github.com/sunkaixuan/SqlSugarRepository
-
 ASP.NET CORE MSSQL   https://github.com/sunkaixuan/ASP_NET_CORE_ORM_SqlSugar
 
 ASP.NET 4.0+ MYSQL   https://github.com/sunkaixuan/MySqlSugar
