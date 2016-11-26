@@ -709,6 +709,10 @@ namespace SqlSugar
             {
                 reval.SelectValue = expStr;
                 ResolveSelect.GetResult<TResult>(reval,expression);
+                if (reval.SelectValue.IsNullOrEmpty())
+                {
+                    reval.SelectValue = new ResolveExpress().GetExpressionRightField(expression, reval.DB);
+                }
             }
             return reval;
         }
