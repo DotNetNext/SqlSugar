@@ -106,7 +106,15 @@ namespace SqlSugar
             {
                 while (re.Read())
                 {
-                    strReval.Add((T)Convert.ChangeType(re.GetValue(0), type));
+                    var objValue = re.GetValue(0);
+                    if (objValue != DBNull.Value)
+                    {
+                        strReval.Add((T)Convert.ChangeType(objValue, type));
+                    }
+                    else
+                    {
+                        strReval.Add(default(T));
+                    }
                 }
             }
         }
