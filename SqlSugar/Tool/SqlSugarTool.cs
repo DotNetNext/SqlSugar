@@ -186,7 +186,7 @@ namespace SqlSugar
                         var value = r.GetValue(obj, null);
                         if (r.PropertyType.IsEnum)
                         {
-                            value = value.ObjToInt();
+                            value =Convert.ToInt64(value);
                         }
                         if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
                         if (r.Name.ToLower().Contains("hierarchyid"))
@@ -249,7 +249,7 @@ namespace SqlSugar
                     var val = r.GetValue(obj, null);
                     if (r.PropertyType.IsEnum)
                     {
-                        val = (int)val;
+                        val =Convert.ToInt64(val);
                     }
                     reval.Add(r.Name, val == null ? DBNull.Value : val);
                 }

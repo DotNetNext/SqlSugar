@@ -692,7 +692,7 @@ namespace SqlSugar
 
                     if (prop.PropertyType.IsEnum)
                     {
-                        val =val.ObjToInt();
+                        val =Convert.ToInt64(val);
                     }
 
                     var par = new SqlParameter(SqlSugarTool.ParSymbol + propName, val);
