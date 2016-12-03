@@ -16,7 +16,7 @@ namespace NewTest
         {
 
             //设置执行的DEMO
-            string switchOn = "enum";
+            string switchOn = "ms";
             IDemos demo = null;
             switch (switchOn)
             {
@@ -33,6 +33,8 @@ namespace NewTest
                 case "insertorupdate": demo = new InsertOrUpdate(); break;
                 //基层函数的用法
                 case "ado": demo = new Ado(); break;
+                //主从模式
+                case "ms": demo = new MsterSlave(); break;
                 //事务
                 case "tran": demo = new Tran(); break;
                 //创建实体函数

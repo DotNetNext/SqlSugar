@@ -60,11 +60,64 @@ namespace SqlSugar
         {
             _sqlConnection = new SqlConnection(connectionString);
         }
+
+        /// <summary>
+        /// 主连接
+        /// </summary>
+        private SqlConnection _masterConnection = null;
+        /// <summary>
+        /// 从连接
+        /// </summary>
+        private List<SqlConnection> _slaveConnections = null;
+        /// <summary>
+        /// 初始化 SqlHelper 类的新实例
+        /// </summary>
+        /// <param name="masterConnectionString"></param>
+        /// <param name="slaveConnectionStrings"></param>
+        public SqlHelper(string masterConnectionString, params string[] slaveConnectionStrings)
+        {
+            _masterConnection = new SqlConnection(masterConnectionString);
+            if (slaveConnectionStrings == null || slaveConnectionStrings.Length == 0)
+            {
+                _slaveConnections = new List<SqlConnection>()
+                {
+                    _masterConnection
+                };
+            }
+            else
+            {
+                _slaveConnections = new List<SqlConnection>();
+                foreach (var item in slaveConnectionStrings)
+                {
+                    _slaveConnections.Add(new SqlConnection(item));
+                }
+            }
+        }
+        /// <summary>
+        /// 设置当前主从连接对象
+        /// </summary>
+        /// <param name="isMaster"></param>
+        public void SetCurrentConnection(bool isMaster)
+        {
+            if (_slaveConnections != null && _slaveConnections.Count > 0)//开启主从模式
+            {
+                if (isMaster || _tran != null)
+                {
+                    _sqlConnection = _masterConnection;
+                }
+                else
+                {
+                    var count = _slaveConnections.Count;
+                    _sqlConnection = _slaveConnections[new Random().Next(0, count - 1)];
+                }
+            }
+        }
+
+
         /// <summary>
         /// 获取当前数据库连接对象
         /// </summary>
         /// <returns></returns>
-
         public virtual SqlConnection GetConnection()
         {
             return _sqlConnection;
@@ -75,6 +128,7 @@ namespace SqlSugar
         /// </summary>
         public virtual void BeginTran()
         {
+            SetCurrentConnection(true);
             CheckConnect();
             _tran = _sqlConnection.BeginTransaction();
         }
@@ -84,6 +138,7 @@ namespace SqlSugar
         /// <param name="iso">指定事务行为</param>
         public virtual void BeginTran(IsolationLevel iso)
         {
+            SetCurrentConnection(true);
             CheckConnect();
             _tran = _sqlConnection.BeginTransaction(iso);
         }
@@ -93,6 +148,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public virtual void BeginTran(string transactionName)
         {
+            SetCurrentConnection(true);
             CheckConnect();
             _tran = _sqlConnection.BeginTransaction(transactionName);
         }
@@ -103,6 +159,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public virtual void BeginTran(IsolationLevel iso, string transactionName)
         {
+            SetCurrentConnection(true);
             CheckConnect();
             _tran = _sqlConnection.BeginTransaction(iso, transactionName);
         }
@@ -112,6 +169,7 @@ namespace SqlSugar
         /// </summary>
         public virtual void RollbackTran()
         {
+            SetCurrentConnection(true);
             CheckConnect();
             if (_tran != null)
             {
@@ -125,6 +183,7 @@ namespace SqlSugar
         /// </summary>
         public virtual void CommitTran()
         {
+            SetCurrentConnection(true);
             CheckConnect();
             if (_tran != null)
             {
@@ -229,6 +288,7 @@ namespace SqlSugar
         /// <returns></returns>
         public virtual object GetScalar(string sql, params SqlParameter[] pars)
         {
+            SetCurrentConnection(true);
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
             sqlCommand.CommandType = CommandType;
@@ -271,6 +331,7 @@ namespace SqlSugar
         /// <returns></returns>
         public virtual int ExecuteCommand(string sql, params SqlParameter[] pars)
         {
+            SetCurrentConnection(true);
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
             sqlCommand.CommandType = this.CommandType;
@@ -312,6 +373,7 @@ namespace SqlSugar
         /// <returns></returns>
         public virtual SqlDataReader GetReader(string sql, params SqlParameter[] pars)
         {
+            SetCurrentConnection(false);
             ExecLogEvent(sql, pars, true);
             SqlCommand sqlCommand = new SqlCommand(sql, _sqlConnection);
             sqlCommand.CommandType = this.CommandType;
@@ -403,6 +465,7 @@ namespace SqlSugar
         /// <returns></returns>
         public virtual DataTable GetDataTable(string sql, params SqlParameter[] pars)
         {
+            SetCurrentConnection(false);
             ExecLogEvent(sql, pars, true);
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             _sqlDataAdapter.SelectCommand.CommandType = this.CommandType;
@@ -443,6 +506,7 @@ namespace SqlSugar
         /// <returns></returns>
         public virtual DataSet GetDataSetAll(string sql, params SqlParameter[] pars)
         {
+            SetCurrentConnection(false);
             ExecLogEvent(sql, pars, true);
             SqlDataAdapter _sqlDataAdapter = new SqlDataAdapter(sql, _sqlConnection);
             if (_tran != null)

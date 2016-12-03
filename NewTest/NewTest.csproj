@@ -56,6 +56,7 @@
     <Compile Include="Demos\MappingColumns.cs" />
     <Compile Include="Demos\MappingTable.cs" />
     <Compile Include="Demos\InitConfig.cs" />
+    <Compile Include="Demos\MsterSlave.cs" />
     <Compile Include="Demos\Select.cs" />
     <Compile Include="Demos\Delete.cs" />
     <Compile Include="Demos\EnumDemo.cs" />
