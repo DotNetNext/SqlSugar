@@ -710,4 +710,4 @@ using (var db = SugarDao.GetInstance())
 db.ClassGenerating.CreateClassFiles(db, ("e:/TestModels"), "Models");
 ```
 
-# More [http://www.cnblogs.com/sunkaixuan/p/5911334.html](http://www.cnblogs.com/sunkaixuan/p/5911334.html)
+# More [http://www.codeisbug.com/Home/Doc](http://www.codeisbug.com/Home/Doc)
