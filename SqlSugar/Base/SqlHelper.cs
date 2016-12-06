@@ -16,8 +16,14 @@ namespace SqlSugar
     /// </summary>
     public abstract class SqlHelper : IDisposable
     {
-        SqlConnection _sqlConnection;
-        SqlTransaction _tran = null;
+        /// <summary>
+        /// 连接对象
+        /// </summary>
+        protected SqlConnection _sqlConnection;
+        /// <summary>
+        /// 事务对象
+        /// </summary>
+        protected SqlTransaction _tran = null;
         /// <summary>
         /// 如何解释命令字符串 默认为Text 
         /// </summary>
@@ -64,17 +70,17 @@ namespace SqlSugar
         /// <summary>
         /// 主连接
         /// </summary>
-        private SqlConnection _masterConnection = null;
+        protected SqlConnection _masterConnection = null;
         /// <summary>
         /// 从连接
         /// </summary>
-        private List<SqlConnection> _slaveConnections = null;
+        protected List<SqlConnection> _slaveConnections = null;
         /// <summary>
         /// 初始化 SqlHelper 类的新实例
         /// </summary>
         /// <param name="masterConnectionString"></param>
         /// <param name="slaveConnectionStrings"></param>
-        public SqlHelper(string masterConnectionString, params string[] slaveConnectionStrings)
+        public  SqlHelper(string masterConnectionString, params string[] slaveConnectionStrings)
         {
             _masterConnection = new SqlConnection(masterConnectionString);
             if (slaveConnectionStrings == null || slaveConnectionStrings.Length == 0)
@@ -97,7 +103,7 @@ namespace SqlSugar
         /// 设置当前主从连接对象
         /// </summary>
         /// <param name="isMaster"></param>
-        public void SetCurrentConnection(bool isMaster)
+        public virtual void SetCurrentConnection(bool isMaster)
         {
             if (_slaveConnections != null && _slaveConnections.Count > 0)//开启主从模式
             {
@@ -529,8 +535,13 @@ namespace SqlSugar
             ExecLogEvent(sql, pars, false);
             return ds;
         }
-
-        private  void ExecLogEvent(string sql, SqlParameter[] pars, bool isStarting = true)
+        /// <summary>
+        /// 执行日志
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="pars"></param>
+        /// <param name="isStarting"></param>
+        protected virtual void ExecLogEvent(string sql, SqlParameter[] pars, bool isStarting = true)
         {
             if (this.IsEnableLogEvent)
             {
