@@ -146,6 +146,10 @@ namespace SqlSugar
         /// <returns></returns>
         internal static List<string> GetPrimaryKeyByTableNames(SqlSugarClient db, string tableName)
         {
+            if (DataBaseConfig.IsManualConfiguration) { //手动配置
+                if (DataBaseConfig.PrimaryKeys == null) return null;
+                return DataBaseConfig.PrimaryKeys.Where(it => it.Key.ToLower() == tableName.ToLower()).Select(it=>it.Value).ToList();
+            }
             string key = "GetPrimaryKeyByTableName" + tableName;
             tableName = tableName.ToLower();
             var cm = CacheManager<List<KeyValue>>.GetInstance();
@@ -195,6 +199,11 @@ namespace SqlSugar
         /// <returns></returns>
         internal static List<KeyValue> GetIdentitiesKeyByTableName(SqlSugarClient db, string tableName)
         {
+            if (DataBaseConfig.IsManualConfiguration)
+            { //手动配置
+                if (DataBaseConfig.IdentityKeys == null) return null;
+                return DataBaseConfig.IdentityKeys.Where(it => it.Key.ToLower() == tableName.ToLower()).ToList();
+            }
             string key = "GetIdentityKeyByTableName" + tableName;
             var cm = CacheManager<List<KeyValue>>.GetInstance();
             List<KeyValue> identityInfo = null;
