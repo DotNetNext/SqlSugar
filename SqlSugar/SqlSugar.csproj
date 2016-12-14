@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\DataBaseConfig.cs" />
     <Compile Include="CloudClient.cs" />
     <Compile Include="Cloud\CloudModels.cs" />
     <Compile Include="Cloud\CloudPubMethod.cs" />

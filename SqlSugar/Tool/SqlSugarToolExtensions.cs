@@ -31,7 +31,7 @@ namespace SqlSugar
             }
             else
             {
-                return string.Join(",", array.Where(c => c != null).Select(it => (it + "").ToSuperSqlFilter().ToSqlValue()));
+                return string.Join(",", array.Where(c => c != null).Select(it => (it + "").ToSqlValue()));
             }
         }
         /// <summary>
