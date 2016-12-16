@@ -1,1 +1,0 @@
-%~dp0nuget.exe pack %~dp0SqlSugar.csproj -OutputDirectory %~dp0
