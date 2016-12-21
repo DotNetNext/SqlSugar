@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 namespace SqlSugar
 {
+    /// <summary>
+    /// 数据库配置
+    /// </summary>
     public class DataBaseConfig
     {
         /// <summary>
