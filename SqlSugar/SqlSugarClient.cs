@@ -1255,7 +1255,7 @@ namespace SqlSugar
 
             string typeName = type.Name;
             typeName = GetTableNameByClassType(typeName);
-            string pkName = SqlSugarTool.GetPrimaryKeyByTableName(this, typeName);
+            var pkNames = SqlSugarTool.GetPrimaryKeyByTableNames(this, typeName);
             var identityNames = SqlSugarTool.GetIdentitiesKeyByTableName(this, typeName);
             var isIdentity = identityNames != null && identityNames.Count > 0;
             var columnNames = props.Select(it => it.Name).ToList();
@@ -1287,11 +1287,18 @@ namespace SqlSugar
             Check.Exception(columnNames == null || columnNames.Count == 0, "没有可插入的列，请查看实体和插入配置。");
 
             StringBuilder sbSql = new StringBuilder();
-            sbSql.AppendFormat(@"UPDATE S SET {{0}} FROM {1} S INNER JOIN 
+            sbSql.AppendFormat(@"UPDATE S SET {{0}} FROM {0} S INNER JOIN 
             (
               {{1}}
 
-            ) T  ON T.{0}=S.{0}",pkName.GetTranslationSqlName(),typeName.GetTranslationSqlName());
+            ) T ",typeName.GetTranslationSqlName());
+            string sqlWhere = null;
+            foreach (var item in pkNames)
+            {
+                var isFirst = pkNames.IndexOf(item)==0;
+                sqlWhere += (isFirst ? (" ON " + string.Format("T.{0}=S.{0}", item.GetTranslationSqlName())) : string.Format(" AND T.{0}=S.{0}", item.GetTranslationSqlName()));
+            }
+            sbSql.Append(sqlWhere);
             StringBuilder sbSqlInnerFromTables = new StringBuilder();
             StringBuilder sbSqlInnerUpdateColumns = new StringBuilder();
             sbSqlInnerUpdateColumns.Append(string.Join(",", columnNames.Select(it => "S." + it.GetTranslationSqlName() + "=" + "T." + it.GetTranslationSqlName())));
