@@ -180,7 +180,7 @@ namespace SqlSugar
                         {
                             FieldInfo field = (FieldInfo)memberExpr.Member;
                             dynInv = field.GetValue(memberExpr.Member);
-                            if (dynInv != null && dynInv.GetType().IsClass) {
+                            if (dynInv != null && dynInv.GetType().IsClass&&dynInv.GetType()!=SqlSugarTool.StringType) {
                                 var fieldName = me.Member.Name;
                                 var proInfo = dynInv.GetType().GetProperty(fieldName);
                                 if (proInfo != null) {
