@@ -11,6 +11,10 @@ namespace SqlSugar
     {
         public ResolveExpressType Type { get; set; }
         public Expression Expression { get; set; }
+        public virtual string GetaMppingColumnsName(string name)
+        {
+            return name;
+        }
         public bool IsSingle { get { return this.Type == ResolveExpressType.Single; } }
 
         public ExpressionContext(Expression expression, ResolveExpressType type)
@@ -25,8 +29,6 @@ namespace SqlSugar
             resolve.Start();
             return resolve.SqlWhere;
         }
-
-        public string GetSelect() { return ""; }
 
         public List<SugarParameter> Parameters
         {
