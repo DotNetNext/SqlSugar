@@ -125,7 +125,7 @@ namespace SqlSugar
         {
             return GetString(sql, this.GetParameters(pars));
         }
-        public virtual string GetString(string sql, params SqlParameter[] pars)
+        public virtual string GetString(string sql, params SugarParameter[] pars)
         {
             return Convert.ToString(GetScalar(sql, pars));
         }
@@ -133,24 +133,24 @@ namespace SqlSugar
         {
             return GetInt(sql, this.GetParameters(pars));
         }
-        public virtual int GetInt(string sql, params SqlParameter[] pars)
+        public virtual int GetInt(string sql, params SugarParameter[] pars)
         {
             return Convert.ToInt32(GetScalar(sql, pars));
         }
-        public virtual Double GetDouble(string sql, params SqlParameter[] pars)
+        public virtual Double GetDouble(string sql, params SugarParameter[] pars)
         {
             return Convert.ToDouble(GetScalar(sql, pars));
         }
-        public virtual decimal GetDecimal(string sql, params SqlParameter[] pars)
+        public virtual decimal GetDecimal(string sql, params SugarParameter[] pars)
         {
             return Convert.ToDecimal(GetScalar(sql, pars));
         }
-        public virtual DateTime GetDateTime(string sql, params SqlParameter[] pars)
+        public virtual DateTime GetDateTime(string sql, params SugarParameter[] pars)
         {
             return Convert.ToDateTime(GetScalar(sql, pars));
         }
 
-        public virtual SqlParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null)
+        public virtual SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null)
         {
             if (obj == null) return null;
             return base.GetParameters(obj, propertyInfo,this.Context.SqlBuilder.SqlParameterKeyWord);
@@ -180,16 +180,16 @@ namespace SqlSugar
                 this.Transaction = null;
             }
         }
-        public abstract IDbDataParameter[] ToIDbDataParameter(params SqlParameter[] pars);
+        public abstract SugarParameter[] ToIDbDataParameter(params SugarParameter[] pars);
         public abstract void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
         public abstract IDataAdapter GetAdapter();
-        public abstract IDbCommand GetCommand(string sql, SqlParameter[] pars);
+        public abstract IDbCommand GetCommand(string sql, SugarParameter[] pars);
         public abstract IDbConnection Connection { get; set; }
         public abstract void BeginTran(string transactionName);//Only SqlServer
         public abstract void BeginTran(IsolationLevel iso, string transactionName);//Only SqlServer
 
         #region Core
-        public virtual int ExecuteCommand(string sql, params SqlParameter[] pars)
+        public virtual int ExecuteCommand(string sql, params SugarParameter[] pars)
         {
             base.SetParSize(pars);
             ExecLogEvent(sql, pars, true);
@@ -200,7 +200,7 @@ namespace SqlSugar
             ExecLogEvent(sql, pars, false);
             return count;
         }
-        public virtual IDataReader GetDataReader(string sql, params SqlParameter[] pars)
+        public virtual IDataReader GetDataReader(string sql, params SugarParameter[] pars)
         {
             base.SetParSize(pars);
             ExecLogEvent(sql, pars, true);
@@ -211,7 +211,7 @@ namespace SqlSugar
             ExecLogEvent(sql, pars, false);
             return sqlDataReader;
         }
-        public virtual DataSet GetDataSetAll(string sql, params SqlParameter[] pars)
+        public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] pars)
         {
             base.SetParSize(pars);
             ExecLogEvent(sql, pars, true);
@@ -225,7 +225,7 @@ namespace SqlSugar
             ExecLogEvent(sql, pars, false);
             return ds;
         }
-        public virtual object GetScalar(string sql, params SqlParameter[] pars)
+        public virtual object GetScalar(string sql, params SugarParameter[] pars)
         {
             base.SetParSize(pars);
             ExecLogEvent(sql, pars, true);
@@ -239,7 +239,7 @@ namespace SqlSugar
         }
         #endregion
 
-        public virtual DataTable GetDataTable(string sql, params SqlParameter[] pars)
+        public virtual DataTable GetDataTable(string sql, params SugarParameter[] pars)
         {
             var ds = GetDataSetAll(sql, pars);
             if (ds.Tables.Count != 0 && ds.Tables.Count > 0) return ds.Tables[0];
@@ -265,7 +265,7 @@ namespace SqlSugar
         {
             return ExecuteCommand(sql, GetParameters(pars));
         }
-        public virtual void ExecLogEvent(string sql, SqlParameter[] pars, bool isStarting = true)
+        public virtual void ExecLogEvent(string sql, SugarParameter[] pars, bool isStarting = true)
         {
             if (this.IsEnableLogEvent)
             {

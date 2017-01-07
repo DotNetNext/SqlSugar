@@ -10,7 +10,7 @@ namespace SqlSugar
     public partial interface ISugarQueryable<T> where T : class, new()
     {
         SqlSugarClient Context { get; set; }
-        List<SqlParameter> Pars { get; set; }
+        List<SugarParameter> Pars { get; set; }
 
 
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);

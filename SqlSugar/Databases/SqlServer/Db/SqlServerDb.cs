@@ -46,7 +46,7 @@ namespace SqlSugar
         {
             return new SqlDataAdapter();
         }
-        public override IDbCommand GetCommand(string sql, SqlParameter[] pars)
+        public override IDbCommand GetCommand(string sql, SugarParameter[] pars)
         {
             SqlCommand sqlCommand = new SqlCommand(sql, (SqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
@@ -73,7 +73,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="pars"></param>
         /// <returns></returns>
-        public override IDbDataParameter[] ToIDbDataParameter(params SqlParameter[] pars)
+        public override SugarParameter[] ToIDbDataParameter(params SugarParameter[] pars)
         {
             return pars;
         }

@@ -9,19 +9,19 @@ namespace SqlSugar
 {
     public class QueryableAccessory
     {
-        protected List<SqlParameter> _Pars;
+        protected List<SugarParameter> _Pars;
         protected void AddPars(object whereObj, SqlSugarClient context)
         {
             var sqlParsArray = context.Database.GetParameters(whereObj);
             if (_Pars == null)
-                _Pars = new List<SqlParameter>();
+                _Pars = new List<SugarParameter>();
             if (sqlParsArray != null)
                 _Pars.AddRange(sqlParsArray);
         }
-        protected void AddPars(List<SqlParameter> pars, SqlSugarClient context)
+        protected void AddPars(List<SugarParameter> pars, SqlSugarClient context)
         {
             if (_Pars == null)
-                _Pars = new List<SqlParameter>();
+                _Pars = new List<SugarParameter>();
             if (pars != null)
                 _Pars.AddRange(pars);
         }

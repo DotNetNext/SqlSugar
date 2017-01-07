@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +15,7 @@ namespace SqlSugar
         protected ICodeFirst _CodeFirst;
         protected IDbMaintenance _DbMaintenance;
         protected IDbConnection _DbConnection;
-        public virtual void SetParSize(SqlParameter[] pars)
+        public virtual void SetParSize(SugarParameter[] pars)
         {
             if (pars != null)
             {
@@ -24,7 +25,7 @@ namespace SqlSugar
                 }
             }
         }
-        public virtual void SetParSize(SqlParameter par)
+        public virtual void SetParSize(SugarParameter par)
         {
             int size = par.Size;
             if (size < 4000)
@@ -33,19 +34,14 @@ namespace SqlSugar
             }
         }
 
-        public virtual void SetSqlDbType(PropertyInfo prop, SqlParameter par)
+        public virtual void SetSqlDbType(PropertyInfo prop, SugarParameter par)
         {
-            var isNullable = false;
-            var isByteArray = PubMethod.GetUnderType(prop, ref isNullable) == typeof(byte[]);
-            if (isByteArray)
-            {
-                par.SqlDbType = SqlDbType.VarBinary;
-            }
+
         }
 
-        protected virtual SqlParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
+        protected virtual SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
         {
-            List<SqlParameter> listParams = new List<SqlParameter>();
+            List<SugarParameter> listParams = new List<SugarParameter>();
             if (obj != null)
             {
                 var type = obj.GetType();
@@ -55,7 +51,7 @@ namespace SqlSugar
                     if (type == PubConst.DicArraySO)
                     {
                         var newObj = (Dictionary<string, object>)obj;
-                        var pars = newObj.Select(it => new SqlParameter(sqlParameterKeyWord + it.Key, it.Value));
+                        var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
                         foreach (var par in pars)
                         {
                             SetParSize(par);
@@ -66,7 +62,7 @@ namespace SqlSugar
                     {
 
                         var newObj = (Dictionary<string, string>)obj;
-                        var pars = newObj.Select(it => new SqlParameter(sqlParameterKeyWord + it.Key, it.Value));
+                        var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
                         foreach (var par in pars)
                         {
                             SetParSize(par);
@@ -96,14 +92,14 @@ namespace SqlSugar
                         if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
                         if (r.Name.ToLower().Contains("hierarchyid"))
                         {
-                            var par = new SqlParameter(sqlParameterKeyWord + r.Name, SqlDbType.Udt);
+                            var par = new SugarParameter(sqlParameterKeyWord + r.Name, SqlDbType.Udt);
                             par.UdtTypeName = "HIERARCHYID";
                             par.Value = value;
                             listParams.Add(par);
                         }
                         else
                         {
-                            var par = new SqlParameter(sqlParameterKeyWord + r.Name, value);
+                            var par = new SugarParameter(sqlParameterKeyWord + r.Name, value);
                             SetParSize(par);
                             if (value == DBNull.Value)
                             {//防止文件类型报错

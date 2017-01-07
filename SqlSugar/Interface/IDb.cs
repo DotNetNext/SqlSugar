@@ -13,10 +13,10 @@ namespace SqlSugar
     {
         IDbConnection Connection { get; set; }
         IDbTransaction Transaction { get; set; }
-        IDbDataParameter[] ToIDbDataParameter(params SqlParameter [] pars);
-        SqlParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null);
+        SugarParameter[] ToIDbDataParameter(params SugarParameter[] pars);
+        SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null);
         SqlSugarClient Context { get; set; }
-        void ExecLogEvent(string sql, SqlParameter[] pars, bool isStarting = true);
+        void ExecLogEvent(string sql, SugarParameter[] pars, bool isStarting = true);
 
         IConnectionConfig MasterConnectionConfig { get; set; }
         List<IConnectionConfig> SlaveConnectionConfigs { get; set; }
@@ -35,24 +35,24 @@ namespace SqlSugar
 
         void SetCommandToAdapter(IDataAdapter adapter,IDbCommand command);
         IDataAdapter GetAdapter();
-        IDbCommand GetCommand(string sql, SqlParameter[] pars);
+        IDbCommand GetCommand(string sql, SugarParameter[] pars);
         DataTable GetDataTable(string sql, object pars);
-        DataTable GetDataTable(string sql, params SqlParameter[] pars);
+        DataTable GetDataTable(string sql, params SugarParameter[] pars);
         DataSet GetDataSetAll(string sql, object pars);
-        DataSet GetDataSetAll(string sql, params SqlParameter[] pars);
+        DataSet GetDataSetAll(string sql, params SugarParameter[] pars);
         IDataReader GetDataReader(string sql,object pars);
-        IDataReader GetDataReader(string sql, params SqlParameter[] pars);
+        IDataReader GetDataReader(string sql, params SugarParameter[] pars);
         object GetScalar(string sql, object pars);
-        object GetScalar(string sql, params SqlParameter[] pars);
+        object GetScalar(string sql, params SugarParameter[] pars);
         int ExecuteCommand(string sql, object pars);
-        int ExecuteCommand(string sql, params SqlParameter[] pars);
+        int ExecuteCommand(string sql, params SugarParameter[] pars);
         string GetString(string sql, object pars);
-        string GetString(string sql, params SqlParameter[] pars);
+        string GetString(string sql, params SugarParameter[] pars);
         int GetInt(string sql, object pars);
-        int GetInt(string sql, params SqlParameter[] pars);
-        Double GetDouble(string sql, params SqlParameter[] pars);
-        decimal GetDecimal(string sql, params SqlParameter[] pars);
-        DateTime GetDateTime(string sql, params SqlParameter[] pars);
+        int GetInt(string sql, params SugarParameter[] pars);
+        Double GetDouble(string sql, params SugarParameter[] pars);
+        decimal GetDecimal(string sql, params SugarParameter[] pars);
+        DateTime GetDateTime(string sql, params SugarParameter[] pars);
 
         void Dispose();
         void Close();

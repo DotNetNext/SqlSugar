@@ -97,6 +97,7 @@
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />
+    <Compile Include="Entities\SugarParameter.cs" />
     <Compile Include="ExpressionsToSql\ExpressionParameter.cs" />
     <Compile Include="Entities\JoinQueryInfo.cs" />
     <Compile Include="Entities\Mapping\MappingColumn.cs" />

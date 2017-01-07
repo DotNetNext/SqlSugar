@@ -15,9 +15,9 @@ namespace SqlSugar
         public IDb Db { get { return Context.Database; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get { return this.Context.SqlBuilder; } }
-        public List<SqlParameter> Pars
+        public List<SugarParameter> Pars
         {
-            get { return PubMethod.IsNullReturnNew<List<SqlParameter>>(base._Pars); }
+            get { return PubMethod.IsNullReturnNew<List<SugarParameter>>(base._Pars); }
             set { base._Pars = value; }
         }
         public void Clear()
