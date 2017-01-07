@@ -11,6 +11,7 @@ namespace SqlSugar
         {
             var expression = this.Expression as BinaryExpression;
             base.BaseExpression = expression;
+            base.BaseParameter = parameter;
             base.IsLeft = true;
             base.Expression = expression.Left;
             base.Start();

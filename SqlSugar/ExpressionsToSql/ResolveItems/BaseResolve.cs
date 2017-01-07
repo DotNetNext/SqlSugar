@@ -15,6 +15,8 @@ namespace SqlSugar
         public bool? IsLeft { get; set; }
         public int ContentIndex { get { return this.Context.Index; } }
         public int Index { get; set; }
+        public ExpressionParameter BaseParameter { get; set; }
+
         private BaseResolve()
         {
 
@@ -35,7 +37,8 @@ namespace SqlSugar
                 Context = this.Context,
                 Expression = exp,
                 IsLeft = this.IsLeft,
-                BaseExpression=this.BaseExpression
+                BaseExpression = this.BaseExpression,
+                Index = this.Index
             };
             if (exp is LambdaExpression)
             {

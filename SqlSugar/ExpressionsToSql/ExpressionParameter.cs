@@ -12,5 +12,7 @@ namespace SqlSugar
         public ExpressionContext Context { get; set; }
         public bool? IsLeft { get; set; }
         public Expression BaseExpression { get; set; }
+        public int Index { get; set; }
+        public Dictionary<string, string> TempData { get; set; }
     }
 }
