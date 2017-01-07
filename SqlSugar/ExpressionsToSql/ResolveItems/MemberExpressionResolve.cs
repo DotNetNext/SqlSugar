@@ -12,21 +12,12 @@ namespace SqlSugar
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
             var isSingle = parameter.Context.IsSingle;
-            string field = string.Empty;
-            field = isSingle ? expression.Member.Name : expression.Member.ToString();
-            base.IsFinished = true;
-            base.SqlWhere += string.Format(" {0} ", field);
-            if (isLeft == true)
+            string fieldName = string.Empty;
+            fieldName = isSingle ? expression.Member.Name : expression.Member.ToString();
+            parameter.BaseParameter.TempData.Add(ExpConst.FiledName, fieldName);
+            if (isLeft == null && base.SqlWhere == null)
             {
-                base.SqlWhere += ExpTool.GetOperator(parameter.BaseExpression.NodeType);
-            }
-            else if (isLeft == false)
-            {
-
-            }
-            else
-            {
-
+                base.SqlWhere = fieldName;
             }
         }
     }

@@ -14,10 +14,12 @@ namespace SqlSugar
             if (expression.NodeType == ExpressionType.MemberAccess)
             {
                 base.SqlWhere = "(" + ((MemberExpression)expression).Member.Name + "=1)";
-                base.IsFinished = true;
             }
-            base.Expression = expression;
-            base.Continue();
+            else
+            {
+                base.Expression = expression;
+                base.Start();
+            }
         }
     }
 }

@@ -9,9 +9,10 @@ namespace SqlSugar
     {
         public BinaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
+            parameter.TempData = new Dictionary<string, object>();
             var expression = this.Expression as BinaryExpression;
+            parameter.TempData.Add(ExpConst.Operator, ExpTool.GetOperator(expression.NodeType));
             base.BaseExpression = expression;
-            base.BaseParameter = parameter;
             base.IsLeft = true;
             base.Expression = expression.Left;
             base.Start();
@@ -19,7 +20,6 @@ namespace SqlSugar
             base.Expression = expression.Right;
             base.Start();
             base.IsLeft = null;
-            base.Continue();
         }
     }
 }

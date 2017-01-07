@@ -5,7 +5,15 @@ using System.Text;
 
 namespace SqlSugar
 {
+    internal class ExpConst
+    {
+        public const string FiledName = "filedName";
+        public const string FiledValue = "FiledValue";
+        public const string Operator = "Operator";
+    }
     internal partial class ErrorMessage
+
+
     {
         internal static string OperatorError
         {
@@ -23,6 +31,6 @@ namespace SqlSugar
                                        "表达示格式错误，正确格式： it=>it.fieldName");
             }
         }
-        
+
     }
 }

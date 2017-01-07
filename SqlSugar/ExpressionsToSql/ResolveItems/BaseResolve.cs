@@ -11,7 +11,6 @@ namespace SqlSugar
         protected Expression BaseExpression { get; set; }
         public ExpressionContext Context { get; set; }
         public string SqlWhere { get; set; }
-        public bool IsFinished { get; set; }
         public bool? IsLeft { get; set; }
         public int ContentIndex { get { return this.Context.Index; } }
         public int Index { get; set; }
@@ -25,12 +24,12 @@ namespace SqlSugar
         {
             this.Expression = parameter.Expression;
             this.Context = parameter.Context;
+            this.BaseParameter = parameter;
         }
 
         public BaseResolve Start()
         {
             this.Index++;
-            this.IsFinished = false;
             Expression exp = this.Expression;
             ExpressionParameter parameter = new ExpressionParameter()
             {
@@ -38,6 +37,7 @@ namespace SqlSugar
                 Expression = exp,
                 IsLeft = this.IsLeft,
                 BaseExpression = this.BaseExpression,
+                BaseParameter=this.BaseParameter,
                 Index = this.Index
             };
             if (exp is LambdaExpression)
@@ -77,13 +77,6 @@ namespace SqlSugar
                 Check.ThrowNotSupportedException("ExpressionType.New、ExpressionType.NewArrayBounds and ExpressionType.NewArrayInit");
             }
             return null;
-        }
-        public void Continue()
-        {
-            if (!IsFinished)
-            {
-                this.Start();
-            }
         }
     }
 }
