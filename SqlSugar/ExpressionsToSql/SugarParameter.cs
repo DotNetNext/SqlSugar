@@ -9,7 +9,6 @@ namespace SqlSugar
 {
     public class SugarParameter : DbParameter
     {
-
         public SugarParameter(string name, object value)
         {
             this.Value = value;
