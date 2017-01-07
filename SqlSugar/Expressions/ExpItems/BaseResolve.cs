@@ -10,6 +10,8 @@ namespace SqlSugar
         protected Expression Expression { get; set; }
         public ExpressionContext Context { get; set; }
         public string SqlWhere { get; set; }
+        public bool IsFinished { get; set; }
+
         private BaseResolve()
         {
 
@@ -21,6 +23,7 @@ namespace SqlSugar
 
         public BaseResolve Start()
         {
+            this.IsFinished = false;
             Expression exp = this.Expression;
             if (exp is LambdaExpression)
             {
@@ -59,6 +62,13 @@ namespace SqlSugar
                 Check.ThrowNotSupportedException("ExpressionType.New、ExpressionType.NewArrayBounds and ExpressionType.NewArrayInit");
             }
             return null;
+        }
+        public void Continue()
+        {
+            if (!IsFinished)
+            {
+                this.Start();
+            }
         }
     }
 }
