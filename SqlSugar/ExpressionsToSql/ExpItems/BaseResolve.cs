@@ -8,6 +8,7 @@ namespace SqlSugar
     public class BaseResolve
     {
         protected Expression Expression { get; set; }
+        protected Expression BaseExpression { get; set; }
         public ExpressionContext Context { get; set; }
         public string SqlWhere { get; set; }
         public bool IsFinished { get; set; }
@@ -34,7 +35,7 @@ namespace SqlSugar
                 Context = this.Context,
                 Expression = exp,
                 IsLeft = this.IsLeft,
-                BaseExpression=this.Expression
+                BaseExpression=this.BaseExpression
             };
             if (exp is LambdaExpression)
             {

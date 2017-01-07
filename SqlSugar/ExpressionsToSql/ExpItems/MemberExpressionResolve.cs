@@ -10,13 +10,13 @@ namespace SqlSugar
         public MemberExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var expression = base.Expression as MemberExpression;
-            var isLeft = this.IsLeft;
-            this.IsLeft = null;
-            var isSingle = base.Context.IsSingle;
+            var isLeft = parameter.IsLeft;
+            var isSingle = parameter.Context.IsSingle;
             string field = string.Empty;
             field = isSingle ? expression.Member.Name : expression.Member.ToString();
             base.IsFinished = true;
-            if (IsLeft == true)
+            base.SqlWhere += string.Format(" {0} ", field);
+            if (isLeft == true)
             {
                 base.SqlWhere += ExpTool.GetOperator(parameter.BaseExpression.NodeType);
             }

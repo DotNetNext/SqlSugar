@@ -10,7 +10,7 @@ namespace SqlSugar
         public BinaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var expression = this.Expression as BinaryExpression;
-            var baseExpression = parameter.Expression;
+            base.BaseExpression = expression;
             base.IsLeft = true;
             base.Expression = expression.Left;
             base.Start();

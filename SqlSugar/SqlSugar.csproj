@@ -109,7 +109,6 @@
     <Compile Include="Enum\OrderByType.cs" />
     <Compile Include="ExpressionsToSql\ResolveExpressType.cs" />
     <Compile Include="ExpressionsToSql\ExpConst.cs" />
-    <Compile Include="ExpressionsToSql\ExpInfo.cs" />
     <Compile Include="ExpressionsToSql\ExpItems\BaseResolve.cs" />
     <Compile Include="ExpressionsToSql\ExpItems\BinaryExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ExpItems\BlockExpressionResolve.cs" />
