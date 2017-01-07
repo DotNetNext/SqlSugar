@@ -19,42 +19,47 @@ namespace SqlSugar
 
         public override System.Data.DbType DbType
         {
-            get;set;
+            get; set;
         }
 
         public override ParameterDirection Direction
         {
-            get;set;
+            get; set;
         }
 
         public override bool IsNullable
         {
-            get;set;
+            get; set;
         }
 
         public override string ParameterName
         {
-            get;set;
+            get; set;
         }
 
         public override int Size
         {
-            get;set;
+            get; set;
         }
 
         public override string SourceColumn
         {
-            get;set;
+            get; set;
         }
 
         public override bool SourceColumnNullMapping
         {
-            get;set;
+            get; set;
         }
-        public string UdtTypeName { get; internal set; }
+        public string UdtTypeName
+        {
+            get;
+            set;
+        }
+
         public override object Value
         {
-            get;set;
+            get; set;
         }
 
         public override void ResetDbType()
