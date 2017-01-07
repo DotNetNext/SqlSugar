@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using SqlSugar;
 using OrmTest.Models;
+using System.Data.SqlClient;
 
 namespace OrmTest
 {

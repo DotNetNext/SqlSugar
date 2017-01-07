@@ -57,7 +57,7 @@ namespace SqlSugar
             }
             if (pars != null)
             {
-                IDbDataParameter[] ipars= ToIDbDataParameter(pars);
+                IDataParameter[] ipars= ToIDbDataParameter(pars);
                 sqlCommand.Parameters.AddRange((SqlParameter[])ipars);
             }
             CheckConnection();
@@ -73,8 +73,20 @@ namespace SqlSugar
         /// </summary>
         /// <param name="pars"></param>
         /// <returns></returns>
-        public override SugarParameter[] ToIDbDataParameter(params SugarParameter[] pars)
+        public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars)
         {
+            if (pars == null || pars.Length == 0) return null;
+            IDataParameter[] reval = new IDataParameter[pars.Length];
+            foreach (var par in pars)
+            {
+                var p = new SqlParameter();
+                p.ParameterName = par.ParameterName;
+                p.UdtTypeName = par.UdtTypeName;
+                p.Size = par.Size;
+                p.Value = par.Value;
+                p.DbType = par.DbType;
+                reval[0] =p;
+            }
             return pars;
         }
     }

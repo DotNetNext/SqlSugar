@@ -18,7 +18,6 @@ namespace SqlSugar
             this.IsClearParameters = true;
             this.CommandTimeOut = 30000;
         }
-
         public IDbTransaction Transaction { get; set; }
         public virtual SqlSugarClient Context { get; set; }
         public virtual IConnectionConfig MasterConnectionConfig { get; set; }
@@ -180,7 +179,7 @@ namespace SqlSugar
                 this.Transaction = null;
             }
         }
-        public abstract SugarParameter[] ToIDbDataParameter(params SugarParameter[] pars);
+        public abstract IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
         public abstract void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
         public abstract IDataAdapter GetAdapter();
         public abstract IDbCommand GetCommand(string sql, SugarParameter[] pars);

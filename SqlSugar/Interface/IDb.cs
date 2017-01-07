@@ -13,7 +13,7 @@ namespace SqlSugar
     {
         IDbConnection Connection { get; set; }
         IDbTransaction Transaction { get; set; }
-        SugarParameter[] ToIDbDataParameter(params SugarParameter[] pars);
+        IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
         SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null);
         SqlSugarClient Context { get; set; }
         void ExecLogEvent(string sql, SugarParameter[] pars, bool isStarting = true);
