@@ -21,18 +21,18 @@ namespace SqlSugar
 
         public override string ToString()
         {
-            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression=this.Expression, Context=this });
+            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
             return resolve.SqlWhere;
         }
 
         public string GetSelect() { return ""; }
 
-        public List<DbParameter> Parameters
+        public List<SugarParameter> Parameters
         {
             get
             {
-                return PubMethod.IsNullReturnNew(base._Parameters);
+                return base._Parameters;
             }
             set
             {

@@ -8,6 +8,6 @@ namespace SqlSugar
 {
     public class ExpResolveAccessory
     {
-        protected List<DbParameter> _Parameters { get; set; }
+        protected List<SugarParameter> _Parameters { get; set; }
     }
 }
