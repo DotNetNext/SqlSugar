@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public class UnaryExpressionResolve:BaseResolve
     {
-        public UnaryExpressionResolve(Expression exp) : base(exp)
+        public UnaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
 
         }

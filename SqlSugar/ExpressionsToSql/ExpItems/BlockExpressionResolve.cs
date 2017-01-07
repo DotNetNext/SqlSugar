@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public class BlockExpressionResolve:BaseResolve
     {
-        public BlockExpressionResolve(Expression exp):base(exp)
+        public BlockExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
 
         }

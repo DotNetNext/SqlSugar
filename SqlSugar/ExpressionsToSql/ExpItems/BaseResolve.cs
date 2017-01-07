@@ -8,7 +8,6 @@ namespace SqlSugar
     public class BaseResolve
     {
         protected Expression Expression { get; set; }
-        protected Expression BaseExpression { get; set; }
         public ExpressionContext Context { get; set; }
         public string SqlWhere { get; set; }
         public bool IsFinished { get; set; }
@@ -19,24 +18,31 @@ namespace SqlSugar
         {
 
         }
-        public BaseResolve(Expression expression)
+        public BaseResolve(ExpressionParameter parameter)
         {
-            this.Expression = expression;
+            this.Expression = parameter.Expression;
+            this.Context = parameter.Context;
         }
 
         public BaseResolve Start()
         {
             this.Index++;
             this.IsFinished = false;
-            this.BaseExpression = null;
             Expression exp = this.Expression;
+            ExpressionParameter parameter = new ExpressionParameter()
+            {
+                Context = this.Context,
+                Expression = exp,
+                IsLeft = this.IsLeft,
+                BaseExpression=this.Expression
+            };
             if (exp is LambdaExpression)
             {
-                return new LambdaExpressionResolve(exp);
+                return new LambdaExpressionResolve(parameter);
             }
             else if (exp is BinaryExpression)
             {
-                return new BinaryExpressionResolve(exp);
+                return new BinaryExpressionResolve(parameter);
             }
             else if (exp is BlockExpression)
             {
@@ -48,19 +54,19 @@ namespace SqlSugar
             }
             else if (exp is MethodCallExpression)
             {
-                return new MethodCallExpressionResolve(exp);
+                return new MethodCallExpressionResolve(parameter);
             }
             else if (exp is ConstantExpression)
             {
-                return new ConstantExpressionResolve(exp);
+                return new ConstantExpressionResolve(parameter);
             }
             else if (exp is MemberExpression)
             {
-                return new MemberExpressionResolve(exp);
+                return new MemberExpressionResolve(parameter);
             }
             else if (exp is UnaryExpression)
             {
-                return new UnaryExpressionResolve(exp);
+                return new UnaryExpressionResolve(parameter);
             }
             else if (exp != null && exp.NodeType.IsIn(ExpressionType.New, ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
             {

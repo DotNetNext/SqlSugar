@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 using System.Text;
 namespace SqlSugar
 {
-    public class ConstantExpressionResolve:BaseResolve
+    public class MethodCallExpressionResolve:BaseResolve
     {
-        public ConstantExpressionResolve(Expression exp) : base(exp)
+        public MethodCallExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
 
         }

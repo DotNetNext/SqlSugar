@@ -7,9 +7,9 @@ namespace SqlSugar
 {
     public class LambdaExpressionResolve : BaseResolve
     {
-        public LambdaExpressionResolve(Expression exp) : base(exp)
+        public LambdaExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
-            LambdaExpression lambda = exp as LambdaExpression;
+            LambdaExpression lambda =base.Expression as LambdaExpression;
             var expression = lambda.Body;
             if (expression.NodeType == ExpressionType.MemberAccess)
             {

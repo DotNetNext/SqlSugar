@@ -3,4 +3,3 @@ F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\SqlSugar\bin\Debug\SqlSugar.pdb
 F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\SqlSugar\bin\Debug\Newtonsoft.Json.dll
 F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\SqlSugar\obj\Debug\SqlSugar.dll
 F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\SqlSugar\obj\Debug\SqlSugar.pdb
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\SqlSugar\obj\Debug\SqlSugar.csprojResolveAssemblyReference.cache

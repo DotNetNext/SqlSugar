@@ -15,10 +15,10 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            Expression<Func<Student, bool>> exp = it => it.Id > 0;
+            Expression<Func<Student, bool>> exp = it => it.Name!="";
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.Single);
            // var x = expContext.GetFiledName();
-            var xx = expContext.GetWhere();
+            var xx = expContext.ToString();
 
 
             var b = DateTime.Now;
@@ -26,7 +26,7 @@ namespace OrmTest
             {
                 DbType = DbType.SqlServer,
                 ConnectionString = "server=.;uid=sa;pwd=sasa;database=SqlSugar4XTest",
-                EntityNamespace = "SqlSugar4XTest.Models",
+                EntityNamespace = "OrmTest.Models",
                 IsAutoCloseConnection = false
             };
             SqlSugarClient db = new SqlSugarClient(config);
