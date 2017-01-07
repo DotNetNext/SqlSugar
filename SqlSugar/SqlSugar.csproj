@@ -97,6 +97,7 @@
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />
+    <Compile Include="Entities\ExpressionParameter.cs" />
     <Compile Include="Entities\JoinQueryInfo.cs" />
     <Compile Include="Entities\Mapping\MappingColumn.cs" />
     <Compile Include="Entities\Mapping\MappingTable.cs" />
@@ -134,9 +135,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlSugarAccessory.cs" />
     <Compile Include="SqlSugarClient.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\Newtonsoft.Json.dll" />

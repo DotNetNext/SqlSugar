@@ -8,20 +8,20 @@ namespace SqlSugar
 {
     public class ExpressionContext : ExpResolveAccessory
     {
-        private ResolveExpressType type { get; set; }
-        private Expression expression { get; set; }
-        private bool IsSingle { get { return this.type == ResolveExpressType.Single; } }
+        public ResolveExpressType Type { get; set; }
+        public Expression Expression { get; set; }
+        public bool IsSingle { get { return this.Type == ResolveExpressType.Single; } }
 
         public ExpressionContext(Expression expression, ResolveExpressType type)
         {
-            this.type = type;
-            this.expression = expression;
+            this.Type = type;
+            this.Expression = expression;
         }
 
         public string GetFiledName()
         {
             string reval = null;
-            LambdaExpression lambda = this.expression as LambdaExpression;
+            LambdaExpression lambda = this.Expression as LambdaExpression;
             var isConvet = lambda.Body.NodeType.IsIn(ExpressionType.Convert);
             var isMember = lambda.Body.NodeType.IsIn(ExpressionType.MemberAccess);
             if (!isConvet && !isMember)
@@ -56,7 +56,7 @@ namespace SqlSugar
 
         public string GetWhere()
         {
-            BaseResolve resolve = new BaseResolve(this.expression);
+            BaseResolve resolve = new BaseResolve(this.Expression);
             resolve.Context = this;
             resolve.Start();
             return resolve.SqlWhere;
@@ -75,5 +75,7 @@ namespace SqlSugar
                 base._Parameters = value;
             }
         }
+
+        public int Index { get; set; }
     }
 }

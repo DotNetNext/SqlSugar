@@ -10,7 +10,10 @@ namespace SqlSugar
     {
         public MemberExpressionResolve(Expression exp) : base(exp)
         {
-
+            var isLeft = this.IsLeft;
+            this.IsLeft = null;
+            var isSingle=base.Context.IsSingle;
+            var expression = exp as MemberExpression;
         }
     }
 }
