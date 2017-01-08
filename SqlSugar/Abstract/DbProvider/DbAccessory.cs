@@ -60,7 +60,6 @@ namespace SqlSugar
                     }
                     else
                     {
-
                         var newObj = (Dictionary<string, string>)obj;
                         var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
                         foreach (var par in pars)
