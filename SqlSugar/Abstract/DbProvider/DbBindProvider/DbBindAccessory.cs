@@ -7,10 +7,10 @@ namespace SqlSugar
 {
     public partial class DbBindAccessory
     {
-        protected List<T> GetEntityList<T>(Type type,SqlSugarClient context, IDataReader dataReader,string fields)
+        protected List<T> GetEntityList<T>(Type type, SqlSugarClient context, IDataReader dataReader, string fields)
         {
             var cacheManager = CacheManager<IDataReaderEntityBuilder<T>>.GetInstance();
-            string key = "DataReaderToList." + fields +context.CurrentConnectionConfig.DbType+ type.FullName;
+            string key = "DataReaderToList." + fields + context.CurrentConnectionConfig.DbType + type.FullName;
             IDataReaderEntityBuilder<T> eblist = null;
             if (cacheManager.ContainsKey(key))
             {
@@ -32,7 +32,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                Check.Exception(true,ErrorMessage.EntityMappingError, ex.Message);
+                Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
             }
             return list;
         }
@@ -76,7 +76,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        Check.Exception(true,ErrorMessage.NotSupportedDictionary);
+                        Check.Exception(true, ErrorMessage.NotSupportedDictionary);
                     }
                 }
             }
@@ -114,7 +114,7 @@ namespace SqlSugar
                     else if (childType == PubConst.IntType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToInt()).ToArray(), type));
                     else
-                        Check.Exception(true,ErrorMessage.NotSupportedArray);
+                        Check.Exception(true, ErrorMessage.NotSupportedArray);
                 }
             }
             return reval;
