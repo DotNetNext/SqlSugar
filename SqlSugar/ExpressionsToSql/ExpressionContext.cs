@@ -23,7 +23,7 @@ namespace SqlSugar
         public ResolveExpressType Type { get; set; }
         public Expression Expression { get; set; }
         public StringBuilder SqlWhere { get; set; }
-        public bool IsSingle
+        public bool IsWhereSingle
         {
             get
             {

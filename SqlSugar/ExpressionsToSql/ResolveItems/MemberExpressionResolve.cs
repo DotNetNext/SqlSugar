@@ -11,9 +11,9 @@ namespace SqlSugar
         {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
-            var isSingle = parameter.Context.IsSingle;
+            var isWhereSingle = parameter.Context.IsWhereSingle;
             string fieldName = string.Empty;
-            fieldName = isSingle ? expression.Member.Name : expression.Member.ToString();
+            fieldName = isWhereSingle ? expression.Member.Name : expression.Member.ToString();
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
                 parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                 {

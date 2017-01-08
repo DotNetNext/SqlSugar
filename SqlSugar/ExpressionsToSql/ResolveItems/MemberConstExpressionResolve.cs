@@ -13,7 +13,7 @@ namespace SqlSugar
         {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
-            var isSingle = parameter.Context.IsSingle;
+            var isWhereSingle = parameter.Context.IsWhereSingle;
             object value = ExpressionTool.GetValue(expression.Member, expression);
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
             {

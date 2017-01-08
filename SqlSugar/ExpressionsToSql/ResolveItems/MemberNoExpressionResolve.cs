@@ -13,7 +13,7 @@ namespace SqlSugar
         {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
-            var isSingle = parameter.Context.IsSingle;
+            var isWhereSingle = parameter.Context.IsWhereSingle;
             object value = null;
             var isField = expression.Member is System.Reflection.FieldInfo;
             var isProperty = expression.Member is System.Reflection.PropertyInfo;
