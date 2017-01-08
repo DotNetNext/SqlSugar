@@ -14,16 +14,7 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isWhereSingle = parameter.Context.IsWhereSingle;
             object value = null;
-            var isField = expression.Member is System.Reflection.FieldInfo;
-            var isProperty = expression.Member is System.Reflection.PropertyInfo;
-            if (isField)
-            {
-                value = ExpressionTool.GetFiledValue(expression);
-            }
-            else if (isProperty)
-            {
-                value = ExpressionTool.GetPropertyValue(expression.Expression as MemberExpression);
-            }
+            value = ExpressionTool.DynamicInvoke(expression);
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
             {
                 parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
@@ -32,11 +23,6 @@ namespace SqlSugar
                     Value = value,
                     ExpressionType = ExpressionConst.ConstantExpressionType
                 }));
-            }
-            if (isLeft == null && base.Context.SqlWhere == null)
-            {
-                base.Context.SqlWhere = new StringBuilder();
-                base.Context.SqlWhere.Append(value);
             }
         }
     }
