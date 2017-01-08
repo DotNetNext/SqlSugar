@@ -71,7 +71,6 @@ namespace SqlSugar
             resolve.Start();
             return this.ResultObj;
         }
-
         #endregion
     }
 }
