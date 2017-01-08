@@ -50,6 +50,13 @@ namespace SqlSugar
         {
             var leftInfo = parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
             var rightInfo = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
+            if (leftInfo.ExpressionType == ExpressionConst.ConstantExpressionType)
+            {
+                var sqlParameterKeyWord = parameter.Context.SqlParameterKeyWord;
+                var reval= string.Format("{0}{1}{2}",sqlParameterKeyWord,leftInfo.Value,parameter.Context.Index+parameter.Index);
+                parameter.Context.Parameters.Add(new SugarParameter(reval,leftInfo.Value));
+                return reval;
+            }
             return leftInfo.Value.ObjToString();
         }
 

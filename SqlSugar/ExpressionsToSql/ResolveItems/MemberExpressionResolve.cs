@@ -18,7 +18,7 @@ namespace SqlSugar
             {
                 IsLeft = Convert.ToBoolean(IsLeft),
                 Value = fieldName,
-                ExpressionType = expression.NodeType
+                ExpressionType = expression.GetType()
             }));
             if (isLeft == null && base.SqlWhere == null)
             {

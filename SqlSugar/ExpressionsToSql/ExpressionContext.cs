@@ -11,6 +11,13 @@ namespace SqlSugar
     {
         public ResolveExpressType Type { get; set; }
         public Expression Expression { get; set; }
+        public virtual string SqlParameterKeyWord
+        {
+            get
+            {
+                return "@";
+            }
+        }
         public virtual string GetaMppingColumnsName(string name)
         {
             return name;
