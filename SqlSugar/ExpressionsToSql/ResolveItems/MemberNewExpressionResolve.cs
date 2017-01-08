@@ -19,7 +19,7 @@ namespace SqlSugar
             var isProperty = expression.Member is System.Reflection.PropertyInfo;
             if (isField)
             {
-                value = ExpressionTool.GetFiledValue(expression.Expression as MemberExpression);
+                value = ExpressionTool.GetFiledValue(expression);
             }
             else if (isProperty)
             {

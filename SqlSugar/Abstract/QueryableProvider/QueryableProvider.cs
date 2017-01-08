@@ -28,7 +28,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            base.Where<T>(expression, ResolveExpressType.Single, this.Context);
+            base.Where<T>(expression, ResolveExpressType.WhereSingle, this.Context);
             return this;
         }
 
@@ -299,7 +299,7 @@ namespace SqlSugar
             var sqlBuilder = this.Context.SqlBuilder;
             var items = sqlBuilder.LambadaQueryBuilder;
             items.WhereIndex = items.WhereIndex + 100;
-            items.ResolveType = ResolveExpressType.Multiple;
+            items.ResolveType = ResolveExpressType.WhereMultiple;
             ResolveExpress re = new ResolveExpress();
             re.Context = this.Context;
             var exLeftArray = re.GetLeftArray(expression);

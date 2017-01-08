@@ -7,7 +7,9 @@ namespace SqlSugar
 {
     public enum ResolveExpressType
     {
-        Single = 0,
-        Multiple = 1,
+        WhereSingle = 0,
+        WhereMultiple = 1,
+        SelectSingle=2,
+        SelectMultiple=3
     }
 }

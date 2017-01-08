@@ -27,7 +27,7 @@ namespace SqlSugar
         {
             get
             {
-                return this.Type == ResolveExpressType.Single;
+                return this.Type == ResolveExpressType.WhereSingle;
             }
         }
         public List<SugarParameter> Parameters

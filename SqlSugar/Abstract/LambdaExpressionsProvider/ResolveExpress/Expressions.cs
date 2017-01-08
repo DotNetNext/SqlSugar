@@ -86,7 +86,7 @@ namespace SqlSugar
             }
             else
             {
-                if (Type == ResolveExpressType.Multiple)
+                if (Type == ResolveExpressType.WhereMultiple)
                 {
                     type = MemberType.Key;
                     var dbName = exp.ToString();
