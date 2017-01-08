@@ -59,6 +59,11 @@ namespace SqlSugar
             {
                 return new MethodCallExpressionResolve(parameter);
             }
+            else if (exp is MemberExpression&&((MemberExpression)exp).Expression.NodeType== ExpressionType.Constant)
+            {
+                parameter.Expression = ((MemberExpression)exp).Expression;
+                return new ConstantExpressionResolve(parameter);
+            }
             else if (exp is ConstantExpression)
             {
                 return new ConstantExpressionResolve(parameter);
