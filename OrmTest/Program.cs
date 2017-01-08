@@ -17,12 +17,13 @@ namespace OrmTest
         public static string GetName() {
             return "a";
         }
+        public string x = "2";
         public static string id { get; set;}
         static void Main(string[] args)
         {
             Program.id = "xx";
             string x = "1";
-            Expression<Func<Student, bool>> exp = it => it.Name== GetName();
+            Expression<Func<Student, bool>> exp = it => it.Name==new Program().x;
            // Expression<Func<Student, object>> exp = it => it.Name;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.Single);
            // var x = expContext.GetFiledName();

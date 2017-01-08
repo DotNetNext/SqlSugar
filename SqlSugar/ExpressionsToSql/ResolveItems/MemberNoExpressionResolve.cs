@@ -15,13 +15,13 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isSingle = parameter.Context.IsSingle;
             object value = null;
-            var fieldInfo = expression.Member as System.Reflection.FieldInfo;
-            var propertyInfo = expression.Member as System.Reflection.PropertyInfo;
-            if (fieldInfo != null)
+            var isField = expression.Member is System.Reflection.FieldInfo;
+            var isProperty = expression.Member is System.Reflection.PropertyInfo;
+            if (isField)
             {
                 value = ExpressionTool.GetFiledValue(expression);
             }
-            else if (propertyInfo != null)
+            else if (isProperty)
             {
                 value = ExpressionTool.GetPropertyValue(expression);
             }
