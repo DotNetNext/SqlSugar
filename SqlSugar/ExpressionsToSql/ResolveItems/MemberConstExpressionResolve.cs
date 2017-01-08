@@ -97,27 +97,25 @@ namespace SqlSugar
 
         private static object GetFiledValue(MemberExpression memberExpr)
         {
-            object reval;
+            object reval = null;
+            FieldInfo field = (FieldInfo)memberExpr.Member;
+            reval = field.GetValue(memberExpr.Member);
+            if (reval != null && reval.GetType().IsClass && reval.GetType() != ExpressionConst.StringType)
             {
-                FieldInfo field = (FieldInfo)memberExpr.Member;
-                reval = field.GetValue(memberExpr.Member);
-                if (reval != null && reval.GetType().IsClass && reval.GetType() != ExpressionConst.StringType)
+                var fieldName = memberExpr.Member.Name;
+                var proInfo = reval.GetType().GetProperty(fieldName);
+                if (proInfo != null)
                 {
-                    var fieldName = memberExpr.Member.Name;
-                    var proInfo = reval.GetType().GetProperty(fieldName);
-                    if (proInfo != null)
-                    {
-                        reval = proInfo.GetValue(reval, null);
-                    }
-                    var fieInfo = reval.GetType().GetField(fieldName);
-                    if (fieInfo != null)
-                    {
-                        reval = fieInfo.GetValue(reval);
-                    }
-                    if (fieInfo == null && proInfo == null)
-                    {
+                    reval = proInfo.GetValue(reval, null);
+                }
+                var fieInfo = reval.GetType().GetField(fieldName);
+                if (fieInfo != null)
+                {
+                    reval = fieInfo.GetValue(reval);
+                }
+                if (fieInfo == null && proInfo == null)
+                {
 
-                    }
                 }
             }
             return reval;
@@ -125,7 +123,7 @@ namespace SqlSugar
 
         private static object GetPropertyValue(MemberExpression memberExpr)
         {
-            object reval;
+            object reval = null;
             PropertyInfo pro = (PropertyInfo)memberExpr.Member;
             reval = pro.GetValue(memberExpr.Member, null);
             if (reval != null && reval.GetType().IsClass && reval.GetType() != ExpressionConst.StringType)
