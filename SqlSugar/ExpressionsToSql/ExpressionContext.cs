@@ -9,36 +9,27 @@ namespace SqlSugar
 {
     public class ExpressionContext : ExpResolveAccessory
     {
-        public ResolveExpressType Type { get; set; }
-        public Expression Expression { get; set; }
-        public StringBuilder SqlWhere { get; set; }
-        public virtual string SqlParameterKeyWord
-        {
-            get
-            {
-                return "@";
-            }
-        }
-        public virtual string GetaMppingColumnsName(string name)
-        {
-            return name;
-        }
-        public bool IsSingle { get { return this.Type == ResolveExpressType.Single; } }
-
+        #region constructor
         public ExpressionContext(Expression expression, ResolveExpressType type)
         {
             this.Type = type;
             this.Expression = expression;
         }
 
-        public string ToSqlString()
-        {
-            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
-            resolve.Start();
-            if (this.SqlWhere == null) return string.Empty;
-            return this.SqlWhere.ToString();
-        }
+        #endregion
 
+        #region properties
+        public int Index { get; set; }
+        public ResolveExpressType Type { get; set; }
+        public Expression Expression { get; set; }
+        public StringBuilder SqlWhere { get; set; }
+        public bool IsSingle
+        {
+            get
+            {
+                return this.Type == ResolveExpressType.Single;
+            }
+        }
         public List<SugarParameter> Parameters
         {
             get
@@ -50,7 +41,28 @@ namespace SqlSugar
                 base._Parameters = value;
             }
         }
+        public virtual string SqlParameterKeyWord
+        {
+            get
+            {
+                return "@";
+            }
+        }
+        #endregion
 
-        public int Index { get; set; }
+        #region functions
+        public virtual string GetaMppingColumnsName(string name)
+        {
+            return name;
+        }
+
+        public virtual string ToSqlString()
+        {
+            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
+            resolve.Start();
+            if (this.SqlWhere == null) return string.Empty;
+            return this.SqlWhere.ToString();
+        } 
+        #endregion
     }
 }
