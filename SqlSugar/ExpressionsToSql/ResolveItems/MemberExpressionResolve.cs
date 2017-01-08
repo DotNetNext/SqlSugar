@@ -13,7 +13,34 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isWhereSingle = parameter.Context.IsWhereSingle;
             string fieldName = string.Empty;
-            fieldName = isWhereSingle ? expression.Member.Name : expression.Member.ToString();
+            switch (parameter.Context.Type)
+            {
+                case ResolveExpressType.WhereSingle:
+                    fieldName = GetFieldNameByWhereSingle(parameter, expression, isLeft);
+                    break;
+                case ResolveExpressType.WhereMultiple:
+                    fieldName = GetFiledNameByWhereMultiple(parameter, expression, isLeft);
+                    break;
+                case ResolveExpressType.SelectSingle:
+                    base.Context.SqlWhere = new StringBuilder();
+                    base.Context.SqlWhere.Append(fieldName);
+                    break;
+                case ResolveExpressType.SelectMultiple:
+                    base.Context.SqlWhere = new StringBuilder();
+                    base.Context.SqlWhere.Append(fieldName);
+                    break;
+                case ResolveExpressType.FieldSingle:
+                    break;
+                case ResolveExpressType.FieldMultiple:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private string GetFiledNameByWhereMultiple(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
+        {
+            string fieldName = expression.Member.ToString();
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
                 parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                 {
@@ -21,11 +48,20 @@ namespace SqlSugar
                     Value = fieldName,
                     ExpressionType = expression.GetType()
                 }));
-            if (isLeft == null && base.Context.SqlWhere == null)
-            {
-                base.Context.SqlWhere = new StringBuilder();
-                base.Context.SqlWhere.Append(fieldName);
-            }
+            return fieldName;
+        }
+
+        private string GetFieldNameByWhereSingle(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
+        {
+            string fieldName = expression.Member.Name;
+            if (parameter.BaseParameter.BinaryExpressionInfoList != null)
+                parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
+                {
+                    IsLeft = Convert.ToBoolean(isLeft),
+                    Value = fieldName,
+                    ExpressionType = expression.GetType()
+                }));
+            return fieldName;
         }
     }
 }
