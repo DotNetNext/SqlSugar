@@ -11,6 +11,5 @@ namespace SqlSugar
         public MemberNewExpressionResolve(ExpressionParameter parameter) : base(parameter) {
 
         }
-
     }
 }
