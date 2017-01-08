@@ -48,14 +48,16 @@ namespace SqlSugar
 
         private string GetRightString(ExpressionParameter parameter)
         {
-            var info=parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
-            return info.Value.ObjToString();
+            var leftInfo = parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
+            var rightInfo = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
+            return leftInfo.Value.ObjToString();
         }
 
         private string GetLeftString(ExpressionParameter parameter)
         {
-            var info = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
-            return info.Value.ObjToString();
+            var leftInfo = parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
+            var rightInfo = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
+            return rightInfo.Value.ObjToString();
         }
     }
 }
