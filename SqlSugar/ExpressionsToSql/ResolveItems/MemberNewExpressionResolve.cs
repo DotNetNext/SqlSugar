@@ -9,7 +9,8 @@ namespace SqlSugar
 {
     public class MemberNewExpressionResolve : BaseResolve
     {
-        public MemberNewExpressionResolve(ExpressionParameter parameter) : base(parameter) {
+        public MemberNewExpressionResolve(ExpressionParameter parameter) : base(parameter)
+        {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
             var isSingle = parameter.Context.IsSingle;
