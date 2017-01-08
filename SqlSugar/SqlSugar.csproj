@@ -98,6 +98,7 @@
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />
     <Compile Include="ExpressionsToSql\BinaryExpressionInfo.cs" />
+    <Compile Include="ExpressionsToSql\ExpressionErrorMessage.cs" />
     <Compile Include="ExpressionsToSql\SugarParameter.cs" />
     <Compile Include="ExpressionsToSql\ExpressionParameter.cs" />
     <Compile Include="Entities\JoinQueryInfo.cs" />
