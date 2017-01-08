@@ -22,12 +22,12 @@ namespace SqlSugar
                     fieldName = GetFiledNameByWhereMultiple(parameter, expression, isLeft);
                     break;
                 case ResolveExpressType.SelectSingle:
-                    base.Context.SqlWhere = new StringBuilder();
-                    base.Context.SqlWhere.Append(fieldName);
+                    base.Context.ResultString = new StringBuilder();
+                    base.Context.ResultString.Append(fieldName);
                     break;
                 case ResolveExpressType.SelectMultiple:
-                    base.Context.SqlWhere = new StringBuilder();
-                    base.Context.SqlWhere.Append(fieldName);
+                    base.Context.ResultString = new StringBuilder();
+                    base.Context.ResultString.Append(fieldName);
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;

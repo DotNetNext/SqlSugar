@@ -33,10 +33,10 @@ namespace SqlSugar
                     ExpressionType = ExpressionConst.ConstantExpressionType
                 }));
             }
-            if (isLeft == null && base.Context.SqlWhere == null)
+            if (isLeft == null && base.Context.ResultString == null)
             {
-                base.Context.SqlWhere = new StringBuilder();
-                base.Context.SqlWhere.Append(value);
+                base.Context.ResultString = new StringBuilder();
+                base.Context.ResultString.Append(value);
             }
         }
     }

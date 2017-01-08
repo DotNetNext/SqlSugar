@@ -22,7 +22,7 @@ namespace SqlSugar
         public int Index { get; set; }
         public ResolveExpressType Type { get; set; }
         public Expression Expression { get; set; }
-        public StringBuilder SqlWhere { get; set; }
+        public StringBuilder ResultString { get; set; }
         public bool IsWhereSingle
         {
             get
@@ -60,8 +60,8 @@ namespace SqlSugar
         {
             BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
-            if (this.SqlWhere == null) return string.Empty;
-            return this.SqlWhere.ToString();
+            if (this.ResultString == null) return string.Empty;
+            return this.ResultString.ToString();
         } 
         #endregion
     }
