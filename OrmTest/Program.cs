@@ -27,7 +27,7 @@ namespace OrmTest
            // Expression<Func<Student, object>> exp = it => it.Name;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
            // var x = expContext.GetFiledName();
-            var xx = expContext.ToSqlString();
+            var xx = expContext.ToResultString();
 
 
             var b = DateTime.Now;

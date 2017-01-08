@@ -57,7 +57,7 @@ namespace SqlSugar
             return name;
         }
 
-        public virtual string ToSqlString()
+        public virtual string ToResultString()
         {
             BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
