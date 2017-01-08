@@ -27,7 +27,8 @@ namespace SqlSugar
         {
             BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
-            return resolve.SqlWhere;
+            if (resolve.SqlWhere == null) return string.Empty;
+            return resolve.SqlWhere.ToString();
         }
 
         public List<SugarParameter> Parameters

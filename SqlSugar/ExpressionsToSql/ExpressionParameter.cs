@@ -13,7 +13,7 @@ namespace SqlSugar
         public bool? IsLeft { get; set; }
         public Expression BaseExpression { get; set; }
         public int Index { get; set; }
-        public Dictionary<string, object> TempData { get; set; }
+        public List<KeyValuePair<string, BinaryExpressionInfo>> BinaryExpressionInfoList { get; set; }
         public ExpressionParameter BaseParameter { get; set; }
     }
 }

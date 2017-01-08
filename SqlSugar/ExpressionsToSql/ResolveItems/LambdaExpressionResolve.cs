@@ -13,7 +13,8 @@ namespace SqlSugar
             var expression = lambda.Body;
             if (expression.NodeType == ExpressionType.MemberAccess)
             {
-                base.SqlWhere = "(" + ((MemberExpression)expression).Member.Name + "=1)";
+                string appendString = "(" +((MemberExpression)expression).Member.Name + "=1)";
+                base.SqlWhere.Append(appendString);
             }
             else
             {

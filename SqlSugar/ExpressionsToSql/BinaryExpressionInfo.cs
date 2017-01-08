@@ -9,7 +9,7 @@ namespace SqlSugar
     public class BinaryExpressionInfo
     {
         public bool IsLeft { get; set; }
-        ExpressionType ExpressionType { get;set;}
+        public ExpressionType ExpressionType { get;set;}
         public object Value { get; set; }
     }
 }
