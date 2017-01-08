@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         public ResolveExpressType Type { get; set; }
         public Expression Expression { get; set; }
+        public StringBuilder SqlWhere { get; set; }
         public virtual string SqlParameterKeyWord
         {
             get
@@ -30,12 +31,12 @@ namespace SqlSugar
             this.Expression = expression;
         }
 
-        public override string ToString()
+        public string ToSqlString()
         {
             BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
-            if (resolve.SqlWhere == null) return string.Empty;
-            return resolve.SqlWhere.ToString();
+            if (this.SqlWhere == null) return string.Empty;
+            return this.SqlWhere.ToString();
         }
 
         public List<SugarParameter> Parameters

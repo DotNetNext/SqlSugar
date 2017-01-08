@@ -28,21 +28,21 @@ namespace SqlSugar
             string leftString = GetLeftString(parameter);
             string rightString = GetRightString(parameter);
             string binarySql =string.Format(ExpressionConst.BinaryFormatString,leftString,operatorValue,rightString);
-            string sqlWhereString = base.SqlWhere.ObjToString();
-            if (base.SqlWhere == null) {
-                base.SqlWhere = new StringBuilder();
+            string sqlWhereString = base.Context.SqlWhere.ObjToString();
+            if (base.Context.SqlWhere == null) {
+                base.Context.SqlWhere = new StringBuilder();
             }
             if (sqlWhereString.Contains(ExpressionConst.Format0))
             {
-                base.SqlWhere.Replace(ExpressionConst.Format0, sqlWhereString);
+                base.Context.SqlWhere.Replace(ExpressionConst.Format0, binarySql);
             }
             else
             {
-                base.SqlWhere.Append(binarySql);
+                base.Context.SqlWhere.Append(binarySql);
             }
             if (sqlWhereString.Contains(ExpressionConst.Format1))
             {
-                base.SqlWhere.Replace(ExpressionConst.Format1, ExpressionConst.Format0);
+                base.Context.SqlWhere.Replace(ExpressionConst.Format1, ExpressionConst.Format0);
             }
         }
 

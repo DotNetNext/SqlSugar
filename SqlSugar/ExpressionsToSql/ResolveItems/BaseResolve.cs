@@ -10,7 +10,6 @@ namespace SqlSugar
         protected Expression Expression { get; set; }
         protected Expression BaseExpression { get; set; }
         public ExpressionContext Context { get; set; }
-        public StringBuilder SqlWhere { get; set; }
         public bool? IsLeft { get; set; }
         public int ContentIndex { get { return this.Context.Index; } }
         public int Index { get; set; }

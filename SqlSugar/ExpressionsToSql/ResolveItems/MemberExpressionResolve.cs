@@ -21,10 +21,10 @@ namespace SqlSugar
                     Value = fieldName,
                     ExpressionType = expression.GetType()
                 }));
-            if (isLeft == null && base.SqlWhere == null)
+            if (isLeft == null && base.Context.SqlWhere == null)
             {
-                base.SqlWhere = new StringBuilder();
-                base.SqlWhere.Append(fieldName);
+                base.Context.SqlWhere = new StringBuilder();
+                base.Context.SqlWhere.Append(fieldName);
             }
         }
     }

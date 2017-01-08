@@ -14,7 +14,7 @@ namespace SqlSugar
             if (expression.NodeType == ExpressionType.MemberAccess)
             {
                 string appendString = "(" +((MemberExpression)expression).Member.Name + "=1)";
-                base.SqlWhere.Append(appendString);
+                base.Context.SqlWhere.Append(appendString);
             }
             else
             {
