@@ -109,7 +109,7 @@
     <Compile Include="Enum\JoinType.cs" />
     <Compile Include="Enum\OrderByType.cs" />
     <Compile Include="ExpressionsToSql\ResolveExpressType.cs" />
-    <Compile Include="ExpressionsToSql\ExpConst.cs" />
+    <Compile Include="ExpressionsToSql\ExpressionConst.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BinaryExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BlockExpressionResolve.cs" />
@@ -121,7 +121,7 @@
     <Compile Include="ExpressionsToSql\ResolveItems\UnaryExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ExpResolveAccessory.cs" />
     <Compile Include="ExpressionsToSql\ExpressionContext.cs" />
-    <Compile Include="ExpressionsToSql\ExpTool.cs" />
+    <Compile Include="ExpressionsToSql\ExpressionTool.cs" />
     <Compile Include="InstanceFactory.cs" />
     <Compile Include="Interface\ICodeFirst.cs" />
     <Compile Include="Interface\IDb.cs" />

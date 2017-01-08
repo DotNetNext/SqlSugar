@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 namespace SqlSugar
 {
-    public class ExpTool
+    public class ExpressionTool
     {
         public static string GetOperator(ExpressionType expressiontype)
         {

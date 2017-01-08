@@ -11,7 +11,7 @@ namespace SqlSugar
         {
             parameter.BinaryExpressionInfoList =new List<KeyValuePair<string, BinaryExpressionInfo>>();
             var expression = this.Expression as BinaryExpression;
-            var operatorValue = ExpTool.GetOperator(expression.NodeType);
+            var operatorValue = ExpressionTool.GetOperator(expression.NodeType);
             var isComparisonOperator =
                                         expression.NodeType != ExpressionType.And &&
                                         expression.NodeType != ExpressionType.AndAlso &&
@@ -27,22 +27,22 @@ namespace SqlSugar
             base.IsLeft = null;
             string leftString = GetLeftString(parameter);
             string rightString = GetRightString(parameter);
-            string binarySql =string.Format(ExpConst.BinaryFormatString,leftString,operatorValue,rightString);
+            string binarySql =string.Format(ExpressionConst.BinaryFormatString,leftString,operatorValue,rightString);
             string sqlWhereString = base.SqlWhere.ToString();
             if (base.SqlWhere == null) {
                 base.SqlWhere = new StringBuilder();
             }
-            if (sqlWhereString.Contains(ExpConst.Format0))
+            if (sqlWhereString.Contains(ExpressionConst.Format0))
             {
-                base.SqlWhere.Replace(ExpConst.Format0, sqlWhereString);
+                base.SqlWhere.Replace(ExpressionConst.Format0, sqlWhereString);
             }
             else
             {
                 base.SqlWhere.Append(binarySql);
             }
-            if (sqlWhereString.Contains(ExpConst.Format1))
+            if (sqlWhereString.Contains(ExpressionConst.Format1))
             {
-                base.SqlWhere.Replace(ExpConst.Format1, ExpConst.Format0);
+                base.SqlWhere.Replace(ExpressionConst.Format1, ExpressionConst.Format0);
             }
         }
 

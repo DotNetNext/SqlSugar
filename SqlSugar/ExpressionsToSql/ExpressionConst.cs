@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    internal class ExpConst
+    internal class ExpressionConst
     {
         public const string BinaryExpressionInfoListKey = "BinaryExpressionInfoListKey";
         public const string BinaryFormatString = " ( {0} {1} {2} ) ";
@@ -26,7 +26,7 @@ namespace SqlSugar
         {
             get
             {
-                return ExpConst.GetThrowMessage("拉姆达解析出错：不支持{0}此种运算符查找！",
+                return ExpressionConst.GetThrowMessage("拉姆达解析出错：不支持{0}此种运算符查找！",
                                        "Lambda parsing error: {0} does not support the operator to find!");
             }
         }
@@ -34,7 +34,7 @@ namespace SqlSugar
         {
             get
             {
-                return ExpConst.GetThrowMessage("Expression format error, correct format: it=>it.fieldName",
+                return ExpressionConst.GetThrowMessage("Expression format error, correct format: it=>it.fieldName",
                                        "表达示格式错误，正确格式： it=>it.fieldName");
             }
         }
