@@ -88,7 +88,6 @@ namespace SqlSugar
             return reval;
         }
 
-
         public static Int32? GetConvertInt32(this IDataRecord dr, int i)
         {
             if (dr.IsDBNull(i))
@@ -151,6 +150,5 @@ namespace SqlSugar
             T t = (T)Enum.ToObject(typeof(T), value);
             return t;
         }
-
     }
 }
