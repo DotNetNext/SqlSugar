@@ -83,6 +83,10 @@ namespace SqlSugar
             {
                 return new UnaryExpressionResolve(parameter);
             }
+            else if (exp is MemberInitExpression)
+            {
+                return new MemberInitExpressionResolve(parameter);
+            }
             else if (exp != null && exp.NodeType.IsIn(ExpressionType.New, ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
             {
                 Check.ThrowNotSupportedException("ExpressionType.New、ExpressionType.NewArrayBounds and ExpressionType.NewArrayInit");

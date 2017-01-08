@@ -23,7 +23,7 @@ namespace OrmTest
         {
             Program.id = "xx";
             string x = "1";
-            Expression<Func<Student, bool>> exp = it => it.Name==new Program().x;
+            Expression<Func<Student, object>> exp = it => new Program() { x=it.Name };
            // Expression<Func<Student, object>> exp = it => it.Name;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
            // var x = expContext.GetFiledName();

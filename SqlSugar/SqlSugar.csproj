@@ -100,6 +100,7 @@
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionErrorMessage.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberConstExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MemberInitExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberNewExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberNoExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\Common\SugarParameter.cs" />
