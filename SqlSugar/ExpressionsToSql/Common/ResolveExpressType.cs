@@ -10,6 +10,8 @@ namespace SqlSugar
         WhereSingle = 0,
         WhereMultiple = 1,
         SelectSingle=2,
-        SelectMultiple=3
+        SelectMultiple=3,
+        FieldSingle=4,
+        FieldMultiple=5
     }
 }
