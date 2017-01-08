@@ -14,10 +14,12 @@ namespace OrmTest
 
     class Program
     {
+        public string id { get; set;}
         static void Main(string[] args)
         {
-            string id = "1";
-            Expression<Func<Student, bool>> exp = it => it.Name!=id;
+
+            string x = "1";
+            Expression<Func<Student, bool>> exp = it => it.Name!=x;
            // Expression<Func<Student, object>> exp = it => it.Name;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.Single);
            // var x = expContext.GetFiledName();
