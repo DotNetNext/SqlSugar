@@ -36,7 +36,7 @@ namespace SqlSugar
                 Expression = exp,
                 IsLeft = this.IsLeft,
                 BaseExpression = this.BaseExpression,
-                BaseParameter=this.BaseParameter,
+                BaseParameter = this.BaseParameter,
                 Index = this.Index
             };
             if (exp is LambdaExpression)
@@ -59,7 +59,11 @@ namespace SqlSugar
             {
                 return new MethodCallExpressionResolve(parameter);
             }
-            else if (exp is MemberExpression&&((MemberExpression)exp).Expression.NodeType== ExpressionType.Constant)
+            else if (exp is MemberExpression && ((MemberExpression)exp).Expression == null)
+            {
+                return new MemberNoExpressionResolve(parameter);
+            }
+            else if (exp is MemberExpression && ((MemberExpression)exp).Expression.NodeType == ExpressionType.Constant)
             {
                 return new MemberConstExpressionResolve(parameter);
             }
