@@ -18,7 +18,6 @@ namespace SqlSugar
             this.Type = type;
             this.Expression = expression;
         }
-
         #endregion
 
         #region properties
