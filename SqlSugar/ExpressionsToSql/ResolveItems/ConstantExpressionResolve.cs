@@ -23,11 +23,6 @@ namespace SqlSugar
                     ExpressionType = expression.GetType()
                 }));
             }
-            if (isLeft == null && base.Context.SqlWhere == null)
-            {
-                base.Context.SqlWhere = new StringBuilder();
-                base.Context.SqlWhere.Append(value);
-            }
         }
     }
 }
