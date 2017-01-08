@@ -23,6 +23,7 @@ namespace SqlSugar
         public ResolveExpressType Type { get; set; }
         public Expression Expression { get; set; }
         public StringBuilder ResultString { get; set; }
+        public object ResultObj { get; set; }
         public bool IsWhereSingle
         {
             get
@@ -62,7 +63,15 @@ namespace SqlSugar
             resolve.Start();
             if (this.ResultString == null) return string.Empty;
             return this.ResultString.ToString();
-        } 
+        }
+
+        public virtual object GetResultObj()
+        {
+            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
+            resolve.Start();
+            return this.ResultObj;
+        }
+
         #endregion
     }
 }
