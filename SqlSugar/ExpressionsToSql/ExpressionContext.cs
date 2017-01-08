@@ -10,6 +10,9 @@ namespace SqlSugar
     public class ExpressionContext : ExpResolveAccessory
     {
         #region constructor
+        private ExpressionContext() {
+
+        }
         public ExpressionContext(Expression expression, ResolveExpressType type)
         {
             this.Type = type;
@@ -19,6 +22,7 @@ namespace SqlSugar
         #endregion
 
         #region properties
+        public IDbMethods DbMehtods { get; set; }
         public int Index { get; set; }
         public ResolveExpressType Type { get; set; }
         public Expression Expression { get; set; }
