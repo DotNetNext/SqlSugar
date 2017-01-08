@@ -16,7 +16,7 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            Expression<Func<Student, bool>> exp = it => it.Name!="";
+            Expression<Func<Student, bool>> exp = it => it.Name!="a";
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.Single);
            // var x = expContext.GetFiledName();
             var xx = expContext.ToString();

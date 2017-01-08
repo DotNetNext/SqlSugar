@@ -28,7 +28,7 @@ namespace SqlSugar
             string leftString = GetLeftString(parameter);
             string rightString = GetRightString(parameter);
             string binarySql =string.Format(ExpressionConst.BinaryFormatString,leftString,operatorValue,rightString);
-            string sqlWhereString = base.SqlWhere.ToString();
+            string sqlWhereString = base.SqlWhere.ObjToString();
             if (base.SqlWhere == null) {
                 base.SqlWhere = new StringBuilder();
             }
@@ -50,21 +50,31 @@ namespace SqlSugar
         {
             var leftInfo = parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
             var rightInfo = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
-            if (leftInfo.ExpressionType == ExpressionConst.ConstantExpressionType)
+            if (rightInfo.ExpressionType == ExpressionConst.ConstantExpressionType)
             {
                 var sqlParameterKeyWord = parameter.Context.SqlParameterKeyWord;
-                var reval= string.Format("{0}{1}{2}",sqlParameterKeyWord,leftInfo.Value,parameter.Context.Index+parameter.Index);
-                parameter.Context.Parameters.Add(new SugarParameter(reval,leftInfo.Value));
+                var reval = string.Format("{0}{1}{2}", sqlParameterKeyWord, leftInfo.Value, parameter.Context.Index + parameter.Index);
+                if (parameter.Context.Parameters == null) {
+                    parameter.Context.Parameters = new List<SugarParameter>();
+                }
+                parameter.Context.Parameters.Add(new SugarParameter(reval, rightInfo.Value));
                 return reval;
             }
-            return leftInfo.Value.ObjToString();
+            return rightInfo.Value.ObjToString();
         }
 
         private string GetLeftString(ExpressionParameter parameter)
         {
             var leftInfo = parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
             var rightInfo = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
-            return rightInfo.Value.ObjToString();
+            if (leftInfo.ExpressionType == ExpressionConst.ConstantExpressionType)
+            {
+                var sqlParameterKeyWord = parameter.Context.SqlParameterKeyWord;
+                var reval = string.Format("{0}{1}{2}", sqlParameterKeyWord, leftInfo.Value, parameter.Context.Index + parameter.Index);
+                parameter.Context.Parameters.Add(new SugarParameter(reval, leftInfo.Value));
+                return reval;
+            }
+            return leftInfo.Value.ObjToString();
         }
     }
 }

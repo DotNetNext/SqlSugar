@@ -17,7 +17,7 @@ namespace SqlSugar
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
                 parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                 {
-                    IsLeft = Convert.ToBoolean(IsLeft),
+                    IsLeft = Convert.ToBoolean(isLeft),
                     Value = fieldName,
                     ExpressionType = expression.GetType()
                 }));

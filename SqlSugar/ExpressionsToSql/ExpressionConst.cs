@@ -13,6 +13,8 @@ namespace SqlSugar
         public const string Format1 = "{1}";
         public readonly static Type MemberExpressionType = typeof(MemberExpression);
         public readonly static Type ConstantExpressionType = typeof(ConstantExpression);
+        public readonly static Type StringType = typeof(string);
+
         internal static string GetThrowMessage(string enMessage, string cnMessage, params string[] args)
         {
             List<string> formatArgs = new List<string>() { enMessage, cnMessage };
