@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
+namespace SqlSugar
+{
+    public class SimpleBinaryExpressionResolve : BaseResolve
+    {
+        public SimpleBinaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
+        {
+            var expression = base.Expression as  BinaryExpression;
+            switch (parameter.Context.ResolveType)
+            {
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
+
+                    base.Expression = expression.Right;
+                    base.Start();
+                    var rightValue = parameter.TempDate;
+                    base.Expression = expression.Left;
+                    base.Start();
+                    var leftValue = parameter.TempDate;
+                    break;
+                case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
+                case ResolveExpressType.FieldSingle:
+                case ResolveExpressType.FieldMultiple:
+                default:
+       
+                    break;
+            }
+        }
+    }
+}

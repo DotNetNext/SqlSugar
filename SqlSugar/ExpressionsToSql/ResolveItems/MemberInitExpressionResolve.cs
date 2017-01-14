@@ -53,10 +53,13 @@ namespace SqlSugar
                     parameter.Context.Result.Append(parameterName);
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.TempDate));
                 }
-                else if(item is MemberExpression)
+                else if (item is MemberExpression)
                 {
-                    base.Expression= memberAssignment.Expression;
+                    base.Expression = memberAssignment.Expression;
                     base.Start();
+                }
+                else {
+                     Check.ThrowNotSupportedException(item.GetType().Name);
                 }
             }
         }

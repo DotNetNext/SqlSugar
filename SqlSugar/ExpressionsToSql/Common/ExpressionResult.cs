@@ -81,13 +81,13 @@ namespace SqlSugar
         {
             switch (this._ResolveExpressType)
             {
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
+                    parameter = parameter + ",";
+                    break;
                 case ResolveExpressType.WhereSingle:
                     break;
                 case ResolveExpressType.WhereMultiple:
-                    break;
-                case ResolveExpressType.SelectSingle:
-                    break;
-                case ResolveExpressType.SelectMultiple:
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;

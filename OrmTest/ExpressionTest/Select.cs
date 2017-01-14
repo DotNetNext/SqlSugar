@@ -36,7 +36,7 @@ namespace OrmTest.ExpressionTest
         }
         private static void MultipleDynamic()
         {
-            Expression<Func<Student, School, object>> exp = (it, school) => new{ Name = "a", Id = it.Id, SchoolId = school.Id };
+            Expression<Func<Student, School, object>> exp = (it, school) => new{ Name = "a", Id = it.Id/2, SchoolId = school.Id };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();

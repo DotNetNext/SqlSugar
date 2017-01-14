@@ -9,37 +9,46 @@ namespace SqlSugar
     {
         public BinaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
-            parameter.BinaryExpressionInfoList =new List<KeyValuePair<string, BinaryExpressionInfo>>();
-            var expression = this.Expression as BinaryExpression;
-            var operatorValue = ExpressionTool.GetOperator(expression.NodeType);
-            var isComparisonOperator =
-                                        expression.NodeType != ExpressionType.And &&
-                                        expression.NodeType != ExpressionType.AndAlso &&
-                                        expression.NodeType != ExpressionType.Or &&
-                                        expression.NodeType != ExpressionType.OrElse;
-            base.BaseExpression = expression;
-            base.IsLeft = true;
-            base.Expression = expression.Left;
-            base.Start();
-            base.IsLeft = false;
-            base.Expression = expression.Right;
-            base.Start();
-            base.IsLeft = null;
-            string leftString = GetLeftString(parameter);
-            string rightString = GetRightString(parameter);
-            string binarySql =string.Format(ExpressionConst.BinaryFormatString,leftString,operatorValue,rightString);
-            string sqlWhereString = base.Context.Result.GetResultString();
-            if (sqlWhereString.Contains(ExpressionConst.Format0))
+            if (parameter.BaseParameter.TempDate != null && parameter.BaseParameter.TempDate.Equals("simple"))
             {
-                base.Context.Result.Replace(ExpressionConst.Format0, binarySql);
+                parameter.IsOnlyAddTempDate = true;
+                new SimpleBinaryExpressionResolve(parameter);
+                parameter.IsOnlyAddTempDate = false;
             }
             else
             {
-                base.Context.Result.Append(binarySql);
-            }
-            if (sqlWhereString.Contains(ExpressionConst.Format1))
-            {
-                base.Context.Result.Replace(ExpressionConst.Format1, ExpressionConst.Format0);
+                parameter.BinaryExpressionInfoList = new List<KeyValuePair<string, BinaryExpressionInfo>>();
+                var expression = this.Expression as BinaryExpression;
+                var operatorValue = ExpressionTool.GetOperator(expression.NodeType);
+                var isComparisonOperator =
+                                            expression.NodeType != ExpressionType.And &&
+                                            expression.NodeType != ExpressionType.AndAlso &&
+                                            expression.NodeType != ExpressionType.Or &&
+                                            expression.NodeType != ExpressionType.OrElse;
+                base.BaseExpression = expression;
+                base.IsLeft = true;
+                base.Expression = expression.Left;
+                base.Start();
+                base.IsLeft = false;
+                base.Expression = expression.Right;
+                base.Start();
+                base.IsLeft = null;
+                string leftString = GetLeftString(parameter);
+                string rightString = GetRightString(parameter);
+                string binarySql = string.Format(ExpressionConst.BinaryFormatString, leftString, operatorValue, rightString);
+                string sqlWhereString = base.Context.Result.GetResultString();
+                if (sqlWhereString.Contains(ExpressionConst.Format0))
+                {
+                    base.Context.Result.Replace(ExpressionConst.Format0, binarySql);
+                }
+                else
+                {
+                    base.Context.Result.Append(binarySql);
+                }
+                if (sqlWhereString.Contains(ExpressionConst.Format1))
+                {
+                    base.Context.Result.Replace(ExpressionConst.Format1, ExpressionConst.Format0);
+                }
             }
         }
 

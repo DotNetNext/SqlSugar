@@ -17,5 +17,6 @@ namespace SqlSugar
         public object TempDate { get; set; }
         public ExpressionParameter BaseParameter { get; set; }
         public int SwitchCaseNumber { get; set; }
+        public bool IsOnlyAddTempDate { get; set; }
     }
 }

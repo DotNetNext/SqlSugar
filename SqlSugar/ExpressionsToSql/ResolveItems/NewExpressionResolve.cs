@@ -49,19 +49,21 @@ namespace SqlSugar
                         parameter.Context.Result.Append(parameterName);
                         this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.TempDate));
                     }
+                    else if (item is MemberExpression)
+                    {
+                        base.Expression = item;
+                        base.Start();
+                    }
+                    else if (item is BinaryExpression)
+                    {
+                        base.Expression = item;
+                        parameter.TempDate = "simple";
+                        base.Start();
+                        parameter.TempDate =null;
+                    }
                     else
                     {
-                        var memberExpression = (MemberExpression)item;
-                        var fieldNme = (memberExpression).Member.Name;
-                        if (isSingle)
-                        {
-                            parameter.Context.Result.Append(fieldNme);
-                        }
-                        else
-                        {
-                            var shortName = memberExpression.Expression.ToString();
-                            parameter.Context.Result.Append(shortName + "." + fieldNme);
-                        }
+                        Check.ThrowNotSupportedException(item.GetType().Name);
                     }
                 }
             }
