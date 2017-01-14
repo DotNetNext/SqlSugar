@@ -13,7 +13,7 @@ namespace SqlSugar
         {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
-            object value = ExpressionTool.GetValue(expression.Member, expression);
+            object value = ExpressionTool.GetMemberValue(expression.Member, expression);
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
             {
                 parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()

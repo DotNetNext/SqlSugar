@@ -47,7 +47,7 @@ namespace SqlSugar
             }
         }
 
-        public static object GetValue(MemberInfo member, Expression expression)
+        public static object GetMemberValue(MemberInfo member, Expression expression)
         {
             var memberInfos = new Stack<MemberInfo>();
             var fieldInfo = member as System.Reflection.FieldInfo;
@@ -167,6 +167,15 @@ namespace SqlSugar
             }
 
             return value;
+        }
+
+        public static Type GetPropertyOrFieldType(MemberInfo propertyOrField)
+        {
+            if (propertyOrField.MemberType == MemberTypes.Property)
+                return ((PropertyInfo)propertyOrField).PropertyType;
+            if (propertyOrField.MemberType == MemberTypes.Field)
+                return ((FieldInfo)propertyOrField).FieldType;
+            throw new NotSupportedException();
         }
     }
 }

@@ -45,6 +45,8 @@ namespace SqlSugar
         {
             get
             {
+                if (base._Parameters == null)
+                    base._Parameters = new List<SugarParameter>();
                 return base._Parameters;
             }
             set
@@ -65,6 +67,11 @@ namespace SqlSugar
         public virtual string GetaMppingColumnsName(string name)
         {
             return name;
+        }
+        public virtual void Resolve()
+        {
+            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
+            resolve.Start();
         }
         #endregion
     }

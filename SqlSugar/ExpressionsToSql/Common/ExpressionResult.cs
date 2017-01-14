@@ -40,7 +40,7 @@ namespace SqlSugar
         public string GetString()
         {
             if (_Result == null) return null;
-            return _Result.ToString();
+            return _Result.ToString().TrimEnd(',');
         }
         #region functions
         public string[] GetResultArray()
@@ -64,6 +64,7 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                     break;
                 case ResolveExpressType.SelectSingle:
+                    parameter=parameter + ",";
                     break;
                 case ResolveExpressType.SelectMultiple:
                     break;
