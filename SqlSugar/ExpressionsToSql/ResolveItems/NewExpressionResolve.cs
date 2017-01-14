@@ -49,9 +49,18 @@ namespace SqlSugar
                     }
                     else
                     {
-                        var memberExpression = (MemberExpression)Expression;
-                        var fieldNme = (memberExpression).Member.Name;
-                        parameter.Context.Result.Append(fieldNme);
+                        var memberExpression = (MemberExpression)item;
+                        if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Constant))
+                        {
+                            var value =ExpressionTool.GetMemberValue(memberExpression.Member, memberExpression);
+                            string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
+                            parameter.Context.Result.Append(parameterName);
+                            this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                        }
+                        else {
+                            var fieldNme = (memberExpression).Member.Name;
+                            parameter.Context.Result.Append(fieldNme);
+                        }
                     }
                 }
             }

@@ -43,33 +43,30 @@ namespace SqlSugar
                     throw new NotSupportedException();
                 }
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
-                MemberInfo member = memberAssignment.Member;
-                Type memberType = ExpressionTool.GetPropertyOrFieldType(member);
-                var name = memberType.Name;
-                var isValueType = memberType.IsValueType || memberType == ExpressionConst.StringType;
-                if (isValueType)
+                if (memberAssignment.Expression.NodeType == ExpressionType.Constant)
                 {
-                    if (memberAssignment.Expression.NodeType==ExpressionType.Constant)
+                    var value = ((ConstantExpression)memberAssignment.Expression).Value;
+                    string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
+                    parameter.Context.Result.Append(parameterName);
+                    this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                }
+                else
+                {
+                    var memberExpression = (MemberExpression)memberAssignment.Expression;
+                    if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Constant))
                     {
-                        var value= ((ConstantExpression)memberAssignment.Expression).Value;
+                        var value = ExpressionTool.GetMemberValue(memberExpression.Member, memberExpression);
                         string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
                         parameter.Context.Result.Append(parameterName);
                         this.Context.Parameters.Add(new SugarParameter(parameterName, value));
                     }
                     else
                     {
-                        var memberExpression = (MemberExpression)memberAssignment.Expression;
                         var fieldNme = (memberExpression).Member.Name;
                         parameter.Context.Result.Append(fieldNme);
                     }
                 }
-                else
-                {
-
-
-                }
             }
         }
-
     }
 }

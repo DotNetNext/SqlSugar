@@ -14,27 +14,29 @@ namespace OrmTest.ExpressionTest
         internal static void Init()
         {
 
-            o1();
-            o2();
+            single();
+            singleDynamic();
         }
 
-        private static void o1()
+        private static void single()
         {
-            Expression<Func<Student, object>> exp = it => new Student() { Name = "a",  Id=it.Id };
+            int p = 1;
+            Expression<Func<Student, object>> exp = it => new Student() { Name = "a",  Id=it.Id, SchoolId=p };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.ResolveType = ResolveExpressType.SelectSingle;
             expContext.Resolve();
-            var x = expContext.Result.GetString();
+            var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
         }
 
-        private static void o2()
+        private static void singleDynamic()
         {
-            Expression<Func<Student, object>> exp = it =>new { x = "a" };
+            string a = "a";
+            Expression<Func<Student, object>> exp = it =>new { x = it.Id, shoolid=1,name=a };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.ResolveType = ResolveExpressType.SelectSingle;
             expContext.Resolve();
-            var x = expContext.Result.GetString();
+            var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
         }
     }

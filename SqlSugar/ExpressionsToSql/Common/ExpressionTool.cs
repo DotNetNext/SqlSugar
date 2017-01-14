@@ -177,5 +177,15 @@ namespace SqlSugar
                 return ((FieldInfo)propertyOrField).FieldType;
             throw new NotSupportedException();
         }
+
+        public static bool IsEntity(Type type)
+        {
+            return type.IsClass && type!=ExpressionConst.StringType;
+        }
+
+        public static bool IsValueType(Type type)
+        {
+            return !IsEntity(type);
+        }
     }
 }
