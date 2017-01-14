@@ -13,7 +13,19 @@ namespace OrmTest.ExpressionTest
     {
         internal static void Init()
         {
-            Expression<Func<Student, object>> exp = it=>it.Name;
+            FieldSingle();
+            FieldMultiple();
+        }
+        private static void FieldSingle()
+        {
+            Expression<Func<Student, object>> exp = it => it.Name;
+            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.FieldSingle);
+            expContext.Resolve();
+            var selectorValue = expContext.Result.GetString();
+        }
+        private static void FieldMultiple()
+        {
+            Expression<Func<Student, object>> exp = it => it.Name;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.FieldMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
