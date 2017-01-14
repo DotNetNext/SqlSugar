@@ -14,6 +14,7 @@ namespace SqlSugar
         public Expression BaseExpression { get; set; }
         public int Index { get; set; }
         public List<KeyValuePair<string, BinaryExpressionInfo>> BinaryExpressionInfoList { get; set; }
+        public object TempDate { get; set; }
         public ExpressionParameter BaseParameter { get; set; }
     }
 }

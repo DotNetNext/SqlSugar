@@ -46,10 +46,11 @@ namespace SqlSugar
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
                 if (memberAssignment.Expression.NodeType == ExpressionType.Constant)
                 {
-                    var value = ((ConstantExpression)memberAssignment.Expression).Value;
+                    base.Expression = memberAssignment.Expression;
+                    base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
                     parameter.Context.Result.Append(parameterName);
-                    this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                    this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.TempDate));
                 }
                 else
                 {
