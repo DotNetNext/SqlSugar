@@ -55,17 +55,17 @@ namespace SqlSugar
             return this.Result.ToString();
         }
 
-        public void Append(string parameter)
+        public void Append(object parameter)
         {
             switch (this._ResolveExpressType)
             {
-                case ResolveExpressType.WhereSingle:
-                    break;
-                case ResolveExpressType.WhereMultiple:
-                    break;
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
                     parameter = parameter + ",";
+                    break;
+                case ResolveExpressType.WhereSingle:
+                    break;
+                case ResolveExpressType.WhereMultiple:
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;
