@@ -35,9 +35,13 @@ namespace SqlSugar
             {
                 _Result = value;
             }
-        } 
+        }
         #endregion
-
+        public string GetString()
+        {
+            if (_Result == null) return null;
+            return _Result.ToString();
+        }
         #region functions
         public string[] GetResultArray()
         {
@@ -75,13 +79,30 @@ namespace SqlSugar
 
         public void AppendFormat(string parameter, params object[] orgs)
         {
+            switch (this._ResolveExpressType)
+            {
+                case ResolveExpressType.WhereSingle:
+                    break;
+                case ResolveExpressType.WhereMultiple:
+                    break;
+                case ResolveExpressType.SelectSingle:
+                    break;
+                case ResolveExpressType.SelectMultiple:
+                    break;
+                case ResolveExpressType.FieldSingle:
+                    break;
+                case ResolveExpressType.FieldMultiple:
+                    break;
+                default:
+                    break;
+            }
             this.Result.AppendFormat(parameter, orgs);
         }
 
         public void Replace(string parameter, string newValue)
         {
             this.Result.Replace(parameter, newValue);
-        } 
+        }
         #endregion
     }
 }

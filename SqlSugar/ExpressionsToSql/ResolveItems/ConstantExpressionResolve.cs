@@ -12,7 +12,6 @@ namespace SqlSugar
         {
             var expression = base.Expression as ConstantExpression;
             var isLeft = parameter.IsLeft;
-            var isWhereSingle = parameter.Context.IsWhereSingle;
             object value = expression.Value;
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
             {

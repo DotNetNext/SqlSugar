@@ -11,7 +11,6 @@ namespace SqlSugar
         {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
-            var isWhereSingle = parameter.Context.IsWhereSingle;
             string fieldName = string.Empty;
             switch (parameter.Context.ResolveType)
             {
@@ -22,12 +21,10 @@ namespace SqlSugar
                     fieldName = GetFiledNameByWhereMultiple(parameter, expression, isLeft);
                     break;
                 case ResolveExpressType.SelectSingle:
-                    base.Context.ResultString = new StringBuilder();
-                    base.Context.ResultString.Append(fieldName);
+                    base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.SelectMultiple:
-                    base.Context.ResultString = new StringBuilder();
-                    base.Context.ResultString.Append(fieldName);
+                    base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;

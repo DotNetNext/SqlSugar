@@ -12,7 +12,6 @@ namespace SqlSugar
         {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
-            var isWhereSingle = parameter.Context.IsWhereSingle;
             object value = null;
             var isField = expression.Member is System.Reflection.FieldInfo;
             var isProperty = expression.Member is System.Reflection.PropertyInfo;
@@ -32,11 +31,6 @@ namespace SqlSugar
                     Value = value,
                     ExpressionType = ExpressionConst.ConstantExpressionType
                 }));
-            }
-            if (isLeft == null && base.Context.ResultString == null)
-            {
-                base.Context.ResultString = new StringBuilder();
-                base.Context.ResultString.Append(value);
             }
         }
     }

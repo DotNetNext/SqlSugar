@@ -16,7 +16,7 @@ namespace OrmTest.ExpressionTest
             Expression<Func<Student, object>> exp = it => new Program() { x = it.Name };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.ResolveType = ResolveExpressType.SelectSingle;
-            var x= expContext.ToResultString();
+            var x = expContext.Result;
         }
     }
 }

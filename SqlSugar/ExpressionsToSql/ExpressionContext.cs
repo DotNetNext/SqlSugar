@@ -26,7 +26,6 @@ namespace SqlSugar
         public int Index { get; set; }
         public ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
-        public object ResultObj { get; set; }
         public ExpressionResult Result
         {
             get

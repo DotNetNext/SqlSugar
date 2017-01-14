@@ -12,7 +12,6 @@ namespace SqlSugar
         {
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
-            var isWhereSingle = parameter.Context.IsWhereSingle;
             object value = null;
             value = ExpressionTool.DynamicInvoke(expression);
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
