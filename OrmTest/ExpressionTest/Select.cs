@@ -13,15 +13,31 @@ namespace OrmTest.ExpressionTest
     {
         internal static void Init()
         {
-
-            single();
-            singleDynamic();
+            DateTime b = DateTime.Now;
+            int count = 10000;
+            for (int i = 0; i < count; i++)
+            {
+                single();
+                Multiple();
+                singleDynamic();
+                MultipleDynamic(); 
+            }
+            DateTime e = DateTime.Now;
+            Console.WriteLine("Count: "+ count + "\r\nTime:  "+(e-b).TotalSeconds+ " Seconds ");
         }
 
+        private static void Multiple()
+        {
+
+        }
+        private static void MultipleDynamic()
+        {
+
+        }
         private static void single()
         {
             int p = 1;
-            Expression<Func<Student, object>> exp = it => new Student() { Name = "a",  Id=it.Id, SchoolId=p };
+            Expression<Func<Student, object>> exp = it => new Student() { Name = "a", Id = it.Id, SchoolId = p };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.ResolveType = ResolveExpressType.SelectSingle;
             expContext.Resolve();
@@ -32,7 +48,7 @@ namespace OrmTest.ExpressionTest
         private static void singleDynamic()
         {
             string a = "a";
-            Expression<Func<Student, object>> exp = it =>new { x = it.Id, shoolid=1,name=a };
+            Expression<Func<Student, object>> exp = it => new { x = it.Id, shoolid = 1, name = a };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.ResolveType = ResolveExpressType.SelectSingle;
             expContext.Resolve();
