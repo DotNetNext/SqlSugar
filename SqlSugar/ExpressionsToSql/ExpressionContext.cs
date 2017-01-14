@@ -7,6 +7,11 @@ using System.Linq.Expressions;
 using System.Text;
 namespace SqlSugar
 {
+    ///<summary>
+    /// ** description：Expression to sql 
+    /// ** author：sunkaixuan
+    /// ** date：2017/1/14
+    /// ** qq:610262374
     public class ExpressionContext : ExpResolveAccessory
     {
         #region constructor
@@ -24,7 +29,7 @@ namespace SqlSugar
         #region properties
         public IDbMethods DbMehtods { get; set; }
         public int Index { get; set; }
-        public ResolveExpressType ResolveType { get; set; }
+        internal ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
         public ExpressionResult Result
         {

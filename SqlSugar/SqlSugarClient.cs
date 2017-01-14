@@ -9,6 +9,7 @@ namespace SqlSugar
     /// ** description：Create database access object
     /// ** author：sunkaixuan
     /// ** date：2017/1/2
+    /// ** qq:610262374
     /// </summary>
     public partial class SqlSugarClient : SqlSugarAccessory, IDisposable
     {

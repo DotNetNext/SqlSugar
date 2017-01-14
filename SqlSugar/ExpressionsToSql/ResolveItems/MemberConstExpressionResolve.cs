@@ -14,14 +14,25 @@ namespace SqlSugar
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
             object value = ExpressionTool.GetMemberValue(expression.Member, expression);
-            if (parameter.BaseParameter.BinaryExpressionInfoList != null)
+            switch (parameter.Context.ResolveType)
             {
-                parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
-                {
-                    IsLeft = Convert.ToBoolean(isLeft),
-                    Value = value,
-                    ExpressionType = expression.Expression.GetType()
-                }));
+                case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.FieldSingle:
+                case ResolveExpressType.FieldMultiple:
+                default:
+                    if (parameter.BaseParameter.BinaryExpressionInfoList != null)
+                    {
+                        parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
+                        {
+                            IsLeft = Convert.ToBoolean(isLeft),
+                            Value = value,
+                            ExpressionType = expression.Expression.GetType()
+                        }));
+                    }
+                    break;
             }
         }
     }

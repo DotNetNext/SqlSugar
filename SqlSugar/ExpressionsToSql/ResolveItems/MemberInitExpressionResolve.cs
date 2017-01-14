@@ -53,6 +53,7 @@ namespace SqlSugar
                 }
                 else
                 {
+                 
                     var memberExpression = (MemberExpression)memberAssignment.Expression;
                     if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Constant))
                     {
@@ -61,7 +62,7 @@ namespace SqlSugar
                         parameter.Context.Result.Append(parameterName);
                         this.Context.Parameters.Add(new SugarParameter(parameterName, value));
                     }
-                    else
+                    else if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Parameter))
                     {
                         var fieldNme = (memberExpression).Member.Name;
                         if (isSingle)
@@ -71,8 +72,12 @@ namespace SqlSugar
                         else
                         {
                             var shortName = memberExpression.Expression.ToString();
-                            parameter.Context.Result.Append(shortName+"."+fieldNme);
+                            parameter.Context.Result.Append(shortName + "." + fieldNme);
                         }
+                    }
+                    else
+                    {
+                        Check.ThrowNotSupportedException(memberExpression.Expression.NodeType.ToString());
                     }
                 }
             }

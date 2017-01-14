@@ -15,29 +15,39 @@ namespace SqlSugar
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.WhereSingle:
-                    fieldName = GetFieldNameByWhereSingle(parameter, expression, isLeft);
+                    fieldName = getSingleName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.WhereMultiple:
-                    fieldName = GetFiledNameByWhereMultiple(parameter, expression, isLeft);
+                    fieldName = getMultipleName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.SelectSingle:
+                    fieldName = getSingleName(parameter, expression, isLeft);
                     base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.SelectMultiple:
+                    fieldName = getMultipleName(parameter, expression, isLeft);
                     base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.FieldSingle:
+                    fieldName = getSingleName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.FieldMultiple:
+                    fieldName = getMultipleName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
                     break;
                 default:
                     break;
             }
         }
 
-        private string GetFiledNameByWhereMultiple(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
+        private string  getMultipleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
-            string fieldName = expression.Member.ToString();
+            string shortName = expression.Expression.ToString();
+            string fieldName = expression.Member.Name;
+            fieldName = shortName + "." + fieldName;
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)
                 parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                 {
@@ -48,7 +58,7 @@ namespace SqlSugar
             return fieldName;
         }
 
-        private string GetFieldNameByWhereSingle(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
+        private string getSingleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
             string fieldName = expression.Member.Name;
             if (parameter.BaseParameter.BinaryExpressionInfoList != null)

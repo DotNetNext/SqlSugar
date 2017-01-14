@@ -24,6 +24,7 @@ namespace OrmTest
 
 
             OrmTest.ExpressionTest.Select.Init();
+            OrmTest.ExpressionTest.Field.Init();
 
 
             Program.id = "xx";

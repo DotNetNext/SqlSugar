@@ -13,14 +13,25 @@ namespace SqlSugar
             var expression = base.Expression as ConstantExpression;
             var isLeft = parameter.IsLeft;
             object value = expression.Value;
-            if (parameter.BaseParameter.BinaryExpressionInfoList != null)
+            switch (parameter.Context.ResolveType)
             {
-                parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
-                {
-                    IsLeft = Convert.ToBoolean(isLeft),
-                    Value = value,
-                    ExpressionType = expression.GetType()
-                }));
+                case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.FieldSingle:
+                case ResolveExpressType.FieldMultiple:
+                default:
+                    if (parameter.BaseParameter.BinaryExpressionInfoList != null)
+                    {
+                        parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
+                        {
+                            IsLeft = Convert.ToBoolean(isLeft),
+                            Value = value,
+                            ExpressionType = expression.GetType()
+                        }));
+                    }
+                    break;
             }
         }
     }

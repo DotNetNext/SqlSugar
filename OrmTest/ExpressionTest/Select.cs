@@ -14,7 +14,7 @@ namespace OrmTest.ExpressionTest
         internal static void Init()
         {
             DateTime b = DateTime.Now;
-            int count = 10000;
+            int count = 1;
             for (int i = 0; i < count; i++)
             {
                 single();
@@ -29,8 +29,7 @@ namespace OrmTest.ExpressionTest
         private static void Multiple()
         {
             Expression<Func<Student,School, object>> exp = (it,school) => new Student() { Name = "a", Id = it.Id, SchoolId = school.Id };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.ResolveType = ResolveExpressType.SelectMultiple;
+            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -38,8 +37,7 @@ namespace OrmTest.ExpressionTest
         private static void MultipleDynamic()
         {
             Expression<Func<Student, School, object>> exp = (it, school) => new{ Name = "a", Id = it.Id, SchoolId = school.Id };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.ResolveType = ResolveExpressType.SelectMultiple;
+            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -48,8 +46,7 @@ namespace OrmTest.ExpressionTest
         {
             int p = 1;
             Expression<Func<Student, object>> exp = it => new Student() { Name = "a", Id = it.Id, SchoolId = p };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.ResolveType = ResolveExpressType.SelectSingle;
+            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectSingle);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -59,8 +56,7 @@ namespace OrmTest.ExpressionTest
         {
             string a = "a";
             Expression<Func<Student, object>> exp = it => new { x = it.Id, shoolid = 1, name = a };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.ResolveType = ResolveExpressType.SelectSingle;
+            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectSingle);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
