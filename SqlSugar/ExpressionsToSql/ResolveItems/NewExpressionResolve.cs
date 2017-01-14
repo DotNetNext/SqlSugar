@@ -43,10 +43,11 @@ namespace SqlSugar
                     ++i;
                     if (item.NodeType == ExpressionType.Constant)
                     {
-                        var value = ((ConstantExpression)item).Value;
+                        base.Expression = item;
+                        base.Start();
                         string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
                         parameter.Context.Result.Append(parameterName);
-                        this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                        this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.TempDate));
                     }
                     else
                     {
