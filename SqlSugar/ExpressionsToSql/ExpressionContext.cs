@@ -10,7 +10,8 @@ namespace SqlSugar
     public class ExpressionContext : ExpResolveAccessory
     {
         #region constructor
-        private ExpressionContext() {
+        private ExpressionContext()
+        {
 
         }
         public ExpressionContext(Expression expression, ResolveExpressType resolveType)
@@ -25,13 +26,20 @@ namespace SqlSugar
         public int Index { get; set; }
         public ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
-        public StringBuilder ResultString { get; set; }
         public object ResultObj { get; set; }
-        public bool IsWhereSingle
+        public ExpressionResult Result
         {
             get
             {
-                return this.ResolveType == ResolveExpressType.WhereSingle;
+                if (base._Result == null)
+                {
+                    this.Result = new ExpressionResult(this.ResolveType);
+                }
+                return base._Result;
+            }
+            set
+            {
+                this._Result = value;
             }
         }
         public List<SugarParameter> Parameters
@@ -58,21 +66,6 @@ namespace SqlSugar
         public virtual string GetaMppingColumnsName(string name)
         {
             return name;
-        }
-
-        public virtual string ToResultString()
-        {
-            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
-            resolve.Start();
-            if (this.ResultString == null) return string.Empty;
-            return this.ResultString.ToString();
-        }
-
-        public virtual object GetResultObj()
-        {
-            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
-            resolve.Start();
-            return this.ResultObj;
         }
         #endregion
     }
