@@ -19,9 +19,10 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                     break;
                 case ResolveExpressType.SelectSingle:
-                    SelectSingle(expression, parameter);
+                    Select(expression, parameter, true);
                     break;
                 case ResolveExpressType.SelectMultiple:
+                    Select(expression, parameter, false);
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;
@@ -32,7 +33,7 @@ namespace SqlSugar
             }
         }
 
-        private void SelectSingle(MemberInitExpression expression, ExpressionParameter parameter)
+        public void Select(MemberInitExpression expression, ExpressionParameter parameter, bool isSingle)
         {
             int i = 0;
             foreach (MemberBinding binding in expression.Bindings)
@@ -63,7 +64,15 @@ namespace SqlSugar
                     else
                     {
                         var fieldNme = (memberExpression).Member.Name;
-                        parameter.Context.Result.Append(fieldNme);
+                        if (isSingle)
+                        {
+                            parameter.Context.Result.Append(fieldNme);
+                        }
+                        else
+                        {
+                            var shortName = memberExpression.Expression.ToString();
+                            parameter.Context.Result.Append(shortName+"."+fieldNme);
+                        }
                     }
                 }
             }

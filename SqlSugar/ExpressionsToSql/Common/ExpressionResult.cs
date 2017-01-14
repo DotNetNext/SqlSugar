@@ -64,9 +64,8 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                     break;
                 case ResolveExpressType.SelectSingle:
-                    parameter=parameter + ",";
-                    break;
                 case ResolveExpressType.SelectMultiple:
+                    parameter = parameter + ",";
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;

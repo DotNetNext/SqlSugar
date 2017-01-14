@@ -19,9 +19,10 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                     break;
                 case ResolveExpressType.SelectSingle:
-                    SelectSingle(expression, parameter);
+                    Select(expression, parameter, true);
                     break;
                 case ResolveExpressType.SelectMultiple:
+                    Select(expression, parameter, false);
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;
@@ -32,7 +33,7 @@ namespace SqlSugar
             }
         }
 
-        private void SelectSingle(NewExpression expression, ExpressionParameter parameter)
+        private void Select(NewExpression expression, ExpressionParameter parameter, bool isSingle)
         {
             if (expression.Arguments != null)
             {
@@ -52,14 +53,23 @@ namespace SqlSugar
                         var memberExpression = (MemberExpression)item;
                         if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Constant))
                         {
-                            var value =ExpressionTool.GetMemberValue(memberExpression.Member, memberExpression);
+                            var value = ExpressionTool.GetMemberValue(memberExpression.Member, memberExpression);
                             string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
                             parameter.Context.Result.Append(parameterName);
                             this.Context.Parameters.Add(new SugarParameter(parameterName, value));
                         }
-                        else {
+                        else
+                        {
                             var fieldNme = (memberExpression).Member.Name;
-                            parameter.Context.Result.Append(fieldNme);
+                            if (isSingle)
+                            {
+                                parameter.Context.Result.Append(fieldNme);
+                            }
+                            else
+                            {
+                                var shortName = memberExpression.Expression.ToString();
+                                parameter.Context.Result.Append(shortName + "." + fieldNme);
+                            }
                         }
                     }
                 }
