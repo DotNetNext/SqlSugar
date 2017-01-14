@@ -41,7 +41,7 @@ namespace SqlSugar
                 foreach (var item in expression.Arguments)
                 {
                     ++i;
-                    if (item.NodeType == ExpressionType.Constant)
+                    if (item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
                     {
                         base.Expression = item;
                         base.Start();
@@ -52,26 +52,15 @@ namespace SqlSugar
                     else
                     {
                         var memberExpression = (MemberExpression)item;
-                        if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Constant))
+                        var fieldNme = (memberExpression).Member.Name;
+                        if (isSingle)
                         {
-                            base.Expression = memberExpression;
-                            base.Start();
-                            string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
-                            parameter.Context.Result.Append(parameterName);
-                            this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.TempDate));
+                            parameter.Context.Result.Append(fieldNme);
                         }
                         else
                         {
-                            var fieldNme = (memberExpression).Member.Name;
-                            if (isSingle)
-                            {
-                                parameter.Context.Result.Append(fieldNme);
-                            }
-                            else
-                            {
-                                var shortName = memberExpression.Expression.ToString();
-                                parameter.Context.Result.Append(shortName + "." + fieldNme);
-                            }
+                            var shortName = memberExpression.Expression.ToString();
+                            parameter.Context.Result.Append(shortName + "." + fieldNme);
                         }
                     }
                 }
@@ -79,3 +68,4 @@ namespace SqlSugar
         }
     }
 }
+
