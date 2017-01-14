@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressionTest\Select.cs" />
+    <Compile Include="ExpressionTest\Where.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Program.cs" />

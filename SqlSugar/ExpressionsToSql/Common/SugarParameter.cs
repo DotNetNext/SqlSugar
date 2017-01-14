@@ -60,6 +60,11 @@ namespace SqlSugar
             get; set;
         }
 
+        public Dictionary<string, object> TempDate
+        {
+            get; set;
+        }
+
         public override void ResetDbType()
         {
             this.DbType = System.Data.DbType.String;
