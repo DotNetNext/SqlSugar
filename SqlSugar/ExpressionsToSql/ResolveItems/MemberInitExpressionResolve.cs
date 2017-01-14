@@ -44,9 +44,10 @@ namespace SqlSugar
                     throw new NotSupportedException();
                 }
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
-                if (memberAssignment.Expression.NodeType == ExpressionType.Constant)
+                var item = memberAssignment.Expression;
+                if (item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
                 {
-                    base.Expression = memberAssignment.Expression;
+                    base.Expression = item;
                     base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
                     parameter.Context.Result.Append(parameterName);
@@ -54,16 +55,9 @@ namespace SqlSugar
                 }
                 else
                 {
-                 
+
                     var memberExpression = (MemberExpression)memberAssignment.Expression;
-                    if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Constant))
-                    {
-                        var value = ExpressionTool.GetMemberValue(memberExpression.Member, memberExpression);
-                        string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
-                        parameter.Context.Result.Append(parameterName);
-                        this.Context.Parameters.Add(new SugarParameter(parameterName, value));
-                    }
-                    else if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Parameter))
+                    if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Parameter))
                     {
                         var fieldNme = (memberExpression).Member.Name;
                         if (isSingle)
