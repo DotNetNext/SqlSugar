@@ -11,7 +11,7 @@ namespace SqlSugar
         public MemberInitExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var expression = base.Expression as MemberInitExpression;
-            switch (parameter.Context.Type)
+            switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.WhereSingle:
                     break;

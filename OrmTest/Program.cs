@@ -21,6 +21,11 @@ namespace OrmTest
         public static string id { get; set;}
         static void Main(string[] args)
         {
+
+
+            OrmTest.ExpressionTest.Select.Init();
+
+
             Program.id = "xx";
             string x = "1";
             Expression<Func<Student, object>> exp = it => new Program() { x=it.Name };

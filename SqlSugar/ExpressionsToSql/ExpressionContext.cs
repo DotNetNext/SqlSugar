@@ -13,9 +13,9 @@ namespace SqlSugar
         private ExpressionContext() {
 
         }
-        public ExpressionContext(Expression expression, ResolveExpressType type)
+        public ExpressionContext(Expression expression, ResolveExpressType resolveType)
         {
-            this.Type = type;
+            this.ResolveType = resolveType;
             this.Expression = expression;
         }
         #endregion
@@ -23,7 +23,7 @@ namespace SqlSugar
         #region properties
         public IDbMethods DbMehtods { get; set; }
         public int Index { get; set; }
-        public ResolveExpressType Type { get; set; }
+        public ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
         public StringBuilder ResultString { get; set; }
         public object ResultObj { get; set; }
@@ -31,7 +31,7 @@ namespace SqlSugar
         {
             get
             {
-                return this.Type == ResolveExpressType.WhereSingle;
+                return this.ResolveType == ResolveExpressType.WhereSingle;
             }
         }
         public List<SugarParameter> Parameters

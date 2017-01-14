@@ -13,7 +13,7 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isWhereSingle = parameter.Context.IsWhereSingle;
             string fieldName = string.Empty;
-            switch (parameter.Context.Type)
+            switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.WhereSingle:
                     fieldName = GetFieldNameByWhereSingle(parameter, expression, isLeft);
