@@ -54,10 +54,11 @@ namespace SqlSugar
                         var memberExpression = (MemberExpression)item;
                         if (memberExpression.Expression.NodeType.IsIn(ExpressionType.Constant))
                         {
-                            var value = ExpressionTool.GetMemberValue(memberExpression.Member, memberExpression);
+                            base.Expression = memberExpression;
+                            base.Start();
                             string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
                             parameter.Context.Result.Append(parameterName);
-                            this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                            this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.TempDate));
                         }
                         else
                         {

@@ -16,10 +16,12 @@ namespace SqlSugar
             object value = ExpressionTool.GetMemberValue(expression.Member, expression);
             switch (parameter.Context.ResolveType)
             {
-                case ResolveExpressType.WhereSingle:
-                case ResolveExpressType.WhereMultiple:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                    parameter.BaseParameter.TempDate = value;
+                    break;
+                case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
                 default:
