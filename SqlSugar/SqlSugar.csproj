@@ -125,6 +125,7 @@
     <Compile Include="ExpressionsToSql\ResolveItems\LambdaExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\NewExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\UnaryExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpResolveAccessory.cs" />
     <Compile Include="ExpressionsToSql\ExpressionContext.cs" />

@@ -87,9 +87,13 @@ namespace SqlSugar
             {
                 return new MemberInitExpressionResolve(parameter);
             }
-            else if (exp != null && exp.NodeType.IsIn(ExpressionType.New, ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
+            else if (exp is NewExpression)
             {
-                Check.ThrowNotSupportedException("ExpressionType.New、ExpressionType.NewArrayBounds and ExpressionType.NewArrayInit");
+                return new NewExpressionResolve(parameter);
+            }
+            else if (exp != null && exp.NodeType.IsIn(ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
+            {
+                Check.ThrowNotSupportedException("ExpressionType.NewArrayBounds and ExpressionType.NewArrayInit");
             }
             return null;
         }
