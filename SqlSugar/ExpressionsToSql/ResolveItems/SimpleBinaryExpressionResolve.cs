@@ -18,10 +18,13 @@ namespace SqlSugar
 
                     base.Expression = expression.Right;
                     base.Start();
-                    var rightValue = parameter.TempDate;
+                    var rightValue = parameter.CommonTempData;
                     base.Expression = expression.Left;
                     base.Start();
-                    var leftValue = parameter.TempDate;
+                    var leftValue = parameter.CommonTempData;
+                    var operatorValue = ExpressionTool.GetOperator(expression.NodeType);
+                    this.Context.Result.CurrentParameter = null;
+                    this.Context.Result.AppendFormat(ExpressionConst.BinaryFormatString, leftValue, operatorValue, rightValue);
                     break;
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:

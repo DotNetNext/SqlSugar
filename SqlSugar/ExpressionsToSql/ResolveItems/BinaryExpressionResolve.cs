@@ -9,15 +9,17 @@ namespace SqlSugar
     {
         public BinaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
-            if (parameter.BaseParameter.TempDate != null && parameter.BaseParameter.TempDate.Equals("simple"))
+            if (parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals("simple"))
             {
-                parameter.IsOnlyAddTempDate = true;
+                parameter.BaseParameter = parameter;
+                parameter.AppendType = ExpressionResultAppendType.AppendTempDate;
+                this.Context.Result.CurrentParameter = parameter;
                 new SimpleBinaryExpressionResolve(parameter);
-                parameter.IsOnlyAddTempDate = false;
+                this.Context.Result.CurrentParameter = null;
             }
             else
             {
-                parameter.BinaryExpressionInfoList = new List<KeyValuePair<string, BinaryExpressionInfo>>();
+                parameter.BinaryTempData = new List<KeyValuePair<string, BinaryExpressionInfo>>();
                 var expression = this.Expression as BinaryExpression;
                 var operatorValue = ExpressionTool.GetOperator(expression.NodeType);
                 var isComparisonOperator =
@@ -54,8 +56,8 @@ namespace SqlSugar
 
         private string GetRightString(ExpressionParameter parameter)
         {
-            var leftInfo = parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
-            var rightInfo = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
+            var leftInfo = parameter.BinaryTempData.Single(it => it.Value.IsLeft).Value;
+            var rightInfo = parameter.BinaryTempData.Single(it => !it.Value.IsLeft).Value;
             if (rightInfo.ExpressionType == ExpressionConst.ConstantExpressionType)
             {
                 var sqlParameterKeyWord = parameter.Context.SqlParameterKeyWord;
@@ -71,8 +73,8 @@ namespace SqlSugar
 
         private string GetLeftString(ExpressionParameter parameter)
         {
-            var leftInfo = parameter.BinaryExpressionInfoList.Single(it => it.Value.IsLeft).Value;
-            var rightInfo = parameter.BinaryExpressionInfoList.Single(it => !it.Value.IsLeft).Value;
+            var leftInfo = parameter.BinaryTempData.Single(it => it.Value.IsLeft).Value;
+            var rightInfo = parameter.BinaryTempData.Single(it => !it.Value.IsLeft).Value;
             if (leftInfo.ExpressionType == ExpressionConst.ConstantExpressionType)
             {
                 var sqlParameterKeyWord = parameter.Context.SqlParameterKeyWord;

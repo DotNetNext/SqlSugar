@@ -23,9 +23,9 @@ namespace SqlSugar
             {
                 value = ExpressionTool.GetPropertyValue(expression);
             }
-            if (parameter.BaseParameter.BinaryExpressionInfoList != null)
+            if (parameter.BaseParameter.BinaryTempData != null)
             {
-                parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
+                parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                 {
                     IsLeft = Convert.ToBoolean(isLeft),
                     Value = value,

@@ -8,15 +8,14 @@ namespace SqlSugar
 {
     public class ExpressionParameter
     {
-        public Expression Expression { get; set; }
         public ExpressionContext Context { get; set; }
-        public bool? IsLeft { get; set; }
-        public Expression BaseExpression { get; set; }
-        public int Index { get; set; }
-        public List<KeyValuePair<string, BinaryExpressionInfo>> BinaryExpressionInfoList { get; set; }
-        public object TempDate { get; set; }
         public ExpressionParameter BaseParameter { get; set; }
-        public int SwitchCaseNumber { get; set; }
-        public bool IsOnlyAddTempDate { get; set; }
+        public Expression BaseExpression { get; set; }
+        public Expression Expression { get; set; }
+        public bool? IsLeft { get; set; }
+        public int Index { get; set; }
+        public object CommonTempData { get; set; }
+        public List<KeyValuePair<string, BinaryExpressionInfo>> BinaryTempData { get; set; }
+        public ExpressionResultAppendType AppendType { get; set; }
     }
 }

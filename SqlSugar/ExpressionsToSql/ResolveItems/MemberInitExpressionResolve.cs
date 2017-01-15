@@ -51,7 +51,7 @@ namespace SqlSugar
                     base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
                     parameter.Context.Result.Append(parameterName);
-                    this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.TempDate));
+                    this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
                 }
                 else if (item is MemberExpression)
                 {

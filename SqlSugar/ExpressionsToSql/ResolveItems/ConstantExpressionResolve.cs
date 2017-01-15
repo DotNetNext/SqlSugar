@@ -17,16 +17,16 @@ namespace SqlSugar
             {
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
-                    parameter.BaseParameter.TempDate = value;
+                    parameter.BaseParameter.CommonTempData = value;
                     break;
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
                 default:
-                    if (parameter.BaseParameter.BinaryExpressionInfoList != null)
+                    if (parameter.BaseParameter.BinaryTempData != null)
                     {
-                        parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
+                        parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                         {
                             IsLeft = Convert.ToBoolean(isLeft),
                             Value = value,

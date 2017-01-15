@@ -7,6 +7,7 @@ namespace SqlSugar
 {
     public class ExpressionResult
     {
+        public ExpressionParameter CurrentParameter { get; set; }
         #region constructor
         private ExpressionResult()
         {
@@ -57,6 +58,10 @@ namespace SqlSugar
 
         public void Append(object parameter)
         {
+            if (this.CurrentParameter.IsValuable() && this.CurrentParameter.AppendType.IsIn(ExpressionResultAppendType.AppendTempDate)) {
+                this.CurrentParameter.CommonTempData = parameter;
+                return;
+            }
             switch (this._ResolveExpressType)
             {
                 case ResolveExpressType.SelectSingle:
@@ -79,6 +84,11 @@ namespace SqlSugar
 
         public void AppendFormat(string parameter, params object[] orgs)
         {
+            if (this.CurrentParameter.IsValuable() && this.CurrentParameter.AppendType.IsIn(ExpressionResultAppendType.AppendTempDate))
+            {
+                this.CurrentParameter.CommonTempData = new KeyValuePair<string,object[]>(parameter,orgs);
+                return;
+            }
             switch (this._ResolveExpressType)
             {
                 case ResolveExpressType.SelectSingle:

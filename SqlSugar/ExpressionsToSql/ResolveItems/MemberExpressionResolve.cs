@@ -7,6 +7,7 @@ namespace SqlSugar
 {
     public class MemberExpressionResolve : BaseResolve
     {
+        public ExpressionParameter Parameter { get; set; }
         public MemberExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var expression = base.Expression as MemberExpression;
@@ -48,8 +49,8 @@ namespace SqlSugar
             string shortName = expression.Expression.ToString();
             string fieldName = expression.Member.Name;
             fieldName = shortName + "." + fieldName;
-            if (parameter.BaseParameter.BinaryExpressionInfoList != null)
-                parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
+            if (parameter.BaseParameter.BinaryTempData != null)
+                parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                 {
                     IsLeft = Convert.ToBoolean(isLeft),
                     Value = fieldName,
@@ -61,8 +62,8 @@ namespace SqlSugar
         private string getSingleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
             string fieldName = expression.Member.Name;
-            if (parameter.BaseParameter.BinaryExpressionInfoList != null)
-                parameter.BaseParameter.BinaryExpressionInfoList.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
+            if (parameter.BaseParameter.BinaryTempData != null)
+                parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
                 {
                     IsLeft = Convert.ToBoolean(isLeft),
                     Value = fieldName,
