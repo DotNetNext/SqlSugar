@@ -58,8 +58,16 @@ namespace SqlSugar
                     base.Expression = memberAssignment.Expression;
                     base.Start();
                 }
-                else {
-                     Check.ThrowNotSupportedException(item.GetType().Name);
+                else if (item is BinaryExpression)
+                {
+                    base.Expression = item;
+                    parameter.CommonTempData = "simple";
+                    base.Start();
+                    parameter.CommonTempData = null;
+                }
+                else
+                {
+                    Check.ThrowNotSupportedException(item.GetType().Name);
                 }
             }
         }
