@@ -80,6 +80,7 @@ namespace SqlSugar
                         base.Start();
                         parameter.CommonTempData = null;
                         parameter.IsAppendResult();
+                        this.Context.Result.TrimEnd();
                         base.Context.Result.Append(base.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
                         base.Context.Result.CurrentParameter = null;
                     }

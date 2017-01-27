@@ -17,7 +17,7 @@ namespace SqlSugar
             }
             set
             {
-                Check.Exception(value!=null&&IsLockCurrentParameter, "CurrentParameter is locked.");
+                Check.Exception(value != null && IsLockCurrentParameter, "CurrentParameter is locked.");
                 this._CurrentParameter = value;
                 this.IsLockCurrentParameter = false;
             }
@@ -68,6 +68,12 @@ namespace SqlSugar
         {
             if (this._Result == null) return null;
             return this.Result.ToString();
+        }
+
+        public void TrimEnd()
+        {
+            if (this._Result == null) return;
+            this.Result=this.Result.Remove(this.Result.Length-1,1);
         }
 
         public void Append(object parameter)

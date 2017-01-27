@@ -9,61 +9,91 @@ using System.Threading.Tasks;
 
 namespace OrmTest.ExpressionTest
 {
-    public class Select
+    public class Select : ExpTestBase
     {
-        internal static void Init()
+        private Select() { }
+        public Select(int eachCount)
         {
-            DateTime b = DateTime.Now;
-            int count = 1;
-            for (int i = 0; i < count; i++)
+            this.Count = eachCount;
+        }
+        internal void Init()
+        {
+            base.Begin();
+            for (int i = 0; i < base.Count; i++)
             {
                 single();
                 Multiple();
                 singleDynamic();
                 MultipleDynamic();
             }
-            DateTime e = DateTime.Now;
-            Console.WriteLine("Count: " + count + "\r\nTime:  " + (e - b).TotalSeconds + " Seconds ");
+            base.End("Select Test");
         }
 
-        private static void Multiple()
+        private void Multiple()
         {
-            Expression<Func<Student, School, object>> exp = (it, school) => new Student() { Name = "a", Id = it.Id, SchoolId = school.Id,TestId=it.Id+1 };
+            Expression<Func<Student, School, object>> exp = (it, school) => new Student() { Name = "a", Id = it.Id, SchoolId = school.Id, TestId = it.Id + 1 };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            if (selectorValue.Trim() != " @constant1 AS Name , it.Id AS Id , school.Id AS SchoolId ".Trim())
-            {
-                throw new Exception("Multiple Error");
-            }
+            base.CheckSelect(
+                selectorValue,
+                pars,
+                @" @constant1 AS Name , it.Id AS Id , school.Id AS SchoolId , ( it.Id + 1 )   AS TestId ",
+                new List<SugarParameter>(){
+                new SugarParameter("@constant1","a")},
+                "Select.Multiple Error");
         }
-        private static void MultipleDynamic()
+
+        private  void MultipleDynamic()
         {
             Expression<Func<Student, School, object>> exp = (it, school) => new { Name = "a", Id = it.Id / 2, SchoolId = school.Id };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
+            base.CheckSelect(
+              selectorValue,
+              pars,
+              @"  @constant1 AS Name , ( it.Id / 2 )   AS Id , school.Id AS SchoolId  ",
+              new List<SugarParameter>(){
+                new SugarParameter("@constant1","a")},
+              "Select.MultipleDynamic Error");
         }
-        private static void single()
+        private  void single()
         {
             int p = 1;
-            Expression<Func<Student, object>> exp = it => new Student() { Name = "a", Id = it.Id, SchoolId = p };
+            Expression<Func<Student, object>> exp = it => new Student() { Name = "a", Id = it.Id, SchoolId = p,TestId=it.Id+1 };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectSingle);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
+            base.CheckSelect(
+                selectorValue,
+                pars,
+                @"  @constant1 AS Name , Id AS Id , @constant3 AS SchoolId , ( Id + 1 )   AS TestId  ",
+                new List<SugarParameter>(){
+                            new SugarParameter("@constant1","a"),
+                            new SugarParameter("@constant3",1)},
+                "Select.single Error");
         }
 
-        private static void singleDynamic()
+        private  void singleDynamic()
         {
             string a = "a";
-            Expression<Func<Student, object>> exp = it => new { x = it.Id, shoolid = 1, name = a };
+            Expression<Func<Student, object>> exp = it => new { x = it.Id, shoolid = 1, name = a,p=it.Id*1 };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectSingle);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
+            base.CheckSelect(
+            selectorValue,
+            pars,
+            @" Id AS x , @constant2 AS shoolid , @constant3 AS name , ( Id * 1 )   AS p  ",
+            new List<SugarParameter>(){
+                                    new SugarParameter("@constant2",1),
+                                    new SugarParameter("@constant3","a")},
+            "Select.single Error");
         }
     }
 }
