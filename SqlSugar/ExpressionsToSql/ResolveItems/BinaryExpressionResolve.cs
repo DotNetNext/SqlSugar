@@ -12,8 +12,6 @@ namespace SqlSugar
             if (parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals("simple"))
             {
                 parameter.BaseParameter = parameter;
-                parameter.AppendType = ExpressionResultAppendType.AppendTempDate;
-                this.Context.Result.CurrentParameter = parameter;
                 new SimpleBinaryExpressionResolve(parameter);
                 this.Context.Result.CurrentParameter = null;
             }

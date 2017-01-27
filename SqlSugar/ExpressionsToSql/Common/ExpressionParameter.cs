@@ -17,5 +17,13 @@ namespace SqlSugar
         public object CommonTempData { get; set; }
         public List<KeyValuePair<string, BinaryExpressionInfo>> BinaryTempData { get; set; }
         public ExpressionResultAppendType AppendType { get; set; }
+        public void IsAppendResult()
+        {
+            this.AppendType = ExpressionResultAppendType.AppendResult;
+        }
+        public void IsAppendTempDate()
+        {
+            this.AppendType = ExpressionResultAppendType.AppendTempDate;
+        }
     }
 }

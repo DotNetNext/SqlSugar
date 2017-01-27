@@ -1,9 +1,0 @@
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\bin\Debug\OrmTest.exe.config
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\bin\Debug\OrmTest.exe
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\bin\Debug\OrmTest.pdb
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\bin\Debug\SqlSugar.dll
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\bin\Debug\Newtonsoft.Json.dll
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\bin\Debug\SqlSugar.pdb
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\obj\Debug\OrmTest.csprojResolveAssemblyReference.cache
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\obj\Debug\OrmTest.exe
-F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\OrmTest\obj\Debug\OrmTest.pdb

@@ -7,7 +7,21 @@ namespace SqlSugar
 {
     public class ExpressionResult
     {
-        public ExpressionParameter CurrentParameter { get; set; }
+        public bool IsLockCurrentParameter { get; set; }
+        private ExpressionParameter _CurrentParameter;
+        public ExpressionParameter CurrentParameter
+        {
+            get
+            {
+                return this._CurrentParameter;
+            }
+            set
+            {
+                Check.Exception(value!=null&&IsLockCurrentParameter, "CurrentParameter is locked.");
+                this._CurrentParameter = value;
+                this.IsLockCurrentParameter = false;
+            }
+        }
         #region constructor
         private ExpressionResult()
         {
@@ -58,7 +72,8 @@ namespace SqlSugar
 
         public void Append(object parameter)
         {
-            if (this.CurrentParameter.IsValuable() && this.CurrentParameter.AppendType.IsIn(ExpressionResultAppendType.AppendTempDate)) {
+            if (this.CurrentParameter.IsValuable() && this.CurrentParameter.AppendType.IsIn(ExpressionResultAppendType.AppendTempDate))
+            {
                 this.CurrentParameter.CommonTempData = parameter;
                 return;
             }
@@ -86,7 +101,7 @@ namespace SqlSugar
         {
             if (this.CurrentParameter.IsValuable() && this.CurrentParameter.AppendType.IsIn(ExpressionResultAppendType.AppendTempDate))
             {
-                this.CurrentParameter.CommonTempData = new KeyValuePair<string,object[]>(parameter,orgs);
+                this.CurrentParameter.CommonTempData = new KeyValuePair<string, object[]>(parameter, orgs);
                 return;
             }
             switch (this._ResolveExpressType)

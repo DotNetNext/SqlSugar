@@ -68,7 +68,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region functions
+        #region public functions
         public virtual string GetaMppingColumnsName(string name)
         {
             return name;
@@ -77,6 +77,10 @@ namespace SqlSugar
         {
             BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
+        }
+        public virtual string GetAsString(string fieldName, string fieldValue)
+        {
+            return string.Format(" {0} {1} {2} ", fieldValue, "AS", fieldName);
         }
         #endregion
     }
