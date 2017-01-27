@@ -20,23 +20,27 @@ namespace OrmTest.ExpressionTest
                 single();
                 Multiple();
                 singleDynamic();
-                MultipleDynamic(); 
+                MultipleDynamic();
             }
             DateTime e = DateTime.Now;
-            Console.WriteLine("Count: "+ count + "\r\nTime:  "+(e-b).TotalSeconds+ " Seconds ");
+            Console.WriteLine("Count: " + count + "\r\nTime:  " + (e - b).TotalSeconds + " Seconds ");
         }
 
         private static void Multiple()
         {
-            Expression<Func<Student,School, object>> exp = (it,school) => new Student() { Name = "a", Id = it.Id, SchoolId = school.Id };
+            Expression<Func<Student, School, object>> exp = (it, school) => new Student() { Name = "a", Id = it.Id, SchoolId = school.Id,TestId=it.Id+1 };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
+            if (selectorValue.Trim() != " @constant1 AS Name , it.Id AS Id , school.Id AS SchoolId ".Trim())
+            {
+                throw new Exception("Multiple Error");
+            }
         }
         private static void MultipleDynamic()
         {
-            Expression<Func<Student, School, object>> exp = (it, school) => new{ Name = "a", Id = it.Id/2, SchoolId = school.Id };
+            Expression<Func<Student, School, object>> exp = (it, school) => new { Name = "a", Id = it.Id / 2, SchoolId = school.Id };
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();

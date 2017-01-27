@@ -20,5 +20,6 @@ namespace OrmTest.Models
 
         [SugarColumn(MappingKeys = "id,SchoolId")]
         public virtual School School { get; set; }
+        public int TestId { get; set; }
     }
 }
