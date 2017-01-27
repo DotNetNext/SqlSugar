@@ -36,7 +36,7 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.CheckSelect(
+            base.Check(
                 selectorValue,
                 pars,
                 @" @constant1 AS Name , it.Id AS Id , school.Id AS SchoolId , ( it.Id + 1 )   AS TestId ",
@@ -52,7 +52,7 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.CheckSelect(
+            base.Check(
               selectorValue,
               pars,
               @"  @constant1 AS Name , ( it.Id / 2 )   AS Id , school.Id AS SchoolId  ",
@@ -68,7 +68,7 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.CheckSelect(
+            base.Check(
                 selectorValue,
                 pars,
                 @"  @constant1 AS Name , Id AS Id , @constant3 AS SchoolId , ( Id + 1 )   AS TestId  ",
@@ -86,7 +86,7 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.CheckSelect(
+            base.Check(
             selectorValue,
             pars,
             @" Id AS x , @constant2 AS shoolid , @constant3 AS name , ( Id * 1 )   AS p  ",

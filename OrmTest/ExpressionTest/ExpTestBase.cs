@@ -21,9 +21,9 @@ namespace OrmTest.ExpressionTest
             Console.WriteLine(title + " \r\nCount: " + this.Count + "\r\nTime:  " + (this.EndTime - this.BeginTime).TotalSeconds + " Seconds \r\n");
         }
 
-        internal void CheckSelect(string selectorValue, List<SugarParameter> pars, string validValue, List<SugarParameter> validPars, string errorMessage)
+        internal void Check(string value, List<SugarParameter> pars, string validValue, List<SugarParameter> validPars, string errorMessage)
         {
-            if (selectorValue.Trim() != validValue.Trim())
+            if (value.Trim() != validValue.Trim())
             {
                 throw new Exception(errorMessage);
             }
