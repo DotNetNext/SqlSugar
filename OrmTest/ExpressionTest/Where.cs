@@ -27,8 +27,20 @@ namespace OrmTest.ExpressionTest
                 whereSingle4();
                 whereSingle5();
                 whereSingle6();
+                WhereMultiple1();
             }
             base.End("Where Test");
+        }
+        private void WhereMultiple1()
+        {
+            Expression<Func<Student, bool>> exp = it => it.Id > 1;
+            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereMultiple);
+            expContext.Resolve();
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( it.Id  > @Id0 )", new List<SugarParameter>() {
+                new SugarParameter("@Id0",1)
+            }, "WhereMultiple1");
         }
         private void whereSingle1()
         {

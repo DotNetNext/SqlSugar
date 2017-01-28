@@ -25,30 +25,11 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.WhereSingle:
                     fieldName = getSingleName(parameter, expression, isLeft);
-                    if (parameter.BaseExpression is BinaryExpression)
-                    {
-                        fieldName = string.Format(" {0} ", fieldName);
-                        if (isLeft == true)
-                        {
-                            fieldName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
-                        }
-                        if (base.Context.Result.Contains(ExpressionConst.Format0))
-                        {
-                            base.Context.Result.Replace(ExpressionConst.Format0, fieldName);
-                        }
-                        else
-                        {
-                            base.Context.Result.Append(fieldName);
-                        }
-                    }
-                    else
-                    {
-                        base.Context.Result.Append(fieldName);
-                    }
+                    fieldName = AppendMember(parameter, isLeft, fieldName);
                     break;
                 case ResolveExpressType.WhereMultiple:
                     fieldName = getMultipleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
+                    fieldName = AppendMember(parameter, isLeft, fieldName);
                     break;
                 case ResolveExpressType.FieldSingle:
                     fieldName = getSingleName(parameter, expression, isLeft);
@@ -61,6 +42,32 @@ namespace SqlSugar
                 default:
                     break;
             }
+        }
+
+        private string AppendMember(ExpressionParameter parameter, bool? isLeft, string fieldName)
+        {
+            if (parameter.BaseExpression is BinaryExpression)
+            {
+                fieldName = string.Format(" {0} ", fieldName);
+                if (isLeft == true)
+                {
+                    fieldName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                }
+                if (base.Context.Result.Contains(ExpressionConst.Format0))
+                {
+                    base.Context.Result.Replace(ExpressionConst.Format0, fieldName);
+                }
+                else
+                {
+                    base.Context.Result.Append(fieldName);
+                }
+            }
+            else
+            {
+                base.Context.Result.Append(fieldName);
+            }
+
+            return fieldName;
         }
 
         private string getMultipleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
