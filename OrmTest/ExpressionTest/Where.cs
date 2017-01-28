@@ -30,7 +30,6 @@ namespace OrmTest.ExpressionTest
             }
             base.End("Where Test");
         }
-
         private void whereSingle1()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 1;
@@ -93,7 +92,6 @@ namespace OrmTest.ExpressionTest
                 new SugarParameter("@Name2","a1")
             }, "whereSingle5");
         }
-
         private void whereSingle6()
         {
             string name = "a";
