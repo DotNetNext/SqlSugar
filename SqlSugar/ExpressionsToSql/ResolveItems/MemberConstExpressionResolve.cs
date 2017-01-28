@@ -21,35 +21,7 @@ namespace SqlSugar
                     parameter.BaseParameter.CommonTempData = value;
                     break;
                 case ResolveExpressType.WhereSingle:
-                    if (parameter.BaseExpression is BinaryExpression)
-                    {
-                        var otherExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
-                        if (otherExpression is MemberExpression)
-                        {
-                            string parameterName = Context.SqlParameterKeyWord
-                                + ((MemberExpression)otherExpression).Member.Name
-                                + Context.ParameterIndex;
-                            base.Context.Parameters.Add(new SugarParameter(parameterName, value));
-                            Context.ParameterIndex++;
-                            parameterName = string.Format(" {0} ", parameterName);
-                            if (isLeft == true)
-                            {
-                                parameterName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
-                            }
-                            if (base.Context.Result.Contains(ExpressionConst.Format0))
-                            {
-                                base.Context.Result.Replace(ExpressionConst.Format0, parameterName);
-                            }
-                            else
-                            {
-                                base.Context.Result.Append(parameterName);
-                            }
-                        }
-                        else
-                        {
-
-                        }
-                    }
+                    AppendParameter(parameter, isLeft, value);
                     break;
                 case ResolveExpressType.WhereMultiple:
                 case ResolveExpressType.FieldSingle:
