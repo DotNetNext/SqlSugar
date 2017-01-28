@@ -36,20 +36,19 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ( Id  > @Id1 ) ", new List<SugarParameter>() {
-                new SugarParameter("@Id1",1)
+            base.Check(value, pars, "( Id  > @Id0 )", new List<SugarParameter>() {
+                new SugarParameter("@Id0",1)
             }, "whereSingle1");
         }
         private void whereSingle2()
         {
-            Expression<Func<Student, bool>> exp = it => it.Id > 1 || it.Name == "a";
+            Expression<Func<Student, bool>> exp = it => 1 > it.Id;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "  ( Id  > @Id1 )  OR  ( Name  = @Name2 )  ", new List<SugarParameter>() {
-                new SugarParameter("@Id1",1),
-                new SugarParameter("@Name2","a")
+            base.Check(value, pars, "( @Id0  > Id )", new List<SugarParameter>() {
+                new SugarParameter("@Id0",1)
             }, "whereSingle2");
         }
         private void whereSingle3()
@@ -59,21 +58,22 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "  ( Id  > @Id1 )  OR  ( Name  = @Name2 )  ", new List<SugarParameter>() {
-                new SugarParameter("@Id1",1),
-                new SugarParameter("@Name2","a")
-            }, "whereSingle2");
+            base.Check(value, pars, " (( Id  > @Id0 )  OR  ( Name  = @Name1 ))", new List<SugarParameter>() {
+                new SugarParameter("@Id0",1),
+                new SugarParameter("@Name1","a")
+            }, "whereSingle3");
         }
         private void whereSingle4()
         {
-            Expression<Func<Student, bool>> exp = it =>( it.Id > 1 &&it.Name!="a")|| it.Name == "a";
+            Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != "a") || it.Name == "a1";
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "  ( Id  > @Id1 )  OR  ( Name  = @Name2 )  ", new List<SugarParameter>() {
-                new SugarParameter("@Id1",1),
-                new SugarParameter("@Name2","a")
+            base.Check(value, pars, " ((( Id  > @Id0 )  AND  ( Name <> @Name1 ))  OR  ( Name  = @Name2 ))  ", new List<SugarParameter>() {
+                new SugarParameter("@Id0",1),
+                new SugarParameter("@Name1","a"),
+                new SugarParameter("@Name2","a1")
             }, "whereSingle4");
         }
     }

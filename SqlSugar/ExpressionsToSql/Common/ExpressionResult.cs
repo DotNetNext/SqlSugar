@@ -82,6 +82,12 @@ namespace SqlSugar
             return (this.Result.ToString().Contains(value));
         }
 
+        internal void Insert(int index, string value)
+        {
+            if (this.Result == null) this.Result.Append(value);
+            this.Result.Insert(index, value);
+        }
+
         public void Append(object parameter)
         {
             if (this.CurrentParameter.IsValuable() && this.CurrentParameter.AppendType.IsIn(ExpressionResultAppendType.AppendTempDate))

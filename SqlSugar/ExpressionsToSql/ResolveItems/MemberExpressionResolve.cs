@@ -24,13 +24,25 @@ namespace SqlSugar
                     base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.WhereSingle:
+                    fieldName = getSingleName(parameter, expression, isLeft);
                     if (parameter.BaseExpression is BinaryExpression)
                     {
-                        fieldName = getSingleName(parameter, expression, isLeft);
+                        fieldName = string.Format(" {0} ", fieldName);
+                        if (isLeft == true)
+                        {
+                            fieldName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                        }
+                        if (base.Context.Result.Contains(ExpressionConst.Format0))
+                        {
+                            base.Context.Result.Replace(ExpressionConst.Format0, fieldName);
+                        }
+                        else
+                        {
+                            base.Context.Result.Append(fieldName);
+                        }
                     }
                     else
                     {
-                        fieldName = getSingleName(parameter, expression, isLeft);
                         base.Context.Result.Append(fieldName);
                     }
                     break;
@@ -56,26 +68,12 @@ namespace SqlSugar
             string shortName = expression.Expression.ToString();
             string fieldName = expression.Member.Name;
             fieldName = shortName + "." + fieldName;
-            if (parameter.BaseParameter.BinaryTempData != null)
-                parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
-                {
-                    IsLeft = Convert.ToBoolean(isLeft),
-                    Value = fieldName,
-                    ExpressionType = expression.GetType()
-                }));
             return fieldName;
         }
 
         private string getSingleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
             string fieldName = expression.Member.Name;
-            if (parameter.BaseParameter.BinaryTempData != null)
-                parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
-                {
-                    IsLeft = Convert.ToBoolean(isLeft),
-                    Value = fieldName,
-                    ExpressionType = expression.GetType()
-                }));
             return fieldName;
         }
     }

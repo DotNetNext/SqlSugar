@@ -23,15 +23,6 @@ namespace SqlSugar
             {
                 value = ExpressionTool.GetPropertyValue(expression);
             }
-            if (parameter.BaseParameter.BinaryTempData != null)
-            {
-                parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
-                {
-                    IsLeft = Convert.ToBoolean(isLeft),
-                    Value = value,
-                    ExpressionType = ExpressionConst.ConstantExpressionType
-                }));
-            }
         }
     }
 

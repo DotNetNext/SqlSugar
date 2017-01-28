@@ -11,11 +11,12 @@ namespace SqlSugar
         public ExpressionContext Context { get; set; }
         public ExpressionParameter BaseParameter { get; set; }
         public Expression BaseExpression { get; set; }
+        public Expression LeftExpression { get; set; }
+        public Expression RightExpression { get; set; }
         public Expression Expression { get; set; }
         public bool? IsLeft { get; set; }
         public int Index { get; set; }
         public object CommonTempData { get; set; }
-        public List<KeyValuePair<string, BinaryExpressionInfo>> BinaryTempData { get; set; }
         public ExpressionResultAppendType AppendType { get; set; }
         public void IsAppendResult()
         {

@@ -28,7 +28,7 @@ namespace SqlSugar
 
         public BaseResolve Start()
         {
-            this.Index++;
+            Context.Index++;
             Expression exp = this.Expression;
             ExpressionParameter parameter = new ExpressionParameter()
             {
@@ -37,7 +37,7 @@ namespace SqlSugar
                 IsLeft = this.IsLeft,
                 BaseExpression = this.BaseExpression,
                 BaseParameter = this.BaseParameter,
-                Index = this.Index
+                Index = Context.Index
             };
             if (exp is LambdaExpression)
             {

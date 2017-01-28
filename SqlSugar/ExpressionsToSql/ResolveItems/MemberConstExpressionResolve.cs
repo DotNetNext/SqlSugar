@@ -24,16 +24,6 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
-                default:
-                    if (parameter.BaseParameter.BinaryTempData != null)
-                    {
-                        parameter.BaseParameter.BinaryTempData.Add(new KeyValuePair<string, BinaryExpressionInfo>(ExpressionConst.BinaryExpressionInfoListKey, new BinaryExpressionInfo()
-                        {
-                            IsLeft = Convert.ToBoolean(isLeft),
-                            Value = value,
-                            ExpressionType = expression.Expression.GetType()
-                        }));
-                    }
                     break;
             }
         }

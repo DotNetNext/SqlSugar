@@ -29,6 +29,7 @@ namespace SqlSugar
         #region properties
         public IDbMethods DbMehtods { get; set; }
         public int Index { get; set; }
+        public int ParameterIndex { get; set; }
         internal ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
         public ExpressionResult Result
