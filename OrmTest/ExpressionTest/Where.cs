@@ -25,6 +25,7 @@ namespace OrmTest.ExpressionTest
                 whereSingle2();
                 whereSingle3();
                 whereSingle4();
+                whereSingle5();
             }
             base.End("Where Test");
         }
@@ -76,5 +77,25 @@ namespace OrmTest.ExpressionTest
                 new SugarParameter("@Name2","a1")
             }, "whereSingle4");
         }
+        private void whereSingle5()
+        {
+            string name = "a";
+            WhereConst.name = "a1";
+            Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != name) || it.Name == WhereConst.name;
+            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
+            expContext.Resolve();
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " ((( Id  > @Id0 )  AND  ( Name <> @Name1 ))  OR  ( Name  = @Name2 ))  ", new List<SugarParameter>() {
+                new SugarParameter("@Id0",1),
+                new SugarParameter("@Name1","a"),
+                new SugarParameter("@Name2","a1")
+            }, "whereSingle4");
+        }
+    }
+
+    public class WhereConst
+    {
+        public static string name { get; set; }
     }
 }
