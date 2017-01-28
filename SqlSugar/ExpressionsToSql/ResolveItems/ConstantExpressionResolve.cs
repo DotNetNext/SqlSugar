@@ -23,10 +23,7 @@ namespace SqlSugar
                     AppendParameter(parameter, isLeft, value);
                     break;
                 case ResolveExpressType.WhereMultiple:
-                    if (parameter.BaseExpression is BinaryExpression)
-                    {
-
-                    }
+                    AppendParameter(parameter, isLeft, value);
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:

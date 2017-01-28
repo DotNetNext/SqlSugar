@@ -29,6 +29,7 @@ namespace SqlSugar
                     AppendParameter(parameter, isLeft, value);
                     break;
                 case ResolveExpressType.WhereMultiple:
+                    AppendParameter(parameter, isLeft, value);
                     break;
                 case ResolveExpressType.SelectSingle:
                     break;
