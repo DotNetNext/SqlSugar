@@ -18,7 +18,8 @@ namespace OrmTest
         {
             int eachCount = 1;
             new OrmTest.ExpressionTest.Select(eachCount).Init();
-            OrmTest.ExpressionTest.Field.Init();
+            new OrmTest.ExpressionTest.Field(eachCount).Init();
+            new OrmTest.ExpressionTest.Where(eachCount).Init();
 
 
             // Program.id = "xx";

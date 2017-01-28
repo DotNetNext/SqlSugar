@@ -73,7 +73,13 @@ namespace SqlSugar
         public void TrimEnd()
         {
             if (this._Result == null) return;
-            this.Result=this.Result.Remove(this.Result.Length-1,1);
+            this.Result = this.Result.Remove(this.Result.Length - 1, 1);
+        }
+
+        public bool Contains(string value)
+        {
+            if (this.Result.Equals(value)) return true;
+            return (this.Result.ToString().Contains(value));
         }
 
         public void Append(object parameter)

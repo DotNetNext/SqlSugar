@@ -11,6 +11,7 @@ namespace SqlSugar
         public const string BinaryFormatString = " ( {0} {1} {2} ) ";
         public const string Format0 = "{0}";
         public const string Format1 = "{1}";
+        public const string Format2 = "{2}";
         public readonly static Type MemberExpressionType = typeof(MemberExpression);
         public readonly static Type ConstantExpressionType = typeof(ConstantExpression);
         public readonly static Type StringType = typeof(string);

@@ -26,18 +26,53 @@ namespace SqlSugar
                                             expression.NodeType != ExpressionType.Or &&
                                             expression.NodeType != ExpressionType.OrElse;
                 base.BaseExpression = expression;
+                var leftExpression = expression.Left;
+                var rightExpression = expression.Right;
+                var leftIsBinary = leftExpression is BinaryExpression;
+                var rightBinary = rightExpression is BinaryExpression;
+                int i = 0;
+                var lbrs = leftIsBinary && !rightBinary;
+                var lsrb = !leftIsBinary && rightBinary;
+                var lbrb = rightBinary && leftIsBinary;
+                var lsbs = !leftIsBinary && !rightBinary;
+                if (lbrs)
+                {
+                    base.Context.Result.Append("{" + i + "}");
+                    ++i;
+                }
+                else if (lsrb)
+                {
+                    base.Context.Result.Append("{" + i + "}");
+                }
+                else if (lbrb)
+                {
+                    base.Context.Result.Append("{0}");
+                    base.Context.Result.Append("{2}");
+                    base.Context.Result.Append("{1}");
+                }
+                base.Expression = leftExpression;
                 base.IsLeft = true;
-                base.Expression = expression.Left;
                 base.Start();
                 base.IsLeft = false;
-                base.Expression = expression.Right;
+                base.Expression = rightExpression;
                 base.Start();
                 base.IsLeft = null;
-                string leftString = GetLeftString(parameter);
-                string rightString = GetRightString(parameter);
-                string binarySql = string.Format(ExpressionConst.BinaryFormatString, leftString, operatorValue, rightString);
-                string sqlWhereString = base.Context.Result.GetResultString();
-                if (sqlWhereString.Contains(ExpressionConst.Format0))
+                string leftString = null;
+                if (!leftIsBinary)
+                    leftString = GetLeftString(parameter);
+                string rightString = null;
+                if (!rightBinary)
+                    rightString = GetRightString(parameter);
+                string binarySql = null;
+                if (lsbs)
+                {
+                    binarySql = string.Format(ExpressionConst.BinaryFormatString, leftString, operatorValue, rightString);
+                }
+                else if (lbrb)
+                {
+                    binarySql = operatorValue;
+                }
+                if (Context.Result.Contains(ExpressionConst.Format0))
                 {
                     base.Context.Result.Replace(ExpressionConst.Format0, binarySql);
                 }
@@ -45,9 +80,10 @@ namespace SqlSugar
                 {
                     base.Context.Result.Append(binarySql);
                 }
-                if (sqlWhereString.Contains(ExpressionConst.Format1))
+                if (Context.Result.Contains(ExpressionConst.Format1))
                 {
                     base.Context.Result.Replace(ExpressionConst.Format1, ExpressionConst.Format0);
+                    base.Context.Result.Replace(ExpressionConst.Format2, ExpressionConst.Format1);
                 }
             }
         }
@@ -60,7 +96,8 @@ namespace SqlSugar
             {
                 var sqlParameterKeyWord = parameter.Context.SqlParameterKeyWord;
                 var reval = string.Format("{0}{1}{2}", sqlParameterKeyWord, leftInfo.Value, parameter.Context.Index + parameter.Index);
-                if (parameter.Context.Parameters == null) {
+                if (parameter.Context.Parameters == null)
+                {
                     parameter.Context.Parameters = new List<SugarParameter>();
                 }
                 parameter.Context.Parameters.Add(new SugarParameter(reval, rightInfo.Value));

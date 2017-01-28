@@ -9,26 +9,38 @@ using System.Threading.Tasks;
 
 namespace OrmTest.ExpressionTest
 {
-    public class Field
+    public class Field:ExpTestBase
     {
-        internal static void Init()
+        private Field() { }
+        public Field(int eachCount)
         {
-            FieldSingle();
-            FieldMultiple();
+            this.Count = eachCount;
         }
-        private static void FieldSingle()
+        internal void Init()
+        {
+            base.Begin();
+            for (int i = 0; i < base.Count; i++)
+            {
+                FieldSingle();
+                FieldMultiple();
+            }
+            base.End("Filed Test");
+        }
+        private void FieldSingle()
         {
             Expression<Func<Student, object>> exp = it => it.Name;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.FieldSingle);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
+            Check(selectorValue, null, "Name", null, "FieldSingle");
         }
-        private static void FieldMultiple()
+        private void FieldMultiple()
         {
             Expression<Func<Student, object>> exp = it => it.Name;
             ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.FieldMultiple);
             expContext.Resolve();
             var selectorValue = expContext.Result.GetString();
+            Check(selectorValue, null, "it.Name", null, "FieldMultiple");
         }
     }
 }

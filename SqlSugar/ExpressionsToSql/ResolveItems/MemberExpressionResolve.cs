@@ -15,19 +15,26 @@ namespace SqlSugar
             string fieldName = string.Empty;
             switch (parameter.Context.ResolveType)
             {
-                case ResolveExpressType.WhereSingle:
-                    fieldName = getSingleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
-                    break;
-                case ResolveExpressType.WhereMultiple:
-                    fieldName = getMultipleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
-                    break;
                 case ResolveExpressType.SelectSingle:
                     fieldName = getSingleName(parameter, expression, isLeft);
                     base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.SelectMultiple:
+                    fieldName = getMultipleName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
+                    break;
+                case ResolveExpressType.WhereSingle:
+                    if (parameter.BaseExpression is BinaryExpression)
+                    {
+                        fieldName = getSingleName(parameter, expression, isLeft);
+                    }
+                    else
+                    {
+                        fieldName = getSingleName(parameter, expression, isLeft);
+                        base.Context.Result.Append(fieldName);
+                    }
+                    break;
+                case ResolveExpressType.WhereMultiple:
                     fieldName = getMultipleName(parameter, expression, isLeft);
                     base.Context.Result.Append(fieldName);
                     break;
@@ -44,7 +51,7 @@ namespace SqlSugar
             }
         }
 
-        private string  getMultipleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
+        private string getMultipleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
             string shortName = expression.Expression.ToString();
             string fieldName = expression.Member.Name;
