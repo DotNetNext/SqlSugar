@@ -21,6 +21,7 @@ namespace OrmTest
             new OrmTest.ExpressionTest.Select(eachCount).Init();
             new OrmTest.ExpressionTest.Field(eachCount).Init();
             new OrmTest.ExpressionTest.Where(eachCount).Init();
+            new OrmTest.ExpressionTest.Method(eachCount).Init();
         }
     }
 }
