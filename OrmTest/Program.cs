@@ -17,7 +17,7 @@ namespace OrmTest
         static void Main(string[] args)
         {
             //Expression To Sql Unit Test
-            int eachCount = 1;
+            int eachCount = 1000;
             new OrmTest.ExpressionTest.Select(eachCount).Init();
             new OrmTest.ExpressionTest.Field(eachCount).Init();
             new OrmTest.ExpressionTest.Where(eachCount).Init();
