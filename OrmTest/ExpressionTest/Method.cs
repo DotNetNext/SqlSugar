@@ -41,7 +41,7 @@ namespace OrmTest.ExpressionTest
             var pars = expContext.Parameters;
             base.Check(value, pars, "(( Id  > @Id0 )  OR  ( Id='' OR Id IS NULL ))", new List<SugarParameter>() {
                 new SugarParameter("@Id0",2)
-            }, "StringIsNullOrEmpty");
+            }, "ToUpper");
         }
 
         #region StringIsNullOrEmpty
