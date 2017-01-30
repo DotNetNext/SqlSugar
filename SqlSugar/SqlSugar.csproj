@@ -97,6 +97,10 @@
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />
+    <Compile Include="ExpressionsToSql\Common\CommonTempDataType.cs" />
+    <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
+    <Compile Include="ExpressionsToSql\Databases\SqlServerExpressionContext.cs" />
+    <Compile Include="ExpressionsToSql\NBORM.cs" />
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionErrorMessage.cs" />

@@ -5,11 +5,38 @@ using System.Linq.Expressions;
 using System.Text;
 namespace SqlSugar
 {
-    public class UnaryExpressionResolve:BaseResolve
+    public class UnaryExpressionResolve : BaseResolve
     {
         public UnaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
-
+            var expression = base.Expression as UnaryExpression;
+            var baseParameter = parameter.BaseParameter;
+            switch (this.Context.ResolveType)
+            {
+                case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
+                    base.Expression = expression.Operand;
+                    if (base.Expression is MemberExpression)
+                    {
+                        BaseParameter.ChildExpression = base.Expression;
+                        parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+                        base.Start();
+                        parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
+                        parameter.BaseParameter.ChildExpression = base.Expression;
+                        parameter.CommonTempData = null;
+                    }
+                    break;
+                case ResolveExpressType.SelectSingle:
+                    break;
+                case ResolveExpressType.SelectMultiple:
+                    break;
+                case ResolveExpressType.FieldSingle:
+                    break;
+                case ResolveExpressType.FieldMultiple:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace SqlSugar
         public ExpressionContext Context { get; set; }
         public ExpressionParameter BaseParameter { get; set; }
         public Expression BaseExpression { get; set; }
+        public Expression ChildExpression { get; set; }
         public Expression LeftExpression { get; set; }
         public Expression RightExpression { get; set; }
         public Expression Expression { get; set; }

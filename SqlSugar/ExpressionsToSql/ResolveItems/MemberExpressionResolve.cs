@@ -13,6 +13,8 @@ namespace SqlSugar
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
             string fieldName = string.Empty;
+            var baseParameter = parameter.BaseParameter;
+            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.SelectSingle:
@@ -24,12 +26,28 @@ namespace SqlSugar
                     base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.WhereSingle:
-                    fieldName = getSingleName(parameter, expression, isLeft);
-                    fieldName = AppendMember(parameter, isLeft, fieldName);
+                    if (isSetTempData)
+                    {
+                        fieldName = getSingleName(parameter, expression, null);
+                        baseParameter.CommonTempData = fieldName;
+                    }
+                    else
+                    {
+                        fieldName = getSingleName(parameter, expression, isLeft);
+                        fieldName = AppendMember(parameter, isLeft, fieldName);
+                    }
                     break;
                 case ResolveExpressType.WhereMultiple:
-                    fieldName = getMultipleName(parameter, expression, isLeft);
-                    fieldName = AppendMember(parameter, isLeft, fieldName);
+                    if (isSetTempData)
+                    {
+                        fieldName = getMultipleName(parameter, expression, null);
+                        baseParameter.CommonTempData = fieldName;
+                    }
+                    else
+                    {
+                        fieldName = getMultipleName(parameter, expression, isLeft);
+                        fieldName = AppendMember(parameter, isLeft, fieldName);
+                    }
                     break;
                 case ResolveExpressType.FieldSingle:
                     fieldName = getSingleName(parameter, expression, isLeft);

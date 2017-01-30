@@ -21,5 +21,13 @@ namespace SqlSugar
                 return ExpressionConst.GetThrowMessage("Expression format error, correct format: it=>it.fieldName","表达示格式错误，正确格式： it=>it.fieldName");
             }
         }
+
+        internal static string MethodError
+        {
+            get
+            {
+                return ExpressionConst.GetThrowMessage("Please use the following methods in the NBORM class, such as NBORM.IsNullOrEmpty (it.Name) for Lambda parsing", "拉姆达解析请使用 NBORM 类下面的方法，例如 NBORM.IsNullOrEmpty(it.Name)");
+            }
+        }
     }
 }
