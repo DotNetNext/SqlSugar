@@ -13,17 +13,24 @@ namespace SqlSugar
             var expression = base.Expression as ConstantExpression;
             var isLeft = parameter.IsLeft;
             object value = expression.Value;
+            var baseParameter = parameter.BaseParameter;
+            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
-                    parameter.BaseParameter.CommonTempData = value;
+                    baseParameter.CommonTempData = value;
                     break;
                 case ResolveExpressType.WhereSingle:
-                    AppendParameter(parameter, isLeft, value);
-                    break;
                 case ResolveExpressType.WhereMultiple:
-                    AppendParameter(parameter, isLeft, value);
+                    if (isSetTempData)
+                    {
+                        baseParameter.CommonTempData = value;
+                    }
+                    else
+                    {
+                        AppendParameter(parameter, isLeft, value);
+                    }
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:

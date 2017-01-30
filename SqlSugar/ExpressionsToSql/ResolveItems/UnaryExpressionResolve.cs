@@ -16,7 +16,7 @@ namespace SqlSugar
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
                     base.Expression = expression.Operand;
-                    if (base.Expression is MemberExpression)
+                    if (base.Expression is MemberExpression|| base.Expression is ConstantExpression)
                     {
                         BaseParameter.ChildExpression = base.Expression;
                         parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
