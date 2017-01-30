@@ -67,6 +67,8 @@ namespace SqlSugar
             {
                 case "IsNullOrEmpty":
                     return this.Context.DbMehtods.IsNullOrEmpty(model);
+                case "ToLower":
+                    return this.Context.DbMehtods.ToLower(model);
                 default:
                     break;
             }

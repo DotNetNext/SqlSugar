@@ -21,16 +21,20 @@ namespace OrmTest.ExpressionTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                #region StringIsNullOrEmpty
                 StringIsNullOrEmpty();
                 StringIsNullOrEmpty2();
                 StringIsNullOrEmpty3();
                 StringIsNullOrEmpty4();
+                ToUpper();
+                #endregion
             }
             base.End("Method Test");
         }
-        private void StringIsNullOrEmpty()
+
+        private void ToUpper()
         {
-            Expression<Func<Student, bool>> exp = it =>it.Id>2|| NBORM.IsNullOrEmpty(it.Id);;
+            Expression<Func<Student, bool>> exp = it =>"a"== NBORM.ToLower(it.Id) ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.Resolve();
             var value = expContext.Result.GetString();
@@ -40,9 +44,21 @@ namespace OrmTest.ExpressionTest
             }, "StringIsNullOrEmpty");
         }
 
+        #region StringIsNullOrEmpty
+        private void StringIsNullOrEmpty()
+        {
+            Expression<Func<Student, bool>> exp = it => it.Id > 2 || NBORM.IsNullOrEmpty(it.Id); ;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
+            expContext.Resolve();
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( Id  > @Id0 )  OR  ( Id='' OR Id IS NULL ))", new List<SugarParameter>() {
+                new SugarParameter("@Id0",2)
+            }, "StringIsNullOrEmpty");
+        }
         private void StringIsNullOrEmpty2()
         {
-            Expression<Func<Student, bool>> exp = it => 2==it.Id  || NBORM.IsNullOrEmpty(true); ;
+            Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(true); ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.Resolve();
             var value = expContext.Result.GetString();
@@ -65,7 +81,6 @@ namespace OrmTest.ExpressionTest
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty3");
         }
-
         private void StringIsNullOrEmpty4()
         {
             WhereConst.name = "xx";
@@ -78,7 +93,8 @@ namespace OrmTest.ExpressionTest
                 new SugarParameter("@MethodCost1","xx"),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty4");
-        }
+        } 
+        #endregion
     }
 }
 

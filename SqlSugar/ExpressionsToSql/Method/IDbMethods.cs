@@ -12,5 +12,7 @@ namespace SqlSugar
     public interface IDbMethods
     {
         string IsNullOrEmpty(MethodCallExpressionModel model);
+        object ToLower(MethodCallExpressionModel model);
+        object ToUpper(MethodCallExpressionModel model);
     }
 }
