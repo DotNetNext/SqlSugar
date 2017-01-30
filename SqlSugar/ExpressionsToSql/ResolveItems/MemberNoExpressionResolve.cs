@@ -15,6 +15,8 @@ namespace SqlSugar
             object value = null;
             var isField = expression.Member is System.Reflection.FieldInfo;
             var isProperty = expression.Member is System.Reflection.PropertyInfo;
+            var baseParameter = parameter.BaseParameter;
+            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
             if (isField)
             {
                 value = ExpressionTool.GetFiledValue(expression);
@@ -26,10 +28,15 @@ namespace SqlSugar
             switch (base.Context.ResolveType)
             {
                 case ResolveExpressType.WhereSingle:
-                    AppendParameter(parameter, isLeft, value);
-                    break;
                 case ResolveExpressType.WhereMultiple:
-                    AppendParameter(parameter, isLeft, value);
+                    if (isSetTempData)
+                    {
+                        baseParameter.CommonTempData = value;
+                    }
+                    else
+                    {
+                        AppendParameter(parameter, isLeft, value);
+                    }
                     break;
                 case ResolveExpressType.SelectSingle:
                     break;

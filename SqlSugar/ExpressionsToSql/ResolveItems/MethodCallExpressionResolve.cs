@@ -23,6 +23,7 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                     foreach (var item in args)
                     {
+                        parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
                         base.Expression = item;
                         base.Start();
                         var methodCallExpressionArgs = new MethodCallExpressionArgs()
