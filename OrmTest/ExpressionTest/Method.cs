@@ -23,6 +23,7 @@ namespace OrmTest.ExpressionTest
             {
                 StringIsNullOrEmpty();
                 StringIsNullOrEmpty2();
+                StringIsNullOrEmpty3();
             }
             base.End("Method Test");
         }
@@ -45,9 +46,23 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( Id  > @Id0 )  OR  ( Id='' OR Id IS NULL ))", new List<SugarParameter>() {
+            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodCost1='' OR @MethodCost1 IS NULL ))", new List<SugarParameter>() {
+                new SugarParameter("@MethodCost1",true),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty2");
+        }
+        private void StringIsNullOrEmpty3()
+        {
+            int a = 1;
+            Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(a); ;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
+            expContext.Resolve();
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodCost1='' OR @MethodCost1 IS NULL ))", new List<SugarParameter>() {
+                new SugarParameter("@MethodCost1",1),
+                new SugarParameter("@Id0",2)
+            }, "StringIsNullOrEmpty3");
         }
     }
 }

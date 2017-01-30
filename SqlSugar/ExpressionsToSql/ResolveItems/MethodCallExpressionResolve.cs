@@ -25,13 +25,30 @@ namespace SqlSugar
                     {
                         base.Expression = item;
                         base.Start();
-                        model.Args.Add(new MethodCallExpressionArgs()
+                        var methodCallExpressionArgs = new MethodCallExpressionArgs()
                         {
                             IsMember = parameter.ChildExpression is MemberExpression,
                             Value = parameter.CommonTempData
-                        });
+                        };
+                        var value = methodCallExpressionArgs.Value;
+                        if (methodCallExpressionArgs.IsMember)
+                        {
+                            var childExpression = parameter.ChildExpression as MemberExpression;
+                            if (childExpression.Expression != null && childExpression.Expression is ConstantExpression)
+                            {
+                                methodCallExpressionArgs.IsMember = false;
+                            }
+                        }
+                        if (methodCallExpressionArgs.IsMember == false)
+                        {
+                            var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.METHODCOST + this.Context.ParameterIndex;
+                            this.Context.ParameterIndex++;
+                            methodCallExpressionArgs.Value = parameterName;
+                            this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                        }
+                        model.Args.Add(methodCallExpressionArgs);
                     }
-                    var methodValue = GetMdthodValue(name,model);
+                    var methodValue = GetMdthodValue(name, model);
                     base.Context.Result.Append(methodValue);
                     break;
                 case ResolveExpressType.SelectSingle:
@@ -39,7 +56,6 @@ namespace SqlSugar
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
                 default:
-
                     break;
             }
         }
@@ -49,7 +65,7 @@ namespace SqlSugar
             switch (name)
             {
                 case "IsNullOrEmpty":
-                   return this.Context.DbMehtods.IsNullOrEmpty(model);
+                    return this.Context.DbMehtods.IsNullOrEmpty(model);
                 default:
                     break;
             }

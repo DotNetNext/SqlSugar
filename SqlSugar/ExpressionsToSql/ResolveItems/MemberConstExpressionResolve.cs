@@ -14,6 +14,8 @@ namespace SqlSugar
             var expression = base.Expression as MemberExpression;
             var isLeft = parameter.IsLeft;
             object value = ExpressionTool.GetMemberValue(expression.Member, expression);
+            var baseParameter = parameter.BaseParameter;
+            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.SelectSingle:
@@ -21,10 +23,15 @@ namespace SqlSugar
                     parameter.BaseParameter.CommonTempData = value;
                     break;
                 case ResolveExpressType.WhereSingle:
-                    AppendParameter(parameter, isLeft, value);
-                    break;
                 case ResolveExpressType.WhereMultiple:
-                    AppendParameter(parameter, isLeft, value);
+                    if (isSetTempData)
+                    {
+                        baseParameter.CommonTempData = value;
+                    }
+                    else
+                    {
+                        AppendParameter(parameter, isLeft, value);
+                    }
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:

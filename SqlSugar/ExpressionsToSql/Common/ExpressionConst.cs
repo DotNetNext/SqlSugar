@@ -7,7 +7,6 @@ namespace SqlSugar
 {
     internal class ExpressionConst
     {
-        public const string BinaryExpressionInfoListKey = "BinaryExpressionInfoListKey";
         public const string BinaryFormatString = " ( {0} {1} {2} ) ";
         public const string Format0 = "{0}";
         public const string Format1 = "$__$";
@@ -15,6 +14,7 @@ namespace SqlSugar
         public const string Format3 = "(";
         public const string Format4 = ")";
         public const string NBORMFULLNAME = "SqlSugar.NBORM";
+        public const string METHODCOST = "MethodCost";
         public readonly static Type MemberExpressionType = typeof(MemberExpression);
         public readonly static Type ConstantExpressionType = typeof(ConstantExpression);
         public readonly static Type StringType = typeof(string);
