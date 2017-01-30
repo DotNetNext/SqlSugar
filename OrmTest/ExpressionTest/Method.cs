@@ -28,9 +28,21 @@ namespace OrmTest.ExpressionTest
                 StringIsNullOrEmpty4();
                 ToUpper();
                 ToLower();
+                Trim();
                 #endregion
             }
             base.End("Method Test");
+        }
+        private void Trim()
+        {
+            Expression<Func<Student, bool>> exp = it =>NBORM.Trim("  a")==it.Name;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
+            expContext.Resolve();
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( @Const0  = (UPPER(Id)) )", new List<SugarParameter>() {
+                new SugarParameter("@Const0","a")
+            }, "ToUpper");
         }
 
         private void ToUpper()
