@@ -31,6 +31,7 @@ namespace SqlSugar
                     {
                         AppendParameter(parameter, isLeft, value);
                     }
+
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:

@@ -27,6 +27,7 @@ namespace OrmTest.ExpressionTest
                 StringIsNullOrEmpty3();
                 StringIsNullOrEmpty4();
                 ToUpper();
+                ToLower();
                 #endregion
             }
             base.End("Method Test");
@@ -34,14 +35,25 @@ namespace OrmTest.ExpressionTest
 
         private void ToUpper()
         {
-            Expression<Func<Student, bool>> exp = it =>"a"== NBORM.ToLower(it.Id) ;
+            Expression<Func<Student, bool>> exp = it =>"a"== NBORM.ToUpper(it.Id) ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( Id  > @Id0 )  OR  ( Id='' OR Id IS NULL ))", new List<SugarParameter>() {
-                new SugarParameter("@Id0",2)
+            base.Check(value, pars, "( @Const0  = (UPPER(Id)) )", new List<SugarParameter>() {
+                new SugarParameter("@Const0","a")
             }, "ToUpper");
+        }
+        private void ToLower()
+        {
+            Expression<Func<Student, bool>> exp = it => "a" == NBORM.ToLower(it.Id);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
+            expContext.Resolve();
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( @Const0  = (LOWER(Id)) )", new List<SugarParameter>() {
+                new SugarParameter("@Const0","a")
+            }, "ToLower");
         }
 
         #region StringIsNullOrEmpty
@@ -63,8 +75,8 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodCost1='' OR @MethodCost1 IS NULL ))", new List<SugarParameter>() {
-                new SugarParameter("@MethodCost1",true),
+            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst1",true),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty2");
         }
@@ -76,8 +88,8 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodCost1='' OR @MethodCost1 IS NULL ))", new List<SugarParameter>() {
-                new SugarParameter("@MethodCost1",1),
+            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst1",1),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty3");
         }
@@ -89,8 +101,8 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodCost1='' OR @MethodCost1 IS NULL ))", new List<SugarParameter>() {
-                new SugarParameter("@MethodCost1","xx"),
+            base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst1","xx"),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty4");
         } 

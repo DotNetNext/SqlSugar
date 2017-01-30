@@ -13,13 +13,13 @@ namespace SqlSugar
             return string.Format("( {0}='' OR {0} IS NULL )", parameter.Value);
         }
 
-        public object ToUpper(MethodCallExpressionModel model)
+        public virtual object ToUpper(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" (UPPER({0})) ", parameter.Value);
         }
 
-        public object ToLower(MethodCallExpressionModel model)
+        public virtual object ToLower(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" (LOWER({0})) ", parameter.Value);

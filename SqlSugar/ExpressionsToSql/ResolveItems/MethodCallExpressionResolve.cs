@@ -42,7 +42,7 @@ namespace SqlSugar
                         }
                         if (methodCallExpressionArgs.IsMember == false)
                         {
-                            var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.METHODCOST + this.Context.ParameterIndex;
+                            var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.METHODCONST + this.Context.ParameterIndex;
                             this.Context.ParameterIndex++;
                             methodCallExpressionArgs.Value = parameterName;
                             this.Context.Parameters.Add(new SugarParameter(parameterName, value));
@@ -69,6 +69,8 @@ namespace SqlSugar
                     return this.Context.DbMehtods.IsNullOrEmpty(model);
                 case "ToLower":
                     return this.Context.DbMehtods.ToLower(model);
+                case "ToUpper":
+                    return this.Context.DbMehtods.ToUpper(model);
                 default:
                     break;
             }

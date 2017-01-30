@@ -124,9 +124,24 @@ namespace SqlSugar
                         this.Context.Result.Append(parameterName);
                     }
                 }
-                else
+                else 
                 {
-
+                    var parameterName =this.Context.SqlParameterKeyWord+ExpressionConst.CONST +Context.ParameterIndex;
+                    Context.ParameterIndex++;
+                    this.Context.Parameters.Add(new SugarParameter(parameterName,value));
+                    parameterName = string.Format(" {0} ", parameterName);
+                    if (isLeft == true)
+                    {
+                        parameterName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                    }
+                    if (this.Context.Result.Contains(ExpressionConst.Format0))
+                    {
+                        this.Context.Result.Replace(ExpressionConst.Format0, parameterName);
+                    }
+                    else
+                    {
+                        this.Context.Result.Append(parameterName);
+                    }
                 }
             }
         }
