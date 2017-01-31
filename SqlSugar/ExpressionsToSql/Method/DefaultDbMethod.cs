@@ -25,7 +25,7 @@ namespace SqlSugar
             return string.Format(" (LOWER({0})) ", parameter.Value);
         }
 
-        public object Trim(MethodCallExpressionModel model)
+        public virtual object Trim(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" (rtrim(ltrim({0}))) ", parameter.Value);
