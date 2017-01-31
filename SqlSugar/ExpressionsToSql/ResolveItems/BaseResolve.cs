@@ -8,7 +8,7 @@ namespace SqlSugar
     public class BaseResolve
     {
         protected Expression Expression { get; set; }
-        protected Expression BaseExpression { get; set; }
+        protected Expression ExactExpression { get; set; }
         public ExpressionContext Context { get; set; }
         public bool? IsLeft { get; set; }
         public int ContentIndex { get { return this.Context.Index; } }
@@ -35,7 +35,7 @@ namespace SqlSugar
                 Context = this.Context,
                 Expression = expression,
                 IsLeft = this.IsLeft,
-                BaseExpression = this.BaseExpression,
+                BaseExpression = this.ExactExpression,
                 BaseParameter = this.BaseParameter,
                 Index = Context.Index
             };

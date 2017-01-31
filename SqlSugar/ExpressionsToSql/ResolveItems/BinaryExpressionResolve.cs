@@ -24,7 +24,7 @@ namespace SqlSugar
                                             expression.NodeType != ExpressionType.AndAlso &&
                                             expression.NodeType != ExpressionType.Or &&
                                             expression.NodeType != ExpressionType.OrElse;
-                base.BaseExpression = expression;
+                base.ExactExpression = expression;
                 var leftExpression = expression.Left;
                 var rightExpression = expression.Right;
                 var leftIsBinary = leftExpression is BinaryExpression;
