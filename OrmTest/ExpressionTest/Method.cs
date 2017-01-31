@@ -42,8 +42,8 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((rtrim(ltrim(@MethodConst0)))  = Name )", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0","  a")
+            base.Check(value, pars, " (Name like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","a")
             }, "Contains");
         }
 

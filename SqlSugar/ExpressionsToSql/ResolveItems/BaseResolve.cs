@@ -100,7 +100,7 @@ namespace SqlSugar
 
         protected void AppendValue(ExpressionParameter parameter, bool? isLeft, object value)
         {
-            if (parameter.BaseExpression is BinaryExpression)
+            if (parameter.BaseExpression is BinaryExpression|| parameter.BaseExpression==null)
             {
                 var otherExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
                 if (parameter.Expression is MethodCallExpression)
