@@ -14,6 +14,7 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             object value = expression.Value;
             var baseParameter = parameter.BaseParameter;
+            baseParameter.ChildExpression = expression;
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
             switch (parameter.Context.ResolveType)
             {
