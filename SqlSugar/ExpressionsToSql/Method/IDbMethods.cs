@@ -15,5 +15,6 @@ namespace SqlSugar
         object ToLower(MethodCallExpressionModel model);
         object ToUpper(MethodCallExpressionModel model);
         object Trim(MethodCallExpressionModel model);
+        object Contains(MethodCallExpressionModel model);
     }
 }

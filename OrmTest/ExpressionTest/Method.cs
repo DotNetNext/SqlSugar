@@ -29,10 +29,24 @@ namespace OrmTest.ExpressionTest
                 ToUpper();
                 ToLower();
                 Trim();
+                Contains();
                 #endregion
             }
             base.End("Method Test");
         }
+
+        private void Contains()
+        {
+            Expression<Func<Student, bool>> exp = it => NBORM.Contains(it.Name,"a");
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
+            expContext.Resolve();
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "((rtrim(ltrim(@MethodConst0)))  = Name )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","  a")
+            }, "Contains");
+        }
+
         private void Trim()
         {
             Expression<Func<Student, bool>> exp = it =>NBORM.Trim("  a")==it.Name;

@@ -76,6 +76,8 @@ namespace SqlSugar
                     return this.Context.DbMehtods.ToUpper(model);
                 case "Trim":
                     return this.Context.DbMehtods.Trim(model);
+                case "Contains":
+                    return this.Context.DbMehtods.Contains(model);
                 default:
                     break;
             }
