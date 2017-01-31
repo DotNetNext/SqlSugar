@@ -103,7 +103,20 @@ namespace SqlSugar
             if (parameter.BaseExpression is BinaryExpression)
             {
                 var otherExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
-                if (otherExpression is MemberExpression)
+                if (parameter.Expression is MethodCallExpression)
+                {
+                    var appendValue = value;
+                    if (this.Context.Result.Contains(ExpressionConst.Format0))
+                    {
+                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue.ObjToString());
+                    }
+                    else
+                    {
+                        this.Context.Result.Append(appendValue);
+                    }
+                    this.AppendOpreator(parameter, isLeft);
+                }
+                else if (otherExpression is MemberExpression)
                 {
                     string appendValue = Context.SqlParameterKeyWord
                         + ((MemberExpression)otherExpression).Member.Name
@@ -124,11 +137,11 @@ namespace SqlSugar
                         this.Context.Result.Append(appendValue);
                     }
                 }
-                else 
+                else
                 {
-                    var appendValue =this.Context.SqlParameterKeyWord+ExpressionConst.CONST +Context.ParameterIndex;
+                    var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.CONST + Context.ParameterIndex;
                     Context.ParameterIndex++;
-                    this.Context.Parameters.Add(new SugarParameter(appendValue,value));
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, value));
                     appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
                     {
@@ -145,7 +158,7 @@ namespace SqlSugar
                 }
             }
         }
-        protected void ActionLeft(ExpressionParameter parameter, bool? isLeft)
+        protected void AppendOpreator(ExpressionParameter parameter, bool? isLeft)
         {
             if (isLeft == true)
             {

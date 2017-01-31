@@ -40,9 +40,9 @@ namespace OrmTest.ExpressionTest
             expContext.Resolve();
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( @Const0  = (UPPER(Id)) )", new List<SugarParameter>() {
-                new SugarParameter("@Const0","a")
-            }, "ToUpper");
+            base.Check(value, pars, "((rtrim(ltrim(@MethodConst0)))  = Name )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","  a")
+            }, "Trim");
         }
 
         private void ToUpper()

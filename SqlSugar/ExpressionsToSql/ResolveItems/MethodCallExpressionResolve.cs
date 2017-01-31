@@ -51,8 +51,7 @@ namespace SqlSugar
                         model.Args.Add(methodCallExpressionArgs);
                     }
                     var methodValue = GetMdthodValue(name, model);
-                    base.Context.Result.Append(methodValue);
-                    base.ActionLeft(parameter, isLeft);
+                    base.AppendValue(parameter,isLeft, methodValue);
                     break;
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
