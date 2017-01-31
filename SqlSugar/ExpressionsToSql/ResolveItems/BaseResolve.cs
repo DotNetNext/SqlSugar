@@ -98,51 +98,58 @@ namespace SqlSugar
             return null;
         }
 
-        protected void AppendParameter(ExpressionParameter parameter, bool? isLeft, object value)
+        protected void AppendValue(ExpressionParameter parameter, bool? isLeft, object value)
         {
             if (parameter.BaseExpression is BinaryExpression)
             {
                 var otherExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
                 if (otherExpression is MemberExpression)
                 {
-                    string parameterName = Context.SqlParameterKeyWord
+                    string appendValue = Context.SqlParameterKeyWord
                         + ((MemberExpression)otherExpression).Member.Name
                         + Context.ParameterIndex;
-                    this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, value));
                     Context.ParameterIndex++;
-                    parameterName = string.Format(" {0} ", parameterName);
+                    appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
                     {
-                        parameterName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                        appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
                     }
                     if (this.Context.Result.Contains(ExpressionConst.Format0))
                     {
-                        this.Context.Result.Replace(ExpressionConst.Format0, parameterName);
+                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue);
                     }
                     else
                     {
-                        this.Context.Result.Append(parameterName);
+                        this.Context.Result.Append(appendValue);
                     }
                 }
                 else 
                 {
-                    var parameterName =this.Context.SqlParameterKeyWord+ExpressionConst.CONST +Context.ParameterIndex;
+                    var appendValue =this.Context.SqlParameterKeyWord+ExpressionConst.CONST +Context.ParameterIndex;
                     Context.ParameterIndex++;
-                    this.Context.Parameters.Add(new SugarParameter(parameterName,value));
-                    parameterName = string.Format(" {0} ", parameterName);
+                    this.Context.Parameters.Add(new SugarParameter(appendValue,value));
+                    appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
                     {
-                        parameterName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                        appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
                     }
                     if (this.Context.Result.Contains(ExpressionConst.Format0))
                     {
-                        this.Context.Result.Replace(ExpressionConst.Format0, parameterName);
+                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue);
                     }
                     else
                     {
-                        this.Context.Result.Append(parameterName);
+                        this.Context.Result.Append(appendValue);
                     }
                 }
+            }
+        }
+        protected void ActionLeft(ExpressionParameter parameter, bool? isLeft)
+        {
+            if (isLeft == true)
+            {
+                this.Context.Result.Append(" " + ExpressionConst.Format1 + parameter.BaseParameter.Index);
             }
         }
     }

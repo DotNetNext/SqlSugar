@@ -35,7 +35,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        AppendParameter(parameter, isLeft, value);
+                        AppendValue(parameter, isLeft, value);
                     }
                     break;
                 case ResolveExpressType.SelectSingle:

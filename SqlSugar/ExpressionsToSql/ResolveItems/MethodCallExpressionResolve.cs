@@ -11,6 +11,7 @@ namespace SqlSugar
         public MethodCallExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var express = base.Expression as MethodCallExpression;
+            var isLeft = parameter.IsLeft;
             CheckMethod(express);
             var method = express.Method;
             string name = method.Name;
@@ -51,6 +52,7 @@ namespace SqlSugar
                     }
                     var methodValue = GetMdthodValue(name, model);
                     base.Context.Result.Append(methodValue);
+                    base.ActionLeft(parameter, isLeft);
                     break;
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
@@ -60,6 +62,8 @@ namespace SqlSugar
                     break;
             }
         }
+
+ 
 
         private object GetMdthodValue(string name, MethodCallExpressionModel model)
         {
