@@ -29,69 +29,69 @@ namespace SqlSugar
         public BaseResolve Start()
         {
             Context.Index++;
-            Expression exp = this.Expression;
+            Expression expression = this.Expression;
             ExpressionParameter parameter = new ExpressionParameter()
             {
                 Context = this.Context,
-                Expression = exp,
+                Expression = expression,
                 IsLeft = this.IsLeft,
                 BaseExpression = this.BaseExpression,
                 BaseParameter = this.BaseParameter,
                 Index = Context.Index
             };
-            if (exp is LambdaExpression)
+            if (expression is LambdaExpression)
             {
                 return new LambdaExpressionResolve(parameter);
             }
-            else if (exp is BinaryExpression)
+            else if (expression is BinaryExpression)
             {
                 return new BinaryExpressionResolve(parameter);
             }
-            else if (exp is BlockExpression)
+            else if (expression is BlockExpression)
             {
                 Check.ThrowNotSupportedException("BlockExpression");
             }
-            else if (exp is ConditionalExpression)
+            else if (expression is ConditionalExpression)
             {
                 Check.ThrowNotSupportedException("ConditionalExpression");
             }
-            else if (exp is MethodCallExpression)
+            else if (expression is MethodCallExpression)
             {
                 return new MethodCallExpressionResolve(parameter);
             }
-            else if (exp is MemberExpression && ((MemberExpression)exp).Expression == null)
+            else if (expression is MemberExpression && ((MemberExpression)expression).Expression == null)
             {
                 return new MemberNoExpressionResolve(parameter);
             }
-            else if (exp is MemberExpression && ((MemberExpression)exp).Expression.NodeType == ExpressionType.Constant)
+            else if (expression is MemberExpression && ((MemberExpression)expression).Expression.NodeType == ExpressionType.Constant)
             {
                 return new MemberConstExpressionResolve(parameter);
             }
-            else if (exp is MemberExpression && ((MemberExpression)exp).Expression.NodeType == ExpressionType.New)
+            else if (expression is MemberExpression && ((MemberExpression)expression).Expression.NodeType == ExpressionType.New)
             {
                 return new MemberNewExpressionResolve(parameter);
             }
-            else if (exp is ConstantExpression)
+            else if (expression is ConstantExpression)
             {
                 return new ConstantExpressionResolve(parameter);
             }
-            else if (exp is MemberExpression)
+            else if (expression is MemberExpression)
             {
                 return new MemberExpressionResolve(parameter);
             }
-            else if (exp is UnaryExpression)
+            else if (expression is UnaryExpression)
             {
                 return new UnaryExpressionResolve(parameter);
             }
-            else if (exp is MemberInitExpression)
+            else if (expression is MemberInitExpression)
             {
                 return new MemberInitExpressionResolve(parameter);
             }
-            else if (exp is NewExpression)
+            else if (expression is NewExpression)
             {
                 return new NewExpressionResolve(parameter);
             }
-            else if (exp != null && exp.NodeType.IsIn(ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
+            else if (expression != null && expression.NodeType.IsIn(ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
             {
                 Check.ThrowNotSupportedException("ExpressionType.NewArrayBounds and ExpressionType.NewArrayInit");
             }
