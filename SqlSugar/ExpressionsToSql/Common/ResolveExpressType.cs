@@ -11,6 +11,7 @@ namespace SqlSugar
         SelectSingle=2,
         SelectMultiple=3,
         FieldSingle=4,
-        FieldMultiple=5
+        FieldMultiple=5,
+        Join=6
     }
 }

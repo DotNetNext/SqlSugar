@@ -103,7 +103,9 @@ namespace SqlSugar
 
         protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context)
         {
-            throw new NotImplementedException();
+            ExpressionContext exp = new ExpressionContext();
+            exp.Resolve(joinExpression, ResolveExpressType.Join);
+            return null;
         }
     }
 }

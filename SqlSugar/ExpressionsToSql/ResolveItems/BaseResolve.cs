@@ -91,16 +91,20 @@ namespace SqlSugar
             {
                 return new NewExpressionResolve(parameter);
             }
-            else if (expression != null && expression.NodeType.IsIn(ExpressionType.NewArrayBounds, ExpressionType.NewArrayInit))
+            else if (expression is NewArrayExpression)
             {
-                Check.ThrowNotSupportedException("ExpressionType.NewArrayBounds and ExpressionType.NewArrayInit");
+                return new NewArrayExpessionResolve(parameter);
+            }
+            else if (expression != null && expression.NodeType.IsIn(ExpressionType.NewArrayBounds))
+            {
+                Check.ThrowNotSupportedException("ExpressionType.NewArrayBounds");
             }
             return null;
         }
 
         protected void AppendValue(ExpressionParameter parameter, bool? isLeft, object value)
         {
-            if (parameter.BaseExpression is BinaryExpression|| parameter.BaseExpression==null)
+            if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
                 var otherExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
                 if (parameter.Expression is MethodCallExpression)
