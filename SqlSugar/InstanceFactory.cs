@@ -83,13 +83,6 @@ namespace SqlSugar
             return reval;
         }
 
-        public static ILambdaExpressions GetLambdaExpressions(IConnectionConfig currentConnectionConfig)
-        {
-            CheckConfig(currentConnectionConfig);
-            ILambdaExpressions reval = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType, "LambdaExpressions"), currentConnectionConfig.DbType);
-            return reval;
-        }
-
         private static string GetClassName(string type, string name)
         {
             return PubConst.AssemblyName + "." + type + name;
