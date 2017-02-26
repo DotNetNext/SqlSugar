@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public partial class SqlServerExpressionContext : ExpressionContext
+    public partial class SqlServerExpressionContext : ExpressionContext, ILambdaExpressions
     {
+        public SqlSugarClient Context { get; set; }
         public SqlServerExpressionContext(Expression expression, ResolveExpressType resolveType) : base(expression, resolveType)
         {
             base.DbMehtods = new SqlServerMethod();
         }
+
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {

@@ -29,11 +29,9 @@ namespace SqlSugar
         {
             var sqlBuilder = context.SqlBuilder;
             var items = sqlBuilder.LambadaQueryBuilder;
-            ResolveExpress resolveExpress = new ResolveExpress(context);
-            items.WhereIndex = items.WhereIndex + 100;
-            resolveExpress.ResolveExpression(expression);
-            this.AddPars(resolveExpress.Paras, context);
-            items.WhereInfos.Add(resolveExpress.SqlWhere);
+            ILambdaExpressions resolveExpress = new SqlServerExpressionContext(expression,type);
+            _Pars.AddRange(resolveExpress.Parameters);
+            items.WhereInfos.Add(resolveExpress.Result.ToString());
         }
 
         protected void Where<T>(string whereString, object whereObj, SqlSugarClient context) where T : class, new()

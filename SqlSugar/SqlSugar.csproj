@@ -54,14 +54,6 @@
     <Compile Include="Abstract\DbProvider\DbMaintenanceProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbProvider.cs" />
     <Compile Include="Abstract\DbProvider\SugarMappingAttribute.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\LambdaExpressionsProvider.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\ResolveExpress\Constant.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\ResolveExpress\Expressions.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\ResolveExpress\Main.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\ResolveExpress\Method.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\ResolveExpress\Models.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\ResolveExpress\Property.cs" />
-    <Compile Include="Abstract\LambdaExpressionsProvider\ResolveExpress\ResolveFieldName.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
     <Compile Include="Abstract\SqlableProvider.cs" />
@@ -89,9 +81,7 @@
     <Compile Include="Databases\SqlServer\Db\DbFirst\SqlServerDbFirst.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerBuilder.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerDbMaintenance.cs" />
-    <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerLambadaQueryBuilder.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlServerDb.cs" />
-    <Compile Include="Databases\SqlServer\LambdaExpressions\SqlServerLambdaExpressions.cs" />
     <Compile Include="Databases\SqlServer\Queryable\SqlServerQueryable.cs" />
     <Compile Include="Databases\SqlServer\Sqlable\SqlServerSqlable.cs" />
     <Compile Include="Entities\ConnectionConfig.cs" />
@@ -100,7 +90,7 @@
     <Compile Include="ExpressionsToSql\Common\CommonTempDataType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
     <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />
-    <Compile Include="Databases\SqlServer\LambdaExpressions\SqlServerExpressionContext.cs" />
+    <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerExpressionContext.cs" />
     <Compile Include="ExpressionsToSql\Method\NBORM.cs" />
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
