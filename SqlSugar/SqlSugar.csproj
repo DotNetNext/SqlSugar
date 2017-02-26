@@ -55,6 +55,7 @@
     <Compile Include="Abstract\DbProvider\DbProvider.cs" />
     <Compile Include="Abstract\DbProvider\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
     <Compile Include="Abstract\SqlableProvider.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\DeleteBuilder.cs" />

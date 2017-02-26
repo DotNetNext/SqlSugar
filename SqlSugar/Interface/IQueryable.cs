@@ -80,13 +80,7 @@ namespace SqlSugar
         List<T> ToPageList(int pageIndex, int pageSize);
         List<T> ToPageList(int pageIndex, int pageSize, ref int pageCount);
 
-        ISugarQueryable<T> JoinTable<T2>(Expression<Func<T, T2, object>> expression, JoinType type = JoinType.Left);
-        ISugarQueryable<T> JoinTable<T2, T3>(Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.Left);
-        ISugarQueryable<T> JoinTable(string tableName, string shortName, string onWhere, object whereObj, JoinType type = JoinType.Left);
-
-
-
-
+      
         void Clear();
     }
 }

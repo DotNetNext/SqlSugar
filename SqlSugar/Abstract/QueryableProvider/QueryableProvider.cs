@@ -293,40 +293,5 @@ namespace SqlSugar
         {
             throw new NotImplementedException();
         }
-
-        public ISugarQueryable<T> JoinTable<T2>(Expression<Func<T, T2, object>> expression, JoinType type = JoinType.Left)
-        {
-            var sqlBuilder = this.Context.SqlBuilder;
-            var items = sqlBuilder.LambadaQueryBuilder;
-            items.WhereIndex = items.WhereIndex + 100;
-            items.ResolveType = ResolveExpressType.WhereMultiple;
-            ResolveExpress re = new ResolveExpress();
-            re.Context = this.Context;
-            var exLeftArray = re.GetLeftArray(expression);
-            re.ResolveExpression(expression);
-            JoinQueryInfo joinInfo = new JoinQueryInfo()
-            {
-                JoinType = type,
-                JoinIndex = items.JoinIndex,
-                JoinWhere = re.SqlWhere,
-                PreShortName= exLeftArray.First(),
-                ShortName= exLeftArray.Last(),
-                TableName=sqlBuilder.GetTranslationTableName(typeof(T2).Name)
-            };
-            items.JoinIndex++;
-            items.JoinQueryInfos.Add(joinInfo);
-            base.AddPars(re.Paras,this.Context);
-            return this;
-        }
-
-        public ISugarQueryable<T> JoinTable<T2, T3>(Expression<Func<T, T2, T3, object>> expression, JoinType type = JoinType.Left)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISugarQueryable<T> JoinTable(string tableName, string shortName, string onWhere, object whereObj, JoinType type = JoinType.Left)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
