@@ -19,12 +19,21 @@ namespace SqlSugar
             return reval;
         }
 
-        public static LambadaQueryBuilder GetGetLambadaQueryBuilder(IConnectionConfig currentConnectionConfig)
+        public static LambadaQueryBuilder GetLambadaQueryBuilder(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);
             LambadaQueryBuilder reval = CreateInstance<LambadaQueryBuilder>(GetClassName(currentConnectionConfig.DbType, "LambadaQueryBuilder"), currentConnectionConfig.DbType);
             return reval;
         }
+
+        public static ILambdaExpressions GetLambdaExpressions(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            ILambdaExpressions reval = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType, "ExpressionContext"), currentConnectionConfig.DbType);
+            return reval;
+        }
+
+
         public static ISugarSqlable GetSqlable(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);

@@ -132,7 +132,7 @@ namespace SqlSugar
                 var reval = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
                 reval.Context = this;
                 var sqlBuilder = reval.Context.SqlBuilder;
-                sqlBuilder.LambadaQueryBuilder = InstanceFactory.GetGetLambadaQueryBuilder(base.CurrentConnectionConfig);
+                sqlBuilder.LambadaQueryBuilder = InstanceFactory.GetLambadaQueryBuilder(base.CurrentConnectionConfig);
                 sqlBuilder.LambadaQueryBuilder.Conext = this;
                 sqlBuilder.LambadaQueryBuilder.EntityType = typeof(T);
                 _Queryable = reval;
