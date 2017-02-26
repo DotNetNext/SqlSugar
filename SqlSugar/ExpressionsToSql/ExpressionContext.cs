@@ -14,17 +14,6 @@ namespace SqlSugar
     /// ** qq:610262374
     public class ExpressionContext : ExpResolveAccessory
     {
-        #region constructor
-        private ExpressionContext()
-        {
-
-        }
-        public ExpressionContext(Expression expression, ResolveExpressType resolveType)
-        {
-            this.ResolveType = resolveType;
-            this.Expression = expression;
-        }
-        #endregion
 
         #region properties
         public IDbMethods DbMehtods { get; set; }
@@ -74,8 +63,10 @@ namespace SqlSugar
         {
             return name;
         }
-        public virtual void Resolve()
+        public virtual void Resolve(Expression expression, ResolveExpressType resolveType)
         {
+            this.ResolveType = resolveType;
+            this.Expression = expression;
             BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
         }

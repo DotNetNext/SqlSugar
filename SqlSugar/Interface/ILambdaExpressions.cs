@@ -18,6 +18,6 @@ namespace SqlSugar
         string SqlParameterKeyWord { get; }
         string GetaMppingColumnsName(string name);
         string GetAsString(string fieldName, string fieldValue);
-        void Resolve();
+        void Resolve(Expression expression, ResolveExpressType resolveType);
     }
 }

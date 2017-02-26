@@ -27,11 +27,10 @@ namespace SqlSugar
         }
         protected void Where<T>(Expression<Func<T, bool>> expression, ResolveExpressType type, SqlSugarClient context) where T : class, new()
         {
-            var sqlBuilder = context.SqlBuilder;
-            var items = sqlBuilder.LambadaQueryBuilder;
-            ILambdaExpressions resolveExpress = new SqlServerExpressionContext(expression,type);
+            ILambdaExpressions resolveExpress =InstanceFactory.GetLambdaExpressions(context.CurrentConnectionConfig);
+            resolveExpress.Resolve(expression,type);
             _Pars.AddRange(resolveExpress.Parameters);
-            items.WhereInfos.Add(resolveExpress.Result.ToString());
+            context.SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(resolveExpress.Result.ToString());
         }
 
         protected void Where<T>(string whereString, object whereObj, SqlSugarClient context) where T : class, new()
