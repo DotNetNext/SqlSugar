@@ -29,16 +29,16 @@ namespace OrmTest.ExpressionTest
         private void FieldSingle()
         {
             Expression<Func<Student, object>> exp = it => it.Name;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.FieldSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.FieldSingle);
             var selectorValue = expContext.Result.GetString();
             Check(selectorValue, null, "Name", null, "FieldSingle");
         }
         private void FieldMultiple()
         {
             Expression<Func<Student, object>> exp = it => it.Name;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.FieldMultiple);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.FieldMultiple);
             var selectorValue = expContext.Result.GetString();
             Check(selectorValue, null, "it.Name", null, "FieldMultiple");
         }

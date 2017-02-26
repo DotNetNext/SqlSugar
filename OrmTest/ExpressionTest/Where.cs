@@ -35,8 +35,8 @@ namespace OrmTest.ExpressionTest
         private void WhereMultiple1()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 1;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereMultiple);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "( it.Id  > @Id0 )", new List<SugarParameter>() {
@@ -48,8 +48,8 @@ namespace OrmTest.ExpressionTest
             string name = "a";
             WhereConst.name = "a1";
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != name || it.Id == 1) || it.Name == WhereConst.name;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereMultiple);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, " (((( it.Id  > @Id0 )  AND  ( it.Name <> @Name1 ))  OR  ( it.Id  = @Id2 ))  OR  ( it.Name  = @Name3 ))", new List<SugarParameter>() {
@@ -62,8 +62,8 @@ namespace OrmTest.ExpressionTest
         private void whereSingle1()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 1;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "( Id  > @Id0 )", new List<SugarParameter>() {
@@ -73,8 +73,8 @@ namespace OrmTest.ExpressionTest
         private void whereSingle2()
         {
             Expression<Func<Student, bool>> exp = it => 1 > it.Id;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "( @Id0  > Id )", new List<SugarParameter>() {
@@ -84,8 +84,8 @@ namespace OrmTest.ExpressionTest
         private void whereSingle3()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 1 || it.Name == "a";
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, " (( Id  > @Id0 )  OR  ( Name  = @Name1 ))", new List<SugarParameter>() {
@@ -96,8 +96,8 @@ namespace OrmTest.ExpressionTest
         private void whereSingle4()
         {
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != "a") || it.Name == "a1";
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, " ((( Id  > @Id0 )  AND  ( Name <> @Name1 ))  OR  ( Name  = @Name2 ))  ", new List<SugarParameter>() {
@@ -111,8 +111,8 @@ namespace OrmTest.ExpressionTest
             string name = "a";
             WhereConst.name = "a1";
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != name) || it.Name == WhereConst.name;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, " ((( Id  > @Id0 )  AND  ( Name <> @Name1 ))  OR  ( Name  = @Name2 ))  ", new List<SugarParameter>() {
@@ -126,8 +126,8 @@ namespace OrmTest.ExpressionTest
             string name = "a";
             WhereConst.name = "a1";
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != name||it.Id==1) || it.Name == WhereConst.name;
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, " (((( Id  > @Id0 )  AND  ( Name <> @Name1 ))  OR  ( Id  = @Id2 ))  OR  ( Name  = @Name3 ))", new List<SugarParameter>() {

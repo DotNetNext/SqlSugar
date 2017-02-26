@@ -38,8 +38,8 @@ namespace OrmTest.ExpressionTest
         private void Contains()
         {
             Expression<Func<Student, bool>> exp = it => NBORM.Contains(it.Name,"a");
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, " (Name like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
@@ -50,8 +50,8 @@ namespace OrmTest.ExpressionTest
         private void Trim()
         {
             Expression<Func<Student, bool>> exp = it =>NBORM.Trim("  a")==it.Name;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "((rtrim(ltrim(@MethodConst0)))  = Name )", new List<SugarParameter>() {
@@ -62,8 +62,8 @@ namespace OrmTest.ExpressionTest
         private void ToUpper()
         {
             Expression<Func<Student, bool>> exp = it =>"a"== NBORM.ToUpper(it.Id) ;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "( @Const0  = (UPPER(Id)) )", new List<SugarParameter>() {
@@ -73,8 +73,8 @@ namespace OrmTest.ExpressionTest
         private void ToLower()
         {
             Expression<Func<Student, bool>> exp = it => "a" == NBORM.ToLower(it.Id);
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "( @Const0  = (LOWER(Id)) )", new List<SugarParameter>() {
@@ -86,8 +86,8 @@ namespace OrmTest.ExpressionTest
         private void StringIsNullOrEmpty()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 2 || NBORM.IsNullOrEmpty(it.Id); ;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "(( Id  > @Id0 )  OR  ( Id='' OR Id IS NULL ))", new List<SugarParameter>() {
@@ -97,8 +97,8 @@ namespace OrmTest.ExpressionTest
         private void StringIsNullOrEmpty2()
         {
             Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(true); ;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
@@ -110,8 +110,8 @@ namespace OrmTest.ExpressionTest
         {
             int a = 1;
             Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(a); ;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
@@ -123,8 +123,8 @@ namespace OrmTest.ExpressionTest
         {
             WhereConst.name = "xx";
             Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(WhereConst.name); ;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext(exp, ResolveExpressType.WhereSingle);
-            expContext.Resolve();
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "(( @Id0  = Id )  OR  ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {

@@ -32,8 +32,8 @@ namespace OrmTest.ExpressionTest
         private void Multiple()
         {
             Expression<Func<Student, School, object>> exp = (it, school) => new Student() { Name = "a", Id = it.Id, SchoolId = school.Id, TestId = it.Id + 1 };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.SelectMultiple);
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(
@@ -48,8 +48,8 @@ namespace OrmTest.ExpressionTest
         private  void MultipleDynamic()
         {
             Expression<Func<Student, School, object>> exp = (it, school) => new { Name = "a", Id = it.Id / 2, SchoolId = school.Id };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectMultiple);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.SelectMultiple);
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(
@@ -64,8 +64,8 @@ namespace OrmTest.ExpressionTest
         {
             int p = 1;
             Expression<Func<Student, object>> exp = it => new Student() { Name = "a", Id = it.Id, SchoolId = p,TestId=it.Id+1 };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.SelectSingle);
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(
@@ -82,8 +82,8 @@ namespace OrmTest.ExpressionTest
         {
             string a = "a";
             Expression<Func<Student, object>> exp = it => new { x = it.Id, shoolid = 1, name = a,p=it.Id*1 };
-            ExpressionContext expContext = new ExpressionContext(exp, ResolveExpressType.SelectSingle);
-            expContext.Resolve();
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.SelectSingle);
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ExpressionTest\ExpTestBase.cs" />
     <Compile Include="ExpressionTest\Field.cs" />
+    <Compile Include="ExpressionTest\Join.cs" />
     <Compile Include="ExpressionTest\Method.cs" />
     <Compile Include="ExpressionTest\Select.cs" />
     <Compile Include="ExpressionTest\Where.cs" />

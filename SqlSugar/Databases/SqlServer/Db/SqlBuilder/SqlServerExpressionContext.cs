@@ -12,7 +12,7 @@ namespace SqlSugar
     public partial class SqlServerExpressionContext : ExpressionContext, ILambdaExpressions
     {
         public SqlSugarClient Context { get; set; }
-        public SqlServerExpressionContext(Expression expression, ResolveExpressType resolveType) : base(expression, resolveType)
+        public SqlServerExpressionContext()
         {
             base.DbMehtods = new SqlServerMethod();
         }
