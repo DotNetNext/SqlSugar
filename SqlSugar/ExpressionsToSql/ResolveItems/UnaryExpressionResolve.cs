@@ -16,10 +16,18 @@ namespace SqlSugar
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
                     base.Expression = expression.Operand;
-                    if (base.Expression is MemberExpression|| base.Expression is ConstantExpression)
+                    if (base.Expression is MemberExpression || base.Expression is ConstantExpression)
                     {
                         BaseParameter.ChildExpression = base.Expression;
                         parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+                        base.Start();
+                        parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
+                        parameter.BaseParameter.ChildExpression = base.Expression;
+                        parameter.CommonTempData = null;
+                    }
+                    else if (base.Expression is BinaryExpression) {
+                        BaseParameter.ChildExpression = base.Expression;
+                        parameter.CommonTempData = CommonTempDataType.Default;
                         base.Start();
                         parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
                         parameter.BaseParameter.ChildExpression = base.Expression;

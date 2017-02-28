@@ -105,6 +105,7 @@ namespace SqlSugar
         {
             ExpressionContext exp = new ExpressionContext();
             exp.Resolve(joinExpression, ResolveExpressType.Join);
+            var reval = exp.Result.GetResultArray();
             return null;
         }
     }

@@ -24,12 +24,19 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.Join:
                     base.Context.ResolveType = ResolveExpressType.WhereMultiple;
+                    int i = 0;
                     foreach (var item in expression.Expressions)
                     {
-                        var value = ((ConstantExpression)item).Value;
-                        var isJoinType = value is JoinType;
-                        //string value = "";
-                        //base.AppendValue();
+                        if (item is UnaryExpression)
+                        {
+                            base.Expression = item;
+                            base.Start();
+                            if (parameter.CommonTempData is JoinType)
+                            {
+                                base.Context.Result.Append(parameter.CommonTempData.ObjToString().ToUpper() + " JOIN ,{" + i + "}");
+                                ++i;
+                            }
+                        }
                     }
                     break;
                 default:
