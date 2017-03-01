@@ -728,7 +728,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    sbInsertSql.Append(");select SCOPE_IDENTITY();");
+                    sbInsertSql.AppendFormat(");select IDENT_CURRENT('[{0}]');", typeName);
                 }
                 cacheSqlManager.Add(cacheSqlKey, sbInsertSql, cacheSqlManager.Day);
             }
@@ -744,14 +744,25 @@ namespace SqlSugar
                         sql = sql.Replace(SqlSugarTool.ParSymbol + item.Key + ")", SqlSugarTool.ParSymbol + item.Value + ")");
                     }
                 }
+
+                //将identity值设置到对象属性中
                 var lastInsertRowId = base.GetScalar(sql, pars.ToArray());
+                if (identities != null && identities.Count > 0)
+                {
+                    var idProperty = props.FirstOrDefault(p => p.Name == identities[0].Value);
+                    if (idProperty != null)
+                    {
+                        object id = Convert.ChangeType(lastInsertRowId, idProperty.PropertyType);
+                        idProperty.SetValue(entity, id, null);
+                    }
+                }
+
                 return lastInsertRowId;
             }
             catch (Exception ex)
             {
                 throw new SqlSugarException(ex.Message, sql, entity);
             }
-
         }
 
         /// <summary>
