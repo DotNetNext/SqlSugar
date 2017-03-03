@@ -76,7 +76,8 @@ namespace SqlSugar
         public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars)
         {
             if (pars == null || pars.Length == 0) return null;
-            IDataParameter[] reval = new IDataParameter[pars.Length];
+            SqlParameter[] reval = new SqlParameter[pars.Length];
+            int i = 0;
             foreach (var par in pars)
             {
                 var p = new SqlParameter();
@@ -85,9 +86,10 @@ namespace SqlSugar
                 p.Size = par.Size;
                 p.Value = par.Value;
                 p.DbType = par.DbType;
-                reval[0] =p;
+                reval[i] =p;
+                ++i;
             }
-            return pars;
+            return reval;
         }
     }
 }

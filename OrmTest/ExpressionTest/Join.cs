@@ -31,7 +31,7 @@ namespace OrmTest.ExpressionTest
             {
                 var list = db.Queryable<Student, School>((st, sc) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id
-                }).ToList();
+                }).Where(st=>st.Id>0).ToList();
             }
         }
 

@@ -10,27 +10,34 @@ namespace SqlSugar
     public class QueryableAccessory
     {
         protected List<SugarParameter> _Pars;
+        protected List<SugarParameter> Pars
+        {
+            get
+            {
+                if (_Pars == null)
+                    _Pars = new List<SugarParameter>();
+                return _Pars;
+            }
+
+        }
         protected void AddPars(object whereObj, SqlSugarClient context)
         {
             var sqlParsArray = context.Database.GetParameters(whereObj);
-            if (_Pars == null)
-                _Pars = new List<SugarParameter>();
             if (sqlParsArray != null)
-                _Pars.AddRange(sqlParsArray);
+                this.Pars.AddRange(sqlParsArray);
         }
         protected void AddPars(List<SugarParameter> pars, SqlSugarClient context)
         {
             if (_Pars == null)
                 _Pars = new List<SugarParameter>();
-            if (pars != null)
-                _Pars.AddRange(pars);
+            _Pars.AddRange(pars);
         }
         protected void Where<T>(Expression<Func<T, bool>> expression, ResolveExpressType type, SqlSugarClient context) where T : class, new()
         {
-            ILambdaExpressions resolveExpress =InstanceFactory.GetLambdaExpressions(context.CurrentConnectionConfig);
-            resolveExpress.Resolve(expression,type);
-            _Pars.AddRange(resolveExpress.Parameters);
-            context.SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(resolveExpress.Result.ToString());
+            ILambdaExpressions resolveExpress = InstanceFactory.GetLambdaExpressions(context.CurrentConnectionConfig);
+            resolveExpress.Resolve(expression, type);
+            Pars.AddRange(resolveExpress.Parameters);
+            context.SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(resolveExpress.Result.GetResultString());
         }
 
         protected void Where<T>(string whereString, object whereObj, SqlSugarClient context) where T : class, new()

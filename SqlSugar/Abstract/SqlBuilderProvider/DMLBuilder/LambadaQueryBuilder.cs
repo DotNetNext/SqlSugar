@@ -74,7 +74,7 @@ namespace SqlSugar
                 if (this.WhereInfos == null) return null;
                 else
                 {
-                    return string.Join(" ", this.WhereInfos);
+                    return " WHERE "+string.Join(" ", this.WhereInfos);
                 }
             }
         }

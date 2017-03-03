@@ -28,7 +28,12 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            base.Where<T>(expression, ResolveExpressType.WhereSingle, this.Context);
+            var type = ResolveExpressType.WhereSingle;
+            if (Context.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
+            {
+                type = ResolveExpressType.WhereMultiple;
+            }
+            base.Where<T>(expression,type, this.Context);
             return this;
         }
 
