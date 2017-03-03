@@ -23,6 +23,7 @@ namespace OrmTest
             new OrmTest.ExpressionTest.Where(eachCount).Init();
             new OrmTest.ExpressionTest.Method(eachCount).Init();
             new OrmTest.ExpressionTest.Join(eachCount).Init();
+            new OrmTest.ExpressionTest.Single(eachCount).Init();
         }
     }
 }
