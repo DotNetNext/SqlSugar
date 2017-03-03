@@ -55,7 +55,7 @@ namespace SqlSugar
             {
                 sqlCommand.Transaction = (SqlTransaction)this.Transaction;
             }
-            if (pars != null)
+            if (pars.IsValuable())
             {
                 IDataParameter[] ipars= ToIDbDataParameter(pars);
                 sqlCommand.Parameters.AddRange((SqlParameter[])ipars);

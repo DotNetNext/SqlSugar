@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="ExpressionTest\ExpTestBase.cs" />
     <Compile Include="ExpressionTest\Field.cs" />
     <Compile Include="ExpressionTest\Join.cs" />

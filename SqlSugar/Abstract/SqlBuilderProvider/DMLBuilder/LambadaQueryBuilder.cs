@@ -58,7 +58,11 @@ namespace SqlSugar
             {
                 if (this.SelectValue.IsNullOrEmpty())
                 {
-                    return string.Join(",", this.Conext.Database.DbMaintenance.GetColumnInfosByTableName(this.EntityName).Select(it => this.Conext.SqlBuilder.GetTranslationColumnName(it.ColumnName)));
+                    string pre = null;
+                    if (this.JoinQueryInfos.IsValuable() && this.JoinQueryInfos.Any(it => it.PreShortName.IsValuable())) {
+                        pre = this.Conext.SqlBuilder.GetTranslationColumnName(this.JoinQueryInfos.Single(it => it.PreShortName.IsValuable()).PreShortName)+".";
+                    }
+                    return string.Join(",", this.Conext.Database.DbMaintenance.GetColumnInfosByTableName(this.EntityName).Select(it => pre+this.Conext.SqlBuilder.GetTranslationColumnName(it.ColumnName)));
                 }
                 else return this.SelectValue;
             }
@@ -99,7 +103,7 @@ namespace SqlSugar
         {
             return string.Format(
                 this.JoinTemplate,
-                joinInfo.JoinIndex == 0 ? (joinInfo.PreShortName + " " + joinInfo.JoinType.ToString()+" ") : (joinInfo.JoinType.ToString() + " JOIN "),
+                joinInfo.JoinIndex == 1 ? (joinInfo.PreShortName + " " + joinInfo.JoinType.ToString()+" ") : (joinInfo.JoinType.ToString() + " JOIN "),
                 joinInfo.TableName,
                 joinInfo.ShortName + " " + TableWithString,
                 joinInfo.JoinWhere);

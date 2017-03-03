@@ -27,12 +27,19 @@ namespace OrmTest.ExpressionTest
 
         public void Q2()
         {
-            ExpressionContext contet = new ExpressionContext();
-            SqlSugarClient db = new SqlSugarClient(new SystemTablesConfig() { ConnectionString="x" ,DbType= DbType.SqlServer });
-            db.Queryable<Student, School>((st,sc)=> new object[] {
-                JoinType.Left,st.SchoolId==sc.Id
-            });
+            using (var db = GetInstance())
+            {
+                var list = db.Queryable<Student, School>((st, sc) => new object[] {
+                          JoinType.Left,st.SchoolId==sc.Id
+                }).ToList();
+            }
+        }
 
+
+        public SqlSugarClient GetInstance()
+        {
+            SqlSugarClient db = new SqlSugarClient(new SystemTablesConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
+            return db;
         }
     }
 }

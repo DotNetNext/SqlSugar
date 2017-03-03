@@ -135,7 +135,7 @@ namespace SqlSugar
                 var joinString = joinArray[i * 2 - 2];
                 joinInfo.ShortName = lambdaParameters[i-1].Name;
                 joinInfo.JoinType = (JoinType) Enum.Parse(typeof (JoinType), joinString);
-                joinInfo.JoinWhere = joinArray[i * 2];
+                joinInfo.JoinWhere = joinArray[i * 2-1];
                 joinInfo.JoinIndex = i;
                 reval.Add((joinInfo));
             }
