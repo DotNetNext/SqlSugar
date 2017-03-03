@@ -101,24 +101,45 @@ namespace SqlSugar
             });
         }
 
-        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context,params  Type [] entityTypeArray)
+        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context, params Type[] entityTypeArray)
         {
-            List<JoinQueryInfo> reval=new List<JoinQueryInfo>();
-            var lambdaParameters = ((LambdaExpression) joinExpression).Parameters;
+            List<JoinQueryInfo> reval = new List<JoinQueryInfo>();
+            var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
             ExpressionContext exp = new ExpressionContext();
             exp.MappingColumns = context.MappingColumns;
             exp.MappingTables = context.MappingTables;
             exp.Resolve(joinExpression, ResolveExpressType.Join);
+            int i = 0;
+            var joinArray = exp.Result.GetResultArray();
             foreach (var type in entityTypeArray)
             {
-                JoinQueryInfo joinInfo = new JoinQueryInfo()
+                var isFirst = i == 0;
+                ++i;
+                JoinQueryInfo joinInfo = new JoinQueryInfo();
+                var hasMappingTable = exp.MappingTables.IsValuable();
+                if (hasMappingTable)
                 {
-                     
-
-                };
+                    var mappingInfo = exp.MappingTables.FirstOrDefault(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
+                    joinInfo.TableName = mappingInfo != null ? mappingInfo.DbTableName : type.Name;
+                }
+                else
+                {
+                    joinInfo.TableName = type.Name;
+                }
+                if (isFirst)
+                {
+                    var firstItem = lambdaParameters.First();
+                    joinInfo.PreShortName = firstItem.Name;
+                    lambdaParameters.Remove(firstItem);
+                }
+                var joinString = joinArray[i * 2 - 2];
+                joinInfo.ShortName = lambdaParameters[i-1].Name;
+                joinInfo.JoinType = (JoinType) Enum.Parse(typeof (JoinType), joinString);
+                joinInfo.JoinWhere = joinArray[i * 2];
+                joinInfo.JoinIndex = i;
+                reval.Add((joinInfo));
             }
-            var joinArray = exp.Result.GetResultArray();
-            return null;
+            return reval;
         }
     }
 }

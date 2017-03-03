@@ -144,7 +144,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T, T2>(Expression<Func<T,T2,object []>> joinExpression) where T : class, new()
         {
             var queryable = Queryable<T>();
-            SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression,this,typeof(T), typeof(T2));
+            SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression,this,typeof(T2));
             return queryable;
         }
         public virtual ISugarQueryable<T> Queryable<T, T2, T3>(Func<T, T2,T3, object[]> joinExpression) where T : class, new()
