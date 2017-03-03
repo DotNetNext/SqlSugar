@@ -12,6 +12,11 @@ namespace SqlSugar
             this.RemoveAll(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
             this.Add(new MappingTable() { EntityName = entityName, DbTableName = dbTableName });
         }
+        public void Add(string entityName, string dbTableName,string dbTableShortName)
+        {
+            this.RemoveAll(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
+            this.Add(new MappingTable() { EntityName = entityName, DbTableName = dbTableName, DbShortTaleName =dbTableShortName});
+        }
     }
 
     public class MappingColumnList: List<MappingColumn> 

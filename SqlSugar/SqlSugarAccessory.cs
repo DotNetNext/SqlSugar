@@ -101,7 +101,7 @@ namespace SqlSugar
             });
         }
 
-        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context)
+        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context,params  Type [] entityTypeArray)
         {
             ExpressionContext exp = new ExpressionContext();
             exp.Resolve(joinExpression, ResolveExpressType.Join);
