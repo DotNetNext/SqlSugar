@@ -103,11 +103,21 @@ namespace SqlSugar
 
         protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context,params  Type [] entityTypeArray)
         {
+            List<JoinQueryInfo> reval=new List<JoinQueryInfo>();
+            var lambdaParameters = ((LambdaExpression) joinExpression).Parameters;
             ExpressionContext exp = new ExpressionContext();
             exp.MappingColumns = context.MappingColumns;
             exp.MappingTables = context.MappingTables;
             exp.Resolve(joinExpression, ResolveExpressType.Join);
-            var reval = exp.Result.GetResultArray();
+            foreach (var type in entityTypeArray)
+            {
+                JoinQueryInfo joinInfo = new JoinQueryInfo()
+                {
+                     
+
+                };
+            }
+            var joinArray = exp.Result.GetResultArray();
             return null;
         }
     }
