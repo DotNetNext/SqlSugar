@@ -10,5 +10,6 @@ namespace SqlSugar
         public string EntityPropertyName { get; set; }
         public string DbColumnName { get; set; }
         public string DbTableName { get; set; }
+        public string EntityName { get; set; }
     }
 }

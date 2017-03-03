@@ -104,6 +104,8 @@ namespace SqlSugar
         protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context,params  Type [] entityTypeArray)
         {
             ExpressionContext exp = new ExpressionContext();
+            exp.MappingColumns = context.MappingColumns;
+            exp.MappingTables = context.MappingTables;
             exp.Resolve(joinExpression, ResolveExpressType.Join);
             var reval = exp.Result.GetResultArray();
             return null;

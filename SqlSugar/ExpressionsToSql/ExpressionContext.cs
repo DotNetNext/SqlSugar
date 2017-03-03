@@ -19,8 +19,8 @@ namespace SqlSugar
         public IDbMethods DbMehtods { get; set; }
         public int Index { get; set; }
         public int ParameterIndex { get; set; }
-        public MappingColumn MappingColumns { get; set; }
-        public MappingTable MappingTables { get; set; }
+        public MappingColumnList MappingColumns { get; set; }
+        public MappingTableList MappingTables { get; set; }
         public ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
         public ExpressionResult Result
