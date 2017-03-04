@@ -206,12 +206,14 @@ namespace SqlSugar
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            return reval;
         }
 
-        public ISugarQueryable<TResult> Select<TResult>(string select) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<TResult>(string selectValue) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            return reval;
         }
 
         public ISugarQueryable<T> Select(string select)
