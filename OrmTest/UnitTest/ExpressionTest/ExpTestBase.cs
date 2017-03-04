@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SqlSugar;
 using System.Linq;
-namespace OrmTest.ExpressionTest
+namespace OrmTest.UnitTest
 {
     public class ExpTestBase
     {

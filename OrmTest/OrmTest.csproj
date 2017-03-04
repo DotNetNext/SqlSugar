@@ -44,13 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="ExpressionTest\ExpTestBase.cs" />
-    <Compile Include="ExpressionTest\Field.cs" />
-    <Compile Include="ExpressionTest\Join.cs" />
-    <Compile Include="ExpressionTest\Method.cs" />
-    <Compile Include="ExpressionTest\Select.cs" />
-    <Compile Include="ExpressionTest\Single.cs" />
-    <Compile Include="ExpressionTest\Where.cs" />
+    <Compile Include="UnitTest\ExpressionTest\ExpTestBase.cs" />
+    <Compile Include="UnitTest\ExpressionTest\Field.cs" />
+    <Compile Include="UnitTest\Query\Join.cs" />
+    <Compile Include="UnitTest\ExpressionTest\Method.cs" />
+    <Compile Include="UnitTest\ExpressionTest\Select.cs" />
+    <Compile Include="UnitTest\Query\Single.cs" />
+    <Compile Include="UnitTest\ExpressionTest\Where.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Program.cs" />

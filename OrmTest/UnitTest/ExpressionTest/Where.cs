@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrmTest.ExpressionTest
+namespace OrmTest.UnitTest
 {
     public class Where : ExpTestBase
     {

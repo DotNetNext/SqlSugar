@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using SqlSugar;
 using OrmTest.Models;
 using System.Data.SqlClient;
-
+using OrmTest.UnitTest;
 namespace OrmTest
 {
 
@@ -18,12 +18,11 @@ namespace OrmTest
         {
             //Expression To Sql Unit Test
             int eachCount = 1;
-            new OrmTest.ExpressionTest.Select(eachCount).Init();
-            new OrmTest.ExpressionTest.Field(eachCount).Init();
-            new OrmTest.ExpressionTest.Where(eachCount).Init();
-            new OrmTest.ExpressionTest.Method(eachCount).Init();
-            new OrmTest.ExpressionTest.Join(eachCount).Init();
-            new OrmTest.ExpressionTest.Single(eachCount).Init();
+            new Field(eachCount).Init();
+            new Where(eachCount).Init();
+            new Method(eachCount).Init();
+            new JoinQuery(eachCount).Init();
+            new SingleQuery(eachCount).Init();
         }
     }
 }

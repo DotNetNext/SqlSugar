@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using SqlSugar;
 using System.Linq.Expressions;
 using OrmTest.Models;
-namespace OrmTest.ExpressionTest
+namespace OrmTest.UnitTest
 {
-    public class Join : ExpTestBase
+    public class SingleQuery : ExpTestBase
     {
-        private Join() { }
-        public Join(int eachCount)
+        private SingleQuery() { }
+        public SingleQuery(int eachCount)
         {
             this.Count = eachCount;
         }
@@ -29,9 +29,7 @@ namespace OrmTest.ExpressionTest
         {
             using (var db = GetInstance())
             {
-                var list = db.Queryable<Student, School>((st, sc) => new object[] {
-                          JoinType.Left,st.SchoolId==sc.Id
-                }).Where(st=>st.Id>0).ToList();
+                var list = db.Queryable<Student>().Where(st => st.Id > 0).ToList();
             }
         }
 
