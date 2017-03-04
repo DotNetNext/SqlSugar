@@ -8,10 +8,10 @@ using System.Linq.Expressions;
 using OrmTest.Models;
 namespace OrmTest.UnitTest
 {
-    public class JoinQuery : ExpTestBase
+    public class SelectQuery : ExpTestBase
     {
-        private JoinQuery() { }
-        public JoinQuery(int eachCount)
+        private SelectQuery() { }
+        public SelectQuery(int eachCount)
         {
             this.Count = eachCount;
         }
@@ -29,12 +29,9 @@ namespace OrmTest.UnitTest
         {
             using (var db = GetInstance())
             {
-                var list = db.Queryable<Student, School>((st, sc) => new object[] {
-                          JoinType.Left,st.SchoolId==sc.Id
-                }).Where(st=>st.Id>0).ToList();
+                var list = db.Queryable<Student>().Where(st => st.Id > 0).ToList();
             }
         }
-
 
         public SqlSugarClient GetInstance()
         {

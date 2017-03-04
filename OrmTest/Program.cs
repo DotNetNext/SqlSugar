@@ -11,17 +11,17 @@ using System.Data.SqlClient;
 using OrmTest.UnitTest;
 namespace OrmTest
 {
-
     class Program
     {
         static void Main(string[] args)
         {
-            //Expression To Sql Unit Test
+            //Unit Test
             int eachCount = 1;
             new Field(eachCount).Init();
             new Where(eachCount).Init();
             new Method(eachCount).Init();
             new JoinQuery(eachCount).Init();
+            new SingleQuery(eachCount).Init();
             new SingleQuery(eachCount).Init();
         }
     }

@@ -207,12 +207,17 @@ namespace SqlSugar
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression) where TResult : class, new()
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            reval.Context = this.Context;
+            reval.Pars = this.Pars;
             return reval;
         }
 
         public ISugarQueryable<TResult> Select<TResult>(string selectValue) where TResult : class, new()
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            reval.Context = this.Context;
+            reval.Context.SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
+            reval.Pars = this.Pars;
             return reval;
         }
 

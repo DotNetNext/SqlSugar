@@ -46,10 +46,11 @@
     <Compile Include="Config.cs" />
     <Compile Include="UnitTest\ExpressionTest\ExpTestBase.cs" />
     <Compile Include="UnitTest\ExpressionTest\Field.cs" />
-    <Compile Include="UnitTest\Query\Join.cs" />
+    <Compile Include="UnitTest\Query\JoinQuery.cs" />
     <Compile Include="UnitTest\ExpressionTest\Method.cs" />
     <Compile Include="UnitTest\ExpressionTest\Select.cs" />
-    <Compile Include="UnitTest\Query\Single.cs" />
+    <Compile Include="UnitTest\Query\SelectQuery.cs" />
+    <Compile Include="UnitTest\Query\SingleQuery.cs" />
     <Compile Include="UnitTest\ExpressionTest\Where.cs" />
     <Compile Include="Models\School.cs" />
     <Compile Include="Models\Student.cs" />
