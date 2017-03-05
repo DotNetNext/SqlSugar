@@ -8,5 +8,10 @@ namespace OrmTest.Models
 {
     public class ViewModelStudent:Student
     {
+
+    }
+    public class ViewModelStudent2
+    {
+        public Student Student { get; set; }
     }
 }

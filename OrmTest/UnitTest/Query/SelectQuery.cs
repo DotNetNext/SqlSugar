@@ -32,9 +32,12 @@ namespace OrmTest.UnitTest
                 //var list = db.Queryable<Student>()
                 //    .Where(st => st.Id > 0)
                 //    .Select(it => new ViewModelStudent { Name = it.Name }).ToList();
-                var list2 = db.Queryable<Student>()
-                  .Where(st => st.Id > 0)
-                  .Select("id").ToList();
+                //var list2 = db.Queryable<Student>()
+                //  .Where(st => st.Id > 0)
+                 // .Select("id").ToList();
+                var list3 = db.Queryable<Student>()
+                 .Where(st => st.Id > 0)
+                 .Select(it => new ViewModelStudent2 { Student = it }).ToList();
             }
         }
 

@@ -85,8 +85,10 @@ namespace SqlSugar
                         base.Context.Result.CurrentParameter = null;
                     }
                 }
-                else
+                else if(item.GetType().IsClass&& item.GetType()!=ExpressionConst.StringType)
                 {
+                  
+                }else{
                     Check.ThrowNotSupportedException(item.GetType().Name);
                 }
             }
