@@ -16,13 +16,13 @@ namespace OrmTest
         static void Main(string[] args)
         {
             //Unit Test
-            int eachCount = 1;
-            new Field(eachCount).Init();
-            new Where(eachCount).Init();
-            new Method(eachCount).Init();
-            new JoinQuery(eachCount).Init();
-            new SingleQuery(eachCount).Init();
-            new SingleQuery(eachCount).Init();
+            int eachCount = 1000;
+            //new Field(eachCount).Init();
+            //new Where(eachCount).Init();
+            //new Method(eachCount).Init();
+            //new JoinQuery(eachCount).Init();
+            //new SingleQuery(eachCount).Init();
+            new SelectQuery(eachCount).Init();
         }
     }
 }

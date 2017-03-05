@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 namespace SqlSugar
 {
@@ -11,18 +12,21 @@ namespace SqlSugar
         {
 
         }
-        private List<SqlParameter> _QueryPars;
+        
+        private List<SugarParameter> _QueryPars;
         private List<JoinQueryInfo> _JoinQueryInfos;
         private List<string> _WhereInfos;
         private string _TableNameString;
 
         public StringBuilder Sql { get; set; }
-        public SqlSugarClient Conext { get; set; }
+        public SqlSugarClient Context { get; set; }
 
+        public ISqlBuilder Builder { get; set; }
         public int? Skip { get; set; }
         public int? Take { get; set; }
         public string OrderByValue { get; set; }
-        public string SelectValue { get; set; }
+        public object SelectValue { get; set; }
+        public string SelectCacheKey { get; set; }
         public Type EntityType { get; set; }
         public string EntityName { get { return this.EntityType.Name; } }
         public string TableWithString { get; set; }
@@ -49,24 +53,61 @@ namespace SqlSugar
         {
             get
             {
-                return this.Conext.SqlBuilder.GetTranslationTableName(EntityType.Name);
+                return Builder.GetTranslationTableName(EntityType.Name);
             }
         }
-        public virtual string GetSelectValueString
+        public virtual string GetSelectValue
         {
             get
             {
-                if (this.SelectValue.IsNullOrEmpty())
+                string reval = string.Empty;
+                if (this.SelectValue==null||this.SelectValue is string)
                 {
-                    string pre = null;
-                    if (this.JoinQueryInfos.IsValuable() && this.JoinQueryInfos.Any(it => it.PreShortName.IsValuable())) {
-                        pre = this.Conext.SqlBuilder.GetTranslationColumnName(this.JoinQueryInfos.Single(it => it.PreShortName.IsValuable()).PreShortName)+".";
-                    }
-                    return string.Join(",", this.Conext.Database.DbMaintenance.GetColumnInfosByTableName(this.EntityName).Select(it => pre+this.Conext.SqlBuilder.GetTranslationColumnName(it.ColumnName)));
+                    reval = GetSelectValueByString();
                 }
-                else return this.SelectValue;
+                else
+                {
+                    reval = GetSelectValueByExpression();
+                }
+                if (ResolveType == ResolveExpressType.SelectMultiple) {
+                    this.SelectCacheKey = this.SelectCacheKey+string.Join("-",this._JoinQueryInfos.Select(it => it.TableName));
+                }
+                return reval;
             }
         }
+        public virtual string GetSelectValueByExpression()
+        {
+            var expression = this.SelectValue as Expression;
+            ILambdaExpressions resolveExpress = this.Context.LambdaExpressions;
+            var isSingle= Builder.LambadaQueryBuilder.JoinQueryInfos.IsValuable();
+            resolveExpress.Resolve(expression, ResolveType);
+            this.QueryPars.AddRange(resolveExpress.Parameters);
+            var reval= resolveExpress.Result.GetResultString();
+            this.SelectCacheKey = reval;
+            resolveExpress.Clear();
+            return reval;
+        }
+        public virtual string GetSelectValueByString()
+        {
+            string reval;
+            if (this.SelectValue.IsNullOrEmpty())
+            {
+                string pre = null;
+                if (this.JoinQueryInfos.IsValuable() && this.JoinQueryInfos.Any(it => it.PreShortName.IsValuable()))
+                {
+                    pre = Builder.GetTranslationColumnName(this.JoinQueryInfos.Single(it => it.PreShortName.IsValuable()).PreShortName) + ".";
+                }
+                reval = string.Join(",", this.Context.Database.DbMaintenance.GetColumnInfosByTableName(this.EntityName).Select(it => pre + Builder.GetTranslationColumnName(it.ColumnName)));
+                this.SelectCacheKey = "*";
+            }
+            else
+            {
+                reval = this.SelectValue.ObjToString();
+            }
+
+            return reval;
+        }
+
         public virtual string GetWhereValueString
         {
             get
@@ -74,7 +115,7 @@ namespace SqlSugar
                 if (this.WhereInfos == null) return null;
                 else
                 {
-                    return " WHERE "+string.Join(" ", this.WhereInfos);
+                    return " WHERE " + string.Join(" ", this.WhereInfos);
                 }
             }
         }
@@ -83,7 +124,8 @@ namespace SqlSugar
             get
             {
                 if (this.JoinQueryInfos.IsNullOrEmpty()) return null;
-                else {
+                else
+                {
                     return string.Join(" ", this.JoinQueryInfos.Select(it => this.ToJoinString(it)));
                 }
             }
@@ -93,17 +135,18 @@ namespace SqlSugar
         {
             Sql = new StringBuilder();
             var tableString = GetTableNameString;
-            if (this.JoinQueryInfos.IsValuable()) {
+            if (this.JoinQueryInfos.IsValuable())
+            {
                 tableString = tableString + " " + GetJoinValueString;
             }
-            Sql.AppendFormat(SqlTemplate, GetSelectValueString, tableString , GetWhereValueString);
+            Sql.AppendFormat(SqlTemplate, GetSelectValue, tableString, GetWhereValueString);
             return Sql.ToString();
         }
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(
                 this.JoinTemplate,
-                joinInfo.JoinIndex == 1 ? (joinInfo.PreShortName + " " + joinInfo.JoinType.ToString()+" ") : (joinInfo.JoinType.ToString() + " JOIN "),
+                joinInfo.JoinIndex == 1 ? (joinInfo.PreShortName + " " + joinInfo.JoinType.ToString() + " ") : (joinInfo.JoinType.ToString() + " JOIN "),
                 joinInfo.TableName,
                 joinInfo.ShortName + " " + TableWithString,
                 joinInfo.JoinWhere);
@@ -117,8 +160,8 @@ namespace SqlSugar
             }
             set { _WhereInfos = value; }
         }
-     
-        public virtual List<SqlParameter> QueryPars
+
+        public virtual List<SugarParameter> QueryPars
         {
             get
             {

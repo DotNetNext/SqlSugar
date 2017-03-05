@@ -6,7 +6,7 @@ namespace SqlSugar
 {
     public class DeleteBuilder : IDMLBuilder
     {
-        public SqlSugarClient Conext
+        public SqlSugarClient Context
         {
             get
             {

@@ -19,7 +19,6 @@ namespace SqlSugar
         protected ISqlBuilder _SqlBuilder;
         protected IDb _Ado;
         protected ILambdaExpressions _LambdaExpressions;
-        protected object _Queryable;
         protected object _Sqlable;
 
         protected void InitConstructor()

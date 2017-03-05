@@ -14,12 +14,13 @@ namespace SqlSugar
         public SqlSugarClient Context { get; set; }
         public IDb Db { get { return Context.Database; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
-        public ISqlBuilder SqlBuilder { get { return this.Context.SqlBuilder; } }
+        public ISqlBuilder SqlBuilder { get; set; }
         public List<SugarParameter> Pars
         {
             get { return PubMethod.IsNullReturnNew<List<SugarParameter>>(base._Pars); }
             set { base._Pars = value; }
         }
+
         public void Clear()
         {
             Pars = null;
@@ -29,23 +30,23 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
             var type = ResolveExpressType.WhereSingle;
-            if (Context.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
+            if (this.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
             {
                 type = ResolveExpressType.WhereMultiple;
             }
-            base.Where<T>(expression,type, this.Context);
+            base.Where<T>(expression, type, this.Context,this.SqlBuilder);
             return this;
         }
 
         public ISugarQueryable<T> Where(string whereString, object whereObj = null)
         {
-            base.Where<T>(whereString, whereObj, this.Context);
+            base.Where<T>(whereString, whereObj, this.Context,this.SqlBuilder);
             return this;
         }
 
         public ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null) where T2 : class, new()
         {
-            base.Where<T2>(whereString, whereObj, this.Context);
+            base.Where<T2>(whereString, whereObj, this.Context,this.SqlBuilder);
             return this;
         }
 
@@ -208,6 +209,9 @@ namespace SqlSugar
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
+            reval.SqlBuilder = this.SqlBuilder;
+            base.SetSelectType(reval.Context,this.SqlBuilder);
+            SqlBuilder.LambadaQueryBuilder.SelectValue = expression;
             reval.Pars = this.Pars;
             return reval;
         }
@@ -216,14 +220,17 @@ namespace SqlSugar
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
-            reval.Context.SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
+            reval.SqlBuilder = this.SqlBuilder;
+            base.SetSelectType(reval.Context,this.SqlBuilder);
+            SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
             reval.Pars = this.Pars;
             return reval;
         }
-
-        public ISugarQueryable<T> Select(string select)
+        public ISugarQueryable<T> Select(string selectValue)
         {
-            throw new NotImplementedException();
+            base.SetSelectType(this.Context,this.SqlBuilder);
+            SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
+            return this;
         }
 
         public int Count()
@@ -256,8 +263,7 @@ namespace SqlSugar
             string sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
             using (var dataReader = this.Db.GetDataReader(sql, this.Pars.ToArray()))
             {
-                var reval = this.Bind.DataReaderToList<T>(typeof(T), dataReader, SqlBuilder.LambadaQueryBuilder.SelectValue);
-                this.Clear();
+                var reval = this.Bind.DataReaderToList<T>(typeof(T), dataReader, SqlBuilder.LambadaQueryBuilder.SelectCacheKey);
                 return reval;
             }
         }

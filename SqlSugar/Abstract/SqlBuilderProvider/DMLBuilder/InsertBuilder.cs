@@ -5,7 +5,7 @@ namespace SqlSugar
 {
     public class InsertBuilder : IDMLBuilder
     {
-        public SqlSugarClient Conext
+        public SqlSugarClient Context
         {
             get
             {

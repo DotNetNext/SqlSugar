@@ -10,6 +10,7 @@ namespace SqlSugar
     public partial interface ISugarQueryable<T> where T : class, new()
     {
         SqlSugarClient Context { get; set; }
+        ISqlBuilder SqlBuilder { get; set; }
         List<SugarParameter> Pars { get; set; }
 
 

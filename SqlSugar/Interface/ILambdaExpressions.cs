@@ -19,5 +19,6 @@ namespace SqlSugar
         string GetaMppingColumnsName(string name);
         string GetAsString(string fieldName, string fieldValue);
         void Resolve(Expression expression, ResolveExpressType resolveType);
+        void Clear();
     }
 }

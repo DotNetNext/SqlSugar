@@ -18,6 +18,11 @@ namespace SqlSugar
             this.IsClearParameters = true;
             this.CommandTimeOut = 30000;
         }
+        public virtual string SqlParameterKeyWord {
+            get {
+                return "@";
+            }
+        }
         public IDbTransaction Transaction { get; set; }
         public virtual SqlSugarClient Context { get; set; }
         public virtual IConnectionConfig MasterConnectionConfig { get; set; }
@@ -152,7 +157,7 @@ namespace SqlSugar
         public virtual SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null)
         {
             if (obj == null) return null;
-            return base.GetParameters(obj, propertyInfo,this.Context.SqlBuilder.SqlParameterKeyWord);
+            return base.GetParameters(obj, propertyInfo,this.SqlParameterKeyWord);
         }
 
         public virtual void BeginTran()

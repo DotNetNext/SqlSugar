@@ -41,7 +41,7 @@ namespace SqlSugar
             }
         }
 
-        public SqlSugarClient Conext { get; set; }
+        public SqlSugarClient Context { get; set; }
 
         public string SqlTemplate
         {

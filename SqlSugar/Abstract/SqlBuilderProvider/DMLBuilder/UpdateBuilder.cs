@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public class UpdateBuilder : IDMLBuilder
     {
-        public SqlSugarClient Conext
+        public SqlSugarClient Context
         {
             get
             {

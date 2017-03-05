@@ -11,6 +11,7 @@ namespace SqlSugar
 {
     public partial interface IDb
     {
+        string SqlParameterKeyWord { get; }
         IDbConnection Connection { get; set; }
         IDbTransaction Transaction { get; set; }
         IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);

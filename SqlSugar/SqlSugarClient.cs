@@ -72,23 +72,6 @@ namespace SqlSugar
 
         #region properties
         /// <summary>
-        /// Sql string processing
-        /// </summary>
-        public virtual ISqlBuilder SqlBuilder
-        {
-            get
-            {
-                if (_SqlBuilder == null)
-                {
-                    var reval = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig);
-                    _SqlBuilder = reval;
-                    _SqlBuilder.Context = this;
-                    return reval;
-                }
-                return _SqlBuilder;
-            }
-        }
-        /// <summary>
         ///Database operation
         /// </summary>
         public virtual IDb Database
@@ -128,54 +111,51 @@ namespace SqlSugar
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
-            if (_Queryable == null)
-            {
-                var reval = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
-                reval.Context = this;
-                var sqlBuilder = reval.Context.SqlBuilder;
-                sqlBuilder.LambadaQueryBuilder = InstanceFactory.GetLambadaQueryBuilder(base.CurrentConnectionConfig);
-                sqlBuilder.LambadaQueryBuilder.Conext = this;
-                sqlBuilder.LambadaQueryBuilder.EntityType = typeof(T);
-                _Queryable = reval;
-                return reval;
-            }
-            return (ISugarQueryable<T>)_Queryable;
+            var reval = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
+            reval.Context = this;
+            var SqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
+            reval.SqlBuilder = SqlBuilder;
+            reval.SqlBuilder.LambadaQueryBuilder = InstanceFactory.GetLambadaQueryBuilder(base.CurrentConnectionConfig);
+            reval.SqlBuilder.LambadaQueryBuilder.Builder = SqlBuilder;
+            reval.SqlBuilder.Context = reval.SqlBuilder.LambadaQueryBuilder.Context = this;
+            reval.SqlBuilder.LambadaQueryBuilder.EntityType = typeof(T);
+            return reval;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2>(Expression<Func<T,T2,object []>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
         {
             var queryable = Queryable<T>();
-            SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression,this,typeof(T2));
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, typeof(T2));
             return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3>(Func<T, T2,T3, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3>(Func<T, T2, T3, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
-        public virtual List<T> Queryable<T, T2, T3, T4>(Func<T, T2, T3,T4, object[]> joinExpression) where T : class, new()
+        public virtual List<T> Queryable<T, T2, T3, T4>(Func<T, T2, T3, T4, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5>(Func<T, T2, T3, T4,T5, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5>(Func<T, T2, T3, T4, T5, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6>(Func<T, T2, T3, T4, T5,T6, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6>(Func<T, T2, T3, T4, T5, T6, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7>(Func<T, T2, T3, T4, T5, T6,T7, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7>(Func<T, T2, T3, T4, T5, T6, T7, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Func<T, T2, T3, T4, T5, T6,T7,T8, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Func<T, T2, T3, T4, T5, T6, T7, T8, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Func<T, T2, T3, T4, T5, T6, T7, T8,T9, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T, T2, T3, T4, T5, T6, T7, T8,T10, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T, T2, T3, T4, T5, T6, T7, T8, T10, object[]> joinExpression) where T : class, new()
         {
             return null;
         }
@@ -202,11 +182,12 @@ namespace SqlSugar
         public virtual List<T> SqlQuery<T>(string sql, object pars = null)
         {
             var dbPars = this.Database.GetParameters(pars);
-            this.SqlBuilder.SqlQueryBuilder.Sql.Append(sql);
+            var builder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig);
+            builder.SqlQueryBuilder.Sql.Append(sql);
             using (var dataReader = this.Database.GetDataReader(sql, dbPars))
             {
-                var reval = this.Database.DbBind.DataReaderToList<T>(typeof(T), dataReader, this.SqlBuilder.SqlQueryBuilder.Fields);
-                this.SqlBuilder.SqlQueryBuilder.Clear();
+                var reval = this.Database.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
+                builder.SqlQueryBuilder.Clear();
                 return reval;
             }
         }

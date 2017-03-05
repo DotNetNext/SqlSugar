@@ -8,7 +8,7 @@ namespace SqlSugar
     public partial interface IDMLBuilder
     {
         string SqlTemplate { get; }
-        SqlSugarClient  Conext { get; set; }
+        SqlSugarClient  Context { get; set; }
         StringBuilder Sql { get; set; }
         string ToSqlString();
         void Clear();

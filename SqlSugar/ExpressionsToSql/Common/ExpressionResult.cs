@@ -67,6 +67,9 @@ namespace SqlSugar
         public string GetResultString()
         {
             if (this._Result == null) return null;
+            if (this._ResolveExpressType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle)) {
+                return this.Result.ToString().TrimEnd(',');
+            }
             return this.Result.ToString();
         }
 

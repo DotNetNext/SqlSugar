@@ -20,7 +20,7 @@ namespace SqlSugar
             }
         }
 
-        public SqlSugarClient Conext
+        public SqlSugarClient Context
         {
             get
             {

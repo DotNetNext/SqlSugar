@@ -76,6 +76,10 @@ namespace SqlSugar
         {
             return string.Format(" {0} {1} {2} ", fieldValue, "AS", fieldName);
         }
+        public virtual void Clear()
+        {
+            base._Result = null;
+        }
         #endregion
     }
 }
