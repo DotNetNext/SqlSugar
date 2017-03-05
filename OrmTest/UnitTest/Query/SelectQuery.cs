@@ -29,12 +29,12 @@ namespace OrmTest.UnitTest
         {
             using (var db = GetInstance())
             {
-                var list = db.Queryable<Student>()
-                    .Where(st => st.Id > 0)
-                    .Select(it => new ViewModelStudent { Name = it.Name }).ToList();
+                //var list = db.Queryable<Student>()
+                //    .Where(st => st.Id > 0)
+                //    .Select(it => new ViewModelStudent { Name = it.Name }).ToList();
                 var list2 = db.Queryable<Student>()
                   .Where(st => st.Id > 0)
-                  .Select("*").ToList();
+                  .Select("id").ToList();
             }
         }
 

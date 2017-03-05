@@ -98,11 +98,11 @@ namespace SqlSugar
                     pre = Builder.GetTranslationColumnName(this.JoinQueryInfos.Single(it => it.PreShortName.IsValuable()).PreShortName) + ".";
                 }
                 reval = string.Join(",", this.Context.Database.DbMaintenance.GetColumnInfosByTableName(this.EntityName).Select(it => pre + Builder.GetTranslationColumnName(it.ColumnName)));
-                this.SelectCacheKey = "*";
             }
             else
             {
                 reval = this.SelectValue.ObjToString();
+                this.SelectCacheKey = reval;
             }
 
             return reval;

@@ -16,7 +16,7 @@ namespace OrmTest
         static void Main(string[] args)
         {
             //Unit Test
-            int eachCount = 1000;
+            int eachCount = 1;
             //new Field(eachCount).Init();
             //new Where(eachCount).Init();
             //new Method(eachCount).Init();
