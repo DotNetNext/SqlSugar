@@ -116,9 +116,10 @@ namespace SqlSugar
                 ++i;
                 JoinQueryInfo joinInfo = new JoinQueryInfo();
                 var hasMappingTable = exp.MappingTables.IsValuable();
+                MappingTable mappingInfo = null;
                 if (hasMappingTable)
                 {
-                    var mappingInfo = exp.MappingTables.FirstOrDefault(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
+                    mappingInfo = exp.MappingTables.FirstOrDefault(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
                     joinInfo.TableName = mappingInfo != null ? mappingInfo.DbTableName : type.Name;
                 }
                 else
@@ -133,6 +134,10 @@ namespace SqlSugar
                 }
                 var joinString = joinArray[i * 2 - 2];
                 joinInfo.ShortName = lambdaParameters[i-1].Name;
+                if (mappingInfo.IsValuable())
+                {
+                    mappingInfo.DbShortTaleName = joinInfo.ShortName;
+                }
                 joinInfo.JoinType = (JoinType) Enum.Parse(typeof (JoinType), joinString);
                 joinInfo.JoinWhere = joinArray[i * 2-1];
                 joinInfo.JoinIndex = i;
