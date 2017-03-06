@@ -85,10 +85,34 @@ namespace SqlSugar
                         base.Context.Result.CurrentParameter = null;
                     }
                 }
-                else if(item.GetType().IsClass&& item.GetType()!=ExpressionConst.StringType)
+                else if (item.Type.IsClass())
                 {
-                  
-                }else{
+                    StringBuilder sb=new StringBuilder();
+                    string prefix = Context.IsJoin ? memberName : "";
+                    var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
+                    base.Context.Result.Append(sb.ToString());
+                    foreach (var property in listProperties)
+                    {
+                        if (property.PropertyType.IsClass())
+                        {
+
+                        }
+                        else
+                        {
+                            var columnName = property.Name;
+                            if (Context.IsJoin)
+                            {
+                                // Context.GetAsString(prefix,item,)
+                            }
+                            else
+                            {
+                                Context.GetAsString(columnName, columnName);
+                            }
+                        }
+                    }
+                }
+                else
+                {
                     Check.ThrowNotSupportedException(item.GetType().Name);
                 }
             }

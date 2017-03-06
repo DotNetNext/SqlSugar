@@ -22,6 +22,13 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public MappingTableList MappingTables { get; set; }
         public List<JoinQueryInfo> JoinQueryInfos { get; set; }
+
+        public bool IsJoin {
+            get
+            {
+               return JoinQueryInfos.IsValuable();
+            }
+        }
         public ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
         public ExpressionResult Result
@@ -73,9 +80,13 @@ namespace SqlSugar
             BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
             resolve.Start();
         }
-        public virtual string GetAsString(string fieldName, string fieldValue)
+        public virtual string GetAsString(string asName, string fieldValue)
         {
-            return string.Format(" {0} {1} {2} ", fieldValue, "AS", fieldName);
+            return string.Format(" [{0}] {1} [{2}] ", fieldValue, "AS", asName);
+        }
+        public virtual string GetAsString(string asName, string fieldValue,string fieldShortName)
+        {
+            return string.Format(" [{0}].[{1}] {2} [{3}] ", fieldShortName, fieldValue, "AS", asName);
         }
         public virtual void Clear()
         {

@@ -177,31 +177,18 @@ namespace SqlSugar
             return DateTime.TryParse(thisValue.ToString(), out outValue);
         }
 
-        /// <summary>
-        /// 是邮箱?
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
         public static bool IsEamil(this object thisValue)
         {
             if (thisValue == null) return false;
             return Regex.IsMatch(thisValue.ToString(), @"^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$");
         }
 
-        /// <summary>
-        /// 是手机?
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
         public static bool IsMobile(this object thisValue)
         {
             if (thisValue == null) return false;
             return Regex.IsMatch(thisValue.ToString(), @"^\d{11}$");
         }
 
-        /// <summary>
-        /// 是座机?
-        /// </summary>
         public static bool IsTelephone(this object thisValue)
         {
             if (thisValue == null) return false;
@@ -209,77 +196,47 @@ namespace SqlSugar
 
         }
 
-        /// <summary>
-        /// 是身份证?
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
         public static bool IsIDcard(this object thisValue)
         {
             if (thisValue == null) return false;
             return System.Text.RegularExpressions.Regex.IsMatch(thisValue.ToString(), @"^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$");
         }
 
-        /// <summary>
-        /// 是传真?
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
         public static bool IsFax(this object thisValue)
         {
             if (thisValue == null) return false;
             return System.Text.RegularExpressions.Regex.IsMatch(thisValue.ToString(), @"^[+]{0,1}(\d){1,3}[ ]?([-]?((\d)|[ ]){1,12})+$");
         }
 
-        /// <summary>
-        /// 是适合正则匹配?
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <param name="pattern"></param>
-        /// <returns></returns>
         public static bool IsMatch(this object thisValue, string pattern)
         {
             if (thisValue == null) return false;
             Regex reg = new Regex(pattern);
             return reg.IsMatch(thisValue.ToString());
         }
-
-        /// <summary>
-        /// 是否是动态类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public static bool IsAnonymousType(this Type type)
         {
             string typeName = type.Name;
             return typeName.Contains("<>") && typeName.Contains("__") && typeName.Contains("AnonymousType");
         }
-        /// <summary>
-        /// 是List类型
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
         public static bool IsCollectionsList(this string thisValue)
         {
             return (thisValue + "").StartsWith("System.Collections.Generic.List");
         }
-        /// <summary>
-        /// 是string[]类型
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
         public static bool IsStringArray(this string thisValue)
         {
             return (thisValue + "").IsMatch(@"System\.[a-z,A-Z,0-9]+?\[\]");
         }
-        /// <summary>
-        /// 是Enumerable
-        /// </summary>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
         public static bool IsEnumerable(this string thisValue)
         {
             return (thisValue + "").StartsWith("System.Linq.Enumerable");
+        }
+
+        public static Type StringType = typeof (string);
+
+        public static bool IsClass(this Type thisValue)
+        {
+            return thisValue != StringType && thisValue.IsClass;
         }
     }
 }
