@@ -153,7 +153,7 @@ namespace SqlSugar
         {
             return string.Format(
                 this.JoinTemplate,
-                joinInfo.JoinIndex == 1 ? (joinInfo.PreShortName + " " + joinInfo.JoinType.ToString() + " ") : (joinInfo.JoinType.ToString() + " JOIN "),
+                joinInfo.JoinIndex == 1 ? (TableShortName + " " + joinInfo.JoinType.ToString() + " ") : (joinInfo.JoinType.ToString() + " JOIN "),
                 joinInfo.TableName,
                 joinInfo.ShortName + " " + joinInfo.TableWithString,
                 joinInfo.JoinWhere);
