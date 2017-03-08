@@ -70,6 +70,7 @@ namespace SqlSugar
         object Min(Expression<Func<T, object>> expression);
 
         List<T> ToList();
+
         string ToJson();
         string ToJsonPage(int pageIndex, int pageSize);
         string ToJsonPage(int pageIndex, int pageSize, ref int pageCount);
