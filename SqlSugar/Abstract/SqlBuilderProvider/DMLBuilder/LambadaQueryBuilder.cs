@@ -122,7 +122,7 @@ namespace SqlSugar
                 if (this.WhereInfos == null) return null;
                 else
                 {
-                    return " WHERE " + string.Join(" ", this.WhereInfos);
+                    return  string.Join(" ", this.WhereInfos);
                 }
             }
         }

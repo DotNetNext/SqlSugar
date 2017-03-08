@@ -126,9 +126,9 @@ namespace SqlSugar
         /// <summary>
         /// Lambda Query operation
         /// </summary>
-        public virtual ISugarQueryable<DetaultT> Queryable(string tableName,string shortName,string widthString=null)
+        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName,string shortName,string widthString=null)
         {
-            var queryable = Queryable<DetaultT>();
+            var queryable = Queryable<SugarDynamic>();
             queryable.SqlBuilder.LambadaQueryBuilder.EntityName = tableName;
             queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
             queryable.SqlBuilder.LambadaQueryBuilder.TableWithString = widthString;

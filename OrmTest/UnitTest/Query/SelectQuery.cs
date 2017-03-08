@@ -40,10 +40,11 @@ namespace OrmTest.UnitTest
                           JoinType.Left,st.SchoolId==sc.Id
                 }).Where(st => st.Id > 0).Select<Student>("*").ToList();
 
-                //var list3 = db.Queryable("Student","st")
-                // .AddJoinInfo("Shool","sh", "sh.id=st.shoolid")
-                // .Where(st => st.Id > 0)
-                // .Select(st => new ViewModelStudent2 { Student = st }).ToList();
+                var list3 = db.Queryable("Student", "st")
+                 .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
+                 .Where("st.id>@id")
+                 .AddParameters(new {id=1})
+                 .Select("st.*").ToList();
             }
         }
 

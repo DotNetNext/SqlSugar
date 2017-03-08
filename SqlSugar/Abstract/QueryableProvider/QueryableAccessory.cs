@@ -37,7 +37,7 @@ namespace SqlSugar
             ILambdaExpressions resolveExpress = context.LambdaExpressions;
             resolveExpress.Resolve(expression, type);
             Pars.AddRange(resolveExpress.Parameters);
-            builder.LambadaQueryBuilder.WhereInfos.Add(resolveExpress.Result.GetResultString());
+            builder.LambadaQueryBuilder.WhereInfos.Add(builder.AppendWhereOrAnd(builder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(),resolveExpress.Result.GetResultString()));
             resolveExpress.Clear();
         }
 

@@ -1,6 +1,7 @@
 ﻿namespace SqlSugar
 {
-    public class DetaultT
+    public class SugarDynamic
     {
+
     }
 }
