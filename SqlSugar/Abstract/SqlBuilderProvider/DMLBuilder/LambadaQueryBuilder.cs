@@ -100,9 +100,9 @@ namespace SqlSugar
             if (this.SelectValue.IsNullOrEmpty())
             {
                 string pre = null;
-                if (this.JoinQueryInfos.IsValuable() && this.JoinQueryInfos.Any(it => it.PreShortName.IsValuable()))
+                if (this.JoinQueryInfos.IsValuable() && this.JoinQueryInfos.Any(it => TableShortName.IsValuable()))
                 {
-                    pre = Builder.GetTranslationColumnName(this.JoinQueryInfos.Single(it => it.PreShortName.IsValuable()).PreShortName) + ".";
+                    pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
                 reval = string.Join(",", this.Context.Database.DbMaintenance.GetColumnInfosByTableName(this.EntityName).Select(it => pre + Builder.GetTranslationColumnName(it.ColumnName)));
             }
