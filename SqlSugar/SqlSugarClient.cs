@@ -153,9 +153,13 @@ namespace SqlSugar
             queryable.SqlBuilder.LambadaQueryBuilder.TableShortName=shortName;
             return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3>(Func<T, T2, T3, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2),typeof(T3));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
         public virtual List<T> Queryable<T, T2, T3, T4>(Func<T, T2, T3, T4, object[]> joinExpression) where T : class, new()
         {
@@ -184,23 +188,6 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T, T2, T3, T4, T5, T6, T7, T8, T10, object[]> joinExpression) where T : class, new()
         {
             return null;
-        }
-        /// <summary>
-        /// Sqlable Query operation
-        /// </summary>
-        public virtual ISugarSqlable Sqlable
-        {
-            get
-            {
-                if (_Sqlable == null)
-                {
-                    var reval = InstanceFactory.GetSqlable(base.CurrentConnectionConfig);
-                    reval.Context = this;
-                    _Sqlable = reval;
-                    return reval;
-                }
-                return (ISugarSqlable)_Sqlable;
-            }
         }
         #endregion
 

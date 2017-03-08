@@ -33,14 +33,6 @@ namespace SqlSugar
             return reval;
         }
 
-
-        public static ISugarSqlable GetSqlable(IConnectionConfig currentConnectionConfig)
-        {
-            CheckConfig(currentConnectionConfig);
-            ISugarSqlable reval = CreateInstance<ISugarSqlable>(GetClassName(currentConnectionConfig.DbType, "Sqlable"), currentConnectionConfig.DbType);
-            return reval;
-        }
-
         public static ISqlBuilder GetSqlbuilder(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);

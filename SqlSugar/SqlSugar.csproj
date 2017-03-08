@@ -57,11 +57,9 @@
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
-    <Compile Include="Abstract\SqlableProvider.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\DeleteBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\InsertBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\LambadaQueryBuilder.cs" />
-    <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\SqlableQueryBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\SqlQueryBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\UpdateBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />
@@ -85,7 +83,6 @@
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerLambadaQueryBuilder.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlServerDb.cs" />
     <Compile Include="Databases\SqlServer\Queryable\SqlServerQueryable.cs" />
-    <Compile Include="Databases\SqlServer\Sqlable\SqlServerSqlable.cs" />
     <Compile Include="DetaultT.cs" />
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
@@ -139,7 +136,6 @@
     <Compile Include="Interface\IDbMaintenance.cs" />
     <Compile Include="Interface\ILambdaExpressions.cs" />
     <Compile Include="Interface\IQueryable.cs" />
-    <Compile Include="Interface\ISqlable.cs" />
     <Compile Include="Interface\ISqlBuilder\IDMLBuilder.cs" />
     <Compile Include="Interface\ISqlBuilder\ISqlBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -36,9 +36,11 @@ namespace OrmTest.UnitTest
                 //var list2 = db.Queryable<Student>()
                 //  .Where(st => st.Id > 0)
                 // .Select("id").ToList();
-                var list = db.Queryable<Student, School>((st, sc) => new object[] {
-                          JoinType.Left,st.SchoolId==sc.Id
-                }).Where(st => st.Id > 0).Select<Student>("*").ToList();
+
+                var list = db.Queryable<Student, School,School>((st, sc,sc2) => new object[] {
+                          JoinType.Left,st.SchoolId==sc.Id,
+                          JoinType.Left,sc2.Id==sc.Id
+                }).Where(st => st.Id > 0).ToList();
 
                 var list3 = db.Queryable("Student", "st")
                  .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
