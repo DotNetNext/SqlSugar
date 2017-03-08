@@ -126,20 +126,23 @@ namespace SqlSugar
         /// <summary>
         /// Lambda Query operation
         /// </summary>
-        public virtual ISugarQueryable<DetaultT> Queryable(string tableName,string shortName)
+        public virtual ISugarQueryable<DetaultT> Queryable(string tableName,string shortName,string widthString=null)
         {
             var queryable = Queryable<DetaultT>();
+            queryable.SqlBuilder.LambadaQueryBuilder.EntityName = tableName;
             queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            queryable.SqlBuilder.LambadaQueryBuilder.TableWithString = widthString;
             return queryable;
         }
 
         /// <summary>
         /// Lambda Query operation
         /// </summary>
-        public virtual ISugarQueryable<T> Queryable<T>(string shortName) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T>(string shortName, string widthString = null) where T : class, new()
         {
             var queryable = Queryable<T>();
             queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            queryable.SqlBuilder.LambadaQueryBuilder.TableWithString = widthString;
             return queryable;
         }
         public virtual ISugarQueryable<T> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
