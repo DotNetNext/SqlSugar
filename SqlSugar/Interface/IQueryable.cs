@@ -13,6 +13,9 @@ namespace SqlSugar
         ISqlBuilder SqlBuilder { get; set; }
         List<SugarParameter> Pars { get; set; }
 
+        ISugarQueryable<T> AddParameters(object pars);
+        ISugarQueryable<T> AddParameters(SugarParameter[] pars);
+        ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string Joinwhere, JoinType types);
 
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object whereObj = null);
