@@ -87,10 +87,8 @@ namespace SqlSugar
                 }
                 else if (item.Type.IsClass())
                 {
-                    StringBuilder sb=new StringBuilder();
                     string prefix = Context.IsJoin ? memberName : "";
                     var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
-                    base.Context.Result.Append(sb.ToString());
                     foreach (var property in listProperties)
                     {
                         if (property.PropertyType.IsClass())
@@ -102,11 +100,11 @@ namespace SqlSugar
                             var columnName = property.Name;
                             if (Context.IsJoin)
                             {
-                                // Context.GetAsString(prefix,item,)
+                                base.Context.Result.Append(Context.GetAsString(property.Name, columnName,""));
                             }
                             else
                             {
-                                Context.GetAsString(columnName, columnName);
+                                base.Context.Result.Append(Context.GetAsString(property.Name, columnName));
                             }
                         }
                     }

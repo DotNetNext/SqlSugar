@@ -30,6 +30,7 @@ namespace OrmTest.UnitTest
             using (var db = GetInstance())
             {
                 //var list = db.Queryable<Student>()
+
                 //    .Where(st => st.Id > 0)
                 //    .Select(it => new ViewModelStudent { Name = it.Name }).ToList();
                 //var list2 = db.Queryable<Student>()
@@ -38,9 +39,11 @@ namespace OrmTest.UnitTest
                 var list = db.Queryable<Student, School>((st, sc) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id
                 }).Where(st => st.Id > 0).Select<Student>("*").ToList();
-                var list3 = db.Queryable<Student>()
-                 .Where(st => st.Id > 0)
-                 .Select(it => new ViewModelStudent2 { Student = it }).ToList();
+
+                //var list3 = db.Queryable("Student","st")
+                // .AddJoinInfo("Shool","sh", "sh.id=st.shoolid")
+                // .Where(st => st.Id > 0)
+                // .Select(st => new ViewModelStudent2 { Student = st }).ToList();
             }
         }
 

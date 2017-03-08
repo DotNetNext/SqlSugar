@@ -38,8 +38,9 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string Joinwhere, JoinType type)
+        public ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
         {
+
             SqlBuilder.LambadaQueryBuilder.JoinIndex = +1;
             SqlBuilder.LambadaQueryBuilder.JoinQueryInfos
                 .Add(new JoinQueryInfo()
@@ -47,7 +48,8 @@ namespace SqlSugar
                     JoinIndex = SqlBuilder.LambadaQueryBuilder.JoinIndex,
                     TableName = tableName,
                     ShortName = shortName,
-                    JoinType = type
+                    JoinType = type,
+                    JoinWhere = joinWhere
                 });
             return this;
         }

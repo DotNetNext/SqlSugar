@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
@@ -113,18 +114,40 @@ namespace SqlSugar
         {
             var reval = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
             reval.Context = this;
-            var SqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.SqlBuilder = SqlBuilder;
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
+            reval.SqlBuilder = sqlBuilder;
             reval.SqlBuilder.LambadaQueryBuilder = InstanceFactory.GetLambadaQueryBuilder(base.CurrentConnectionConfig);
-            reval.SqlBuilder.LambadaQueryBuilder.Builder = SqlBuilder;
+            reval.SqlBuilder.LambadaQueryBuilder.Builder = sqlBuilder;
             reval.SqlBuilder.Context = reval.SqlBuilder.LambadaQueryBuilder.Context = this;
-            reval.SqlBuilder.LambadaQueryBuilder.EntityType = typeof(T);
+            reval.SqlBuilder.LambadaQueryBuilder.EntityName = typeof(T).Name;
             return reval;
+        }
+
+        /// <summary>
+        /// Lambda Query operation
+        /// </summary>
+        public virtual ISugarQueryable<DetaultT> Queryable(string tableName,string shortName)
+        {
+            var queryable = Queryable<DetaultT>();
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
+        }
+
+        /// <summary>
+        /// Lambda Query operation
+        /// </summary>
+        public virtual ISugarQueryable<T> Queryable<T>(string shortName) where T : class, new()
+        {
+            var queryable = Queryable<T>();
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
         public virtual ISugarQueryable<T> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
         {
             var queryable = Queryable<T>();
-            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, typeof(T2));
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this,ref shortName, typeof(T2));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName=shortName;
             return queryable;
         }
         public virtual ISugarQueryable<T> Queryable<T, T2, T3>(Func<T, T2, T3, object[]> joinExpression) where T : class, new()

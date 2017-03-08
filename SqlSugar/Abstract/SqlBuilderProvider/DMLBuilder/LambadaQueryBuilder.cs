@@ -27,8 +27,7 @@ namespace SqlSugar
         public string OrderByValue { get; set; }
         public object SelectValue { get; set; }
         public string SelectCacheKey { get; set; }
-        public Type EntityType { get; set; }
-        public string EntityName { get { return this.EntityType.Name; } }
+        public string EntityName { get; set; }
         public string TableWithString { get; set; }
         public string GroupByValue { get; set; }
         public int WhereIndex { get; set; }
@@ -53,9 +52,17 @@ namespace SqlSugar
         {
             get
             {
-                return Builder.GetTranslationTableName(EntityType.Name);
+                var result= Builder.GetTranslationTableName(EntityName)+TableWithString;
+                if (this.TableShortName.IsValuable())
+                {
+                    result += " " + TableShortName;
+                }
+                return result;
             }
         }
+
+        public virtual string TableShortName { get; set; }
+
         public virtual string GetSelectValue
         {
             get
@@ -148,7 +155,7 @@ namespace SqlSugar
                 this.JoinTemplate,
                 joinInfo.JoinIndex == 1 ? (joinInfo.PreShortName + " " + joinInfo.JoinType.ToString() + " ") : (joinInfo.JoinType.ToString() + " JOIN "),
                 joinInfo.TableName,
-                joinInfo.ShortName + " " + TableWithString,
+                joinInfo.ShortName + " " + joinInfo.TableWithString,
                 joinInfo.JoinWhere);
         }
         public virtual List<string> WhereInfos

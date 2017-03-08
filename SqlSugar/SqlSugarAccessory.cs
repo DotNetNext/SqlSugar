@@ -100,7 +100,7 @@ namespace SqlSugar
             });
         }
 
-        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context, params Type[] entityTypeArray)
+        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context,ref string shortName, params Type[] entityTypeArray)
         {
             List<JoinQueryInfo> reval = new List<JoinQueryInfo>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
@@ -129,8 +129,8 @@ namespace SqlSugar
                 if (isFirst)
                 {
                     var firstItem = lambdaParameters.First();
-                    joinInfo.PreShortName = firstItem.Name;
                     lambdaParameters.Remove(firstItem);
+                    shortName = firstItem.Name;
                 }
                 var joinString = joinArray[i * 2 - 2];
                 joinInfo.ShortName = lambdaParameters[i-1].Name;

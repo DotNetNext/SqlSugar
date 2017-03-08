@@ -15,7 +15,7 @@ namespace SqlSugar
 
         ISugarQueryable<T> AddParameters(object pars);
         ISugarQueryable<T> AddParameters(SugarParameter[] pars);
-        ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string Joinwhere, JoinType types);
+        ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type=JoinType.Left);
 
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object whereObj = null);
