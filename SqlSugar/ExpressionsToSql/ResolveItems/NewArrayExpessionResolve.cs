@@ -33,7 +33,14 @@ namespace SqlSugar
                             base.Start();
                             if (parameter.CommonTempData is JoinType)
                             {
-                                base.Context.Result.Append(parameter.CommonTempData.ObjToString()+ ",{" + i + "}");
+                                if (i > 0)
+                                {
+                                    base.Context.Result.Append(","+parameter.CommonTempData.ObjToString() + ",");
+                                }
+                                else
+                                {
+                                    base.Context.Result.Append(parameter.CommonTempData.ObjToString() + ",");
+                                }
                                 ++i;
                             }
                         }

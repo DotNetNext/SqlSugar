@@ -29,6 +29,11 @@ namespace OrmTest.UnitTest
         {
             using (var db = GetInstance())
             {
+                db.Database.IsEnableLogEvent = true;
+                db.Database.LogEventStarting = (sql,pars) =>
+                {
+                    Console.WriteLine(sql+" " + pars);
+                };
                 //var list = db.Queryable<Student>()
 
                 //    .Where(st => st.Id > 0)
