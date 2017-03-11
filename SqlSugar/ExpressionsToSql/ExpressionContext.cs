@@ -82,11 +82,11 @@ namespace SqlSugar
         }
         public virtual string GetAsString(string asName, string fieldValue)
         {
-            return string.Format(" [{0}] {1} [{2}] ", fieldValue, "AS", asName);
+            return string.Format(" {0} {1} [{2}] ", fieldValue, "AS", asName);
         }
         public virtual string GetAsString(string asName, string fieldValue,string fieldShortName)
         {
-            return string.Format(" [{0}].[{1}] {2} [{3}] ", fieldShortName, fieldValue, "AS", asName);
+            return string.Format(" {0}.[{1}] {2} [{3}] ", fieldShortName, fieldValue, "AS", asName);
         }
         public virtual void Clear()
         {
