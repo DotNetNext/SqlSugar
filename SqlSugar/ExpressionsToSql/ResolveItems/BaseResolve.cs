@@ -95,6 +95,10 @@ namespace SqlSugar
             {
                 return new NewArrayExpessionResolve(parameter);
             }
+            else if (expression is ParameterExpression)
+            {
+                return new TypeParameterExpressionReolve(parameter);
+            }
             else if (expression != null && expression.NodeType.IsIn(ExpressionType.NewArrayBounds))
             {
                 Check.ThrowNotSupportedException("ExpressionType.NewArrayBounds");

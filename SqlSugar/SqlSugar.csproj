@@ -124,6 +124,7 @@
     <Compile Include="ExpressionsToSql\ResolveItems\NewArrayExpessionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\NewExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\SimpleBinaryExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\TypeParameterExpressionReolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\UnaryExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpResolveAccessory.cs" />
     <Compile Include="ExpressionsToSql\ExpressionContext.cs" />

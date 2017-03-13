@@ -34,9 +34,11 @@ namespace OrmTest.UnitTest
                 {
                     Console.WriteLine(sql+" " + pars);
                 };
-                var list = db.Queryable<Student>()
+                var list = db.Queryable<School,School>((st,st2)=>new object[] {
+                           JoinType.Left,st.Id==st2.Id
+                    })
                     .Where(st => st.Id > 0)
-                    .Select(it => new ViewModelStudent { Name = it.Name }).ToList();
+                    .Select(st => new ViewModelStudent { School=st}).ToList();
 
                 var list2 = db.Queryable<Student>()
                   .Where(st => st.Id > 0)

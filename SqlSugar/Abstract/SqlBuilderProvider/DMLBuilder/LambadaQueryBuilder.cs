@@ -87,6 +87,9 @@ namespace SqlSugar
             var expression = this.SelectValue as Expression;
             ILambdaExpressions resolveExpress = this.Context.LambdaExpressions;
             var isSingle= Builder.LambadaQueryBuilder.JoinQueryInfos.IsValuable();
+            resolveExpress.JoinQueryInfos = Builder.LambadaQueryBuilder.JoinQueryInfos;
+            resolveExpress.MappingColumns = Context.MappingColumns;
+            resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.Resolve(expression, ResolveType);
             this.QueryPars.AddRange(resolveExpress.Parameters);
             var reval= resolveExpress.Result.GetResultString();

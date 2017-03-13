@@ -87,7 +87,9 @@ namespace SqlSugar
                 }
                 else if (item.Type.IsClass())
                 {
-                    string prefix = Context.IsJoin ? memberName : "";
+                    base.Expression = item;
+                    base.Start();
+                    var shortName = parameter.CommonTempData;
                     var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
                     foreach (var property in listProperties)
                     {
@@ -97,14 +99,15 @@ namespace SqlSugar
                         }
                         else
                         {
+                            var asName =memberName+"_"+property.Name;
                             var columnName = property.Name;
                             if (Context.IsJoin)
                             {
-                                base.Context.Result.Append(Context.GetAsString(property.Name, columnName,""));
+                                base.Context.Result.Append(Context.GetAsString(asName, columnName, shortName.ObjToString()));
                             }
                             else
                             {
-                                base.Context.Result.Append(Context.GetAsString(property.Name, columnName));
+                                base.Context.Result.Append(Context.GetAsString(asName, columnName));
                             }
                         }
                     }
