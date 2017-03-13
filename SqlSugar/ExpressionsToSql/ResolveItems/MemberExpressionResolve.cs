@@ -93,13 +93,13 @@ namespace SqlSugar
         {
             string shortName = expression.Expression.ToString();
             string fieldName = expression.Member.Name;
-            fieldName = shortName + "." + fieldName;
+            fieldName =Context.GetTranslationColumnName(shortName + "." + fieldName);
             return fieldName;
         }
 
         private string getSingleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
-            string fieldName = expression.Member.Name;
+            string fieldName = Context.GetTranslationColumnName(expression.Member.Name);
             return fieldName;
         }
     }

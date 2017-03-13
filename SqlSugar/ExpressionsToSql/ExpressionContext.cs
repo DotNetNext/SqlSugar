@@ -69,9 +69,71 @@ namespace SqlSugar
         #endregion
 
         #region public functions
-        public virtual string GetaMppingColumnsName(string name)
+        public virtual string GetTranslationTableName(string name,bool isMapping=true)
         {
-            return name;
+            Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name Or Column Name"));
+            if (name.Contains("[") && name.Contains("]")) return name;
+            if (isMapping&&this.MappingTables.IsValuable())
+            {
+                if (name.Contains("."))
+                {
+                    var columnInfo = name.Split('.');
+                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
+                    if (mappingInfo != null)
+                    {
+                        columnInfo[columnInfo.Length - 1] = mappingInfo.EntityName;
+                    }
+                    return string.Join(".", columnInfo.Select(it => "[" + it + "]"));
+                }
+                else
+                {
+                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+                    return "[" + (mappingInfo == null ? name : mappingInfo.EntityName) + "]";
+                }
+            }
+            else
+            {
+                if (name.Contains("."))
+                {
+                    return string.Join(".", name.Split('.').Select(it => "[" + it + "]"));
+                }
+                else
+                {
+                    return "[" + name + "]";
+                }
+            }
+        }
+        public virtual string GetTranslationColumnName(string name, bool isMapping = true)
+        {
+            Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name Or Column Name"));
+            if (name.Contains("[") && name.Contains("]")) return name;
+            if (isMapping&&this.MappingColumns.IsValuable())
+            {
+                if (name.Contains("."))
+                {
+                    var columnInfo = name.Split('.');
+                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
+                    if (mappingInfo != null) {
+                        columnInfo[columnInfo.Length-1] = mappingInfo.DbColumnName;
+                    }
+                    return string.Join(".", columnInfo.Select(it => "[" + it + "]"));
+                }
+                else
+                {
+                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+                    return "[" + (mappingInfo == null ? name : mappingInfo.DbColumnName) + "]";
+                }
+            }
+            else {
+                if (name.Contains("."))
+                {
+                    return string.Join(".", name.Split('.').Select(it => "[" + it + "]"));
+                }
+                else
+                {
+                    return "[" + name + "]";
+                }
+            }
         }
         public virtual void Resolve(Expression expression, ResolveExpressType resolveType)
         {
@@ -82,11 +144,11 @@ namespace SqlSugar
         }
         public virtual string GetAsString(string asName, string fieldValue)
         {
-            return string.Format(" {0} {1} [{2}] ", fieldValue, "AS", asName);
+            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldValue), "AS", GetTranslationColumnName(asName,false));
         }
         public virtual string GetAsString(string asName, string fieldValue,string fieldShortName)
         {
-            return string.Format(" {0}.[{1}] {2} [{3}] ", fieldShortName, fieldValue, "AS", asName);
+            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldShortName+"."+ fieldValue), "AS", GetTranslationTableName(asName,false));
         }
         public virtual void Clear()
         {
