@@ -161,33 +161,61 @@ namespace SqlSugar
             queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
             return queryable;
         }
-        public virtual List<T> Queryable<T, T2, T3, T4>(Func<T, T2, T3, T4, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3),typeof(T4));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5>(Func<T, T2, T3, T4, T5, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4),typeof(T5));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6>(Func<T, T2, T3, T4, T5, T6, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5),typeof(T6));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7>(Func<T, T2, T3, T4, T5, T6, T7, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),typeof(T7));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Func<T, T2, T3, T4, T5, T6, T7, T8, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7),typeof(T8));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8),typeof(T9));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T, T2, T3, T4, T5, T6, T7, T8, T10, object[]> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T10, object[]>> joinExpression) where T : class, new()
         {
-            return null;
+            var queryable = Queryable<T>();
+            string shortName = string.Empty;
+            queryable.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9),typeof(T10));
+            queryable.SqlBuilder.LambadaQueryBuilder.TableShortName = shortName;
+            return queryable;
         }
         #endregion
 
