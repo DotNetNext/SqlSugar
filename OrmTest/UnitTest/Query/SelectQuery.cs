@@ -37,7 +37,7 @@ namespace OrmTest.UnitTest
                 var list = db.Queryable<School,School>((st,st2)=>new object[] {
                            JoinType.Left,st.Id==st2.Id
                     })
-                    .Where(st => st.Id > 0)
+                    .Where<Student,School>((st,sc) => st.Id > 0)
                     .Select(st => new ViewModelStudent { School=st}).ToList();
 
                 var list2 = db.Queryable<Student>()

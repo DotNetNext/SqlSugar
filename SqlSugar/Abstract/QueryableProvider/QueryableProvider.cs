@@ -77,26 +77,26 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> Where<T2>(Expression<Func<T, T2, bool>> expression) where T2 : class, new()
+        public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression) where T2 : class, new()
         {
-            throw new NotImplementedException();
+            return this;
         }
-
-        public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T, T2, T3, bool>> expression) where T2 : class, new() where T3 : class, new()
+        public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression) where T2 : class, new() where T3 : class, new()
         {
-            throw new NotImplementedException();
+            return this;
         }
-
-        public ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T, T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new()
+        public ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new()
         {
-            throw new NotImplementedException();
+            return this;
         }
-
-        public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new()
+        public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new()
         {
-            throw new NotImplementedException();
+            return this;
         }
-
+        public ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new()
+        {
+            return this;
+        }
         public ISugarQueryable<T> In(params object[] pkValues)
         {
             throw new NotImplementedException();
@@ -212,22 +212,30 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T, T2, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression) where TResult : class, new()
         {
             throw new NotImplementedException();
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T, T2, T3, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression) where TResult : class, new()
         {
             throw new NotImplementedException();
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression) where TResult : class, new()
         {
             throw new NotImplementedException();
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression) where TResult : class, new()
+        {
+            throw new NotImplementedException();
+        }
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression) where TResult : class, new()
+        {
+            throw new NotImplementedException();
+        }
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression) where TResult : class, new()
         {
             throw new NotImplementedException();
         }
@@ -338,5 +346,7 @@ namespace SqlSugar
         {
             throw new NotImplementedException();
         }
+
+  
     }
 }
