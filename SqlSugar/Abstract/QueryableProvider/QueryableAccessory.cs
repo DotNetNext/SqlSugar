@@ -10,7 +10,7 @@ namespace SqlSugar
     public class QueryableAccessory
     {
         protected List<SugarParameter> _Pars;
-        protected List<SugarParameter> Pars
+        protected List<SugarParameter> BasePars
         {
             get
             {
@@ -24,7 +24,7 @@ namespace SqlSugar
         {
             var sqlParsArray = context.Database.GetParameters(whereObj);
             if (sqlParsArray != null)
-                this.Pars.AddRange(sqlParsArray);
+                this.BasePars.AddRange(sqlParsArray);
         }
         protected void AddPars(List<SugarParameter> pars, SqlSugarClient context)
         {
@@ -36,7 +36,7 @@ namespace SqlSugar
         {
             ILambdaExpressions resolveExpress = context.LambdaExpressions;
             resolveExpress.Resolve(expression, type);
-            Pars.AddRange(resolveExpress.Parameters);
+            BasePars.AddRange(resolveExpress.Parameters);
             builder.LambadaQueryBuilder.WhereInfos.Add(builder.AppendWhereOrAnd(builder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(),resolveExpress.Result.GetResultString()));
             resolveExpress.Clear();
         }
