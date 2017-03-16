@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,7 +48,7 @@ namespace SqlSugar
                         base.Expression = item;
                         base.Start();
                         string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
-                        parameter.Context.Result.Append(base.Context.GetAsString(memberName,parameterName));
+                        parameter.Context.Result.Append(base.Context.GetAsString(memberName, parameterName));
                         this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
                     }
                     else if (item is MemberExpression)
@@ -60,7 +61,7 @@ namespace SqlSugar
                             base.Expression = item;
                             base.Start();
                             parameter.IsAppendResult();
-                            base.Context.Result.Append(base.Context.GetAsString(memberName,parameter.CommonTempData.ObjToString()));
+                            base.Context.Result.Append(base.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
                             base.Context.Result.CurrentParameter = null;
                         }
                     }
@@ -81,9 +82,37 @@ namespace SqlSugar
                             base.Context.Result.CurrentParameter = null;
                         }
                     }
+                    else if (item.Type.IsClass())
+                    {
+                        base.Expression = item;
+                        base.Start();
+                        var shortName = parameter.CommonTempData;
+                        var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
+                        foreach (var property in listProperties)
+                        {
+                            if (property.PropertyType.IsClass())
+                            {
+
+                            }
+                            else
+                            {
+                                var asName = memberName + "_" + property.Name;
+                                var columnName = property.Name;
+                                if (Context.IsJoin)
+                                {
+                                    base.Context.Result.Append(Context.GetAsString(asName, columnName, shortName.ObjToString()));
+                                }
+                                else
+                                {
+                                    base.Context.Result.Append(Context.GetAsString(asName, columnName));
+                                }
+                            }
+                        }
+                    }
                     else
                     {
                         Check.ThrowNotSupportedException(item.GetType().Name);
+
                     }
                 }
             }

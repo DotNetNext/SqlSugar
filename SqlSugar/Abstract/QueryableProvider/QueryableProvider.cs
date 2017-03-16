@@ -214,33 +214,38 @@ namespace SqlSugar
 
         public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            return SelectMehtod<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            return SelectMehtod<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            return SelectMehtod<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            return SelectMehtod<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            return SelectMehtod<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression) where TResult : class, new()
         {
-            throw new NotImplementedException();
+            return SelectMehtod<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression) where TResult : class, new()
+        {
+            return SelectMehtod<TResult>(expression);
+        }
+
+        private ISugarQueryable<TResult> SelectMehtod<TResult>(Expression expression) where TResult : class, new()
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
