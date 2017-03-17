@@ -24,6 +24,13 @@ namespace SqlSugar
         ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new();
         ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new();
         ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new();
+        ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T> WhereIF(bool isWhere,string whereString, object whereObj = null);
+        ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression) where T2 : class, new();
+        ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression) where T2 : class, new() where T3 : class, new();
+        ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new();
+        ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new();
+        ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new();
         ISugarQueryable<T> In(params object[] pkValues);
 
         T InSingle(object pkValue);

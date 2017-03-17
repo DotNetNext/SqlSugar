@@ -56,47 +56,93 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            var type = ResolveExpressType.WhereSingle;
-            if (this.SqlBuilder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
-            {
-                type = ResolveExpressType.WhereMultiple;
-            }
-            base.Where<T>(expression, type, this.Context, this.SqlBuilder);
+            base.Where(expression,this.Context, this.SqlBuilder);
             return this;
         }
-
         public ISugarQueryable<T> Where(string whereString, object whereObj = null)
         {
             base.Where<T>(whereString, whereObj, this.Context, this.SqlBuilder);
             return this;
         }
-
         public ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null) where T2 : class, new()
         {
             base.Where<T2>(whereString, whereObj, this.Context, this.SqlBuilder);
             return this;
         }
-
         public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression) where T2 : class, new()
         {
+            base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
         public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression) where T2 : class, new() where T3 : class, new()
         {
+            base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
         public ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new()
         {
+            base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
         public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new()
         {
+            base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
         public ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new()
         {
+            base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
+        public virtual ISugarQueryable<T> WhereIF(bool isWhere,Expression<Func<T, bool>> expression)
+        {
+            if (!isWhere) return this;
+            Where<T>(expression);
+            return this;
+        }
+        public ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null)
+        {
+            if (!isWhere) return this;
+            base.Where<T>(whereString, whereObj, this.Context, this.SqlBuilder);
+            return this;
+        }
+        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, string whereString, object whereObj = null) where T2 : class, new()
+        {
+            if (!isWhere) return this;
+            base.Where<T2>(whereString, whereObj, this.Context, this.SqlBuilder);
+            return this;
+        }
+        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression) where T2 : class, new()
+        {
+            if (!isWhere) return this;
+            this.Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression) where T2 : class, new() where T3 : class, new()
+        {
+            if (!isWhere) return this;
+            this.Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new()
+        {
+            if (!isWhere) return this;
+            this.Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new()
+        {
+            if (!isWhere) return this;
+            this.Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new()
+        {
+            if (!isWhere) return this;
+            this.Where(expression);
+            return this;
+        }
+
         public ISugarQueryable<T> In(params object[] pkValues)
         {
             throw new NotImplementedException();

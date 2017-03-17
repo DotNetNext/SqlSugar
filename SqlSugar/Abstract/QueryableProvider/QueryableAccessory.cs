@@ -32,8 +32,13 @@ namespace SqlSugar
                 _Pars = new List<SugarParameter>();
             _Pars.AddRange(pars);
         }
-        protected void Where<T>(Expression<Func<T, bool>> expression, ResolveExpressType type,SqlSugarClient context,ISqlBuilder builder) where T : class, new()
+        protected void Where(Expression expression,SqlSugarClient context,ISqlBuilder builder)
         {
+            ResolveExpressType type = ResolveExpressType.WhereSingle;
+            if (builder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
+            {
+                type = ResolveExpressType.WhereMultiple;
+            }
             ILambdaExpressions resolveExpress = context.LambdaExpressions;
             resolveExpress.Resolve(expression, type);
             BasePars.AddRange(resolveExpress.Parameters);
