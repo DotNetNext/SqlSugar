@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SqlServerQueryable<T>:QueryableProvider<T> where T:class,new()
+    public class SqlServerQueryable<T>:QueryableProvider<T> 
     {
     
     }

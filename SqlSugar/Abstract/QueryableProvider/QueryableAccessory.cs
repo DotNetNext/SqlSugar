@@ -46,7 +46,7 @@ namespace SqlSugar
             resolveExpress.Clear();
         }
 
-        protected void Where<T>(string whereString, object whereObj, SqlSugarClient context, ISqlBuilder builder) where T : class, new()
+        protected void Where<T>(string whereString, object whereObj, SqlSugarClient context, ISqlBuilder builder) 
         {
             var SqlBuilder = builder;
             var whereValue = SqlBuilder.LambadaQueryBuilder.WhereInfos;

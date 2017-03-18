@@ -10,7 +10,7 @@ namespace SqlSugar
     {
         static Assembly assembly = Assembly.Load(PubConst.AssemblyName);
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
-        public static ISugarQueryable<T> GetQueryable<T>(IConnectionConfig currentConnectionConfig)where T:class,new()
+        public static ISugarQueryable<T> GetQueryable<T>(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);
             string className = "Queryable";
@@ -79,7 +79,7 @@ namespace SqlSugar
         {
             return PubConst.AssemblyName + "." + type + name;
         }
-        private static Restult CreateInstance<T,Restult>(string className, string dbType) where T:class,new()
+        private static Restult CreateInstance<T,Restult>(string className, string dbType) 
         {
             var cacheKey = className + typeof(T).FullName;
             Type type;

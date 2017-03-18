@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T> where T : class, new()
+    public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T> 
     {
         public SqlSugarClient Context { get; set; }
         public IDb Db { get { return Context.Database; } }
@@ -64,32 +64,32 @@ namespace SqlSugar
             base.Where<T>(whereString, whereObj, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null) where T2 : class, new()
+        public ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             base.Where<T2>(whereString, whereObj, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression) where T2 : class, new()
+        public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression)
         {
             base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression) where T2 : class, new() where T3 : class, new()
+        public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression) 
         {
             base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new()
+        public ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression)
         {
             base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new()
+        public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression) 
         {
             base.Where(expression, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new()
+        public ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression) 
         {
             base.Where(expression, this.Context, this.SqlBuilder);
             return this;
@@ -106,37 +106,37 @@ namespace SqlSugar
             base.Where<T>(whereString, whereObj, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, string whereString, object whereObj = null) where T2 : class, new()
+        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, string whereString, object whereObj = null) 
         {
             if (!isWhere) return this;
             base.Where<T2>(whereString, whereObj, this.Context, this.SqlBuilder);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression) where T2 : class, new()
+        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression)
         {
             if (!isWhere) return this;
             this.Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression) where T2 : class, new() where T3 : class, new()
+        public ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression) 
         {
             if (!isWhere) return this;
             this.Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new()
+        public ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression) 
         {
             if (!isWhere) return this;
             this.Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new()
+        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression)
         {
             if (!isWhere) return this;
             this.Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression) where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new()
+        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression) 
         {
             if (!isWhere) return this;
             this.Where(expression);
@@ -258,40 +258,40 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression) 
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression) 
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression) 
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression) 
         {
             return SelectMehtod<TResult>(expression);
         }
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression) 
         {
             return SelectMehtod<TResult>(expression);
         }
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression) where TResult : class, new()
-        {
-            return SelectMehtod<TResult>(expression);
-        }
-
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression) 
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        private ISugarQueryable<TResult> SelectMehtod<TResult>(Expression expression) where TResult : class, new()
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression) 
+        {
+            return SelectMehtod<TResult>(expression);
+        }
+
+        private ISugarQueryable<TResult> SelectMehtod<TResult>(Expression expression)
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
