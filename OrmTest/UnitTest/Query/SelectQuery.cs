@@ -35,12 +35,12 @@ namespace OrmTest.UnitTest
                     Console.WriteLine(sql + " " + pars);
                 };
 
-                //var listx = db.Queryable<School, School>((st, st2) => new object[] {
-                //           JoinType.Left,st.Id==st2.Id
-                //    }) 
-                //    .Where(st => st.Id > 0)
-                //    .Select<Student, School, dynamic>((st, sc) => new { st, st.Id, stid = st.Id, scId = sc.Id }).ToList();
-                //return;
+                var listx = db.Queryable<School, School>((st, st2) => new object[] {
+                           JoinType.Left,st.Id==st2.Id
+                    })
+                    .Where(st => st.Id > 0)
+                    .Select<School, School, dynamic>((st, st2) => new {stid = st.Id, scId = st2.Id,xx=st }).ToList();
+                return;
                 var list = db.Queryable<School, School>((st, st2) => new object[] {
                            JoinType.Left,st.Id==st2.Id
                     }).Where<Student, School>((st, sc) => st.Id > 0)
