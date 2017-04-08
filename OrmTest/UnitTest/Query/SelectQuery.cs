@@ -61,7 +61,14 @@ namespace OrmTest.UnitTest
 
                 var list2 = db.Queryable<Student>()
                   .Where(st => st.Id > 0)
-                 .Select("id").ToList();
+                 .Select("id").ToSql();
+
+                base.Check("SELECT id FROM [Student]  WHERE ( [Id]  > @Id0 )",
+                 new List<SugarParameter>() { new SugarParameter("@Id0", 0) },
+                 list2.Key,
+                 list2.Value,
+                 "list2报错"
+                );
 
                 var list3 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id,
