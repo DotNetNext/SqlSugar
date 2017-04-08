@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T> 
+    public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
         public SqlSugarClient Context { get; set; }
         public IDb Db { get { return Context.Database; } }
@@ -56,45 +56,47 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            base.Where(expression,this.Context, this.SqlBuilder);
+            this._Where(expression);
             return this;
         }
         public ISugarQueryable<T> Where(string whereString, object whereObj = null)
         {
-            base.Where<T>(whereString, whereObj, this.Context, this.SqlBuilder);
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         public ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
-            base.Where<T2>(whereString, whereObj, this.Context, this.SqlBuilder);
+            var whereValue = SqlBuilder.LambadaQueryBuilder.WhereInfos;
+            whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString));
+            this.AddPars(whereObj, this.Context);
             return this;
         }
         public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression)
         {
-            base.Where(expression, this.Context, this.SqlBuilder);
+            this._Where(expression);
             return this;
         }
-        public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression) 
+        public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression)
         {
-            base.Where(expression, this.Context, this.SqlBuilder);
+            this._Where(expression);
             return this;
         }
         public ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression)
         {
-            base.Where(expression, this.Context, this.SqlBuilder);
+            this._Where(expression);
             return this;
         }
-        public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression) 
+        public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression)
         {
-            base.Where(expression, this.Context, this.SqlBuilder);
+            this._Where(expression);
             return this;
         }
-        public ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression) 
+        public ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression)
         {
-            base.Where(expression, this.Context, this.SqlBuilder);
+            this._Where(expression);
             return this;
         }
-        public virtual ISugarQueryable<T> WhereIF(bool isWhere,Expression<Func<T, bool>> expression)
+        public virtual ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (!isWhere) return this;
             Where<T>(expression);
@@ -103,13 +105,13 @@ namespace SqlSugar
         public ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null)
         {
             if (!isWhere) return this;
-            base.Where<T>(whereString, whereObj, this.Context, this.SqlBuilder);
+            this.Where<T>(whereString, whereObj);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, string whereString, object whereObj = null) 
+        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, string whereString, object whereObj = null)
         {
             if (!isWhere) return this;
-            base.Where<T2>(whereString, whereObj, this.Context, this.SqlBuilder);
+            this.Where<T2>(whereString, whereObj);
             return this;
         }
         public ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression)
@@ -118,13 +120,13 @@ namespace SqlSugar
             this.Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression) 
+        public ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression)
         {
             if (!isWhere) return this;
             this.Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression) 
+        public ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression)
         {
             if (!isWhere) return this;
             this.Where(expression);
@@ -136,7 +138,7 @@ namespace SqlSugar
             this.Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression) 
+        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression)
         {
             if (!isWhere) return this;
             this.Where(expression);
@@ -258,35 +260,35 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression) 
+        public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression)
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression) 
+        public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression)
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression) 
+        public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression)
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression) 
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression)
         {
             return SelectMehtod<TResult>(expression);
         }
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression) 
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression)
         {
             return SelectMehtod<TResult>(expression);
         }
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression) 
+        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression)
         {
             return SelectMehtod<TResult>(expression);
         }
 
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression) 
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             return SelectMehtod<TResult>(expression);
         }
@@ -346,8 +348,8 @@ namespace SqlSugar
 
         public List<T> ToList()
         {
-            string sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
-            using (var dataReader = this.Db.GetDataReader(sql, this.Pars.ToArray()))
+            var sqlObj =this.ToSql();
+            using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
                 var reval = this.Bind.DataReaderToList<T>(typeof(T), dataReader, SqlBuilder.LambadaQueryBuilder.SelectCacheKey);
                 return reval;
@@ -368,9 +370,10 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public KeyValuePair<string, Dictionary<string, string>> ToSql()
+        public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            throw new NotImplementedException();
+            string sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
+            return new KeyValuePair<string, List<SugarParameter>>(sql, this.Pars);
         }
 
         public DataTable ToDataTable()
@@ -398,6 +401,23 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
+        #region 私有方法
+        protected void _Where(Expression expression)
+        {
+            ResolveExpressType type = ResolveExpressType.WhereSingle;
+            if (SqlBuilder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
+            {
+                type = ResolveExpressType.WhereMultiple;
+            }
+            ILambdaExpressions resolveExpress = this.SqlBuilder.LambadaQueryBuilder.LambdaExpressions;
+            resolveExpress.Resolve(expression, type);
+            BasePars.AddRange(resolveExpress.Parameters);
+            SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(SqlBuilder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(), resolveExpress.Result.GetResultString()));
+            resolveExpress.Clear();
+        }
   
+        #endregion
+
+
     }
 }

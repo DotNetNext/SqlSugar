@@ -90,23 +90,7 @@ namespace SqlSugar
                 return _Ado;
             }
         }
-        /// <summary>
-        /// Lambda Expressions operation
-        /// </summary>
-        public virtual ILambdaExpressions LambdaExpressions
-        {
-            get
-            {
-                if (_LambdaExpressions == null)
-                {
-                    var reval = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-                    reval.Context = this;
-                    _LambdaExpressions = reval;
-                    return reval;
-                }
-                return _LambdaExpressions;
-            }
-        }
+
         /// <summary>
         /// Lambda Query operation
         /// </summary>
@@ -120,6 +104,7 @@ namespace SqlSugar
             reval.SqlBuilder.LambadaQueryBuilder.Builder = sqlBuilder;
             reval.SqlBuilder.Context = reval.SqlBuilder.LambadaQueryBuilder.Context = this;
             reval.SqlBuilder.LambadaQueryBuilder.EntityName = typeof(T).Name;
+            reval.SqlBuilder.LambadaQueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
             return reval;
         }
 

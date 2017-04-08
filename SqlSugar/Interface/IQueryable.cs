@@ -84,7 +84,7 @@ namespace SqlSugar
         string ToJsonPage(int pageIndex, int pageSize);
         string ToJsonPage(int pageIndex, int pageSize, ref int pageCount);
 
-        KeyValuePair<string, Dictionary<string, string>> ToSql();
+        KeyValuePair<string, List<SugarParameter>> ToSql();
 
 
         DataTable ToDataTable();

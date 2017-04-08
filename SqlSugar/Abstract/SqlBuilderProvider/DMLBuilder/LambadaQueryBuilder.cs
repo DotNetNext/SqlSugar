@@ -8,11 +8,6 @@ namespace SqlSugar
 {
     public abstract class LambadaQueryBuilder : IDMLBuilder
     {
-        public LambadaQueryBuilder()
-        {
-
-        }
-        
         private List<SugarParameter> _QueryPars;
         private List<JoinQueryInfo> _JoinQueryInfos;
         private List<string> _WhereInfos;
@@ -20,6 +15,7 @@ namespace SqlSugar
 
         public StringBuilder Sql { get; set; }
         public SqlSugarClient Context { get; set; }
+        public ILambdaExpressions LambdaExpressions { get; set; }
 
         public ISqlBuilder Builder { get; set; }
         public int? Skip { get; set; }
@@ -85,7 +81,7 @@ namespace SqlSugar
         public virtual string GetSelectValueByExpression()
         {
             var expression = this.SelectValue as Expression;
-            ILambdaExpressions resolveExpress = this.Context.LambdaExpressions;
+            ILambdaExpressions resolveExpress = this.LambdaExpressions;
             var isSingle= Builder.LambadaQueryBuilder.JoinQueryInfos.IsValuable();
             resolveExpress.JoinQueryInfos = Builder.LambadaQueryBuilder.JoinQueryInfos;
             resolveExpress.MappingColumns = Context.MappingColumns;

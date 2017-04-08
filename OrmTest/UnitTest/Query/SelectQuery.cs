@@ -35,16 +35,29 @@ namespace OrmTest.UnitTest
                     Console.WriteLine(sql + " " + pars);
                 };
 
-                var listx = db.Queryable<School, School>((st, st2) => new object[] {
+                var l1 = db.Queryable<School, School>((st, st2) => new object[] {
                            JoinType.Left,st.Id==st2.Id
                     })
                     .Where(st => st.Id > 0)
-                    .Select<School, School, dynamic>((st, st2) => new {stid = st.Id, scId = st2.Id,xx=st }).ToList();
-                return;
-                var list = db.Queryable<School, School>((st, st2) => new object[] {
+                    .Select<School, School, dynamic>((st, st2) => new {stid = st.Id, scId = st2.Id,xx=st }).ToSql();
+
+                base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [xx_Id] , [st].[Name] AS [xx_Name]  FROM [School] st  Left JOIN School st2  ON ( [st].[Id]  = [st2].[Id] )   WHERE ( [st].[Id]  > @Id0 )"
+                    , new List<SugarParameter>() {
+                        new SugarParameter("@Id0",0)
+                    },l1.Key,l1.Value, "l1错误");
+
+                var l2 = db.Queryable<School, School>((st, st2) => new object[] {
                            JoinType.Left,st.Id==st2.Id
-                    }).Where<Student, School>((st, sc) => st.Id > 0)
-                      .Select(st => new ViewModelStudent { School = st }).ToList();
+                    }).Where<Student, School>((st, st2) => st2.Id > 2)
+                      .Select(st => new ViewModelStudent { School = st }).ToSql();
+
+                base.Check("SELECT  [st].[Id] AS [School_Id] , [st].[Name] AS [School_Name]  FROM [School] st  Left JOIN School st2  ON ( [st].[Id]  = [st2].[Id] )   WHERE ( [st2].[Id]  > @Id0 )",
+                     new List<SugarParameter>() { new SugarParameter("@Id0", 2) },
+                     l2.Key,
+                     l2.Value,
+                     "l2报错"
+                    );
+
 
                 var list2 = db.Queryable<Student>()
                   .Where(st => st.Id > 0)
