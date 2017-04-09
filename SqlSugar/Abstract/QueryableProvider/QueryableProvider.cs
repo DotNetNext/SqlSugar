@@ -351,8 +351,16 @@ namespace SqlSugar
             var sqlObj =this.ToSql();
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
-                var reval = this.Bind.DataReaderToList<T>(typeof(T), dataReader, SqlBuilder.LambadaQueryBuilder.SelectCacheKey);
-                return reval;
+                var tType = typeof(T);
+                if (tType.IsAnonymousType())
+                {
+                   return this.Context.RewritableMethods.DataReaderToDynamicList<T>(dataReader);
+                }
+                else
+                {
+                    var reval = this.Bind.DataReaderToList<T>(tType, dataReader, SqlBuilder.LambadaQueryBuilder.SelectCacheKey);
+                    return reval;
+                }
             }
         }
         public string ToJson()
@@ -410,14 +418,14 @@ namespace SqlSugar
                 type = ResolveExpressType.WhereMultiple;
             }
             ILambdaExpressions resolveExpress = this.SqlBuilder.LambadaQueryBuilder.LambdaExpressions;
+            resolveExpress.IgnoreComumnList = this.Context.IgnoreComumns;
+            resolveExpress.MappingColumns = this.Context.MappingColumns;
+            resolveExpress.MappingColumns = this.Context.MappingColumns;
             resolveExpress.Resolve(expression, type);
             BasePars.AddRange(resolveExpress.Parameters);
             SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(SqlBuilder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(), resolveExpress.Result.GetResultString()));
             resolveExpress.Clear();
         }
-  
         #endregion
-
-
     }
 }

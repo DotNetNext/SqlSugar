@@ -86,6 +86,7 @@ namespace SqlSugar
             resolveExpress.JoinQueryInfos = Builder.LambadaQueryBuilder.JoinQueryInfos;
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
+            resolveExpress.IgnoreComumnList = Context.IgnoreComumns;
             resolveExpress.Resolve(expression, ResolveType);
             this.QueryPars.AddRange(resolveExpress.Parameters);
             var reval= resolveExpress.Result.GetResultString();

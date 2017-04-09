@@ -10,32 +10,32 @@ namespace SqlSugar
         public SqlSugarException(string message)
             : base(message){}
 
-        public SqlSugarException(string message, string sql)
-            : base(GetMessage(message, sql)) {}
+        public SqlSugarException(SqlSugarClient context,string message, string sql)
+            : base(GetMessage(context, message, sql)) {}
 
-        public SqlSugarException(string message, string sql, object pars)
-            : base(GetMessage(message, sql, pars)){}
+        public SqlSugarException(SqlSugarClient context, string message, string sql, object pars)
+            : base(GetMessage(context,message, sql, pars)){}
 
-        public SqlSugarException(string message, object pars)
-            : base(GetMessage(message, pars)){}
+        public SqlSugarException(SqlSugarClient context, string message, object pars)
+            : base(GetMessage(context,message, pars)){}
 
-        private static string GetMessage(string message, object pars)
+        private static string GetMessage(SqlSugarClient context, string message, object pars)
         {
             var parsStr = string.Empty; ;
             if (pars != null)
             {
-                parsStr = JsonConvert.SerializeObject(pars);
+                parsStr = context.RewritableMethods.SerializeObject(pars);
             }
             var reval = GetLineMessage("message", message) + GetLineMessage("function", parsStr);
             return reval;
 
         }
 
-        private static string GetMessage(string message, string sql, object pars)
+        private static string GetMessage(SqlSugarClient context, string message, string sql, object pars)
         {
             if (pars == null)
             {
-                return GetMessage(message, sql);
+                return GetMessage(context,message, sql);
             }
             else
             {

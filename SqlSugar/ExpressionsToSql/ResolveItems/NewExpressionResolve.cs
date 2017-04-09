@@ -90,6 +90,11 @@ namespace SqlSugar
                         var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
                         foreach (var property in listProperties)
                         {
+                            if (this.Context.IgnoreComumnList != null 
+                                && this.Context.IgnoreComumnList.Any(
+                                    it => it.EntityName == item.Type.Name&&it.EntityPropertyName==property.Name)) {
+                                continue;
+                            }
                             if (property.PropertyType.IsClass())
                             {
 

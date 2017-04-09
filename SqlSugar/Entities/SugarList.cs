@@ -19,6 +19,14 @@ namespace SqlSugar
         }
     }
 
+    public class IgnoreComumnList : List<IgnoreComumn> {
+        public void Add(string EntityPropertyName,string EntityName)
+        {
+            this.RemoveAll(it => it.EntityPropertyName.Equals(EntityPropertyName, StringComparison.CurrentCultureIgnoreCase));
+            this.Add(new IgnoreComumn() { EntityPropertyName = EntityPropertyName,  EntityName=EntityName});
+        }
+    }
+
     public class MappingColumnList: List<MappingColumn> 
     {
         public void Add(string EntityPropertyName, string dbColumnName,string dbTableName)

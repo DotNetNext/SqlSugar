@@ -15,11 +15,13 @@ namespace SqlSugar
         public Guid ContextID { get; set; }
         public MappingTableList MappingTables = new MappingTableList();
         public MappingColumnList MappingColumns = new MappingColumnList();
+        public IgnoreComumnList IgnoreComumns = new IgnoreComumnList();
 
         protected ISqlBuilder _SqlBuilder;
         protected IDb _Ado;
         protected ILambdaExpressions _LambdaExpressions;
         protected object _Sqlable;
+        protected IRewritableMethods _RewritableMethods;
 
         protected void InitConstructor()
         {

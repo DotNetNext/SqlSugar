@@ -8,9 +8,10 @@ namespace SqlSugar
 {
     public partial interface ILambdaExpressions
     {
-         MappingColumnList MappingColumns { get; set; }
-         MappingTableList MappingTables { get; set; }
-         List<JoinQueryInfo> JoinQueryInfos { get; set; }
+        MappingColumnList MappingColumns { get; set; }
+        MappingTableList MappingTables { get; set; }
+        IgnoreComumnList IgnoreComumnList { get; set; }
+        List<JoinQueryInfo> JoinQueryInfos { get; set; }
         SqlSugarClient Context { get; set; }
         IDbMethods DbMehtods { get; set; }
         Expression Expression { get; set; }

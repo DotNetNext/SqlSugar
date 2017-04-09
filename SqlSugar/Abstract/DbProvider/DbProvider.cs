@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -282,7 +281,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        action(sql, JsonConvert.SerializeObject(pars.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql,this.Context.RewritableMethods.SerializeObject(pars.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
                     }
                 }
             }

@@ -74,6 +74,7 @@
     <Compile Include="Common\PubConvert.cs" />
     <Compile Include="Common\PubMethod.cs" />
     <Compile Include="Common\SqlException.cs" />
+    <Compile Include="Common\RewritableMethods.cs" />
     <Compile Include="Databases\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
     <Compile Include="Databases\SqlServer\DbType.cs" />
     <Compile Include="Databases\SqlServer\Db\DbBind\SqlServerDbBind.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />
+    <Compile Include="Entities\Mapping\IgnoreComumn.cs" />
     <Compile Include="ExpressionsToSql\Common\CommonTempDataType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
     <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="Interface\IQueryable.cs" />
     <Compile Include="Interface\ISqlBuilder\IDMLBuilder.cs" />
     <Compile Include="Interface\ISqlBuilder\ISqlBuilder.cs" />
+    <Compile Include="Interface\IRewritableMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlSugarAccessory.cs" />
     <Compile Include="SqlSugarClient.cs" />
