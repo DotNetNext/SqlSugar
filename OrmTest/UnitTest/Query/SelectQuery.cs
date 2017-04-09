@@ -29,7 +29,7 @@ namespace OrmTest.UnitTest
         {
             using (var db = GetInstance())
             {
-                db.Database.IsEnableLogEvent = true;
+                //db.Database.IsEnableLogEvent = true;
                 db.Database.LogEventStarting = (sql, pars) =>
                 {
                     Console.WriteLine(sql + " " + pars);
@@ -38,9 +38,10 @@ namespace OrmTest.UnitTest
 
                 #region dr ot entity
                 db.IgnoreComumns.Add("TestId", "Student");
-                var dr2 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
                 var dr1 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
-                var x=db.RewritableMethods.SerializeObject(new { newid = 1, obj = new School() { Id = 1 } });
+                var dr2 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
+                var dr3 = db.Queryable<Student>().Select(it => new  ViewModelStudent2{  Student=it }).ToList();
+                var dr4 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it,  Name =it.Name }).ToList();
                 #endregion
 
 
@@ -80,7 +81,7 @@ namespace OrmTest.UnitTest
                  .Select("st.*").ToList();
                 #endregion
 
-     
+
             }
         }
 

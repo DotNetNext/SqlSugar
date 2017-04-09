@@ -18,35 +18,64 @@ namespace SqlSugar
         /// <returns></returns>
         public ExpandoObject DataReaderToExpandoObject(IDataReader reader)
         {
-            ExpandoObject d = new ExpandoObject();
+            ExpandoObject result = new ExpandoObject();
+            var dic = ((IDictionary<string, object>)result);
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 try
                 {
-                    ((IDictionary<string, object>)d).Add(reader.GetName(i), reader.GetValue(i));
+                    dic.Add(reader.GetName(i), reader.GetValue(i));
                 }
                 catch
                 {
-                    ((IDictionary<string, object>)d).Add(reader.GetName(i), null);
+                    dic.Add(reader.GetName(i), null);
                 }
             }
-            return d;
+            return result;
         }
 
         public List<T> DataReaderToDynamicList<T>(IDataReader reader)
         {
-            var list = new List<T>();
+            var tType = typeof(T);
+            var classProperties = tType.GetProperties().Where(it => it.PropertyType.IsClass()).ToList();
+            var reval = new List<T>();
             if (reader != null && !reader.IsClosed)
             {
                 while (reader.Read())
                 {
                     var expandoObject = DataReaderToExpandoObject(reader);
+                    var dic = (IDictionary<string,object>)expandoObject;
+                    foreach (var item in classProperties)
+                    {
+                        var startsWithName = item.Name + "_";
+                        List<string> removeKeys = new List<string>();
+                        foreach (var d in dic)
+                        {
+                            if (d.Key.StartsWith(startsWithName)) {
+                                removeKeys.Add(d.Key);
+                            }
+                        }
+                        if (removeKeys.Any()) {
+                            var keyValues = removeKeys.Select(it => new KeyValuePair<string, object>(it.Replace(startsWithName, null), dic[it])).ToList();
+                            foreach (var key in removeKeys)
+                            {
+                                dic.Remove(key);
+                            }
+                            var obj = Activator.CreateInstance(item.PropertyType, true);
+                            var ps = obj.GetType().GetProperties();
+                            foreach (var keyValue in keyValues)
+                            {
+                                ps.Single(it => it.Name == keyValue.Key).SetValue(obj,keyValue.Value);
+                            }
+                            dic.Add(item.Name, obj);
+                        }
+                    }
                     var stringValue = SerializeObject(expandoObject);
-                    list.Add((T)DeserializeObject<T>(stringValue));
+                    reval.Add((T)DeserializeObject<T>(stringValue));
                 }
                 reader.Close();
             }
-            return list;
+            return reval;
         }
 
         /// <summary>
