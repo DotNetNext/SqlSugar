@@ -56,6 +56,12 @@ namespace SqlSugar
             return result;
         }
 
+        /// <summary>
+        /// DataReaderToDynamicList
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         public List<T> DataReaderToDynamicList<T>(IDataReader reader)
         {
             var tType = typeof(T);
