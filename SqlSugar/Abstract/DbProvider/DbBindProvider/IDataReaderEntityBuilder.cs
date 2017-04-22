@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 namespace SqlSugar
 {
-    public partial class  IDataReaderEntityBuilder<T>
+    public partial class IDataReaderEntityBuilder<T>
     {
         #region fields
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
@@ -38,6 +38,7 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertEnum_Null = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Null");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
+        private static readonly MethodInfo getEntity= typeof(IDataRecordExtensions).GetMethod("getEntity");
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
         #endregion
@@ -57,21 +58,24 @@ namespace SqlSugar
             LocalBuilder result = generator.DeclareLocal(type);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
             generator.Emit(OpCodes.Stloc, result);
-            var classFieldNames = typeof(T).GetProperties().Select(it => it.Name).ToList();
+            var mappingColumns = context.MappingColumns.Where(it => it.EntityName == type.Name);
             for (int i = 0; i < dataRecord.FieldCount; i++)
             {
-                string dbFieldName = dataRecord.GetName(i);
-                if (!classFieldNames.Any(it => it == dbFieldName) && classFieldNames.Any(it => it.Equals(dbFieldName, StringComparison.CurrentCultureIgnoreCase)))
+                string propName = null;
+                if (mappingColumns != null)
                 {
-                    dbFieldName = classFieldNames.Single(it => it.ToLower() == dbFieldName.ToLower());
+                    var mappingInfo = mappingColumns.SingleOrDefault(it => it.DbColumnName.Equals(dataRecord.GetName(i), StringComparison.CurrentCultureIgnoreCase));
+                    if (mappingInfo != null)
+                    {
+                        propName = mappingInfo.EntityPropertyName;
+                    }
                 }
-                PropertyInfo propertyInfo = type.GetProperty(dbFieldName);
+                PropertyInfo propertyInfo = type.GetProperty(type.GetProperties().Single(it=>it.Name.Equals(propName,StringComparison.CurrentCultureIgnoreCase)).Name);
                 Label endIfLabel = generator.DefineLabel();
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
                     bool isNullable = false;
                     var underType = PubMethod.GetUnderType(propertyInfo, ref isNullable);
-
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldc_I4, i);
                     generator.Emit(OpCodes.Callvirt, isDBNullMethod);
@@ -79,7 +83,7 @@ namespace SqlSugar
                     generator.Emit(OpCodes.Ldloc, result);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldc_I4, i);
-                    GeneratorCallMethod(generator, underType, isNullable, propertyInfo, dataRecord.GetDataTypeName(i), dbFieldName, context);
+                    GeneratorCallMethod(generator, underType, isNullable, propertyInfo, dataRecord.GetDataTypeName(i), propName, context);
                     generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
                     generator.MarkLabel(endIfLabel);
                 }
@@ -88,7 +92,7 @@ namespace SqlSugar
             generator.Emit(OpCodes.Ret);
             dynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
             return dynamicBuilder;
-        } 
+        }
         #endregion
 
         #region helpers
@@ -252,7 +256,7 @@ namespace SqlSugar
                     generator.Emit(OpCodes.Unbox_Any, pro.PropertyType);
                 }
             }
-        } 
+        }
         #endregion
     }
 }
