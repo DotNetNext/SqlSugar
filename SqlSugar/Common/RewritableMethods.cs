@@ -61,13 +61,16 @@ namespace SqlSugar
                             {
                                 dic.Remove(key);
                             }
-                            var obj = Activator.CreateInstance(item.PropertyType, true);
-                            var ps = obj.GetType().GetProperties();
-                            foreach (var keyValue in keyValues)
+                            if (!item.PropertyType.IsAnonymousType())
                             {
-                                ps.Single(it => it.Name == keyValue.Key).SetValue(obj,keyValue.Value);
+                                var obj = Activator.CreateInstance(item.PropertyType, true);
+                                var ps = obj.GetType().GetProperties();
+                                foreach (var keyValue in keyValues)
+                                {
+                                    ps.Single(it => it.Name == keyValue.Key).SetValue(obj, keyValue.Value);
+                                }
+                                dic.Add(item.Name, obj);
                             }
-                            dic.Add(item.Name, obj);
                         }
                     }
                     var stringValue = SerializeObject(expandoObject);
