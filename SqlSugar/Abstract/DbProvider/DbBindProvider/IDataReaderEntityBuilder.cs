@@ -58,12 +58,12 @@ namespace SqlSugar
             LocalBuilder result = generator.DeclareLocal(type);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
             generator.Emit(OpCodes.Stloc, result);
-            var mappingColumns = context.MappingColumns.Where(it => it.EntityName.Equals(type.Name,StringComparison.CurrentCultureIgnoreCase));
+            var mappingColumns = context.MappingColumns.Where(it => it.EntityName.Equals(type.Name,StringComparison.CurrentCultureIgnoreCase)).ToList();
             for (int i = 0; i < dataRecord.FieldCount; i++)
             {
                 string dbFieldName = dataRecord.GetName(i);
                 string propName = dbFieldName;
-                if (mappingColumns != null)
+                if (mappingColumns != null&& mappingColumns.Any())
                 {
                     var mappingInfo = mappingColumns.SingleOrDefault(it => it.DbColumnName.Equals(dbFieldName, StringComparison.CurrentCultureIgnoreCase));
                     if (mappingInfo != null)
