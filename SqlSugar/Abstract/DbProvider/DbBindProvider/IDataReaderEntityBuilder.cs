@@ -61,10 +61,11 @@ namespace SqlSugar
             var mappingColumns = context.MappingColumns.Where(it => it.EntityName == type.Name);
             for (int i = 0; i < dataRecord.FieldCount; i++)
             {
-                string propName = null;
+                string dbFieldName = dataRecord.GetName(i);
+                string propName = dbFieldName;
                 if (mappingColumns != null)
                 {
-                    var mappingInfo = mappingColumns.SingleOrDefault(it => it.DbColumnName.Equals(dataRecord.GetName(i), StringComparison.CurrentCultureIgnoreCase));
+                    var mappingInfo = mappingColumns.SingleOrDefault(it => it.DbColumnName.Equals(dbFieldName, StringComparison.CurrentCultureIgnoreCase));
                     if (mappingInfo != null)
                     {
                         propName = mappingInfo.EntityPropertyName;
