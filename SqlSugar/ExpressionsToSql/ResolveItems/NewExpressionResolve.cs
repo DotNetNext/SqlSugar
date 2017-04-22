@@ -101,7 +101,7 @@ namespace SqlSugar
                             }
                             else
                             {
-                                var asName = memberName + "_" + property.Name;
+                                var asName = "["+item.Type.Name + "." + property.Name+"]";
                                 var columnName = property.Name;
                                 if (Context.IsJoin)
                                 {
