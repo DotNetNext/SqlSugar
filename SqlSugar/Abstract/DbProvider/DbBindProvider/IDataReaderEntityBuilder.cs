@@ -51,7 +51,7 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertEnum_Null = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Null");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
-        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("getEntity", new Type[] { typeof(SqlSugarClient) });
+        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarClient) });
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
         #endregion
