@@ -12,13 +12,15 @@ namespace SqlSugar
         private SqlSugarClient Context = null;
         private IDataReaderEntityBuilder<T> DynamicBuilder;
         private IDataRecord DataRecord;
-        private IDataReaderEntityBuilder() {
+        private IDataReaderEntityBuilder()
+        {
         }
 
-        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord) {
+        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord)
+        {
             this.Context = context;
             this.DataRecord = dataRecord;
-            this.DynamicBuilder=new IDataReaderEntityBuilder<T>();
+            this.DynamicBuilder = new IDataReaderEntityBuilder<T>();
         }
         #region fields
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
@@ -49,20 +51,19 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertEnum_Null = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Null");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
-        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("getEntity");
+        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("getEntity", new Type[] { typeof(SqlSugarClient) });
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
         #endregion
 
-        #region functions
         public T Build(IDataRecord dataRecord)
         {
             return handler(dataRecord);
         }
 
-        public  IDataReaderEntityBuilder<T> CreateBuilder(Type type)
+        public IDataReaderEntityBuilder<T> CreateBuilder(Type type)
         {
-            DynamicMethod method = new DynamicMethod("DynamicCreateEntity", type,
+            DynamicMethod method = new DynamicMethod("SqlSugarEntity", type,
             new Type[] { typeof(IDataRecord) }, type, true);
             ILGenerator generator = method.GetILGenerator();
             LocalBuilder result = generator.DeclareLocal(type);
@@ -103,31 +104,7 @@ namespace SqlSugar
             DynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
             return DynamicBuilder;
         }
-
-        private  void CreateBuilder_Part(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, List<MappingColumn> mappingColumns)
-        {
-            foreach (var prop in propertyInfo.PropertyType.GetProperties())
-            {
-                string entityName = propertyInfo.PropertyType.Name;
-                string entityProptertyName = prop.Name;
-                string fileName = entityName + "." + entityProptertyName;
-                if (Context.IgnoreComumns != null && Context.IgnoreComumns.Any(it => it.EntityPropertyName.Equals(entityProptertyName, StringComparison.CurrentCultureIgnoreCase)
-                && it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    continue;
-                }
-                if (mappingColumns != null)
-                {
-                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName.Equals(propertyInfo.Name));
-                    if (mappInfo != null)
-                    {
-                        fileName = mappInfo.DbColumnName;
-                    }
-                }
-                BindField(generator, result, prop, fileName);
-            }
-        }
-        private  void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
+        private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
         {
             int i = DataRecord.GetOrdinal(fileName);
             bool isNullable = false;
@@ -144,10 +121,9 @@ namespace SqlSugar
             generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
             generator.MarkLabel(endIfLabel);
         }
-        private  void BindField( ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
+        private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
         {
             int i = DataRecord.GetOrdinal(fileName);
-            bool isNullable = false;
             Label endIfLabel = generator.DefineLabel();
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
@@ -156,23 +132,11 @@ namespace SqlSugar
             generator.Emit(OpCodes.Ldloc, result);
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
-            GeneratorCallMethod(generator,propertyInfo,i);
+            BindMethod(generator, propertyInfo, i);
             generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
             generator.MarkLabel(endIfLabel);
         }
-        #endregion
-
-        #region helpers
-        private  void CheckType(List<string> errorTypes, string objType, string dbType, string field)
-        {
-            var isAny = errorTypes.Contains(objType);
-            if (isAny)
-            {
-                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", field, dbType, objType));
-            }
-        }
-
-        private  void GeneratorCallMethod(ILGenerator generator,PropertyInfo bindProperty,int ordinal)
+        private void BindMethod(ILGenerator generator, PropertyInfo bindProperty, int ordinal)
         {
             var isNullableType = false;
             var bindType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
@@ -328,6 +292,13 @@ namespace SqlSugar
                 }
             }
         }
-        #endregion
+        private void CheckType(List<string> errorTypes, string objType, string dbType, string field)
+        {
+            var isAny = errorTypes.Contains(objType);
+            if (isAny)
+            {
+                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", field, dbType, objType));
+            }
+        }
     }
 }
