@@ -7,6 +7,12 @@ using System.Reflection;
 using System.Reflection.Emit;
 namespace SqlSugar
 {
+    ///<summary>
+    /// ** description：IDataReader Entity Builder
+    /// ** author：sunkaixuan
+    /// ** date：2017/4/2
+    /// ** qq:610262374
+    /// </summary>
     public partial class IDataReaderEntityBuilder<T>
     {
         private SqlSugarClient Context = null;
@@ -91,7 +97,7 @@ namespace SqlSugar
                 {
                     if (propertyInfo.PropertyType.IsClass())
                     {
-                       BindClass(generator, result, propertyInfo);
+                        BindClass(generator, result, propertyInfo);
                     }
                     else
                     {
@@ -107,7 +113,7 @@ namespace SqlSugar
         private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
         {
 
-          
+
         }
         private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
         {
