@@ -9,6 +9,17 @@ namespace SqlSugar
 {
     public partial class IDataReaderEntityBuilder<T>
     {
+        private SqlSugarClient Context = null;
+        private IDataReaderEntityBuilder<T> DynamicBuilder;
+        private IDataRecord DataRecord;
+        private IDataReaderEntityBuilder() {
+        }
+
+        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord) {
+            this.Context = context;
+            this.DataRecord = dataRecord;
+            this.DynamicBuilder=new IDataReaderEntityBuilder<T>();
+        }
         #region fields
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
         private static readonly MethodInfo getValueMethod = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
@@ -38,7 +49,7 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertEnum_Null = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Null");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
-        private static readonly MethodInfo getEntity= typeof(IDataRecordExtensions).GetMethod("getEntity");
+        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("getEntity");
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
         #endregion
@@ -49,55 +60,111 @@ namespace SqlSugar
             return handler(dataRecord);
         }
 
-        public static IDataReaderEntityBuilder<T> CreateBuilder(Type type, IDataRecord dataRecord, SqlSugarClient context)
+        public  IDataReaderEntityBuilder<T> CreateBuilder(Type type)
         {
-            IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
             DynamicMethod method = new DynamicMethod("DynamicCreateEntity", type,
             new Type[] { typeof(IDataRecord) }, type, true);
             ILGenerator generator = method.GetILGenerator();
             LocalBuilder result = generator.DeclareLocal(type);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
             generator.Emit(OpCodes.Stloc, result);
-            var mappingColumns = context.MappingColumns.Where(it => it.EntityName.Equals(type.Name,StringComparison.CurrentCultureIgnoreCase)).ToList();
-            for (int i = 0; i < dataRecord.FieldCount; i++)
+            var mappingColumns = Context.MappingColumns.Where(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            var properties = type.GetProperties();
+            foreach (var propertyInfo in properties)
             {
-                string dbFieldName = dataRecord.GetName(i);
-                string propName = dbFieldName;
-                if (mappingColumns != null&& mappingColumns.Any())
+                string fileName = propertyInfo.Name;
+                if (mappingColumns != null)
                 {
-                    var mappingInfo = mappingColumns.SingleOrDefault(it => it.DbColumnName.Equals(dbFieldName, StringComparison.CurrentCultureIgnoreCase));
-                    if (mappingInfo != null)
+                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName.Equals(propertyInfo.Name));
+                    if (mappInfo != null)
                     {
-                        propName = mappingInfo.EntityPropertyName;
+                        fileName = mappInfo.DbColumnName;
                     }
                 }
-                PropertyInfo propertyInfo = type.GetProperty(type.GetProperties().Single(it=>it.Name.Equals(propName,StringComparison.CurrentCultureIgnoreCase)).Name);
-                Label endIfLabel = generator.DefineLabel();
+                if (Context.IgnoreComumns != null && Context.IgnoreComumns.Any(it => it.EntityPropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
+                         && it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    continue;
+                }
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
-                    bool isNullable = false;
-                    var underType = PubMethod.GetUnderType(propertyInfo, ref isNullable);
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldc_I4, i);
-                    generator.Emit(OpCodes.Callvirt, isDBNullMethod);
-                    generator.Emit(OpCodes.Brtrue, endIfLabel);
-                    generator.Emit(OpCodes.Ldloc, result);
-                    generator.Emit(OpCodes.Ldarg_0);
-                    generator.Emit(OpCodes.Ldc_I4, i);
-                    GeneratorCallMethod(generator, underType, isNullable, propertyInfo, dataRecord.GetDataTypeName(i), propName, context);
-                    generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
-                    generator.MarkLabel(endIfLabel);
+                    if (propertyInfo.PropertyType.IsClass())
+                    {
+                        //BindClass(dataRecord, context, generator, result, propertyInfo,fileName);
+                    }
+                    else
+                    {
+                        BindField(generator, result, propertyInfo, fileName);
+                    }
                 }
             }
             generator.Emit(OpCodes.Ldloc, result);
             generator.Emit(OpCodes.Ret);
-            dynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
-            return dynamicBuilder;
+            DynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
+            return DynamicBuilder;
+        }
+
+        private  void CreateBuilder_Part(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, List<MappingColumn> mappingColumns)
+        {
+            foreach (var prop in propertyInfo.PropertyType.GetProperties())
+            {
+                string entityName = propertyInfo.PropertyType.Name;
+                string entityProptertyName = prop.Name;
+                string fileName = entityName + "." + entityProptertyName;
+                if (Context.IgnoreComumns != null && Context.IgnoreComumns.Any(it => it.EntityPropertyName.Equals(entityProptertyName, StringComparison.CurrentCultureIgnoreCase)
+                && it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    continue;
+                }
+                if (mappingColumns != null)
+                {
+                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName.Equals(propertyInfo.Name));
+                    if (mappInfo != null)
+                    {
+                        fileName = mappInfo.DbColumnName;
+                    }
+                }
+                BindField(generator, result, prop, fileName);
+            }
+        }
+        private  void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
+        {
+            int i = DataRecord.GetOrdinal(fileName);
+            bool isNullable = false;
+            Label endIfLabel = generator.DefineLabel();
+            var underType = PubMethod.GetUnderType(propertyInfo, ref isNullable);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldc_I4, i);
+            generator.Emit(OpCodes.Callvirt, isDBNullMethod);
+            generator.Emit(OpCodes.Brtrue, endIfLabel);
+            generator.Emit(OpCodes.Ldloc, result);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldc_I4, i);
+
+            generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
+            generator.MarkLabel(endIfLabel);
+        }
+        private  void BindField( ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
+        {
+            int i = DataRecord.GetOrdinal(fileName);
+            bool isNullable = false;
+            Label endIfLabel = generator.DefineLabel();
+            var underType = PubMethod.GetUnderType(propertyInfo, ref isNullable);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldc_I4, i);
+            generator.Emit(OpCodes.Callvirt, isDBNullMethod);
+            generator.Emit(OpCodes.Brtrue, endIfLabel);
+            generator.Emit(OpCodes.Ldloc, result);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldc_I4, i);
+            GeneratorCallMethod(generator, underType, isNullable, propertyInfo, DataRecord.GetDataTypeName(i), propertyInfo.Name);
+            generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
+            generator.MarkLabel(endIfLabel);
         }
         #endregion
 
         #region helpers
-        private static void CheckType(List<string> errorTypes, string objType, string dbType, string field)
+        private  void CheckType(List<string> errorTypes, string objType, string dbType, string field)
         {
             var isAny = errorTypes.Contains(objType);
             if (isAny)
@@ -106,9 +173,9 @@ namespace SqlSugar
             }
         }
 
-        private static void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName, SqlSugarClient context)
+        private  void GeneratorCallMethod(ILGenerator generator, Type type, bool isNullable, PropertyInfo pro, string dbTypeName, string fieldName)
         {
-            var bind = context.Database.DbBind;
+            var bind = Context.Database.DbBind;
             List<string> guidThrow = bind.GuidThrow;
             List<string> intThrow = bind.IntThrow;
             List<string> stringThrow = bind.StringThrow;

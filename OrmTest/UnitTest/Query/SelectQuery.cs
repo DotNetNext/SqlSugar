@@ -38,7 +38,7 @@ namespace OrmTest.UnitTest
 
                 #region dr ot entity
                 db.IgnoreComumns.Add("TestId", "Student");
-                var dr3 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it }).ToList();
+                var dr3 = db.Queryable<Student>().Select(it => new ViewModelStudent2 {    Name=it.Name,Student=it}).ToList();
                 var dr0 = db.Queryable<Student>().Select(it => new  { id=it.Id,w=new { x=it } }).ToList();
                 var dr1 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
                 var dr2 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();

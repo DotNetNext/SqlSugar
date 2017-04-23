@@ -18,7 +18,7 @@ namespace SqlSugar
             }
             else
             {
-                eblist = IDataReaderEntityBuilder<T>.CreateBuilder(type, dataReader, context);
+                eblist =new IDataReaderEntityBuilder<T>(context,dataReader).CreateBuilder(type);
                 cacheManager.Add(key, eblist);
             }
             List<T> list = new List<T>();
