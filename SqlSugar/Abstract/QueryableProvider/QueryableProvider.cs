@@ -349,10 +349,11 @@ namespace SqlSugar
         public List<T> ToList()
         {
             var sqlObj =this.ToSql();
+            var isComplexModel = Regex.IsMatch(sqlObj.Key, @"AS \[\w+\.\w+\]");
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
                 var tType = typeof(T);
-                if (tType.IsAnonymousType())
+                if (tType.IsAnonymousType()||isComplexModel)
                 {
                    return this.Context.RewritableMethods.DataReaderToDynamicList<T>(dataReader);
                 }
