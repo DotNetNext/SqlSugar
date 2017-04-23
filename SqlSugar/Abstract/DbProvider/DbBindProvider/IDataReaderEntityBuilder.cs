@@ -18,6 +18,7 @@ namespace SqlSugar
         private SqlSugarClient Context = null;
         private IDataReaderEntityBuilder<T> DynamicBuilder;
         private IDataRecord DataRecord;
+        private List<string> ReaderKeys { get; set; }
         private IDataReaderEntityBuilder()
         {
         }
@@ -27,6 +28,7 @@ namespace SqlSugar
             this.Context = context;
             this.DataRecord = dataRecord;
             this.DynamicBuilder = new IDataReaderEntityBuilder<T>();
+            this.ReaderKeys = new List<string>();
         }
         #region fields
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
@@ -69,6 +71,10 @@ namespace SqlSugar
 
         public IDataReaderEntityBuilder<T> CreateBuilder(Type type)
         {
+            for (int i = 0; i < this.DataRecord.FieldCount; i++)
+            {
+                this.ReaderKeys.Add(this.DataRecord.GetName(i));
+            }
             DynamicMethod method = new DynamicMethod("SqlSugarEntity", type,
             new Type[] { typeof(IDataRecord) }, type, true);
             ILGenerator generator = method.GetILGenerator();
@@ -101,7 +107,10 @@ namespace SqlSugar
                     }
                     else
                     {
-                        BindField(generator, result, propertyInfo, fileName);
+                        if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            BindField(generator, result, propertyInfo, fileName);
+                        }
                     }
                 }
             }
