@@ -91,7 +91,7 @@ namespace SqlSugar
                 {
                     if (propertyInfo.PropertyType.IsClass())
                     {
-                        //BindClass(dataRecord, context, generator, result, propertyInfo,fileName);
+                       BindClass(generator, result, propertyInfo);
                     }
                     else
                     {
@@ -104,22 +104,10 @@ namespace SqlSugar
             DynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
             return DynamicBuilder;
         }
-        private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
+        private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
         {
-            int i = DataRecord.GetOrdinal(fileName);
-            bool isNullable = false;
-            Label endIfLabel = generator.DefineLabel();
-            var underType = PubMethod.GetUnderType(propertyInfo, ref isNullable);
-            generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldc_I4, i);
-            generator.Emit(OpCodes.Callvirt, isDBNullMethod);
-            generator.Emit(OpCodes.Brtrue, endIfLabel);
-            generator.Emit(OpCodes.Ldloc, result);
-            generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldc_I4, i);
 
-            generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
-            generator.MarkLabel(endIfLabel);
+          
         }
         private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
         {

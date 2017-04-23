@@ -150,5 +150,10 @@ namespace SqlSugar
             T t = (T)Enum.ToObject(typeof(T), value);
             return t;
         }
+
+        public static object Entity(this IDataReader dr, SqlSugarClient context) 
+        {
+            return null;
+        }
     }
 }
