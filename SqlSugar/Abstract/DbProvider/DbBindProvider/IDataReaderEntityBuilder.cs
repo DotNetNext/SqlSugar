@@ -286,12 +286,12 @@ namespace SqlSugar
                 }
             }
         }
-        private void CheckType(List<string> errorTypes, string objType, string dbType, string field)
+        private void CheckType(List<string> errorTypes, string objType, string transformedPropertyName, string propertyName)
         {
             var isAny = errorTypes.Contains(objType);
             if (isAny)
             {
-                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", field, dbType, objType));
+                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", propertyName, transformedPropertyName, objType));
             }
         }
     }
