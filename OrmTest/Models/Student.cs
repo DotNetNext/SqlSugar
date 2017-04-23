@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SqlSugar;
 using System.Linq.Expressions;
+using Chloe.Entity;
 
 namespace OrmTest.Models
 {
@@ -17,6 +18,7 @@ namespace OrmTest.Models
         public int SchoolId { get; set; }
         public DateTime CreateTime { get; set; }
         [SugarColumn(IsIgnore=true)]
+        [NotMappedAttribute]
         public int TestId { get; set; }
     }
 }

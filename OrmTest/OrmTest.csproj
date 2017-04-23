@@ -33,6 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Chloe, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Chloe.SqlServer.2.6.0\lib\net40\Chloe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Chloe.SqlServer, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Chloe.SqlServer.2.6.0\lib\net40\Chloe.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SyntacticSugar, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SyntacticSugar.2.4.1\lib\net40\SyntacticSugar.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +57,9 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Models\ViewModelStudent.cs" />
+    <Compile Include="PerformanceTesting\ChloeORMPerformance.cs" />
+    <Compile Include="PerformanceTesting\PerformanceBase.cs" />
+    <Compile Include="PerformanceTesting\SqlSugarPerformance.cs" />
     <Compile Include="UnitTest\ExpressionTest\ExpTestBase.cs" />
     <Compile Include="UnitTest\ExpressionTest\Field.cs" />
     <Compile Include="UnitTest\Query\JoinQuery.cs" />
@@ -59,7 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">

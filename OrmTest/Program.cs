@@ -9,6 +9,8 @@ using SqlSugar;
 using OrmTest.Models;
 using System.Data.SqlClient;
 using OrmTest.UnitTest;
+using OrmTest.PerformanceTesting;
+
 namespace OrmTest
 {
     class Program
@@ -22,7 +24,15 @@ namespace OrmTest
             //new Method(eachCount).Init();
             //new JoinQuery(eachCount).Init();
             //new SingleQuery(eachCount).Init();
-            new SelectQuery(eachCount).Init();
+            //new SelectQuery(eachCount).Init();
+
+
+            //Performance Test
+            for (int i = 0; i < 100; i++)
+            {
+              
+                new ChloeORMPerformance().Select(); 
+            }
         }
     }
 }
