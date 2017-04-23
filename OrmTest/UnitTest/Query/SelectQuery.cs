@@ -53,7 +53,7 @@ namespace OrmTest.UnitTest
                           .Where(st => st.Id > 0)
                           .Select<School, School, dynamic>((st, st2) => new { stid = st.Id, scId = st2.Id, xx = st }).ToSql();
 
-                base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [xx_Id] , [st].[Name] AS [xx_Name]  FROM [School] st  Left JOIN School st2  ON ( [st].[Id]  = [st2].[Id] )   WHERE ( [st].[Id]  > @Id0 )"
+                base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [School.Id] , [st].[Name] AS [School.Name]  FROM [School] st  Left JOIN School st2  ON ( [st].[Id]  = [st2].[Id] )   WHERE ( [st].[Id]  > @Id0 )"
                     , new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
                     }, l1.Key, l1.Value, "l1错误");
