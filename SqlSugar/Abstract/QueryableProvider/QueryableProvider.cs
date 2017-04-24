@@ -177,7 +177,9 @@ namespace SqlSugar
 
         public ISugarQueryable<T> OrderBy(string orderFileds)
         {
-            throw new NotImplementedException();
+            var orderByValue = SqlBuilder.LambadaQueryBuilder.OrderByValue;
+            SqlBuilder.LambadaQueryBuilder.OrderByValue +=string.IsNullOrEmpty(orderByValue)?orderFileds:(","+orderFileds);
+            return this;
         }
 
         public ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -298,7 +300,6 @@ namespace SqlSugar
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
             reval.SqlBuilder = this.SqlBuilder;
-            base.SetSelectType(reval.Context, this.SqlBuilder);
             SqlBuilder.LambadaQueryBuilder.SelectValue = expression;
             reval.Pars = this.Pars;
             return reval;
@@ -309,14 +310,12 @@ namespace SqlSugar
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
             reval.SqlBuilder = this.SqlBuilder;
-            base.SetSelectType(reval.Context, this.SqlBuilder);
             SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
             reval.Pars = this.Pars;
             return reval;
         }
         public ISugarQueryable<T> Select(string selectValue)
         {
-            base.SetSelectType(this.Context, this.SqlBuilder);
             SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
             return this;
         }

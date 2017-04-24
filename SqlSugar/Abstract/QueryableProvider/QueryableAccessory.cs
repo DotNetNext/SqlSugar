@@ -33,16 +33,5 @@ namespace SqlSugar
                 _Pars = new List<SugarParameter>();
             _Pars.AddRange(pars);
         }
-
-        protected void SetSelectType(SqlSugarClient context,ISqlBuilder builder)
-        {
-            var type = ResolveExpressType.SelectSingle;
-            if (builder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
-            {
-                type = ResolveExpressType.SelectMultiple;
-            }
-            builder.LambadaQueryBuilder.ResolveType = type;
-        }
-
     }
 }

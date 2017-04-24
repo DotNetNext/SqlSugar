@@ -8,16 +8,21 @@ namespace SqlSugar
 {
     public abstract class LambadaQueryBuilder : IDMLBuilder
     {
+        #region Private Fileds
         private List<SugarParameter> _QueryPars;
         private List<JoinQueryInfo> _JoinQueryInfos;
         private List<string> _WhereInfos;
-        private string _TableNameString;
+        private string _TableNameString; 
+        #endregion
 
+        #region Service object
         public StringBuilder Sql { get; set; }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
+        public ISqlBuilder Builder { get; set; } 
+        #endregion
 
-        public ISqlBuilder Builder { get; set; }
+        #region Splicing basic
         public int? Skip { get; set; }
         public int? Take { get; set; }
         public string OrderByValue { get; set; }
@@ -28,8 +33,54 @@ namespace SqlSugar
         public string GroupByValue { get; set; }
         public int WhereIndex { get; set; }
         public int JoinIndex { get; set; }
-        public ResolveExpressType ResolveType { get; set; }
+        public virtual List<SugarParameter> QueryPars
+        {
+            get
+            {
+                _QueryPars = PubMethod.IsNullReturnNew(_QueryPars);
+                return _QueryPars;
+            }
+            set { _QueryPars = value; }
+        }
+        public virtual List<JoinQueryInfo> JoinQueryInfos
+        {
+            get
+            {
+                _JoinQueryInfos = PubMethod.IsNullReturnNew(_JoinQueryInfos);
+                return _JoinQueryInfos;
+            }
+            set { _JoinQueryInfos = value; }
+        }
+        public virtual string TableShortName { get; set; }
+        public virtual List<string> WhereInfos
+        {
+            get
+            {
+                _WhereInfos = PubMethod.IsNullReturnNew(_WhereInfos);
+                return _WhereInfos;
+            }
+            set { _WhereInfos = value; }
+        }
+        #endregion
 
+        #region Lambada Type
+        public ResolveExpressType SelectType
+        {
+            get
+            {
+                return this.IsSingle() ? ResolveExpressType.SelectSingle : ResolveExpressType.SelectMultiple;
+            }
+        }
+        public ResolveExpressType WheretType
+        {
+            get
+            {
+                return this.IsSingle() ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
+            }
+        }
+        #endregion
+
+        #region sql template
         public virtual string SqlTemplate
         {
             get
@@ -44,27 +95,67 @@ namespace SqlSugar
                 return " {0} JOIN {1} {2} ON {3} ";
             }
         }
-        public virtual string GetTableNameString
+        #endregion
+
+        #region Common Methods
+        public virtual bool IsSingle()
         {
-            get
-            {
-                var result= Builder.GetTranslationTableName(EntityName)+TableWithString;
-                if (this.TableShortName.IsValuable())
-                {
-                    result += " " + TableShortName;
-                }
-                return result;
-            }
+            var isSingle = Builder.LambadaQueryBuilder.JoinQueryInfos.IsNullOrEmpty();
+            return isSingle;
         }
+        public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
+        {
+            ILambdaExpressions resolveExpress = this.LambdaExpressions;
+            resolveExpress.JoinQueryInfos = Builder.LambadaQueryBuilder.JoinQueryInfos;
+            resolveExpress.MappingColumns = Context.MappingColumns;
+            resolveExpress.MappingTables = Context.MappingTables;
+            resolveExpress.IgnoreComumnList = Context.IgnoreComumns;
+            resolveExpress.Resolve(expression, resolveType);
+            this.QueryPars.AddRange(resolveExpress.Parameters);
+            var reval = resolveExpress.Result;
+            return reval;
+        }
+        public virtual string ToSqlString()
+        {
+            Sql = new StringBuilder();
+            var tableString = GetTableNameString;
+            if (this.JoinQueryInfos.IsValuable())
+            {
+                tableString = tableString + " " + GetJoinValueString;
+            }
+            Sql.AppendFormat(SqlTemplate, GetSelectValue, tableString, GetWhereValueString);
+            return Sql.ToString();
+        }
+        public virtual string ToJoinString(JoinQueryInfo joinInfo)
+        {
+            return string.Format(
+                this.JoinTemplate,
+                joinInfo.JoinType.ToString(),
+                joinInfo.TableName,
+                joinInfo.ShortName + " " + joinInfo.TableWithString,
+                joinInfo.JoinWhere);
+        }
+        public virtual void Clear()
+        {
+            this.Skip = 0;
+            this.Take = 0;
+            this.Sql = null;
+            this.WhereIndex = 0;
+            this.QueryPars = null;
+            this.GroupByValue = null;
+            this._TableNameString = null;
+            this.WhereInfos = null;
+            this.JoinQueryInfos = null;
+        }
+        #endregion
 
-        public virtual string TableShortName { get; set; }
-
+        #region Get SQL Partial
         public virtual string GetSelectValue
         {
             get
             {
                 string reval = string.Empty;
-                if (this.SelectValue==null||this.SelectValue is string)
+                if (this.SelectValue == null || this.SelectValue is string)
                 {
                     reval = GetSelectValueByString();
                 }
@@ -72,8 +163,9 @@ namespace SqlSugar
                 {
                     reval = GetSelectValueByExpression();
                 }
-                if (ResolveType == ResolveExpressType.SelectMultiple) {
-                    this.SelectCacheKey = this.SelectCacheKey+string.Join("-",this._JoinQueryInfos.Select(it => it.TableName));
+                if (this.SelectType == ResolveExpressType.SelectMultiple)
+                {
+                    this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this._JoinQueryInfos.Select(it => it.TableName));
                 }
                 return reval;
             }
@@ -81,17 +173,8 @@ namespace SqlSugar
         public virtual string GetSelectValueByExpression()
         {
             var expression = this.SelectValue as Expression;
-            ILambdaExpressions resolveExpress = this.LambdaExpressions;
-            var isSingle= Builder.LambadaQueryBuilder.JoinQueryInfos.IsValuable();
-            resolveExpress.JoinQueryInfos = Builder.LambadaQueryBuilder.JoinQueryInfos;
-            resolveExpress.MappingColumns = Context.MappingColumns;
-            resolveExpress.MappingTables = Context.MappingTables;
-            resolveExpress.IgnoreComumnList = Context.IgnoreComumns;
-            resolveExpress.Resolve(expression, ResolveType);
-            this.QueryPars.AddRange(resolveExpress.Parameters);
-            var reval= resolveExpress.Result.GetResultString();
+            var reval = GetExpressionValue(expression, this.SelectType).GetResultString();
             this.SelectCacheKey = reval;
-            resolveExpress.Clear();
             return reval;
         }
         public virtual string GetSelectValueByString()
@@ -114,7 +197,6 @@ namespace SqlSugar
 
             return reval;
         }
-
         public virtual string GetWhereValueString
         {
             get
@@ -122,7 +204,7 @@ namespace SqlSugar
                 if (this.WhereInfos == null) return null;
                 else
                 {
-                    return  string.Join(" ", this.WhereInfos);
+                    return string.Join(" ", this.WhereInfos);
                 }
             }
         }
@@ -137,66 +219,18 @@ namespace SqlSugar
                 }
             }
         }
-
-        public virtual string ToSqlString()
-        {
-            Sql = new StringBuilder();
-            var tableString = GetTableNameString;
-            if (this.JoinQueryInfos.IsValuable())
-            {
-                tableString = tableString + " " + GetJoinValueString;
-            }
-            Sql.AppendFormat(SqlTemplate, GetSelectValue, tableString, GetWhereValueString);
-            return Sql.ToString();
-        }
-        public virtual string ToJoinString(JoinQueryInfo joinInfo)
-        {
-            return string.Format(
-                this.JoinTemplate,
-                joinInfo.JoinType.ToString(),
-                joinInfo.TableName,
-                joinInfo.ShortName + " " + joinInfo.TableWithString,
-                joinInfo.JoinWhere);
-        }
-        public virtual List<string> WhereInfos
+        public virtual string GetTableNameString
         {
             get
             {
-                _WhereInfos = PubMethod.IsNullReturnNew(_WhereInfos);
-                return _WhereInfos;
+                var result = Builder.GetTranslationTableName(EntityName) + TableWithString;
+                if (this.TableShortName.IsValuable())
+                {
+                    result += " " + TableShortName;
+                }
+                return result;
             }
-            set { _WhereInfos = value; }
         }
-
-        public virtual List<SugarParameter> QueryPars
-        {
-            get
-            {
-                _QueryPars = PubMethod.IsNullReturnNew(_QueryPars);
-                return _QueryPars;
-            }
-            set { _QueryPars = value; }
-        }
-        public virtual List<JoinQueryInfo> JoinQueryInfos
-        {
-            get
-            {
-                _JoinQueryInfos = PubMethod.IsNullReturnNew(_JoinQueryInfos);
-                return _JoinQueryInfos;
-            }
-            set { _JoinQueryInfos = value; }
-        }
-        public virtual void Clear()
-        {
-            this.Skip = 0;
-            this.Take = 0;
-            this.Sql = null;
-            this.WhereIndex = 0;
-            this.QueryPars = null;
-            this.GroupByValue = null;
-            this._TableNameString = null;
-            this.WhereInfos = null;
-            this.JoinQueryInfos = null;
-        }
+        #endregion
     }
 }
