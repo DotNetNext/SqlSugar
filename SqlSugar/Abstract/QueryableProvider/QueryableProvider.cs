@@ -184,12 +184,14 @@ namespace SqlSugar
 
         public ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
         {
-            throw new NotImplementedException();
+            this._OrderBy(expression, type);
+            return this;
         }
 
         public ISugarQueryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
-            throw new NotImplementedException();
+            this._OrderBy(expression, type);
+            return this;
         }
 
         public ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
@@ -347,6 +349,7 @@ namespace SqlSugar
 
         public List<T> ToList()
         {
+            this.Pars.AddRange(SqlBuilder.LambadaQueryBuilder.QueryPars);
             var sqlObj =this.ToSql();
             var isComplexModel = Regex.IsMatch(sqlObj.Key, @"AS \[\w+\.\w+\]");
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
@@ -373,7 +376,7 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public string ToJsonPage(int pageIndex, int pageSize, ref int pageCount)
+        public string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
             throw new NotImplementedException();
         }
@@ -394,7 +397,7 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public DataTable ToDataTablePage(int pageIndex, int pageSize, ref int pageCount)
+        public DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {
             throw new NotImplementedException();
         }
@@ -404,7 +407,7 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public List<T> ToPageList(int pageIndex, int pageSize, ref int pageCount)
+        public List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
             throw new NotImplementedException();
         }
@@ -412,19 +415,16 @@ namespace SqlSugar
         #region 私有方法
         protected void _Where(Expression expression)
         {
-            ResolveExpressType type = ResolveExpressType.WhereSingle;
-            if (SqlBuilder.LambadaQueryBuilder.JoinQueryInfos.IsValuable())
-            {
-                type = ResolveExpressType.WhereMultiple;
-            }
-            ILambdaExpressions resolveExpress = this.SqlBuilder.LambadaQueryBuilder.LambdaExpressions;
-            resolveExpress.IgnoreComumnList = this.Context.IgnoreComumns;
-            resolveExpress.MappingColumns = this.Context.MappingColumns;
-            resolveExpress.MappingColumns = this.Context.MappingColumns;
-            resolveExpress.Resolve(expression, type);
-            BasePars.AddRange(resolveExpress.Parameters);
-            SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(SqlBuilder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(), resolveExpress.Result.GetResultString()));
-            resolveExpress.Clear();
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var result=SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(SqlBuilder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(),result.GetResultString()));
+        }
+        protected ISugarQueryable<T> _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)
+        {
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var orderByValue = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            OrderBy(orderByValue + " " + type.ToString().ToUpper());
+            return this;
         }
         #endregion
     }

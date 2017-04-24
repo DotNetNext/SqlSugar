@@ -82,17 +82,17 @@ namespace SqlSugar
 
         string ToJson();
         string ToJsonPage(int pageIndex, int pageSize);
-        string ToJsonPage(int pageIndex, int pageSize, ref int pageCount);
+        string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber);
 
         KeyValuePair<string, List<SugarParameter>> ToSql();
 
 
         DataTable ToDataTable();
         DataTable ToDataTablePage(int pageIndex, int pageSize);
-        DataTable ToDataTablePage(int pageIndex, int pageSize, ref int pageCount);
+        DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber);
 
         List<T> ToPageList(int pageIndex, int pageSize);
-        List<T> ToPageList(int pageIndex, int pageSize, ref int pageCount);
+        List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);
 
       
         void Clear();
