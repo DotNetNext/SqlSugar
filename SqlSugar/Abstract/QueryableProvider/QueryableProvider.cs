@@ -174,7 +174,7 @@ namespace SqlSugar
         {
             var orderByValue = SqlBuilder.LambadaQueryBuilder.OrderByValue;
             if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty()) {
-                SqlBuilder.LambadaQueryBuilder.OrderByValue = "ORDER ";
+                SqlBuilder.LambadaQueryBuilder.OrderByValue = "ORDER BY ";
             }
             SqlBuilder.LambadaQueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
             return this;
@@ -194,12 +194,19 @@ namespace SqlSugar
 
         public ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
         {
-            throw new NotImplementedException();
+            _GroupBy(expression);
+            return this;
         }
 
         public ISugarQueryable<T> GroupBy(string groupFileds)
         {
-            throw new NotImplementedException();
+            var croupByValue = SqlBuilder.LambadaQueryBuilder.GroupByValue;
+            if (SqlBuilder.LambadaQueryBuilder.GroupByValue.IsNullOrEmpty())
+            {
+                SqlBuilder.LambadaQueryBuilder.GroupByValue = "GROUP BY ";
+            }
+            SqlBuilder.LambadaQueryBuilder.GroupByValue += string.IsNullOrEmpty(croupByValue) ? groupFileds : ("," + groupFileds);
+            return this;
         }
 
         public ISugarQueryable<T> Skip(int index)
@@ -420,6 +427,13 @@ namespace SqlSugar
             var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
             var orderByValue = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             OrderBy(orderByValue.GetResultString() + " " + type.ToString().ToUpper());
+            return this;
+        }
+        protected ISugarQueryable<T> _GroupBy(Expression expression)
+        {
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var orderByValue = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            GroupBy(orderByValue.GetResultString());
             return this;
         }
         #endregion
