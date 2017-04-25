@@ -217,7 +217,10 @@ namespace SqlSugar
         {
             get
             {
-                var result = Builder.GetTranslationTableName(EntityName) + TableWithString;
+                var result = Builder.GetTranslationTableName(EntityName);
+                if (this.TableWithString.IsValuable()) {
+                    result += " " + TableWithString;
+                }
                 if (this.TableShortName.IsValuable())
                 {
                     result += " " + TableShortName;

@@ -12,6 +12,7 @@ namespace SqlSugar
         SqlSugarClient Context { get; set; }
         ISqlBuilder SqlBuilder { get; set; }
 
+        ISugarQueryable<T> With(string withString);
         ISugarQueryable<T> AddParameters(object pars);
         ISugarQueryable<T> AddParameters(SugarParameter[] pars);
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type=JoinType.Left);

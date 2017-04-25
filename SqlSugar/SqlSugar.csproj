@@ -89,6 +89,7 @@
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />
     <Compile Include="Entities\Mapping\IgnoreComumn.cs" />
+    <Compile Include="Entities\SqlWith.cs" />
     <Compile Include="ExpressionsToSql\Common\CommonTempDataType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
     <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />

@@ -436,6 +436,12 @@ namespace SqlSugar
             GroupBy(orderByValue.GetResultString());
             return this;
         }
+
+        public ISugarQueryable<T> With(string withString)
+        {
+            SqlBuilder.LambadaQueryBuilder.TableWithString = withString;
+            return this;
+        }
         #endregion
     }
 }
