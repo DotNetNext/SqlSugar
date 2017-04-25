@@ -82,7 +82,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT {0} FROM {1} {2}";
+                return "SELECT {0} FROM {1} {2} {3} {4}";
             }
         }
         public virtual string JoinTemplate
@@ -117,12 +117,7 @@ namespace SqlSugar
         public virtual string ToSqlString()
         {
             Sql = new StringBuilder();
-            var tableString = GetTableNameString;
-            if (this.JoinQueryInfos.IsValuable())
-            {
-                tableString = tableString + " " + GetJoinValueString;
-            }
-            Sql.AppendFormat(SqlTemplate, GetSelectValue, tableString, GetWhereValueString);
+            Sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString,GetGroupByString,GetOrderByString);
             return Sql.ToString();
         }
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
@@ -227,7 +222,27 @@ namespace SqlSugar
                 {
                     result += " " + TableShortName;
                 }
+                if (!this.IsSingle())
+                {
+                    result = result + " " + GetJoinValueString;
+                }
                 return result;
+            }
+        }
+
+        public virtual string GetOrderByString
+        {
+            get
+            {
+               return this.OrderByValue;
+            }
+        }
+
+        public virtual string GetGroupByString
+        {
+            get
+            {
+                return this.GroupByValue;
             }
         }
         #endregion

@@ -15,6 +15,8 @@ namespace SqlSugar
             {
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
+                case ResolveExpressType.FieldSingle:
+                case ResolveExpressType.FieldMultiple:
                     base.Expression = expression.Operand;
                     if (base.Expression is MemberExpression || base.Expression is ConstantExpression)
                     {
@@ -37,10 +39,6 @@ namespace SqlSugar
                 case ResolveExpressType.SelectSingle:
                     break;
                 case ResolveExpressType.SelectMultiple:
-                    break;
-                case ResolveExpressType.FieldSingle:
-                    break;
-                case ResolveExpressType.FieldMultiple:
                     break;
                 default:
                     break;

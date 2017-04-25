@@ -173,6 +173,9 @@ namespace SqlSugar
         public ISugarQueryable<T> OrderBy(string orderFileds)
         {
             var orderByValue = SqlBuilder.LambadaQueryBuilder.OrderByValue;
+            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty()) {
+                SqlBuilder.LambadaQueryBuilder.OrderByValue = "ORDER ";
+            }
             SqlBuilder.LambadaQueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
             return this;
         }
@@ -416,7 +419,7 @@ namespace SqlSugar
         {
             var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
             var orderByValue = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            OrderBy(orderByValue + " " + type.ToString().ToUpper());
+            OrderBy(orderByValue.GetResultString() + " " + type.ToString().ToUpper());
             return this;
         }
         #endregion
