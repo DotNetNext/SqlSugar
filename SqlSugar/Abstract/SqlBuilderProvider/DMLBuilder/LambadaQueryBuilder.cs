@@ -8,18 +8,23 @@ namespace SqlSugar
 {
     public abstract class LambadaQueryBuilder : IDMLBuilder
     {
+
+        public LambadaQueryBuilder()
+        {
+            this.QueryPars = new List<SugarParameter>();
+        }
+
         #region Private Fileds
-        private List<SugarParameter> _QueryPars;
         private List<JoinQueryInfo> _JoinQueryInfos;
         private List<string> _WhereInfos;
-        private string _TableNameString; 
+        private string _TableNameString;
         #endregion
 
         #region Service object
         public StringBuilder Sql { get; set; }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
-        public ISqlBuilder Builder { get; set; } 
+        public ISqlBuilder Builder { get; set; }
         #endregion
 
         #region Splicing basic
@@ -33,15 +38,7 @@ namespace SqlSugar
         public string GroupByValue { get; set; }
         public int WhereIndex { get; set; }
         public int JoinIndex { get; set; }
-        public virtual List<SugarParameter> QueryPars
-        {
-            get
-            {
-                _QueryPars = PubMethod.IsNullReturnNew(_QueryPars);
-                return _QueryPars;
-            }
-            set { _QueryPars = value; }
-        }
+        public virtual List<SugarParameter> QueryPars { get; set; }
         public virtual List<JoinQueryInfo> JoinQueryInfos
         {
             get
@@ -106,11 +103,13 @@ namespace SqlSugar
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
+            this.LambdaExpressions.Clear();
             resolveExpress.JoinQueryInfos = Builder.LambadaQueryBuilder.JoinQueryInfos;
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreComumns;
             resolveExpress.Resolve(expression, resolveType);
+            this.QueryPars = new List<SugarParameter>();
             this.QueryPars.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
             return reval;

@@ -15,26 +15,20 @@ namespace SqlSugar
         public IDb Db { get { return Context.Database; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
-        public List<SugarParameter> Pars
-        {
-            get { return PubMethod.IsNullReturnNew<List<SugarParameter>>(base._Pars); }
-            set { base._Pars = value; }
-        }
-
         public void Clear()
         {
-            Pars = null;
             SqlBuilder.LambadaQueryBuilder.Clear();
         }
 
-        public ISugarQueryable<T> AddParameters(object pars)
+        public ISugarQueryable<T> AddParameters(object whereObj)
         {
-            AddPars(pars, Context);
+            if (whereObj != null)
+                this.SqlBuilder.LambadaQueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> AddParameters(SugarParameter[] pars)
         {
-            AddPars(pars, Context);
+            this.SqlBuilder.LambadaQueryBuilder.QueryPars.AddRange(pars);
             return this;
         }
 
@@ -68,7 +62,8 @@ namespace SqlSugar
         {
             var whereValue = SqlBuilder.LambadaQueryBuilder.WhereInfos;
             whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString));
-            this.AddPars(whereObj, this.Context);
+            if (whereObj != null)
+                this.SqlBuilder.LambadaQueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression)
@@ -178,7 +173,7 @@ namespace SqlSugar
         public ISugarQueryable<T> OrderBy(string orderFileds)
         {
             var orderByValue = SqlBuilder.LambadaQueryBuilder.OrderByValue;
-            SqlBuilder.LambadaQueryBuilder.OrderByValue +=string.IsNullOrEmpty(orderByValue)?orderFileds:(","+orderFileds);
+            SqlBuilder.LambadaQueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
             return this;
         }
 
@@ -302,8 +297,8 @@ namespace SqlSugar
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
             reval.SqlBuilder = this.SqlBuilder;
-            SqlBuilder.LambadaQueryBuilder.SelectValue = expression;
-            reval.Pars = this.Pars;
+            reval.SqlBuilder.LambadaQueryBuilder.QueryPars = this.SqlBuilder.LambadaQueryBuilder.QueryPars;
+            reval.SqlBuilder.LambadaQueryBuilder.SelectValue = expression;
             return reval;
         }
 
@@ -313,7 +308,6 @@ namespace SqlSugar
             reval.Context = this.Context;
             reval.SqlBuilder = this.SqlBuilder;
             SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
-            reval.Pars = this.Pars;
             return reval;
         }
         public ISugarQueryable<T> Select(string selectValue)
@@ -349,15 +343,14 @@ namespace SqlSugar
 
         public List<T> ToList()
         {
-            this.Pars.AddRange(SqlBuilder.LambadaQueryBuilder.QueryPars);
-            var sqlObj =this.ToSql();
+            var sqlObj = this.ToSql();
             var isComplexModel = Regex.IsMatch(sqlObj.Key, @"AS \[\w+\.\w+\]");
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
                 var tType = typeof(T);
-                if (tType.IsAnonymousType()||isComplexModel)
+                if (tType.IsAnonymousType() || isComplexModel)
                 {
-                   return this.Context.RewritableMethods.DataReaderToDynamicList<T>(dataReader);
+                    return this.Context.RewritableMethods.DataReaderToDynamicList<T>(dataReader);
                 }
                 else
                 {
@@ -384,7 +377,7 @@ namespace SqlSugar
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             string sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
-            return new KeyValuePair<string, List<SugarParameter>>(sql, this.Pars);
+            return new KeyValuePair<string, List<SugarParameter>>(sql, SqlBuilder.LambadaQueryBuilder.QueryPars);
         }
 
         public DataTable ToDataTable()
@@ -416,8 +409,8 @@ namespace SqlSugar
         protected void _Where(Expression expression)
         {
             var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var result=SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
-            SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(SqlBuilder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(),result.GetResultString()));
+            var result = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(SqlBuilder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(), result.GetResultString()));
         }
         protected ISugarQueryable<T> _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)
         {

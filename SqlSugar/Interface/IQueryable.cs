@@ -11,7 +11,6 @@ namespace SqlSugar
     {
         SqlSugarClient Context { get; set; }
         ISqlBuilder SqlBuilder { get; set; }
-        List<SugarParameter> Pars { get; set; }
 
         ISugarQueryable<T> AddParameters(object pars);
         ISugarQueryable<T> AddParameters(SugarParameter[] pars);
