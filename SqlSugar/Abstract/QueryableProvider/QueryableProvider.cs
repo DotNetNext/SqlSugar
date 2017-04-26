@@ -209,64 +209,76 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> Skip(int index)
+        public ISugarQueryable<T> Skip(int num)
         {
-            throw new NotImplementedException();
+            SqlBuilder.LambadaQueryBuilder.Skip = num;
+            return this;
         }
 
         public ISugarQueryable<T> Take(int num)
         {
-            throw new NotImplementedException();
+            SqlBuilder.LambadaQueryBuilder.Take = num;
+            return this;
         }
 
         public T Single()
         {
-            throw new NotImplementedException();
-        }
-
-        public T SingleOrDefault()
-        {
-            throw new NotImplementedException();
+            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                SqlBuilder.LambadaQueryBuilder.OrderByValue = " ORDER BY GETDATE()";
+            }
+            SqlBuilder.LambadaQueryBuilder.Skip=0;
+            SqlBuilder.LambadaQueryBuilder.Take=1;
+            var reval = this.ToList();
+            if (reval.IsValuable())
+            {
+                return reval.SingleOrDefault();
+            }
+            else {
+                return default(T);
+            }
         }
 
         public T Single(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
-        }
-
-        public T SingleOrDefault(Expression<Func<T, bool>> expression)
-        {
-            throw new NotImplementedException();
+            _Where(expression);
+            return Single();
         }
 
         public T First()
         {
-            throw new NotImplementedException();
-        }
-
-        public T FirstOrDefault()
-        {
-            throw new NotImplementedException();
+            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                SqlBuilder.LambadaQueryBuilder.OrderByValue = " ORDER BY GETDATE()";
+            }
+            SqlBuilder.LambadaQueryBuilder.Skip = 0;
+            SqlBuilder.LambadaQueryBuilder.Take = 1;
+            var reval = this.ToList();
+            if (reval.IsValuable())
+            {
+                return reval.FirstOrDefault();
+            }
+            else
+            {
+                return default(T);
+            }
         }
 
         public T First(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
-        }
-
-        public T FirstOrDefault(Expression<Func<T, bool>> expression)
-        {
-            throw new NotImplementedException();
+            _Where(expression);
+            return First();
         }
 
         public bool Any(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
+            _Where(expression);
+            return Any();
         }
 
         public bool Any()
         {
-            throw new NotImplementedException();
+            return this.ToList().IsValuable();
         }
 
         public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression)

@@ -50,15 +50,11 @@ namespace SqlSugar
         ISugarQueryable<T> Take(int num);
 
         T Single();
-        T SingleOrDefault();
         T Single(Expression<Func<T, bool>> expression);
-        T SingleOrDefault(Expression<Func<T, bool>> expression);
 
         T First();
-        T FirstOrDefault();
         T First(Expression<Func<T, bool>> expression);
 
-        T FirstOrDefault(Expression<Func<T, bool>> expression);
         bool Any(Expression<Func<T, bool>> expression);
         bool Any();
         ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression) ;
