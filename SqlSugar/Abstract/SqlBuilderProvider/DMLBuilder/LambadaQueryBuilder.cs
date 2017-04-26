@@ -92,6 +92,17 @@ namespace SqlSugar
                 return " {0} JOIN {1} {2} ON {3} ";
             }
         }
+        public virtual string PageTempalte
+        {
+            get
+            {
+                return @" 
+                        WITH PageTable AS(
+                          {0}
+                        )
+                        SELECT * FROM (SELECT *,ROW_NUMBER() OVER({1}) AS RowIndex FROM PageTable ) T  BETWEEN {2} AND {3}";
+            }
+        }
         #endregion
 
         #region Common Methods
@@ -117,8 +128,23 @@ namespace SqlSugar
         public virtual string ToSqlString()
         {
             Sql = new StringBuilder();
-            Sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString,GetGroupByString,GetOrderByString);
-            return Sql.ToString();
+            Sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString, GetOrderByString);
+            if (Skip != null && Take == null)
+            {
+                return string.Format(PageTempalte, Sql.ToString(), GetOrderByString, 0,Take);
+            }
+            else if (Skip == null && Take != null)
+            {
+                return string.Format(PageTempalte, Sql.ToString(), GetOrderByString, Skip+1,long.MaxValue);
+            }
+            else if (Skip != null && Take == null)
+            {
+                return string.Format(PageTempalte, Sql.ToString(), GetOrderByString, Skip+1, Take);
+            }
+            else {
+                return Sql.ToString();
+            }
+          
         }
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
@@ -218,7 +244,8 @@ namespace SqlSugar
             get
             {
                 var result = Builder.GetTranslationTableName(EntityName);
-                if (this.TableWithString.IsValuable()) {
+                if (this.TableWithString.IsValuable())
+                {
                     result += " " + TableWithString;
                 }
                 if (this.TableShortName.IsValuable())
@@ -237,7 +264,7 @@ namespace SqlSugar
         {
             get
             {
-               return this.OrderByValue;
+                return this.OrderByValue;
             }
         }
 
