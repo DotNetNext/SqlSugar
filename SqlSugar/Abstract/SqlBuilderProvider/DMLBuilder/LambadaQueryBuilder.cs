@@ -28,6 +28,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        public bool IsCount { get; set; }
         public int? Skip { get; set; }
         public int? Take { get; set; }
         public string OrderByValue { get; set; }
@@ -174,6 +175,7 @@ namespace SqlSugar
         {
             get
             {
+                if (this.IsCount) return " COUNT(1) ";
                 string reval = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {

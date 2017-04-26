@@ -340,7 +340,11 @@ namespace SqlSugar
 
         public int Count()
         {
-            throw new NotImplementedException();
+            SqlBuilder.LambadaQueryBuilder.IsCount = true;
+            var sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
+            var reval= Context.Database.GetInt(sql, SqlBuilder.LambadaQueryBuilder.QueryPars.ToArray()); 
+            SqlBuilder.LambadaQueryBuilder.IsCount = false;
+            return reval;
         }
 
         public TResult Max<TResult>(string maxField)
