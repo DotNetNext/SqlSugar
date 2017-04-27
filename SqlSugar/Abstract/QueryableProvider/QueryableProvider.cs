@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -142,38 +143,78 @@ namespace SqlSugar
 
         public ISugarQueryable<T> In(params object[] pkValues)
         {
-            throw new NotImplementedException();
+            if (pkValues == null || pkValues.Length == 0)
+            {
+                Where("1=2 ");
+                return this;
+            }
+            string filed = Context.Database.DbMaintenance.GetSinglePrimaryFiled(this.SqlBuilder.GetTableName(typeof(T).Name));
+            string shortName = this.SqlBuilder.LambadaQueryBuilder.TableShortName == null ? null : (this.SqlBuilder.LambadaQueryBuilder.TableShortName + ".");
+            filed = shortName + filed;
+            return In(filed, pkValues);
         }
 
         public T InSingle(object pkValue)
         {
-            throw new NotImplementedException();
+            var list = In(pkValue).ToList();
+            if (list == null) return default(T);
+            else return list.SingleOrDefault();
         }
 
-        public ISugarQueryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues)
+        public ISugarQueryable<T> In<FieldType>(string filed, params FieldType[] inValues)
         {
-            throw new NotImplementedException();
+            if (inValues.Length == 1)
+            {
+                if (inValues.GetType().IsArray)
+                {
+                    var whereIndex = this.SqlBuilder.LambadaQueryBuilder.WhereIndex;
+                    string parameterName = this.SqlBuilder.SqlParameterKeyWord + "InPara" + whereIndex;
+                    this.Where(string.Format("{0} = {1} ", filed, parameterName));
+                    this.AddParameters(new SqlParameter(parameterName, inValues[0]));
+                    this.SqlBuilder.LambadaQueryBuilder.WhereIndex++;
+                }
+                else
+                {
+                    var values = new List<object>();
+                    foreach (var item in ((IEnumerable)inValues[0]))
+                    {
+                        if (item != null)
+                        {
+                            values.Add(item.ToString().ToSqlValue());
+                        }
+                    }
+                    this.Where(string.Format("{0} in ({1}) ", filed, string.Join(",", values)));
+                }
+            }
+            else
+            {
+                var values = new List<object>();
+                foreach (var item in inValues)
+                {
+                    if (item != null)
+                    {
+                        values.Add(item.ToString().ToSqlValue());
+                    }
+                }
+                this.Where(string.Format("{0} in ({1}) ", filed, string.Join(",", values)));
+
+            }
+            return this;
         }
 
         public ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
-            throw new NotImplementedException();
-        }
-
-        public ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISugarQueryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues)
-        {
-            throw new NotImplementedException();
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            return In(fieldName, inValues);
         }
 
         public ISugarQueryable<T> OrderBy(string orderFileds)
         {
             var orderByValue = SqlBuilder.LambadaQueryBuilder.OrderByValue;
-            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty()) {
+            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
                 SqlBuilder.LambadaQueryBuilder.OrderByValue = "ORDER BY ";
             }
             SqlBuilder.LambadaQueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
@@ -227,14 +268,15 @@ namespace SqlSugar
             {
                 SqlBuilder.LambadaQueryBuilder.OrderByValue = " ORDER BY GETDATE()";
             }
-            SqlBuilder.LambadaQueryBuilder.Skip=0;
-            SqlBuilder.LambadaQueryBuilder.Take=1;
+            SqlBuilder.LambadaQueryBuilder.Skip = 0;
+            SqlBuilder.LambadaQueryBuilder.Take = 1;
             var reval = this.ToList();
             if (reval.IsValuable())
             {
                 return reval.SingleOrDefault();
             }
-            else {
+            else
+            {
                 return default(T);
             }
         }
@@ -283,45 +325,35 @@ namespace SqlSugar
 
         public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression)
         {
-            return SelectMehtod<TResult>(expression);
+            return _Select<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression)
         {
-            return SelectMehtod<TResult>(expression);
+            return _Select<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression)
         {
-            return SelectMehtod<TResult>(expression);
+            return _Select<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression)
         {
-            return SelectMehtod<TResult>(expression);
+            return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression)
         {
-            return SelectMehtod<TResult>(expression);
+            return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression)
         {
-            return SelectMehtod<TResult>(expression);
+            return _Select<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return SelectMehtod<TResult>(expression);
-        }
-
-        private ISugarQueryable<TResult> SelectMehtod<TResult>(Expression expression)
-        {
-            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
-            reval.Context = this.Context;
-            reval.SqlBuilder = this.SqlBuilder;
-            reval.SqlBuilder.LambadaQueryBuilder.QueryPars = this.SqlBuilder.LambadaQueryBuilder.QueryPars;
-            reval.SqlBuilder.LambadaQueryBuilder.SelectValue = expression;
-            return reval;
+            return _Select<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<TResult>(string selectValue) where TResult : class, new()
@@ -342,62 +374,82 @@ namespace SqlSugar
         {
             SqlBuilder.LambadaQueryBuilder.IsCount = true;
             var sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
-            var reval= Context.Database.GetInt(sql, SqlBuilder.LambadaQueryBuilder.QueryPars.ToArray()); 
+            var reval = Context.Database.GetInt(sql, SqlBuilder.LambadaQueryBuilder.QueryPars.ToArray());
             SqlBuilder.LambadaQueryBuilder.IsCount = false;
             return reval;
         }
 
         public TResult Max<TResult>(string maxField)
         {
-            throw new NotImplementedException();
+            this.Select("Max("+ maxField + ")");
+            var reval = this._ToList<TResult>().SingleOrDefault();
+            return reval;
         }
 
-        public object Max(Expression<Func<T, object>> expression)
+        public TResult Max<TResult>(Expression<Func<T, object>> expression)
         {
-            throw new NotImplementedException();
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Max<TResult>(lamResult.GetResultString());
         }
 
         public TResult Min<TResult>(string minField)
         {
-            throw new NotImplementedException();
+            this.Select("Min("+ minField + ")");
+            var reval = this._ToList<TResult>().SingleOrDefault();
+            return reval;
         }
 
-        public object Min(Expression<Func<T, object>> expression)
+        public TResult Min<TResult>(Expression<Func<T, object>> expression)
         {
-            throw new NotImplementedException();
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Min<TResult>(lamResult.GetResultString());
         }
 
+        public TResult Sum<TResult>(string sumField)
+        {
+            this.Select("Sum(" + sumField + ")");
+            var reval = this._ToList<TResult>().SingleOrDefault();
+            return reval;
+        }
+
+        public TResult Sum<TResult>(Expression<Func<T, object>> expression)
+        {
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Sum<TResult>(lamResult.GetResultString());
+        }
+        public TResult Avg<TResult>(string avgField)
+        {
+            this.Select("Sum(" + avgField + ")");
+            var reval = this._ToList<TResult>().SingleOrDefault();
+            return reval;
+        }
+        public TResult Avg<TResult>(Expression<Func<T, object>> expression)
+        {
+            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
+            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Avg<TResult>(lamResult.GetResultString());
+        }
         public List<T> ToList()
         {
-            var sqlObj = this.ToSql();
-            var isComplexModel = Regex.IsMatch(sqlObj.Key, @"AS \[\w+\.\w+\]");
-            using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
-            {
-                var tType = typeof(T);
-                if (tType.IsAnonymousType() || isComplexModel)
-                {
-                    return this.Context.RewritableMethods.DataReaderToDynamicList<T>(dataReader);
-                }
-                else
-                {
-                    var reval = this.Bind.DataReaderToList<T>(tType, dataReader, SqlBuilder.LambadaQueryBuilder.SelectCacheKey);
-                    return reval;
-                }
-            }
+            return _ToList<T>();
         }
+
         public string ToJson()
         {
-            throw new NotImplementedException();
+            return this.Context.RewritableMethods.SerializeObject(this.ToList());
         }
 
         public string ToJsonPage(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex,pageSize));
         }
 
         public string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
-            throw new NotImplementedException();
+            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize,ref totalNumber));
         }
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
@@ -406,32 +458,61 @@ namespace SqlSugar
             return new KeyValuePair<string, List<SugarParameter>>(sql, SqlBuilder.LambadaQueryBuilder.QueryPars);
         }
 
+        public ISugarQueryable<T> With(string withString)
+        {
+            SqlBuilder.LambadaQueryBuilder.TableWithString = withString;
+            return this;
+        }
+
         public DataTable ToDataTable()
         {
-            throw new NotImplementedException();
+            var sqlObj = this.ToSql();
+            var result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
+            return result;
         }
 
         public DataTable ToDataTablePage(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            if (pageIndex == 0)
+                pageIndex = 1;
+            SqlBuilder.LambadaQueryBuilder.Skip = (pageIndex - 1) * pageSize;
+            SqlBuilder.LambadaQueryBuilder.Take = pageSize;
+            return ToDataTable();
+
         }
 
         public DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {
-            throw new NotImplementedException();
+            totalNumber = this.Count();
+            return ToDataTablePage(pageIndex,pageSize);
         }
 
         public List<T> ToPageList(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            if (pageIndex == 0)
+                pageIndex = 1;
+            SqlBuilder.LambadaQueryBuilder.Skip = (pageIndex - 1) * pageSize;
+            SqlBuilder.LambadaQueryBuilder.Take = pageSize;
+            return ToList();
         }
 
         public List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
-            throw new NotImplementedException();
+            totalNumber = this.Count();
+            return ToPageList(pageIndex, pageSize);
         }
 
-        #region 私有方法
+
+        #region Private Methods
+        private ISugarQueryable<TResult> _Select<TResult>(Expression expression)
+        {
+            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            reval.Context = this.Context;
+            reval.SqlBuilder = this.SqlBuilder;
+            reval.SqlBuilder.LambadaQueryBuilder.QueryPars = this.SqlBuilder.LambadaQueryBuilder.QueryPars;
+            reval.SqlBuilder.LambadaQueryBuilder.SelectValue = expression;
+            return reval;
+        }
         protected void _Where(Expression expression)
         {
             var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
@@ -441,22 +522,35 @@ namespace SqlSugar
         protected ISugarQueryable<T> _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)
         {
             var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var orderByValue = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            OrderBy(orderByValue.GetResultString() + " " + type.ToString().ToUpper());
+            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            OrderBy(lamResult.GetResultString() + " " + type.ToString().ToUpper());
             return this;
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
             var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var orderByValue = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            GroupBy(orderByValue.GetResultString());
+            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            GroupBy(lamResult.GetResultString());
             return this;
         }
 
-        public ISugarQueryable<T> With(string withString)
+        private List<TResult> _ToList<TResult>()
         {
-            SqlBuilder.LambadaQueryBuilder.TableWithString = withString;
-            return this;
+            var sqlObj = this.ToSql();
+            var isComplexModel = Regex.IsMatch(sqlObj.Key, @"AS \[\w+\.\w+\]");
+            using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
+            {
+                var tType = typeof(TResult);
+                if (tType.IsAnonymousType() || isComplexModel)
+                {
+                    return this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
+                }
+                else
+                {
+                    var reval = this.Bind.DataReaderToList<TResult>(tType, dataReader, SqlBuilder.LambadaQueryBuilder.SelectCacheKey);
+                    return reval;
+                }
+            }
         }
         #endregion
     }

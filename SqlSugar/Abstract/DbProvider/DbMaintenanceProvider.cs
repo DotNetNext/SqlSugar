@@ -121,6 +121,11 @@ namespace SqlSugar
             }
         }
 
+        public virtual string GetSinglePrimaryFiled(string tableName)
+        {
+            var pkColumnInfo = GetColumnInfosByTableName(tableName).FirstOrDefault(it => it.IsPrimarykey);
+            return pkColumnInfo == null ? null : pkColumnInfo.ColumnName;
+        }
 
         protected abstract string AddColumnToTableSql { get; }
         public bool AddColumnToTable(string tableName, DbColumnInfo column)
@@ -169,7 +174,7 @@ namespace SqlSugar
         {
             var isSystemTables = Context.CurrentConnectionConfig is SystemTablesConfig;
             return isSystemTables;
-        } 
+        }
         #endregion
     }
 }

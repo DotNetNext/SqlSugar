@@ -36,8 +36,6 @@ namespace SqlSugar
         T InSingle(object pkValue);
         ISugarQueryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues);
         ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        ISugarQueryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues);
 
         ISugarQueryable<T> OrderBy(string orderFileds);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
@@ -70,9 +68,13 @@ namespace SqlSugar
 
         int Count();
         TResult Max<TResult>(string maxField);
-        object Max(Expression<Func<T, object>> expression);
+        TResult Max<TResult>(Expression<Func<T, object>> expression);
         TResult Min<TResult>(string minField);
-        object Min(Expression<Func<T, object>> expression);
+        TResult Min<TResult>(Expression<Func<T, object>> expression);
+        TResult Sum<TResult>(string sumField);
+        TResult Sum<TResult>(Expression<Func<T, object>> expression);
+        TResult Avg<TResult>(string avgField);
+        TResult Avg<TResult>(Expression<Func<T, object>> expression);
 
         List<T> ToList();
 

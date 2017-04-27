@@ -14,6 +14,8 @@ namespace SqlSugar
 
         List<DbColumnInfo> GetColumnInfosByTableName(string tableName);
 
+        string GetSinglePrimaryFiled(string tableName);
+
         bool TruncateTable(string tableName);
 
         bool CreateTable(string tableName, List<DbColumnInfo> columns);

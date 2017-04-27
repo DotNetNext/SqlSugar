@@ -19,6 +19,7 @@ namespace SqlSugar
 
         string SqlParameterKeyWord { get; }
         string GetTranslationTableName(string name);
+        string GetTableName(string name);
         string GetTranslationColumnName(string name);
     }
 }
