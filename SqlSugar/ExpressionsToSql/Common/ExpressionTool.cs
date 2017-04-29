@@ -14,11 +14,11 @@ namespace SqlSugar
             {
                 case ExpressionType.And:
                 case ExpressionType.AndAlso:
-                    return " AND ";
+                    return "AND";
                 case ExpressionType.Equal:
-                    return " =";
+                    return "=";
                 case ExpressionType.GreaterThan:
-                    return " >";
+                    return ">";
                 case ExpressionType.GreaterThanOrEqual:
                     return ">=";
                 case ExpressionType.LessThan:
@@ -29,7 +29,7 @@ namespace SqlSugar
                     return "<>";
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
-                    return " OR ";
+                    return "OR";
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                     return "+";

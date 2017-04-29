@@ -105,7 +105,7 @@ namespace OrmTest.UnitTest
                     .WhereIF(true,it=> NBORM.Contains(it.Name,"a"))
                     .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).With(SqlWith.NoLock).ToSql();
                 base.Check(@"WITH PageTable AS(
-                          SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student] WITH(NOLOCK)   WHERE ( [Id]  = @Id0 )  AND  ([Name] like '%'+@MethodConst1+'%')  
+                          SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student] WITH(NOLOCK)   WHERE ( [Id] = @Id0 )  AND  ([Name] like '%'+@MethodConst1+'%')  
                   )
                   SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [Id] DESC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 11 AND 20", new List<SugarParameter>() {
                                new SugarParameter("@Id0",1),new SugarParameter("@MethodConst1","a")
