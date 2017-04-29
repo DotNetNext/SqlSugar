@@ -82,5 +82,19 @@ namespace SqlSugar
             var parameter2 = model.Args[2];
             return string.Format(" ({0} BETWEEN {1} AND {2}) ", parameter.Value, parameter1.Value, parameter2.Value);
         }
+
+        public object StartsWith(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} like {1}+'%') ", parameter.Value, parameter2.Value);
+        }
+
+        public object EndsWith(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} like '%'+{1}) ", parameter.Value, parameter2.Value);
+        }
     }
 }

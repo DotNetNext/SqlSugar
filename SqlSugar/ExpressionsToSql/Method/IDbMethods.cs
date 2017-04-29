@@ -22,5 +22,7 @@ namespace SqlSugar
         object DateAddByType(MethodCallExpressionModel model);
         object DateAddDay(MethodCallExpressionModel model);
         object Between(MethodCallExpressionModel model);
+        object StartsWith(MethodCallExpressionModel model);
+        object EndsWith(MethodCallExpressionModel model);
     }
 }

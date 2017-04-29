@@ -92,6 +92,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.DateAddByType(model);
                 case "Between":
                     return this.Context.DbMehtods.Between(model);
+                case "StartsWith":
+                    return this.Context.DbMehtods.StartsWith(model);
+                case "EndsWith":
+                    return this.Context.DbMehtods.EndsWith(model);
                 default:
                     break;
             }

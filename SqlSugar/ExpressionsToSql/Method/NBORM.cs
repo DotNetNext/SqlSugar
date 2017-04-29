@@ -19,5 +19,7 @@ namespace SqlSugar
         public static bool DateAdd(DateTime date1, int addValue, DateType millisecond){ throw new NotImplementedException(); }
         public static bool DateAdd(DateTime date1, int addValue) { throw new NotImplementedException(); }
         public static bool Between(object value, object start, object end){ throw new NotImplementedException();}
+        public static bool StartsWith(string thisValue, string parameterValue) { throw new NotImplementedException();}
+        public static bool EndsWith(string thisValue, string parameterValue) {throw new NotImplementedException();}
     }
 }

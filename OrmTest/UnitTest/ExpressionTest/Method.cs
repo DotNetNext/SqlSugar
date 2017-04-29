@@ -30,6 +30,8 @@ namespace OrmTest.UnitTest
                 ToLower();
                 Trim();
                 Contains();
+                StartsWith();
+                EndsWith();
                 Between();
                 Equals();
                 Equals_2();
@@ -42,6 +44,28 @@ namespace OrmTest.UnitTest
             base.End("Method Test");
         }
 
+        private void StartsWith()
+        {
+            Expression<Func<Student, bool>> exp = it => NBORM.StartsWith(it.Name, "a");
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " ([Name] like @MethodConst0+'%') ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","a")
+            }, "StartsWith");
+        }
+        private void EndsWith()
+        {
+            Expression<Func<Student, bool>> exp = it => NBORM.EndsWith(it.Name, "a");
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " ([Name] like '%'+@MethodConst0) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","a")
+            }, "EndsWith");
+        }
         private void Between()
         {
             Expression<Func<Student, bool>> exp = it => NBORM.Between(it.Name,1, 2);
