@@ -38,43 +38,26 @@ namespace OrmTest.UnitTest
 
                 #region dr ot entity
                 db.IgnoreComumns.Add("TestId", "Student");
-                var d5 = db.Queryable<Student>().ToList();
-                var gos = db.Queryable<Student>()
-                    .With(SqlWith.NoLock)
-                    .GroupBy(it=>it.Id)
-                    .OrderBy(it=>it.Id)
-                    .Select(it=>it.Id).ToSql();
-                base.Check("SELECT [Id] FROM [Student] WITH(NOLOCK) GROUP BY [Id] ORDER BY [Id] ASC", null, gos.Key,null, "基本查询出错");
-                var dr3 = db.Queryable<Student>().Select(it => new ViewModelStudent2 {    Name=it.Name,Student=it}).ToList();
-                var dr0 = db.Queryable<Student>().Select(it => new  { id=it.Id,w=new { x=it } }).ToList();
-                var dr1 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
-                var dr2 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
-                var dr4 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it,  Name =it.Name }).ToList();
+                var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 {    Name=it.Name,Student=it}).ToList();
+                var s2 = db.Queryable<Student>().Select(it => new  { id=it.Id,w=new { x=it } }).ToList();
+                var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
+                var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
+                var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it,  Name =it.Name }).ToList();
                 #endregion
 
 
                 #region sql and parameters validate
-                var l1 = db.Queryable<School, School>((st, st2) => new object[] {
+                var ss1 = db.Queryable<School, School>((st, st2) => new object[] {
                            JoinType.Left,st.Id==st2.Id
                     })
                           .Where(st => st.Id > 0)
                           .Select<School, School, dynamic>((st, st2) => new { stid = st.Id, scId = st2.Id, xx = st }).ToSql();
 
-                base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [School.Id] , [st].[Name] AS [School.Name]  FROM [School] st  Left JOIN School st2  ON ( [st].[Id]  = [st2].[Id] )   WHERE ( [st].[Id]  > @Id0 )"
+                base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [School.Id] , [st].[Name] AS [School.Name]  FROM [School] st Left JOIN School st2 ON ( [st].[Id] = [st2].[Id] )   WHERE ( [st].[Id] > @Id0 ) "
                     , new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
-                    }, l1.Key, l1.Value, "l1错误");
+                    }, ss1.Key, ss1.Value, "ss1错误");
 
-                var list2 = db.Queryable<Student>()
-                  .Where(st => st.Id > 0)
-                 .Select("id").ToSql();
-
-                base.Check("SELECT id FROM [Student]  WHERE ( [Id]  > @Id0 )",
-                 new List<SugarParameter>() { new SugarParameter("@Id0", 0) },
-                 list2.Key,
-                 list2.Value,
-                 "list2报错"
-                );
 
                 var list3 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id,
@@ -82,11 +65,7 @@ namespace OrmTest.UnitTest
                 }).Where(st => st.Id > 0)
                 .Select<School>((st) => new School() { Id = st.Id }).ToList();
 
-                var list4 = db.Queryable("Student", "st")
-                 .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
-                 .Where("st.id>@id")
-                 .AddParameters(new { id = 1 })
-                 .Select("st.*").ToList();
+      
                 #endregion
 
 

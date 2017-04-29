@@ -22,8 +22,23 @@ namespace OrmTest.UnitTest
             {
                 Q1();
                 Q2();
+                Q3();
             }
             base.End("Method Test");
+        }
+
+        private void Q3()
+        {
+            using (var db = GetInstance())
+            {
+                var join3 = db.Queryable("Student", "st")
+                            .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
+                            .Where("st.id>@id")
+                            .AddParameters(new { id = 1 })
+                            .Select("st.*").ToSql();
+                string sql = @"SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id ";
+                base.Check(sql,new List<SugarParameter>() {new SugarParameter("@id",1)}, join3.Key, join3.Value, "join 3 Error");
+            }
         }
 
         public void Q1()
@@ -45,7 +60,7 @@ namespace OrmTest.UnitTest
             {
                 var join2 = db.Queryable<Student, School>((st, sc) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id
-                }).Where(st=>st.Id>2).Select<Student>("*").ToSql();
+                }).Where(st => st.Id > 2).Select<Student>("*").ToSql();
                 base.Check(@"SELECT * FROM [Student] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   WHERE ( [st].[Id] > @Id0 ) ",
     new List<SugarParameter>() {
                         new SugarParameter("@Id0",2)
@@ -60,7 +75,7 @@ namespace OrmTest.UnitTest
             db.Database.IsEnableLogEvent = true;
             db.Database.LogEventStarting = (sql, pars) =>
             {
-                Console.WriteLine(sql+" "+pars);
+                Console.WriteLine(sql + " " + pars);
             };
             return db;
         }
