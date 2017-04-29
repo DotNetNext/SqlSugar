@@ -67,7 +67,7 @@ namespace SqlSugar
             }
             else if (type.IsValueType || type == PubConst.StringType)
             {
-                return GetKeyValueList<T>(type, dataReader);
+                return GetValueTypeList<T>(type, dataReader);
             }
             else if (type.IsArray)
             {

@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         string SqlTemplate { get; }
         SqlSugarClient  Context { get; set; }
-        StringBuilder Sql { get; set; }
+        StringBuilder sql { get; set; }
         string ToSqlString();
         void Clear();
     }

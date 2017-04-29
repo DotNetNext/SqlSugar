@@ -16,7 +16,7 @@ namespace SqlSugar
             {
                 if (this._Fields.IsNullOrEmpty())
                 {
-                    this._Fields = Regex.Match(this.Sql.ToString(), @"select(.*?)from", RegexOptions.IgnoreCase).Groups[1].Value;
+                    this._Fields = Regex.Match(this.sql.ToString(), @"select(.*?)from", RegexOptions.IgnoreCase).Groups[1].Value;
                     if (this._Fields.IsNullOrEmpty())
                     {
                         this._Fields = "*";
@@ -30,7 +30,7 @@ namespace SqlSugar
             }
         }
         private StringBuilder _Sql;
-        public StringBuilder Sql
+        public StringBuilder sql
         {
             get {
                 _Sql = PubMethod.IsNullReturnNew(_Sql);
@@ -58,7 +58,7 @@ namespace SqlSugar
 
         public void Clear()
         {
-            this.Sql = null;
+            this.sql = null;
         }
     }
 }

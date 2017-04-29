@@ -17,7 +17,6 @@ namespace SqlSugar
         public virtual string SqlParameterKeyWord { get { return "@"; } }
         public abstract string GetTranslationTableName(string name);
         public abstract string GetTranslationColumnName(string name);
-        public abstract string  GetTableName(string name);
 
         public string AppendWhereOrAnd(bool isWhere, string sqlString)
         {
@@ -46,7 +45,7 @@ namespace SqlSugar
             set { base._InsertBuilder = value; }
         }
 
-        public LambadaQueryBuilder LambadaQueryBuilder
+        public QueryBuilder QueryBuilder
         {
             get;set;
         }

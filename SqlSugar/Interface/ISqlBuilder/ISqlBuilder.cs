@@ -12,14 +12,13 @@ namespace SqlSugar
         CommandType CommandType { get; set; }
         String AppendWhereOrAnd(bool isWhere, string sqlString);
         SqlQueryBuilder SqlQueryBuilder { get; set; }
-        LambadaQueryBuilder LambadaQueryBuilder { get; set; }
+        QueryBuilder QueryBuilder { get; set; }
         InsertBuilder InsertBuilder { get; set; }
         DeleteBuilder DeleteBuilder { get; set; }
         UpdateBuilder UpdateBuilder { get; set; }
 
         string SqlParameterKeyWord { get; }
         string GetTranslationTableName(string name);
-        string GetTableName(string name);
         string GetTranslationColumnName(string name);
     }
 }

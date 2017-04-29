@@ -59,7 +59,7 @@
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\DeleteBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\InsertBuilder.cs" />
-    <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\LambadaQueryBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\QueryBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\SqlQueryBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\DMLBuilder\UpdateBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />

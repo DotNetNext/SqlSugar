@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class SqlServerLambadaQueryBuilder: LambadaQueryBuilder
+    public class SqlServerQueryBuilder: QueryBuilder
     {
     }
 }

@@ -19,10 +19,10 @@ namespace SqlSugar
             return reval;
         }
 
-        public static LambadaQueryBuilder GetLambadaQueryBuilder(IConnectionConfig currentConnectionConfig)
+        public static QueryBuilder GetQueryBuilder(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);
-            LambadaQueryBuilder reval = CreateInstance<LambadaQueryBuilder>(GetClassName(currentConnectionConfig.DbType, "LambadaQueryBuilder"), currentConnectionConfig.DbType);
+            QueryBuilder reval = CreateInstance<QueryBuilder>(GetClassName(currentConnectionConfig.DbType, "QueryBuilder"), currentConnectionConfig.DbType);
             return reval;
         }
 

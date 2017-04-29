@@ -16,31 +16,38 @@ namespace SqlSugar
         public IDb Db { get { return Context.Database; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
+        public QueryBuilder QueryBuilder
+        {
+            get
+            {
+              return  this.SqlBuilder.QueryBuilder;
+            }
+        }
         public void Clear()
         {
-            SqlBuilder.LambadaQueryBuilder.Clear();
+            QueryBuilder.Clear();
         }
 
         public ISugarQueryable<T> AddParameters(object whereObj)
         {
             if (whereObj != null)
-                this.SqlBuilder.LambadaQueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> AddParameters(SugarParameter[] pars)
         {
-            this.SqlBuilder.LambadaQueryBuilder.QueryPars.AddRange(pars);
+            QueryBuilder.QueryPars.AddRange(pars);
             return this;
         }
 
         public ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
         {
 
-            SqlBuilder.LambadaQueryBuilder.JoinIndex = +1;
-            SqlBuilder.LambadaQueryBuilder.JoinQueryInfos
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
                 .Add(new JoinQueryInfo()
                 {
-                    JoinIndex = SqlBuilder.LambadaQueryBuilder.JoinIndex,
+                    JoinIndex = QueryBuilder.JoinIndex,
                     TableName = tableName,
                     ShortName = shortName,
                     JoinType = type,
@@ -61,10 +68,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
-            var whereValue = SqlBuilder.LambadaQueryBuilder.WhereInfos;
+            var whereValue = QueryBuilder.WhereInfos;
             whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString));
             if (whereObj != null)
-                this.SqlBuilder.LambadaQueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression)
@@ -148,8 +155,8 @@ namespace SqlSugar
                 Where("1=2 ");
                 return this;
             }
-            string filed = Context.Database.DbMaintenance.GetSinglePrimaryFiled(this.SqlBuilder.GetTableName(typeof(T).Name));
-            string shortName = this.SqlBuilder.LambadaQueryBuilder.TableShortName == null ? null : (this.SqlBuilder.LambadaQueryBuilder.TableShortName + ".");
+            string filed = Context.Database.DbMaintenance.GetSinglePrimaryFiled(this.SqlBuilder.GetTranslationTableName(typeof(T).Name));
+            string shortName = QueryBuilder.TableShortName == null ? null : (QueryBuilder.TableShortName + ".");
             filed = shortName + filed;
             return In(filed, pkValues);
         }
@@ -167,11 +174,11 @@ namespace SqlSugar
             {
                 if (inValues.GetType().IsArray)
                 {
-                    var whereIndex = this.SqlBuilder.LambadaQueryBuilder.WhereIndex;
+                    var whereIndex = QueryBuilder.WhereIndex;
                     string parameterName = this.SqlBuilder.SqlParameterKeyWord + "InPara" + whereIndex;
-                    this.Where(string.Format("{0} = {1} ", filed, parameterName));
+                    this.Where(string.Format(QueryBuilder.InTemplate, filed, parameterName));
                     this.AddParameters(new SqlParameter(parameterName, inValues[0]));
-                    this.SqlBuilder.LambadaQueryBuilder.WhereIndex++;
+                    QueryBuilder.WhereIndex++;
                 }
                 else
                 {
@@ -183,7 +190,7 @@ namespace SqlSugar
                             values.Add(item.ToString().ToSqlValue());
                         }
                     }
-                    this.Where(string.Format("{0} in ({1}) ", filed, string.Join(",", values)));
+                    this.Where(string.Format(QueryBuilder.InTemplate, filed, string.Join(",", values)));
                 }
             }
             else
@@ -196,7 +203,7 @@ namespace SqlSugar
                         values.Add(item.ToString().ToSqlValue());
                     }
                 }
-                this.Where(string.Format("{0} in ({1}) ", filed, string.Join(",", values)));
+                this.Where(string.Format(QueryBuilder.InTemplate, filed, string.Join(",", values)));
 
             }
             return this;
@@ -204,20 +211,20 @@ namespace SqlSugar
 
         public ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
             return In(fieldName, inValues);
         }
 
         public ISugarQueryable<T> OrderBy(string orderFileds)
         {
-            var orderByValue = SqlBuilder.LambadaQueryBuilder.OrderByValue;
-            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty())
+            var orderByValue = QueryBuilder.OrderByValue;
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
-                SqlBuilder.LambadaQueryBuilder.OrderByValue = "ORDER BY ";
+                QueryBuilder.OrderByValue = QueryBuilder.OrderByTemplate;
             }
-            SqlBuilder.LambadaQueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
+            QueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
             return this;
         }
 
@@ -241,35 +248,35 @@ namespace SqlSugar
 
         public ISugarQueryable<T> GroupBy(string groupFileds)
         {
-            var croupByValue = SqlBuilder.LambadaQueryBuilder.GroupByValue;
-            if (SqlBuilder.LambadaQueryBuilder.GroupByValue.IsNullOrEmpty())
+            var croupByValue = QueryBuilder.GroupByValue;
+            if (QueryBuilder.GroupByValue.IsNullOrEmpty())
             {
-                SqlBuilder.LambadaQueryBuilder.GroupByValue = "GROUP BY ";
+                QueryBuilder.GroupByValue = QueryBuilder.GroupByTemplate;
             }
-            SqlBuilder.LambadaQueryBuilder.GroupByValue += string.IsNullOrEmpty(croupByValue) ? groupFileds : ("," + groupFileds);
+            QueryBuilder.GroupByValue += string.IsNullOrEmpty(croupByValue) ? groupFileds : ("," + groupFileds);
             return this;
         }
 
         public ISugarQueryable<T> Skip(int num)
         {
-            SqlBuilder.LambadaQueryBuilder.Skip = num;
+            QueryBuilder.Skip = num;
             return this;
         }
 
         public ISugarQueryable<T> Take(int num)
         {
-            SqlBuilder.LambadaQueryBuilder.Take = num;
+            QueryBuilder.Take = num;
             return this;
         }
 
         public T Single()
         {
-            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty())
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
-                SqlBuilder.LambadaQueryBuilder.OrderByValue = " ORDER BY GETDATE()";
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
             }
-            SqlBuilder.LambadaQueryBuilder.Skip = 0;
-            SqlBuilder.LambadaQueryBuilder.Take = 1;
+            QueryBuilder.Skip = 0;
+            QueryBuilder.Take = 1;
             var reval = this.ToList();
             if (reval.IsValuable())
             {
@@ -289,12 +296,12 @@ namespace SqlSugar
 
         public T First()
         {
-            if (SqlBuilder.LambadaQueryBuilder.OrderByValue.IsNullOrEmpty())
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
-                SqlBuilder.LambadaQueryBuilder.OrderByValue = " ORDER BY GETDATE()";
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
             }
-            SqlBuilder.LambadaQueryBuilder.Skip = 0;
-            SqlBuilder.LambadaQueryBuilder.Take = 1;
+            QueryBuilder.Skip = 0;
+            QueryBuilder.Take = 1;
             var reval = this.ToList();
             if (reval.IsValuable())
             {
@@ -361,75 +368,75 @@ namespace SqlSugar
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
             reval.SqlBuilder = this.SqlBuilder;
-            SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
+            QueryBuilder.SelectValue = selectValue;
             return reval;
         }
         public ISugarQueryable<T> Select(string selectValue)
         {
-            SqlBuilder.LambadaQueryBuilder.SelectValue = selectValue;
+            QueryBuilder.SelectValue = selectValue;
             return this;
         }
 
         public int Count()
         {
-            SqlBuilder.LambadaQueryBuilder.IsCount = true;
-            var sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
-            var reval = Context.Database.GetInt(sql, SqlBuilder.LambadaQueryBuilder.QueryPars.ToArray());
-            SqlBuilder.LambadaQueryBuilder.IsCount = false;
+            QueryBuilder.IsCount = true;
+            var sql = QueryBuilder.ToSqlString();
+            var reval = Context.Database.GetInt(sql, QueryBuilder.QueryPars.ToArray());
+            QueryBuilder.IsCount = false;
             return reval;
         }
 
         public TResult Max<TResult>(string maxField)
         {
-            this.Select("Max("+ maxField + ")");
+            this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
 
-        public TResult Max<TResult>(Expression<Func<T, object>> expression)
+        public TResult Max<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Max<TResult>(lamResult.GetResultString());
         }
 
         public TResult Min<TResult>(string minField)
         {
-            this.Select("Min("+ minField + ")");
+            this.Select(string.Format(QueryBuilder.MinTemplate, minField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
 
-        public TResult Min<TResult>(Expression<Func<T, object>> expression)
+        public TResult Min<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Min<TResult>(lamResult.GetResultString());
         }
 
         public TResult Sum<TResult>(string sumField)
         {
-            this.Select("Sum(" + sumField + ")");
+            this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
 
-        public TResult Sum<TResult>(Expression<Func<T, object>> expression)
+        public TResult Sum<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Sum<TResult>(lamResult.GetResultString());
         }
         public TResult Avg<TResult>(string avgField)
         {
-            this.Select("Sum(" + avgField + ")");
+            this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
-        public TResult Avg<TResult>(Expression<Func<T, object>> expression)
+        public TResult Avg<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Avg<TResult>(lamResult.GetResultString());
         }
         public List<T> ToList()
@@ -444,23 +451,23 @@ namespace SqlSugar
 
         public string ToJsonPage(int pageIndex, int pageSize)
         {
-            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex,pageSize));
+            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize));
         }
 
         public string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
-            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize,ref totalNumber));
+            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber));
         }
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            string sql = SqlBuilder.LambadaQueryBuilder.ToSqlString();
-            return new KeyValuePair<string, List<SugarParameter>>(sql, SqlBuilder.LambadaQueryBuilder.QueryPars);
+            string sql = QueryBuilder.ToSqlString();
+            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.QueryPars);
         }
 
         public ISugarQueryable<T> With(string withString)
         {
-            SqlBuilder.LambadaQueryBuilder.TableWithString = withString;
+            QueryBuilder.TableWithString = withString;
             return this;
         }
 
@@ -475,24 +482,23 @@ namespace SqlSugar
         {
             if (pageIndex == 0)
                 pageIndex = 1;
-            SqlBuilder.LambadaQueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            SqlBuilder.LambadaQueryBuilder.Take = pageSize;
+            QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+            QueryBuilder.Take = pageSize;
             return ToDataTable();
-
         }
 
         public DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {
             totalNumber = this.Count();
-            return ToDataTablePage(pageIndex,pageSize);
+            return ToDataTablePage(pageIndex, pageSize);
         }
 
         public List<T> ToPageList(int pageIndex, int pageSize)
         {
             if (pageIndex == 0)
                 pageIndex = 1;
-            SqlBuilder.LambadaQueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            SqlBuilder.LambadaQueryBuilder.Take = pageSize;
+            QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+            QueryBuilder.Take = pageSize;
             return ToList();
         }
 
@@ -509,27 +515,27 @@ namespace SqlSugar
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
             reval.SqlBuilder = this.SqlBuilder;
-            reval.SqlBuilder.LambadaQueryBuilder.QueryPars = this.SqlBuilder.LambadaQueryBuilder.QueryPars;
-            reval.SqlBuilder.LambadaQueryBuilder.SelectValue = expression;
+            reval.SqlBuilder.QueryBuilder.QueryPars = QueryBuilder.QueryPars;
+            reval.SqlBuilder.QueryBuilder.SelectValue = expression;
             return reval;
         }
         protected void _Where(Expression expression)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var result = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
-            SqlBuilder.LambadaQueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(SqlBuilder.LambadaQueryBuilder.WhereInfos.IsNullOrEmpty(), result.GetResultString()));
+            var isSingle = QueryBuilder.IsSingle();
+            var result = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            QueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(), result.GetResultString()));
         }
         protected ISugarQueryable<T> _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            OrderBy(lamResult.GetResultString() + " " + type.ToString().ToUpper());
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            OrderBy(lamResult.GetResultString() + PubConst.Space + type.ToString().ToUpper());
             return this;
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
-            var isSingle = SqlBuilder.LambadaQueryBuilder.IsSingle();
-            var lamResult = SqlBuilder.LambadaQueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             GroupBy(lamResult.GetResultString());
             return this;
         }
@@ -537,7 +543,7 @@ namespace SqlSugar
         private List<TResult> _ToList<TResult>()
         {
             var sqlObj = this.ToSql();
-            var isComplexModel = Regex.IsMatch(sqlObj.Key, @"AS \[\w+\.\w+\]");
+            var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
                 var tType = typeof(TResult);
@@ -547,7 +553,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var reval = this.Bind.DataReaderToList<TResult>(tType, dataReader, SqlBuilder.LambadaQueryBuilder.SelectCacheKey);
+                    var reval = this.Bind.DataReaderToList<TResult>(tType, dataReader, QueryBuilder.SelectCacheKey);
                     return reval;
                 }
             }

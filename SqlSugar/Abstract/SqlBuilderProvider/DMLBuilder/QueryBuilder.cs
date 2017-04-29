@@ -4,12 +4,14 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
-    public abstract class LambadaQueryBuilder : IDMLBuilder
+    public abstract class QueryBuilder : IDMLBuilder
     {
 
-        public LambadaQueryBuilder()
+        public QueryBuilder()
         {
             this.QueryPars = new List<SugarParameter>();
         }
@@ -21,7 +23,7 @@ namespace SqlSugar
         #endregion
 
         #region Service object
-        public StringBuilder Sql { get; set; }
+        public StringBuilder sql { get; set; }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public ISqlBuilder Builder { get; set; }
@@ -83,25 +85,79 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT {0} FROM {1} {2} {3} {4}";
+                return "SELECT {0} FROM {1}{2}{3}{4} ";
             }
         }
         public virtual string JoinTemplate
         {
             get
             {
-                return " {0} JOIN {1} {2} ON {3} ";
+                return "{0}JOIN {1}{2}ON {3} ";
             }
         }
         public virtual string PageTempalte
         {
             get
             {
-                return @" 
-                        WITH PageTable AS(
+                return @"WITH PageTable AS(
                           {0}
-                        )
-                        SELECT * FROM (SELECT *,ROW_NUMBER() OVER({1}) AS RowIndex FROM PageTable ) T  BETWEEN {2} AND {3}";
+                  )
+                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER({1}) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN {2} AND {3}";
+            }
+        }
+        public virtual string DefaultOrderByTemplate
+        {
+            get
+            {
+                return "ORDER BY GETDATE() ";
+            }
+        }
+        public virtual string OrderByTemplate
+        {
+            get
+            {
+                return "ORDER BY ";
+            }
+        }
+        public virtual string GroupByTemplate
+        {
+            get
+            {
+                return "GROUP BY ";
+            }
+        }
+
+        public virtual string MaxTemplate
+        {
+            get
+            {
+                return "MAX({0})";
+            }
+        }
+        public virtual string MinTemplate
+        {
+            get
+            {
+                return "MIN({0})";
+            }
+        }
+        public virtual string SumTemplate
+        {
+            get
+            {
+                return "SUM({0})";
+            }
+        }
+        public virtual string AvgTemplate
+        {
+            get
+            {
+                return "AVG({0})";
+            }
+        }
+        public virtual string InTemplate {
+            get {
+                return "{0} IN ({1}) ";
             }
         }
         #endregion
@@ -109,14 +165,14 @@ namespace SqlSugar
         #region Common Methods
         public virtual bool IsSingle()
         {
-            var isSingle = Builder.LambadaQueryBuilder.JoinQueryInfos.IsNullOrEmpty();
+            var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty();
             return isSingle;
         }
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
             this.LambdaExpressions.Clear();
-            resolveExpress.JoinQueryInfos = Builder.LambadaQueryBuilder.JoinQueryInfos;
+            resolveExpress.JoinQueryInfos = Builder.QueryBuilder.JoinQueryInfos;
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreComumns;
@@ -128,45 +184,51 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
-            Sql = new StringBuilder();
-            Sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString, GetOrderByString);
+            sql = new StringBuilder();
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString,(Skip!=null||Take!=null)?null:GetOrderByString);
+            if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {
-                return string.Format(PageTempalte, Sql.ToString(), GetOrderByString, 0,Take);
+                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
             }
             else if (Skip == null && Take != null)
             {
-                return string.Format(PageTempalte, Sql.ToString(), GetOrderByString, Skip+1,long.MaxValue);
+                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, 1, Take.ObjToInt());
             }
-            else if (Skip != null && Take == null)
+            else if (Skip != null && Take != null)
             {
-                return string.Format(PageTempalte, Sql.ToString(), GetOrderByString, Skip+1, Take);
+                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Take);
             }
-            else {
-                return Sql.ToString();
+            else
+            {
+                return sql.ToString();
             }
-          
+
         }
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(
                 this.JoinTemplate,
-                joinInfo.JoinType.ToString(),
-                joinInfo.TableName,
-                joinInfo.ShortName + " " + joinInfo.TableWithString,
+                joinInfo.JoinType.ToString() + PubConst.Space,
+                joinInfo.TableName + PubConst.Space,
+                joinInfo.ShortName + PubConst.Space + joinInfo.TableWithString,
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
         {
             this.Skip = 0;
             this.Take = 0;
-            this.Sql = null;
+            this.sql = null;
             this.WhereIndex = 0;
             this.QueryPars = null;
             this.GroupByValue = null;
             this._TableNameString = null;
             this.WhereInfos = null;
             this.JoinQueryInfos = null;
+        }
+        public virtual bool IsComplexModel(string sql)
+        {
+            return Regex.IsMatch(sql, @"AS \[\w+\.\w+\]");
         }
         #endregion
 
@@ -175,7 +237,7 @@ namespace SqlSugar
         {
             get
             {
-                if (this.IsCount) return " COUNT(1) ";
+                if (this.IsCount) return "COUNT(1) AS [Count] ";
                 string reval = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {
@@ -226,7 +288,7 @@ namespace SqlSugar
                 if (this.WhereInfos == null) return null;
                 else
                 {
-                    return string.Join(" ", this.WhereInfos);
+                    return string.Join(PubConst.Space, this.WhereInfos);
                 }
             }
         }
@@ -237,7 +299,7 @@ namespace SqlSugar
                 if (this.JoinQueryInfos.IsNullOrEmpty()) return null;
                 else
                 {
-                    return string.Join(" ", this.JoinQueryInfos.Select(it => this.ToJoinString(it)));
+                    return string.Join(PubConst.Space, this.JoinQueryInfos.Select(it => this.ToJoinString(it)));
                 }
             }
         }
@@ -246,22 +308,22 @@ namespace SqlSugar
             get
             {
                 var result = Builder.GetTranslationTableName(EntityName);
+                result += PubConst.Space;
                 if (this.TableWithString.IsValuable())
                 {
-                    result += " " + TableWithString;
+                    result += TableWithString + PubConst.Space;
                 }
                 if (this.TableShortName.IsValuable())
                 {
-                    result += " " + TableShortName;
+                    result += (TableShortName + PubConst.Space);
                 }
                 if (!this.IsSingle())
                 {
-                    result = result + " " + GetJoinValueString;
+                    result += GetJoinValueString + PubConst.Space;
                 }
                 return result;
             }
         }
-
         public virtual string GetOrderByString
         {
             get
@@ -269,7 +331,6 @@ namespace SqlSugar
                 return this.OrderByValue;
             }
         }
-
         public virtual string GetGroupByString
         {
             get

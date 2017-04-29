@@ -10,7 +10,7 @@ namespace SqlSugar
 
         protected InsertBuilder _InsertBuilder;
 
-        protected LambadaQueryBuilder _LambadaQueryBuilder;
+        protected QueryBuilder _QueryBuilder;
 
         protected SqlQueryBuilder _SqlQueryBuilder;
 

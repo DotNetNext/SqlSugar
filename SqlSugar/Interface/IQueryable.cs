@@ -68,13 +68,13 @@ namespace SqlSugar
 
         int Count();
         TResult Max<TResult>(string maxField);
-        TResult Max<TResult>(Expression<Func<T, object>> expression);
+        TResult Max<TResult>(Expression<Func<T, TResult>> expression);
         TResult Min<TResult>(string minField);
-        TResult Min<TResult>(Expression<Func<T, object>> expression);
+        TResult Min<TResult>(Expression<Func<T, TResult>> expression);
         TResult Sum<TResult>(string sumField);
-        TResult Sum<TResult>(Expression<Func<T, object>> expression);
+        TResult Sum<TResult>(Expression<Func<T, TResult>> expression);
         TResult Avg<TResult>(string avgField);
-        TResult Avg<TResult>(Expression<Func<T, object>> expression);
+        TResult Avg<TResult>(Expression<Func<T, TResult>> expression);
 
         List<T> ToList();
 

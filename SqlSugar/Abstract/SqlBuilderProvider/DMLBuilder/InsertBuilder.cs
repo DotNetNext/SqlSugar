@@ -18,7 +18,7 @@ namespace SqlSugar
             }
         }
 
-        public StringBuilder Sql
+        public StringBuilder sql
         {
             get
             {

@@ -7,6 +7,7 @@ namespace SqlSugar
     internal static class PubConst
     {
         internal const string AssemblyName = "SqlSugar";
+        internal const string Space = " ";
         internal static Type StringType = typeof(string);
         internal static Type IntType = typeof(int);
         internal static Type DecType = typeof(decimal);
