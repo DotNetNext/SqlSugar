@@ -20,6 +20,7 @@ namespace SqlSugar
         object DateIsSameDay(MethodCallExpressionModel model);
         object DateIsSameByType(MethodCallExpressionModel model);
         object DateAddByType(MethodCallExpressionModel model);
+        object DateValue(MethodCallExpressionModel model);
         object DateAddDay(MethodCallExpressionModel model);
         object Between(MethodCallExpressionModel model);
         object StartsWith(MethodCallExpressionModel model);

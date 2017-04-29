@@ -96,5 +96,12 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like '%'+{1}) ", parameter.Value, parameter2.Value);
         }
+
+        public object DateValue(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0}({1})) ", parameter2.Value, parameter.Value);
+        }
     }
 }

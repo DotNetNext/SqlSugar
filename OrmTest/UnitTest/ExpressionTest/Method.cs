@@ -39,9 +39,23 @@ namespace OrmTest.UnitTest
                 DateIsSameByType();
                 DateAddDay();
                 DateAddByType();
+                DateValue();
                 #endregion
             }
             base.End("Method Test");
+        }
+
+        private void DateValue()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => NBORM.DateValue(x2,DateType.Year);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "  (@MethodConst1(@MethodConst0)) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",DateType.Year)
+            }, "StartsWith");
         }
 
         private void StartsWith()
