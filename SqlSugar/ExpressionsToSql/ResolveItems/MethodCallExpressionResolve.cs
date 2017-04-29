@@ -90,6 +90,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.DateAddDay(model);
                     else
                         return this.Context.DbMehtods.DateAddByType(model);
+                case "Between":
+                    return this.Context.DbMehtods.Between(model);
                 default:
                     break;
             }

@@ -44,7 +44,14 @@ namespace OrmTest.UnitTest
 
         private void Between()
         {
-            //throw new NotImplementedException();
+            Expression<Func<Student, bool>> exp = it => NBORM.Between(it.Name,1, 2);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " ([Name] BETWEEN @MethodConst0 AND @MethodConst1) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",1),new SugarParameter("@MethodConst1",2),
+            }, "Between");
         }
 
         private void DateAddByType()

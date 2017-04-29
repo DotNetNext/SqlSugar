@@ -74,5 +74,13 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" (DATEADD(day,{1},{0})) ", parameter.Value, parameter2.Value); 
         }
+
+        public object Between(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            var parameter2 = model.Args[2];
+            return string.Format(" ({0} BETWEEN {1} AND {2}) ", parameter.Value, parameter1.Value, parameter2.Value);
+        }
     }
 }

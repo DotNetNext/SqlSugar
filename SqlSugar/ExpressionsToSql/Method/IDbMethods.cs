@@ -21,5 +21,6 @@ namespace SqlSugar
         object DateIsSameByType(MethodCallExpressionModel model);
         object DateAddByType(MethodCallExpressionModel model);
         object DateAddDay(MethodCallExpressionModel model);
+        object Between(MethodCallExpressionModel model);
     }
 }

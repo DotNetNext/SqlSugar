@@ -18,5 +18,6 @@ namespace SqlSugar
         public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType)  { throw new NotImplementedException(); }
         public static bool DateAdd(DateTime date1, int addValue, DateType millisecond){ throw new NotImplementedException(); }
         public static bool DateAdd(DateTime date1, int addValue) { throw new NotImplementedException(); }
+        public static bool Between(object value, object start, object end){ throw new NotImplementedException();}
     }
 }
