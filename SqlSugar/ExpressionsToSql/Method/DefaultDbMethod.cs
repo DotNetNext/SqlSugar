@@ -37,5 +37,42 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like '%'+{1}+'%') ", parameter.Value, parameter2.Value);
         }
+
+        public object Equals(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} = {1}) ", parameter.Value, parameter2.Value); ;
+        }
+
+        public object DateIsSameDay(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" (DATEDIFF(day,{0},{1})=0) ", parameter.Value, parameter2.Value); ;
+        }
+
+        public object DateIsSameByType(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" (DATEDIFF({2},{0},{1})=0) ", parameter.Value, parameter2.Value, parameter3.Value); 
+        }
+
+        public object DateAddByType(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" (DATEADD({2},{1},{0})) ", parameter.Value, parameter2.Value, parameter3.Value);
+        }
+
+        public object DateAddDay(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" (DATEADD(day,{1},{0})) ", parameter.Value, parameter2.Value); 
+        }
     }
 }

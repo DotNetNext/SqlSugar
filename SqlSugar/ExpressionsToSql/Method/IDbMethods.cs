@@ -16,5 +16,10 @@ namespace SqlSugar
         object ToUpper(MethodCallExpressionModel model);
         object Trim(MethodCallExpressionModel model);
         object Contains(MethodCallExpressionModel model);
+        object Equals(MethodCallExpressionModel model);
+        object DateIsSameDay(MethodCallExpressionModel model);
+        object DateIsSameByType(MethodCallExpressionModel model);
+        object DateAddByType(MethodCallExpressionModel model);
+        object DateAddDay(MethodCallExpressionModel model);
     }
 }

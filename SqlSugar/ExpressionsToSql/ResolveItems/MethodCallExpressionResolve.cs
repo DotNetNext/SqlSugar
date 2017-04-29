@@ -78,6 +78,18 @@ namespace SqlSugar
                     return this.Context.DbMehtods.Trim(model);
                 case "Contains":
                     return this.Context.DbMehtods.Contains(model);
+                case "Equals":
+                    return this.Context.DbMehtods.Equals(model);
+                case "DateIsSame":
+                    if (model.Args.Count == 2)
+                        return this.Context.DbMehtods.DateIsSameDay(model);
+                    else
+                        return this.Context.DbMehtods.DateIsSameByType(model);
+                case "DateAdd":
+                    if (model.Args.Count == 2)
+                        return this.Context.DbMehtods.DateAddDay(model);
+                    else
+                        return this.Context.DbMehtods.DateAddByType(model);
                 default:
                     break;
             }

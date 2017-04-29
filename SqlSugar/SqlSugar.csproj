@@ -91,6 +91,7 @@
     <Compile Include="Entities\Mapping\IgnoreComumn.cs" />
     <Compile Include="Entities\SqlWith.cs" />
     <Compile Include="ExpressionsToSql\Common\CommonTempDataType.cs" />
+    <Compile Include="ExpressionsToSql\Common\DeteType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
     <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerExpressionContext.cs" />
