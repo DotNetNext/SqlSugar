@@ -84,7 +84,7 @@
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerLambadaQueryBuilder.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlServerDb.cs" />
     <Compile Include="Databases\SqlServer\Queryable\SqlServerQueryable.cs" />
-    <Compile Include="DetaultT.cs" />
+    <Compile Include="Entities\DetaultT.cs" />
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />
