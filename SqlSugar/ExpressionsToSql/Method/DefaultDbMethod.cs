@@ -125,31 +125,31 @@ namespace SqlSugar
         public string ToGuid(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS UNIQUEIDENTIFIER", parameter.Value);
+            return string.Format(" CAST({0} AS UNIQUEIDENTIFIER)", parameter.Value);
         }
 
         public string ToDouble(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS FLOAT", parameter.Value);
+            return string.Format(" CAST({0} AS FLOAT)", parameter.Value);
         }
 
         public string ToBool(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS BIT", parameter.Value);
+            return string.Format(" CAST({0} AS BIT)", parameter.Value);
         }
 
         public string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS DATETIME", parameter.Value);
+            return string.Format(" CAST({0} AS DATETIME)", parameter.Value);
         }
 
         public string ToDecimal(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS MONEY", parameter.Value);
+            return string.Format(" CAST({0} AS MONEY)", parameter.Value);
         }
         public string Substring(MethodCallExpressionModel model)
         {

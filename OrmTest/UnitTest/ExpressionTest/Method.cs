@@ -40,9 +40,162 @@ namespace OrmTest.UnitTest
                 DateAddDay();
                 DateAddByType();
                 DateValue();
+                ToInt32();
+                ToInt64();
+                ToDate();
+                Tostring();
+                ToDecimal();
+                ToGuid();
+                ToDouble();
+                ToBool();
+                Substring();
+                Replace();
+                Length();
                 #endregion
             }
             base.End("Method Test");
+        }
+
+        private void Length()
+        {
+            Expression<Func<Student, bool>> exp = it => NBORM.Length("aaaa") >1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(LEN(@MethodConst0) > @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","aaaa"),new SugarParameter("@Const1",1)
+            }, "Length");
+        }
+
+        private void Replace()
+        {
+            var x2 = Guid.NewGuid();
+            Expression<Func<Student, bool>> exp = it => NBORM.Replace("aaaa","a", "1") == "a";
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(REPLACE(@MethodConst0,@MethodConst1,@MethodConst2) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","aaaa"),   new SugarParameter("@MethodConst1","a") ,   new SugarParameter("@MethodConst2","1"),new SugarParameter("@Const3","a")
+            }, "Replace");
+        }
+
+        private void Substring()
+        {
+            var x2 = Guid.NewGuid();
+            Expression<Func<Student, bool>> exp = it => NBORM.Substring("aaaa",0,2) == "a";
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(SUBSTRING(@MethodConst0,1 + @MethodConst1,@MethodConst2) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","aaaa"),   new SugarParameter("@MethodConst1",0) ,   new SugarParameter("@MethodConst2",2),new SugarParameter("@Const3","a")
+            }, "Substring");
+        }
+
+        private void ToBool()
+        {
+            var x2 = Guid.NewGuid();
+            Expression<Func<Student, bool>> exp = it => NBORM.ToBool("true") == true;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS BIT) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","true"),new SugarParameter("@Const1",(bool)true)
+            }, "ToBool");
+        }
+
+        private void ToDouble()
+        {
+            var x2 = Guid.NewGuid();
+            Expression<Func<Student, bool>> exp = it => NBORM.ToDouble("2") == 2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS FLOAT) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","2"),new SugarParameter("@Const1",(Double)2)
+            }, "ToDouble");
+        }
+
+        private void ToGuid()
+        {
+            var x2 = Guid.NewGuid();
+            Expression<Func<Student, bool>> exp = it => NBORM.ToGuid("A94027A3-476E-478D-8228-F4054394B874") == x2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS UNIQUEIDENTIFIER) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","A94027A3-476E-478D-8228-F4054394B874"),new SugarParameter("@Const1",x2)
+            }, "ToGuid");
+        }
+
+        private void ToDecimal()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => NBORM.ToDecimal("22") == 1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS MONEY) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","22"),new SugarParameter("@Const1",(decimal)1)
+            }, "ToDecimal");
+        }
+
+        private void Tostring()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => NBORM.ToString("2015-1-1") == "a";
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS NVARCHAR(MAX)) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","2015-1-1"),new SugarParameter("@Const1","a")
+            }, "Tostring");
+        }
+
+        private void ToDate()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => NBORM.ToDate("2015-1-1") == x2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS DATETIME) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","2015-1-1"),new SugarParameter("@Const1",x2)
+            }, "ToDate");
+        }
+
+        private void ToInt64()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => NBORM.ToInt64("3") == 1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS BIGINT) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","3"),new SugarParameter("@Const1",(Int64)1)
+            }, "ToInt64");
+        }
+
+        private void ToInt32()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => NBORM.ToInt32("3")== 1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS INT) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","3"),new SugarParameter("@Const1",1)
+            }, "ToInt32");
         }
 
         private void DateValue()
