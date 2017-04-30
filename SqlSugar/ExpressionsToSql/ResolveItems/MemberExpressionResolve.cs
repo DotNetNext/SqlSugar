@@ -20,11 +20,25 @@ namespace SqlSugar
             {
                 case ResolveExpressType.SelectSingle:
                     fieldName = getSingleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
+                    if (isSetTempData)
+                    {
+                        baseParameter.CommonTempData = fieldName;
+                    }
+                    else
+                    {
+                        base.Context.Result.Append(fieldName);
+                    }
                     break;
                 case ResolveExpressType.SelectMultiple:
                     fieldName = getMultipleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
+                    if (isSetTempData)
+                    {
+                        baseParameter.CommonTempData = fieldName;
+                    }
+                    else
+                    {
+                        base.Context.Result.Append(fieldName);
+                    }
                     break;
                 case ResolveExpressType.WhereSingle:
                     if (isSetTempData)

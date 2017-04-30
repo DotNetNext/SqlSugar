@@ -47,6 +47,13 @@ namespace OrmTest.UnitTest
 
 
                 #region sql and parameters validate
+                var ss0 = db.Queryable<Student, School>((st,sc)=>new object[] {
+                    JoinType.Inner,st.Id==sc.Id
+                }).GroupBy(st => st.Id).Select(st => new { avgId=NBORM.AggregateAvg(st.Id) }).ToSql();
+                base.Check(" SELECT  AVG([st].[Id]) AS [avgId]  FROM [Student] st Inner JOIN School sc ON ( [st].[Id] = [sc].[Id] )  GROUP BY [st].[Id] ", null,
+                    ss0.Key, null," ss0 Error");
+
+
                 var ss1 = db.Queryable<School, School>((st, st2) => new object[] {
                            JoinType.Left,st.Id==st2.Id
                     })
@@ -56,7 +63,7 @@ namespace OrmTest.UnitTest
                 base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [School.Id] , [st].[Name] AS [School.Name]  FROM [School] st Left JOIN School st2 ON ( [st].[Id] = [st2].[Id] )   WHERE ( [st].[Id] > @Id0 ) "
                     , new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
-                    }, ss1.Key, ss1.Value, "ss1错误");
+                    }, ss1.Key, ss1.Value, "ss1 Error");
 
 
                 var ss2 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
@@ -67,7 +74,7 @@ namespace OrmTest.UnitTest
                 base.Check("SELECT  [st].[Id] AS [Id]  FROM [Student] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )  Left JOIN School sc2 ON ( [sc2].[Id] = [sc].[Id] )   WHERE ( [st].[Id] > @Id0 ) ",
                    new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
-                    }, ss2.Key, ss2.Value, "ss2错误");
+                    }, ss2.Key, ss2.Value, "ss2 Error");
                 #endregion
 
 

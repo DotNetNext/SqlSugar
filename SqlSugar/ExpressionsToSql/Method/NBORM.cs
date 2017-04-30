@@ -34,5 +34,10 @@ namespace SqlSugar
         public static string Substring(object value, int index, int length) { throw new NotImplementedException(); }
         public static string Replace(object value,string oldChar, string newChar) { throw new NotImplementedException(); }
         public static int Length(object value) { throw new NotImplementedException(); }
+        public static dynamic AggregateSum(object thisValue) { throw new NotImplementedException(); }
+        public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotImplementedException(); }
+        public static dynamic AggregateMin(object thisValue) { throw new NotImplementedException(); }
+        public static dynamic AggregateMax(object thisValue) { throw new NotImplementedException(); }
+        public static dynamic AggregateCount(object thisValue) { throw new NotImplementedException(); }
     }
 }

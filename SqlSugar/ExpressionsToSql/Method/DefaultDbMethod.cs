@@ -186,5 +186,35 @@ namespace SqlSugar
             var parameter3 = model.Args[2];
             return string.Format("REPLACE({0},{1},{2})", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
+
+        public string AggregateSum(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("SUM({0})", parameter.MemberName);
+        }
+
+        public string AggregateAvg(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("AVG({0})", parameter.MemberName);
+        }
+
+        public string AggregateMin(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("MIN({0})", parameter.MemberName);
+        }
+
+        public string AggregateMax(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("MAX({0})", parameter.MemberName);
+        }
+
+        public string AggregateCount(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("COUNT({0})", parameter.MemberName);
+        }
     }
 }

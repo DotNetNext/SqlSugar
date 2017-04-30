@@ -51,6 +51,11 @@ namespace SqlSugar
                         parameter.Context.Result.Append(base.Context.GetAsString(memberName, parameterName));
                         this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
                     }
+                    else if (item is MethodCallExpression) {
+                        base.Expression = item;
+                        base.Start();
+                        parameter.Context.Result.Append(base.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                    }
                     else if (item is MemberExpression)
                     {
                         if (base.Context.Result.IsLockCurrentParameter == false)
@@ -90,9 +95,10 @@ namespace SqlSugar
                         var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
                         foreach (var property in listProperties)
                         {
-                            if (this.Context.IgnoreComumnList != null 
+                            if (this.Context.IgnoreComumnList != null
                                 && this.Context.IgnoreComumnList.Any(
-                                    it => it.EntityName == item.Type.Name&&it.EntityPropertyName==property.Name)) {
+                                    it => it.EntityName == item.Type.Name && it.EntityPropertyName == property.Name))
+                            {
                                 continue;
                             }
                             if (property.PropertyType.IsClass())
@@ -101,7 +107,7 @@ namespace SqlSugar
                             }
                             else
                             {
-                                var asName = "["+item.Type.Name + "." + property.Name+"]";
+                                var asName = "[" + item.Type.Name + "." + property.Name + "]";
                                 var columnName = property.Name;
                                 if (Context.IsJoin)
                                 {

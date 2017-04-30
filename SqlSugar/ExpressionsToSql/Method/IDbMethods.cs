@@ -37,5 +37,10 @@ namespace SqlSugar
         string ToDecimal(MethodCallExpressionModel model);
         string Length(MethodCallExpressionModel model);
         string Replace(MethodCallExpressionModel model);
+        string AggregateSum(MethodCallExpressionModel model);
+        string AggregateAvg(MethodCallExpressionModel model);
+        string AggregateMin(MethodCallExpressionModel model);
+        string AggregateMax(MethodCallExpressionModel model);
+        string AggregateCount(MethodCallExpressionModel model);
     }
 }
