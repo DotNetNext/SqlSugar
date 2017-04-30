@@ -31,12 +31,12 @@ namespace SqlSugar
         public ISugarQueryable<T> AddParameters(object whereObj)
         {
             if (whereObj != null)
-                QueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> AddParameters(SugarParameter[] pars)
         {
-            QueryBuilder.QueryPars.AddRange(pars);
+            QueryBuilder.Parameters.AddRange(pars);
             return this;
         }
 
@@ -71,7 +71,7 @@ namespace SqlSugar
             var whereValue = QueryBuilder.WhereInfos;
             whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString));
             if (whereObj != null)
-                QueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression)
@@ -109,7 +109,7 @@ namespace SqlSugar
 
             QueryBuilder.HavingInfos = SqlBuilder.AppendHaving(whereString);
             if (whereObj != null)
-                QueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> Having<T2>(Expression<Func<T2, bool>> expression)
@@ -420,7 +420,7 @@ namespace SqlSugar
         {
             QueryBuilder.IsCount = true;
             var sql = QueryBuilder.ToSqlString();
-            var reval = Context.Database.GetInt(sql, QueryBuilder.QueryPars.ToArray());
+            var reval = Context.Database.GetInt(sql, QueryBuilder.Parameters.ToArray());
             QueryBuilder.IsCount = false;
             return reval;
         }
@@ -501,7 +501,7 @@ namespace SqlSugar
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             string sql = QueryBuilder.ToSqlString();
-            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.QueryPars);
+            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
         }
 
         public ISugarQueryable<T> With(string withString)
@@ -554,7 +554,7 @@ namespace SqlSugar
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
             reval.SqlBuilder = this.SqlBuilder;
-            reval.SqlBuilder.QueryBuilder.QueryPars = QueryBuilder.QueryPars;
+            reval.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
             reval.SqlBuilder.QueryBuilder.SelectValue = expression;
             return reval;
         }
@@ -599,7 +599,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var reval = this.Bind.DataReaderToList<TResult>(tType, dataReader, QueryBuilder.SelectCacheKey);
+                    result = this.Bind.DataReaderToList<TResult>(tType, dataReader, QueryBuilder.SelectCacheKey);
                 }
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Context.Close();
             }

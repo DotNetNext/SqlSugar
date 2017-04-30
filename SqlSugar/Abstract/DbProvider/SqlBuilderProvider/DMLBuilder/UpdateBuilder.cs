@@ -20,6 +20,19 @@ namespace SqlSugar
             }
         }
 
+        public List<SugarParameter> Parameters
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public StringBuilder sql
         {
             get

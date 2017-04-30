@@ -13,7 +13,7 @@ namespace SqlSugar
 
         public QueryBuilder()
         {
-            this.QueryPars = new List<SugarParameter>();
+            this.Parameters = new List<SugarParameter>();
         }
 
         #region Private Fileds
@@ -42,7 +42,7 @@ namespace SqlSugar
         public string GroupByValue { get; set; }
         public int WhereIndex { get; set; }
         public int JoinIndex { get; set; }
-        public virtual List<SugarParameter> QueryPars { get; set; }
+        public virtual List<SugarParameter> Parameters { get; set; }
         public virtual List<JoinQueryInfo> JoinQueryInfos
         {
             get
@@ -191,8 +191,8 @@ namespace SqlSugar
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreComumns;
             resolveExpress.Resolve(expression, resolveType);
-            this.QueryPars = new List<SugarParameter>();
-            this.QueryPars.AddRange(resolveExpress.Parameters);
+            this.Parameters = new List<SugarParameter>();
+            this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
             return reval;
         }
@@ -234,7 +234,7 @@ namespace SqlSugar
             this.Take = 0;
             this.sql = null;
             this.WhereIndex = 0;
-            this.QueryPars = null;
+            this.Parameters = null;
             this.GroupByValue = null;
             this._TableNameString = null;
             this.WhereInfos = null;

@@ -51,6 +51,19 @@ namespace SqlSugar
             }
         }
 
+        public List<SugarParameter> Parameters
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public string ToSqlString()
         {
             throw new NotImplementedException();

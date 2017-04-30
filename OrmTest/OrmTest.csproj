@@ -62,6 +62,7 @@
     <Compile Include="PerformanceTesting\SqlSugarPerformance.cs" />
     <Compile Include="UnitTest\ExpressionTest\ExpTestBase.cs" />
     <Compile Include="UnitTest\ExpressionTest\Field.cs" />
+    <Compile Include="UnitTest\Insert.cs" />
     <Compile Include="UnitTest\Query\JoinQuery.cs" />
     <Compile Include="UnitTest\ExpressionTest\Method.cs" />
     <Compile Include="UnitTest\ExpressionTest\Select.cs" />

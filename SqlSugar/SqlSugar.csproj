@@ -53,6 +53,7 @@
     <Compile Include="Abstract\DbProvider\DbFirstProvider\DbFirstProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbMaintenanceProvider\DbMaintenanceProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbProvider\DbProvider.cs" />
+    <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
@@ -139,11 +140,14 @@
     <Compile Include="Interface\IDbBind.cs" />
     <Compile Include="Interface\IDbFirst.cs" />
     <Compile Include="Interface\IDbMaintenance.cs" />
+    <Compile Include="Interface\IDeleteable.cs" />
     <Compile Include="Interface\ILambdaExpressions.cs" />
+    <Compile Include="Interface\Insertable.cs" />
     <Compile Include="Interface\IQueryable.cs" />
     <Compile Include="Interface\ISqlBuilder\IDMLBuilder.cs" />
     <Compile Include="Interface\ISqlBuilder\ISqlBuilder.cs" />
     <Compile Include="Interface\IRewritableMethods.cs" />
+    <Compile Include="Interface\IUpdateable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlSugarAccessory.cs" />
     <Compile Include="SqlSugarClient.cs" />
@@ -152,9 +156,8 @@
     <Content Include="Lib\Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Abstract\Deleteable\" />
-    <Folder Include="Abstract\Insertable\" />
-    <Folder Include="Abstract\Updateable\" />
+    <Folder Include="Abstract\DeleteProvider\" />
+    <Folder Include="Abstract\UpdateProvider\" />
     <Folder Include="Databases\MySql\" />
     <Folder Include="Databases\Oracle\" />
     <Folder Include="Databases\Sqlite\" />
