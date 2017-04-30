@@ -98,6 +98,28 @@ namespace SqlSugar
                     return this.Context.DbMehtods.StartsWith(model);
                 case "EndsWith":
                     return this.Context.DbMehtods.EndsWith(model);
+                case "ToInt32":
+                     return this.Context.DbMehtods.ToInt32(model);
+                case "ToInt64":
+                    return this.Context.DbMehtods.ToInt64(model);
+                case "ToDate":
+                    return this.Context.DbMehtods.ToDate(model);
+                case "ToString":
+                    return this.Context.DbMehtods.ToString(model);
+                case "ToDecimal":
+                    return this.Context.DbMehtods.ToDecimal(model);
+                case "ToGuid":
+                    return this.Context.DbMehtods.ToGuid(model);
+                case "ToDouble":
+                    return this.Context.DbMehtods.ToDouble(model);
+                case "ToBool":
+                    return this.Context.DbMehtods.ToBool(model);
+                case "Substring":
+                    return this.Context.DbMehtods.Substring(model);
+                case "Replace":
+                    return this.Context.DbMehtods.Replace(model);
+                case "Length":
+                    return this.Context.DbMehtods.Length(model);
                 default:
                     break;
             }

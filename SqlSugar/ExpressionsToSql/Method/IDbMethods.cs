@@ -25,5 +25,16 @@ namespace SqlSugar
         string Between(MethodCallExpressionModel model);
         string StartsWith(MethodCallExpressionModel model);
         string EndsWith(MethodCallExpressionModel model);
+        string ToInt32(MethodCallExpressionModel model);
+        string ToInt64(MethodCallExpressionModel model);
+        string ToString(MethodCallExpressionModel model);
+        string ToGuid(MethodCallExpressionModel model);
+        string ToDouble(MethodCallExpressionModel model);
+        string ToBool(MethodCallExpressionModel model);
+        string Substring(MethodCallExpressionModel model);
+        string ToDate(MethodCallExpressionModel model);
+        string ToDecimal(MethodCallExpressionModel model);
+        string Length(MethodCallExpressionModel model);
+        string Replace(MethodCallExpressionModel model);
     }
 }
