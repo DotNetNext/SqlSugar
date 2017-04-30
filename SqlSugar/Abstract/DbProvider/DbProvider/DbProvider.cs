@@ -173,6 +173,7 @@ namespace SqlSugar
             {
                 this.Transaction.Commit();
                 this.Transaction = null;
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
             }
         }
         public virtual void CommitTran()
@@ -181,6 +182,7 @@ namespace SqlSugar
             {
                 this.Transaction.Commit();
                 this.Transaction = null;
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
             }
         }
         public abstract IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
@@ -201,6 +203,7 @@ namespace SqlSugar
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection&&this.Transaction==null) this.Close();
             return count;
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] pars)
@@ -226,6 +229,7 @@ namespace SqlSugar
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return ds;
         }
         public virtual object GetScalar(string sql, params SugarParameter[] pars)
@@ -238,6 +242,7 @@ namespace SqlSugar
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return scalar;
         }
         #endregion

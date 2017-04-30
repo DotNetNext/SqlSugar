@@ -12,10 +12,12 @@ namespace OrmTest.UnitTest
     {
         public void Init()
         {
-            using (var db = GetInstance())
+            var db = GetInstance();
+            for (int i = 0; i < 200; i++)
             {
-               var x= db.Queryable<Student>().ToList();
+                var x = db.Queryable<Student>().ToList(); 
             }
+
         }
         public SqlSugarClient GetInstance()
         {

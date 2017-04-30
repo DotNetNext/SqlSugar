@@ -230,6 +230,7 @@ namespace SqlSugar
             using (var dataReader = this.Database.GetDataReader(sql, dbPars))
             {
                 var reval = this.Database.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
+                if (this.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
                 builder.SqlQueryBuilder.Clear();
                 return reval;
             }

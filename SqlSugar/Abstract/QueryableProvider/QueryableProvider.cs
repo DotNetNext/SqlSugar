@@ -587,6 +587,7 @@ namespace SqlSugar
         }
         private List<TResult> _ToList<TResult>()
         {
+            List<TResult> result = null;
             var sqlObj = this.ToSql();
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
@@ -594,14 +595,15 @@ namespace SqlSugar
                 var tType = typeof(TResult);
                 if (tType.IsAnonymousType() || isComplexModel)
                 {
-                    return this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
+                    result= this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
                 }
                 else
                 {
                     var reval = this.Bind.DataReaderToList<TResult>(tType, dataReader, QueryBuilder.SelectCacheKey);
-                    return reval;
                 }
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Context.Close();
             }
+            return result;
         }
         #endregion
     }
