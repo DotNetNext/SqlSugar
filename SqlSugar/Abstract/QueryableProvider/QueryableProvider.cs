@@ -99,6 +99,45 @@ namespace SqlSugar
             this._Where(expression);
             return this;
         }
+
+        public ISugarQueryable<T> Having(Expression<Func<T, bool>> expression) {
+            this._Having(expression);
+            return this;
+        }
+        public ISugarQueryable<T> Having(string whereString, object whereObj = null)
+        {
+
+            QueryBuilder.HavingInfos = SqlBuilder.AppendHaving(whereString);
+            if (whereObj != null)
+                QueryBuilder.QueryPars.AddRange(Context.Database.GetParameters(whereObj));
+            return this;
+        }
+        public ISugarQueryable<T> Having<T2>(Expression<Func<T2, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+        public ISugarQueryable<T> Having<T2, T3>(Expression<Func<T2, T3, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+        public ISugarQueryable<T> Having<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+        public ISugarQueryable<T> Having<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+        public ISugarQueryable<T> Having<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
         public virtual ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (!isWhere) return this;
@@ -539,7 +578,13 @@ namespace SqlSugar
             GroupBy(lamResult.GetResultString());
             return this;
         }
-
+        protected ISugarQueryable<T> _Having(Expression expression)
+        {
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            Having(lamResult.GetResultString());
+            return this;
+        }
         private List<TResult> _ToList<TResult>()
         {
             var sqlObj = this.ToSql();

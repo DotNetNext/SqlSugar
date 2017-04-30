@@ -24,6 +24,15 @@ namespace SqlSugar
         ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression);
         ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression) ;
         ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression) ;
+
+        ISugarQueryable<T> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T> Having(string whereString, object whereObj = null);
+        ISugarQueryable<T> Having<T2>(Expression<Func<T2, bool>> expression);
+        ISugarQueryable<T> Having<T2, T3>(Expression<Func<T2, T3, bool>> expression);
+        ISugarQueryable<T> Having<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression);
+        ISugarQueryable<T> Having<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T> Having<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
+
         ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T> WhereIF(bool isWhere,string whereString, object whereObj = null);
         ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression);

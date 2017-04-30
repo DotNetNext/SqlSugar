@@ -54,6 +54,12 @@ namespace SqlSugar
                     parameter.Context.Result.Append(base.Context.GetAsString(memberName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
                 }
+                else if (item is MethodCallExpression)
+                {
+                    base.Expression = item;
+                    base.Start();
+                    parameter.Context.Result.Append(base.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                }
                 else if (item is MemberExpression)
                 {
                     if (base.Context.Result.IsLockCurrentParameter == false)

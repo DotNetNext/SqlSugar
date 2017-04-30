@@ -38,20 +38,24 @@ namespace OrmTest.UnitTest
 
                 #region dr ot entity
                 db.IgnoreComumns.Add("TestId", "Student");
-                var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 {    Name=it.Name,Student=it}).ToList();
-                var s2 = db.Queryable<Student>().Select(it => new  { id=it.Id,w=new { x=it } }).ToList();
+                var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
+                var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
                 var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
                 var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
-                var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it,  Name =it.Name }).ToList();
+                var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
                 #endregion
 
 
                 #region sql and parameters validate
-                var ss0 = db.Queryable<Student, School>((st,sc)=>new object[] {
+                var ss0 = db.Queryable<Student, School>((st, sc) => new object[] {
                     JoinType.Inner,st.Id==sc.Id
-                }).GroupBy(st => st.Id).Select(st => new { avgId=NBORM.AggregateAvg(st.Id) }).ToSql();
-                base.Check(" SELECT  AVG([st].[Id]) AS [avgId]  FROM [Student] st Inner JOIN School sc ON ( [st].[Id] = [sc].[Id] )  GROUP BY [st].[Id] ", null,
-                    ss0.Key, null," ss0 Error");
+                }).GroupBy(st => st.Id).Having(sc => NBORM.AggregateAvg(sc.Id) == 1).Select(st => new { avgId = NBORM.AggregateAvg(st.Id) }).ToSql();
+                base.Check("SELECT  AVG([st].[Id]) AS [avgId]  FROM [Student] st Inner JOIN School sc ON ( [st].[Id] = [sc].[Id] )  GROUP BY [st].[Id] HAVING (AVG([sc].[Id]) = @Const0 ) ",
+                    new List<SugarParameter>() {
+                      new SugarParameter("@Const0",1)
+                    }
+                    ,
+                    ss0.Key, ss0.Value, " ss0 Error");
 
 
                 var ss1 = db.Queryable<School, School>((st, st2) => new object[] {

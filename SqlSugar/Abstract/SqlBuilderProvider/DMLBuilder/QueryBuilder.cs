@@ -19,6 +19,7 @@ namespace SqlSugar
         #region Private Fileds
         private List<JoinQueryInfo> _JoinQueryInfos;
         private List<string> _WhereInfos;
+        private string _HavingInfos;
         private string _TableNameString;
         #endregion
 
@@ -60,6 +61,17 @@ namespace SqlSugar
                 return _WhereInfos;
             }
             set { _WhereInfos = value; }
+        }
+        public virtual string HavingInfos
+        {
+            get
+            {
+                return _HavingInfos;
+            }
+            set
+            {
+                _HavingInfos = value;
+            }
         }
         #endregion
 
@@ -155,8 +167,10 @@ namespace SqlSugar
                 return "AVG({0})";
             }
         }
-        public virtual string InTemplate {
-            get {
+        public virtual string InTemplate
+        {
+            get
+            {
                 return "{0} IN ({1}) ";
             }
         }
@@ -185,7 +199,7 @@ namespace SqlSugar
         public virtual string ToSqlString()
         {
             sql = new StringBuilder();
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString,(Skip!=null||Take!=null)?null:GetOrderByString);
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString+HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
             if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {

@@ -22,6 +22,10 @@ namespace SqlSugar
         {
             return isWhere ? (" WHERE " + sqlString ):( " AND " + sqlString);
         }
+        public string AppendHaving(string sqlString)
+        {
+            return  " HAVING " + sqlString;
+        }
 
         public DeleteBuilder DeleteBuilder
         {
