@@ -19,13 +19,13 @@ namespace OrmTest
         {
             //Unit Test
             int eachCount = 1;
-            new Field(eachCount).Init();
-            new Where(eachCount).Init();
-            new Method(eachCount).Init();
-            new JoinQuery(eachCount).Init();
-            new SingleQuery(eachCount).Init();
-            new SelectQuery(eachCount).Init();
-
+            //new Field(eachCount).Init();
+            //new Where(eachCount).Init();
+            //new Method(eachCount).Init();
+            //new JoinQuery(eachCount).Init();
+            //new SingleQuery(eachCount).Init();
+            //new SelectQuery(eachCount).Init();
+            new MapTable().Init();
 
             //Performance Test
             for (int i = 0; i < 100; i++)
