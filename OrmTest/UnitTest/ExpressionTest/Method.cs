@@ -30,6 +30,7 @@ namespace OrmTest.UnitTest
                 ToLower();
                 Trim();
                 Contains();
+                ContainsArray();
                 StartsWith();
                 EndsWith();
                 Between();
@@ -342,7 +343,7 @@ namespace OrmTest.UnitTest
 
         private void Contains()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.Contains(it.Name,"a");
+            Expression<Func<Student, bool>> exp = it => NBORM.Contains(it.Name, "a");
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -350,6 +351,17 @@ namespace OrmTest.UnitTest
             base.Check(value, pars, " ([Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains");
+        }
+
+        private void ContainsArray()
+        {
+            string[] array = new string[] { "1","2"};
+            Expression<Func<Student, bool>> exp = it => NBORM.ContainsArray(array, it.Name);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, null, "  ([Name] IN ('1','2')) ",null, "Contains2");
         }
 
         private void Trim()

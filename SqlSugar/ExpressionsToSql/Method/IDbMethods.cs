@@ -16,6 +16,7 @@ namespace SqlSugar
         string ToUpper(MethodCallExpressionModel model);
         string Trim(MethodCallExpressionModel model);
         string Contains(MethodCallExpressionModel model);
+        string ContainsArray(MethodCallExpressionModel model);
         string Equals(MethodCallExpressionModel model);
         string DateIsSameDay(MethodCallExpressionModel model);
         string DateIsSameByType(MethodCallExpressionModel model);

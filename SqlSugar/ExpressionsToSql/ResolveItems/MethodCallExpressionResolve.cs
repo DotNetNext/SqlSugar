@@ -30,9 +30,9 @@ namespace SqlSugar
                         var methodCallExpressionArgs = new MethodCallExpressionArgs()
                         {
                             IsMember = parameter.ChildExpression is MemberExpression,
-                            Value = parameter.CommonTempData
+                            MemberName = parameter.CommonTempData
                         };
-                        var value = methodCallExpressionArgs.Value;
+                        var value = methodCallExpressionArgs.MemberName;
                         if (methodCallExpressionArgs.IsMember)
                         {
                             var childExpression = parameter.ChildExpression as MemberExpression;
@@ -45,7 +45,8 @@ namespace SqlSugar
                         {
                             var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.METHODCONST + this.Context.ParameterIndex;
                             this.Context.ParameterIndex++;
-                            methodCallExpressionArgs.Value = parameterName;
+                            methodCallExpressionArgs.MemberName = parameterName;
+                            methodCallExpressionArgs.MemberValue = value;
                             this.Context.Parameters.Add(new SugarParameter(parameterName, value));
                         }
                         model.Args.Add(methodCallExpressionArgs);
@@ -77,7 +78,9 @@ namespace SqlSugar
                 case "Trim":
                     return this.Context.DbMehtods.Trim(model);
                 case "Contains":
-                    return this.Context.DbMehtods.Contains(model);
+                        return this.Context.DbMehtods.Contains(model);
+                case "ContainsArray":
+                        return this.Context.DbMehtods.ContainsArray(model);
                 case "Equals":
                     return this.Context.DbMehtods.Equals(model);
                 case "DateIsSame":

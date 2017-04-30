@@ -14,6 +14,7 @@ namespace SqlSugar
     public class MethodCallExpressionArgs
     {
         public bool IsMember { get; set; }
-        public object Value { get; set; }
+        public object MemberName { get; set; }
+        public object MemberValue { get; set; }
     }
 }
