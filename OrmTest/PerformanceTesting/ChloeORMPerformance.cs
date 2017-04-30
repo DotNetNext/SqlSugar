@@ -11,6 +11,10 @@ namespace OrmTest.PerformanceTesting
 {
     public class ChloeORMPerformance: PerformanceBase
     {
+        public ChloeORMPerformance(int eachCount)
+        {
+            this.count = eachCount;
+        }
         public void Select()
         {
             MsSqlContext db = new MsSqlContext(Config.ConnectionString);

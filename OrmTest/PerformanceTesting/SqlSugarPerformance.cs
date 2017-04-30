@@ -10,7 +10,11 @@ namespace OrmTest.PerformanceTesting
 {
     public class SqlSugarPerformance : PerformanceBase
     {
-        public  void Select()
+        public SqlSugarPerformance(int eachCount)
+        {
+            this.count = eachCount;
+        }
+        public void Select()
         {
             SqlSugarClient db = new SqlSugarClient(new SystemTablesConfig()
             {

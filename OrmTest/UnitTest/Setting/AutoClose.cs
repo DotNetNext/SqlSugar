@@ -8,15 +8,23 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class MapTable : ExpTestBase
+    public class AutoClose : ExpTestBase
     {
+        public AutoClose(int eachCount)
+        {
+            this.Count = eachCount;
+        }
         public void Init()
         {
-            var db = GetInstance();
-            for (int i = 0; i < 200; i++)
+
+            //IsAutoCloseConnection
+            for (int i = 0; i < this.Count; i++)
             {
-                var x = db.Queryable<Student>().ToList(); 
+                var db = GetInstance();
+                var x = db.Queryable<Student>().ToList();
             }
+
+
 
         }
         public SqlSugarClient GetInstance()

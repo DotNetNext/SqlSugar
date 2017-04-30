@@ -18,20 +18,16 @@ namespace OrmTest
         static void Main(string[] args)
         {
             //Unit Test
-            int eachCount = 1;
-            //new Field(eachCount).Init();
-            //new Where(eachCount).Init();
-            //new Method(eachCount).Init();
-            //new JoinQuery(eachCount).Init();
-            //new SingleQuery(eachCount).Init();
-            //new SelectQuery(eachCount).Init();
-            new MapTable().Init();
+            //new Field(1).Init();
+            //new Where(1).Init();
+            //new Method(1).Init();
+            //new JoinQuery(1).Init();
+            //new SingleQuery(1).Init();
+            //new SelectQuery(1).Init();
+            //new AutoClose(200).Init();
 
             //Performance Test
-            for (int i = 0; i < 100; i++)
-            {
-              //  new SqlSugarPerformance().Select(); 
-            }
+            //new SqlSugarPerformance(100).Select();
         }
     }
 }
