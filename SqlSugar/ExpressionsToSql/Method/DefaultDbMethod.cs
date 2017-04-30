@@ -13,46 +13,46 @@ namespace SqlSugar
             return string.Format("( {0}='' OR {0} IS NULL )", parameter.Value);
         }
 
-        public virtual object ToUpper(MethodCallExpressionModel model)
+        public virtual string ToUpper(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" (UPPER({0})) ", parameter.Value);
         }
 
-        public virtual object ToLower(MethodCallExpressionModel model)
+        public virtual string ToLower(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" (LOWER({0})) ", parameter.Value);
         }
 
-        public virtual object Trim(MethodCallExpressionModel model)
+        public virtual string Trim(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" (rtrim(ltrim({0}))) ", parameter.Value);
         }
 
-        public virtual object Contains(MethodCallExpressionModel model)
+        public virtual string Contains(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like '%'+{1}+'%') ", parameter.Value, parameter2.Value);
         }
 
-        public object Equals(MethodCallExpressionModel model)
+        public string Equals(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} = {1}) ", parameter.Value, parameter2.Value); ;
         }
 
-        public object DateIsSameDay(MethodCallExpressionModel model)
+        public string DateIsSameDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" (DATEDIFF(day,{0},{1})=0) ", parameter.Value, parameter2.Value); ;
         }
 
-        public object DateIsSameByType(MethodCallExpressionModel model)
+        public string DateIsSameByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -60,7 +60,7 @@ namespace SqlSugar
             return string.Format(" (DATEDIFF({2},{0},{1})=0) ", parameter.Value, parameter2.Value, parameter3.Value); 
         }
 
-        public object DateAddByType(MethodCallExpressionModel model)
+        public string DateAddByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -68,14 +68,14 @@ namespace SqlSugar
             return string.Format(" (DATEADD({2},{1},{0})) ", parameter.Value, parameter2.Value, parameter3.Value);
         }
 
-        public object DateAddDay(MethodCallExpressionModel model)
+        public string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" (DATEADD(day,{1},{0})) ", parameter.Value, parameter2.Value); 
         }
 
-        public object Between(MethodCallExpressionModel model)
+        public string Between(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter1 = model.Args[1];
@@ -83,21 +83,21 @@ namespace SqlSugar
             return string.Format(" ({0} BETWEEN {1} AND {2}) ", parameter.Value, parameter1.Value, parameter2.Value);
         }
 
-        public object StartsWith(MethodCallExpressionModel model)
+        public string StartsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like {1}+'%') ", parameter.Value, parameter2.Value);
         }
 
-        public object EndsWith(MethodCallExpressionModel model)
+        public string EndsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like '%'+{1}) ", parameter.Value, parameter2.Value);
         }
 
-        public object DateValue(MethodCallExpressionModel model)
+        public string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];

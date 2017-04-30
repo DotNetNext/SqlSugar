@@ -12,18 +12,18 @@ namespace SqlSugar
     public interface IDbMethods
     {
         string IsNullOrEmpty(MethodCallExpressionModel model);
-        object ToLower(MethodCallExpressionModel model);
-        object ToUpper(MethodCallExpressionModel model);
-        object Trim(MethodCallExpressionModel model);
-        object Contains(MethodCallExpressionModel model);
-        object Equals(MethodCallExpressionModel model);
-        object DateIsSameDay(MethodCallExpressionModel model);
-        object DateIsSameByType(MethodCallExpressionModel model);
-        object DateAddByType(MethodCallExpressionModel model);
-        object DateValue(MethodCallExpressionModel model);
-        object DateAddDay(MethodCallExpressionModel model);
-        object Between(MethodCallExpressionModel model);
-        object StartsWith(MethodCallExpressionModel model);
-        object EndsWith(MethodCallExpressionModel model);
+        string ToLower(MethodCallExpressionModel model);
+        string ToUpper(MethodCallExpressionModel model);
+        string Trim(MethodCallExpressionModel model);
+        string Contains(MethodCallExpressionModel model);
+        string Equals(MethodCallExpressionModel model);
+        string DateIsSameDay(MethodCallExpressionModel model);
+        string DateIsSameByType(MethodCallExpressionModel model);
+        string DateAddByType(MethodCallExpressionModel model);
+        string DateValue(MethodCallExpressionModel model);
+        string DateAddDay(MethodCallExpressionModel model);
+        string Between(MethodCallExpressionModel model);
+        string StartsWith(MethodCallExpressionModel model);
+        string EndsWith(MethodCallExpressionModel model);
     }
 }

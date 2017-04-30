@@ -48,14 +48,14 @@ namespace OrmTest.UnitTest
         private void DateValue()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateValue(x2,DateType.Year);
+            Expression<Func<Student, bool>> exp = it => NBORM.DateValue(x2,DateType.Year)==1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "  (@MethodConst1(@MethodConst0)) ", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",DateType.Year)
-            }, "StartsWith");
+            base.Check(value, pars, " ((@MethodConst1(@MethodConst0)) = @Const2 ) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",DateType.Year),new SugarParameter("@Const2",1)
+            }, "DateValue");
         }
 
         private void StartsWith()
@@ -95,26 +95,26 @@ namespace OrmTest.UnitTest
         private void DateAddByType()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateAdd(x2, 11, DateType.Millisecond);
+            Expression<Func<Student, bool>> exp = it => NBORM.DateAdd(x2, 11, DateType.Millisecond)==x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (DATEADD(@MethodConst2,@MethodConst1,@MethodConst0)) ", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),
+            base.Check(value, pars, "((DATEADD(@MethodConst2,@MethodConst1,@MethodConst0)) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2),
                 new SugarParameter("@MethodConst2",DateType.Millisecond)
             }, "DateAddByType");
         }
         private void DateAddDay()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateAdd(x2, 1);
+            Expression<Func<Student, bool>> exp = it => NBORM.DateAdd(x2, 1)==x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (DATEADD(day,@MethodConst1,@MethodConst0)) ", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",1)
+            base.Check(value, pars, "((DATEADD(day,@MethodConst1,@MethodConst0)) = @Const2 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",1),new SugarParameter("@Const2",x2)
             }, "DateIsSameByType");
         }
 
