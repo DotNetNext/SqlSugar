@@ -45,14 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\DbProvider\CodeFirstProvider\CodeFirstProvider.cs" />
-    <Compile Include="Abstract\DbProvider\DbAccessory.cs" />
+    <Compile Include="Abstract\DbProvider\DbProvider\DbAccessory.cs" />
     <Compile Include="Abstract\DbProvider\DbBindProvider\DbBindAccessory.cs" />
     <Compile Include="Abstract\DbProvider\DbBindProvider\DbBindProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbBindProvider\IDataReaderEntityBuilder.cs" />
     <Compile Include="Abstract\DbProvider\DbBindProvider\IDataRecordExtensions.cs" />
     <Compile Include="Abstract\DbProvider\DbFirstProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbMaintenanceProvider.cs" />
-    <Compile Include="Abstract\DbProvider\DbProvider.cs" />
+    <Compile Include="Abstract\DbProvider\DbProvider\DbProvider.cs" />
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
