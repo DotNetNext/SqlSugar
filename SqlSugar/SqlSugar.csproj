@@ -152,6 +152,9 @@
     <Content Include="Lib\Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Abstract\Deleteable\" />
+    <Folder Include="Abstract\Insertable\" />
+    <Folder Include="Abstract\Updateable\" />
     <Folder Include="Databases\MySql\" />
     <Folder Include="Databases\Oracle\" />
     <Folder Include="Databases\Sqlite\" />

@@ -26,6 +26,7 @@ namespace OrmTest.UnitTest
                 StringIsNullOrEmpty2();
                 StringIsNullOrEmpty3();
                 StringIsNullOrEmpty4();
+                #endregion
                 ToUpper();
                 ToLower();
                 Trim();
@@ -52,7 +53,6 @@ namespace OrmTest.UnitTest
                 Substring();
                 Replace();
                 Length();
-                #endregion
             }
             base.End("Method Test");
         }
