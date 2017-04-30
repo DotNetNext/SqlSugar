@@ -53,7 +53,7 @@
     <Compile Include="Abstract\DbProvider\DbFirstProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbMaintenanceProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbProvider.cs" />
-    <Compile Include="Abstract\DbProvider\SugarMappingAttribute.cs" />
+    <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
