@@ -7,8 +7,10 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    public class SqlQueryBuilder:IDMLBuilder
+    public class SqlQueryBuilder : IDMLBuilder
     {
+        public SqlSugarClient Context { get; set; }
+
         private string _Fields { get; set; }
         public string Fields
         {
@@ -29,46 +31,47 @@ namespace SqlSugar
                 _Fields = value;
             }
         }
+
         private StringBuilder _Sql;
         public StringBuilder sql
         {
-            get {
+            get
+            {
                 _Sql = PubMethod.IsNullReturnNew(_Sql);
                 return _Sql;
             }
-            set {
+            set
+            {
                 _Sql = value;
             }
         }
-
-        public SqlSugarClient Context { get; set; }
 
         public string SqlTemplate
         {
             get
             {
-                throw new NotImplementedException();
+                return null;
             }
         }
 
+        private List<SugarParameter> _Parameters;
         public List<SugarParameter> Parameters
         {
             get
             {
-                throw new NotImplementedException();
+                _Parameters = PubMethod.IsNullReturnNew(_Parameters);
+                return _Parameters;
             }
-
             set
             {
-                throw new NotImplementedException();
+                _Parameters = value;
             }
         }
 
         public string ToSqlString()
         {
-            throw new NotImplementedException();
+            return sql.ToString();
         }
-
         public void Clear()
         {
             this.sql = null;

@@ -243,12 +243,14 @@ namespace SqlSugar
         #endregion
 
         #region SqlQuery
-        public virtual List<T> SqlQuery<T>(string sql, object pars = null)
+        public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
-            var dbPars = this.Database.GetParameters(pars);
+            var dbPars = this.Database.GetParameters(whereObj);
             var builder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig);
             builder.SqlQueryBuilder.sql.Append(sql);
-            using (var dataReader = this.Database.GetDataReader(sql, dbPars))
+            if (dbPars != null && dbPars.Any())
+                builder.SqlQueryBuilder.Parameters.AddRange(dbPars);
+            using (var dataReader = this.Database.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 var reval = this.Database.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
                 if (this.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
@@ -272,7 +274,7 @@ namespace SqlSugar
             {
                 this.Database.Dispose();
             }
-        } 
+        }
         #endregion
     }
 }
