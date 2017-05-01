@@ -11,7 +11,7 @@ namespace SqlSugar
         public SqlSugarClient Context { get; set; }
         public EntityInfo GetEntityInfo<T>()where T:class,new()
         {
-            string cacheKey = "GetEntityInfo";
+            string cacheKey = "GetEntityInfo"+typeof(T).FullName;
             return CacheFactory.Func<EntityInfo>(cacheKey,
             (cm, key) =>
             {
@@ -27,9 +27,10 @@ namespace SqlSugar
                 result.Columns = new List<EntityColumnInfo>();
                 foreach (var item in result.Type.GetProperties())
                 {
-                    EntityColumnInfo columns = new EntityColumnInfo();
-                    columns.ColumnName = item.Name;
-                    columns.PropertyInfo = item;
+                    EntityColumnInfo column = new EntityColumnInfo();
+                    column.EntityName = item.Name;
+                    column.PropertyInfo = item;
+                    result.Columns.Add(column);
                 }
                 return result;
             });

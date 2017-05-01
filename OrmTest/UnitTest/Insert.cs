@@ -21,8 +21,7 @@ namespace OrmTest.UnitTest
             var insertObj = new Student() { Name="jack",CreateTime=DateTime.Now };
             var insertObjs = new List<Student>() { insertObj }.ToArray();
 
-            //Insert reutrn identity
-            db.Insertable<Student>(insertObj).ExecuteReutrnIdentity();
+            var s1= db.Insertable<Student>(insertObj).ToSql();
 
             //Insert reutrn Command Count
             db.Insertable<Student>(insertObj).ExecuteCommand();

@@ -8,6 +8,7 @@ namespace SqlSugar
     {
         public InsertBuilder() {
             this.sql = new StringBuilder();
+            this.DbColumnInfoList = new List<DbColumnInfo>();
         }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
@@ -16,7 +17,8 @@ namespace SqlSugar
         public  List<SugarParameter> Parameters { get; set; }
         public string EntityName { get; set; }
         public string TableWithString { get; set; }
-        public List<string> ColumNames{ get; set; }
+        public List<DbColumnInfo> DbColumnInfoList { get; set; }
+        public bool IsInsertNull { get; set; }
 
         public virtual string SqlTemplate
         {
@@ -49,9 +51,9 @@ namespace SqlSugar
 
         public virtual string ToSqlString()
         {
-            string columnsString =string.Join("," ,this.ColumNames.Select(it => Builder.GetTranslationColumnName(it)));
-            string columnParametersString = string.Join(",", this.ColumNames.Select(it =>Builder.SqlParameterKeyWord+it));
-            return string.Format(this.sql.ToString(),columnsString, columnParametersString);
+            string columnsString =string.Join("," ,this.DbColumnInfoList.Select(it => Builder.GetTranslationColumnName(it.ColumnName)));
+            string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>Builder.SqlParameterKeyWord+it.ColumnName));
+            return string.Format(SqlTemplate,GetTableNameString,columnsString, columnParametersString);
         }
     }
 }

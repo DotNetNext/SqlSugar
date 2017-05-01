@@ -236,11 +236,11 @@ namespace SqlSugar
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.SqlBuilder = sqlBuilder;
             reval.InsertObjs = insertObjs;
-            reval.SqlBuilder.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
-            reval.SqlBuilder.InsertBuilder.Builder = sqlBuilder;
-            reval.SqlBuilder.Context = reval.SqlBuilder.QueryBuilder.Context = this;
-            reval.SqlBuilder.InsertBuilder.EntityName = typeof(T).Name;
-            reval.SqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+            sqlBuilder.InsertBuilder =reval.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
+            sqlBuilder.InsertBuilder.Builder = sqlBuilder;
+            sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
+            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+            reval.Init();
             return reval;
         }
 

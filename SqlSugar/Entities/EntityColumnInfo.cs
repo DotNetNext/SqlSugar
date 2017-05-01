@@ -11,7 +11,6 @@ namespace SqlSugar
     {
         public PropertyInfo PropertyInfo { get; set; }
         public string EntityName { get; set; }
-        public string ColumnName { get; set; }
         public int Length { get; set; }
         public string ColumnDescription { get; set; }
         public string DefaultValue { get; set; }

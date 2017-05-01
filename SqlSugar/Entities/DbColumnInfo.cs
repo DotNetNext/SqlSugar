@@ -9,6 +9,7 @@ namespace SqlSugar
         public string TableName { get; set; }
         public int TableId { get; set; }
         public string ColumnName { get; set; }
+        public string EntityPropertyName { get; set; }
         public string DataType { get; set; }
         public int Length { get; set; }
         public string ColumnDescription { get; set; }
@@ -16,5 +17,6 @@ namespace SqlSugar
         public bool IsNullable { get; set; }
         public bool IsIdentity { get; set; }
         public bool IsPrimarykey { get; set; }
+        public object Value { get; set; }
     }
 }
