@@ -18,6 +18,7 @@ namespace SqlSugar
         public IgnoreComumnList IgnoreComumns = new IgnoreComumnList();
 
         protected ISqlBuilder _SqlBuilder;
+        protected EntityProvider _EntityProvider;
         protected IDb _Ado;
         protected ILambdaExpressions _LambdaExpressions;
         protected object _Sqlable;

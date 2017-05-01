@@ -71,7 +71,7 @@ namespace SqlSugar
 
         #endregion
 
-        #region properties
+        #region  ADO Method
         /// <summary>
         ///Database operation
         /// </summary>
@@ -90,7 +90,9 @@ namespace SqlSugar
                 return _Ado;
             }
         }
+        #endregion
 
+        #region Rewritable Methods
         /// <summary>
         /// Rewritable Methods
         /// </summary>
@@ -108,7 +110,7 @@ namespace SqlSugar
             {
                 base._RewritableMethods = value;
             }
-        }
+        } 
         #endregion
 
         #region Queryable
@@ -226,12 +228,14 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
-        public virtual IInsertable<T> Insertable<T>(params T[] insertObj) where T : class, new()
+        public virtual IInsertable<T> Insertable<T>(params T[] insertObjs) where T : class, new()
         {
             var reval = new InsertableProvider<T>();
             reval.Context = this;
+            reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.SqlBuilder = sqlBuilder;
+            reval.InsertObjs = insertObjs;
             reval.SqlBuilder.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
             reval.SqlBuilder.InsertBuilder.Builder = sqlBuilder;
             reval.SqlBuilder.Context = reval.SqlBuilder.QueryBuilder.Context = this;
@@ -256,6 +260,24 @@ namespace SqlSugar
                 if (this.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
                 builder.SqlQueryBuilder.Clear();
                 return reval;
+            }
+        }
+        #endregion
+
+        #region Entity Methods
+        public virtual EntityProvider EntityProvider
+        {
+            get
+            {
+                if (base._EntityProvider == null)
+                {
+                    base._EntityProvider = new EntityProvider();
+                }
+                return _EntityProvider;
+            }
+            set
+            {
+                base._EntityProvider = value;
             }
         }
         #endregion
