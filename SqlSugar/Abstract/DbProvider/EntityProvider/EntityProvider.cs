@@ -28,7 +28,7 @@ namespace SqlSugar
                 foreach (var item in result.Type.GetProperties())
                 {
                     EntityColumnInfo column = new EntityColumnInfo();
-                    column.EntityName = item.Name;
+                    column.Name = item.Name;
                     column.PropertyInfo = item;
                     result.Columns.Add(column);
                 }

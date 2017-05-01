@@ -39,10 +39,10 @@ namespace SqlSugar
 
     public class MappingColumnList : List<MappingColumn>
     {
-        public void Add(string EntityPropertyName, string dbColumnName, string dbTableName)
+        public void Add(string EntityPropertyName, string dbColumnName, string entityName)
         {
             this.RemoveAll(it => it.EntityPropertyName.Equals(EntityPropertyName, StringComparison.CurrentCultureIgnoreCase));
-            this.Add(new MappingColumn() { EntityPropertyName = EntityPropertyName, DbColumnName = dbColumnName, DbTableName = dbTableName });
+            this.Add(new MappingColumn() { EntityPropertyName = EntityPropertyName, DbColumnName = dbColumnName, EntityName = entityName });
         }
         public new void Clear()
         {

@@ -15,7 +15,7 @@ namespace SqlSugar
         public ISqlBuilder Builder { get; set; }
         public StringBuilder sql { get; set; }
         public  List<SugarParameter> Parameters { get; set; }
-        public string EntityName { get; set; }
+        public string TableName { get; set; }
         public string TableWithString { get; set; }
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
         public bool IsInsertNull { get; set; }
@@ -39,7 +39,7 @@ namespace SqlSugar
         {
             get
             {
-                var result = Builder.GetTranslationTableName(EntityName);
+                var result = Builder.GetTranslationTableName(TableName);
                 result += PubConst.Space;
                 if (this.TableWithString.IsValuable())
                 {

@@ -14,7 +14,9 @@ namespace SqlSugar
 
         List<DbColumnInfo> GetColumnInfosByTableName(string tableName);
 
-        string GetSinglePrimaryFiled(string tableName);
+        List<string> GetIsIdentities(string tableName);
+
+        List<string> GetPrimaries(string tableName);
 
         bool TruncateTable(string tableName);
 

@@ -121,10 +121,16 @@ namespace SqlSugar
             }
         }
 
-        public virtual string GetSinglePrimaryFiled(string tableName)
+        public virtual List<string> GetIsIdentities(string tableName)
         {
-            var pkColumnInfo = GetColumnInfosByTableName(tableName).FirstOrDefault(it => it.IsPrimarykey);
-            return pkColumnInfo == null ? null : pkColumnInfo.ColumnName;
+            var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
+            return result.Select(it=>it.ColumnName).ToList();
+        }
+
+        public virtual List<string> GetPrimaries(string tableName)
+        {
+            var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
+            return result.Select(it => it.ColumnName).ToList();
         }
 
         protected abstract string AddColumnToTableSql { get; }

@@ -194,7 +194,9 @@ namespace SqlSugar
                 Where("1=2 ");
                 return this;
             }
-            string filed = Context.Database.DbMaintenance.GetSinglePrimaryFiled(this.SqlBuilder.GetTranslationTableName(typeof(T).Name));
+            var pks = Context.Database.DbMaintenance.GetPrimaries(this.SqlBuilder.GetTranslationTableName(typeof(T).Name));
+            Check.Exception(pks == null || pks.Count != 1, "Queryable.In(params object[] pkValues): Only one primary key");
+            string filed = pks.FirstOrDefault();
             string shortName = QueryBuilder.TableShortName == null ? null : (QueryBuilder.TableShortName + ".");
             filed = shortName + filed;
             return In(filed, pkValues);

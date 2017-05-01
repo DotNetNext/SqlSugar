@@ -69,13 +69,28 @@ namespace SqlSugar
         #region Private Methods
         private void PreToSql()
         {
-            if (this.Context.IgnoreColumns != null && this.Context.IgnoreColumns.Any()) {
+            #region Identities
+            List<string> identities = Db.DbMaintenance.GetIsIdentities(this.InsertBuilder.TableName);
+            if (identities != null && identities.Any())
+            {
                 var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
                 this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                 {
-                    return !currentIgnoreColumns.Any(i => it.EntityPropertyName == i.EntityPropertyName);
+                    return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
                 }).ToList();
-            }
+            } 
+            #endregion
+
+            #region IgnoreColumns
+            if (this.Context.IgnoreColumns != null && this.Context.IgnoreColumns.Any())
+            {
+                var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
+                this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
+                {
+                    return !currentIgnoreColumns.Any(i => it.EntityPropertyName.Equals(i.EntityPropertyName,StringComparison.CurrentCulture));
+                }).ToList();
+            } 
+            #endregion
             if (this.IsSingle)
             {
                 foreach (var item in this.InsertBuilder.DbColumnInfoList)
@@ -87,13 +102,13 @@ namespace SqlSugar
         }
         public void Init()
         {
-            this.InsertBuilder.EntityName = EntityInfo.Name;
+            this.InsertBuilder.TableName = EntityInfo.Name;
             if (IsMappingTable)
             {
                 var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.EntityName == EntityInfo.Name);
                 if (mappingInfo != null)
                 {
-                    this.InsertBuilder.EntityName = mappingInfo.DbTableName;
+                    this.InsertBuilder.TableName = mappingInfo.DbTableName;
                 }
             }
             Check.Exception(InsertObjs == null || InsertObjs.Count() == 0, "InsertObjs is null");
@@ -106,8 +121,8 @@ namespace SqlSugar
                     var columnInfo = new DbColumnInfo()
                     {
                         Value = column.PropertyInfo.GetValue(item),
-                        ColumnName = GetDbColumnName(column.EntityName),
-                        EntityPropertyName = column.EntityName,
+                        ColumnName = GetDbColumnName(column.Name),
+                        EntityPropertyName = column.Name,
                         TableId = i
                     };
                     insertItem.Add(columnInfo);
@@ -121,9 +136,9 @@ namespace SqlSugar
             {
                 return entityName;
             }
-            if (this.Context.MappingColumns.Any(it => it.EntityName == EntityInfo.Name))
+            if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.Name,StringComparison.CurrentCultureIgnoreCase)))
             {
-                this.MappingColumnList = this.Context.MappingColumns.Where(it => it.EntityName == EntityInfo.Name).ToList();
+                this.MappingColumnList = this.Context.MappingColumns.Where(it => it.EntityName.Equals(EntityInfo.Name,StringComparison.CurrentCultureIgnoreCase)).ToList();
             }
             if (MappingColumnList == null || !MappingColumnList.Any())
             {
@@ -131,7 +146,7 @@ namespace SqlSugar
             }
             else
             {
-                var mappInfo = this.Context.MappingColumns.Single(it => it.EntityPropertyName == entityName);
+                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(entityName,StringComparison.CurrentCultureIgnoreCase));
                 return mappInfo == null ? entityName : mappInfo.DbColumnName;
             }
         }

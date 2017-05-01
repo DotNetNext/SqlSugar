@@ -73,6 +73,7 @@
     <Compile Include="Models\Student.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTest\Setting\Attribute.cs" />
     <Compile Include="UnitTest\Setting\AutoClose.cs" />
     <Compile Include="UnitTest\Setting\MapColumn.cs" />
     <Compile Include="UnitTest\Setting\MapTable.cs" />

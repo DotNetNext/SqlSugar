@@ -21,8 +21,8 @@ namespace OrmTest.UnitTest
             var insertObj = new Student() { Name="jack",CreateTime=DateTime.Now };
             var insertObjs = new List<Student>() { insertObj }.ToArray();
             db.IgnoreColumns.Add("TestId", "Student");
-            db.MappingColumns.Add("id","dbid", "Student");
-            db.MappingTables.Add("student","dbstudent");
+            //db.MappingColumns.Add("id","dbid", "Student");
+           
             var s1= db.Insertable<Student>(insertObj).ToSql();
 
             //Insert reutrn Command Count
