@@ -243,6 +243,7 @@ namespace SqlSugar
         }
 
         #endregion
+
         #region SqlQuery
         public virtual List<T> SqlQuery<T>(string sql, object pars = null)
         {
