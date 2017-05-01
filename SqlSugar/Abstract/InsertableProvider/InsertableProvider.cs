@@ -70,15 +70,21 @@ namespace SqlSugar
         private void PreToSql()
         {
             #region Identities
-            List<string> identities = Db.DbMaintenance.GetIsIdentities(this.InsertBuilder.TableName);
-            if (identities != null && identities.Any())
+            if (this.Context.IsSystemTablesConfig)
             {
-                var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
-                this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
+                List<string> identities = Db.DbMaintenance.GetIsIdentities(this.InsertBuilder.TableName);
+                if (identities != null && identities.Any())
                 {
-                    return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
-                }).ToList();
-            } 
+                    var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
+                    this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
+                    {
+                        return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                    }).ToList();
+                }
+            }
+            else {
+
+            }
             #endregion
 
             #region IgnoreColumns

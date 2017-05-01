@@ -15,6 +15,16 @@ namespace SqlSugar
     /// </summary>
     public partial class SqlSugarClient : SqlSugarAccessory, IDisposable
     {
+        #region Properties
+        public bool IsSystemTablesConfig
+        {
+            get
+            {
+                return this.CurrentConnectionConfig is SystemTablesConfig;
+            }
+        } 
+        #endregion
+
         #region constructor
         /// <summary>
         /// If you have system table permissions, use this
@@ -110,7 +120,7 @@ namespace SqlSugar
             {
                 base._RewritableMethods = value;
             }
-        } 
+        }
         #endregion
 
         #region Queryable
@@ -236,7 +246,7 @@ namespace SqlSugar
             reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
             reval.SqlBuilder = sqlBuilder;
             reval.InsertObjs = insertObjs;
-            sqlBuilder.InsertBuilder =reval.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
+            sqlBuilder.InsertBuilder = reval.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
             sqlBuilder.InsertBuilder.Builder = sqlBuilder;
             sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
             reval.Init();
