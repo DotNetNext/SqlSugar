@@ -112,26 +112,14 @@ namespace SqlSugar
         #endregion
 
         #region functions
+
+        #region Queryable
         /// <summary>
         /// Lambda Query operation
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
             var reval = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
-            reval.Context = this;
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.SqlBuilder = sqlBuilder;
-            reval.SqlBuilder.QueryBuilder = InstanceFactory.GetQueryBuilder(base.CurrentConnectionConfig);
-            reval.SqlBuilder.QueryBuilder.Builder = sqlBuilder;
-            reval.SqlBuilder.Context = reval.SqlBuilder.QueryBuilder.Context = this;
-            reval.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
-            reval.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            return reval;
-        }
-
-        public virtual IInsertable<T> Insertable<T>(params T [] insertObj) where T : class, new()
-        {
-            var reval = new InsertableProvider<T>();
             reval.Context = this;
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.SqlBuilder = sqlBuilder;
@@ -237,6 +225,25 @@ namespace SqlSugar
             return queryable;
         }
 
+        #endregion
+
+        #region Insertable
+        public virtual IInsertable<T> Insertable<T>(params T[] insertObj) where T : class, new()
+        {
+            var reval = new InsertableProvider<T>();
+            reval.Context = this;
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
+            reval.SqlBuilder = sqlBuilder;
+            reval.SqlBuilder.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
+            reval.SqlBuilder.InsertBuilder.Builder = sqlBuilder;
+            reval.SqlBuilder.Context = reval.SqlBuilder.QueryBuilder.Context = this;
+            reval.SqlBuilder.InsertBuilder.EntityName = typeof(T).Name;
+            reval.SqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+            return reval;
+        }
+
+        #endregion
+        #region SqlQuery
         public virtual List<T> SqlQuery<T>(string sql, object pars = null)
         {
             var dbPars = this.Database.GetParameters(pars);
@@ -249,7 +256,9 @@ namespace SqlSugar
                 builder.SqlQueryBuilder.Clear();
                 return reval;
             }
-        }
+        } 
+        #endregion
+
         public virtual void Close()
         {
             if (this.Database != null)

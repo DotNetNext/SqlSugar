@@ -29,7 +29,7 @@ namespace SqlSugar
             }
         }
 
-        public void Clear()
+        public virtual void Clear()
         {
 
         }
@@ -47,7 +47,7 @@ namespace SqlSugar
             }
         }
 
-        public string ToSqlString()
+        public virtual string ToSqlString()
         {
             string columnsString =string.Join("," ,this.ColumNames.Select(it => Builder.GetTranslationColumnName(it)));
             string columnParametersString = string.Join(",", this.ColumNames.Select(it =>Builder.SqlParameterKeyWord+it));

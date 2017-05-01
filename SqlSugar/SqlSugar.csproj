@@ -54,6 +54,7 @@
     <Compile Include="Abstract\DbProvider\DbMaintenanceProvider\DbMaintenanceProvider.cs" />
     <Compile Include="Abstract\DbProvider\DbProvider\DbProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
+    <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerInsertBuilder.cs" />
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
@@ -82,7 +83,7 @@
     <Compile Include="Databases\SqlServer\Db\DbFirst\SqlServerDbFirst.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerBuilder.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerDbMaintenance.cs" />
-    <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerLambadaQueryBuilder.cs" />
+    <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerQueryBuilder.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlServerDb.cs" />
     <Compile Include="Databases\SqlServer\Queryable\SqlServerQueryable.cs" />
     <Compile Include="Entities\DetaultT.cs" />

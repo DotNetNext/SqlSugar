@@ -29,24 +29,12 @@ namespace SqlSugar
 
         public DeleteBuilder DeleteBuilder
         {
-            get
-            {
-                base._DeleteBuilder = PubMethod.IsNullReturnNew(base._DeleteBuilder);
-             //   base._DeleteBuilder.Conext = this.Context;
-                return base._DeleteBuilder;
-            }
-            set { base._DeleteBuilder = value; }
+            get; set;
         }
 
         public InsertBuilder InsertBuilder
         {
-            get
-            {
-                base._InsertBuilder = PubMethod.IsNullReturnNew(base._InsertBuilder);
-            //    base._InsertBuilder.Conext = this.Context;
-                return base._InsertBuilder;
-            }
-            set { base._InsertBuilder = value; }
+            get; set;
         }
 
         public QueryBuilder QueryBuilder
@@ -59,7 +47,6 @@ namespace SqlSugar
             get
             {
                 base._SqlQueryBuilder = PubMethod.IsNullReturnNew(base._SqlQueryBuilder);
-              //  base._SqlQueryBuilder.Conext = this.Context;
                 return base._SqlQueryBuilder;
             }
             set { base._SqlQueryBuilder = value; }
@@ -67,13 +54,7 @@ namespace SqlSugar
 
         public UpdateBuilder UpdateBuilder
         {
-            get
-            {
-                base._UpdateBuilder = PubMethod.IsNullReturnNew(base._UpdateBuilder);
-             //   base._UpdateBuilder.Conext = this.Context;
-                return base._UpdateBuilder;
-            }
-            set { base._UpdateBuilder = value; }
+            get; set;
         }
 
         public SqlSugarClient Context

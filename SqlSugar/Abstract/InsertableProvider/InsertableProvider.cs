@@ -42,22 +42,26 @@ namespace SqlSugar
 
         public IInsertable<T> Insert(T InsertObj)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IInsertable<T> InsertColumns(Expression<Func<T, object[]>> columns)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IInsertable<T> InsertRange(List<T> InsertObjs)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IInsertable<T> With(string lockString)
         {
-            throw new NotImplementedException();
+            return this;
+        }
+
+        public IInsertable<T> Where(bool isInsertNull) {
+            return this;
         }
     }
 }
