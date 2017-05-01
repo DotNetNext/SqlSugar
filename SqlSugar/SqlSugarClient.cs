@@ -231,15 +231,14 @@ namespace SqlSugar
         public virtual IInsertable<T> Insertable<T>(params T[] insertObjs) where T : class, new()
         {
             var reval = new InsertableProvider<T>();
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.Context = this;
             reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.SqlBuilder = sqlBuilder;
             reval.InsertObjs = insertObjs;
             sqlBuilder.InsertBuilder =reval.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
             sqlBuilder.InsertBuilder.Builder = sqlBuilder;
             sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
-            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
             reval.Init();
             return reval;
         }

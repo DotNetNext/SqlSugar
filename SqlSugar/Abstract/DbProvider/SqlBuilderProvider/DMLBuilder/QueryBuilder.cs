@@ -189,7 +189,7 @@ namespace SqlSugar
             resolveExpress.JoinQueryInfos = Builder.QueryBuilder.JoinQueryInfos;
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
-            resolveExpress.IgnoreComumnList = Context.IgnoreComumns;
+            resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters = new List<SugarParameter>();
             this.Parameters.AddRange(resolveExpress.Parameters);

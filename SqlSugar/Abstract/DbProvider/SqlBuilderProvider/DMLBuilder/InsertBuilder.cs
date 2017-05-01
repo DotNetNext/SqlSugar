@@ -27,7 +27,7 @@ namespace SqlSugar
                 return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2})";
+           ({2}) ;SELECT SCOPE_IDENTITY();";
             }
         }
 

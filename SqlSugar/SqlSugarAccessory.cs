@@ -15,7 +15,7 @@ namespace SqlSugar
         public Guid ContextID { get; set; }
         public MappingTableList MappingTables = new MappingTableList();
         public MappingColumnList MappingColumns = new MappingColumnList();
-        public IgnoreComumnList IgnoreComumns = new IgnoreComumnList();
+        public IgnoreComumnList IgnoreColumns = new IgnoreComumnList();
 
         protected ISqlBuilder _SqlBuilder;
         protected EntityProvider _EntityProvider;

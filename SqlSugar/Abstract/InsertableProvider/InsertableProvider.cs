@@ -60,6 +60,8 @@ namespace SqlSugar
 
         public IInsertable<T> Where(bool isInsertNull)
         {
+            if (this.InsertBuilder.LambdaExpressions == null)
+                this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
             this.InsertBuilder.IsInsertNull = isInsertNull;
             return this;
         }
@@ -67,12 +69,19 @@ namespace SqlSugar
         #region Private Methods
         private void PreToSql()
         {
+            if (this.Context.IgnoreColumns != null && this.Context.IgnoreColumns.Any()) {
+                var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
+                this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
+                {
+                    return !currentIgnoreColumns.Any(i => it.EntityPropertyName == i.EntityPropertyName);
+                }).ToList();
+            }
             if (this.IsSingle)
             {
                 foreach (var item in this.InsertBuilder.DbColumnInfoList)
                 {
                     if (this.InsertBuilder.Parameters == null) this.InsertBuilder.Parameters = new List<SugarParameter>();
-                    this.InsertBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord+item.ColumnName,item.Value));
+                    this.InsertBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.ColumnName, item.Value));
                 }
             }
         }
@@ -99,7 +108,7 @@ namespace SqlSugar
                         Value = column.PropertyInfo.GetValue(item),
                         ColumnName = GetDbColumnName(column.EntityName),
                         EntityPropertyName = column.EntityName,
-                        TableId=i
+                        TableId = i
                     };
                     insertItem.Add(columnInfo);
                 }

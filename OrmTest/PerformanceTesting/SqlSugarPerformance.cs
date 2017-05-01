@@ -22,7 +22,7 @@ namespace OrmTest.PerformanceTesting
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = false
             });
-            db.IgnoreComumns.Add("TestId", "Student");
+            db.IgnoreColumns.Add("TestId", "Student");
             db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
             base.Execute("sqlsuagr", () =>
             {
