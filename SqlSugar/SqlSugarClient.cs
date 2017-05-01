@@ -111,8 +111,6 @@ namespace SqlSugar
         }
         #endregion
 
-        #region functions
-
         #region Queryable
         /// <summary>
         /// Lambda Query operation
@@ -257,9 +255,10 @@ namespace SqlSugar
                 builder.SqlQueryBuilder.Clear();
                 return reval;
             }
-        } 
+        }
         #endregion
 
+        #region Dispose OR Close
         public virtual void Close()
         {
             if (this.Database != null)
@@ -273,7 +272,7 @@ namespace SqlSugar
             {
                 this.Database.Dispose();
             }
-        }
+        } 
         #endregion
     }
 }
