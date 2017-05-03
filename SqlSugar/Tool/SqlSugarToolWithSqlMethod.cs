@@ -95,8 +95,8 @@ namespace SqlSugar
             {
                 sbSql.Insert(0, string.Format("SELECT {0},row_index=ROW_NUMBER() OVER(ORDER BY {1} )", fileds, orderByFiled));
                 sbSql.Append(" WHERE 1=1 ").Append(string.Join(" ", sqlable.Where));
-                sbSql.Append(sqlable.OrderBy);
                 sbSql.Append(sqlable.GroupBy);
+                sbSql.Append(sqlable.OrderBy);
                 int skip = (pageIndex - 1) * pageSize + 1;
                 int take = pageSize;
                 sbSql.Insert(0, "SELECT * FROM ( ");
