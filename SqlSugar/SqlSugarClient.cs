@@ -259,6 +259,21 @@ namespace SqlSugar
         }
         #endregion
 
+        #region deleteable
+        public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
+        {
+            var reval = new DeleteableProvider<T>();
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
+            reval.Context = this;
+            reval.SqlBuilder = sqlBuilder;
+            sqlBuilder.DeleteBuilder = reval.DeleteBuilder = InstanceFactory.GetDeleteBuilder(base.CurrentConnectionConfig);
+            sqlBuilder.InsertBuilder.Builder = sqlBuilder;
+            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+            sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
+            return reval;
+        }
+        #endregion
+
         #region SqlQuery
         public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
         {

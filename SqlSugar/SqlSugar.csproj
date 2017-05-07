@@ -55,6 +55,7 @@
     <Compile Include="Abstract\DbProvider\DbProvider\DbProvider.cs" />
     <Compile Include="Abstract\DbProvider\EntityProvider\EntityProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
+    <Compile Include="Abstract\UpdateProvider\DeleteableProvider.cs" />
     <Compile Include="Databases\SqlServer\Db\SqlBuilder\SqlServerInsertBuilder.cs" />
     <Compile Include="Entities\EntityColumnInfo.cs" />
     <Compile Include="Entities\EntityInfo.cs" />
@@ -161,7 +162,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstract\DeleteProvider\" />
-    <Folder Include="Abstract\UpdateProvider\" />
     <Folder Include="Databases\MySql\" />
     <Folder Include="Databases\Oracle\" />
     <Folder Include="Databases\Sqlite\" />
