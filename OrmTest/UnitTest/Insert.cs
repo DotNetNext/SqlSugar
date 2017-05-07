@@ -35,8 +35,11 @@ namespace OrmTest.UnitTest
             //Ignore  Name and TestId
             var s4=db.Insertable<Student>(insertObj).IgnoreColumns(it => new object[] { it.Name,it.TestId }).ToSql();
 
+            //Ignore  Name and TestId
+            var s5 = db.Insertable<Student>(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
+
             //Use Lock
-            var s5=db.Insertable<Student>(insertObj).With(SqlWith.UpdLock).ToSql();
+            var s6 =db.Insertable<Student>(insertObj).With(SqlWith.UpdLock).ToSql();
 
             //ToSql
             var s7= db.Insertable<Student>(insertObj).With(SqlWith.UpdLock)

@@ -43,14 +43,19 @@ namespace SqlSugar
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             return Db.GetInt(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
-        } 
+        }
         #endregion
 
         #region Setting
         public IInsertable<T> IgnoreColumns(Expression<Func<T, object[]>> columns)
         {
-           var ignoreColumns = InsertBuilder.GetExpressionValue(columns,ResolveExpressType.Array);
-            this.InsertBuilder.DbColumnInfoList= this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.EntityPropertyName)).ToList();
+            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array);
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.EntityPropertyName)).ToList();
+            return this;
+        }
+        public IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
+        {
+            this.InsertBuilder.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.EntityPropertyName)).ToList();
             return this;
         }
 
@@ -73,7 +78,7 @@ namespace SqlSugar
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
             this.InsertBuilder.IsInsertNull = isInsertNull;
             return this;
-        } 
+        }
         #endregion
 
         #region Private Methods
@@ -91,7 +96,8 @@ namespace SqlSugar
                     }).ToList();
                 }
             }
-            else {
+            else
+            {
 
             }
             #endregion
@@ -102,9 +108,9 @@ namespace SqlSugar
                 var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
                 this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                 {
-                    return !currentIgnoreColumns.Any(i => it.EntityPropertyName.Equals(i.EntityPropertyName,StringComparison.CurrentCulture));
+                    return !currentIgnoreColumns.Any(i => it.EntityPropertyName.Equals(i.EntityPropertyName, StringComparison.CurrentCulture));
                 }).ToList();
-            } 
+            }
             #endregion
             if (this.IsSingle)
             {
@@ -151,9 +157,9 @@ namespace SqlSugar
             {
                 return entityName;
             }
-            if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.Name,StringComparison.CurrentCultureIgnoreCase)))
+            if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.Name, StringComparison.CurrentCultureIgnoreCase)))
             {
-                this.MappingColumnList = this.Context.MappingColumns.Where(it => it.EntityName.Equals(EntityInfo.Name,StringComparison.CurrentCultureIgnoreCase)).ToList();
+                this.MappingColumnList = this.Context.MappingColumns.Where(it => it.EntityName.Equals(EntityInfo.Name, StringComparison.CurrentCultureIgnoreCase)).ToList();
             }
             if (MappingColumnList == null || !MappingColumnList.Any())
             {
@@ -161,10 +167,12 @@ namespace SqlSugar
             }
             else
             {
-                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(entityName,StringComparison.CurrentCultureIgnoreCase));
+                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
                 return mappInfo == null ? entityName : mappInfo.DbColumnName;
             }
         }
+
+
         #endregion
     }
 }

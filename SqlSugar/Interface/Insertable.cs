@@ -14,6 +14,7 @@ namespace SqlSugar
         IInsertable<T> With(string lockString);
         IInsertable<T> InsertColumns(Expression<Func<T, object[]>> columns);
         IInsertable<T> IgnoreColumns(Expression<Func<T, object[]>> columns);
+        IInsertable<T> IgnoreColumns(Func<string,bool> ignoreColumMethod);
         IInsertable<T> Where(bool isInsertNull);
         KeyValuePair<string, List<SugarParameter>> ToSql();
         EntityInfo EntityInfo { get; set; }
