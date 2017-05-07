@@ -26,22 +26,24 @@ namespace OrmTest.UnitTest
             var s1= db.Insertable<Student>(insertObj).ToSql();
 
             //Insert reutrn Command Count
-            db.Insertable<Student>(insertObj).ExecuteCommand();
+            var s2=db.Insertable<Student>(insertObj).ExecuteCommand();
 
+            db.IgnoreColumns = null;
             //Only  insert  Name 
-            db.Insertable<Student>(insertObj).InsertColumns(it => new object[] { it.Name}).ExecuteReutrnIdentity();
+            var s3 = db.Insertable<Student>(insertObj).InsertColumns(it => new object[] { it.Name}).ToSql();
 
             //Ignore  Name and TestId
-            db.Insertable<Student>(insertObj).IgnoreColumns(it => new object[] { it.Name,it.TestId }).ExecuteReutrnIdentity();
+            var s4=db.Insertable<Student>(insertObj).IgnoreColumns(it => new object[] { it.Name,it.TestId }).ToSql();
 
             //Use Lock
-            db.Insertable<Student>(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
+            var s5=db.Insertable<Student>(insertObj).With(SqlWith.UpdLock).ToSql();
 
             //ToSql
-            db.Insertable<Student>(insertObj).With(SqlWith.UpdLock).InsertColumns(it => new object[] { it.Name }).ToSql();
+            var s7= db.Insertable<Student>(insertObj).With(SqlWith.UpdLock)
+                .InsertColumns(it => new object[] { it.Name }).ToSql();
 
             //Insert List<T>
-            db.Insertable<Student>(insertObjs).With(SqlWith.UpdLock).ExecuteCommand();
+            var s8= db.Insertable<Student>(insertObjs).With(SqlWith.UpdLock).ToSql();
         }
 
         public SqlSugarClient GetInstance()

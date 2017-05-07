@@ -238,7 +238,7 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
-        public virtual IInsertable<T> Insertable<T>(params T[] insertObjs) where T : class, new()
+        public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
             var reval = new InsertableProvider<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
@@ -248,11 +248,15 @@ namespace SqlSugar
             reval.InsertObjs = insertObjs;
             sqlBuilder.InsertBuilder = reval.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
             sqlBuilder.InsertBuilder.Builder = sqlBuilder;
+            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
             sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
             reval.Init();
             return reval;
         }
-
+        public virtual IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
+        {
+            return this.Insertable(new T[] { insertObj});
+        }
         #endregion
 
         #region SqlQuery

@@ -24,31 +24,40 @@ namespace SqlSugar
         private List<string> IgnoreColumnNameList { get; set; }
         public T[] InsertObjs { get; set; }
 
+        #region Core
         public int ExecuteCommand()
         {
+            InsertBuilder.IsReturnIdentity = false;
             PreToSql();
-            return Db.ExecuteCommand(InsertBuilder.ToSqlString(), InsertBuilder.Parameters);
+            return Db.ExecuteCommand(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
         }
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
+            InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
             return new KeyValuePair<string, List<SugarParameter>>(sql, InsertBuilder.Parameters);
         }
-
         public int ExecuteReutrnIdentity()
         {
+            InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            return Db.GetInt(InsertBuilder.ToSqlString(), InsertBuilder.Parameters);
-        }
+            return Db.GetInt(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
+        } 
+        #endregion
 
+        #region Setting
         public IInsertable<T> IgnoreColumns(Expression<Func<T, object[]>> columns)
         {
-            throw new NotImplementedException();
+           var ignoreColumns = InsertBuilder.GetExpressionValue(columns,ResolveExpressType.Array);
+            this.InsertBuilder.DbColumnInfoList= this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.EntityPropertyName)).ToList();
+            return this;
         }
 
         public IInsertable<T> InsertColumns(Expression<Func<T, object[]>> columns)
         {
+            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array);
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.EntityPropertyName)).ToList();
             return this;
         }
 
@@ -64,7 +73,8 @@ namespace SqlSugar
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
             this.InsertBuilder.IsInsertNull = isInsertNull;
             return this;
-        }
+        } 
+        #endregion
 
         #region Private Methods
         private void PreToSql()
@@ -75,7 +85,6 @@ namespace SqlSugar
                 List<string> identities = Db.DbMaintenance.GetIsIdentities(this.InsertBuilder.TableName);
                 if (identities != null && identities.Any())
                 {
-                    var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
                     this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                     {
                         return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));

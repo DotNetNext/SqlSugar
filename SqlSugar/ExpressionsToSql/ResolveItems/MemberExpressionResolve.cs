@@ -72,6 +72,10 @@ namespace SqlSugar
                     fieldName = getMultipleName(parameter, expression, isLeft);
                     base.Context.Result.Append(fieldName);
                     break;
+                case ResolveExpressType.Array:
+                    fieldName = getArrayName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
+                    break;
                 default:
                     break;
             }
@@ -114,6 +118,11 @@ namespace SqlSugar
         private string getSingleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
             string fieldName = Context.GetTranslationColumnName(expression.Member.Name);
+            return fieldName;
+        }
+        private string getArrayName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
+        {
+            string fieldName = expression.Member.Name;
             return fieldName;
         }
     }

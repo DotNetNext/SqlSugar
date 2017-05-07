@@ -22,6 +22,13 @@ namespace SqlSugar
                 case ResolveExpressType.FieldMultiple:
                     Check.ThrowNotSupportedException("NewArrayExpression");
                     break;
+                case ResolveExpressType.Array:
+                    foreach (var item in expression.Expressions)
+                    {
+                        base.Expression = item;
+                        base.Start();
+                    }
+                    break;
                 case ResolveExpressType.Join:
                     base.Context.ResolveType = ResolveExpressType.WhereMultiple;
                     int i = 0;
@@ -35,7 +42,7 @@ namespace SqlSugar
                             {
                                 if (i > 0)
                                 {
-                                    base.Context.Result.Append(","+parameter.CommonTempData.ObjToString() + ",");
+                                    base.Context.Result.Append("," + parameter.CommonTempData.ObjToString() + ",");
                                 }
                                 else
                                 {
