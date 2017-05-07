@@ -19,11 +19,6 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public IDeleteable<T> TableName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public IDeleteable<T> Where(List<T> deleteObjs)
         {
             throw new NotImplementedException();
@@ -55,6 +50,11 @@ namespace SqlSugar
         }
 
         public IDeleteable<T> With(string lockString)
+        {
+            throw new NotImplementedException();
+        }
+
+        public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             throw new NotImplementedException();
         }

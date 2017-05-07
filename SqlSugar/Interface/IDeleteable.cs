@@ -10,7 +10,6 @@ namespace SqlSugar
     public interface IDeleteable<T>
     {
         int ExecuteCommand();
-        IDeleteable<T> TableName(string name);
         IDeleteable<T> With(string lockString);
         IDeleteable<T> Where(T deleteObj);
         IDeleteable<T> Where(Expression<Func<T, bool>> expression);
@@ -18,5 +17,6 @@ namespace SqlSugar
         IDeleteable<T> Where<PkType>(PkType primaryKeyValue);
         IDeleteable<T> Where<PkType>(PkType [] primaryKeyValues);
         IDeleteable<T> Where(string whereString,object whereObj);
+        KeyValuePair<string, List<SugarParameter>> ToSql();
     }
 }
