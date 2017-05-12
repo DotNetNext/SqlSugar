@@ -338,6 +338,34 @@ namespace SqlSugar
                 return mappingInfo.DbTableName;
             }
         }
+        internal string GetEntityName(string tableName)
+        {
+            if (this.MappingTables == null || this.MappingTables.Count == 0) return tableName;
+            else
+            {
+                var mappingInfo = this.MappingTables.SingleOrDefault(it => it.DbTableName == tableName);
+                return mappingInfo.EntityName;
+            }
+        }
+        internal string GetDbColumnName<T>(string entityNam)
+        {
+            var typeName = typeof(T).Name;
+            if (this.MappingTables == null || this.MappingTables.Count == 0) return typeName;
+            else
+            {
+                var mappingInfo = this.MappingTables.SingleOrDefault(it => it.EntityName == typeName);
+                return mappingInfo.DbTableName;
+            }
+        }
+        internal string GetEntityPropertyName(string bbColumnName)
+        {
+            if (this.MappingTables == null || this.MappingTables.Count == 0) return tableName;
+            else
+            {
+                var mappingInfo = this.MappingTables.SingleOrDefault(it => it.DbTableName == tableName);
+                return mappingInfo.EntityName;
+            }
+        }
         #endregion
     }
 }
