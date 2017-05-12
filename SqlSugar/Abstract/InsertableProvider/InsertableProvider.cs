@@ -47,7 +47,7 @@ namespace SqlSugar
         #endregion
 
         #region Setting
-        public IInsertable<T> IgnoreColumns(Expression<Func<T, object[]>> columns)
+        public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array);
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.EntityPropertyName)).ToList();
@@ -59,7 +59,7 @@ namespace SqlSugar
             return this;
         }
 
-        public IInsertable<T> InsertColumns(Expression<Func<T, object[]>> columns)
+        public IInsertable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array);
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.EntityPropertyName)).ToList();

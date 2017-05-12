@@ -30,10 +30,10 @@ namespace OrmTest.UnitTest
 
             db.IgnoreColumns = null;
             //Only  insert  Name 
-            var s3 = db.Insertable<Student>(insertObj).InsertColumns(it => new object[] { it.Name}).ToSql();
+            var s3 = db.Insertable<Student>(insertObj).InsertColumns(it => new {it.Name}).ToSql();
 
             //Ignore  Name and TestId
-            var s4=db.Insertable<Student>(insertObj).IgnoreColumns(it => new object[] { it.Name,it.TestId }).ToSql();
+            var s4=db.Insertable<Student>(insertObj).IgnoreColumns(it => new{ it.Name,it.TestId }).ToSql();
 
             //Ignore  Name and TestId
             var s5 = db.Insertable<Student>(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
@@ -43,7 +43,7 @@ namespace OrmTest.UnitTest
 
             //ToSql
             var s7= db.Insertable<Student>(insertObj).With(SqlWith.UpdLock)
-                .InsertColumns(it => new object[] { it.Name }).ToSql();
+                .InsertColumns(it => new { it.Name }).ToSql();
 
             //Insert List<T>
             var s8= db.Insertable<Student>(insertObjs).With(SqlWith.UpdLock).ToSql();
