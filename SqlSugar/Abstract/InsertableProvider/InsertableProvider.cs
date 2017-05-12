@@ -22,6 +22,7 @@ namespace SqlSugar
         public EntityInfo EntityInfo { get; set; }
         public List<MappingColumn> MappingColumnList { get; set; }
         private List<string> IgnoreColumnNameList { get; set; }
+        private bool IsOffIdentity { get; set; }
         public T[] InsertObjs { get; set; }
 
         #region Core
@@ -72,7 +73,7 @@ namespace SqlSugar
             return this;
         }
 
-        public IInsertable<T> Where(bool isInsertNull)
+        public IInsertable<T> Where(bool isInsertNull,bool isOffIdentity=false)
         {
             if (this.InsertBuilder.LambdaExpressions == null)
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
@@ -85,20 +86,23 @@ namespace SqlSugar
         private void PreToSql()
         {
             #region Identities
-            if (this.Context.IsSystemTablesConfig)
+            if (!IsOffIdentity)
             {
-                List<string> identities = Db.DbMaintenance.GetIsIdentities(this.InsertBuilder.TableName);
-                if (identities != null && identities.Any())
+                if (this.Context.IsSystemTablesConfig)
                 {
-                    this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
+                    List<string> identities = Db.DbMaintenance.GetIsIdentities(this.InsertBuilder.TableName);
+                    if (identities != null && identities.Any())
                     {
-                        return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
-                    }).ToList();
+                        this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
+                        {
+                            return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                        }).ToList();
+                    }
                 }
-            }
-            else
-            {
+                else
+                {
 
+                }
             }
             #endregion
 

@@ -267,9 +267,9 @@ namespace SqlSugar
             reval.Context = this;
             reval.SqlBuilder = sqlBuilder;
             sqlBuilder.DeleteBuilder = reval.DeleteBuilder = InstanceFactory.GetDeleteBuilder(base.CurrentConnectionConfig);
-            sqlBuilder.InsertBuilder.Builder = sqlBuilder;
-            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
+            sqlBuilder.DeleteBuilder.Builder = sqlBuilder;
+            sqlBuilder.DeleteBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+            sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this;
             return reval;
         }
         #endregion
