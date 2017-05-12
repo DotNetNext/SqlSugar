@@ -13,10 +13,11 @@ namespace SqlSugar
         public IDb Db { get { return Context.Database; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }
-
         public int ExecuteCommand()
         {
-            throw new NotImplementedException();
+            string sql = DeleteBuilder.ToSqlString();
+            var paramters = DeleteBuilder.Parameters.ToArray();
+            return Db.GetInt(sql, paramters);
         }
 
         public IDeleteable<T> Where(List<T> deleteObjs)
@@ -26,37 +27,65 @@ namespace SqlSugar
 
         public IDeleteable<T> Where(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
+            var expResult=DeleteBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
+            DeleteBuilder.WhereInfos.Add(expResult.GetResultString());
+            return this;
         }
 
         public IDeleteable<T> Where(T deleteObj)
         {
-            throw new NotImplementedException();
+            string tableName = this.Context.GetTableName<T>();
+
+            return this;
         }
 
-        public IDeleteable<T> Where(string whereString, object whereObj)
+        public IDeleteable<T> Where(string whereString, object whereObj=null)
         {
-            throw new NotImplementedException();
+            DeleteBuilder.WhereInfos.Add(whereString);
+            if (whereObj != null)
+            {
+                DeleteBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
+            }
+            return this;
         }
 
-        public IDeleteable<T> Where<PkType>(PkType[] primaryKeyValues)
+        public IDeleteable<T> In<PkType>(PkType[] primaryKeyValues)
         {
-            throw new NotImplementedException();
+            if (primaryKeyValues == null || primaryKeyValues.Count() == 0) {
+                Where("1=2 ");
+                return this;
+            }
+            string tableName = this.Context.GetTableName<T>();
+            string primaryField = null;
+            if (this.Context.IsSystemTablesConfig)
+            {
+                primaryField = this.Db.DbMaintenance.GetPrimaries(tableName).FirstOrDefault();
+                Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
+                Where(string.Format(DeleteBuilder.WhereInTemplate, primaryField, primaryKeyValues.ToJoinSqlInVals()));
+            }
+            else {
+
+            }
+            return this;
         }
 
-        public IDeleteable<T> Where<PkType>(PkType primaryKeyValue)
+        public IDeleteable<T> In<PkType>(PkType primaryKeyValue)
         {
-            throw new NotImplementedException();
+            In(new PkType[] { primaryKeyValue });
+            return this;
         }
 
         public IDeleteable<T> With(string lockString)
         {
-            throw new NotImplementedException();
+            DeleteBuilder.TableWithString = lockString;
+            return this;
         }
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            throw new NotImplementedException();
+            string sql = DeleteBuilder.ToSqlString();
+            var paramters = DeleteBuilder.Parameters.ToList();
+            return new KeyValuePair<string, List<SugarParameter>>(sql,paramters);
         }
     }
 }

@@ -29,7 +29,13 @@ namespace SqlSugar
         {
             get
             {
-                return " DELETE FROM {0}{1}";
+                return "DELETE FROM {0}{1}";
+            }
+        }
+
+        public string WhereInTemplate {
+            get {
+                return "{0} IN ({1})";
             }
         }
         public virtual string GetTableNameString

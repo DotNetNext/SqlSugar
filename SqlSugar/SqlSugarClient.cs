@@ -22,7 +22,7 @@ namespace SqlSugar
             {
                 return this.CurrentConnectionConfig is SystemTablesConfig;
             }
-        } 
+        }
         #endregion
 
         #region constructor
@@ -255,7 +255,7 @@ namespace SqlSugar
         }
         public virtual IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
-            return this.Insertable(new T[] { insertObj});
+            return this.Insertable(new T[] { insertObj });
         }
         #endregion
 
@@ -323,6 +323,19 @@ namespace SqlSugar
             if (this.Database != null)
             {
                 this.Database.Dispose();
+            }
+        }
+        #endregion
+
+        #region Internal Methods
+        internal string GetTableName<T>()
+        {
+            var typeName = typeof(T).Name;
+            if (this.MappingTables == null || this.MappingTables.Count == 0) return typeName;
+            else
+            {
+                var mappingInfo = this.MappingTables.SingleOrDefault(it => it.EntityName == typeName);
+                return mappingInfo.DbTableName;
             }
         }
         #endregion
