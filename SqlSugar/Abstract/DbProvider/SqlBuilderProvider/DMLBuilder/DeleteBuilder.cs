@@ -50,7 +50,16 @@ namespace SqlSugar
             get
             {
                 if (_WhereInfos == null || _WhereInfos.Count == 0) return null;
-                return "";
+                string whereString = null;
+                int i = 0;
+                foreach (var item in _WhereInfos)
+                {
+                    var isFirst = i == 0;
+                    whereString += isFirst ? "WHERE " : "AND ";
+                    whereString +=(item + PubConst.Space);
+                    ++i;
+                }
+                return whereString;
             }
         }
 
@@ -60,7 +69,7 @@ namespace SqlSugar
 
         public string ToSqlString()
         {
-            return string.Format(SqlTemplate, GetTableNameString,GetWhereString);
+            return string.Format(SqlTemplate, GetTableNameString, GetWhereString);
         }
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
