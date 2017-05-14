@@ -335,7 +335,7 @@ namespace SqlSugar
             else
             {
                 var mappingInfo = this.MappingTables.SingleOrDefault(it => it.EntityName == typeName);
-                return mappingInfo.DbTableName;
+                return mappingInfo==null?typeName:mappingInfo.DbTableName;
             }
         }
         internal string GetEntityName(string tableName)
@@ -344,26 +344,27 @@ namespace SqlSugar
             else
             {
                 var mappingInfo = this.MappingTables.SingleOrDefault(it => it.DbTableName == tableName);
-                return mappingInfo.EntityName;
+                return mappingInfo==null?tableName:mappingInfo.EntityName;
             }
         }
-        internal string GetDbColumnName<T>(string entityNam)
+        internal string GetDbColumnName<T>(string entityPropertyName)
         {
             var typeName = typeof(T).Name;
-            if (this.MappingTables == null || this.MappingTables.Count == 0) return typeName;
+            if (this.MappingColumns == null || this.MappingColumns.Count == 0) return entityPropertyName;
             else
             {
-                var mappingInfo = this.MappingTables.SingleOrDefault(it => it.EntityName == typeName);
-                return mappingInfo.DbTableName;
+                var mappingInfo = this.MappingColumns.SingleOrDefault(it =>it.EntityName==typeName &&it.EntityPropertyName == entityPropertyName);
+                return mappingInfo==null?entityPropertyName:mappingInfo.DbColumnName;
             }
         }
-        internal string GetEntityPropertyName(string bbColumnName)
+        internal string GetEntityPropertyName<T>(string dbColumnName)
         {
-            if (this.MappingTables == null || this.MappingTables.Count == 0) return tableName;
+            var typeName = typeof(T).Name;
+            if (this.MappingColumns == null || this.MappingColumns.Count == 0) return dbColumnName;
             else
             {
-                var mappingInfo = this.MappingTables.SingleOrDefault(it => it.DbTableName == tableName);
-                return mappingInfo.EntityName;
+                var mappingInfo = this.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName == dbColumnName);
+                return mappingInfo == null ? dbColumnName : mappingInfo.DbColumnName;
             }
         }
         #endregion

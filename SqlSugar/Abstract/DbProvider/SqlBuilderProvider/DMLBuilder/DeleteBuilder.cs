@@ -33,11 +33,44 @@ namespace SqlSugar
             }
         }
 
-        public string WhereInTemplate {
-            get {
+        public string WhereInTemplate
+        {
+            get
+            {
                 return "{0} IN ({1})";
             }
         }
+
+        public string WhereInOrTemplate
+        {
+            get
+            {
+                return "OR";
+            }
+        }
+        public string WhereInAndTemplate
+        {
+            get
+            {
+                return "AND";
+            }
+        }
+        public string WhereInEqualTemplate
+        {
+            get
+            {
+                return "{0}=N'{1}'";
+            }
+        }
+
+        public string WhereInAreaTemplate
+        {
+            get
+            {
+                return "({0})";
+            }
+        }
+
         public virtual string GetTableNameString
         {
             get
@@ -62,7 +95,7 @@ namespace SqlSugar
                 {
                     var isFirst = i == 0;
                     whereString += isFirst ? "WHERE " : "AND ";
-                    whereString +=(item + PubConst.Space);
+                    whereString += (item + PubConst.Space);
                     ++i;
                 }
                 return whereString;

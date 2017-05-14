@@ -25,6 +25,11 @@ namespace SqlSugar
             if (checkObj == null)
                 throw new SqlSugarException("SqlSugarException.ArgumentNullException：" + message);
         }
+        public static void ArgumentNullException(object [] checkObj, string message)
+        {
+            if (checkObj == null|| checkObj.Length==0)
+                throw new SqlSugarException("SqlSugarException.ArgumentNullException：" + message);
+        }
 
         public static void Exception(bool isException, string message, params string[] args)
         {
