@@ -9,7 +9,6 @@ namespace SqlSugar
 {
     public class InsertableProvider<T> : IInsertable<T> where T : class, new()
     {
-
         public SqlSugarClient Context { get; set; }
         public IDb Db { get { return Context.Database; } }
         public ISqlBuilder SqlBuilder { get; set; }
