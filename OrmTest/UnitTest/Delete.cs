@@ -25,9 +25,9 @@ namespace OrmTest
             //use lock
             var s2 = db.Deleteable<Student>().With(SqlWith.RowLock).ToSql();
             //by primary key
-            var s3 = db.Deleteable<Student>().Where(1).ToSql();
+            var s3 = db.Deleteable<Student>().In(1).ToSql();
             //by primary key array
-            var s4 = db.Deleteable<Student>().Where(new int[] { 1,2}).ToSql();
+            var s4 = db.Deleteable<Student>().In(new int[] { 1,2}).ToSql();
             //by expression
             var s5 = db.Deleteable<Student>().Where(it=>it.Id==1).ToSql();
         }

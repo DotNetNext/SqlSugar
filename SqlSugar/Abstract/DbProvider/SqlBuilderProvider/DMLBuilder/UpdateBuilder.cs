@@ -7,6 +7,8 @@ namespace SqlSugar
 {
     public class UpdateBuilder : IDMLBuilder
     {
+        public ISqlBuilder Builder { get; internal set; }
+
         public SqlSugarClient Context
         {
             get
@@ -19,6 +21,8 @@ namespace SqlSugar
                 throw new NotImplementedException();
             }
         }
+
+        public ILambdaExpressions LambdaExpressions { get; internal set; }
 
         public List<SugarParameter> Parameters
         {

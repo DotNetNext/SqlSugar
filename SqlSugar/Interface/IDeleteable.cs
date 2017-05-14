@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IDeleteable<T>
+    public interface IDeleteable<T> where T : class, new()
     {
         int ExecuteCommand();
         IDeleteable<T> With(string lockString);
@@ -15,7 +15,7 @@ namespace SqlSugar
         IDeleteable<T> Where(Expression<Func<T, bool>> expression);
         IDeleteable<T> Where(List<T> deleteObjs);
         IDeleteable<T> In<PkType>(PkType primaryKeyValue);
-        IDeleteable<T> In<PkType>(PkType [] primaryKeyValues);
+        IDeleteable<T> In<PkType>(PkType[] primaryKeyValues);
         IDeleteable<T> Where(string whereString,object whereObj=null);
         KeyValuePair<string, List<SugarParameter>> ToSql();
     }

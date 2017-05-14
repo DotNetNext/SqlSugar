@@ -31,6 +31,12 @@ namespace SqlSugar
             InsertBuilder reval = CreateInstance<InsertBuilder>(GetClassName(currentConnectionConfig.DbType, "InsertBuilder"), currentConnectionConfig.DbType);
             return reval;
         }
+        public static UpdateBuilder GetUpdateBuilder(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            UpdateBuilder reval = CreateInstance<UpdateBuilder>(GetClassName(currentConnectionConfig.DbType, "UpdateBuilder"), currentConnectionConfig.DbType);
+            return reval;
+        }
         public static DeleteBuilder GetDeleteBuilder(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);

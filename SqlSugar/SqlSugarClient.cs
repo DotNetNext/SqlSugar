@@ -274,6 +274,28 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Updateable
+        public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
+        {
+            var reval = new UpdateableProvider<T>();
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
+            reval.Context = this;
+            reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
+            reval.SqlBuilder = sqlBuilder;
+            reval.UpdateObjs = UpdateObjs;
+            sqlBuilder.UpdateBuilder = reval.UpdateBuilder = InstanceFactory.GetUpdateBuilder(base.CurrentConnectionConfig);
+            sqlBuilder.UpdateBuilder.Builder = sqlBuilder;
+            sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+            sqlBuilder.Context = reval.SqlBuilder.UpdateBuilder.Context = this;
+            reval.Init();
+            return reval;
+        }
+        public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
+        {
+            return this.Updateable(new T[] { UpdateObj });
+        }
+        #endregion
+
         #region SqlQuery
         public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
