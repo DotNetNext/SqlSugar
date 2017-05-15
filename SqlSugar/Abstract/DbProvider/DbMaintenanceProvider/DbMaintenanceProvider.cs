@@ -86,33 +86,36 @@ namespace SqlSugar
                          {
                              this.GetTableInfoList();
                          }
-                         var entity = this.Context.MappingTables.SingleOrDefault(it => it.DbTableName.Equals(tableName, StringComparison.CurrentCultureIgnoreCase));
-                         var entityName = entity == null ? tableName : entity.EntityName;
-                         var assembly = Assembly.Load(this.Context.EntityNamespace.Split('.').First());
-                         foreach (var item in assembly.GetType(this.Context.EntityNamespace + "." + entityName).GetProperties())
+                         var entities = this.Context.MappingTables.Where(it => it.DbTableName.Equals(tableName, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                         foreach (var entity in entities)
                          {
-                             var isVirtual = item.GetGetMethod().IsVirtual;
-                             if (isVirtual) continue;
-                             var sugarColumn = item.GetCustomAttributes(typeof(SugarColumn), true)
-                             .Where(it => it is SugarColumn)
-                             .Select(it => (SugarColumn)it)
-                             .Where(it => it.ColumnName.IsValuable())
-                             .FirstOrDefault();
-                             if (sugarColumn.IsNullOrEmpty())
+                             var entityName = entity == null ? tableName : entity.EntityName;
+                             var assembly = Assembly.Load(this.Context.EntityNamespace.Split('.').First());
+                             foreach (var item in assembly.GetType(this.Context.EntityNamespace + "." + entityName).GetProperties())
                              {
-                                 reval.Add(new DbColumnInfo() { ColumnName = item.Name });
-                             }
-                             else
-                             {
-                                 if (sugarColumn.IsIgnore == false)
+                                 var isVirtual = item.GetGetMethod().IsVirtual;
+                                 if (isVirtual) continue;
+                                 var sugarColumn = item.GetCustomAttributes(typeof(SugarColumn), true)
+                                 .Where(it => it is SugarColumn)
+                                 .Select(it => (SugarColumn)it)
+                                 .Where(it => it.ColumnName.IsValuable())
+                                 .FirstOrDefault();
+                                 if (sugarColumn.IsNullOrEmpty())
                                  {
-                                     var columnInfo = new DbColumnInfo();
-                                     columnInfo.ColumnName = sugarColumn.ColumnName.IsNullOrEmpty() ? item.Name : sugarColumn.ColumnName;
-                                     columnInfo.IsPrimarykey = sugarColumn.IsPrimaryKey;
-                                     columnInfo.IsIdentity = sugarColumn.IsIdentity;
-                                     columnInfo.ColumnDescription = sugarColumn.ColumnDescription;
-                                     columnInfo.TableName = entity.IsNullOrEmpty() ? tableName : entity.DbTableName;
-                                     reval.Add(columnInfo);
+                                     reval.Add(new DbColumnInfo() { ColumnName = item.Name });
+                                 }
+                                 else
+                                 {
+                                     if (sugarColumn.IsIgnore == false)
+                                     {
+                                         var columnInfo = new DbColumnInfo();
+                                         columnInfo.ColumnName = sugarColumn.ColumnName.IsNullOrEmpty() ? item.Name : sugarColumn.ColumnName;
+                                         columnInfo.IsPrimarykey = sugarColumn.IsPrimaryKey;
+                                         columnInfo.IsIdentity = sugarColumn.IsIdentity;
+                                         columnInfo.ColumnDescription = sugarColumn.ColumnDescription;
+                                         columnInfo.TableName = entity.IsNullOrEmpty() ? tableName : entity.DbTableName;
+                                         reval.Add(columnInfo);
+                                     }
                                  }
                              }
                          }
