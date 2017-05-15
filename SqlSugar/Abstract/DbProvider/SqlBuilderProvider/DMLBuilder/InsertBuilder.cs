@@ -46,6 +46,26 @@ namespace SqlSugar
             }
         }
 
+        public virtual string SqlTemplateBatch {
+            get {
+                return "INSERT {0} ({1})";
+            }
+        }
+
+        public virtual string SqlTemplateBatchSelect {
+            get {
+                return "N'{0}' AS {1}";
+            }
+        }
+
+        public virtual string SqlTemplateBatchUnion
+        {
+            get
+            {
+                return "\r\nUNION ALL ";
+            }
+        }
+
         public virtual void Clear()
         {
 
@@ -78,9 +98,29 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
+            var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
+            var isSingle = groupList.Count() == 1;
             string columnsString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.GetTranslationColumnName(it.ColumnName)));
-            string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.ColumnName));
-            return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+            if (isSingle)
+            {
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.ColumnName));
+                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+            }
+            else {
+                StringBuilder batchInsetrSql = new StringBuilder();
+                batchInsetrSql.AppendFormat(GetTableNameString, columnsString);
+                int i = 0;
+                foreach (var columns in groupList)
+                {
+                    var isFirst = i == 0;
+                    if (!isFirst) {
+                        batchInsetrSql.Append(SqlTemplateBatchUnion);
+                    }
+                    batchInsetrSql.Append("\r\n SELECT "+string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect,it.ColumnName,it.Value))));
+                    ++i;  
+                }
+                return batchInsetrSql.ToString();
+            }
         }
     }
 }
