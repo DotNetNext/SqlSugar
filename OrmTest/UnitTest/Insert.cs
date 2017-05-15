@@ -19,7 +19,7 @@ namespace OrmTest.UnitTest
         public void Init() {
             var db = GetInstance();
             var insertObj = new Student() { Name="jack",CreateTime=DateTime.Now };
-            var insertObjs = new List<Student>() { insertObj }.ToArray();
+            var insertObjs = new List<Student>() { insertObj , insertObj }.ToArray();
             db.IgnoreColumns.Add("TestId", "Student");
             //db.MappingColumns.Add("id","dbid", "Student");
            
@@ -45,6 +45,8 @@ namespace OrmTest.UnitTest
             var s7= db.Insertable<Student>(insertObj).With(SqlWith.UpdLock)
                 .InsertColumns(it => new { it.Name }).ToSql();
 
+            db.IgnoreColumns = new IgnoreComumnList();
+            db.IgnoreColumns.Add("TestId", "Student");
             //Insert List<T>
             var s8= db.Insertable<Student>(insertObjs).With(SqlWith.UpdLock).ToSql();
         }

@@ -54,7 +54,7 @@ namespace SqlSugar
 
         public virtual string SqlTemplateBatchSelect {
             get {
-                return "N'{0}' AS {1}";
+                return "{0} AS {1}";
             }
         }
 
@@ -62,7 +62,7 @@ namespace SqlSugar
         {
             get
             {
-                return "\r\nUNION ALL ";
+                return "\t\r\nUNION ALL ";
             }
         }
 
@@ -100,7 +100,7 @@ namespace SqlSugar
         {
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
-            string columnsString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.GetTranslationColumnName(it.ColumnName)));
+            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.ColumnName)));
             if (isSingle)
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.ColumnName));
@@ -108,7 +108,7 @@ namespace SqlSugar
             }
             else {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                batchInsetrSql.AppendFormat(GetTableNameString, columnsString);
+                batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
                 int i = 0;
                 foreach (var columns in groupList)
                 {
@@ -116,10 +116,32 @@ namespace SqlSugar
                     if (!isFirst) {
                         batchInsetrSql.Append(SqlTemplateBatchUnion);
                     }
-                    batchInsetrSql.Append("\r\n SELECT "+string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect,it.ColumnName,it.Value))));
+                    batchInsetrSql.Append("\r\n SELECT "+string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.ColumnName))));
                     ++i;  
                 }
                 return batchInsetrSql.ToString();
+            }
+        }
+
+        public object FormatValue(object value)
+        {
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else {
+                var type = value.GetType();
+                if (type == PubConst.DateType)
+                {
+                    return "'" + value.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.ms") + "'";
+                }
+                else if (type == PubConst.StringType|| type == PubConst.ObjType)
+                {
+                    return "N'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else {
+                    return "N'" + value.ToString() + "'";
+                }
             }
         }
     }

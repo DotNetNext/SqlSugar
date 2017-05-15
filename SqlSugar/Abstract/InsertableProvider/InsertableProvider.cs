@@ -154,6 +154,7 @@ namespace SqlSugar
                     insertItem.Add(columnInfo);
                 }
                 this.InsertBuilder.DbColumnInfoList.AddRange(insertItem);
+                ++i;
             }
         }
         private string GetDbColumnName(string entityName)
