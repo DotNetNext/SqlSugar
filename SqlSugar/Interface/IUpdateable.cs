@@ -13,8 +13,9 @@ namespace SqlSugar
         IInsertable<T> With(string lockString);
         IInsertable<T> Update(T InsertObj);
         IInsertable<T> Where(bool isUpdateNull);
-        IInsertable<T> UpdateColumns(Expression<Func<T, object[]>> columns);
-        IInsertable<T> IgnoreColumns(Expression<Func<T, object[]>> columns);
+        IInsertable<T> UpdateColumns(Expression<Func<T, object>> columns);
+        IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IInsertable<T> UpdateRange(List<T> InsertObjs);
+        object ToSql();
     }
 }
