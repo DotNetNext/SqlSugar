@@ -18,118 +18,24 @@ namespace SqlSugar
         public SqlSugarClient Context { get; set; }
         public List<DbTableInfo> GetViewInfoList()
         {
-            if (this.IsSystemTables())
-            {
-                string key = "DbMaintenanceProvider.GetViewInfoList";
-                return GetListOrCache<DbTableInfo>(key, this.GetViewInfoListSql);
-            }
-            else
-            {
-                return new List<DbTableInfo>();
-            }
+            string key = "DbMaintenanceProvider.GetViewInfoList";
+            return GetListOrCache<DbTableInfo>(key, this.GetViewInfoListSql);
         }
         public List<DbTableInfo> GetTableInfoList()
         {
-            if (this.IsSystemTables())
-            {
-                string key = "DbMaintenanceProvider.GetTableInfoList";
-                return GetListOrCache<DbTableInfo>(key, this.GetTableInfoListSql);
-            }
-            else
-            {
-                return CacheFactory.Func<List<DbTableInfo>>("DbMaintenanceProvider.GetTableInfoList2",
-                    (cm, key) =>
-                    {
-                        return cm[key];
-                    },
-                    (cm, key) =>
-                    {
-                        List<DbTableInfo> reval = new List<DbTableInfo>();
-                        var classes = Assembly.Load(this.Context.EntityNamespace.Split('.').First()).GetTypes();
-                        foreach (var item in classes)
-                        {
-                            if (item.Namespace == this.Context.EntityNamespace)
-                            {
-                                var sugarTableObj = item.GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
-                                if (sugarTableObj.IsNullOrEmpty())
-                                {
-                                    reval.Add(new DbTableInfo() { Name = item.Name });
-                                }
-                                else
-                                {
-                                    var sugarTable = (SugarTable)sugarTableObj;
-                                    reval.Add(new DbTableInfo() { Name = sugarTable.TableName });
-                                }
-                            }
-                        }
-                        return reval;
-                    });
-            }
+            string key = "DbMaintenanceProvider.GetTableInfoList";
+            return GetListOrCache<DbTableInfo>(key, this.GetTableInfoListSql);
         }
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
-            if (this.IsSystemTables())
-            {
-                string key = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower();
-                return GetListOrCache<DbColumnInfo>(key, this.GetColumnInfosByTableNameSql);
-            }
-            else
-            {
-                string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower() + "2";
-                return CacheFactory.Func<List<DbColumnInfo>>(cacheKey,
-                     (cm, key) =>
-                     {
-                         return cm[key];
-                     },
-                     (cm, key) =>
-                     {
-                         List<DbColumnInfo> reval = new List<DbColumnInfo>();
-                         if (this.Context.MappingTables.IsNullOrEmpty())
-                         {
-                             this.GetTableInfoList();
-                         }
-                         var entities = this.Context.MappingTables.Where(it => it.DbTableName.Equals(tableName, StringComparison.CurrentCultureIgnoreCase)).ToList();
-                         foreach (var entity in entities)
-                         {
-                             var entityName = entity == null ? tableName : entity.EntityName;
-                             var assembly = Assembly.Load(this.Context.EntityNamespace.Split('.').First());
-                             foreach (var item in assembly.GetType(this.Context.EntityNamespace + "." + entityName).GetProperties())
-                             {
-                                 var isVirtual = item.GetGetMethod().IsVirtual;
-                                 if (isVirtual) continue;
-                                 var sugarColumn = item.GetCustomAttributes(typeof(SugarColumn), true)
-                                 .Where(it => it is SugarColumn)
-                                 .Select(it => (SugarColumn)it)
-                                 .Where(it => it.ColumnName.IsValuable())
-                                 .FirstOrDefault();
-                                 if (sugarColumn.IsNullOrEmpty())
-                                 {
-                                     reval.Add(new DbColumnInfo() { ColumnName = item.Name });
-                                 }
-                                 else
-                                 {
-                                     if (sugarColumn.IsIgnore == false)
-                                     {
-                                         var columnInfo = new DbColumnInfo();
-                                         columnInfo.ColumnName = sugarColumn.ColumnName.IsNullOrEmpty() ? item.Name : sugarColumn.ColumnName;
-                                         columnInfo.IsPrimarykey = sugarColumn.IsPrimaryKey;
-                                         columnInfo.IsIdentity = sugarColumn.IsIdentity;
-                                         columnInfo.ColumnDescription = sugarColumn.ColumnDescription;
-                                         columnInfo.TableName = entity.IsNullOrEmpty() ? tableName : entity.DbTableName;
-                                         reval.Add(columnInfo);
-                                     }
-                                 }
-                             }
-                         }
-                         return reval;
-                     });
-            }
+            string key = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower();
+            return GetListOrCache<DbColumnInfo>(key, this.GetColumnInfosByTableNameSql);
         }
 
         public virtual List<string> GetIsIdentities(string tableName)
         {
             var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
-            return result.Select(it=>it.ColumnName).ToList();
+            return result.Select(it => it.ColumnName).ToList();
         }
 
         public virtual List<string> GetPrimaries(string tableName)
