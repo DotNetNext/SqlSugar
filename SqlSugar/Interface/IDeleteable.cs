@@ -16,6 +16,7 @@ namespace SqlSugar
         IDeleteable<T> Where(List<T> deleteObjs);
         IDeleteable<T> In<PkType>(PkType primaryKeyValue);
         IDeleteable<T> In<PkType>(PkType[] primaryKeyValues);
+        IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues);
         IDeleteable<T> Where(string whereString,object whereObj=null);
         KeyValuePair<string, List<SugarParameter>> ToSql();
     }
