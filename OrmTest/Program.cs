@@ -27,8 +27,13 @@ namespace OrmTest
             //new AutoClose(1).Init();
             //new Insert(1).Init();
             new Delete(1).Init();
+
+
             //Performance Test
             //new SqlSugarPerformance(100).Select();
+
+
+            //Demo 
         }
     }
 }
