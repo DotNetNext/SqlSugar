@@ -19,36 +19,40 @@ namespace OrmTest.UnitTest
         public void Init() {
             var db = GetInstance();
             var insertObj = new Student() { Name="jack",CreateTime=DateTime.Now };
-            var insertObjs = new List<Student>() { insertObj , insertObj }.ToArray();
             db.IgnoreColumns.Add("TestId", "Student");
             //db.MappingColumns.Add("id","dbid", "Student");
            
-            var s1= db.Insertable<Student>(insertObj).ToSql();
+            var s1= db.Insertable(insertObj).ToSql();
 
             //Insert reutrn Command Count
-            var s2=db.Insertable<Student>(insertObj).ExecuteCommand();
+            var s2=db.Insertable(insertObj).ExecuteCommand();
 
             db.IgnoreColumns = null;
             //Only  insert  Name 
-            var s3 = db.Insertable<Student>(insertObj).InsertColumns(it => new {it.Name}).ToSql();
+            var s3 = db.Insertable(insertObj).InsertColumns(it => new {it.Name}).ToSql();
 
             //Ignore  Name and TestId
-            var s4=db.Insertable<Student>(insertObj).IgnoreColumns(it => new{ it.Name,it.TestId }).ToSql();
+            var s4=db.Insertable(insertObj).IgnoreColumns(it => new{ it.Name,it.TestId }).ToSql();
 
             //Ignore  Name and TestId
-            var s5 = db.Insertable<Student>(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
+            var s5 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
 
             //Use Lock
-            var s6 =db.Insertable<Student>(insertObj).With(SqlWith.UpdLock).ToSql();
+            var s6 =db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
 
             //ToSql
-            var s7= db.Insertable<Student>(insertObj).With(SqlWith.UpdLock)
+            var s7= db.Insertable(insertObj).With(SqlWith.UpdLock)
                 .InsertColumns(it => new { it.Name }).ToSql();
 
             db.IgnoreColumns = new IgnoreComumnList();
             db.IgnoreColumns.Add("TestId", "Student");
             //Insert List<T>
-            var s8= db.Insertable<Student>(insertObjs).With(SqlWith.UpdLock).ToSql();
+            var insertObjs = new List<Student>();
+            for (int i = 0; i < 1000; i++)
+            {
+                insertObjs.Add(new Student() { Name="name"+i });
+            }
+            var s8= db.Insertable(insertObjs.ToArray()).InsertColumns(it=>new{ it.Name}).With(SqlWith.UpdLock).ToSql();
         }
 
         public SqlSugarClient GetInstance()

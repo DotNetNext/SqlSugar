@@ -108,16 +108,25 @@ namespace SqlSugar
             }
             else {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
-                int i = 0;
-                foreach (var columns in groupList)
-                {
-                    var isFirst = i == 0;
-                    if (!isFirst) {
-                        batchInsetrSql.Append(SqlTemplateBatchUnion);
+                int pageSize = 200;
+                int pageIndex = 1;
+                int totalRecord = groupList.Count;
+                int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                while (pageCount >= pageIndex) {
+                    batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
+                    int i = 0;
+                    foreach (var columns in groupList.Skip((pageIndex-1)*pageSize).Take(pageSize).ToList())
+                    {
+                        var isFirst = i == 0;
+                        if (!isFirst)
+                        {
+                            batchInsetrSql.Append(SqlTemplateBatchUnion);
+                        }
+                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.ColumnName))));
+                        ++i;
                     }
-                    batchInsetrSql.Append("\r\n SELECT "+string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.ColumnName))));
-                    ++i;  
+                    pageIndex++;
+                    batchInsetrSql.Append("\r\nGO\r\n");
                 }
                 return batchInsetrSql.ToString();
             }

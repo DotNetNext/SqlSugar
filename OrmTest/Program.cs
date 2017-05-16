@@ -25,8 +25,8 @@ namespace OrmTest
             //new SingleQuery(1).Init();
             //new SelectQuery(1).Init();
             //new AutoClose(1).Init();
-            //new Insert(1).Init();
-            new Delete(1).Init();
+            new Insert(1).Init();
+            //new Delete(1).Init();
             //Performance Test
             //new SqlSugarPerformance(100).Select();
         }
