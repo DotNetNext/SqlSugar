@@ -11,7 +11,7 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return "ALERT TABLE {0} ADD {1} {2} {3}";
             }
         }
 
