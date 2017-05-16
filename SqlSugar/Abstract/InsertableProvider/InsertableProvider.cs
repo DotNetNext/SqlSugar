@@ -125,7 +125,7 @@ namespace SqlSugar
                 }
             }
         }
-        public void Init()
+        internal void Init()
         {
             this.InsertBuilder.TableName = EntityInfo.Name;
             if (IsMappingTable)

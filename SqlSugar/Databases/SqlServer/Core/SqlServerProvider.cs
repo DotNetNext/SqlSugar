@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class SqlServerDb : DbProvider
+    public class SqlServerProvider : DbProvider
     {
-        public SqlServerDb() {}
+        public SqlServerProvider() {}
         public override IDbConnection Connection
         {
             get

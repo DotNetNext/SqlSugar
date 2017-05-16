@@ -20,17 +20,17 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public IInsertable<T> IgnoreColumns(Expression<Func<T, object[]>> columns)
+        public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IInsertable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
             throw new NotImplementedException();
         }
 
         public IInsertable<T> Update(T InsertObj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IInsertable<T> UpdateColumns(Expression<Func<T, object[]>> columns)
         {
             throw new NotImplementedException();
         }
@@ -46,6 +46,11 @@ namespace SqlSugar
         }
 
         public IInsertable<T> With(string lockString)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ToSql()
         {
             throw new NotImplementedException();
         }
