@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class Mapping:ExpTestBase
+    public class Mapping:UnitTestBase
     {
         private Mapping() { }
         public Mapping(int eachCount)

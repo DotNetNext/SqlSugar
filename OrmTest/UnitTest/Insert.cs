@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class Insert : ExpTestBase
+    public class Insert : UnitTestBase
     {
         private Insert() { }
         public Insert(int eachCount)

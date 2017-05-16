@@ -4,7 +4,7 @@ using SqlSugar;
 using System.Linq;
 namespace OrmTest.UnitTest
 {
-    public class ExpTestBase
+    public class UnitTestBase
     {
         public int Count { get; set; }
         private DateTime BeginTime { get; set; }

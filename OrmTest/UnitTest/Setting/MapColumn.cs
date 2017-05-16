@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class MapColumn : ExpTestBase
+    public class MapColumn : UnitTestBase
     {
         public SqlSugarClient GetInstance()
         {

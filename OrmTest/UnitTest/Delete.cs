@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    public class Delete : ExpTestBase
+    public class Delete : UnitTestBase
     {
         private Delete() { }
         public Delete(int eachCount)

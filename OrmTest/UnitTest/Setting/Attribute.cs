@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class Attribute : ExpTestBase
+    public class Attribute : UnitTestBase
     {
         public Attribute(int eachCount)
         {

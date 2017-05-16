@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class Where : ExpTestBase
+    public class Where : UnitTestBase
     {
         private Where() { }
         public Where(int eachCount)

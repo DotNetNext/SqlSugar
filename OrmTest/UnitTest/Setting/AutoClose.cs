@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class AutoClose : ExpTestBase
+    public class AutoClose : UnitTestBase
     {
         public AutoClose(int eachCount)
         {
