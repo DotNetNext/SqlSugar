@@ -54,9 +54,10 @@ namespace SqlSugar
                     foreach (var deleteObj in deleteObjs)
                     {
                         StringBuilder orString = new StringBuilder();
-                        var isFirst = deleteObjs.IndexOf(deleteObj)==0;
-                        if (isFirst) {
-                            orString.Append(DeleteBuilder.WhereInOrTemplate+PubConst.Space);
+                        var isFirst = deleteObjs.IndexOf(deleteObj) == 0;
+                        if (isFirst)
+                        {
+                            orString.Append(DeleteBuilder.WhereInOrTemplate + PubConst.Space);
                         }
                         int i = 0;
                         StringBuilder andString = new StringBuilder();
@@ -70,10 +71,10 @@ namespace SqlSugar
                             andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
                             ++i;
                         }
-                        orString.AppendFormat(DeleteBuilder.WhereInAreaTemplate,andString);
+                        orString.AppendFormat(DeleteBuilder.WhereInAreaTemplate, andString);
                         whereInSql.Append(orString);
                     }
-                    Where(string.Format(DeleteBuilder.WhereInAreaTemplate,whereInSql.ToString()));
+                    Where(string.Format(DeleteBuilder.WhereInAreaTemplate, whereInSql.ToString()));
                 }
             }
             else
@@ -105,7 +106,8 @@ namespace SqlSugar
             }
             return this;
         }
-        public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues) {
+        public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
+        {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
             {
                 Where("1=2 ");
@@ -149,8 +151,9 @@ namespace SqlSugar
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
+            DeleteBuilder.TableName = this.Context.GetTableName<T>();
             string sql = DeleteBuilder.ToSqlString();
-            var paramters = DeleteBuilder.Parameters.ToList();
+            var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
             return new KeyValuePair<string, List<SugarParameter>>(sql, paramters);
         }
     }

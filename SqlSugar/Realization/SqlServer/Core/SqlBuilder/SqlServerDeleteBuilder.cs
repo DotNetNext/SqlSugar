@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class SqlServerDeleteBuilder<T>:DeleteableProvider<T> where T:class,new()
+    public class SqlServerDeleteBuilder: DeleteBuilder
     {
 
     }

@@ -89,7 +89,7 @@ namespace SqlSugar
         public static IDb GetDb(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);
-            IDb reval = CreateInstance<IDb>(GetClassName(currentConnectionConfig.DbType, "Db"), currentConnectionConfig.DbType);
+            IDb reval = CreateInstance<IDb>(GetClassName(currentConnectionConfig.DbType, "Provider"), currentConnectionConfig.DbType);
             return reval;
         }
 
