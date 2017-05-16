@@ -27,7 +27,7 @@ namespace SqlSugar
                 Where("1=2 ");
                 return this;
             }
-            string tableName = this.Context.GetTableName<T>();
+            string tableName = this.Context.EntityProvider.GetTableName<T>();
             var entityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
             if (this.Context.IsSystemTablesConfig)
             {
@@ -40,7 +40,7 @@ namespace SqlSugar
                     var primaryField = primaryFields.Single();
                     foreach (var deleteObj in deleteObjs)
                     {
-                        var entityPropertyName = this.Context.GetEntityPropertyName<T>(primaryField);
+                        var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
                         var columnInfo = entityInfo.Columns.Single(it => it.Name == entityPropertyName);
                         var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                         primaryKeyValues.Add(value);
@@ -65,7 +65,7 @@ namespace SqlSugar
                         {
                             if (i == 0)
                                 andString.Append(DeleteBuilder.WhereInAndTemplate + PubConst.Space);
-                            var entityPropertyName = this.Context.GetEntityPropertyName<T>(primaryField);
+                            var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
                             var columnInfo = entityInfo.Columns.Single(it => it.Name == entityPropertyName);
                             var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                             andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
@@ -122,7 +122,7 @@ namespace SqlSugar
                 Where("1=2 ");
                 return this;
             }
-            string tableName = this.Context.GetTableName<T>();
+            string tableName = this.Context.EntityProvider.GetTableName<T>();
             string primaryField = null;
             if (this.Context.IsSystemTablesConfig)
             {
@@ -151,7 +151,7 @@ namespace SqlSugar
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            DeleteBuilder.TableName = this.Context.GetTableName<T>();
+            DeleteBuilder.TableName = this.Context.EntityProvider.GetTableName<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
             return new KeyValuePair<string, List<SugarParameter>>(sql, paramters);

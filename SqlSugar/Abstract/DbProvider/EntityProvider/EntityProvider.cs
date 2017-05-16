@@ -35,5 +35,44 @@ namespace SqlSugar
                 return result;
             });
         }
+        public string GetTableName<T>()
+        {
+            var typeName = typeof(T).Name;
+            if (this.Context.MappingTables == null || this.Context.MappingTables.Count == 0) return typeName;
+            else
+            {
+                var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.EntityName == typeName);
+                return mappingInfo == null ? typeName : mappingInfo.DbTableName;
+            }
+        }
+        public string GetEntityName(string tableName)
+        {
+            if (this.Context.MappingTables == null || this.Context.MappingTables.Count == 0) return tableName;
+            else
+            {
+                var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.DbTableName == tableName);
+                return mappingInfo == null ? tableName : mappingInfo.EntityName;
+            }
+        }
+        public string GetDbColumnName<T>(string entityPropertyName)
+        {
+            var typeName = typeof(T).Name;
+            if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return entityPropertyName;
+            else
+            {
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.EntityPropertyName == entityPropertyName);
+                return mappingInfo == null ? entityPropertyName : mappingInfo.DbColumnName;
+            }
+        }
+        public string GetEntityPropertyName<T>(string dbColumnName)
+        {
+            var typeName = typeof(T).Name;
+            if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
+            else
+            {
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName == dbColumnName);
+                return mappingInfo == null ? dbColumnName : mappingInfo.DbColumnName;
+            }
+        }
     }
 }
