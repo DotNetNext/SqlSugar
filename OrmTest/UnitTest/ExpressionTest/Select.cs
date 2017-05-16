@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class Select : ExpTestBase
+    public class Select : UnitTestBase
     {
         private Select() { }
         public Select(int eachCount)

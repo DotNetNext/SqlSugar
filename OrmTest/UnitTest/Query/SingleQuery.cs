@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using OrmTest.Models;
 namespace OrmTest.UnitTest
 {
-    public class SingleQuery : ExpTestBase
+    public class SingleQuery : UnitTestBase
     {
         private SingleQuery() { }
         public SingleQuery(int eachCount)

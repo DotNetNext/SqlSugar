@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using OrmTest.Models;
 namespace OrmTest.UnitTest
 {
-    public class JoinQuery : ExpTestBase
+    public class JoinQuery : UnitTestBase
     {
         private JoinQuery() { }
         public JoinQuery(int eachCount)

@@ -105,7 +105,14 @@ namespace SqlSugar
             }
             return this;
         }
-
+        public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues) {
+            if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
+            {
+                Where("1=2 ");
+                return this;
+            }
+            return In<PkType>(primaryKeyValues.ToArray());
+        }
         public IDeleteable<T> In<PkType>(PkType[] primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)

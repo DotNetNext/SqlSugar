@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.UnitTest
 {
-    public class MapTable : ExpTestBase
+    public class MapTable : UnitTestBase
     {
         public void Init()
         {

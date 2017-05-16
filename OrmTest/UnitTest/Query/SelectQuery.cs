@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using OrmTest.Models;
 namespace OrmTest.UnitTest
 {
-    public class SelectQuery : ExpTestBase
+    public class SelectQuery : UnitTestBase
     {
         private SelectQuery() { }
         public SelectQuery(int eachCount)
