@@ -109,7 +109,7 @@ namespace SqlSugar
             #region IgnoreColumns
             if (this.Context.IgnoreColumns != null && this.Context.IgnoreColumns.Any())
             {
-                var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.Name).ToList();
+                var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.EntityName).ToList();
                 this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                 {
                     return !currentIgnoreColumns.Any(i => it.EntityPropertyName.Equals(i.EntityPropertyName, StringComparison.CurrentCulture));
@@ -127,10 +127,10 @@ namespace SqlSugar
         }
         internal void Init()
         {
-            this.InsertBuilder.TableName = EntityInfo.Name;
+            this.InsertBuilder.TableName = EntityInfo.EntityName;
             if (IsMappingTable)
             {
-                var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.EntityName == EntityInfo.Name);
+                var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.EntityName == EntityInfo.EntityName);
                 if (mappingInfo != null)
                 {
                     this.InsertBuilder.TableName = mappingInfo.DbTableName;
@@ -146,8 +146,8 @@ namespace SqlSugar
                     var columnInfo = new DbColumnInfo()
                     {
                         Value = column.PropertyInfo.GetValue(item),
-                        ColumnName = GetDbColumnName(column.Name),
-                        EntityPropertyName = column.Name,
+                        ColumnName = GetDbColumnName(column.PropertyName),
+                        EntityPropertyName = column.PropertyName,
                         TableId = i
                     };
                     insertItem.Add(columnInfo);
@@ -162,9 +162,9 @@ namespace SqlSugar
             {
                 return entityName;
             }
-            if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.Name, StringComparison.CurrentCultureIgnoreCase)))
+            if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                this.MappingColumnList = this.Context.MappingColumns.Where(it => it.EntityName.Equals(EntityInfo.Name, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                this.MappingColumnList = this.Context.MappingColumns.Where(it => it.EntityName.Equals(EntityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase)).ToList();
             }
             if (MappingColumnList == null || !MappingColumnList.Any())
             {

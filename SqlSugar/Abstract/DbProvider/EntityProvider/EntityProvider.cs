@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,9 +10,33 @@ namespace SqlSugar
     public class EntityProvider
     {
         public SqlSugarClient Context { get; set; }
-        public EntityInfo GetEntityInfo<T>()where T:class,new()
+
+        public List<EntityInfo> GetAllEntities()
         {
-            string cacheKey = "GetEntityInfo"+typeof(T).FullName;
+            string cacheKey = "GetAllEntities";
+            return CacheFactory.Func<List<EntityInfo>>(cacheKey,
+            (cm, key) =>
+            {
+                return cm[key];
+
+            }, (cm, key) =>
+            {
+                List<EntityInfo> reval = new List<EntityInfo>();
+                var classes = Assembly.Load(this.Context.EntityNamespace.Split('.').First()).GetTypes();
+                foreach (var item in classes)
+                {
+                    reval.Add(GetEntityInfo(item));
+                }
+                return reval;
+            });
+        }
+        public EntityInfo GetEntityInfo<T>()
+        {
+            return GetEntityInfo(typeof(T));
+        }
+        public EntityInfo GetEntityInfo(Type type)
+        {
+            string cacheKey = "GetEntityInfo" + type.FullName;
             return CacheFactory.Func<EntityInfo>(cacheKey,
             (cm, key) =>
             {
@@ -20,18 +45,17 @@ namespace SqlSugar
             }, (cm, key) =>
             {
                 EntityInfo result = new EntityInfo();
-                var type = typeof(T);
+                var sugarAttributeInfo = type.GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
+                if (sugarAttributeInfo.IsValuable())
+                {
+                    var sugarTable = (SugarTable)sugarAttributeInfo;
+                    result.DbTableName = sugarTable.TableName;
+                }
                 result.Type = type;
                 result.Type.GetProperties();
-                result.Name =result.Type.Name;
+                result.EntityName = result.Type.Name;
                 result.Columns = new List<EntityColumnInfo>();
-                foreach (var item in result.Type.GetProperties())
-                {
-                    EntityColumnInfo column = new EntityColumnInfo();
-                    column.Name = item.Name;
-                    column.PropertyInfo = item;
-                    result.Columns.Add(column);
-                }
+                SetColumns(result);
                 return result;
             });
         }
@@ -74,5 +98,18 @@ namespace SqlSugar
                 return mappingInfo == null ? dbColumnName : mappingInfo.DbColumnName;
             }
         }
+
+        #region Primary key
+        private static void SetColumns(EntityInfo result)
+        {
+            foreach (var item in result.Type.GetProperties())
+            {
+                EntityColumnInfo column = new EntityColumnInfo();
+                column.PropertyName = item.Name;
+                column.PropertyInfo = item;
+                result.Columns.Add(column);
+            }
+        }
+        #endregion
     }
 }

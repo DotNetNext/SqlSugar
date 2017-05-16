@@ -10,7 +10,8 @@ namespace SqlSugar
     public class EntityColumnInfo
     {
         public PropertyInfo PropertyInfo { get; set; }
-        public string Name { get; set; }
+        public string PropertyName { get; set; }
+        public string DbColumnName { get; set; }
         public int Length { get; set; }
         public string ColumnDescription { get; set; }
         public string DefaultValue { get; set; }

@@ -41,7 +41,7 @@ namespace SqlSugar
                     foreach (var deleteObj in deleteObjs)
                     {
                         var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
-                        var columnInfo = entityInfo.Columns.Single(it => it.Name == entityPropertyName);
+                        var columnInfo = entityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                         primaryKeyValues.Add(value);
                     }
@@ -66,7 +66,7 @@ namespace SqlSugar
                             if (i == 0)
                                 andString.Append(DeleteBuilder.WhereInAndTemplate + PubConst.Space);
                             var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
-                            var columnInfo = entityInfo.Columns.Single(it => it.Name == entityPropertyName);
+                            var columnInfo = entityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                             var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                             andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
                             ++i;
