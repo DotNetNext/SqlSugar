@@ -102,14 +102,40 @@ namespace SqlSugar
         #region Primary key
         private static void SetColumns(EntityInfo result)
         {
-            foreach (var item in result.Type.GetProperties())
+            foreach (var property in result.Type.GetProperties())
             {
                 EntityColumnInfo column = new EntityColumnInfo();
-                column.PropertyName = item.Name;
-                column.PropertyInfo = item;
+                var isVirtual = property.GetGetMethod().IsVirtual;
+                if (isVirtual) continue;
+                var sugarColumn = property.GetCustomAttributes(typeof(SugarColumn), true)
+                .Where(it => it is SugarColumn)
+                .Select(it => (SugarColumn)it)
+                .Where(it => it.ColumnName.IsValuable())
+                .FirstOrDefault();
+                column.DbTableName = result.DbTableName;
+                column.EnitytName = result.EntityName;
+                column.PropertyName = property.Name;
+                if (sugarColumn.IsNullOrEmpty())
+                {
+                    column.DbColumnName = property.Name;
+                }
+                else
+                {
+                    if (sugarColumn.IsIgnore == false)
+                    {
+                        column.DbColumnName = sugarColumn.ColumnName.IsNullOrEmpty() ? property.Name : sugarColumn.ColumnName;
+                        column.IsPrimarykey = sugarColumn.IsPrimaryKey;
+                        column.IsIdentity = sugarColumn.IsIdentity;
+                        column.ColumnDescription = sugarColumn.ColumnDescription;
+                    }
+                    else {
+                        column.IsIgnore = true;
+                    }
+                }
                 result.Columns.Add(column);
             }
         }
         #endregion
+
     }
 }
