@@ -57,8 +57,8 @@
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
-    <Compile Include="Databases\SqlServer\Core\SqlBuilder\SqlServerDeleteBuilder.cs" />
-    <Compile Include="Databases\SqlServer\Core\SqlBuilder\SqlServerInsertBuilder.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerDeleteBuilder.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerInsertBuilder.cs" />
     <Compile Include="Entities\EntityColumnInfo.cs" />
     <Compile Include="Entities\EntityInfo.cs" />
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
@@ -83,15 +83,15 @@
     <Compile Include="Common\PubMethod.cs" />
     <Compile Include="Common\SqlException.cs" />
     <Compile Include="Common\RewritableMethods.cs" />
-    <Compile Include="Databases\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
-    <Compile Include="Databases\SqlServer\DbType.cs" />
-    <Compile Include="Databases\SqlServer\Core\DbBind\SqlServerDbBind.cs" />
-    <Compile Include="Databases\SqlServer\DbFirst\SqlServerDbFirst.cs" />
-    <Compile Include="Databases\SqlServer\Core\SqlBuilder\SqlServerBuilder.cs" />
-    <Compile Include="Databases\SqlServer\Core\SqlBuilder\SqlServerDbMaintenance.cs" />
-    <Compile Include="Databases\SqlServer\Core\SqlBuilder\SqlServerQueryBuilder.cs" />
-    <Compile Include="Databases\SqlServer\Core\SqlServerProvider.cs" />
-    <Compile Include="Databases\SqlServer\Queryable\SqlServerQueryable.cs" />
+    <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
+    <Compile Include="Realization\SqlServer\DbType.cs" />
+    <Compile Include="Realization\SqlServer\Core\DbBind\SqlServerDbBind.cs" />
+    <Compile Include="Realization\SqlServer\DbFirst\SqlServerDbFirst.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerBuilder.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerDbMaintenance.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerQueryBuilder.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlServerProvider.cs" />
+    <Compile Include="Realization\SqlServer\Queryable\SqlServerQueryable.cs" />
     <Compile Include="Entities\DetaultT.cs" />
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="ExpressionsToSql\Common\DateType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
     <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />
-    <Compile Include="Databases\SqlServer\Core\SqlBuilder\SqlServerExpressionContext.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerExpressionContext.cs" />
     <Compile Include="ExpressionsToSql\Method\NBORM.cs" />
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
@@ -163,9 +163,9 @@
     <Content Include="Lib\Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Databases\MySql\" />
-    <Folder Include="Databases\Oracle\" />
-    <Folder Include="Databases\Sqlite\" />
+    <Folder Include="Realization\MySql\" />
+    <Folder Include="Realization\Oracle\" />
+    <Folder Include="Realization\Sqlite\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
