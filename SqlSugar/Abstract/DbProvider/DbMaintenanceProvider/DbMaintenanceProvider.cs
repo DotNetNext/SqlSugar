@@ -7,9 +7,15 @@ namespace SqlSugar
 {
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
-        public SqlSugarClient Context { get; set; }
-
         protected abstract string GetViewInfoListSql { get; }
+        protected abstract string GetTableInfoListSql { get; }
+        protected abstract string GetColumnInfosByTableNameSql { get; }
+        protected abstract string AddColumnToTableSql { get; }
+        protected abstract string BackupDataBaseSql { get; }
+        protected abstract string CreateTableSql { get; }
+        protected abstract string TruncateTableSql { get; }
+
+        public SqlSugarClient Context { get; set; }
         public List<DbTableInfo> GetViewInfoList()
         {
             if (this.IsSystemTables())
@@ -22,8 +28,6 @@ namespace SqlSugar
                 return new List<DbTableInfo>();
             }
         }
-
-        protected abstract string GetTableInfoListSql { get; }
         public List<DbTableInfo> GetTableInfoList()
         {
             if (this.IsSystemTables())
@@ -62,8 +66,6 @@ namespace SqlSugar
                     });
             }
         }
-
-        protected abstract string GetColumnInfosByTableNameSql { get; }
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             if (this.IsSystemTables())
@@ -136,26 +138,21 @@ namespace SqlSugar
             return result.Select(it => it.ColumnName).ToList();
         }
 
-        protected abstract string AddColumnToTableSql { get; }
         public bool AddColumnToTable(string tableName, DbColumnInfo column)
         {
             throw new NotImplementedException();
         }
-
-        protected abstract string BackupDataBaseSql { get; }
         public bool BackupDataBase()
         {
             throw new NotImplementedException();
         }
 
-        protected abstract string CreateTableSql { get; }
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
             this.Context.Database.ExecuteCommand(this.CreateTableSql);
             return true;
         }
 
-        protected abstract string TruncateTableSql { get; }
         public virtual bool TruncateTable(string tableName)
         {
             this.Context.Database.ExecuteCommand(this.TruncateTableSql);
