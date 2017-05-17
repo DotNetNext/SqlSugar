@@ -19,7 +19,7 @@ namespace OrmTest.UnitTest
         public void Init() {
 
             var db = GetInstance();
-            var s1= db.Queryable<Student>().ToSql();
+            var s1= db.Queryable<Student>().Where(it=>it.Id==1).ToSql();
         }
 
         public SqlSugarClient GetInstance()
