@@ -170,7 +170,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -178,7 +178,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -186,7 +186,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -194,7 +194,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -202,7 +202,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -210,7 +210,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -218,7 +218,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -226,7 +226,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -234,7 +234,7 @@ namespace SqlSugar
         {
             var queryable = Queryable<T>();
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, this, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10));
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
