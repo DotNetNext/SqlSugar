@@ -25,5 +25,6 @@ namespace SqlSugar
         /// <param name="value"></param>
         /// <returns></returns>
         T DeserializeObject<T>(string value);
+        T TranslateCopy<T>(T sourceObject);
     }
 }

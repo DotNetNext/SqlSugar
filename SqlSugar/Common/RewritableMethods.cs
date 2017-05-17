@@ -11,7 +11,7 @@ namespace SqlSugar
 {
     public class RewritableMethods : IRewritableMethods
     {
-        
+
         /// <summary>
         ///DataReader to Dynamic
         /// </summary>
@@ -39,7 +39,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public Dictionary<string,object> DataReaderToDictionary(IDataReader reader)
+        public Dictionary<string, object> DataReaderToDictionary(IDataReader reader)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             for (int i = 0; i < reader.FieldCount; i++)
@@ -79,7 +79,7 @@ namespace SqlSugar
                         var typeName = tType.Name;
                         if (item.PropertyType.IsClass())
                         {
-                            result.Add(name,DataReaderToDynamicList_Part(readerValues, item, reval));
+                            result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
                         }
                         else
                         {
@@ -96,7 +96,7 @@ namespace SqlSugar
             }
             return reval;
         }
-        private Dictionary<string,object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues,PropertyInfo item, List<T> reval)
+        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             var type = item.PropertyType;
@@ -138,6 +138,22 @@ namespace SqlSugar
         public T DeserializeObject<T>(string value)
         {
             return JsonConvert.DeserializeObject<T>(value);
+        }
+
+        /// <summary>
+        /// Copy new Object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sourceObject"></param>
+        /// <returns></returns>
+        public T TranslateCopy<T>(T sourceObject)
+        {
+            if (sourceObject == null) return default(T);
+            else
+            {
+                var jsonString = SerializeObject(sourceObject);
+                return DeserializeObject<T>(jsonString);
+            }
         }
     }
 }

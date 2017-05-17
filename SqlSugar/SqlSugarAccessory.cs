@@ -63,7 +63,8 @@ namespace SqlSugar
                            }
                        }
                    }
-                   return Tuple.Create<MappingTableList, MappingColumnList, IgnoreComumnList>(this.MappingTables,this.MappingColumns,this.IgnoreColumns);
+                   var result= Tuple.Create<MappingTableList, MappingColumnList, IgnoreComumnList>(this.MappingTables,this.MappingColumns,this.IgnoreColumns);
+                   return this.Context.RewritableMethods.TranslateCopy(result);
                });
             }
         }
