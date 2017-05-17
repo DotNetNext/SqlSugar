@@ -25,7 +25,8 @@ namespace SqlSugar
                 var classes = Assembly.Load(this.Context.EntityNamespace.Split('.').First()).GetTypes();
                 foreach (var item in classes)
                 {
-                    reval.Add(GetEntityInfo(item));
+                    if (item.FullName.Contains(this.Context.EntityNamespace))
+                        reval.Add(GetEntityInfo(item));
                 }
                 return reval;
             });
@@ -128,7 +129,8 @@ namespace SqlSugar
                         column.IsIdentity = sugarColumn.IsIdentity;
                         column.ColumnDescription = sugarColumn.ColumnDescription;
                     }
-                    else {
+                    else
+                    {
                         column.IsIgnore = true;
                     }
                 }

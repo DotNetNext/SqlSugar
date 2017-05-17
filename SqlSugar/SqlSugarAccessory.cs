@@ -43,7 +43,8 @@ namespace SqlSugar
                    var entities = this.Context.EntityProvider.GetAllEntities();
                    foreach (var entity in entities)
                    {
-                       if (!entity.DbTableName.Equals(entity.EntityName))
+                       if (entity.Type.IsAnonymousType()) continue;
+                       if (entity.DbTableName!=null&&!entity.DbTableName.Equals(entity.EntityName))
                        {
                            this.MappingTables.Add(entity.EntityName, entity.DbTableName);
                        }
