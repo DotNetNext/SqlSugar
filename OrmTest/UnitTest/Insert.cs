@@ -40,19 +40,24 @@ namespace OrmTest.UnitTest
             //Use Lock
             var s6 =db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
 
+
             //ToSql
             var s7= db.Insertable(insertObj).With(SqlWith.UpdLock)
                 .InsertColumns(it => new { it.Name }).ToSql();
 
+            var s8 = db.Insertable(insertObj).Where(true/* Is insert null */, true/*off identity*/).ToSql();
+
+
             db.IgnoreColumns = new IgnoreComumnList();
             db.IgnoreColumns.Add("TestId", "Student");
+
             //Insert List<T>
             var insertObjs = new List<Student>();
             for (int i = 0; i < 1000; i++)
             {
                 insertObjs.Add(new Student() { Name="name"+i });
             }
-            var s8= db.Insertable(insertObjs.ToArray()).InsertColumns(it=>new{ it.Name}).With(SqlWith.UpdLock).ToSql();
+            var s9= db.Insertable(insertObjs.ToArray()).InsertColumns(it=>new{ it.Name}).With(SqlWith.UpdLock).ToSql();
         }
 
         public SqlSugarClient GetInstance()
