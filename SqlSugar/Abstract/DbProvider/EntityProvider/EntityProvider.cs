@@ -111,7 +111,6 @@ namespace SqlSugar
                 var sugarColumn = property.GetCustomAttributes(typeof(SugarColumn), true)
                 .Where(it => it is SugarColumn)
                 .Select(it => (SugarColumn)it)
-                .Where(it => it.ColumnName.IsValuable())
                 .FirstOrDefault();
                 column.DbTableName = result.DbTableName;
                 column.EnitytName = result.EntityName;
