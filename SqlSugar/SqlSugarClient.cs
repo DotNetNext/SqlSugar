@@ -25,7 +25,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region constructor
+        #region Constructor
         /// <summary>
         /// If you have system table permissions, use this
         /// </summary>
@@ -264,7 +264,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region deleteable
+        #region Deleteable
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             var reval = new DeleteableProvider<T>();
