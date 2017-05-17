@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public partial class SqlSugarAccessory
     {
+        public SqlSugarClient Context { get; set; }
         public string EntityNamespace { get; set; }
         public IConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get; set; }
@@ -21,7 +22,6 @@ namespace SqlSugar
         protected EntityProvider _EntityProvider;
         protected IDb _Ado;
         protected ILambdaExpressions _LambdaExpressions;
-        protected object _Sqlable;
         protected IRewritableMethods _RewritableMethods;
 
         protected void InitConstructor()
@@ -29,87 +29,50 @@ namespace SqlSugar
             this.ContextID = Guid.NewGuid();
             if (this.CurrentConnectionConfig is AttrbuitesCofnig)
             {
-                this.InitAttributeMappingTables();
-                this.InitAttributeMappingColumns();
+                string cacheKey = "Context.InitAttributeMappingTables";
+                CacheFactory.Action<Tuple<MappingTableList, MappingColumnList, IgnoreComumnList>>(cacheKey,
+                (cm, key) =>
+                {
+                    var cacheInfo = cm[key];
+                    this.MappingTables = cacheInfo.Item1;
+                    this.MappingColumns = cacheInfo.Item2;
+                    this.IgnoreColumns = cacheInfo.Item3;
+                },
+               (cm, key) =>
+               {
+                   var entities = this.Context.EntityProvider.GetAllEntities();
+                   foreach (var entity in entities)
+                   {
+                       if (!entity.DbTableName.Equals(entity.EntityName))
+                       {
+                           this.MappingTables.Add(entity.EntityName, entity.DbTableName);
+                       }
+                       foreach (var column in entity.Columns)
+                       {
+                           if (column.IsIgnore)
+                           {
+                               this.IgnoreColumns.Add(column.PropertyName, column.EnitytName);
+                           }
+                           else
+                           {
+                               if (!column.DbColumnName.Equals(column.PropertyName))
+                               {
+                                   this.MappingColumns.Add(column.PropertyName, column.DbColumnName, column.EnitytName);
+                               }
+                           }
+                       }
+                   }
+                   return Tuple.Create<MappingTableList, MappingColumnList, IgnoreComumnList>(this.MappingTables,this.MappingColumns,this.IgnoreColumns);
+               });
             }
         }
-        protected void InitAttributeMappingTables()
-        {
-            string cacheKey = "Context.InitAttributeMappingTables";
-            CacheFactory.Action<List<MappingTable>>(cacheKey,
-            (cm, key) =>
-            {
-                this.MappingTables.AddRange(cm[key]);
-            },
-            (cm, key) =>
-            {
-                var classes = Assembly.Load(this.EntityNamespace.Split('.').First()).GetTypes();
-                List<MappingTable> mappingList = new List<MappingTable>();
-                foreach (var item in classes)
-                {
-                    if (item.Namespace == this.EntityNamespace)
-                    {
-                        var sugarTableObj = item.GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
-                        if (sugarTableObj.IsValuable())
-                        {
-                            var sugarTable = (SugarTable)sugarTableObj;
-                            if (item.Name != sugarTable.TableName)
-                                mappingList.Add(new MappingTable() { EntityName = item.Name, DbTableName = sugarTable.TableName });
-                        }
-                    }
-                }
-                this.MappingTables.AddRange(mappingList);
-                return mappingList;
-            });
-        }
-
-        protected void InitAttributeMappingColumns()
-        {
-            string cacheKey = "Context.InitAttributeMappingColumns";
-            CacheFactory.Action<List<MappingColumn>>(cacheKey,
-            (cm, key) =>
-            {
-                this.MappingColumns.AddRange(cm[cacheKey]);
-            },
-            (cm, key) =>
-            {
-                var assembly = Assembly.Load(this.EntityNamespace.Split('.').First());
-                var entityTypeArray = assembly.GetTypes();
-                List<MappingColumn> mappingList = new List<MappingColumn>();
-                foreach (var entityType in entityTypeArray)
-                {
-                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityType.Name, StringComparison.CurrentCultureIgnoreCase));
-                    var tableName = mappingInfo.IsNullOrEmpty() ? entityType.Name : mappingInfo.DbTableName;
-                    var entityName = mappingInfo.IsNullOrEmpty() ? entityType.Name : mappingInfo.EntityName;
-                    if (entityType.Namespace == this.EntityNamespace)
-                        foreach (var item in assembly.GetType(this.EntityNamespace + "." + entityName).GetProperties())
-                        {
-                            var sugarColumnObjs = item.GetCustomAttributes(typeof(SugarColumn), true).Where(it => it is SugarColumn).ToList();
-                            foreach (var sugarColumnObj in sugarColumnObjs)
-                            {
-                                var sugarColumn = (SugarColumn)sugarColumnObj;
-                                if (sugarColumn.ColumnName.IsValuable())
-                                {
-                                    if (item.Name != sugarColumn.ColumnName && sugarColumn.ColumnName.IsValuable())
-                                    {
-                                        this.MappingColumns.Add(item.Name, sugarColumn.ColumnName, tableName);
-                                    }
-                                }
-                            }
-                        }
-                }
-                this.MappingColumns.AddRange(mappingList);
-                return mappingList;
-            });
-        }
-
-        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, SqlSugarClient context,ref string shortName, params Type[] entityTypeArray)
+        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, ref string shortName, params Type[] entityTypeArray)
         {
             List<JoinQueryInfo> reval = new List<JoinQueryInfo>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
             ExpressionContext exp = new ExpressionContext();
-            exp.MappingColumns = context.MappingColumns;
-            exp.MappingTables = context.MappingTables;
+            exp.MappingColumns = this.Context.MappingColumns;
+            exp.MappingTables = this.Context.MappingTables;
             exp.Resolve(joinExpression, ResolveExpressType.Join);
             int i = 0;
             var joinArray = exp.Result.GetResultArray();
@@ -136,9 +99,9 @@ namespace SqlSugar
                     shortName = firstItem.Name;
                 }
                 var joinString = joinArray[i * 2 - 2];
-                joinInfo.ShortName = lambdaParameters[i-1].Name;
-                joinInfo.JoinType = (JoinType) Enum.Parse(typeof (JoinType), joinString);
-                joinInfo.JoinWhere = joinArray[i * 2-1];
+                joinInfo.ShortName = lambdaParameters[i - 1].Name;
+                joinInfo.JoinType = (JoinType)Enum.Parse(typeof(JoinType), joinString);
+                joinInfo.JoinWhere = joinArray[i * 2 - 1];
                 joinInfo.JoinIndex = i;
                 reval.Add((joinInfo));
             }

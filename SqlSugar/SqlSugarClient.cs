@@ -32,6 +32,7 @@ namespace SqlSugar
         /// <param name="config"></param>
         public SqlSugarClient(SystemTablesConfig config)
         {
+            base.Context = this;
             base.CurrentConnectionConfig = config;
             base.InitConstructor();
         }
@@ -41,6 +42,7 @@ namespace SqlSugar
         /// <param name="config"></param>
         public SqlSugarClient(AttrbuitesCofnig config)
         {
+            base.Context = this;
             base.CurrentConnectionConfig = config;
             Check.ArgumentNullException(config.EntityNamespace, ErrorMessage.EntityNamespaceError);
             base.EntityNamespace = config.EntityNamespace;
@@ -53,6 +55,7 @@ namespace SqlSugar
         /// <param name="slaveConnectionConfigs"></param>
         public SqlSugarClient(SystemTablesConfig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
         {
+            base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;
             base.InitConstructor();
             if (slaveConnectionConfigs.IsNullOrEmpty()) return;
@@ -68,6 +71,7 @@ namespace SqlSugar
         /// <param name="slaveConnectionConfigs"></param>
         public SqlSugarClient(AttrbuitesCofnig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
         {
+            base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;
             base.InitConstructor();
             if (slaveConnectionConfigs.IsNullOrEmpty()) return;

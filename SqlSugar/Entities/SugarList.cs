@@ -25,10 +25,10 @@ namespace SqlSugar
 
     public class IgnoreComumnList : List<IgnoreComumn>
     {
-        public void Add(string EntityPropertyName, string EntityName)
+        public void Add(string propertyName, string EntityName)
         {
-            this.RemoveAll(it => it.EntityPropertyName.Equals(EntityPropertyName, StringComparison.CurrentCultureIgnoreCase));
-            this.Add(new IgnoreComumn() { EntityPropertyName = EntityPropertyName, EntityName = EntityName });
+            this.RemoveAll(it => it.EntityPropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            this.Add(new IgnoreComumn() { EntityPropertyName = propertyName, EntityName = EntityName });
         }
 
         public new void Clear()
@@ -39,10 +39,10 @@ namespace SqlSugar
 
     public class MappingColumnList : List<MappingColumn>
     {
-        public void Add(string EntityPropertyName, string dbColumnName, string entityName)
+        public void Add(string propertyName, string dbColumnName, string entityName)
         {
-            this.RemoveAll(it => it.EntityPropertyName.Equals(EntityPropertyName, StringComparison.CurrentCultureIgnoreCase));
-            this.Add(new MappingColumn() { EntityPropertyName = EntityPropertyName, DbColumnName = dbColumnName, EntityName = entityName });
+            this.RemoveAll(it => it.EntityPropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            this.Add(new MappingColumn() { EntityPropertyName = propertyName, DbColumnName = dbColumnName, EntityName = entityName });
         }
         public new void Clear()
         {
