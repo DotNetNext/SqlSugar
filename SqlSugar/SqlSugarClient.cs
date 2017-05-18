@@ -133,16 +133,16 @@ namespace SqlSugar
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
-            var reval = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
-            reval.Context = this;
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.SqlBuilder = sqlBuilder;
-            reval.SqlBuilder.QueryBuilder = InstanceFactory.GetQueryBuilder(base.CurrentConnectionConfig);
-            reval.SqlBuilder.QueryBuilder.Builder = sqlBuilder;
-            reval.SqlBuilder.Context = reval.SqlBuilder.QueryBuilder.Context = this;
-            reval.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
-            reval.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            return reval;
+            var result = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig);
+            result.Context = this;;
+            result.SqlBuilder = sqlBuilder;
+            result.SqlBuilder.QueryBuilder = InstanceFactory.GetQueryBuilder(base.CurrentConnectionConfig);
+            result.SqlBuilder.QueryBuilder.Builder = sqlBuilder;
+            result.SqlBuilder.Context = result.SqlBuilder.QueryBuilder.Context = this;
+            result.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
+            result.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+            return result;
         }
         /// <summary>
         /// Lambda Query operation
