@@ -148,22 +148,20 @@ namespace SqlSugar
         /// <summary>
         /// Lambda Query operation
         /// </summary>
-        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName, string widthString = null)
+        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName)
         {
             var queryable = Queryable<SugarDynamic>();
             queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            queryable.SqlBuilder.QueryBuilder.TableWithString = widthString;
             return queryable;
         }
         /// <summary>
         /// Lambda Query operation
         /// </summary>
-        public virtual ISugarQueryable<T> Queryable<T>(string shortName, string widthString = null) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T>(string shortName) where T : class, new()
         {
             var queryable = Queryable<T>();
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            queryable.SqlBuilder.QueryBuilder.TableWithString = widthString;
             return queryable;
         }
         public virtual ISugarQueryable<T> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
