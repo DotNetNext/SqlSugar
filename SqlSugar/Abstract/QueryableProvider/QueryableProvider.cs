@@ -23,6 +23,11 @@ namespace SqlSugar
               return  this.SqlBuilder.QueryBuilder;
             }
         }
+        public EntityInfo EntityInfo {
+            get {
+                return this.Context.EntityProvider.GetEntityInfo<T>();
+            }
+        }
         public void Clear()
         {
             QueryBuilder.Clear();
@@ -194,7 +199,7 @@ namespace SqlSugar
                 Where("1=2 ");
                 return this;
             }
-            var pks = Context.Database.DbMaintenance.GetPrimaries(this.SqlBuilder.GetTranslationTableName(typeof(T).Name));
+            var pks = GetPrimaryKeys().Select(it=> SqlBuilder.GetTranslationTableName(it)).ToList();
             Check.Exception(pks == null || pks.Count != 1, "Queryable.In(params object[] pkValues): Only one primary key");
             string filed = pks.FirstOrDefault();
             string shortName = QueryBuilder.TableShortName == null ? null : (QueryBuilder.TableShortName + ".");
@@ -606,6 +611,28 @@ namespace SqlSugar
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Context.Close();
             }
             return result;
+        }
+        private List<string> GetPrimaryKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.Database.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private List<string> GetIdentityKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.Database.DbMaintenance.GetIsIdentities(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+            }
         }
         #endregion
     }
