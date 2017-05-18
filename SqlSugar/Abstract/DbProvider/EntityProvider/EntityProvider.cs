@@ -53,7 +53,6 @@ namespace SqlSugar
                     result.DbTableName = sugarTable.TableName;
                 }
                 result.Type = type;
-                result.Type.GetProperties();
                 result.EntityName = result.Type.Name;
                 result.Columns = new List<EntityColumnInfo>();
                 SetColumns(result);
@@ -115,6 +114,7 @@ namespace SqlSugar
                 column.DbTableName = result.DbTableName;
                 column.EnitytName = result.EntityName;
                 column.PropertyName = property.Name;
+                column.PropertyInfo = property;
                 if (sugarColumn.IsNullOrEmpty())
                 {
                     column.DbColumnName = property.Name;

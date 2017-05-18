@@ -17,7 +17,7 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            //Unit Test
+            /***Unit Test***/
             //new Field(1).Init();
             //new Where(1).Init();
             //new Method(1).Init();
@@ -29,7 +29,7 @@ namespace OrmTest
             //new Delete(1).Init();
             new Mapping(1).Init();
 
-            //Performance Test
+            /***Performance Test***/
             //new SqlSugarPerformance(100).Select();
 
 

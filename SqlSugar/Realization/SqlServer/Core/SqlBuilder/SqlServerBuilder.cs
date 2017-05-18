@@ -24,7 +24,7 @@ namespace SqlSugar
             var mappingInfo = context
                  .MappingColumns
                  .FirstOrDefault(it => it.EntityPropertyName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? "["+name+"]" : mappingInfo.DbColumnName);
+            return (mappingInfo == null ? "["+name+"]" : "["+mappingInfo.DbColumnName+"]");
         }
     }
 }
