@@ -38,6 +38,7 @@ namespace SqlSugar
         public object SelectValue { get; set; }
         public string SelectCacheKey { get; set; }
         public string EntityName { get; set; }
+        public Type EntityType { get; set;}
         public string TableWithString { get; set; }
         public string GroupByValue { get; set; }
         public int WhereIndex { get; set; }
@@ -285,7 +286,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityProvider.GetAllEntities().Single(it=>it.EntityName==this.EntityName).Columns.Where(it=>!it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.PropertyName)));
+                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it=>!it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.PropertyName)));
             }
             else
             {

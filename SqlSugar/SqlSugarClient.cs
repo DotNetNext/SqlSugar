@@ -140,6 +140,7 @@ namespace SqlSugar
             result.SqlBuilder.QueryBuilder = InstanceFactory.GetQueryBuilder(base.CurrentConnectionConfig);
             result.SqlBuilder.QueryBuilder.Builder = sqlBuilder;
             result.SqlBuilder.Context = result.SqlBuilder.QueryBuilder.Context = this;
+            result.SqlBuilder.QueryBuilder.EntityType = typeof(T);
             result.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
             result.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
             return result;
