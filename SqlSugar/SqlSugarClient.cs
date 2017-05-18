@@ -306,11 +306,11 @@ namespace SqlSugar
         #region SqlQuery
         public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
-            var dbPars = this.Database.GetParameters(whereObj);
+            var parameters = this.Database.GetParameters(whereObj);
             var builder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig);
             builder.SqlQueryBuilder.sql.Append(sql);
-            if (dbPars != null && dbPars.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(dbPars);
+            if (parameters != null && parameters.Any())
+                builder.SqlQueryBuilder.Parameters.AddRange(parameters);
             using (var dataReader = this.Database.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 var reval = this.Database.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
