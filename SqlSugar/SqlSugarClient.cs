@@ -144,7 +144,6 @@ namespace SqlSugar
             reval.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
             return reval;
         }
-
         /// <summary>
         /// Lambda Query operation
         /// </summary>
