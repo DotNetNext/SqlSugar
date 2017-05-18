@@ -285,7 +285,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.Database.DbMaintenance.GetColumnInfosByTableName(this.EntityName).Select(it => pre + Builder.GetTranslationColumnName(it.ColumnName)));
+                reval = string.Join(",", this.Context.EntityProvider.GetAllEntities().Single(it=>it.EntityName==this.EntityName).Columns.Where(it=>!it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.PropertyName)));
             }
             else
             {
