@@ -13,6 +13,13 @@ namespace SqlSugar
         public IDb Db { get { return Context.Database; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }
+        public EntityInfo EntityInfo
+        {
+            get
+            {
+                return this.Context.EntityProvider.GetEntityInfo<T>();
+            }
+        }
         public int ExecuteCommand()
         {
             string sql = DeleteBuilder.ToSqlString();
@@ -28,58 +35,50 @@ namespace SqlSugar
                 return this;
             }
             string tableName = this.Context.EntityProvider.GetTableName<T>();
-            var entityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
-            if (this.Context.IsSystemTablesConfig)
+            var primaryFields = this.GetPrimaryKeys();
+            var isSinglePrimaryKey = primaryFields.Count == 1;
+            Check.ArgumentNullException(primaryFields, string.Format("Table {0} with no primarykey", tableName));
+            if (isSinglePrimaryKey)
             {
-                var primaryFields = this.Db.DbMaintenance.GetPrimaries(tableName).ToArray();
-                var isSinglePrimaryKey = primaryFields.Length == 1;
-                Check.ArgumentNullException(primaryFields, string.Format("Table {0} with no primarykey", tableName));
-                if (isSinglePrimaryKey)
+                List<object> primaryKeyValues = new List<object>();
+                var primaryField = primaryFields.Single();
+                foreach (var deleteObj in deleteObjs)
                 {
-                    List<object> primaryKeyValues = new List<object>();
-                    var primaryField = primaryFields.Single();
-                    foreach (var deleteObj in deleteObjs)
-                    {
-                        var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
-                        var columnInfo = entityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
-                        var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
-                        primaryKeyValues.Add(value);
-                    }
-                    var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
-                    Where(string.Format(DeleteBuilder.WhereInTemplate, primaryFields.Single(), inValueString));
+                    var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
+                    var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
+                    var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
+                    primaryKeyValues.Add(value);
                 }
-                else
-                {
-                    StringBuilder whereInSql = new StringBuilder();
-                    foreach (var deleteObj in deleteObjs)
-                    {
-                        StringBuilder orString = new StringBuilder();
-                        var isFirst = deleteObjs.IndexOf(deleteObj) == 0;
-                        if (isFirst)
-                        {
-                            orString.Append(DeleteBuilder.WhereInOrTemplate + PubConst.Space);
-                        }
-                        int i = 0;
-                        StringBuilder andString = new StringBuilder();
-                        foreach (var primaryField in primaryFields)
-                        {
-                            if (i == 0)
-                                andString.Append(DeleteBuilder.WhereInAndTemplate + PubConst.Space);
-                            var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
-                            var columnInfo = entityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
-                            var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
-                            andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
-                            ++i;
-                        }
-                        orString.AppendFormat(DeleteBuilder.WhereInAreaTemplate, andString);
-                        whereInSql.Append(orString);
-                    }
-                    Where(string.Format(DeleteBuilder.WhereInAreaTemplate, whereInSql.ToString()));
-                }
+                var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
+                Where(string.Format(DeleteBuilder.WhereInTemplate, primaryFields.Single(), inValueString));
             }
             else
             {
-
+                StringBuilder whereInSql = new StringBuilder();
+                foreach (var deleteObj in deleteObjs)
+                {
+                    StringBuilder orString = new StringBuilder();
+                    var isFirst = deleteObjs.IndexOf(deleteObj) == 0;
+                    if (isFirst)
+                    {
+                        orString.Append(DeleteBuilder.WhereInOrTemplate + PubConst.Space);
+                    }
+                    int i = 0;
+                    StringBuilder andString = new StringBuilder();
+                    foreach (var primaryField in primaryFields)
+                    {
+                        if (i == 0)
+                            andString.Append(DeleteBuilder.WhereInAndTemplate + PubConst.Space);
+                        var entityPropertyName = this.Context.EntityProvider.GetEntityPropertyName<T>(primaryField);
+                        var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
+                        var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
+                        andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
+                        ++i;
+                    }
+                    orString.AppendFormat(DeleteBuilder.WhereInAreaTemplate, andString);
+                    whereInSql.Append(orString);
+                }
+                Where(string.Format(DeleteBuilder.WhereInAreaTemplate, whereInSql.ToString()));
             }
             return this;
         }
@@ -124,16 +123,9 @@ namespace SqlSugar
             }
             string tableName = this.Context.EntityProvider.GetTableName<T>();
             string primaryField = null;
-            if (this.Context.IsSystemTablesConfig)
-            {
-                primaryField = this.Db.DbMaintenance.GetPrimaries(tableName).FirstOrDefault();
-                Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
-                Where(string.Format(DeleteBuilder.WhereInTemplate, primaryField, primaryKeyValues.ToJoinSqlInVals()));
-            }
-            else
-            {
-
-            }
+            primaryField = GetPrimaryKeys().FirstOrDefault();
+            Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
+            Where(string.Format(DeleteBuilder.WhereInTemplate, primaryField, primaryKeyValues.ToJoinSqlInVals()));
             return this;
         }
 
@@ -155,6 +147,30 @@ namespace SqlSugar
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
             return new KeyValuePair<string, List<SugarParameter>>(sql, paramters);
+        }
+
+
+        private List<string> GetPrimaryKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.Database.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private List<string> GetIdentityKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.Database.DbMaintenance.GetIsIdentities(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+            }
         }
     }
 }

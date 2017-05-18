@@ -55,7 +55,7 @@ namespace SqlSugar
         }
         public IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
-            this.InsertBuilder.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.EntityPropertyName)).ToList();
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.EntityPropertyName)).ToList();
             return this;
         }
 
@@ -72,7 +72,7 @@ namespace SqlSugar
             return this;
         }
 
-        public IInsertable<T> Where(bool isInsertNull,bool isOffIdentity=false)
+        public IInsertable<T> Where(bool isInsertNull, bool isOffIdentity = false)
         {
             this.IsOffIdentity = IsOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)
@@ -88,20 +88,13 @@ namespace SqlSugar
             #region Identities
             if (!IsOffIdentity)
             {
-                if (this.Context.IsSystemTablesConfig)
+                List<string> identities = GetIdentityKeys();
+                if (identities != null && identities.Any())
                 {
-                    List<string> identities = Db.DbMaintenance.GetIsIdentities(this.InsertBuilder.TableName);
-                    if (identities != null && identities.Any())
+                    this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                     {
-                        this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
-                        {
-                            return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
-                        }).ToList();
-                    }
-                }
-                else
-                {
-
+                        return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                    }).ToList();
                 }
             }
             #endregion
@@ -177,7 +170,28 @@ namespace SqlSugar
             }
         }
 
-
+        private List<string> GetPrimaryKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.Database.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private List<string> GetIdentityKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.Database.DbMaintenance.GetIsIdentities(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+            }
+        }
         #endregion
     }
 }
