@@ -49,7 +49,10 @@ namespace SqlSugar
         Double GetDouble(string sql, params SugarParameter[] pars);
         decimal GetDecimal(string sql, params SugarParameter[] pars);
         DateTime GetDateTime(string sql, params SugarParameter[] pars);
+        List<T> SqlQuery<T>(string sql, object whereObj = null);
 
+        List<T> SqlQuery<T>(string sql, params SugarParameter[] pars);
+        List<T> SqlQuery<T>(string sql, List<SugarParameter>  pars);
         void Dispose();
         void Close();
         void Open();

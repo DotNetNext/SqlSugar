@@ -303,24 +303,6 @@ namespace SqlSugar
         }
         #endregion
 
-        #region SqlQuery
-        public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
-        {
-            var parameters = this.Database.GetParameters(whereObj);
-            var builder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig);
-            builder.SqlQueryBuilder.sql.Append(sql);
-            if (parameters != null && parameters.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(parameters);
-            using (var dataReader = this.Database.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
-            {
-                var reval = this.Database.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
-                if (this.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
-                builder.SqlQueryBuilder.Clear();
-                return reval;
-            }
-        }
-        #endregion
-
         #region DbFirst
         public virtual IDbFirst DbFirst
         {

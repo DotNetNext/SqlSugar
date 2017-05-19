@@ -84,41 +84,7 @@ namespace SqlSugar
             }
         }
 
-        public virtual string GetString(string sql, object pars)
-        {
-            return GetString(sql, this.GetParameters(pars));
-        }
-        public virtual string GetString(string sql, params SugarParameter[] pars)
-        {
-            return Convert.ToString(GetScalar(sql, pars));
-        }
-        public virtual int GetInt(string sql, object pars)
-        {
-            return GetInt(sql, this.GetParameters(pars));
-        }
-        public virtual int GetInt(string sql, params SugarParameter[] pars)
-        {
-            return Convert.ToInt32(GetScalar(sql, pars));
-        }
-        public virtual Double GetDouble(string sql, params SugarParameter[] pars)
-        {
-            return Convert.ToDouble(GetScalar(sql, pars));
-        }
-        public virtual decimal GetDecimal(string sql, params SugarParameter[] pars)
-        {
-            return Convert.ToDecimal(GetScalar(sql, pars));
-        }
-        public virtual DateTime GetDateTime(string sql, params SugarParameter[] pars)
-        {
-            return Convert.ToDateTime(GetScalar(sql, pars));
-        }
-
-        public virtual SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null)
-        {
-            if (obj == null) return null;
-            return base.GetParameters(obj, propertyInfo,this.SqlParameterKeyWord);
-        }
-
+        #region Tran
         public virtual void BeginTran()
         {
             this.Connection.BeginTransaction();
@@ -144,14 +110,18 @@ namespace SqlSugar
                 this.Transaction = null;
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
             }
-        }
+        } 
+        #endregion
+
+        #region abstract
         public abstract IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
         public abstract void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
         public abstract IDataAdapter GetAdapter();
         public abstract IDbCommand GetCommand(string sql, SugarParameter[] pars);
         public abstract IDbConnection Connection { get; set; }
         public abstract void BeginTran(string transactionName);//Only SqlServer
-        public abstract void BeginTran(IsolationLevel iso, string transactionName);//Only SqlServer
+        public abstract void BeginTran(IsolationLevel iso, string transactionName);//Only SqlServer 
+        #endregion
 
         #region Core
         public virtual int ExecuteCommand(string sql, params SugarParameter[] pars)
@@ -207,21 +177,79 @@ namespace SqlSugar
         }
         #endregion
 
+        public virtual string GetString(string sql, object pars)
+        {
+            return GetString(sql, this.GetParameters(pars));
+        }
+        public virtual string GetString(string sql, params SugarParameter[] pars)
+        {
+            return Convert.ToString(GetScalar(sql, pars));
+        }
+        public virtual int GetInt(string sql, object pars)
+        {
+            return GetInt(sql, this.GetParameters(pars));
+        }
+        public virtual int GetInt(string sql, params SugarParameter[] pars)
+        {
+            return Convert.ToInt32(GetScalar(sql, pars));
+        }
+        public virtual Double GetDouble(string sql, params SugarParameter[] pars)
+        {
+            return Convert.ToDouble(GetScalar(sql, pars));
+        }
+        public virtual decimal GetDecimal(string sql, params SugarParameter[] pars)
+        {
+            return Convert.ToDecimal(GetScalar(sql, pars));
+        }
+        public virtual DateTime GetDateTime(string sql, params SugarParameter[] pars)
+        {
+            return Convert.ToDateTime(GetScalar(sql, pars));
+        }
+        public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
+        {
+            var parameters = this.GetParameters(whereObj);
+            return SqlQuery<T>(sql, parameters);
+        }
+        public virtual List<T> SqlQuery<T>(string sql, params SugarParameter[] pars)
+        {
+            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            builder.SqlQueryBuilder.sql.Append(sql);
+            if (pars != null && pars.Any())
+                builder.SqlQueryBuilder.Parameters.AddRange(pars);
+            using (var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            {
+                var reval = this.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
+                builder.SqlQueryBuilder.Clear();
+                return reval;
+            }
+        }
+        public virtual List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+            {
+                return SqlQuery<T>(sql, parameters.ToArray());
+            }
+            else
+            {
+                return SqlQuery<T>(sql);
+            }
+        }
         public virtual DataTable GetDataTable(string sql, params SugarParameter[] pars)
         {
             var ds = GetDataSetAll(sql, pars);
             if (ds.Tables.Count != 0 && ds.Tables.Count > 0) return ds.Tables[0];
             return new DataTable();
         }
-        public DataTable GetDataTable(string sql, object pars)
+        public virtual DataTable GetDataTable(string sql, object pars)
         {
             return GetDataTable(sql, this.GetParameters(pars));
         }
-        public DataSet GetDataSetAll(string sql, object pars)
+        public virtual DataSet GetDataSetAll(string sql, object pars)
         {
             return GetDataSetAll(sql, this.GetParameters(pars));
         }
-        public IDataReader GetDataReader(string sql, object pars)
+        public virtual IDataReader GetDataReader(string sql, object pars)
         {
             return GetDataReader(sql, this.GetParameters(pars));
         }
@@ -251,6 +279,12 @@ namespace SqlSugar
                 }
             }
         }
+        public virtual SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null)
+        {
+            if (obj == null) return null;
+            return base.GetParameters(obj, propertyInfo, this.SqlParameterKeyWord);
+        }
+
         public virtual void Open()
         {
             CheckConnection();
