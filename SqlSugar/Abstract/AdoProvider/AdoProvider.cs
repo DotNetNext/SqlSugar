@@ -83,7 +83,7 @@ namespace SqlSugar
             }
         }
 
-        #region Tran
+        #region Transaction
         public virtual void BeginTran()
         {
             this.Connection.BeginTransaction();
