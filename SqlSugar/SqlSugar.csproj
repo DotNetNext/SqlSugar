@@ -63,7 +63,6 @@
     <Compile Include="Entities\EntityInfo.cs" />
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
-    <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
     <Compile Include="Abstract\Core\SqlBuilder\DMLBuilder\DeleteBuilder.cs" />
     <Compile Include="Abstract\Core\SqlBuilder\DMLBuilder\InsertBuilder.cs" />
