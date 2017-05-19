@@ -20,6 +20,5 @@ namespace SqlSugar
         IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
         IUpdateable<T> UpdateRange(List<T> InsertObjs);
         KeyValuePair<string,List<SugarParameter>> ToSql();
-        object Where(Func<object, bool> p);
     }
 }

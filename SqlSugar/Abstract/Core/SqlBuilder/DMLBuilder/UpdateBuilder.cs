@@ -12,6 +12,7 @@ namespace SqlSugar
         {
             this.sql = new StringBuilder();
             this.DbColumnInfoList = new List<DbColumnInfo>();
+            this.SetValues = new List<KeyValuePair<string, string>>();
         }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
@@ -21,6 +22,7 @@ namespace SqlSugar
         public string TableName { get; set; }
         public string TableWithString { get; set; }
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
+        public List<KeyValuePair<string, string>> SetValues { get; set; }
         public bool IsUpdateNull { get; set; }
         public bool IsReturnIdentity { get; set; }
 
@@ -87,13 +89,16 @@ namespace SqlSugar
                 return result;
             }
         }
-        public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
+        public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType,bool isMapping=true)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
             this.LambdaExpressions.Clear();
-            resolveExpress.MappingColumns = Context.MappingColumns;
-            resolveExpress.MappingTables = Context.MappingTables;
-            resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
+            if (isMapping)
+            {
+                resolveExpress.MappingColumns = Context.MappingColumns;
+                resolveExpress.MappingTables = Context.MappingTables;
+                resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
+            }
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters = new List<SugarParameter>();
             this.Parameters.AddRange(resolveExpress.Parameters);

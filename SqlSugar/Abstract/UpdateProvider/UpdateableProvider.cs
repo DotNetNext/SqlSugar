@@ -32,8 +32,15 @@ namespace SqlSugar
 
         public IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression)
         {
-            var expResult=UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
-
+            var expResult = UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
+            var resultString=expResult.GetResultString();
+            LambdaExpression lambda = setValueExpression as LambdaExpression;
+            var expression = lambda.Body;
+            Check.Exception(!(expression is BinaryExpression), "Expression  format error");
+            var leftExpression = (expression as BinaryExpression).Left;
+            Check.Exception(!(leftExpression is MemberExpression), "Expression  format error");
+            var leftResultString=UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.WhereSingle).GetString();
+            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(leftResultString, resultString));
             return this;
         }
 
@@ -61,7 +68,10 @@ namespace SqlSugar
         {
             return this;
         }
-
+        public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
+        {
+            return this;
+        }
         public IUpdateable<T> With(string lockString)
         {
             return this;
