@@ -16,7 +16,7 @@ namespace SqlSugar
         IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
-        IUpdateable<T> ReSetValue(Func<T, bool> setValueExpression);
+        IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
         IUpdateable<T> UpdateRange(List<T> InsertObjs);
         KeyValuePair<string,List<SugarParameter>> ToSql();
     }

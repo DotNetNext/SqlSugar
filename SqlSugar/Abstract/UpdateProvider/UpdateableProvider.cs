@@ -17,57 +17,59 @@ namespace SqlSugar
 
         public int ExecuteCommand()
         {
-            throw new NotImplementedException();
+            return 0;
         }
 
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
-        public IUpdateable<T> ReSetValue(Func<T, bool> setValueExpression)
+        public IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression)
         {
-            throw new NotImplementedException();
+            var expResult=UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
+
+            return this;
         }
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            throw new NotImplementedException();
+            return new KeyValuePair<string, List<SugarParameter>>();
         }
 
         public IUpdateable<T> Update(T InsertObj)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IUpdateable<T> UpdateRange(List<T> InsertObjs)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IUpdateable<T> Where(bool isUpdateNull)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public IUpdateable<T> With(string lockString)
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         internal void Init()
         {
-            throw new NotImplementedException();
+            return this;
         }
     }
 }
