@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public abstract partial class DbProvider : DbAccessory, IAdo
+    public abstract partial class AdoProvider : AdoAccessory, IAdo
     {
-        public DbProvider()
+        public AdoProvider()
         {
             this.IsEnableLogEvent = false;
             this.CommandType = CommandType.Text;

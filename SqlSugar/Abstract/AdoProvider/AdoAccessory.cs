@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 namespace SqlSugar
 {
-    public partial class DbAccessory
+    public partial class AdoAccessory
     {
         protected IDbBind _DbBind;
         protected IDbFirst _DbFirst;
