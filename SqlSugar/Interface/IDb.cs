@@ -28,12 +28,7 @@ namespace SqlSugar
         Action<string, string> LogEventCompleted { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
-
-        IDbFirst DbFirst { get;}
-        ICodeFirst CodeFirst { get; }
         IDbBind DbBind { get; }
-        IDbMaintenance DbMaintenance{ get;}
-
         void SetCommandToAdapter(IDataAdapter adapter,IDbCommand command);
         IDataAdapter GetAdapter();
         IDbCommand GetCommand(string sql, SugarParameter[] pars);

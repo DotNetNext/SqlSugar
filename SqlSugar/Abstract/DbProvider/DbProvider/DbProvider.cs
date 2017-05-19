@@ -39,46 +39,6 @@ namespace SqlSugar
                 return base._DbBind;
             }
         }
-        public virtual IDbFirst DbFirst
-        {
-            get
-            {
-                if (base._DbFirst == null)
-                {
-                    IDbFirst dbFirst = InstanceFactory.GetDbFirst(this.Context.CurrentConnectionConfig);
-                    base._DbFirst = dbFirst;
-                    dbFirst.Context = this.Context;
-                }
-                return base._DbFirst;
-            }
-        }
-        public virtual ICodeFirst CodeFirst
-        {
-            get
-            {
-                if (base._CodeFirst == null)
-                {
-                    ICodeFirst codeFirst = InstanceFactory.GetCodeFirst(this.Context.CurrentConnectionConfig);
-                    base._CodeFirst = codeFirst;
-                    codeFirst.Context = this.Context;
-                }
-                return base._CodeFirst;
-            }
-        }
-        public virtual IDbMaintenance DbMaintenance
-        {
-            get
-            {
-                if (base._DbMaintenance == null)
-                {
-                    IDbMaintenance maintenance = InstanceFactory.GetDbMaintenance(this.Context.CurrentConnectionConfig);
-                    base._DbMaintenance = maintenance;
-                    maintenance.Context = this.Context;
-                }
-                return base._DbMaintenance;
-            }
-        }
-
         public virtual int CommandTimeOut { get; set; }
         public virtual CommandType CommandType { get; set; }
         public virtual bool IsEnableLogEvent { get; set; }

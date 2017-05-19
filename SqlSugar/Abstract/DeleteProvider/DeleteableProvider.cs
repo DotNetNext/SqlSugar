@@ -154,7 +154,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.Database.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
+                return this.Context.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
             }
             else
             {
@@ -165,7 +165,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.Database.DbMaintenance.GetIsIdentities(this.EntityInfo.DbTableName);
+                return this.Context.DbMaintenance.GetIsIdentities(this.EntityInfo.DbTableName);
             }
             else
             {
