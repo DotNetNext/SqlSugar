@@ -20,37 +20,47 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)
+        public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
             throw new NotImplementedException();
         }
 
-        public IInsertable<T> UpdateColumns(Expression<Func<T, object>> columns)
+        public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
             throw new NotImplementedException();
         }
 
-        public IInsertable<T> Update(T InsertObj)
+        public IUpdateable<T> ReSetValue(Func<T, bool> setValueExpression)
         {
             throw new NotImplementedException();
         }
 
-        public IInsertable<T> UpdateRange(List<T> InsertObjs)
+        public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             throw new NotImplementedException();
         }
 
-        public IInsertable<T> Where(bool isUpdateNull)
+        public IUpdateable<T> Update(T InsertObj)
         {
             throw new NotImplementedException();
         }
 
-        public IInsertable<T> With(string lockString)
+        public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
             throw new NotImplementedException();
         }
 
-        public object ToSql()
+        public IUpdateable<T> UpdateRange(List<T> InsertObjs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IUpdateable<T> Where(bool isUpdateNull)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IUpdateable<T> With(string lockString)
         {
             throw new NotImplementedException();
         }

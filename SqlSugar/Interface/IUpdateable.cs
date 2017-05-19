@@ -10,12 +10,14 @@ namespace SqlSugar
     public interface IUpdateable<T>
     {
         int ExecuteCommand();
-        IInsertable<T> With(string lockString);
-        IInsertable<T> Update(T InsertObj);
-        IInsertable<T> Where(bool isUpdateNull);
-        IInsertable<T> UpdateColumns(Expression<Func<T, object>> columns);
-        IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);
-        IInsertable<T> UpdateRange(List<T> InsertObjs);
-        object ToSql();
+        IUpdateable<T> With(string lockString);
+        IUpdateable<T> Update(T InsertObj);
+        IUpdateable<T> Where(bool isUpdateNull);
+        IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns);
+        IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
+        IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
+        IUpdateable<T> ReSetValue(Func<T, bool> setValueExpression);
+        IUpdateable<T> UpdateRange(List<T> InsertObjs);
+        KeyValuePair<string,List<SugarParameter>> ToSql();
     }
 }

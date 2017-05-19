@@ -79,6 +79,7 @@
     <Compile Include="UnitTest\Setting\AutoClose.cs" />
     <Compile Include="UnitTest\Setting\MapColumn.cs" />
     <Compile Include="UnitTest\Setting\MapTable.cs" />
+    <Compile Include="UnitTest\Update.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
