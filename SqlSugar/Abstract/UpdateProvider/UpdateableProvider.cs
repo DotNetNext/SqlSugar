@@ -13,20 +13,24 @@ namespace SqlSugar
         public EntityInfo EntityInfo { get; internal set; }
         public ISqlBuilder SqlBuilder { get; internal set; }
         public UpdateBuilder UpdateBuilder { get; internal set; }
+        public IAdo Ado { get { return Context.Ado; } }
         public object[] UpdateObjs { get; internal set; }
 
         public int ExecuteCommand()
         {
-            return 0;
+            return this.Ado.ExecuteCommand(UpdateBuilder.ToSqlString(), UpdateBuilder.Parameters.ToArray());
         }
 
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.EntityPropertyName)).ToList();
             return this;
         }
 
         public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
+            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.EntityPropertyName)).ToList();
             return this;
         }
 
@@ -56,6 +60,8 @@ namespace SqlSugar
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
+            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.EntityPropertyName)).ToList();
             return this;
         }
 
@@ -74,6 +80,7 @@ namespace SqlSugar
         }
         public IUpdateable<T> With(string lockString)
         {
+            this.UpdateBuilder.TableWithString = lockString;
             return this;
         }
 

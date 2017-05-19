@@ -10,7 +10,7 @@ namespace SqlSugar
     public class InsertableProvider<T> : IInsertable<T> where T : class, new()
     {
         public SqlSugarClient Context { get; set; }
-        public IAdo Db { get { return Context.Ado; } }
+        public IAdo Ado { get { return Context.Ado; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public InsertBuilder InsertBuilder { get; set; }
 
@@ -29,7 +29,7 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = false;
             PreToSql();
-            return Db.ExecuteCommand(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
+            return Ado.ExecuteCommand(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
         }
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
@@ -42,14 +42,14 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            return Db.GetInt(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
+            return Ado.GetInt(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
         }
         #endregion
 
         #region Setting
         public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
-            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array);
+            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.EntityPropertyName)).ToList();
             return this;
         }
@@ -61,7 +61,7 @@ namespace SqlSugar
 
         public IInsertable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
-            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array);
+            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.EntityPropertyName)).ToList();
             return this;
         }

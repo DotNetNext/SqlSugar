@@ -61,7 +61,7 @@ namespace SqlSugar
         public string[] GetResultArray()
         {
             if (this._Result == null) return null;
-            return this.Result.ToString().Split(',');
+            return this.Result.ToString().TrimEnd(',').Split(',');
         }
 
         public string GetResultString()
@@ -100,6 +100,7 @@ namespace SqlSugar
             }
             switch (this._ResolveExpressType)
             {
+                case ResolveExpressType.Array:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
                     parameter = parameter + ",";
