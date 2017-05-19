@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public abstract partial class DbProvider : DbAccessory, IDb
+    public abstract partial class DbProvider : DbAccessory, IAdo
     {
         public DbProvider()
         {

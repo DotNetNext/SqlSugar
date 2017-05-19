@@ -10,7 +10,7 @@ namespace SqlSugar
     public class DeleteableProvider<T> : IDeleteable<T> where T : class, new()
     {
         public SqlSugarClient Context { get; set; }
-        public IDb Db { get { return Context.Database; } }
+        public IAdo Db { get { return Context.Ado; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }
         public EntityInfo EntityInfo
@@ -101,7 +101,7 @@ namespace SqlSugar
             DeleteBuilder.WhereInfos.Add(whereString);
             if (whereObj != null)
             {
-                DeleteBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
+                DeleteBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             }
             return this;
         }

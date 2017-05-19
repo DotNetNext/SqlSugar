@@ -145,7 +145,7 @@ namespace SqlSugar
             var bindType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
             string dbTypeName = DataRecord.GetDataTypeName(ordinal);
             string propertyName = bindProperty.Name;
-            var bind = Context.Database.DbBind;
+            var bind = Context.Ado.DbBind;
             List<string> guidThrow = bind.GuidThrow;
             List<string> intThrow = bind.IntThrow;
             List<string> stringThrow = bind.StringThrow;

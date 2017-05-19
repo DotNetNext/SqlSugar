@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public partial interface IDb
+    public partial interface IAdo
     {
         string SqlParameterKeyWord { get; }
         IDbConnection Connection { get; set; }

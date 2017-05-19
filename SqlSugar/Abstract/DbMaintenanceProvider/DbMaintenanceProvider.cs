@@ -55,13 +55,13 @@ namespace SqlSugar
 
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
-            this.Context.Database.ExecuteCommand(this.CreateTableSql);
+            this.Context.Ado.ExecuteCommand(this.CreateTableSql);
             return true;
         }
 
         public virtual bool TruncateTable(string tableName)
         {
-            this.Context.Database.ExecuteCommand(this.TruncateTableSql);
+            this.Context.Ado.ExecuteCommand(this.TruncateTableSql);
             return true;
         }
 
@@ -75,10 +75,10 @@ namespace SqlSugar
 
              }, (cm, key) =>
              {
-                 var isEnableLogEvent = this.Context.Database.IsEnableLogEvent;
-                 this.Context.Database.IsEnableLogEvent = false;
-                 var reval = this.Context.Database.SqlQuery<T>(this.GetColumnInfosByTableNameSql);
-                 this.Context.Database.IsEnableLogEvent = isEnableLogEvent;
+                 var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+                 this.Context.Ado.IsEnableLogEvent = false;
+                 var reval = this.Context.Ado.SqlQuery<T>(this.GetColumnInfosByTableNameSql);
+                 this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
                  return reval;
              });
         }

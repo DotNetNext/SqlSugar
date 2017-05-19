@@ -20,7 +20,7 @@ namespace SqlSugar
 
         protected ISqlBuilder _SqlBuilder;
         protected EntityProvider _EntityProvider;
-        protected IDb _Ado;
+        protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
         protected IRewritableMethods _RewritableMethods;
         protected IDbFirst _DbFirst;

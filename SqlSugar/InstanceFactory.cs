@@ -86,10 +86,10 @@ namespace SqlSugar
             return reval;
         }
 
-        public static IDb GetDb(IConnectionConfig currentConnectionConfig)
+        public static IAdo GetAdo(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);
-            IDb reval = CreateInstance<IDb>(GetClassName(currentConnectionConfig.DbType, "Provider"), currentConnectionConfig.DbType);
+            IAdo reval = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType, "Provider"), currentConnectionConfig.DbType);
             return reval;
         }
 

@@ -13,7 +13,7 @@ namespace SqlSugar
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
         public SqlSugarClient Context { get; set; }
-        public IDb Db { get { return Context.Database; } }
+        public IAdo Db { get { return Context.Ado; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public QueryBuilder QueryBuilder
@@ -36,7 +36,7 @@ namespace SqlSugar
         public ISugarQueryable<T> AddParameters(object whereObj)
         {
             if (whereObj != null)
-                QueryBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> AddParameters(SugarParameter[] pars)
@@ -76,7 +76,7 @@ namespace SqlSugar
             var whereValue = QueryBuilder.WhereInfos;
             whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString));
             if (whereObj != null)
-                QueryBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression)
@@ -114,7 +114,7 @@ namespace SqlSugar
 
             QueryBuilder.HavingInfos = SqlBuilder.AppendHaving(whereString);
             if (whereObj != null)
-                QueryBuilder.Parameters.AddRange(Context.Database.GetParameters(whereObj));
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
         }
         public ISugarQueryable<T> Having<T2>(Expression<Func<T2, bool>> expression)
@@ -427,7 +427,7 @@ namespace SqlSugar
         {
             QueryBuilder.IsCount = true;
             var sql = QueryBuilder.ToSqlString();
-            var reval = Context.Database.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
             QueryBuilder.IsCount = false;
             return reval;
         }

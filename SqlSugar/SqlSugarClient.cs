@@ -60,7 +60,7 @@ namespace SqlSugar
             base.InitConstructor();
             if (slaveConnectionConfigs.IsNullOrEmpty()) return;
 
-            var db = this.Database;
+            var db = this.Ado;
             db.MasterConnectionConfig = masterConnectionConfig;
             db.SlaveConnectionConfigs = slaveConnectionConfigs.ToList();
         }
@@ -76,7 +76,7 @@ namespace SqlSugar
             base.InitConstructor();
             if (slaveConnectionConfigs.IsNullOrEmpty()) return;
 
-            var db = this.Database;
+            var db = this.Ado;
             Check.ArgumentNullException(masterConnectionConfig.EntityNamespace, ErrorMessage.EntityNamespaceError);
             base.EntityNamespace = masterConnectionConfig.EntityNamespace;
             db.MasterConnectionConfig = masterConnectionConfig;
@@ -89,13 +89,13 @@ namespace SqlSugar
         /// <summary>
         ///Database operation
         /// </summary>
-        public virtual IDb Database
+        public virtual IAdo Ado
         {
             get
             {
                 if (_Ado == null)
                 {
-                    var reval = InstanceFactory.GetDb(base.CurrentConnectionConfig);
+                    var reval = InstanceFactory.GetAdo(base.CurrentConnectionConfig);
                     Check.ConnectionConfig(base.CurrentConnectionConfig);
                     _Ado = reval;
                     reval.Context = this;
@@ -373,16 +373,16 @@ namespace SqlSugar
         #region Dispose OR Close
         public virtual void Close()
         {
-            if (this.Database != null)
+            if (this.Ado != null)
             {
-                this.Database.Close();
+                this.Ado.Close();
             }
         }
         public virtual void Dispose()
         {
-            if (this.Database != null)
+            if (this.Ado != null)
             {
-                this.Database.Dispose();
+                this.Ado.Dispose();
             }
         }
         #endregion

@@ -30,7 +30,7 @@ namespace OrmTest.UnitTest
             using (var db = GetInstance())
             {
                 //db.Database.IsEnableLogEvent = true;
-                db.Database.LogEventStarting = (sql, pars) =>
+                db.Ado.LogEventStarting = (sql, pars) =>
                 {
                     Console.WriteLine(sql + " " + pars);
                 };
