@@ -142,7 +142,7 @@
     <Compile Include="ExpressionsToSql\Common\ExpressionTool.cs" />
     <Compile Include="InstanceFactory.cs" />
     <Compile Include="Interface\ICodeFirst.cs" />
-    <Compile Include="Interface\IDb.cs" />
+    <Compile Include="Interface\IAdo.cs" />
     <Compile Include="Interface\IDbBind.cs" />
     <Compile Include="Interface\IDbFirst.cs" />
     <Compile Include="Interface\IDbMaintenance.cs" />
