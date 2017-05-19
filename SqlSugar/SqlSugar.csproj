@@ -44,16 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstract\DbProvider\CodeFirstProvider\CodeFirstProvider.cs" />
-    <Compile Include="Abstract\DbProvider\DbProvider\DbAccessory.cs" />
-    <Compile Include="Abstract\DbProvider\DbBindProvider\DbBindAccessory.cs" />
-    <Compile Include="Abstract\DbProvider\DbBindProvider\DbBindProvider.cs" />
-    <Compile Include="Abstract\DbProvider\DbBindProvider\IDataReaderEntityBuilder.cs" />
-    <Compile Include="Abstract\DbProvider\DbBindProvider\IDataRecordExtensions.cs" />
-    <Compile Include="Abstract\DbProvider\DbFirstProvider\DbFirstProvider.cs" />
-    <Compile Include="Abstract\DbProvider\DbMaintenanceProvider\DbMaintenanceProvider.cs" />
-    <Compile Include="Abstract\DbProvider\DbProvider\DbProvider.cs" />
-    <Compile Include="Abstract\DbProvider\EntityProvider\EntityProvider.cs" />
+    <Compile Include="Abstract\CodeFirstProvider\CodeFirstProvider.cs" />
+    <Compile Include="Abstract\Core\DbProvider\DbAccessory.cs" />
+    <Compile Include="Abstract\Core\DbBindProvider\DbBindAccessory.cs" />
+    <Compile Include="Abstract\Core\DbBindProvider\DbBindProvider.cs" />
+    <Compile Include="Abstract\Core\DbBindProvider\IDataReaderEntityBuilder.cs" />
+    <Compile Include="Abstract\Core\DbBindProvider\IDataRecordExtensions.cs" />
+    <Compile Include="Abstract\DbFirstProvider\DbFirstProvider.cs" />
+    <Compile Include="Abstract\DbMaintenanceProvider\DbMaintenanceProvider.cs" />
+    <Compile Include="Abstract\Core\DbProvider\DbProvider.cs" />
+    <Compile Include="Abstract\EntityProvider\EntityProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
@@ -65,13 +65,13 @@
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExtendsions.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
-    <Compile Include="Abstract\DbProvider\SqlBuilderProvider\DMLBuilder\DeleteBuilder.cs" />
-    <Compile Include="Abstract\DbProvider\SqlBuilderProvider\DMLBuilder\InsertBuilder.cs" />
-    <Compile Include="Abstract\DbProvider\SqlBuilderProvider\DMLBuilder\QueryBuilder.cs" />
-    <Compile Include="Abstract\DbProvider\SqlBuilderProvider\DMLBuilder\SqlQueryBuilder.cs" />
-    <Compile Include="Abstract\DbProvider\SqlBuilderProvider\DMLBuilder\UpdateBuilder.cs" />
-    <Compile Include="Abstract\DbProvider\SqlBuilderProvider\SqlBuilderAccessory.cs" />
-    <Compile Include="Abstract\DbProvider\SqlBuilderProvider\SqlBuilderProvider.cs" />
+    <Compile Include="Abstract\Core\SqlBuilderProvider\DMLBuilder\DeleteBuilder.cs" />
+    <Compile Include="Abstract\Core\SqlBuilderProvider\DMLBuilder\InsertBuilder.cs" />
+    <Compile Include="Abstract\Core\SqlBuilderProvider\DMLBuilder\QueryBuilder.cs" />
+    <Compile Include="Abstract\Core\SqlBuilderProvider\DMLBuilder\SqlQueryBuilder.cs" />
+    <Compile Include="Abstract\Core\SqlBuilderProvider\DMLBuilder\UpdateBuilder.cs" />
+    <Compile Include="Abstract\Core\SqlBuilderProvider\SqlBuilderAccessory.cs" />
+    <Compile Include="Abstract\Core\SqlBuilderProvider\SqlBuilderProvider.cs" />
     <Compile Include="Common\CacheManager.cs" />
     <Compile Include="Common\Check.cs" />
     <Compile Include="Common\CommonExtensions.cs" />
