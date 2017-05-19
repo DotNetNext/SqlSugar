@@ -39,18 +39,18 @@ namespace SqlSugar
 
         }
 
-        protected virtual SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
+        protected virtual SugarParameter[] GetParameters(object whereObj, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
         {
             List<SugarParameter> listParams = new List<SugarParameter>();
-            if (obj != null)
+            if (whereObj != null)
             {
-                var type = obj.GetType();
+                var type = whereObj.GetType();
                 var isDic = type.IsIn(PubConst.DicArraySO, PubConst.DicArraySS);
                 if (isDic)
                 {
                     if (type == PubConst.DicArraySO)
                     {
-                        var newObj = (Dictionary<string, object>)obj;
+                        var newObj = (Dictionary<string, object>)whereObj;
                         var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
                         foreach (var par in pars)
                         {
@@ -60,7 +60,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        var newObj = (Dictionary<string, string>)obj;
+                        var newObj = (Dictionary<string, string>)whereObj;
                         var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
                         foreach (var par in pars)
                         {
@@ -83,7 +83,7 @@ namespace SqlSugar
                     string replaceGuid = Guid.NewGuid().ToString();
                     foreach (PropertyInfo r in propertiesObj)
                     {
-                        var value = r.GetValue(obj, null);
+                        var value = r.GetValue(whereObj, null);
                         if (r.PropertyType.IsEnum)
                         {
                             value = Convert.ToInt64(value);
