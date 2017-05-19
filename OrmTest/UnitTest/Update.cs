@@ -47,11 +47,15 @@ namespace OrmTest.UnitTest
                 .UpdateColumns(it => new { it.Name }).ToSql();
 
             //update List<T>
-            var s8 = db.Updateable(updateObj).With(SqlWith.UpdLock).ToSql();
+            var s8 = db.Updateable(updateObjs).With(SqlWith.UpdLock).ToSql();
 
             //Re Set Value
             var s9 = db.Updateable(updateObj)
                 .ReSetValue(it=>it.Name==(it.SchoolId+"")).ToSql();
+
+            //Where By Expression
+            var s10 = db.Updateable(updateObj)
+           .Where(it => it.Id==1).ToSql();
         }
 
         public SqlSugarClient GetInstance()
