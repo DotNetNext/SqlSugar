@@ -51,7 +51,7 @@ namespace OrmTest.UnitTest
 
             //Re Set Value
             var s9 = db.Updateable(updateObj)
-                .ReSetValue(it=>it.Name==(it.Name+1)).ToSql();
+                .ReSetValue(it=>it.Name==(it.SchoolId+"")).ToSql();
         }
 
         public SqlSugarClient GetInstance()

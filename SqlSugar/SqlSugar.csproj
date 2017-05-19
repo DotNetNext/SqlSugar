@@ -83,6 +83,7 @@
     <Compile Include="Common\SqlException.cs" />
     <Compile Include="Common\RewritableMethods.cs" />
     <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
+    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerUpdateBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbType.cs" />
     <Compile Include="Realization\SqlServer\Core\DbBind\SqlServerDbBind.cs" />
     <Compile Include="Realization\SqlServer\DbFirst\SqlServerDbFirst.cs" />
