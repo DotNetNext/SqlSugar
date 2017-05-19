@@ -46,7 +46,6 @@ namespace SqlSugar
         public virtual Action<string, string> LogEventStarting { get; set; }
         public virtual Action<string, string> LogEventCompleted { get; set; }
 
-
         public virtual void Close()
         {
             if (this.Transaction != null)
@@ -185,6 +184,16 @@ namespace SqlSugar
         {
             return Convert.ToString(GetScalar(sql, pars));
         }
+        public virtual string GetString(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetString(sql);
+            }
+            else {
+                return GetString(sql, pars.ToArray());
+            }
+        }
         public virtual int GetInt(string sql, object pars)
         {
             return GetInt(sql, this.GetParameters(pars));
@@ -193,17 +202,73 @@ namespace SqlSugar
         {
             return Convert.ToInt32(GetScalar(sql, pars));
         }
+        public virtual int GetInt(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetInt(sql);
+            }
+            else
+            {
+                return GetInt(sql, pars.ToArray());
+            }
+        }
+        public virtual Double GetDouble(string sql, object pars)
+        {
+            return GetDouble(sql, this.GetParameters(pars));
+        }
         public virtual Double GetDouble(string sql, params SugarParameter[] pars)
         {
             return Convert.ToDouble(GetScalar(sql, pars));
+        }
+        public virtual Double GetDouble(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetDouble(sql);
+            }
+            else
+            {
+                return GetDouble(sql, pars.ToArray());
+            }
+        }
+        public virtual decimal GetDecimal(string sql, object pars)
+        {
+            return GetDecimal(sql, this.GetParameters(pars));
         }
         public virtual decimal GetDecimal(string sql, params SugarParameter[] pars)
         {
             return Convert.ToDecimal(GetScalar(sql, pars));
         }
+        public virtual decimal GetDecimal(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetDecimal(sql);
+            }
+            else
+            {
+                return GetDecimal(sql, pars.ToArray());
+            }
+        }
+        public virtual DateTime GetDateTime(string sql, object pars)
+        {
+            return GetDateTime(sql, this.GetParameters(pars));
+        }
         public virtual DateTime GetDateTime(string sql, params SugarParameter[] pars)
         {
             return Convert.ToDateTime(GetScalar(sql, pars));
+        }
+        public virtual DateTime GetDateTime(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetDateTime(sql);
+            }
+            else
+            {
+                return GetDateTime(sql, pars.ToArray());
+            }
         }
         public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
         {
@@ -245,22 +310,78 @@ namespace SqlSugar
         {
             return GetDataTable(sql, this.GetParameters(pars));
         }
+        public virtual DataTable GetDataTable(string sql, List<SugarParameter>[] pars)
+        {
+            if (pars == null)
+            {
+                return GetDataTable(sql);
+            }
+            else
+            {
+                return GetDataTable(sql, pars.ToArray());
+            }
+        }
         public virtual DataSet GetDataSetAll(string sql, object pars)
         {
             return GetDataSetAll(sql, this.GetParameters(pars));
+        }
+        public virtual DataSet GetDataSetAll(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetDataSetAll(sql);
+            }
+            else
+            {
+                return GetDataSetAll(sql, pars.ToArray());
+            }
         }
         public virtual IDataReader GetDataReader(string sql, object pars)
         {
             return GetDataReader(sql, this.GetParameters(pars));
         }
+        public virtual IDataReader GetDataReader(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetDataReader(sql);
+            }
+            else
+            {
+                return GetDataReader(sql, pars.ToArray());
+            }
+        }
         public virtual object GetScalar(string sql, object pars)
         {
             return GetScalar(sql, this.GetParameters(pars));
+        }
+        public virtual object GetScalar(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return GetScalar(sql);
+            }
+            else
+            {
+                return GetScalar(sql, pars.ToArray());
+            }
         }
         public virtual int ExecuteCommand(string sql, object pars)
         {
             return ExecuteCommand(sql, GetParameters(pars));
         }
+        public virtual int ExecuteCommand(string sql, List<SugarParameter> pars)
+        {
+            if (pars == null)
+            {
+                return ExecuteCommand(sql);
+            }
+            else
+            {
+                return ExecuteCommand(sql, pars.ToArray());
+            }
+        }
+
         public virtual void ExecLogEvent(string sql, SugarParameter[] pars, bool isStarting = true)
         {
             if (this.IsEnableLogEvent)
@@ -284,10 +405,11 @@ namespace SqlSugar
             if (obj == null) return null;
             return base.GetParameters(obj, propertyInfo, this.SqlParameterKeyWord);
         }
-
         public virtual void Open()
         {
             CheckConnection();
         }
+
+       
     }
 }
