@@ -69,7 +69,7 @@ namespace SqlSugar
 
         internal void Init()
         {
-            return this;
+
         }
     }
 }
