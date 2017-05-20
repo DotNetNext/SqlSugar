@@ -42,11 +42,11 @@ namespace SqlSugar
         {
             get
             {
-                return @"UPDATE S SET {{0}} FROM {0} S INNER JOIN 
+                return @"UPDATE S SET {0} FROM {1} S {2}   INNER JOIN 
             (
-              { { 1} }
+              {{0}}
 
-            ) T ON ";
+            ) T ON {{1}}";
             }
         }
 
@@ -87,6 +87,14 @@ namespace SqlSugar
                 {
                     result += TableWithString + PubConst.Space;
                 }
+                return result;
+            }
+        }
+        public virtual string GetTableNameStringNoWith
+        {
+            get
+            {
+                var result = Builder.GetTranslationTableName(TableName);
                 return result;
             }
         }
@@ -149,30 +157,44 @@ namespace SqlSugar
             else
             {
                 Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
-                var whereString = string.Join(",", PrimaryKeys.Select(it => string.Format("T.{0}=S.{0}", Builder.GetTranslationColumnName(it))));
+                string setValues = string.Join(",", groupList.First().Select(it =>
+                {
+                    if (SetValues.IsValuable())
+                    {
+                        var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                        if (setValue != null && setValue.Any())
+                        {
+                            return setValue.First().Value;
+                        }
+                    }
+                    var result =string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(it.DbColumnName));
+                    return result;
+                }));
                 StringBuilder batchUpdateSql = new StringBuilder();
+                batchUpdateSql.AppendFormat(SqlTemplateBatch,setValues,GetTableNameStringNoWith, TableWithString);
                 int pageSize = 200;
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                StringBuilder updateTable = new StringBuilder();
                 while (pageCount >= pageIndex)
                 {
-                    batchUpdateSql.AppendFormat(SqlTemplateBatch, GetTableNameString, "");
+               
                     int i = 0;
                     foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
                     {
                         var isFirst = i == 0;
                         if (!isFirst)
                         {
-                            batchUpdateSql.Append(SqlTemplateBatchUnion);
+                            updateTable.Append(SqlTemplateBatchUnion);
                         }
-                        batchUpdateSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
+                        updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
                         ++i;
                     }
                     pageIndex++;
-                    batchUpdateSql.Append("\r\nGO\r\n");
+                    updateTable.Append("\r\nGO\r\n");
                 }
-                return batchUpdateSql.ToString();
+                return string.Format(batchUpdateSql.ToString(), updateTable.ToString(),"");
             }
         }
 
