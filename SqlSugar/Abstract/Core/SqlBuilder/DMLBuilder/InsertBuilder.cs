@@ -100,10 +100,10 @@ namespace SqlSugar
         {
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
-            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.ColumnName)));
+            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.ColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else {
@@ -122,7 +122,7 @@ namespace SqlSugar
                         {
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.ColumnName))));
+                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
                         ++i;
                     }
                     pageIndex++;

@@ -8,8 +8,8 @@ namespace SqlSugar
     {
         public string TableName { get; set; }
         public int TableId { get; set; }
-        public string ColumnName { get; set; }
-        public string EntityPropertyName { get; set; }
+        public string DbColumnName { get; set; }
+        public string PropertyName { get; set; }
         public string DataType { get; set; }
         public int Length { get; set; }
         public string ColumnDescription { get; set; }

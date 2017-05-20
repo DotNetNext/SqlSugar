@@ -109,7 +109,15 @@ namespace SqlSugar
             if (thisValue == null || thisValue.Count() == 0) return false;
             return true;
         }
-
+        /// <summary>
+        /// 有值?(与IsNullOrEmpty相反)
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsValuable(this IEnumerable<KeyValuePair<string,string>> thisValue)
+        {
+            if (thisValue == null || thisValue.Count() == 0) return false;
+            return true;
+        }
         /// <summary>
         /// 是零?
         /// </summary>

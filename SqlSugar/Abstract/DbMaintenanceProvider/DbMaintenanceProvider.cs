@@ -35,13 +35,13 @@ namespace SqlSugar
         public virtual List<string> GetIsIdentities(string tableName)
         {
             var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
-            return result.Select(it => it.ColumnName).ToList();
+            return result.Select(it => it.DbColumnName).ToList();
         }
 
         public virtual List<string> GetPrimaries(string tableName)
         {
             var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
-            return result.Select(it => it.ColumnName).ToList();
+            return result.Select(it => it.DbColumnName).ToList();
         }
 
         public bool AddColumnToTable(string tableName, DbColumnInfo column)

@@ -26,6 +26,7 @@ namespace SqlSugar
         public List<string> WhereValues { get; set; }
         public List<KeyValuePair<string, string>> SetValues { get; set; }
         public bool IsUpdateNull { get; set; }
+        public List<string> PrimaryKeys { get; set; }
 
         public virtual string SqlTemplate
         {
@@ -89,9 +90,6 @@ namespace SqlSugar
                 return result;
             }
         }
-
-        public List<string> PrimaryKeys { get; internal set; }
-
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType, bool isMapping = true)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
@@ -112,7 +110,17 @@ namespace SqlSugar
         {
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
-            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.ColumnName) + "=" + this.Context.Ado.SqlParameterKeyWord + it.ColumnName));
+            string columnsString = string.Join(",", groupList.First().Select(it =>
+             {
+                 if (SetValues.IsValuable()) {
+                     var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                     if (setValue != null&& setValue.Any()) {
+                         return setValue.First().Value;
+                     }
+                 }
+                 var result = Builder.GetTranslationColumnName(it.DbColumnName) + "=" + this.Context.Ado.SqlParameterKeyWord + it.DbColumnName;
+                 return result;
+             }));
             if (isSingle)
             {
                 string whereString = null;
@@ -125,7 +133,7 @@ namespace SqlSugar
                         whereString += item;
                     }
                 }
-                else if(PrimaryKeys.IsValuable())
+                else if (PrimaryKeys.IsValuable())
                 {
                     foreach (var item in PrimaryKeys)
                     {
@@ -156,7 +164,7 @@ namespace SqlSugar
                         {
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.ColumnName))));
+                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
                         ++i;
                     }
                     pageIndex++;

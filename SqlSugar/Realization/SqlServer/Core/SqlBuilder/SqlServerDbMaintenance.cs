@@ -38,7 +38,7 @@ namespace SqlSugar
             {
                 string sql = @"SELECT Sysobjects.name AS TableName,
                            syscolumns.Id AS TableId,
-                           syscolumns.name AS ColumnName,
+                           syscolumns.name AS DbColumnName,
                            systypes.name AS DataType,
                            syscolumns.length AS [Length],
                            sys.extended_properties.[value] AS [ColumnDescription],

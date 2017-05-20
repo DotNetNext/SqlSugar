@@ -50,19 +50,19 @@ namespace SqlSugar
         public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.EntityPropertyName)).ToList();
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName)).ToList();
             return this;
         }
         public IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.EntityPropertyName)).ToList();
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
             return this;
         }
 
         public IInsertable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.EntityPropertyName)).ToList();
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.PropertyName)).ToList();
             return this;
         }
 
@@ -93,7 +93,7 @@ namespace SqlSugar
                 {
                     this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                     {
-                        return !identities.Any(i => it.ColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                        return !identities.Any(i => it.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
                     }).ToList();
                 }
             }
@@ -105,7 +105,7 @@ namespace SqlSugar
                 var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.EntityName).ToList();
                 this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                 {
-                    return !currentIgnoreColumns.Any(i => it.EntityPropertyName.Equals(i.EntityPropertyName, StringComparison.CurrentCulture));
+                    return !currentIgnoreColumns.Any(i => it.PropertyName.Equals(i.EntityPropertyName, StringComparison.CurrentCulture));
                 }).ToList();
             }
             #endregion
@@ -114,7 +114,7 @@ namespace SqlSugar
                 foreach (var item in this.InsertBuilder.DbColumnInfoList)
                 {
                     if (this.InsertBuilder.Parameters == null) this.InsertBuilder.Parameters = new List<SugarParameter>();
-                    this.InsertBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.ColumnName, item.Value));
+                    this.InsertBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value));
                 }
             }
         }
@@ -139,8 +139,8 @@ namespace SqlSugar
                     var columnInfo = new DbColumnInfo()
                     {
                         Value = column.PropertyInfo.GetValue(item),
-                        ColumnName = GetDbColumnName(column.PropertyName),
-                        EntityPropertyName = column.PropertyName,
+                        DbColumnName = GetDbColumnName(column.PropertyName),
+                        PropertyName = column.PropertyName,
                         TableId = i
                     };
                     insertItem.Add(columnInfo);
