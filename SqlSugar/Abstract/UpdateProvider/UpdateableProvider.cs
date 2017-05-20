@@ -118,6 +118,16 @@ namespace SqlSugar
         private void PreToSql()
         {
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
+
+            if (this.IsSingle)
+            {
+                foreach (var item in this.UpdateBuilder.DbColumnInfoList)
+                {
+                    if (this.UpdateBuilder.Parameters == null) this.UpdateBuilder.Parameters = new List<SugarParameter>();
+                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value));
+                }
+            }
+
             #region Identities
             if (!IsOffIdentity)
             {
@@ -142,14 +152,6 @@ namespace SqlSugar
                 }).ToList();
             }
             #endregion
-            if (this.IsSingle)
-            {
-                foreach (var item in this.UpdateBuilder.DbColumnInfoList)
-                {
-                    if (this.UpdateBuilder.Parameters == null) this.UpdateBuilder.Parameters = new List<SugarParameter>();
-                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value));
-                }
-            }
         }
         private string GetDbColumnName(string entityName)
         {
