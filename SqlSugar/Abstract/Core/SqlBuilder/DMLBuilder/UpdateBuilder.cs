@@ -110,19 +110,21 @@ namespace SqlSugar
         {
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
-            string columnsString = string.Join(",", groupList.First().Select(it =>
-             {
-                 if (SetValues.IsValuable()) {
-                     var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
-                     if (setValue != null&& setValue.Any()) {
-                         return setValue.First().Value;
-                     }
-                 }
-                 var result = Builder.GetTranslationColumnName(it.DbColumnName) + "=" + this.Context.Ado.SqlParameterKeyWord + it.DbColumnName;
-                 return result;
-             }));
             if (isSingle)
             {
+                string columnsString = string.Join(",", groupList.First().Select(it =>
+                {
+                    if (SetValues.IsValuable())
+                    {
+                        var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                        if (setValue != null && setValue.Any())
+                        {
+                            return setValue.First().Value;
+                        }
+                    }
+                    var result = Builder.GetTranslationColumnName(it.DbColumnName) + "=" + this.Context.Ado.SqlParameterKeyWord + it.DbColumnName;
+                    return result;
+                }));
                 string whereString = null;
                 if (this.WhereValues.IsValuable())
                 {
@@ -148,29 +150,29 @@ namespace SqlSugar
             {
                 Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
                 var whereString = string.Join(",", PrimaryKeys.Select(it => string.Format("T.{0}=S.{0}", Builder.GetTranslationColumnName(it))));
-                StringBuilder batchInsetrSql = new StringBuilder();
+                StringBuilder batchUpdateSql = new StringBuilder();
                 int pageSize = 200;
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
                 while (pageCount >= pageIndex)
                 {
-                    batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
+                    batchUpdateSql.AppendFormat(SqlTemplateBatch, GetTableNameString, "");
                     int i = 0;
                     foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
                     {
                         var isFirst = i == 0;
                         if (!isFirst)
                         {
-                            batchInsetrSql.Append(SqlTemplateBatchUnion);
+                            batchUpdateSql.Append(SqlTemplateBatchUnion);
                         }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
+                        batchUpdateSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
                         ++i;
                     }
                     pageIndex++;
-                    batchInsetrSql.Append("\r\nGO\r\n");
+                    batchUpdateSql.Append("\r\nGO\r\n");
                 }
-                return batchInsetrSql.ToString();
+                return batchUpdateSql.ToString();
             }
         }
 

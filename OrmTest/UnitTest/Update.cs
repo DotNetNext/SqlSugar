@@ -20,7 +20,7 @@ namespace OrmTest.UnitTest
         {
             var db = GetInstance();
             var updateObj = new Student() { Id = 1, Name = "jack", CreateTime = DateTime.Now };
-            var updateObjs = new List<Student>() { updateObj }.ToArray();
+            var updateObjs = new List<Student>() { updateObj,new Student() { Id=2,Name="sun" } }.ToArray();
             db.IgnoreColumns.Add("TestId", "Student");
             //db.MappingColumns.Add("id","dbid", "Student");
 
