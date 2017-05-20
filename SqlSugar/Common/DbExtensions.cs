@@ -33,10 +33,6 @@ namespace SqlSugar
         {
             if (!value.IsNullOrEmpty())
             {
-                if (Regex.IsMatch(value, @"%\d.*%|0x.+0", RegexOptions.IgnoreCase))
-                {
-                    throw new SqlSugarException(ErrorMessage.FilterError);
-                }
                 value = value.Replace("'", "''");
             }
             return value;

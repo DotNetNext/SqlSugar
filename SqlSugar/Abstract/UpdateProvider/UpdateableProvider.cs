@@ -61,20 +61,10 @@ namespace SqlSugar
             return new KeyValuePair<string, List<SugarParameter>>(sql, UpdateBuilder.Parameters);
         }
 
-        public IUpdateable<T> Update(T InsertObj)
-        {
-            return this;
-        }
-
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.EntityPropertyName)).ToList();
-            return this;
-        }
-
-        public IUpdateable<T> UpdateRange(List<T> InsertObjs)
-        {
             return this;
         }
 
@@ -127,6 +117,7 @@ namespace SqlSugar
         }
         private void PreToSql()
         {
+            UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
             #region Identities
             if (!IsOffIdentity)
             {
@@ -178,6 +169,28 @@ namespace SqlSugar
             {
                 var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
                 return mappInfo == null ? entityName : mappInfo.DbColumnName;
+            }
+        }
+        private List<string> GetPrimaryKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private List<string> GetIdentityKeys()
+        {
+            if (this.Context.IsSystemTablesConfig)
+            {
+                return this.Context.DbMaintenance.GetIsIdentities(this.EntityInfo.DbTableName);
+            }
+            else
+            {
+                return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
     }

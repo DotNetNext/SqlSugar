@@ -19,7 +19,6 @@ namespace SqlSugar
                 throw new SqlSugarException("SqlSugarException.ArgumentNullException：" + ErrorMessage.ConnectionConfigIsNull);
             }
         }
-
         public static void ArgumentNullException(object checkObj, string message)
         {
             if (checkObj == null)

@@ -13,6 +13,7 @@ namespace SqlSugar
             this.sql = new StringBuilder();
             this.DbColumnInfoList = new List<DbColumnInfo>();
             this.SetValues = new List<KeyValuePair<string, string>>();
+            this.WhereValues = new List<string>();
         }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
@@ -25,27 +26,14 @@ namespace SqlSugar
         public List<string> WhereValues { get; set; }
         public List<KeyValuePair<string, string>> SetValues { get; set; }
         public bool IsUpdateNull { get; set; }
-        public bool IsReturnIdentity { get; set; }
 
         public virtual string SqlTemplate
         {
             get
             {
-                if (IsReturnIdentity)
-                {
-                    return @"INSERT INTO {0} 
-           ({1})
-     VALUES
-           ({2}) ;SELECT SCOPE_IDENTITY();";
-                }
-                else
-                {
-                    return @"INSERT INTO {0} 
-           ({1})
-     VALUES
-           ({2}) ;";
+                return @"UPDATE {0} SET
+           {1} {2}";
 
-                }
             }
         }
 
@@ -53,10 +41,21 @@ namespace SqlSugar
         {
             get
             {
-                return "INSERT {0} ({1})";
+                return @"UPDATE S SET {{0}} FROM {0} S INNER JOIN 
+            (
+              { { 1} }
+
+            ) T ON ";
             }
         }
 
+        public virtual string SqlTemplateBatchSet
+        {
+            get
+            {
+                return "{0} AS {1}";
+            }
+        }
         public virtual string SqlTemplateBatchSelect
         {
             get
@@ -90,7 +89,10 @@ namespace SqlSugar
                 return result;
             }
         }
-        public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType,bool isMapping=true)
+
+        public List<string> PrimaryKeys { get; internal set; }
+
+        public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType, bool isMapping = true)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
             this.LambdaExpressions.Clear();
@@ -110,14 +112,34 @@ namespace SqlSugar
         {
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
-            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.ColumnName)));
+            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.ColumnName) + "=" + this.Context.Ado.SqlParameterKeyWord + it.ColumnName));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.ColumnName));
-                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+                string whereString = null;
+                if (this.WhereValues.IsValuable())
+                {
+                    foreach (var item in WhereValues)
+                    {
+                        var isFirst = whereString == null;
+                        whereString += (isFirst ? " WHERE " : " AND ");
+                        whereString += item;
+                    }
+                }
+                else if(PrimaryKeys.IsValuable())
+                {
+                    foreach (var item in PrimaryKeys)
+                    {
+                        var isFirst = whereString == null;
+                        whereString += (isFirst ? " WHERE " : " AND ");
+                        whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
+                    }
+                }
+                return string.Format(SqlTemplate, GetTableNameString, columnsString, whereString);
             }
             else
             {
+                Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
+                var whereString = string.Join(",", PrimaryKeys.Select(it => string.Format("T.{0}=S.{0}", Builder.GetTranslationColumnName(it))));
                 StringBuilder batchInsetrSql = new StringBuilder();
                 int pageSize = 200;
                 int pageIndex = 1;
