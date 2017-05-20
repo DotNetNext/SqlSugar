@@ -88,9 +88,9 @@
     <Compile Include="Realization\SqlServer\Core\DbBind\SqlServerDbBind.cs" />
     <Compile Include="Realization\SqlServer\DbFirst\SqlServerDbFirst.cs" />
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerBuilder.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerDbMaintenance.cs" />
+    <Compile Include="Realization\SqlServer\DbMaintenance\SqlServerDbMaintenance.cs" />
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerQueryBuilder.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlServerProvider.cs" />
+    <Compile Include="Realization\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Realization\SqlServer\Queryable\SqlServerQueryable.cs" />
     <Compile Include="Entities\DetaultT.cs" />
     <Compile Include="Entities\ConnectionConfig.cs" />
