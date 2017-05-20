@@ -22,6 +22,7 @@ namespace SqlSugar
         public string TableName { get; set; }
         public string TableWithString { get; set; }
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
+        public List<string> WhereValues { get; set; }
         public List<KeyValuePair<string, string>> SetValues { get; set; }
         public bool IsUpdateNull { get; set; }
         public bool IsReturnIdentity { get; set; }

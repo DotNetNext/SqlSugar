@@ -50,7 +50,8 @@ namespace SqlSugar
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            return new KeyValuePair<string, List<SugarParameter>>();
+            string sql = UpdateBuilder.ToSqlString();
+            return new KeyValuePair<string, List<SugarParameter>>(sql, UpdateBuilder.Parameters);
         }
 
         public IUpdateable<T> Update(T InsertObj)
@@ -76,6 +77,8 @@ namespace SqlSugar
         }
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
+            var expResult = UpdateBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
+            UpdateBuilder.WhereValues.Add(expResult.GetResultString());
             return this;
         }
         public IUpdateable<T> With(string lockString)
