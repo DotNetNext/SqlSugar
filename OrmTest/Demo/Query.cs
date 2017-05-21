@@ -62,6 +62,14 @@ namespace OrmTest.Demo
             //SELECT [st].[Id],[st].[SchoolId],[st].[Name],[st].[CreateTime] FROM [Student] st 
             //Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   
             //WHERE ( [sc].[Id] = @Id0 )  AND ( [st].[Id] = @Id1 )  AND (( [st].[Id] = @Id2 ) AND ( [sc].[Id] = @Id3 ))
+
+
+            //Where If
+            string name = null;
+            string name2 = "sunkaixuan";
+            var list2 = db.Queryable<Student>()
+                 .WhereIF(!string.IsNullOrEmpty(name), it => it.Name == name)
+                 .WhereIF(!string.IsNullOrEmpty(name2), it => it.Name == name2).ToList();
         }
         public static void Join()
         {
