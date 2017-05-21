@@ -19,7 +19,7 @@ namespace OrmTest.UnitTest
         public void Init()
         {
             var db = GetInstance();
-            var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") };
+            var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1"), SchoolId=0 };
             db.IgnoreColumns.Add("TestId", "Student");
             //db.MappingColumns.Add("id","dbid", "Student");
 
@@ -86,7 +86,7 @@ new List<SugarParameter>() {
 }, t6.Key, t6.Value, "Insert t6 error"
 );
 
-            var insertObj2 = new Student() { Name = null, CreateTime = Convert.ToDateTime("2010-1-1") };
+            var insertObj2 = new Student() { Name = null,SchoolId=0, CreateTime = Convert.ToDateTime("2010-1-1") };
             var t8 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ToSql();
             base.Check(@"
 INSERT INTO [Student]  

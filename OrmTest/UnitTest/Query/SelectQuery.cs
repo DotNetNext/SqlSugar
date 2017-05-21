@@ -75,7 +75,7 @@ namespace OrmTest.UnitTest
                           JoinType.Left,sc2.Id==sc.Id
                 }).Where(st => st.Id > 0)
                 .Select<School>((st) => new School() { Id = st.Id }).ToSql();
-                base.Check("SELECT  [st].[Id] AS [Id]  FROM [Student] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )  Left JOIN School sc2 ON ( [sc2].[Id] = [sc].[Id] )   WHERE ( [st].[Id] > @Id0 ) ",
+                base.Check("SELECT  [st].[Id] AS [Id]  FROM [Student] st Left JOIN School sc ON ( [st].[SchoolId] =[sc].[Id])  Left JOIN School sc2 ON ( [sc2].[Id] = [sc].[Id] )   WHERE ( [st].[Id] > @Id0 ) ",
                    new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
                     }, ss2.Key, ss2.Value, "ss2 Error");

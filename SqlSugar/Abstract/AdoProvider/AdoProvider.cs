@@ -200,7 +200,7 @@ namespace SqlSugar
         }
         public virtual int GetInt(string sql, params SugarParameter[] pars)
         {
-            return Convert.ToInt32(GetScalar(sql, pars));
+            return GetScalar(sql, pars).ObjToInt();
         }
         public virtual int GetInt(string sql, List<SugarParameter> pars)
         {
