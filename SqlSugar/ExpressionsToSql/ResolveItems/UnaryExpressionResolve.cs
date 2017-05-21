@@ -17,6 +17,8 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
                     base.Expression = expression.Operand;
                     if (base.Expression is BinaryExpression||parameter.BaseExpression is BinaryExpression)
                     {
@@ -36,10 +38,6 @@ namespace SqlSugar
                         parameter.BaseParameter.ChildExpression = base.Expression;
                         parameter.CommonTempData = null;
                     }
-                    break;
-                case ResolveExpressType.SelectSingle:
-                    break;
-                case ResolveExpressType.SelectMultiple:
                     break;
                 default:
                     break;

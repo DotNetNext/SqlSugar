@@ -63,7 +63,7 @@ namespace SqlSugar
                         base.Start();
                         parameter.Context.Result.Append(base.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
                     }
-                    else if (item is MemberExpression)
+                    else if (item is MemberExpression || item is UnaryExpression)
                     {
                         if (base.Context.Result.IsLockCurrentParameter == false)
                         {
