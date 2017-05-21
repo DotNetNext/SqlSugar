@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.Demo
 {
-    class Delete
+    public class Delete
     {
     }
 }

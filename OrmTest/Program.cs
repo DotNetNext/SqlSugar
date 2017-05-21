@@ -35,6 +35,7 @@ namespace OrmTest
 
             /***Demo***/
             OrmTest.Demo.Query.Init();
+            OrmTest.Demo.Insert.Init();
         }
     }
 }
