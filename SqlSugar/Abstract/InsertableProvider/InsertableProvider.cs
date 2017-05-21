@@ -114,7 +114,11 @@ namespace SqlSugar
                 foreach (var item in this.InsertBuilder.DbColumnInfoList)
                 {
                     if (this.InsertBuilder.Parameters == null) this.InsertBuilder.Parameters = new List<SugarParameter>();
-                    this.InsertBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value));
+                    var paramters = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value);
+                    if (InsertBuilder.IsInsertNull && paramters.Value == null) {
+                        continue;
+                    }
+                    this.InsertBuilder.Parameters.Add(paramters);
                 }
             }
         }

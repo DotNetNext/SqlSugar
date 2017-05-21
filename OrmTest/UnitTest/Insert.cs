@@ -16,12 +16,13 @@ namespace OrmTest.UnitTest
             this.Count = eachCount;
         }
 
-        public void Init() {
+        public void Init()
+        {
             var db = GetInstance();
-            var insertObj = new Student() { Name="jack",CreateTime=Convert.ToDateTime("2010-1-1")};
+            var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") };
             db.IgnoreColumns.Add("TestId", "Student");
             //db.MappingColumns.Add("id","dbid", "Student");
-           
+
             var t1 = db.Insertable(insertObj).ToSql();
             base.Check(@"INSERT INTO [Student]  
            ([SchoolId],[Name],[CreateTime])
@@ -35,11 +36,11 @@ namespace OrmTest.UnitTest
            );
 
             //Insert reutrn Command Count
-            var t2=db.Insertable(insertObj).ExecuteCommand();
+            var t2 = db.Insertable(insertObj).ExecuteCommand();
 
             db.IgnoreColumns = null;
             //Only  insert  Name 
-            var t3 = db.Insertable(insertObj).InsertColumns(it => new {it.Name}).ToSql();
+            var t3 = db.Insertable(insertObj).InsertColumns(it => new { it.Name }).ToSql();
             base.Check(@"INSERT INTO [Student]  
            ([Name])
      VALUES
@@ -49,7 +50,7 @@ namespace OrmTest.UnitTest
 
 
             //Ignore  Name and TestId
-            var t4=db.Insertable(insertObj).IgnoreColumns(it => new{ it.Name,it.TestId }).ToSql();
+            var t4 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ToSql();
             base.Check(@"INSERT INTO [Student]  
            ([SchoolId],[CreateTime])
      VALUES
@@ -72,7 +73,7 @@ new List<SugarParameter>() {
 }, t5.Key, t5.Value, "Insert t5 error"
 );
             //Use Lock
-            var t6 =db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
+            var t6 = db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
             base.Check(@"INSERT INTO [Student] WITH(UPDLOCK)  
            ([SchoolId],[Name],[CreateTime],[TestId])
      VALUES
@@ -85,8 +86,22 @@ new List<SugarParameter>() {
 }, t6.Key, t6.Value, "Insert t6 error"
 );
 
-
-            var s8 = db.Insertable(insertObj).Where(true/* Is insert null */, true/*off identity*/).ToSql();
+            var insertObj2 = new Student() { Name = null, CreateTime = Convert.ToDateTime("2010-1-1") };
+            var t8 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ToSql();
+            base.Check(@"
+INSERT INTO [Student]  
+           ([SchoolId],[CreateTime],[TestId])
+     VALUES
+           (@SchoolId,@CreateTime,@TestId) ;SELECT SCOPE_IDENTITY();",
+               new List<SugarParameter>() {
+               new SugarParameter("@SchoolId", 0),
+               new SugarParameter("@CreateTime", Convert.ToDateTime("2010-1-1")),
+               new SugarParameter("@TestId", 0)
+               },
+               t8.Key,
+               t8.Value,
+               "Insert t8 error"
+           );
 
 
             db.IgnoreColumns = new IgnoreComumnList();
@@ -96,14 +111,14 @@ new List<SugarParameter>() {
             var insertObjs = new List<Student>();
             for (int i = 0; i < 1000; i++)
             {
-                insertObjs.Add(new Student() { Name="name"+i });
+                insertObjs.Add(new Student() { Name = "name" + i });
             }
-            var s9= db.Insertable(insertObjs.ToArray()).InsertColumns(it=>new{ it.Name}).With(SqlWith.UpdLock).ToSql();
+            var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).With(SqlWith.UpdLock).ToSql();
         }
 
         public SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new SystemTablesConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection=true });
+            SqlSugarClient db = new SqlSugarClient(new SystemTablesConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
             return db;
         }
     }

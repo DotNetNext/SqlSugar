@@ -98,6 +98,10 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
+            if (IsInsertNull)
+            {
+                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
+            }
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
