@@ -22,8 +22,9 @@ namespace SqlSugar
         }
         public int ExecuteCommand()
         {
+            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
-            var paramters = DeleteBuilder.Parameters.ToArray();
+            var paramters = DeleteBuilder.Parameters==null?null:DeleteBuilder.Parameters.ToArray();
             return Db.GetInt(sql, paramters);
         }
 
@@ -105,6 +106,7 @@ namespace SqlSugar
             }
             return this;
         }
+
         public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
@@ -114,6 +116,7 @@ namespace SqlSugar
             }
             return In<PkType>(primaryKeyValues.ToArray());
         }
+
         public IDeleteable<T> In<PkType>(PkType[] primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
@@ -143,7 +146,7 @@ namespace SqlSugar
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            DeleteBuilder.TableName = this.Context.EntityProvider.GetTableName<T>();
+            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
             return new KeyValuePair<string, List<SugarParameter>>(sql, paramters);

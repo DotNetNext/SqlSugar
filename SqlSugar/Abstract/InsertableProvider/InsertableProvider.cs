@@ -124,6 +124,7 @@ namespace SqlSugar
         }
         internal void Init()
         {
+            InsertBuilder.EntityInfo = this.EntityInfo;
             Check.Exception(InsertObjs == null || InsertObjs.Count() == 0, "InsertObjs is null");
             int i = 0;
             foreach (var item in InsertObjs)

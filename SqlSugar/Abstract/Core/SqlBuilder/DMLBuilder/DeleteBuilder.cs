@@ -8,13 +8,12 @@ namespace SqlSugar
     public class DeleteBuilder : IDMLBuilder
     {
         private List<string> _WhereInfos;
-
+        public EntityInfo EntityInfo { get; set; }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public List<SugarParameter> Parameters { get; set; }
         public StringBuilder sql { get; set; }
         public ISqlBuilder Builder { get; set; }
-        public string TableName { get; set; }
         public string TableWithString { get; set; }
         public virtual List<string> WhereInfos
         {
@@ -75,7 +74,7 @@ namespace SqlSugar
         {
             get
             {
-                var result = Builder.GetTranslationTableName(TableName);
+                var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 result += PubConst.Space;
                 if (this.TableWithString.IsValuable())
                 {
