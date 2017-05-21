@@ -41,6 +41,12 @@ namespace OrmTest.Demo
             var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             }).ToPageList(pageIndex, pageSize, ref totalCount);
+
+            //top 5
+            var top5 = db.Queryable<Student>().Take(5).ToList();
+
+            //skip5
+            var skip5 = db.Queryable<Student>().Skip(5).ToList();
         }
         public static void Where()
         {
