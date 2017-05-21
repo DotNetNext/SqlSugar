@@ -19,6 +19,15 @@ namespace OrmTest.Demo
             Join();
             Funs();
             Select();
+            Ado();
+        }
+
+        private static void Ado()
+        {
+            var db = GetInstance();
+            var t1= db.Ado.SqlQuery<string>("select 'a'");
+            var t2 = db.Ado.GetInt("select 1");
+            var t3 = db.Ado.GetDataTable("select 1 as id");
         }
 
         public static void Easy()
@@ -82,7 +91,7 @@ namespace OrmTest.Demo
             //join return List<dynamic>
             var list2 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
-            }).Select<Student,School,dynamic>((st,sc)=>new { Name=st.Name }).ToList();
+            }).Select<Student,School,ViewModelStudent>((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
         }
         public static void Funs()
         {
