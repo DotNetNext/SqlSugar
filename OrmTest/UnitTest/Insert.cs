@@ -49,11 +49,28 @@ namespace OrmTest.UnitTest
 
 
             //Ignore  Name and TestId
-            var s4=db.Insertable(insertObj).IgnoreColumns(it => new{ it.Name,it.TestId }).ToSql();
+            var t4=db.Insertable(insertObj).IgnoreColumns(it => new{ it.Name,it.TestId }).ToSql();
+            base.Check(@"INSERT INTO [Student]  
+           ([SchoolId],[CreateTime])
+     VALUES
+           (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
+      new List<SugarParameter>() {
+               new SugarParameter("@SchoolId",0),
+               new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
+      }, t4.Key, t4.Value, "Insert t4 error"
+      );
 
             //Ignore  Name and TestId
-            var s5 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
-
+            var t5 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
+            base.Check(@"INSERT INTO [Student] WITH(UPDLOCK)  
+           ([SchoolId],[CreateTime])
+     VALUES
+           (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
+new List<SugarParameter>() {
+               new SugarParameter("@SchoolId",0),
+               new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
+}, t5.Key, t5.Value, "Insert t5 error"
+);
             //Use Lock
             var s6 =db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
 
