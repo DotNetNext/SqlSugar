@@ -204,14 +204,17 @@ namespace SqlSugar
             if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {
+                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
                 return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
             }
             else if (Skip == null && Take != null)
             {
+                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
                 return string.Format(PageTempalte, sql.ToString(), GetOrderByString, 1, Take.ObjToInt());
             }
             else if (Skip != null && Take != null)
             {
+                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
                 return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Take);
             }
             else

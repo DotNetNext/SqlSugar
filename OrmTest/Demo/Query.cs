@@ -32,7 +32,15 @@ namespace OrmTest.Demo
 
         public static void Page()
         {
+            var db = GetInstance();
+            var pageIndex = 1;
+            var pageSize = 2;
+            var totalCount = 0;
+            var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 
+            var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).ToPageList(pageIndex, pageSize, ref totalCount);
         }
         public static void Where()
         {
