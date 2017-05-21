@@ -65,7 +65,16 @@ namespace OrmTest.Demo
         }
         public static void Join()
         {
+            var db = GetInstance();
+            //join 
+            var list = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).ToList();
 
+            //join return List<dynamic>
+            var list2 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).Select<Student,School,dynamic>((st,sc)=>new { Name=st.Name }).ToList();
         }
         public static void Funs()
         {
