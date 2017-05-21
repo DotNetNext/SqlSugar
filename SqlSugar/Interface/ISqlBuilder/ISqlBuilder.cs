@@ -19,7 +19,9 @@ namespace SqlSugar
         UpdateBuilder UpdateBuilder { get; set; }
 
         string SqlParameterKeyWord { get; }
+
         string GetTranslationTableName(string name);
-        string GetTranslationColumnName(string name);
+        string GetTranslationColumnName(string entityName, string propertyName);
+        string GetTranslationColumnName(string propertyName);
     }
 }

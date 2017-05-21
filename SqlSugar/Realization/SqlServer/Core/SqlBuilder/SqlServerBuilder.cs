@@ -10,21 +10,29 @@ namespace SqlSugar
     {
         public override string GetTranslationTableName(string name)
         {
-            Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name Or Column Name"));
+            Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             var context = this.Context;
             var mappingInfo = context
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
             return "[" + (mappingInfo == null ? name : mappingInfo.DbTableName) + "]";
         }
-        public override string GetTranslationColumnName(string name)
+        public override string GetTranslationColumnName(string entityName, string propertyName)
         {
-            Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name Or Column Name"));
+            Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
+            Check.ArgumentNullException(propertyName, string.Format(ErrorMessage.ObjNotExist, "Column Name"));
             var context = this.Context;
             var mappingInfo = context
                  .MappingColumns
-                 .FirstOrDefault(it => it.EntityPropertyName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? "["+name+"]" : "["+mappingInfo.DbColumnName+"]");
+                 .FirstOrDefault(it => 
+                 it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase)&&
+                 it.EntityPropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            return (mappingInfo == null ? "["+ propertyName + "]" : "["+mappingInfo.DbColumnName+"]");
+        }
+
+        public override string GetTranslationColumnName(string propertyName)
+        {
+            return "[" + propertyName + "]";
         }
     }
 }

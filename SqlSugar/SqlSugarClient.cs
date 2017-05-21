@@ -253,6 +253,7 @@ namespace SqlSugar
             sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
             sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
             reval.Init();
+            reval.InsertBuilder.EntityInfo = reval.EntityInfo;
             return reval;
         }
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()

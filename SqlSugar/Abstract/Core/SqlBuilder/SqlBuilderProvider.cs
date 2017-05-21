@@ -16,8 +16,9 @@ namespace SqlSugar
         public CommandType CommandType { get; set; }
         public virtual string SqlParameterKeyWord { get { return "@"; } }
         public abstract string GetTranslationTableName(string name);
-        public abstract string GetTranslationColumnName(string name);
-
+        public abstract string GetTranslationColumnName(string entityName, string propertyName);
+        public abstract string GetTranslationColumnName(string propertyName);
+ 
         public string AppendWhereOrAnd(bool isWhere, string sqlString)
         {
             return isWhere ? (" WHERE " + sqlString ):( " AND " + sqlString);
@@ -26,6 +27,7 @@ namespace SqlSugar
         {
             return  " HAVING " + sqlString;
         }
+
 
         public DeleteBuilder DeleteBuilder
         {

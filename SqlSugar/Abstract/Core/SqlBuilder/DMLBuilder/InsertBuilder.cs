@@ -18,11 +18,11 @@ namespace SqlSugar
         public ISqlBuilder Builder { get; set; }
         public StringBuilder sql { get; set; }
         public List<SugarParameter> Parameters { get; set; }
-        public string TableName { get; set; }
         public string TableWithString { get; set; }
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
         public bool IsInsertNull { get; set; }
         public bool IsReturnIdentity { get; set; }
+        public EntityInfo EntityInfo { get;  set; }
 
         public virtual string SqlTemplate
         {
@@ -74,7 +74,7 @@ namespace SqlSugar
         {
             get
             {
-                var result = Builder.GetTranslationTableName(TableName);
+                var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 result += PubConst.Space;
                 if (this.TableWithString.IsValuable())
                 {
@@ -83,6 +83,8 @@ namespace SqlSugar
                 return result;
             }
         }
+
+
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;

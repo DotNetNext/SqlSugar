@@ -124,15 +124,6 @@ namespace SqlSugar
         }
         internal void Init()
         {
-            this.InsertBuilder.TableName = EntityInfo.EntityName;
-            if (IsMappingTable)
-            {
-                var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.EntityName == EntityInfo.EntityName);
-                if (mappingInfo != null)
-                {
-                    this.InsertBuilder.TableName = mappingInfo.DbTableName;
-                }
-            }
             Check.Exception(InsertObjs == null || InsertObjs.Count() == 0, "InsertObjs is null");
             int i = 0;
             foreach (var item in InsertObjs)
