@@ -27,6 +27,7 @@ namespace SqlSugar
         public List<KeyValuePair<string, string>> SetValues { get; set; }
         public bool IsUpdateNull { get; set; }
         public List<string> PrimaryKeys { get; set; }
+        public bool IsOffIdentity { get; set; }
 
         public virtual string SqlTemplate
         {
@@ -42,11 +43,19 @@ namespace SqlSugar
         {
             get
             {
-                return @"UPDATE S SET {0} FROM {1} S {2}   INNER JOIN 
-            (
-              {{0}}
+                return @"UPDATE S SET {0} FROM {1} S {2}   INNER JOIN ";
+            }
+        }
 
-            ) T ON {{1}}";
+        public virtual string SqlTemplateJoin
+        {
+            get
+            {
+                return @"            (
+              {0}
+
+            ) T ON {1}
+                GO ";
             }
         }
 
@@ -69,7 +78,7 @@ namespace SqlSugar
         {
             get
             {
-                return "\t\r\nUNION ALL ";
+                return "\t\t\r\nUNION ALL ";
             }
         }
 
@@ -98,6 +107,7 @@ namespace SqlSugar
                 return result;
             }
         }
+
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType, bool isMapping = true)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
@@ -120,7 +130,26 @@ namespace SqlSugar
             var isSingle = groupList.Count() == 1;
             if (isSingle)
             {
-                string columnsString = string.Join(",", groupList.First().Select(it =>
+                return ToSingleSqlString(groupList);
+            }
+            else
+            {
+                return TomultipleSqlString(groupList);
+            }
+        }
+
+        private string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        {
+            Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
+            int pageSize = 200;
+            int pageIndex = 1;
+            int totalRecord = groupList.Count;
+            int pageCount = (totalRecord + pageSize - 1) / pageSize;
+            StringBuilder batchUpdateSql = new StringBuilder();
+            while (pageCount >= pageIndex)
+            {
+                StringBuilder updateTable = new StringBuilder();
+                string setValues = string.Join(",", groupList.First().Where(it=>it.IsPrimarykey==false&&(it.IsIdentity==false||(IsOffIdentity&&it.IsIdentity))).Select(it =>
                 {
                     if (SetValues.IsValuable())
                     {
@@ -130,16 +159,30 @@ namespace SqlSugar
                             return setValue.First().Value;
                         }
                     }
-                    var result = Builder.GetTranslationColumnName(it.DbColumnName) + "=" + this.Context.Ado.SqlParameterKeyWord + it.DbColumnName;
+                    var result = string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(it.DbColumnName));
                     return result;
                 }));
+                batchUpdateSql.AppendFormat(SqlTemplateBatch.ToString(), setValues, GetTableNameStringNoWith, TableWithString);
+                int i = 0;
+                foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
+                {
+                    var isFirst = i == 0;
+                    if (!isFirst)
+                    {
+                        updateTable.Append(SqlTemplateBatchUnion);
+                    }
+                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
+                    ++i;
+                }
+                pageIndex++;
+                updateTable.Append("\r\n");
                 string whereString = null;
                 if (this.WhereValues.IsValuable())
                 {
                     foreach (var item in WhereValues)
                     {
                         var isFirst = whereString == null;
-                        whereString += (isFirst ? " WHERE " : " AND ");
+                        whereString += (isFirst ? null : " AND ");
                         whereString += item;
                     }
                 }
@@ -148,54 +191,50 @@ namespace SqlSugar
                     foreach (var item in PrimaryKeys)
                     {
                         var isFirst = whereString == null;
-                        whereString += (isFirst ? " WHERE " : " AND ");
-                        whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
+                        whereString += (isFirst ? null : " AND ");
+                        whereString += string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(item));
                     }
                 }
-                return string.Format(SqlTemplate, GetTableNameString, columnsString, whereString);
+                batchUpdateSql.AppendFormat(SqlTemplateJoin, updateTable, whereString);
             }
-            else
+            return batchUpdateSql.ToString();
+        }
+
+        private string ToSingleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        {
+            string columnsString = string.Join(",", groupList.First().Where(it => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Select(it =>
             {
-                Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
-                string setValues = string.Join(",", groupList.First().Select(it =>
+                if (SetValues.IsValuable())
                 {
-                    if (SetValues.IsValuable())
+                    var setValue = SetValues.Where(sv => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                    if (setValue != null && setValue.Any())
                     {
-                        var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
-                        if (setValue != null && setValue.Any())
-                        {
-                            return setValue.First().Value;
-                        }
+                        return setValue.First().Value;
                     }
-                    var result =string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(it.DbColumnName));
-                    return result;
-                }));
-                StringBuilder batchUpdateSql = new StringBuilder();
-                batchUpdateSql.AppendFormat(SqlTemplateBatch,setValues,GetTableNameStringNoWith, TableWithString);
-                int pageSize = 200;
-                int pageIndex = 1;
-                int totalRecord = groupList.Count;
-                int pageCount = (totalRecord + pageSize - 1) / pageSize;
-                StringBuilder updateTable = new StringBuilder();
-                while (pageCount >= pageIndex)
-                {
-               
-                    int i = 0;
-                    foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
-                    {
-                        var isFirst = i == 0;
-                        if (!isFirst)
-                        {
-                            updateTable.Append(SqlTemplateBatchUnion);
-                        }
-                        updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), it.DbColumnName))));
-                        ++i;
-                    }
-                    pageIndex++;
-                    updateTable.Append("\r\nGO\r\n");
                 }
-                return string.Format(batchUpdateSql.ToString(), updateTable.ToString(),"");
+                var result = Builder.GetTranslationColumnName(it.DbColumnName) + "=" + this.Context.Ado.SqlParameterKeyWord + it.DbColumnName;
+                return result;
+            }));
+            string whereString = null;
+            if (this.WhereValues.IsValuable())
+            {
+                foreach (var item in WhereValues)
+                {
+                    var isFirst = whereString == null;
+                    whereString += (isFirst ? " WHERE " : " AND ");
+                    whereString += item;
+                }
             }
+            else if (PrimaryKeys.IsValuable())
+            {
+                foreach (var item in PrimaryKeys)
+                {
+                    var isFirst = whereString == null;
+                    whereString += (isFirst ? " WHERE " : " AND ");
+                    whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
+                }
+            }
+            return string.Format(SqlTemplate, GetTableNameString, columnsString, whereString);
         }
 
         public object FormatValue(object value)
@@ -209,7 +248,11 @@ namespace SqlSugar
                 var type = value.GetType();
                 if (type == PubConst.DateType)
                 {
-                    return "'" + value.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.ms") + "'";
+                    var date = value.ObjToDate();
+                    if (date < Convert.ToDateTime("1900-1-1")) {
+                        date = Convert.ToDateTime("1900-1-1");
+                    }
+                    return "'" + date.ToString("yyyy-MM-dd hh:mm:ss.fff") + "'";
                 }
                 else if (type == PubConst.StringType || type == PubConst.ObjType)
                 {

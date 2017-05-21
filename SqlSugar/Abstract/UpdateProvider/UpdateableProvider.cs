@@ -14,7 +14,7 @@ namespace SqlSugar
         public ISqlBuilder SqlBuilder { get; internal set; }
         public UpdateBuilder UpdateBuilder { get; internal set; }
         public IAdo Ado { get { return Context.Ado; } }
-        public T[] UpdateObjs { get;  set; }
+        public T[] UpdateObjs { get; set; }
         public bool IsMappingTable { get { return this.Context.MappingTables != null && this.Context.MappingTables.Any(); } }
         public bool IsMappingColumns { get { return this.Context.MappingColumns != null && this.Context.MappingColumns.Any(); } }
         public bool IsSingle { get { return this.UpdateObjs.Length == 1; } }
@@ -43,13 +43,13 @@ namespace SqlSugar
         public IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression)
         {
             var expResult = UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
-            var resultString=expResult.GetResultString();
+            var resultString = expResult.GetResultString();
             LambdaExpression lambda = setValueExpression as LambdaExpression;
             var expression = lambda.Body;
             Check.Exception(!(expression is BinaryExpression), "Expression  format error");
             var leftExpression = (expression as BinaryExpression).Left;
             Check.Exception(!(leftExpression is MemberExpression), "Expression  format error");
-            var leftResultString=UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.WhereSingle).GetString();
+            var leftResultString = UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.WhereSingle).GetString();
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(leftResultString, resultString));
             return this;
         }
@@ -64,12 +64,22 @@ namespace SqlSugar
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.PropertyName)).ToList();
+            List<string> primaryKeys = GetPrimaryKeys();
+            foreach (var item in this.UpdateBuilder.DbColumnInfoList)
+            {
+                var mappingInfo = primaryKeys.SingleOrDefault(i => item.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                if (mappingInfo != null && mappingInfo.Any())
+                {
+                    item.IsPrimarykey = true;
+                }
+            }
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.PropertyName)||it.IsPrimarykey==true).ToList();
             return this;
         }
 
-        public IUpdateable<T> Where(bool isUpdateNull)
+        public IUpdateable<T> Where(bool isUpdateNull,bool IsOffIdentity=false)
         {
+            UpdateBuilder.IsOffIdentity = IsOffIdentity;
             return this;
         }
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
@@ -118,30 +128,6 @@ namespace SqlSugar
         private void PreToSql()
         {
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
-
-            if (this.IsSingle)
-            {
-                foreach (var item in this.UpdateBuilder.DbColumnInfoList)
-                {
-                    if (this.UpdateBuilder.Parameters == null) this.UpdateBuilder.Parameters = new List<SugarParameter>();
-                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value));
-                }
-            }
-
-            #region Identities
-            if (!IsOffIdentity)
-            {
-                List<string> identities = GetIdentityKeys();
-                if (identities != null && identities.Any())
-                {
-                    this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it =>
-                    {
-                        return !identities.Any(i => it.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
-                    }).ToList();
-                }
-            }
-            #endregion
-
             #region IgnoreColumns
             if (this.Context.IgnoreColumns != null && this.Context.IgnoreColumns.Any())
             {
@@ -152,6 +138,42 @@ namespace SqlSugar
                 }).ToList();
             }
             #endregion
+            if (this.IsSingle)
+            {
+                foreach (var item in this.UpdateBuilder.DbColumnInfoList)
+                {
+                    if (this.UpdateBuilder.Parameters == null) this.UpdateBuilder.Parameters = new List<SugarParameter>();
+                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value));
+                }
+            }
+
+            #region Identities
+            List<string> identities = GetIdentityKeys();
+            if (identities != null && identities.Any())
+            {
+                this.UpdateBuilder.DbColumnInfoList.ForEach(it =>
+                {
+                    var mappingInfo = identities.SingleOrDefault(i => it.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                    if (mappingInfo != null && mappingInfo.Any())
+                    {
+                        it.IsIdentity = true;
+                    }
+                });
+            }
+            #endregion
+            List<string> primaryKey = GetPrimaryKeys();
+            if (primaryKey != null && primaryKey.Count > 0)
+            {
+                this.UpdateBuilder.DbColumnInfoList.ForEach(it =>
+                {
+                    var mappingInfo = primaryKey.SingleOrDefault(i => it.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                    if (mappingInfo != null && mappingInfo.Any())
+                    {
+                        it.IsPrimarykey = true;
+                    }
+                });
+            }
+
         }
         private string GetDbColumnName(string entityName)
         {

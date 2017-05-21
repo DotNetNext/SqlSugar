@@ -19,35 +19,65 @@ namespace OrmTest.UnitTest
         public void Init()
         {
             var db = GetInstance();
-            var updateObj = new Student() { Id = 1, Name = "jack", CreateTime = DateTime.Now };
+            var updateObj = new Student() { Id = 1, Name = "jack", CreateTime = Convert.ToDateTime("2017-05-21 09:56:12.610") };
             var updateObjs = new List<Student>() { updateObj,new Student() { Id=2,Name="sun" } }.ToArray();
             db.IgnoreColumns.Add("TestId", "Student");
             //db.MappingColumns.Add("id","dbid", "Student");
 
-            var s1 = db.Updateable(updateObj).ToSql();
+            var t1 = db.Updateable(updateObj).ToSql();
+            base.Check(@"UPDATE [Student]  SET
+           [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime  WHERE [Id]=@Id", new List<SugarParameter>() {
+                           new SugarParameter("@SchoolId",0),
+                           new SugarParameter("@Id",1),
+                           new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
+                           new SugarParameter("@Name", "jack")
+            }, t1.Key, t1.Value,"Update t1 error");
 
             //update reutrn Command Count
-            var s2 = db.Updateable(updateObj).ExecuteCommand();
+            var t2 = db.Updateable(updateObj).ExecuteCommand();
 
             db.IgnoreColumns = null;
             //Only  update  Name 
-            var s3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ToSql();
+            var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ToSql();
+            base.Check(@"UPDATE [Student]  SET
+           [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
+                           new SugarParameter("@Id",1),
+                           new SugarParameter("@Name", "jack")
+            }, t3.Key, t3.Value, "Update t3 error");
 
             //Ignore  Name and TestId
-            var s4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ToSql();
+            var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ToSql();
+            base.Check(@"UPDATE [Student]  SET
+           [SchoolId]=@SchoolId,[CreateTime]=@CreateTime  WHERE [Id]=@Id", new List<SugarParameter>() {
+                           new SugarParameter("@CreateTime",Convert.ToDateTime("2017-05-21 09:56:12.610")),
+                           new SugarParameter("@SchoolId", 0),
+                           new SugarParameter("@Id",1),
+            }, t4.Key, t4.Value, "Update t4 error");
 
             //Ignore  Name and TestId
-            var s5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
+            var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
+            base.Check(@"UPDATE [Student] WITH(UPDLOCK)  SET
+           [SchoolId]=@SchoolId,[CreateTime]=@CreateTime  WHERE [Id]=@Id", new List<SugarParameter>() {
+                           new SugarParameter("@CreateTime",Convert.ToDateTime("2017-05-21 09:56:12.610")),
+                           new SugarParameter("@SchoolId", 0),
+                           new SugarParameter("@Id",1),
+            }, t5.Key, t5.Value, "Update t5 error");
+
 
             //Use Lock
-            var s6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ToSql();
+            var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ToSql();
+            base.Check(@"UPDATE [Student] WITH(UPDLOCK)  SET
+           [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime,[TestId]=@TestId  WHERE [Id]=@Id", new List<SugarParameter>() {
+                           new SugarParameter("@SchoolId",0),
+                           new SugarParameter("@Id",1),
+                           new SugarParameter("@TestId",0),
+                           new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
+                           new SugarParameter("@Name", "jack")
+            }, t6.Key, t6.Value, "Update t6 error");
 
-            //ToSql
-            var s7 = db.Updateable(updateObj).With(SqlWith.UpdLock)
-                .UpdateColumns(it => new { it.Name }).ToSql();
 
             //update List<T>
-            var s8 = db.Updateable(updateObjs).With(SqlWith.UpdLock).ToSql();
+            var t7 = db.Updateable(updateObjs).With(SqlWith.UpdLock).ToSql();
 
             //Re Set Value
             var s9 = db.Updateable(updateObj)
