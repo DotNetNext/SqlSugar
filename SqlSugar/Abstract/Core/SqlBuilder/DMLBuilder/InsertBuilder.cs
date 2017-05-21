@@ -130,7 +130,7 @@ namespace SqlSugar
                         ++i;
                     }
                     pageIndex++;
-                    batchInsetrSql.Append("\r\nGO\r\n");
+                    batchInsetrSql.Append("\r\n;\r\n");
                 }
                 return batchInsetrSql.ToString();
             }
