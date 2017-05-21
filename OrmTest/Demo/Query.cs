@@ -47,6 +47,8 @@ namespace OrmTest.Demo
             var t1= db.Ado.SqlQuery<string>("select 'a'");
             var t2 = db.Ado.GetInt("select 1");
             var t3 = db.Ado.GetDataTable("select 1 as id");
+            //more
+            //db.Ado.GetXXX...
         }
 
         public static void Easy()
