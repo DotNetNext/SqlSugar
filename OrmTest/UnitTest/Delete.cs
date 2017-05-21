@@ -48,6 +48,9 @@ namespace OrmTest
 
             //by expression
             var t5 = db.Deleteable<Student>().Where(it=>it.Id==1).ToSql();
+            base.Check(@"DELETE FROM [Student] WHERE ( [Id] = @Id0 ) ", new List<SugarParameter>() {
+                new SugarParameter("@Id0",1)
+            }, t5.Key, t5.Value, "Delte t5 error");
         }
 
         public SqlSugarClient GetInstance()
