@@ -104,8 +104,19 @@ UNION ALL
            );
 
             //Where By Expression
-            var s10 = db.Updateable(updateObj)
+            var t9 = db.Updateable(updateObj)
            .Where(it => it.Id==1).ToSql();
+           base.Check(@"UPDATE [Student]  SET
+           [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime,[TestId]=@TestId  WHERE ( [Id] = @Id0 )",
+          new List<SugarParameter>() {
+                           new SugarParameter("@SchoolId",0),
+                           new SugarParameter("@Id",1),
+                           new SugarParameter("@Id0",1),
+                           new SugarParameter("@TestId",0),
+                           new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
+                           new SugarParameter("@Name", "jack") },t9.Key,t9.Value,"Upate t9 error"
+           );
+
         }
 
         public SqlSugarClient GetInstance()
