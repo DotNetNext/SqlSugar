@@ -25,7 +25,7 @@ namespace SqlSugar
         public int ExecuteCommand()
         {
             PreToSql();
-            return this.Ado.ExecuteCommand(UpdateBuilder.ToSqlString(), UpdateBuilder.Parameters.ToArray());
+            return this.Ado.ExecuteCommand(UpdateBuilder.ToSqlString(), UpdateBuilder.Parameters==null?null:UpdateBuilder.Parameters.ToArray());
         }
 
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
