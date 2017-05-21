@@ -30,7 +30,10 @@ namespace OrmTest.Demo
                 .GroupBy(it => it.Name)
                 .GroupBy(it => it.Id).Having(it => NBORM.AggregateAvg(it.Id) > 0)
                 .Select(it => new { idAvg = NBORM.AggregateAvg(it.Id), name = it.Name }).ToList();
-            
+
+            //SQL:
+            //SELECT AVG([Id]) AS[idAvg], [Name] AS[name]  FROM[Student] GROUP BY[Name],[Id] HAVING(AVG([Id]) > 0 )
+ 
             //NBORM.AggregateSum(object thisValue) 
             //NBORM.AggregateAvg<TResult>(TResult thisValue)
             //NBORM.AggregateMin(object thisValue) 
@@ -151,6 +154,7 @@ namespace OrmTest.Demo
         public static void Select()
         {
             var db = GetInstance();
+            db.IgnoreColumns.Add("TestId", "Student");
             var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
             var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
             var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
