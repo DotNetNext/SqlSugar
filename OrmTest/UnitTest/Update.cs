@@ -90,15 +90,16 @@ UNION ALL
 
             //Re Set Value
             var t8 = db.Updateable(updateObj)
-                .ReSetValue(it=>it.Name==(it.SchoolId+"")).ToSql();
+                .ReSetValue(it=>it.Name==(it.Name+1)).ToSql();
             base.Check(@"UPDATE [Student]  SET
-           [SchoolId] = @SchoolId, ( [Name] = (@Const0)),[CreateTime] = @CreateTime,[TestId] = @TestId  WHERE[Id] = @Id",
+           [SchoolId]=@SchoolId, [Name] =( [Name] + @Const0 ),[CreateTime]=@CreateTime,[TestId]=@TestId  WHERE [Id]=@Id",
             new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
                            new SugarParameter("@Id",1),
                            new SugarParameter("@TestId",0),
                            new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
-                           new SugarParameter("@Const0", "jack")
+                           new SugarParameter("@Const0", 1),
+                           new SugarParameter("@Name", "jack")
             }, t8.Key, t8.Value, "Update t8 error"
            );
 

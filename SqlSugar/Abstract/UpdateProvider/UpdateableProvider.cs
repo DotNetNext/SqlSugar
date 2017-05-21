@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -43,7 +44,7 @@ namespace SqlSugar
         public IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression)
         {
             var expResult = UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
-            var resultString = expResult.GetResultString();
+            var resultString =Regex.Match(expResult.GetResultString(),@"\((.+)\)").Groups[1].Value;
             LambdaExpression lambda = setValueExpression as LambdaExpression;
             var expression = lambda.Body;
             Check.Exception(!(expression is BinaryExpression), "Expression  format error");
