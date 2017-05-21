@@ -55,7 +55,7 @@ namespace SqlSugar
               {0}
 
             ) T ON {1}
-                GO ";
+                ; ";
             }
         }
 

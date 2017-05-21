@@ -82,11 +82,11 @@ namespace OrmTest.UnitTest
               
  SELECT N'1' AS Id,N'0' AS SchoolId,N'jack' AS Name,'2017-05-21 09:56:12.610' AS CreateTime,N'0' AS TestId		
 UNION ALL 
- SELECT N'2' AS Id,N'0' AS SchoolId,N'sun' AS Name,'1900-01-01 12:00:00.000' AS CreateTime,N'0' AS TestId
+ SELECT N'2' AS Id,N'0' AS SchoolId,N'sun' AS Name,NULL AS CreateTime,N'0' AS TestId
 
 
             ) T ON S.[Id]=T.[Id]
-                GO ", null, t7.Key, null,"Update t7 error");
+                ; ", null, t7.Key, null,"Update t7 error");
 
             //Re Set Value
             var t8 = db.Updateable(updateObj)

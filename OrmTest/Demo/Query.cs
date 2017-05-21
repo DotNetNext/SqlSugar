@@ -21,6 +21,7 @@ namespace OrmTest.Demo
             Select();
             Ado();
             Group();
+            Sqlable();
         }
 
         private static void Group()
@@ -170,6 +171,18 @@ namespace OrmTest.Demo
             var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
             var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
         }
+
+        private static void Sqlable()
+        {
+            var db = GetInstance();
+            var join3 = db.Queryable("Student", "st")
+                          .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
+                          .Where("st.id>@id")
+                          .AddParameters(new { id = 1 })
+                          .Select("st.*").ToList();
+          //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
+        }
+
 
         public static SqlSugarClient GetInstance()
         {
