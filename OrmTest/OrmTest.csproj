@@ -56,6 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="Demo\Delete.cs" />
+    <Compile Include="Demo\Insert.cs" />
+    <Compile Include="Demo\Query.cs" />
+    <Compile Include="Demo\Update.cs" />
     <Compile Include="Models\ViewModelStudent.cs" />
     <Compile Include="PerformanceTesting\ChloeORMPerformance.cs" />
     <Compile Include="PerformanceTesting\PerformanceBase.cs" />
@@ -90,9 +94,7 @@
       <Name>SqlSugar</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Demo\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

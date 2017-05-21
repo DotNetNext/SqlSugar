@@ -44,6 +44,11 @@ namespace SqlSugar
             QueryBuilder.Parameters.AddRange(pars);
             return this;
         }
+        public ISugarQueryable<T> AddParameters(SugarParameter par)
+        {
+            QueryBuilder.Parameters.Add(par);
+            return this;
+        }
 
         public ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
         {
@@ -222,8 +227,8 @@ namespace SqlSugar
                 {
                     var whereIndex = QueryBuilder.WhereIndex;
                     string parameterName = this.SqlBuilder.SqlParameterKeyWord + "InPara" + whereIndex;
+                    this.AddParameters(new SugarParameter(parameterName, inValues[0]));
                     this.Where(string.Format(QueryBuilder.InTemplate, filed, parameterName));
-                    this.AddParameters(new SqlParameter(parameterName, inValues[0]));
                     QueryBuilder.WhereIndex++;
                 }
                 else
