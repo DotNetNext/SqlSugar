@@ -21,15 +21,33 @@ namespace OrmTest
         {
             var db = GetInstance();
             //by entity
-            var s1= db.Deleteable<Student>().Where(new Student() { Id = 1 }).ToSql();
+            var t1= db.Deleteable<Student>().Where(new Student() { Id = 1 }).ToSql();
+            base.Check(@"DELETE FROM [Student] WHERE Id IN ('1') ",
+               null,
+               t1.Key,
+               null, "Delte t1 error"
+           );
             //use lock
-            var s2 = db.Deleteable<Student>().With(SqlWith.RowLock).ToSql();
+            var t2 = db.Deleteable<Student>().With(SqlWith.RowLock).ToSql();
+            base.Check(@"DELETE FROM [Student] WITH(ROWLOCK) ",
+               null,
+               t2.Key,
+               null, "Delte t2 error"
+           );
+
             //by primary key
-            var s3 = db.Deleteable<Student>().In(1).ToSql();
+            var t3 = db.Deleteable<Student>().In(1).ToSql();
+            base.Check(@"DELETE FROM [Student] WHERE Id IN ('1') ",
+               null,
+               t3.Key,
+               null, "Delte tt error"
+           );
             //by primary key array
-            var s4 = db.Deleteable<Student>().In(new int[] { 1,2}).ToSql();
+            var t4 = db.Deleteable<Student>().In(new int[] { 1,2}).ToSql();
+            base.Check(@"DELETE FROM [Student] WHERE Id IN ('1','2') ", null, t4.Key, null, "Update t4 error");
+
             //by expression
-            var s5 = db.Deleteable<Student>().Where(it=>it.Id==1).ToSql();
+            var t5 = db.Deleteable<Student>().Where(it=>it.Id==1).ToSql();
         }
 
         public SqlSugarClient GetInstance()
