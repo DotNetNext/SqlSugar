@@ -20,6 +20,22 @@ namespace OrmTest.Demo
             Funs();
             Select();
             Ado();
+            Group();
+        }
+
+        private static void Group()
+        {
+            var db = GetInstance();
+            var list = db.Queryable<Student>()
+                .GroupBy(it => it.Name)
+                .GroupBy(it => it.Id).Having(it => NBORM.AggregateAvg(it.Id) > 0)
+                .Select(it => new { idAvg = NBORM.AggregateAvg(it.Id), name = it.Name }).ToList();
+            
+            //NBORM.AggregateSum(object thisValue) 
+            //NBORM.AggregateAvg<TResult>(TResult thisValue)
+            //NBORM.AggregateMin(object thisValue) 
+            //NBORM.AggregateMax(object thisValue) 
+            //NBORM.AggregateCount(object thisValue) 
         }
 
         private static void Ado()
@@ -95,11 +111,51 @@ namespace OrmTest.Demo
         }
         public static void Funs()
         {
+            var db = GetInstance();
+            var t1 = db.Queryable<Student>().Where(it => NBORM.ToLower(it.Name) == NBORM.ToLower("JACK")).ToList();
+            //SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
 
-        }
+            /***More Functions***/
+            //NBORM.IsNullOrEmpty(object thisValue)
+            //NBORM.ToLower(object thisValue) 
+            //NBORM.string ToUpper(object thisValue) 
+            //NBORM.string Trim(object thisValue) 
+            //NBORM.bool Contains(string thisValue, string parameterValue) 
+            //NBORM.ContainsArray(object[] thisValue, string parameterValue) 
+            //NBORM.StartsWith(object thisValue, string parameterValue) 
+            //NBORM.EndsWith(object thisValue, string parameterValue)
+            //NBORM.Equals(object thisValue, object parameterValue) 
+            //NBORM.DateIsSame(DateTime date1, DateTime date2)
+            //NBORM.DateIsSame(DateTime date1, DateTime date2, DateType dataType) 
+            //NBORM.DateAdd(DateTime date, int addValue, DateType millisecond) 
+            //NBORM.DateAdd(DateTime date, int addValue) 
+            //NBORM.DateValue(DateTime date, DateType dataType) 
+            //NBORM.Between(object value, object start, object end) 
+            //NBORM.ToInt32(object value) 
+            //NBORM.ToInt64(object value)
+            //NBORM.ToDate(object value) 
+            //NBORM.ToString(object value) 
+            //NBORM.ToDecimal(object value) 
+            //NBORM.ToGuid(object value) 
+            //NBORM.ToDouble(object value) 
+            //NBORM.ToBool(object value) 
+            //NBORM.Substring(object value, int index, int length)
+            //NBORM.Replace(object value, string oldChar, string newChar)
+            //NBORM.Length(object value) { throw new NotImplementedException(); }
+            //NBORM.AggregateSum(object thisValue) 
+            //NBORM.AggregateAvg<TResult>(TResult thisValue)
+            //NBORM.AggregateMin(object thisValue) 
+            //NBORM.AggregateMax(object thisValue) 
+            //NBORM.AggregateCount(object thisValue) 
+    }
         public static void Select()
         {
-
+            var db = GetInstance();
+            var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
+            var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
+            var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
+            var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
+            var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
         }
 
         public static SqlSugarClient GetInstance()
