@@ -78,10 +78,29 @@ namespace OrmTest.UnitTest
 
             //update List<T>
             var t7 = db.Updateable(updateObjs).With(SqlWith.UpdLock).ToSql();
+            base.Check(@"UPDATE S SET S.[SchoolId]=T.[SchoolId],S.[Name]=T.[Name],S.[CreateTime]=T.[CreateTime],S.[TestId]=T.[TestId] FROM [Student] S WITH(UPDLOCK)   INNER JOIN             (
+              
+ SELECT N'1' AS Id,N'0' AS SchoolId,N'jack' AS Name,'2017-05-21 09:56:12.610' AS CreateTime,N'0' AS TestId		
+UNION ALL 
+ SELECT N'2' AS Id,N'0' AS SchoolId,N'sun' AS Name,'1900-01-01 12:00:00.000' AS CreateTime,N'0' AS TestId
+
+
+            ) T ON S.[Id]=T.[Id]
+                GO ", null, t7.Key, null,"Update t7 error");
 
             //Re Set Value
-            var s9 = db.Updateable(updateObj)
+            var t8 = db.Updateable(updateObj)
                 .ReSetValue(it=>it.Name==(it.SchoolId+"")).ToSql();
+            base.Check(@"UPDATE [Student]  SET
+           [SchoolId] = @SchoolId, ( [Name] = (@Const0)),[CreateTime] = @CreateTime,[TestId] = @TestId  WHERE[Id] = @Id",
+            new List<SugarParameter>() {
+                           new SugarParameter("@SchoolId",0),
+                           new SugarParameter("@Id",1),
+                           new SugarParameter("@TestId",0),
+                           new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
+                           new SugarParameter("@Const0", "jack")
+            }, t8.Key, t8.Value, "Update t8 error"
+           );
 
             //Where By Expression
             var s10 = db.Updateable(updateObj)
