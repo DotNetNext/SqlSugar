@@ -72,12 +72,19 @@ new List<SugarParameter>() {
 }, t5.Key, t5.Value, "Insert t5 error"
 );
             //Use Lock
-            var s6 =db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
+            var t6 =db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
+            base.Check(@"INSERT INTO [Student] WITH(UPDLOCK)  
+           ([SchoolId],[Name],[CreateTime],[TestId])
+     VALUES
+           (@SchoolId,@Name,@CreateTime,@TestId) ;SELECT SCOPE_IDENTITY();",
+new List<SugarParameter>() {
+               new SugarParameter("@SchoolId",0),
+               new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
+               new SugarParameter("@Name","jack"),
+               new SugarParameter("@TestId",0)
+}, t6.Key, t6.Value, "Insert t6 error"
+);
 
-
-            //ToSql
-            var s7= db.Insertable(insertObj).With(SqlWith.UpdLock)
-                .InsertColumns(it => new { it.Name }).ToSql();
 
             var s8 = db.Insertable(insertObj).Where(true/* Is insert null */, true/*off identity*/).ToSql();
 
