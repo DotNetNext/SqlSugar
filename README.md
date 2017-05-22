@@ -17,3 +17,22 @@
   var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
 ``` 
 
+###1.3 Page
+```c
+var pageIndex = 1;
+var pageSize = 2;
+var totalCount = 0;
+//page
+var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
+
+//page join
+var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
+JoinType.Left,st.SchoolId==sc.Id
+}).ToPageList(pageIndex, pageSize, ref totalCount);
+
+//top 5
+var top5 = db.Queryable<Student>().Take(5).ToList();
+
+//skip5
+var skip5 = db.Queryable<Student>().Skip(5).ToList();
+``` 
