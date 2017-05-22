@@ -3,7 +3,8 @@
 
 ##Query Create Connection
 ```c
-     SqlSugarClient db = new SqlSugarClient(new SystemTableConfig() { ConnectionString = Config.ConnectionString, DbType =     DbType.SqlServer, IsAutoCloseConnection = true });
+     SqlSugarClient db = new SqlSugarClient(new SystemTableConfig() 
+     { ConnectionString = Config.ConnectionString, DbType =DbType.SqlServer, IsAutoCloseConnection = true });
 ```
 
 ## Introduction
