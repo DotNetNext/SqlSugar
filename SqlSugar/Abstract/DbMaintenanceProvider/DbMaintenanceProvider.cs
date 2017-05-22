@@ -84,7 +84,7 @@ namespace SqlSugar
         }
         private bool IsSystemTables()
         {
-            var isSystemTables = Context.CurrentConnectionConfig is SystemTablesConfig;
+            var isSystemTables = Context.CurrentConnectionConfig is SystemTableConfig;
             return isSystemTables;
         }
         #endregion

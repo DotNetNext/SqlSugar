@@ -186,7 +186,7 @@ namespace OrmTest.Demo
 
         public static SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new SystemTablesConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new SystemTableConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
             db.Ado.IsEnableLogEvent = true;
             db.Ado.LogEventStarting = (sql, pars) =>
             {

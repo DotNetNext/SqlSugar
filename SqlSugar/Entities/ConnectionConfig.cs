@@ -12,7 +12,7 @@ namespace SqlSugar
         bool IsAutoCloseConnection { get; set; }
     }
 
-    public class SystemTablesConfig : IConnectionConfig
+    public class SystemTableConfig : IConnectionConfig
     {
         public string DbType { get; set; }
         public string ConnectionString { get; set; }

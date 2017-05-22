@@ -20,7 +20,7 @@ namespace SqlSugar
         {
             get
             {
-                return this.CurrentConnectionConfig is SystemTablesConfig;
+                return this.CurrentConnectionConfig is SystemTableConfig;
             }
         }
         #endregion
@@ -30,7 +30,7 @@ namespace SqlSugar
         /// If you have system table permissions, use this
         /// </summary>
         /// <param name="config"></param>
-        public SqlSugarClient(SystemTablesConfig config)
+        public SqlSugarClient(SystemTableConfig config)
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
@@ -53,7 +53,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="masterConnectionConfig"></param>
         /// <param name="slaveConnectionConfigs"></param>
-        public SqlSugarClient(SystemTablesConfig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
+        public SqlSugarClient(SystemTableConfig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
         {
             base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;
