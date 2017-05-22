@@ -115,7 +115,7 @@ namespace SqlSugar
                 {
                     var columnInfo = new DbColumnInfo()
                     {
-                        Value = column.PropertyInfo.GetValue(item),
+                        Value = column.PropertyInfo.GetValue(item,null),
                         DbColumnName = GetDbColumnName(column.PropertyName),
                         PropertyName = column.PropertyName,
                         TableId = i

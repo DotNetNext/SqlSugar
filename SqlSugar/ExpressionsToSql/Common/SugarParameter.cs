@@ -65,6 +65,11 @@ namespace SqlSugar
             get; set;
         }
 
+        public override DataRowVersion SourceVersion
+        {
+            get;set;
+        }
+
         public override void ResetDbType()
         {
             this.DbType = System.Data.DbType.String;
