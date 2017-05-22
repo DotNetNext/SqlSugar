@@ -20,11 +20,13 @@ namespace SqlSugar
         {
             get
             {
-              return  this.SqlBuilder.QueryBuilder;
+                return this.SqlBuilder.QueryBuilder;
             }
         }
-        public EntityInfo EntityInfo {
-            get {
+        public EntityInfo EntityInfo
+        {
+            get
+            {
                 return this.Context.EntityProvider.GetEntityInfo<T>();
             }
         }
@@ -110,7 +112,8 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> Having(Expression<Func<T, bool>> expression) {
+        public ISugarQueryable<T> Having(Expression<Func<T, bool>> expression)
+        {
             this._Having(expression);
             return this;
         }
@@ -204,7 +207,7 @@ namespace SqlSugar
                 Where("1=2 ");
                 return this;
             }
-            var pks = GetPrimaryKeys().Select(it=> SqlBuilder.GetTranslationTableName(it)).ToList();
+            var pks = GetPrimaryKeys().Select(it => SqlBuilder.GetTranslationTableName(it)).ToList();
             Check.Exception(pks == null || pks.Count != 1, "Queryable.In(params object[] pkValues): Only one primary key");
             string filed = pks.FirstOrDefault();
             string shortName = QueryBuilder.TableShortName == null ? null : (QueryBuilder.TableShortName + ".");
@@ -285,10 +288,15 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> OrderBy<T2>(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T2> OrderBy<T2>(Expression<Func<T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
             this._OrderBy(expression, type);
-            return this;
+            var reval = InstanceFactory.GetQueryable<T2>(this.Context.CurrentConnectionConfig);
+            reval.Context = this.Context;
+            reval.SqlBuilder = this.SqlBuilder;
+            reval.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
+            reval.SqlBuilder.QueryBuilder.SelectValue = expression;
+            return reval;
         }
 
         public ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
@@ -296,7 +304,16 @@ namespace SqlSugar
             _GroupBy(expression);
             return this;
         }
-
+        public ISugarQueryable<T2> GroupBy<T2>(Expression<Func<T2, object>> expression)
+        {
+            _GroupBy(expression);
+            var reval = InstanceFactory.GetQueryable<T2>(this.Context.CurrentConnectionConfig);
+            reval.Context = this.Context;
+            reval.SqlBuilder = this.SqlBuilder;
+            reval.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
+            reval.SqlBuilder.QueryBuilder.SelectValue = expression;
+            return reval;
+        }
         public ISugarQueryable<T> GroupBy(string groupFileds)
         {
             var croupByValue = QueryBuilder.GroupByValue;
@@ -607,7 +624,7 @@ namespace SqlSugar
                 var tType = typeof(TResult);
                 if (tType.IsAnonymousType() || isComplexModel)
                 {
-                    result= this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
+                    result = this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
                 }
                 else
                 {
