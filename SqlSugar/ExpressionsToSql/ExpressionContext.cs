@@ -71,15 +71,15 @@ namespace SqlSugar
         #endregion
 
         #region public functions
-        public virtual string GetTranslationTableName(string name, bool isMapping = true)
+        public virtual string GetTranslationTableName(string entityName, bool isMapping = true)
         {
-            Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name Or Column Name"));
-            if (IsTranslationText(name)) return name;
+            Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
+            if (IsTranslationText(entityName)) return entityName;
             if (isMapping && this.MappingTables.IsValuable())
             {
-                if (name.Contains("."))
+                if (entityName.Contains("."))
                 {
-                    var columnInfo = name.Split('.');
+                    var columnInfo = entityName.Split('.');
                     var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
                     if (mappingInfo != null)
                     {
@@ -89,57 +89,47 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-                    return "[" + (mappingInfo == null ? name : mappingInfo.EntityName) + "]";
+                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
+                    return "[" + (mappingInfo == null ? entityName : mappingInfo.EntityName) + "]";
                 }
             }
             else
             {
-                if (name.Contains("."))
+                if (entityName.Contains("."))
                 {
-                    return string.Join(".", name.Split('.').Select(it => GetTranslationText(it)));
+                    return string.Join(".", entityName.Split('.').Select(it => GetTranslationText(it)));
                 }
                 else
                 {
-                    return GetTranslationText(name);
+                    return GetTranslationText(entityName);
                 }
             }
         }
-        public virtual string GetTranslationColumnName(string name, bool isMapping = true)
+        public virtual string GetTranslationColumnName(string columnName)
         {
-            Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name Or Column Name"));
-            if (IsTranslationText(name)) return name;
-            if (isMapping && this.MappingColumns.IsValuable())
+            Check.ArgumentNullException(columnName, string.Format(ErrorMessage.ObjNotExist, "column Name"));
+            if (IsTranslationText(columnName)) return columnName;
+            if (columnName.Contains("."))
             {
-                if (name.Contains("."))
-                {
-                    var columnInfo = name.Split('.');
-                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.PropertyName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
-                    if (mappingInfo != null)
-                    {
-                        columnInfo[columnInfo.Length - 1] = mappingInfo.DbColumnName;
-                    }
-                    return string.Join(".", columnInfo.Select(it => GetTranslationText(it)));
-                }
-                else
-                {
-                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.PropertyName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-                    return "[" + (mappingInfo == null ? name : mappingInfo.DbColumnName) + "]";
-                }
+                return string.Join(".", columnName.Split('.').Select(it => GetTranslationText(it)));
             }
             else
             {
-                if (name.Contains("."))
-                {
-                    return string.Join(".", name.Split('.').Select(it => GetTranslationText(it)));
-                }
-                else
-                {
-                    return GetTranslationText(name);
-                }
+                return GetTranslationText(columnName);
             }
         }
-
+        public virtual string GetDbColumnName(string entityName, string propertyName)
+        {
+            if (this.MappingColumns.IsValuable())
+            {
+                var mappingInfo = this.MappingColumns.SingleOrDefault(it => it.EntityName == entityName && it.PropertyName == propertyName);
+                return mappingInfo == null ? propertyName : mappingInfo.DbColumnName;
+            }
+            else
+            {
+                return propertyName;
+            }
+        }
         public virtual bool IsTranslationText(string name)
         {
             return name.Contains("[") && name.Contains("]");
@@ -157,11 +147,11 @@ namespace SqlSugar
         }
         public virtual string GetAsString(string asName, string fieldValue)
         {
-            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldValue), "AS", GetTranslationColumnName(asName, false));
+            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldValue), "AS", GetTranslationColumnName(asName));
         }
         public virtual string GetAsString(string asName, string fieldValue, string fieldShortName)
         {
-            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldShortName + "." + fieldValue), "AS", GetTranslationTableName(asName, false));
+            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldShortName + "." + fieldValue), "AS", GetTranslationColumnName(asName));
         }
         public virtual void Clear()
         {

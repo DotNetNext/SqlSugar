@@ -111,13 +111,16 @@ namespace SqlSugar
         {
             string shortName = expression.Expression.ToString();
             string fieldName = expression.Member.Name;
+            fieldName=this.Context.GetDbColumnName(expression.Expression.Type.Name, fieldName);
             fieldName =Context.GetTranslationColumnName(shortName + "." + fieldName);
             return fieldName;
         }
 
         private string getSingleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
         {
-            string fieldName = Context.GetTranslationColumnName(expression.Member.Name);
+            string fieldName = expression.Member.Name;
+            fieldName = this.Context.GetDbColumnName(expression.Expression.Type.Name, fieldName);
+            fieldName = Context.GetTranslationColumnName(fieldName);
             return fieldName;
         }
         private string getArrayName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
