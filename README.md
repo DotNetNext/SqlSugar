@@ -66,8 +66,8 @@ JoinType.Left,st.SchoolId==sc.Id
 
 ### 1.5 SqlFunctions
 ```c
-  var t1 = db.Queryable<Student>().Where(it => NBORM.ToLower(it.Name) == NBORM.ToLower("JACK")).ToList();
-            //SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
+var t1 = db.Queryable<Student>().Where(it => NBORM.ToLower(it.Name) == NBORM.ToLower("JACK")).ToList();
+//SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
 
 /***More Functions***/
 //NBORM.IsNullOrEmpty(object thisValue)
