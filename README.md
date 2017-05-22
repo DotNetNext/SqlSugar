@@ -1,12 +1,13 @@
-### SqlSugar 4.X
+# SqlSugar 4.X
 
+##  Query
 
-##Query Create Connection
+### Create Connection
 ```c
      SqlSugarClient db = new SqlSugarClient(new SystemTableConfig() 
      { ConnectionString = Config.ConnectionString, DbType =DbType.SqlServer, IsAutoCloseConnection = true });
 ```
 
-## Introduction
+### Introduction
 
 
