@@ -190,7 +190,7 @@ var t4 = db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
 //by expression
 var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  ```
- ##  3. Update
+ ##  4. Update
 
  ```c
 var db = GetInstance();
