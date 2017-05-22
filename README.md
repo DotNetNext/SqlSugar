@@ -112,7 +112,7 @@ var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).T
 var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
 ```
 
-### 1.7 Sql Join Sql
+### 1.7  Join Sql
 ```c
 var join3 = db.Queryable("Student", "st")
                 .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
@@ -121,3 +121,14 @@ var join3 = db.Queryable("Student", "st")
                 .Select("st.*").ToList();
  //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
  ```
+ 
+ ### 1.8 ADO.NET
+ ```c
+var db = GetInstance();
+var t1= db.Ado.SqlQuery<string>("select 'a'");
+var t2 = db.Ado.GetInt("select 1");
+var t3 = db.Ado.GetDataTable("select 1 as id");
+//more
+//db.Ado.GetXXX...
+ ```
+ 
