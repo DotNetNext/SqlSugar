@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using SqlSugar;
 using System.Linq.Expressions;
-using Chloe.Entity;
 
 namespace OrmTest.Models
 {
