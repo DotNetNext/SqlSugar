@@ -62,7 +62,6 @@
     <Compile Include="Demo\Query.cs" />
     <Compile Include="Demo\Update.cs" />
     <Compile Include="Models\ViewModelStudent.cs" />
-    <Compile Include="PerformanceTesting\ChloeORMPerformance.cs" />
     <Compile Include="PerformanceTesting\PerformanceBase.cs" />
     <Compile Include="PerformanceTesting\SqlSugarPerformance.cs" />
     <Compile Include="UnitTest\Delete.cs" />
@@ -94,8 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataBase\script.sql" />
-    <Content Include="OtherDll\Chloe.dll" />
-    <Content Include="OtherDll\Chloe.SqlServer.dll" />
     <Content Include="OtherDll\SyntacticSugar.dll" />
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,6 @@ namespace OrmTest.Models
         public string Name { get; set; }
         public DateTime? CreateTime { get; set; }
         [SugarColumn(IsIgnore=true)]
-        [NotMappedAttribute]
         public int TestId { get; set; }
     }
 }
