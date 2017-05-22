@@ -117,10 +117,18 @@ namespace OrmTest.Demo
               JoinType.Left,st.SchoolId==st2.Id
             }).ToList();
 
-            //join return List<dynamic>
+            //join return List<ViewModelStudent>
             var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             }).Select<Student,School,ViewModelStudent>((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
+
+            //join Order By (order by st.id desc,sc.id desc)
+            var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            })
+            .OrderBy(st=>st.Id,OrderByType.Desc)
+            .OrderBy<School>(sc=>sc.Id,OrderByType.Desc)
+            .Select<Student, School, ViewModelStudent>((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
         }
         public static void Funs()
         {
