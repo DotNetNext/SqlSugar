@@ -40,7 +40,7 @@ namespace SqlSugar
         /// If you do not have system table permissions, use this
         /// </summary>
         /// <param name="config"></param>
-        public SqlSugarClient(AttrbuitesCofnig config)
+        public SqlSugarClient(AttribuiteCofnig config)
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
@@ -69,7 +69,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="masterConnectionConfig"></param>
         /// <param name="slaveConnectionConfigs"></param>
-        public SqlSugarClient(AttrbuitesCofnig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
+        public SqlSugarClient(AttribuiteCofnig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
         {
             base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;

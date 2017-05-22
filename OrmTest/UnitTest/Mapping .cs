@@ -27,7 +27,7 @@ namespace OrmTest.UnitTest
 
         public SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new AttrbuitesCofnig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true, EntityNamespace= "OrmTest.Models" });
+            SqlSugarClient db = new SqlSugarClient(new AttribuiteCofnig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true, EntityNamespace= "OrmTest.Models" });
             return db;
         }
     }

@@ -30,7 +30,7 @@ namespace SqlSugar
         protected void InitConstructor()
         {
             this.ContextID = Guid.NewGuid();
-            if (this.CurrentConnectionConfig is AttrbuitesCofnig)
+            if (this.CurrentConnectionConfig is AttribuiteCofnig)
             {
                 string cacheKey = "Context.InitAttributeMappingTables";
                 CacheFactory.Action<Tuple<MappingTableList, MappingColumnList, IgnoreComumnList>>(cacheKey,
