@@ -102,3 +102,12 @@ var t1 = db.Queryable<Student>().Where(it => NBORM.ToLower(it.Name) == NBORM.ToL
 //NBORM.AggregateMax(object thisValue) 
 //NBORM.AggregateCount(object thisValue) 
 ```
+
+### 1.6 Select
+```c
+var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
+var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
+var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
+var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
+var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
+```
