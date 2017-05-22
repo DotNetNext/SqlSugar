@@ -111,3 +111,13 @@ var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
 var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
 var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
 ```
+
+### 1.7 Sql Join Sql
+```c
+var join3 = db.Queryable("Student", "st")
+                .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
+                .Where("st.id>@id")
+                .AddParameters(new { id = 1 })
+                .Select("st.*").ToList();
+ //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
+ ```
