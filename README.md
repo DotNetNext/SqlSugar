@@ -63,3 +63,42 @@ JoinType.Left,st.SchoolId==sc.Id
 .OrderBy<School>(sc=>sc.Id,OrderByType.Desc)
 .Select<Student, School, ViewModelStudent>((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 ```
+
+### 1.5 SqlFunctions
+```c
+  var t1 = db.Queryable<Student>().Where(it => NBORM.ToLower(it.Name) == NBORM.ToLower("JACK")).ToList();
+            //SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
+
+/***More Functions***/
+//NBORM.IsNullOrEmpty(object thisValue)
+//NBORM.ToLower(object thisValue) 
+//NBORM.string ToUpper(object thisValue) 
+//NBORM.string Trim(object thisValue) 
+//NBORM.bool Contains(string thisValue, string parameterValue) 
+//NBORM.ContainsArray(object[] thisValue, string parameterValue) 
+//NBORM.StartsWith(object thisValue, string parameterValue) 
+//NBORM.EndsWith(object thisValue, string parameterValue)
+//NBORM.Equals(object thisValue, object parameterValue) 
+//NBORM.DateIsSame(DateTime date1, DateTime date2)
+//NBORM.DateIsSame(DateTime date1, DateTime date2, DateType dataType) 
+//NBORM.DateAdd(DateTime date, int addValue, DateType millisecond) 
+//NBORM.DateAdd(DateTime date, int addValue) 
+//NBORM.DateValue(DateTime date, DateType dataType) 
+//NBORM.Between(object value, object start, object end) 
+//NBORM.ToInt32(object value) 
+//NBORM.ToInt64(object value)
+//NBORM.ToDate(object value) 
+//NBORM.ToString(object value) 
+//NBORM.ToDecimal(object value) 
+//NBORM.ToGuid(object value) 
+//NBORM.ToDouble(object value) 
+//NBORM.ToBool(object value) 
+//NBORM.Substring(object value, int index, int length)
+//NBORM.Replace(object value, string oldChar, string newChar)
+//NBORM.Length(object value) { throw new NotImplementedException(); }
+//NBORM.AggregateSum(object thisValue) 
+//NBORM.AggregateAvg<TResult>(TResult thisValue)
+//NBORM.AggregateMin(object thisValue) 
+//NBORM.AggregateMax(object thisValue) 
+//NBORM.AggregateCount(object thisValue) 
+```
