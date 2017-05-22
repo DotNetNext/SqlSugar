@@ -9,5 +9,11 @@
 ```
 
 ### 1.2 Introduction
-
+```c
+  var getAll = db.Queryable<Student>().ToList();
+  var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
+  var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
+  var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
+  var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
+``` 
 
