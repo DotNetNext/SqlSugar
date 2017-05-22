@@ -84,7 +84,7 @@ namespace SqlSugar
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return entityPropertyName;
             else
             {
-                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.EntityPropertyName == entityPropertyName);
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.PropertyName == entityPropertyName);
                 return mappingInfo == null ? entityPropertyName : mappingInfo.DbColumnName;
             }
         }

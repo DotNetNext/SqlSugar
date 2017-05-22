@@ -114,7 +114,7 @@ namespace SqlSugar
                 if (name.Contains("."))
                 {
                     var columnInfo = name.Split('.');
-                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
+                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.PropertyName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
                     if (mappingInfo != null)
                     {
                         columnInfo[columnInfo.Length - 1] = mappingInfo.DbColumnName;
@@ -123,7 +123,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.EntityPropertyName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+                    var mappingInfo = this.MappingColumns.FirstOrDefault(it => it.PropertyName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
                     return "[" + (mappingInfo == null ? name : mappingInfo.DbColumnName) + "]";
                 }
             }
