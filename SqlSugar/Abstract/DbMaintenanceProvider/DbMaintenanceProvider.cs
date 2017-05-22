@@ -82,11 +82,6 @@ namespace SqlSugar
                  return reval;
              });
         }
-        private bool IsSystemTables()
-        {
-            var isSystemTables = Context.CurrentConnectionConfig is SystemTableConfig;
-            return isSystemTables;
-        }
         #endregion
     }
 }
