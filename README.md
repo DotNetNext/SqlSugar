@@ -175,8 +175,55 @@ var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }
 ##  3. Delete
 
  ```c
+var t1 = db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
+
+//use lock
+var t2 = db.Deleteable<Student>().With(SqlWith.RowLock).ExecuteCommand();
+
+
+//by primary key
+var t3 = db.Deleteable<Student>().In(1).ExecuteCommand();
+
+//by primary key array
+var t4 = db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
+
+//by expression
+var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  ```
  ##  3. Update
 
  ```c
+var db = GetInstance();
+var updateObj = new Student() { Id = 1, Name = "jack", SchoolId = 0, CreateTime = Convert.ToDateTime("2017-05-21 09:56:12.610") };
+var updateObjs = new List<Student>() { updateObj, new Student() { Id = 2, Name = "sun", SchoolId = 0 } }.ToArray();
+db.IgnoreColumns.Add("TestId", "Student");
+//db.MappingColumns.Add("id","dbid", "Student");
+
+
+//update reutrn Update Count
+var t1= db.Updateable(updateObj).ExecuteCommand();
+
+//Only  update  Name 
+var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
+
+
+//Ignore  Name and TestId
+var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteCommand();
+
+//Ignore  Name and TestId
+var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ExecuteCommand();
+
+
+//Use Lock
+var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
+
+//update List<T>
+var t7 = db.Updateable(updateObjs).ExecuteCommand();
+
+//Re Set Value
+var t8 = db.Updateable(updateObj)
+ .ReSetValue(it => it.Name == (it.Name + 1)).ExecuteCommand();
+
+//Where By Expression
+var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
  ```
