@@ -34,16 +34,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Chloe, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Chloe.SqlServer.2.6.0\lib\net40\Chloe.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>OtherDll\Chloe.dll</HintPath>
     </Reference>
     <Reference Include="Chloe.SqlServer, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Chloe.SqlServer.2.6.0\lib\net40\Chloe.SqlServer.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>OtherDll\Chloe.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="SyntacticSugar, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SyntacticSugar.2.4.1\lib\net40\SyntacticSugar.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>OtherDll\SyntacticSugar.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -86,9 +86,6 @@
     <Compile Include="UnitTest\Update.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
       <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
       <Name>SqlSugar</Name>
@@ -96,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataBase\script.sql" />
+    <Content Include="OtherDll\Chloe.dll" />
+    <Content Include="OtherDll\Chloe.SqlServer.dll" />
+    <Content Include="OtherDll\SyntacticSugar.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
