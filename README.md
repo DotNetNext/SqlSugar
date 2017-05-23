@@ -11,6 +11,10 @@ If you have system table permissions, use SystemTableConfig,else use AttributeCo
      { ConnectionString = Config.ConnectionString, DbType =DbType.SqlServer, IsAutoCloseConnection = true });
 ```
 
+SystemTableConfig：
+https://github.com/sunkaixuan/SqlSugar/wiki/SystemTableConfig
+
+
 ### 1.2 Introduction
 ```c
   var getAll = db.Queryable<Student>().ToList();
