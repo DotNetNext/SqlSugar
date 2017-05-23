@@ -19,7 +19,7 @@ namespace SqlSugar
         public bool IsAutoCloseConnection { get; set; }
     }
 
-    public class AttribuiteConfig : IConnectionConfig
+    public class AttributeConfig : IConnectionConfig
     {
         public string EntityNamespace { get; set; }
         public string DbType { get; set; }
