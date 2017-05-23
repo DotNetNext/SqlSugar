@@ -13,6 +13,7 @@ If you have system table permissions, use SystemTableConfig,else use AttributeCo
 
 SystemTableConfig：
 https://github.com/sunkaixuan/SqlSugar/wiki/SystemTableConfig
+
 AttrbuteConfig
 https://github.com/sunkaixuan/SqlSugar/wiki/AttributeCofnig
 
