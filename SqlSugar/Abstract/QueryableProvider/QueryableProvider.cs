@@ -395,7 +395,7 @@ namespace SqlSugar
 
         public bool Any()
         {
-            return this.ToList().IsValuable();
+            return this.Count()>0;
         }
 
         public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression)

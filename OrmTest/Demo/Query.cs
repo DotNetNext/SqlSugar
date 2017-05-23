@@ -60,6 +60,8 @@ namespace OrmTest.Demo
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
+            var sum = db.Queryable<Student>().Sum(it=>it.Id);
+            var isAny = db.Queryable<Student>().Where(it=>it.Id==-1).Any();
         }
 
         public static void Page()
