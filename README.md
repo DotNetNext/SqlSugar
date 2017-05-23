@@ -5,7 +5,7 @@
 ##  1. Query
 
 ### 1.1 Create Connection
-If you have system table permissions, use SystemTableConfig,else use AttribuiteCofnig
+If you have system table permissions, use SystemTableConfig,else use AttribuiteConfig
 ```c
      SqlSugarClient db = new SqlSugarClient(new SystemTableConfig() 
      { ConnectionString = Config.ConnectionString, DbType =DbType.SqlServer, IsAutoCloseConnection = true });
