@@ -62,6 +62,7 @@ namespace OrmTest.Demo
             var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
             var sum = db.Queryable<Student>().Sum(it=>it.Id);
             var isAny = db.Queryable<Student>().Where(it=>it.Id==-1).Any();
+            var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
         }
 
         public static void Page()
