@@ -10,12 +10,24 @@ namespace SqlSugar
         public ExpressionParameter Parameter { get; set; }
         public MemberExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
-            var expression = base.Expression as MemberExpression;
-            var isLeft = parameter.IsLeft;
-            string fieldName = string.Empty;
             var baseParameter = parameter.BaseParameter;
-            baseParameter.ChildExpression = expression;
+            var isLeft = parameter.IsLeft;
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
+            var expression = base.Expression as MemberExpression;
+            if (expression.Expression != null&& expression.Expression.NodeType!= ExpressionType.Parameter) {
+                var value= ExpressionTool.GetMemberValue(expression.Member, expression);
+                if (isSetTempData)
+                {
+                    baseParameter.CommonTempData = value;
+                }
+                else
+                {
+                    AppendValue(parameter, isLeft, value);
+                }
+                return;
+            }
+            string fieldName = string.Empty;
+            baseParameter.ChildExpression = expression;
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.SelectSingle:
