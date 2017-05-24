@@ -35,6 +35,7 @@ namespace OrmTest.UnitTest
            }, t1.Key, t1.Value, "Insert t1 error"
            );
 
+
             //Insert reutrn Command Count
             var t2 = db.Insertable(insertObj).ExecuteCommand();
 
@@ -114,6 +115,9 @@ INSERT INTO [Student]
                 insertObjs.Add(new Student() { Name = "name" + i });
             }
             var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).With(SqlWith.UpdLock).ToSql();
+
+            insertObj.Name = null;
+            var t10 = db.Insertable(insertObj).ExecuteCommand();
         }
 
         public SqlSugarClient GetInstance()

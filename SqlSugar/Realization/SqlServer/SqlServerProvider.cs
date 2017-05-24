@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -79,6 +80,7 @@ namespace SqlSugar
             int i = 0;
             foreach (var par in pars)
             {
+                if (par.Value == null) par.Value = DBNull.Value;
                 var p = new SqlParameter();
                 p.ParameterName = par.ParameterName;
                 p.UdtTypeName = par.UdtTypeName;
