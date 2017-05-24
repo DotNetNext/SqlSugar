@@ -26,6 +26,7 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.Update:
                     SelectMethod(parameter, isLeft, name, args, model);
                     break;
                 case ResolveExpressType.FieldSingle:

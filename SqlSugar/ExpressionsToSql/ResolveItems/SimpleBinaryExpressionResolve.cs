@@ -15,6 +15,7 @@ namespace SqlSugar
             {
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.Update:
 
                     base.Expression = expression.Right;
                     base.Start();

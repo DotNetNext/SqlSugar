@@ -37,7 +37,7 @@ namespace OrmTest.UnitTest
                 {
                     foreach (var item in pars)
                     {
-                        if (!validPars.Any(it => it.ParameterName.Equals(item.ParameterName) && it.Value.Equals(item.Value)))
+                        if (!validPars.Any(it => it.ParameterName.Equals(item.ParameterName) && it.Value.ObjToString().Equals(item.Value.ObjToString())))
                         {
                             throw new Exception(errorMessage);
                         }

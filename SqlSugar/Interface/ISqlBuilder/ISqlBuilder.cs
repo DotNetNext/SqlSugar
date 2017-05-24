@@ -23,5 +23,6 @@ namespace SqlSugar
         string GetTranslationTableName(string name);
         string GetTranslationColumnName(string entityName, string propertyName);
         string GetTranslationColumnName(string propertyName);
+        string GetNoTranslationColumnName(string name);
     }
 }

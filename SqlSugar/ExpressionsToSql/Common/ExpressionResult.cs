@@ -103,6 +103,7 @@ namespace SqlSugar
                 case ResolveExpressType.Array:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.Update:
                     parameter = parameter + ",";
                     break;
                 case ResolveExpressType.WhereSingle:

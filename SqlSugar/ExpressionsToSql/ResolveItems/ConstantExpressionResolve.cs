@@ -19,6 +19,7 @@ namespace SqlSugar
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.Update:
                 case ResolveExpressType.SelectMultiple:
                     baseParameter.CommonTempData = value;
                     break;

@@ -19,6 +19,7 @@ namespace SqlSugar
                 case ResolveExpressType.FieldMultiple:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.Update:
                     base.Expression = expression.Operand;
                     if (base.Expression is BinaryExpression||parameter.BaseExpression is BinaryExpression)
                     {

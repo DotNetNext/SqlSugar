@@ -18,7 +18,8 @@ namespace SqlSugar
         public abstract string GetTranslationTableName(string name);
         public abstract string GetTranslationColumnName(string entityName, string propertyName);
         public abstract string GetTranslationColumnName(string propertyName);
- 
+        public abstract string GetNoTranslationColumnName(string name);
+
         public string AppendWhereOrAnd(bool isWhere, string sqlString)
         {
             return isWhere ? (" WHERE " + sqlString ):( " AND " + sqlString);

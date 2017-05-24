@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -24,15 +25,20 @@ namespace SqlSugar
             var context = this.Context;
             var mappingInfo = context
                  .MappingColumns
-                 .FirstOrDefault(it => 
-                 it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase)&&
+                 .FirstOrDefault(it =>
+                 it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase) &&
                  it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? "["+ propertyName + "]" : "["+mappingInfo.DbColumnName+"]");
+            return (mappingInfo == null ? "[" + propertyName + "]" : "[" + mappingInfo.DbColumnName + "]");
         }
 
         public override string GetTranslationColumnName(string propertyName)
         {
             return "[" + propertyName + "]";
+        }
+
+        public override string GetNoTranslationColumnName(string name)
+        {
+            return name == null ? string.Empty : Regex.Match(name, @"\[(.*?)\]").Groups[1].Value;
         }
     }
 }

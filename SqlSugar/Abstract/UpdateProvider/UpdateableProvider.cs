@@ -25,7 +25,7 @@ namespace SqlSugar
         public int ExecuteCommand()
         {
             PreToSql();
-            return this.Ado.ExecuteCommand(UpdateBuilder.ToSqlString(), UpdateBuilder.Parameters==null?null:UpdateBuilder.Parameters.ToArray());
+            return this.Ado.ExecuteCommand(UpdateBuilder.ToSqlString(), UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
         }
 
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
@@ -44,7 +44,7 @@ namespace SqlSugar
         public IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression)
         {
             var expResult = UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
-            var resultString =Regex.Match(expResult.GetResultString(),@"\((.+)\)").Groups[1].Value;
+            var resultString = Regex.Match(expResult.GetResultString(), @"\((.+)\)").Groups[1].Value;
             LambdaExpression lambda = setValueExpression as LambdaExpression;
             var expression = lambda.Body;
             Check.Exception(!(expression is BinaryExpression), "Expression  format error");
@@ -74,11 +74,25 @@ namespace SqlSugar
                     item.IsPrimarykey = true;
                 }
             }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.PropertyName)||it.IsPrimarykey==true).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.PropertyName) || it.IsPrimarykey == true).ToList();
+            return this;
+        }
+        public IUpdateable<T> UpdateColumns(Expression<Func<T, T>> columns)
+        {
+            var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
+            var resultArray=expResult.GetResultArray();
+            if (resultArray.IsValuable()) {
+                foreach (var item in resultArray)
+                {
+                    string key = SqlBuilder.GetNoTranslationColumnName(item);
+                    UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), item));
+                }
+            }
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v=> SqlBuilder.GetNoTranslationColumnName(v.Key) ==it.DbColumnName) || it.IsPrimarykey == true).ToList();
             return this;
         }
 
-        public IUpdateable<T> Where(bool isUpdateNull,bool IsOffIdentity=false)
+        public IUpdateable<T> Where(bool isUpdateNull, bool IsOffIdentity = false)
         {
             UpdateBuilder.IsOffIdentity = IsOffIdentity;
             return this;
@@ -115,7 +129,7 @@ namespace SqlSugar
                 {
                     var columnInfo = new DbColumnInfo()
                     {
-                        Value = column.PropertyInfo.GetValue(item,null),
+                        Value = column.PropertyInfo.GetValue(item, null),
                         DbColumnName = GetDbColumnName(column.PropertyName),
                         PropertyName = column.PropertyName,
                         TableId = i
@@ -174,7 +188,9 @@ namespace SqlSugar
                     }
                 });
             }
-
+            if (this.UpdateBuilder.Parameters.IsValuable()&&this.UpdateBuilder.SetValues.IsValuable()) {
+                this.UpdateBuilder.Parameters.RemoveAll(it => this.UpdateBuilder.SetValues.Any(v =>(SqlBuilder.SqlParameterKeyWord+SqlBuilder.GetNoTranslationColumnName(v.Key)) == it.ParameterName));
+            }
         }
         private string GetDbColumnName(string entityName)
         {

@@ -18,6 +18,7 @@ namespace SqlSugar
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
             switch (parameter.Context.ResolveType)
             {
+                case ResolveExpressType.Update:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
                     parameter.BaseParameter.CommonTempData = value;

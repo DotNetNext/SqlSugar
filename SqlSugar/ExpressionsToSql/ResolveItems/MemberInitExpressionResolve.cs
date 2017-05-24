@@ -28,11 +28,62 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.FieldMultiple:
                     break;
+                case ResolveExpressType.Update:
+                    Update(expression, parameter);
+                    break;
                 default:
                     break;
             }
         }
 
+        private void Update(MemberInitExpression expression, ExpressionParameter parameter)
+        {
+            int i = 0;
+            foreach (MemberBinding binding in expression.Bindings)
+            {
+                ++i;
+                if (binding.BindingType != MemberBindingType.Assignment)
+                {
+                    throw new NotSupportedException();
+                }
+                MemberAssignment memberAssignment = (MemberAssignment)binding;
+                var memberName = memberAssignment.Member.Name;
+                var item = memberAssignment.Expression;
+                if (item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
+                {
+                    base.Expression = item;
+                    base.Start();
+                    string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
+                    parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+                    this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+                }
+                else if (item is MethodCallExpression)
+                {
+                    base.Expression = item;
+                    base.Start();
+                    parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
+                }
+                else if (item is MemberExpression || item is UnaryExpression)
+                {
+                    if (base.Context.Result.IsLockCurrentParameter == false)
+                    {
+                        base.Context.Result.CurrentParameter = parameter;
+                        base.Context.Result.IsLockCurrentParameter = true;
+                        parameter.IsAppendTempDate();
+                        base.Expression = item;
+                        base.Start();
+                        parameter.IsAppendResult();
+                        base.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
+                        base.Context.Result.CurrentParameter = null;
+                    }
+                }
+                else if (item is BinaryExpression)
+                {
+                    Check.ThrowNotSupportedException(item.GetType().Name);
+                }
+            }
+        }
+ 
         public void Select(MemberInitExpression expression, ExpressionParameter parameter, bool isSingle)
         {
             int i = 0;

@@ -20,6 +20,7 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.Update:
                     parameter.BaseParameter.CommonTempData = expression.Name;
                     break;
                 case ResolveExpressType.FieldSingle:
