@@ -14,9 +14,10 @@ namespace SqlSugar
         public Expression ChildExpression { get; set; }
         public Expression LeftExpression { get; set; }
         public Expression RightExpression { get; set; }
-        public Expression Expression { get; set; }
+        public Expression CurrentExpression { get; set; }
         public bool? IsLeft { get; set; }
         public int Index { get; set; }
+        public bool ValueIsNull { get; set; }
         public object CommonTempData { get; set; }
         public ExpressionResultAppendType AppendType { get; set; }
         public void IsAppendResult()

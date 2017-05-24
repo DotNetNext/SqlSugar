@@ -31,9 +31,12 @@ namespace SqlSugar
                     }
                     else
                     {
+                        var parentIsBinary = parameter.BaseParameter.CurrentExpression is BinaryExpression;
+                        if (value == null && parentIsBinary) {
+                            parameter.BaseParameter.ValueIsNull = true;
+                        }
                         AppendValue(parameter, isLeft, value);
                     }
-
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:

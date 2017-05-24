@@ -21,7 +21,7 @@ namespace SqlSugar
         }
         public BaseResolve(ExpressionParameter parameter)
         {
-            this.Expression = parameter.Expression;
+            this.Expression = parameter.CurrentExpression;
             this.Context = parameter.Context;
             this.BaseParameter = parameter;
         }
@@ -33,7 +33,7 @@ namespace SqlSugar
             ExpressionParameter parameter = new ExpressionParameter()
             {
                 Context = this.Context,
-                Expression = expression,
+                CurrentExpression = expression,
                 IsLeft = this.IsLeft,
                 BaseExpression = this.ExactExpression,
                 BaseParameter = this.BaseParameter,
@@ -111,7 +111,7 @@ namespace SqlSugar
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
                 var otherExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
-                if (parameter.Expression is MethodCallExpression)
+                if (parameter.CurrentExpression is MethodCallExpression)
                 {
                     var appendValue = value;
                     if (this.Context.Result.Contains(ExpressionConst.Format0))

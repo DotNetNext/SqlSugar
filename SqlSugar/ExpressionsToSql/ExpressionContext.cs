@@ -142,7 +142,7 @@ namespace SqlSugar
         {
             this.ResolveType = resolveType;
             this.Expression = expression;
-            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { Expression = this.Expression, Context = this });
+            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { CurrentExpression = this.Expression, Context = this });
             resolve.Start();
         }
         public virtual string GetAsString(string asName, string fieldValue)
