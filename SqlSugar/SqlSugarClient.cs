@@ -135,7 +135,7 @@ namespace SqlSugar
         {
             var result = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig);
-            result.Context = this;;
+            result.Context = this; ;
             result.SqlBuilder = sqlBuilder;
             result.SqlBuilder.QueryBuilder = InstanceFactory.GetQueryBuilder(base.CurrentConnectionConfig);
             result.SqlBuilder.QueryBuilder.Builder = sqlBuilder;
@@ -301,6 +301,10 @@ namespace SqlSugar
         {
             return this.Updateable(new T[] { UpdateObj });
         }
+        public virtual IUpdateable<T> Updateable<T>() where T : class, new()
+        {
+            return this.Updateable(new T[] { new T() });
+        }
         #endregion
 
         #region DbFirst
@@ -348,7 +352,7 @@ namespace SqlSugar
                 }
                 return base._DbMaintenance;
             }
-        } 
+        }
         #endregion
 
         #region Entity Methods
