@@ -34,6 +34,7 @@ namespace SqlSugar
                         var parentIsBinary = parameter.BaseParameter.CurrentExpression is BinaryExpression;
                         if (value == null && parentIsBinary) {
                             parameter.BaseParameter.ValueIsNull = true;
+                            value = "NULL";
                         }
                         AppendValue(parameter, isLeft, value);
                     }

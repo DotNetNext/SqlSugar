@@ -110,7 +110,7 @@ namespace SqlSugar
         {
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
-                var otherExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
+                var oppoSiteExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
                 if (parameter.CurrentExpression is MethodCallExpression)
                 {
                     var appendValue = value;
@@ -124,12 +124,19 @@ namespace SqlSugar
                     }
                     this.AppendOpreator(parameter, isLeft);
                 }
-                else if (otherExpression is MemberExpression)
+                else if (oppoSiteExpression is MemberExpression)
                 {
                     string appendValue = Context.SqlParameterKeyWord
-                        + ((MemberExpression)otherExpression).Member.Name
+                        + ((MemberExpression)oppoSiteExpression).Member.Name
                         + Context.ParameterIndex;
-                    this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                    if (value.ObjToString() != "NULL" && !parameter.ValueIsNull)
+                    {
+                        this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                    }
+                    else
+                    {
+                        appendValue = value.ObjToString();
+                    }
                     Context.ParameterIndex++;
                     appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
