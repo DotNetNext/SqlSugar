@@ -84,8 +84,8 @@ namespace SqlSugar
                 }
             }
         }
- 
-        public void Select(MemberInitExpression expression, ExpressionParameter parameter, bool isSingle)
+
+        private void Select(MemberInitExpression expression, ExpressionParameter parameter, bool isSingle)
         {
             int i = 0;
             foreach (MemberBinding binding in expression.Bindings)

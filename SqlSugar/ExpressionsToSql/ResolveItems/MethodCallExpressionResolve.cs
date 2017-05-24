@@ -177,7 +177,7 @@ namespace SqlSugar
             return null;
         }
 
-        public void CheckMethod(MethodCallExpression expression)
+        private void CheckMethod(MethodCallExpression expression)
         {
             Check.Exception(expression.Method.ReflectedType.FullName != ExpressionConst.NBORMFULLNAME, ExpressionErrorMessage.MethodError);
         }
