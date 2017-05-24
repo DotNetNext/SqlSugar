@@ -47,7 +47,7 @@ namespace OrmTest.Demo
 
             //Where
             var t10= db.Updateable<Student>()
-                .UpdateColumns(it => new Student() { Name = "jack", SchoolId =1 })
+                .UpdateColumns(it => new Student() { CreateTime=DateTime.Now })
                 .Where(it => it.Id == 11).ExecuteCommand();
         }
         public static SqlSugarClient GetInstance()

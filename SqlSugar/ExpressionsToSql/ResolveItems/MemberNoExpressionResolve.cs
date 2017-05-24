@@ -29,6 +29,9 @@ namespace SqlSugar
             {
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.Update:
                     if (isSetTempData)
                     {
                         baseParameter.CommonTempData = value;
@@ -37,11 +40,7 @@ namespace SqlSugar
                     {
                         AppendValue(parameter, isLeft, value);
                     }
-                    break;
-                case ResolveExpressType.SelectSingle:
-                    break;
-                case ResolveExpressType.SelectMultiple:
-                    break;
+                     break;
                 case ResolveExpressType.FieldSingle:
                     break;
                 case ResolveExpressType.FieldMultiple:

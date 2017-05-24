@@ -49,7 +49,7 @@ namespace SqlSugar
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
                 var memberName = memberAssignment.Member.Name;
                 var item = memberAssignment.Expression;
-                if (item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
+                if (item is UnaryExpression||item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
                 {
                     base.Expression = item;
                     base.Start();
@@ -63,7 +63,7 @@ namespace SqlSugar
                     base.Start();
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
                 }
-                else if (item is MemberExpression || item is UnaryExpression)
+                else if (item is MemberExpression)
                 {
                     if (base.Context.Result.IsLockCurrentParameter == false)
                     {
