@@ -33,7 +33,8 @@ namespace SqlSugar
                 var lsrb = !leftIsBinary && rightBinary;
                 var lbrb = rightBinary && leftIsBinary;
                 var lsbs = !leftIsBinary && !rightBinary;
-                if (!base.Context.Result.Contains(ExpressionConst.Format0))
+                var isBegin = !base.Context.Result.Contains(ExpressionConst.Format0);
+                if (isBegin)
                 {
                     base.Context.Result.Append(ExpressionConst.Format3);
                     base.Context.Result.Append(ExpressionConst.Format0);
@@ -46,11 +47,14 @@ namespace SqlSugar
                 base.Expression = leftExpression;
                 base.IsLeft = true;
                 base.Start();
-                base.Context.Result.Replace(ExpressionConst.Format1+parameter.Index,operatorValue);
                 base.IsLeft = false;
                 base.Expression = rightExpression;
                 base.Start();
                 base.IsLeft = null;
+                base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, operatorValue);
+                if (lsbs) {
+
+                }
                 base.Context.Result.Append(ExpressionConst.Format4);
                 if (parameter.BaseExpression is BinaryExpression && parameter.IsLeft == true)
                 {
