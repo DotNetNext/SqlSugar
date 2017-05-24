@@ -53,7 +53,7 @@ namespace SqlSugar
                 {
                     base.Expression = item;
                     base.Start();
-                    string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
+                    string parameterName = this.Context.SqlParameterKeyWord + "const" + this.ContentIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
                 }
@@ -73,7 +73,8 @@ namespace SqlSugar
                         base.Expression = item;
                         base.Start();
                         parameter.IsAppendResult();
-                        base.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
+                        string parameterName = this.Context.SqlParameterKeyWord + "const" + +this.ContentIndex; ;
+                        parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
                         base.Context.Result.CurrentParameter = null;
                     }
                 }

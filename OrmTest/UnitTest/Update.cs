@@ -119,8 +119,8 @@ UNION ALL
             string name = "x";
             var t10 = db.Updateable<Student>().UpdateColumns(it => new Student() { Name =name, SchoolId=updateObj.SchoolId }).Where(it=>it.Id==11).ToSql();
             base.Check(@"UPDATE [Student]  SET
-            [SchoolId] = [@Const0] , [Name] = [@constant1]   WHERE ( [Id] = @Id1 )", new List<SugarParameter>() {
-                           new SugarParameter("@constant1","x"),
+            [SchoolId] = @Const0 , [Name] = @const3   WHERE ( [Id] = @Id1 )", new List<SugarParameter>() {
+                           new SugarParameter("@const3","x"),
                            new SugarParameter("@Const0",18),
                            new SugarParameter("@Id1",11)},
                                t10.Key,

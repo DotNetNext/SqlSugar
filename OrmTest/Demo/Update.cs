@@ -44,6 +44,11 @@ namespace OrmTest.Demo
 
             //Where By Expression
             var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
+
+            //Where
+            var t10= db.Updateable<Student>()
+                .UpdateColumns(it => new Student() { Name = "jack", SchoolId =1 })
+                .Where(it => it.Id == 11).ExecuteCommand();
         }
         public static SqlSugarClient GetInstance()
         {
