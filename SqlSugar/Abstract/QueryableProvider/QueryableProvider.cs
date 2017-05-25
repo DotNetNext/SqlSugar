@@ -166,31 +166,6 @@ namespace SqlSugar
                 QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
         }
-        public ISugarQueryable<T> Having<T2>(Expression<Func<T2, bool>> expression)
-        {
-            this._Having(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Having<T2, T3>(Expression<Func<T2, T3, bool>> expression)
-        {
-            this._Having(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Having<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression)
-        {
-            this._Having(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Having<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression)
-        {
-            this._Having(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Having<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression)
-        {
-            this._Having(expression);
-            return this;
-        }
 
         public virtual ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
