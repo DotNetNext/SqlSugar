@@ -382,34 +382,6 @@ namespace SqlSugar
             return this.Count() > 0;
         }
 
-        public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-
-        public ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-
-        public ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _Select<TResult>(expression);
