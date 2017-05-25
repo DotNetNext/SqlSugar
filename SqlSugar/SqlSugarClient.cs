@@ -166,7 +166,7 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T,T2,T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
         {
             var queryable = InstanceFactory.GetQueryable<T, T2,T3>(base.CurrentConnectionConfig);
             base.CreateQueryable(queryable);
@@ -175,7 +175,7 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T,T2,T3,T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
         {
             var queryable = InstanceFactory.GetQueryable<T, T2,T3,T4>(base.CurrentConnectionConfig);
             base.CreateQueryable(queryable);

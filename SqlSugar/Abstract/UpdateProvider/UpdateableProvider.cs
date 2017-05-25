@@ -35,6 +35,7 @@ namespace SqlSugar
         {
             var entityName = typeof(T).Name;
             IsAs = true;
+            OldMappingTableList = this.Context.MappingTables;
             this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;

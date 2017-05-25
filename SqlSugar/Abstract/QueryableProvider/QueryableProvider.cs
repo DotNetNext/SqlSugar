@@ -250,6 +250,7 @@ namespace SqlSugar
         {
             var entityName = typeof(T2).Name;
             IsAs = true;
+            OldMappingTableList = this.Context.MappingTables;
             this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this;
@@ -258,6 +259,7 @@ namespace SqlSugar
         {
             var entityName = typeof(T).Name;
             IsAs = true;
+            OldMappingTableList = this.Context.MappingTables;
             this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this;
@@ -756,7 +758,7 @@ namespace SqlSugar
         {
             if (IsAs)
             {
-                this.Context.MappingTables = OldMappingTableList;
+                this.Context.MappingTables = OldMappingTableList==null?new MappingTableList():OldMappingTableList;
             }
         }
         #endregion

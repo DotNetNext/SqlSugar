@@ -64,6 +64,9 @@ namespace OrmTest.Demo
             var isAny = db.Queryable<Student>().Where(it=>it.Id==-1).Any();
             var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
             var getListByRename = db.Queryable<School>().AS("Student").ToList();
+            var group = db.Queryable<Student>().GroupBy(it => it.Id)
+                .Having(it => NBORM.AggregateCount(it.Id) > 10)
+                .Select(it =>new { id = NBORM.AggregateCount(it.Id) }).ToList();
         }
 
         public static void Page()
@@ -115,13 +118,15 @@ namespace OrmTest.Demo
             //join  2
             var list = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
-            }).ToList();
+            })
+            .Where(st=>st.Name=="jack").ToList();
 
             //join  3
             var list2 = db.Queryable<Student, School,Student>((st, sc,st2) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id,
               JoinType.Left,st.SchoolId==st2.Id
-            }).ToList();
+            })
+            .Where((st, sc, st2)=> st2.Id==1||sc.Id==1||st.Id==1).ToList();
 
             //join return List<ViewModelStudent>
             var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
