@@ -201,13 +201,6 @@ var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  ##  4. Update
 
  ```c
-var db = GetInstance();
-var updateObj = new Student() { Id = 1, Name = "jack", SchoolId = 0, CreateTime = Convert.ToDateTime("2017-05-21 09:56:12.610") };
-var updateObjs = new List<Student>() { updateObj, new Student() { Id = 2, Name = "sun", SchoolId = 0 } }.ToArray();
-db.IgnoreColumns.Add("TestId", "Student");
-//db.MappingColumns.Add("id","dbid", "Student");
-
-
 //update reutrn Update Count
 var t1= db.Updateable(updateObj).ExecuteCommand();
 
@@ -234,4 +227,9 @@ var t8 = db.Updateable(updateObj)
 
 //Where By Expression
 var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
+
+//Update By Expression  Where By Expression
+var t10 = db.Updateable<Student>()
+ .UpdateColumns(it => new Student() { Name="a",CreateTime=DateTime.Now })
+ .Where(it => it.Id == 11).ExecuteCommand();
  ```
