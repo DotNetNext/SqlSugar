@@ -155,7 +155,32 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
     {
+        #region Where
+        new ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3,T4, bool>> expression);
+        #endregion
 
+        #region Select
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression);
+        #endregion
+
+        #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3,T4, object>> expression, OrderByType type = OrderByType.Asc);
+        #endregion
+
+        #region GroupBy
+        new ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3,T4, object>> expression);
+        #endregion
     }
     //public partial interface ISugarQueryable<T, T2, T3, T4,T5> : ISugarQueryable<T>
     //{
