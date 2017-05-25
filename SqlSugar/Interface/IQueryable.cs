@@ -21,27 +21,27 @@ namespace SqlSugar
 
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object whereObj = null);
-        ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression);
-        ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression);
-        ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression);
-        ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
+        //ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression);
+        //ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression);
+        //ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression);
+        //ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression);
+        //ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
 
         ISugarQueryable<T> Having(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Having(string whereString, object whereObj = null);
-        ISugarQueryable<T> Having<T2>(Expression<Func<T2, bool>> expression);
-        ISugarQueryable<T> Having<T2, T3>(Expression<Func<T2, T3, bool>> expression);
-        ISugarQueryable<T> Having<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression);
-        ISugarQueryable<T> Having<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T> Having<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
+        //ISugarQueryable<T> Having<T2>(Expression<Func<T2, bool>> expression);
+        //ISugarQueryable<T> Having<T2, T3>(Expression<Func<T2, T3, bool>> expression);
+        //ISugarQueryable<T> Having<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression);
+        //ISugarQueryable<T> Having<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression);
+        //ISugarQueryable<T> Having<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
 
         ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null);
-        ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression);
-        ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression);
-        ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression);
-        ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
+        //ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression);
+        //ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression);
+        //ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression);
+        //ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression);
+        //ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
         ISugarQueryable<T> In(params object[] pkValues);
 
         T InSingle(object pkValue);
@@ -50,10 +50,10 @@ namespace SqlSugar
 
         ISugarQueryable<T> OrderBy(string orderFileds);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T2> OrderBy<T2>(Expression<Func<T2, object>> expression, OrderByType type = OrderByType.Asc);
+        //ISugarQueryable<T2> OrderBy<T2>(Expression<Func<T2, object>> expression, OrderByType type = OrderByType.Asc);
 
         ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression);
-        ISugarQueryable<T2> GroupBy<T2>(Expression<Func<T2, object>> expression);
+        //ISugarQueryable<T2> GroupBy<T2>(Expression<Func<T2, object>> expression);
         ISugarQueryable<T> GroupBy(string groupFileds);
 
         ISugarQueryable<T> Skip(int index);
@@ -67,12 +67,12 @@ namespace SqlSugar
 
         bool Any(Expression<Func<T, bool>> expression);
         bool Any();
-        ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression);
-        ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression);
-        ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression);
-        ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression);
-        ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression);
-        ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression);
+        //ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression);
+        //ISugarQueryable<TResult> Select<T2, T3, TResult>(Expression<Func<T2, T3, TResult>> expression);
+        //ISugarQueryable<TResult> Select<T2, T3, T4, TResult>(Expression<Func<T2, T3, T4, TResult>> expression);
+        //ISugarQueryable<TResult> Select<T2, T3, T4, T5, TResult>(Expression<Func<T2, T3, T4, T5, TResult>> expression);
+        //ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, TResult>(Expression<Func<T2, T3, T4, T5, T6, TResult>> expression);
+        //ISugarQueryable<TResult> Select<T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<T2, T3, T4, T5, T6, T7, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(string select) where TResult : class, new();
         ISugarQueryable<T> Select(string select);
@@ -109,7 +109,13 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {
-
+        new ISugarQueryable<T,T2> Where(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T,T2> Where(Expression<Func<T,T2, bool>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T,T2, TResult>> expression);
+        new ISugarQueryable<T,T2> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T,T2> OrderBy(Expression<Func<T,T2, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T,T2> GroupBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2> GroupBy(Expression<Func<T,T2, object>> expression);
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
     {

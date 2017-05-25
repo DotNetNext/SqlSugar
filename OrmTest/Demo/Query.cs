@@ -93,9 +93,9 @@ namespace OrmTest.Demo
             var list = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
-            .Where<School>(sc => sc.Id == 1)
-            .Where<Student>(st => st.Id == 1)
-            .Where<Student, School>((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
+            .Where((st,sc)=> sc.Id == 1)
+            .Where((st,sc) => st.Id == 1)
+            .Where((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
 
             //SELECT [st].[Id],[st].[SchoolId],[st].[Name],[st].[CreateTime] FROM [Student] st 
             //Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   
@@ -126,15 +126,15 @@ namespace OrmTest.Demo
             //join return List<ViewModelStudent>
             var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
-            }).Select<Student,School,ViewModelStudent>((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
+            }).Select((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
 
             //join Order By (order by st.id desc,sc.id desc)
             var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
             .OrderBy(st=>st.Id,OrderByType.Desc)
-            .OrderBy<School>(sc=>sc.Id,OrderByType.Desc)
-            .Select<Student, School, ViewModelStudent>((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
+            .OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
+            .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
         }
         public static void Funs()
         {
@@ -184,6 +184,12 @@ namespace OrmTest.Demo
             var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
             var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
             var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
+            var s6 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            })
+         .OrderBy(st => st.Id, OrderByType.Desc)
+         .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
+         .Select((st, sc) => new  { Name = st.Name, SchoolId = sc.Id }).ToList();
         }
 
         private static void Sqlable()

@@ -10,16 +10,54 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    public partial class QueryableProvider<T, T2,T3,T4> : QueryableProvider<T>, ISugarQueryable<T, T2,T3,T4>
+    public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
     {
 
     }
-    public partial class QueryableProvider<T, T2,T3> : QueryableProvider<T>, ISugarQueryable<T, T2,T3>
+    public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
 
     }
-    public partial class QueryableProvider<T,T2> : QueryableProvider<T>,ISugarQueryable<T,T2>{
+    public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
+    {
+        public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression) {
+           _Where(expression);
+            return this;
+         }
+        public  ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
 
+        public ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+
+        public  ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            this._OrderBy(expression, type);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2>  OrderBy(Expression<Func<T, object>> expression, OrderByType type)
+        {
+            this._OrderBy(expression, type);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2>  GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+
+        public  ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
     }
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
@@ -609,7 +647,7 @@ namespace SqlSugar
 
 
         #region Private Methods
-        private ISugarQueryable<TResult> _Select<TResult>(Expression expression)
+        protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
@@ -645,7 +683,7 @@ namespace SqlSugar
             Having(lamResult.GetResultString());
             return this;
         }
-        private List<TResult> _ToList<TResult>()
+        protected List<TResult> _ToList<TResult>()
         {
             List<TResult> result = null;
             var sqlObj = this.ToSql();
@@ -666,7 +704,7 @@ namespace SqlSugar
             RestoreMapping();
             return result;
         }
-        private List<string> GetPrimaryKeys()
+        protected List<string> GetPrimaryKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {
@@ -677,7 +715,7 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
             }
         }
-        private List<string> GetIdentityKeys()
+        protected List<string> GetIdentityKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {
@@ -688,7 +726,7 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
-        private void RestoreMapping()
+        protected void RestoreMapping()
         {
             if (IsAs)
             {

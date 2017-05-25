@@ -27,11 +27,11 @@ namespace OrmTest.UnitTest
                 JoinType.Left,st.SchoolId==sc.Id
             })
             .Where(st => st.Id == 1)
-            .Where<School>(sc => sc.Id == 1)
-            .Where<School, Student>((sc, st) => sc.Id == st.Id)
+            .Where((st,sc) => sc.Id == 1)
+            .Where((st,sc) => sc.Id == st.Id)
             .GroupBy(st => st.Id)
-            .GroupBy<School>(sc => sc.Id).OrderBy<Student>(st => st.Id,OrderByType.Asc)
-            .Select<Student,School,dynamic>((st,sc)=> new { stid=st.Id,scid=sc.Id}).ToSql();
+            .GroupBy((st,sc) => sc.Id).OrderBy(st => st.Id,OrderByType.Asc)
+            .Select((st,sc)=> new { stid=st.Id,scid=sc.Id}).ToSql();
             base.Check(@"SELECT  [st].[ID] AS [stid] , [sc].[id] AS [scid]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] =[sc].[id])   WHERE ( [st].[ID] = @Id0 )  AND ( [sc].[id] = @Id1 )  AND ( [sc].[id] = [st].[ID] )GROUP BY [st].[ID],[sc].[id]ORDER BY [st].[ID] ASC ",
                 null, t2.Key, null, " Mapping t2 error");
             var x2 = GetInstance();

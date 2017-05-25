@@ -62,7 +62,7 @@ namespace OrmTest.UnitTest
                            JoinType.Left,st.Id==st2.Id
                     })
                           .Where(st => st.Id > 0)
-                          .Select<School, School, dynamic>((st, st2) => new { stid = st.Id, scId = st2.Id, xx = st }).ToSql();
+                          .Select((st, st2) => new { stid = st.Id, scId = st2.Id, xx = st }).ToSql();
 
                 base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [School.Id] , [st].[Name] AS [School.Name]  FROM [School] st Left JOIN School st2 ON ( [st].[Id] = [st2].[Id] )   WHERE ( [st].[Id] > @Id0 ) "
                     , new List<SugarParameter>() {

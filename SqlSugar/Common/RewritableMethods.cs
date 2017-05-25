@@ -85,7 +85,23 @@ namespace SqlSugar
                         {
                             if (readerValues.ContainsKey(name))
                             {
-                                result.Add(name, readerValues[name]);
+                                var addValue = readerValues[name];
+                                if (addValue == DBNull.Value)
+                                {
+                                    if (item.PropertyType.IsIn(PubConst.IntType, PubConst.DecType, PubConst.Dob, PubConst.ByteType))
+                                    {
+                                        addValue = 0;
+                                    }
+                                    else if (item.PropertyType == PubConst.GuidType)
+                                    {
+                                        addValue = Guid.Empty;
+                                    }
+                                    else if (item.PropertyType == PubConst.GuidType)
+                                    {
+                                        addValue = DateTime.MinValue;
+                                    }
+                                }
+                                result.Add(name, addValue);
                             }
                         }
                     }
