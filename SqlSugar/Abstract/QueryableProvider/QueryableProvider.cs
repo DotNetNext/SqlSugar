@@ -20,11 +20,12 @@ namespace SqlSugar
     }
     public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
     {
-        public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression) {
-           _Where(expression);
+        public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
             return this;
-         }
-        public  ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             return _Select<TResult>(expression);
         }
@@ -35,25 +36,25 @@ namespace SqlSugar
             return this;
         }
 
-        public  ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
-            this._OrderBy(expression, type);
+            _OrderBy(expression, type);
             return this;
         }
 
-        public new ISugarQueryable<T, T2>  OrderBy(Expression<Func<T, object>> expression, OrderByType type)
+        public new ISugarQueryable<T, T2> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
         {
-            this._OrderBy(expression, type);
+            _OrderBy(expression, type);
             return this;
         }
 
-        public new ISugarQueryable<T, T2>  GroupBy(Expression<Func<T, object>> expression)
+        public new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
             return this;
         }
 
-        public  ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression)
+        public ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression)
         {
             _GroupBy(expression);
             return this;
