@@ -18,7 +18,30 @@ namespace SqlSugar
             ISugarQueryable<T> reval = CreateInstance<T,ISugarQueryable<T>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-
+        public static ISugarQueryable<T,T2> GetQueryable<T,T2>(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T,T2> reval = CreateInstance<T,T2, ISugarQueryable<T,T2>>(className, currentConnectionConfig.DbType);
+            return reval;
+        }
+        public static ISugarQueryable<T, T2, T3> GetQueryable<T, T2,T3>(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3> reval = CreateInstance<T, T2, T3, ISugarQueryable<T, T2,T3>>(className, currentConnectionConfig.DbType);
+            return reval;
+        }
+        public static ISugarQueryable<T, T2, T3, T4> GetQueryable<T, T2, T3, T4>(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4> reval = CreateInstance<T, T2, T3, T4, ISugarQueryable<T, T2, T3, T4>>(className, currentConnectionConfig.DbType);
+            return reval;
+        }
         public static QueryBuilder GetQueryBuilder(IConnectionConfig currentConnectionConfig)
         {
             CheckConfig(currentConnectionConfig);
@@ -110,6 +133,75 @@ namespace SqlSugar
                 lock (typeCache)
                 {
                     type = Type.GetType(className + "`1", true).MakeGenericType(typeof(T));
+                    Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
+                    if (!typeCache.ContainsKey(cacheKey))
+                    {
+                        typeCache.Add(cacheKey, type);
+                    }
+                }
+            }
+            var reval = (Restult)Activator.CreateInstance(type, true);
+            return reval;
+        }
+        private static Restult CreateInstance<T,T2, Restult>(string className, string dbType)
+        {
+            var cacheKey = className + typeof(T).FullName+typeof(T2).FullName;
+            Type type;
+            if (typeCache.ContainsKey(cacheKey))
+            {
+                type = typeCache[cacheKey];
+            }
+            else
+            {
+                lock (typeCache)
+                {
+                    type = Type.GetType(className + "`2", true).MakeGenericType(typeof(T),typeof(T2));
+                    Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
+                    if (!typeCache.ContainsKey(cacheKey))
+                    {
+                        typeCache.Add(cacheKey, type);
+                    }
+                }
+            }
+            var reval = (Restult)Activator.CreateInstance(type, true);
+            return reval;
+        }
+        private static Restult CreateInstance<T, T2,T3, Restult>(string className, string dbType)
+        {
+            var cacheKey = className + typeof(T).FullName + typeof(T2).FullName+typeof(T3).FullName;
+            Type type;
+            if (typeCache.ContainsKey(cacheKey))
+            {
+                type = typeCache[cacheKey];
+            }
+            else
+            {
+                lock (typeCache)
+                {
+                    type = Type.GetType(className + "`3", true).MakeGenericType(typeof(T), typeof(T2),typeof(T3));
+                    Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
+                    if (!typeCache.ContainsKey(cacheKey))
+                    {
+                        typeCache.Add(cacheKey, type);
+                    }
+                }
+            }
+            var reval = (Restult)Activator.CreateInstance(type, true);
+            return reval;
+        }
+        private static Restult CreateInstance<T, T2,T3,T4, Restult>(string className, string dbType)
+        {
+            var cacheKey = className + typeof(T).FullName + typeof(T2).FullName + typeof(T3).FullName + typeof(T4).FullName;
+            Type type;
+            if (typeCache.ContainsKey(cacheKey))
+            {
+                type = typeCache[cacheKey];
+            }
+            else
+            {
+                lock (typeCache)
+                {
+                    type = Type.GetType(className + "`4", true).MakeGenericType(typeof(T), typeof(T2), typeof(T4), typeof(T4));
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(cacheKey))
                     {

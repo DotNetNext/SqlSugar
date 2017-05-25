@@ -10,6 +10,17 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
+    public partial class QueryableProvider<T, T2,T3,T4> : QueryableProvider<T>, ISugarQueryable<T, T2,T3,T4>
+    {
+
+    }
+    public partial class QueryableProvider<T, T2,T3> : QueryableProvider<T>, ISugarQueryable<T, T2,T3>
+    {
+
+    }
+    public partial class QueryableProvider<T,T2> : QueryableProvider<T>,ISugarQueryable<T,T2>{
+
+    }
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
         public SqlSugarClient Context { get; set; }

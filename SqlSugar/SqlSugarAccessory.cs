@@ -112,5 +112,19 @@ namespace SqlSugar
             }
             return reval;
         }
+
+        protected void CreateQueryable<T>(ISugarQueryable<T> result) where T : class, new()
+        {
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.SqlBuilder = sqlBuilder;
+            result.SqlBuilder.QueryBuilder = InstanceFactory.GetQueryBuilder(CurrentConnectionConfig);
+            result.SqlBuilder.QueryBuilder.Builder = sqlBuilder;
+            result.SqlBuilder.Context = result.SqlBuilder.QueryBuilder.Context = this.Context;
+            result.SqlBuilder.QueryBuilder.EntityType = typeof(T);
+            result.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
+            result.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(CurrentConnectionConfig);
+        }
+
     }
 }
