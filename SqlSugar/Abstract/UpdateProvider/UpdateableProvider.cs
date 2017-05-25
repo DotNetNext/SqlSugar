@@ -22,12 +22,23 @@ namespace SqlSugar
         public List<MappingColumn> MappingColumnList { get; set; }
         private List<string> IgnoreColumnNameList { get; set; }
         private bool IsOffIdentity { get; set; }
+        public MappingTableList OldMappingTableList { get; set; }
+        public bool IsAs { get; set; }
         public int ExecuteCommand()
         {
             PreToSql();
-            return this.Ado.ExecuteCommand(UpdateBuilder.ToSqlString(), UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            string sql = UpdateBuilder.ToSqlString();
+            RestoreMapping();
+            return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
         }
-
+        public IUpdateable<T> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            IsAs = true;
+            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables.Add(entityName, tableName);
+            return this; ;
+        }
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
@@ -59,6 +70,7 @@ namespace SqlSugar
         {
             PreToSql();
             string sql = UpdateBuilder.ToSqlString();
+            RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, UpdateBuilder.Parameters);
         }
 
@@ -232,6 +244,13 @@ namespace SqlSugar
             else
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private void RestoreMapping()
+        {
+            if (IsAs)
+            {
+                this.Context.MappingTables = OldMappingTableList;
             }
         }
     }

@@ -12,6 +12,8 @@ namespace SqlSugar
         SqlSugarClient Context { get; set; }
         ISqlBuilder SqlBuilder { get; set; }
 
+        ISugarQueryable<T> AS<T2>(string tableName);
+        ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> With(string withString);
         ISugarQueryable<T> AddParameters(object pars);
         ISugarQueryable<T> AddParameters(SugarParameter[] pars);

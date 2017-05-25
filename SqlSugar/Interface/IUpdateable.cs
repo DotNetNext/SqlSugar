@@ -10,6 +10,7 @@ namespace SqlSugar
     public interface IUpdateable<T>
     {
         int ExecuteCommand();
+        IUpdateable<T> AS(string tableName);
         IUpdateable<T> With(string lockString);
         IUpdateable<T> Where(bool isUpdateNull,bool IsOffIdentity = false);
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);

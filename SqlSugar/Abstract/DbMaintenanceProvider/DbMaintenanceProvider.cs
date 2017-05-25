@@ -28,6 +28,7 @@ namespace SqlSugar
         }
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
+            if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
             string key = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower();
             return GetListOrCache<DbColumnInfo>(key, this.GetColumnInfosByTableNameSql);
         }

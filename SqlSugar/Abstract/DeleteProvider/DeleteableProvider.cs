@@ -13,6 +13,8 @@ namespace SqlSugar
         public IAdo Db { get { return Context.Ado; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }
+        public MappingTableList OldMappingTableList { get; set; }
+        public bool IsAs { get; set; }
         public EntityInfo EntityInfo
         {
             get
@@ -25,7 +27,16 @@ namespace SqlSugar
             DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters==null?null:DeleteBuilder.Parameters.ToArray();
+            RestoreMapping();
             return Db.GetInt(sql, paramters);
+        }
+        public IDeleteable<T> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            IsAs = true;
+            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables.Add(entityName, tableName);
+            return this; ;
         }
 
         public IDeleteable<T> Where(List<T> deleteObjs)
@@ -149,6 +160,7 @@ namespace SqlSugar
             DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
+            RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, paramters);
         }
 
@@ -173,6 +185,13 @@ namespace SqlSugar
             else
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private void RestoreMapping()
+        {
+            if (IsAs)
+            {
+                this.Context.MappingTables = OldMappingTableList;
             }
         }
     }

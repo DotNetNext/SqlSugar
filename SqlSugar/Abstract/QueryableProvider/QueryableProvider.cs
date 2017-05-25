@@ -16,6 +16,8 @@ namespace SqlSugar
         public IAdo Db { get { return Context.Ado; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
+        public MappingTableList OldMappingTableList { get; set; }
+        public bool IsAs { get; set; }
         public QueryBuilder QueryBuilder
         {
             get
@@ -34,7 +36,22 @@ namespace SqlSugar
         {
             QueryBuilder.Clear();
         }
-
+        public ISugarQueryable<T> AS<T2>(string tableName)
+        {
+            var entityName = typeof(T2).Name;
+            IsAs = true;
+            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables.Add(entityName, tableName);
+            return this;
+        }
+        public ISugarQueryable<T> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            IsAs = true;
+            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables.Add(entityName, tableName);
+            return this;
+        }
         public ISugarQueryable<T> AddParameters(object whereObj)
         {
             if (whereObj != null)
@@ -395,7 +412,7 @@ namespace SqlSugar
 
         public bool Any()
         {
-            return this.Count()>0;
+            return this.Count() > 0;
         }
 
         public ISugarQueryable<TResult> Select<T2, TResult>(Expression<Func<T2, TResult>> expression)
@@ -450,6 +467,7 @@ namespace SqlSugar
             QueryBuilder.IsCount = true;
             var sql = QueryBuilder.ToSqlString();
             var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            RestoreMapping();
             QueryBuilder.IsCount = false;
             return reval;
         }
@@ -530,6 +548,7 @@ namespace SqlSugar
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             string sql = QueryBuilder.ToSqlString();
+            RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
         }
 
@@ -542,6 +561,7 @@ namespace SqlSugar
         public DataTable ToDataTable()
         {
             var sqlObj = this.ToSql();
+            RestoreMapping();
             var result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
             return result;
         }
@@ -632,6 +652,7 @@ namespace SqlSugar
                 }
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Context.Close();
             }
+            RestoreMapping();
             return result;
         }
         private List<string> GetPrimaryKeys()
@@ -654,6 +675,13 @@ namespace SqlSugar
             else
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private void RestoreMapping()
+        {
+            if (IsAs)
+            {
+                this.Context.MappingTables = OldMappingTableList;
             }
         }
         #endregion

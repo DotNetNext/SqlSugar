@@ -10,6 +10,7 @@ namespace SqlSugar
     public interface IDeleteable<T> where T : class, new()
     {
         int ExecuteCommand();
+        IDeleteable<T> AS(string tableName);
         IDeleteable<T> With(string lockString);
         IDeleteable<T> Where(T deleteObj);
         IDeleteable<T> Where(Expression<Func<T, bool>> expression);

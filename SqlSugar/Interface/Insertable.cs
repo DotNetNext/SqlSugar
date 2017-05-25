@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         int ExecuteCommand();
         int ExecuteReutrnIdentity();
+        IInsertable<T> AS(string tableName);
         IInsertable<T> With(string lockString);
         IInsertable<T> InsertColumns(Expression<Func<T, object>> columns);
         IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);

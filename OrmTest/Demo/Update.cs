@@ -51,8 +51,7 @@ namespace OrmTest.Demo
                 .Where(it => it.Id == 11).ExecuteCommand();
 
             //Rename 
-            db.MappingTables.Add("School", "Student");
-            db.Updateable<School>().UpdateColumns(it => new School() { Name = "jack" }).Where(it => it.Id == 1).ExecuteCommand();
+            db.Updateable<School>().AS("Student").UpdateColumns(it => new School() { Name = "jack" }).Where(it => it.Id == 1).ExecuteCommand();
             //Update Student set Name='jack' Where Id=1
         }
         public static SqlSugarClient GetInstance()

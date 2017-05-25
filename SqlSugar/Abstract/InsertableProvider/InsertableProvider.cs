@@ -24,29 +24,46 @@ namespace SqlSugar
         private bool IsOffIdentity { get; set; }
         public T[] InsertObjs { get; set; }
 
+        public MappingTableList OldMappingTableList { get; set; }
+        public bool IsAs { get; set; }
+
         #region Core
         public int ExecuteCommand()
         {
             InsertBuilder.IsReturnIdentity = false;
             PreToSql();
-            return Ado.ExecuteCommand(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            return Ado.ExecuteCommand(sql, InsertBuilder.Parameters.ToArray());
         }
+
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, InsertBuilder.Parameters);
         }
         public int ExecuteReutrnIdentity()
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            return Ado.GetInt(InsertBuilder.ToSqlString(), InsertBuilder.Parameters.ToArray());
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            return Ado.GetInt(sql, InsertBuilder.Parameters.ToArray());
         }
         #endregion
 
         #region Setting
+        public IInsertable<T> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            IsAs = true;
+            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables.Add(entityName, tableName);
+            return this; ;
+        }
         public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
@@ -186,6 +203,13 @@ namespace SqlSugar
             else
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+            }
+        }
+        private void RestoreMapping()
+        {
+            if (IsAs)
+            {
+                this.Context.MappingTables = OldMappingTableList;
             }
         }
         #endregion
