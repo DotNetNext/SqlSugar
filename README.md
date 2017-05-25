@@ -20,11 +20,18 @@ https://github.com/sunkaixuan/SqlSugar/wiki/AttributeCofnig
 
 ### 1.2 Introduction
 ```c
-  var getAll = db.Queryable<Student>().ToList();
-  var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
-  var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
-  var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
-  var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
+var getAll = db.Queryable<Student>().ToList();
+var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
+var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
+var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
+var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
+var sum = db.Queryable<Student>().Sum(it=>it.Id);
+var isAny = db.Queryable<Student>().Where(it=>it.Id==-1).Any();
+var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
+var getListByRename = db.Queryable<School>().AS("Student").ToList();
+var group = db.Queryable<Student>().GroupBy(it => it.Id)
+.Having(it => NBORM.AggregateCount(it.Id) > 10)
+.Select(it =>new { id = NBORM.AggregateCount(it.Id) }).ToList();
 ``` 
 
 ### 1.3 Page
@@ -52,26 +59,28 @@ var skip5 = db.Queryable<Student>().Skip(5).ToList();
 //join  2
 var list = db.Queryable<Student, School>((st, sc) => new object[] {
 JoinType.Left,st.SchoolId==sc.Id
-}).ToList();
+})
+.Where(st=>st.Name=="jack").ToList();
 
 //join  3
 var list2 = db.Queryable<Student, School,Student>((st, sc,st2) => new object[] {
 JoinType.Left,st.SchoolId==sc.Id,
 JoinType.Left,st.SchoolId==st2.Id
-}).ToList();
+})
+.Where((st, sc, st2)=> st2.Id==1||sc.Id==1||st.Id==1).ToList();
 
 //join return List<ViewModelStudent>
 var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
 JoinType.Left,st.SchoolId==sc.Id
-}).Select<Student,School,ViewModelStudent>((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
+}).Select((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
 
 //join Order By (order by st.id desc,sc.id desc)
 var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
 JoinType.Left,st.SchoolId==sc.Id
 })
 .OrderBy(st=>st.Id,OrderByType.Desc)
-.OrderBy<School>(sc=>sc.Id,OrderByType.Desc)
-.Select<Student, School, ViewModelStudent>((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
+.OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
+.Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 ```
 
 ### 1.5 SqlFunctions
@@ -141,6 +150,28 @@ var t3 = db.Ado.GetDataTable("select 1 as id");
 //more
 //db.Ado.GetXXX...
  ```
+
+### 1.9 Where
+```c
+var list = db.Queryable<Student, School>((st, sc) => new object[] {
+JoinType.Left,st.SchoolId==sc.Id
+})
+.Where((st,sc)=> sc.Id == 1)
+.Where((st,sc) => st.Id == 1)
+.Where((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
+
+//SELECT [st].[Id],[st].[SchoolId],[st].[Name],[st].[CreateTime] FROM [Student] st 
+//Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   
+//WHERE ( [sc].[Id] = @Id0 )  AND ( [st].[Id] = @Id1 )  AND (( [st].[Id] = @Id2 ) AND ( [sc].[Id] = @Id3 ))
+
+//Where If
+string name = null;
+string name2 = "sunkaixuan";
+var list2 = db.Queryable<Student>()
+.WhereIF(!string.IsNullOrEmpty(name), it => it.Name == name)
+.WhereIF(!string.IsNullOrEmpty(name2), it => it.Name == name2).ToList();
+```
+
  
 ##  2. Insert
  ```c
