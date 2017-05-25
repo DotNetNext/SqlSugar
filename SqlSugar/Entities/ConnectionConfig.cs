@@ -5,13 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public interface IConnectionConfig
-    {
-        string DbType { get; set; }
-        string ConnectionString { get; set; }
-        bool IsAutoCloseConnection { get; set; }
-    }
-
     public class SystemTableConfig : IConnectionConfig
     {
         public string DbType { get; set; }
