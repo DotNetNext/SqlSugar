@@ -152,31 +152,6 @@ namespace SqlSugar
                 QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
         }
-        public ISugarQueryable<T> Where<T2>(Expression<Func<T2, bool>> expression)
-        {
-            this._Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Where<T2, T3>(Expression<Func<T2, T3, bool>> expression)
-        {
-            this._Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Where<T2, T3, T4>(Expression<Func<T2, T3, T4, bool>> expression)
-        {
-            this._Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Where<T2, T3, T4, T5>(Expression<Func<T2, T3, T4, T5, bool>> expression)
-        {
-            this._Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> Where<T2, T3, T4, T5, T6>(Expression<Func<T2, T3, T4, T5, T6, bool>> expression)
-        {
-            this._Where(expression);
-            return this;
-        }
 
         public ISugarQueryable<T> Having(Expression<Func<T, bool>> expression)
         {
@@ -220,7 +195,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (!isWhere) return this;
-            Where<T>(expression);
+            _Where(expression);
             return this;
         }
         public ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null)
@@ -229,43 +204,6 @@ namespace SqlSugar
             this.Where<T>(whereString, whereObj);
             return this;
         }
-        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, string whereString, object whereObj = null)
-        {
-            if (!isWhere) return this;
-            this.Where<T2>(whereString, whereObj);
-            return this;
-        }
-        public ISugarQueryable<T> WhereIF<T2>(bool isWhere, Expression<Func<T2, bool>> expression)
-        {
-            if (!isWhere) return this;
-            this.Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> WhereIF<T2, T3>(bool isWhere, Expression<Func<T2, T3, bool>> expression)
-        {
-            if (!isWhere) return this;
-            this.Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression)
-        {
-            if (!isWhere) return this;
-            this.Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression)
-        {
-            if (!isWhere) return this;
-            this.Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression)
-        {
-            if (!isWhere) return this;
-            this.Where(expression);
-            return this;
-        }
-
         public ISugarQueryable<T> In(params object[] pkValues)
         {
             if (pkValues == null || pkValues.Length == 0)
@@ -354,32 +292,12 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T2> OrderBy<T2>(Expression<Func<T2, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            this._OrderBy(expression, type);
-            var reval = InstanceFactory.GetQueryable<T2>(this.Context.CurrentConnectionConfig);
-            reval.Context = this.Context;
-            reval.SqlBuilder = this.SqlBuilder;
-            reval.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            reval.SqlBuilder.QueryBuilder.SelectValue = expression;
-            return reval;
-        }
-
         public ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
             return this;
         }
-        public ISugarQueryable<T2> GroupBy<T2>(Expression<Func<T2, object>> expression)
-        {
-            _GroupBy(expression);
-            var reval = InstanceFactory.GetQueryable<T2>(this.Context.CurrentConnectionConfig);
-            reval.Context = this.Context;
-            reval.SqlBuilder = this.SqlBuilder;
-            reval.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            reval.SqlBuilder.QueryBuilder.SelectValue = expression;
-            return reval;
-        }
+
         public ISugarQueryable<T> GroupBy(string groupFileds)
         {
             var croupByValue = QueryBuilder.GroupByValue;
