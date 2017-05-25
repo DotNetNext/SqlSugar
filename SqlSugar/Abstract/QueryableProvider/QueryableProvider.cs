@@ -16,26 +16,102 @@ namespace SqlSugar
     }
     public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
-
-    }
-    public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
-    {
-        public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression)
+        #region  Group 
+        public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression)
         {
-            _Where(expression);
+            _GroupBy(expression);
             return this;
         }
+
+        public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region Order
+        public ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             return _Select<TResult>(expression);
         }
 
-        public ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Where
+        public ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, bool>> expression)
         {
             _Where(expression);
             return this;
         }
 
+        public new ISugarQueryable<T, T2, T3> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+
+        #endregion
+
+    }
+    public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
+    {
+        #region Where
+        public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+
+        #endregion
+
+        #region Order
         public ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
             _OrderBy(expression, type);
@@ -47,7 +123,9 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
+        #endregion
 
+        #region GroupBy
         public new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
@@ -59,6 +137,7 @@ namespace SqlSugar
             _GroupBy(expression);
             return this;
         }
+        #endregion
     }
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
