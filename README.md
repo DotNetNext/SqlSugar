@@ -269,19 +269,20 @@ var t10 = db.Updateable<Student>()
  .Where(it => it.Id == 11).ExecuteCommand();
  ```
 
- ##  4. Mapping
- ##### Priority level    AS>Add>Attribute
- ### 4.1 Add
+ ##  5. Table structure is different from entity
+ ##### Priority level： 
+ AS>Add>Attribute
+ ### 5.1 Add
  ```c
 db.MappingTables.Add()
 db.MappingColumns.Add()
 db.IgnoreColumns.Add()
  ```
- ### 4.2 AS
+ ### 5.2 AS
   ```c
 db.Queryable<T>().As("tableName").ToList();
  ```
-### 4.3 Attribute
+### 5.3 Attribute
  ```c
 [SugarColumn(IsIgnore=true)]
 public int TestId { get; set; }
