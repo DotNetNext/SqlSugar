@@ -3,6 +3,7 @@
 Email:610262374@qq.com 
 QQ Group:225982985
 
+##3.x API
 3.X https://github.com/sunkaixuan/SqlSugar/tree/master
 
 ##  1. Query
