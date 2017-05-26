@@ -58,7 +58,7 @@ namespace OrmTest.UnitTest
                     t1.Key, t1.Value, " select t1 Error");
 
 
-                var ss1 = db.Queryable<School, School>((st, st2) => new object[] {
+                var t2 = db.Queryable<School, School>((st, st2) => new object[] {
                            JoinType.Left,st.Id==st2.Id
                     })
                           .Where(st => st.Id > 0)
@@ -67,18 +67,18 @@ namespace OrmTest.UnitTest
                 base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [School.Id] , [st].[Name] AS [School.Name]  FROM [School] st Left JOIN School st2 ON ( [st].[Id] = [st2].[Id] )   WHERE ( [st].[Id] > @Id0 ) "
                     , new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
-                    }, ss1.Key, ss1.Value, "ss1 Error");
+                    }, t2.Key, t2.Value, "select t2  Error");
 
 
-                var ss2 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
+                var t3 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id,
                           JoinType.Left,sc2.Id==sc.Id
                 }).Where(st => st.Id > 0)
                 .Select<School>((st) => new School() { Id = st.Id }).ToSql();
-                base.Check("SELECT  [st].[Id] AS [Id]  FROM [Student] st Left JOIN School sc ON ( [st].[SchoolId] =[sc].[Id])  Left JOIN School sc2 ON ( [sc2].[Id] = [sc].[Id] )   WHERE ( [st].[Id] > @Id0 ) ",
+                base.Check("SELECT  [st].[ID] AS [Id]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] =[sc].[Id])  Left JOIN School sc2 ON ( [sc2].[Id] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
                    new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
-                    }, ss2.Key, ss2.Value, "ss2 Error");
+                    }, t3.Key, t3.Value, "select t3 Error");
                 #endregion
 
 
