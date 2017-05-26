@@ -29,16 +29,31 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
            
+            //1. no result 
            var result=db.UseTran(() =>
             {
                 var count= db.Ado.ExecuteCommand("delete student");
                 throw new Exception("error haha");
             });
 
+            //2 has result 
             var result2 = db.UseTran<List<Student>>(() =>
             {
                 return db.Queryable<Student>().ToList();
             });
+
+            //3 use try
+            try
+            {
+                db.Ado.BeginTran();
+
+                db.Ado.CommitTran();
+            }
+            catch (Exception)
+            {
+                db.Ado.RollbackTran();
+                throw;
+            }
         }
 
         private static void Group()
