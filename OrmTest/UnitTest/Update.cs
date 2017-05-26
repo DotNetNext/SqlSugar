@@ -25,10 +25,10 @@ namespace OrmTest.UnitTest
             //db.MappingColumns.Add("id","dbid", "Student");
 
             var t1 = db.Updateable(updateObj).ToSql();
-            base.Check(@"UPDATE [Student]  SET
+            base.Check(@"UPDATE [STudent]  SET
            [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime  WHERE [Id]=@Id", new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
-                           new SugarParameter("@Id",1),
+                           new SugarParameter("@ID",1),
                            new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@Name", "jack")
             }, t1.Key, t1.Value,"Update t1 error");
@@ -39,38 +39,37 @@ namespace OrmTest.UnitTest
             db.IgnoreColumns = null;
             //Only  update  Name 
             var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ToSql();
-            base.Check(@"UPDATE [Student]  SET
+            base.Check(@"UPDATE [STudent]  SET
            [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
-                           new SugarParameter("@Id",1),
+                           new SugarParameter("@ID",1),
                            new SugarParameter("@Name", "jack")
             }, t3.Key, t3.Value, "Update t3 error");
 
             //Ignore  Name and TestId
             var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ToSql();
-            base.Check(@"UPDATE [Student]  SET
+            base.Check(@"UPDATE [STudent]  SET
            [SchoolId]=@SchoolId,[CreateTime]=@CreateTime  WHERE [Id]=@Id", new List<SugarParameter>() {
                            new SugarParameter("@CreateTime",Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@SchoolId", 0),
-                           new SugarParameter("@Id",1),
+                           new SugarParameter("@ID",1),
             }, t4.Key, t4.Value, "Update t4 error");
 
             //Ignore  Name and TestId
             var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
-            base.Check(@"UPDATE [Student] WITH(UPDLOCK)  SET
+            base.Check(@"UPDATE [STudent] WITH(UPDLOCK)  SET
            [SchoolId]=@SchoolId,[CreateTime]=@CreateTime  WHERE [Id]=@Id", new List<SugarParameter>() {
                            new SugarParameter("@CreateTime",Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@SchoolId", 0),
-                           new SugarParameter("@Id",1),
+                           new SugarParameter("@ID",1),
             }, t5.Key, t5.Value, "Update t5 error");
 
 
             //Use Lock
             var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ToSql();
-            base.Check(@"UPDATE [Student] WITH(UPDLOCK)  SET
-           [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime,[TestId]=@TestId  WHERE [Id]=@Id", new List<SugarParameter>() {
+            base.Check(@"UPDATE [STudent] WITH(UPDLOCK)  SET
+           [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime  WHERE [Id]=@Id", new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
-                           new SugarParameter("@Id",1),
-                           new SugarParameter("@TestId",0),
+                           new SugarParameter("@ID",1),
                            new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@Name", "jack")
             }, t6.Key, t6.Value, "Update t6 error");
@@ -78,11 +77,11 @@ namespace OrmTest.UnitTest
 
             //update List<T>
             var t7 = db.Updateable(updateObjs).With(SqlWith.UpdLock).ToSql();
-            base.Check(@"UPDATE S SET S.[SchoolId]=T.[SchoolId],S.[Name]=T.[Name],S.[CreateTime]=T.[CreateTime],S.[TestId]=T.[TestId] FROM [Student] S WITH(UPDLOCK)   INNER JOIN             (
+            base.Check(@"UPDATE S SET S.[SchoolId]=T.[SchoolId],S.[Name]=T.[Name],S.[CreateTime]=T.[CreateTime] FROM [STudent] S WITH(UPDLOCK)   INNER JOIN             (
               
- SELECT N'1' AS Id,N'0' AS SchoolId,N'jack' AS Name,'2017-05-21 09:56:12.610' AS CreateTime,N'0' AS TestId		
+ SELECT N'1' AS ID,N'0' AS SchoolId,N'jack' AS Name,'2017-05-21 09:56:12.610' AS CreateTime		
 UNION ALL 
- SELECT N'2' AS Id,N'0' AS SchoolId,N'sun' AS Name,NULL AS CreateTime,N'0' AS TestId
+ SELECT N'2' AS ID,N'0' AS SchoolId,N'sun' AS Name,NULL AS CreateTime
 
 
             ) T ON S.[Id]=T.[Id]
@@ -91,12 +90,11 @@ UNION ALL
             //Re Set Value
             var t8 = db.Updateable(updateObj)
                 .ReSetValue(it=>it.Name==(it.Name+1)).ToSql();
-            base.Check(@"UPDATE [Student]  SET
-           [SchoolId]=@SchoolId, [Name] =( [Name] + @Const0 ),[CreateTime]=@CreateTime,[TestId]=@TestId  WHERE [Id]=@Id",
+            base.Check(@"UPDATE [STudent]  SET
+           [SchoolId]=@SchoolId, [Name] =( [Name] + @Const0 ),[CreateTime]=@CreateTime  WHERE [Id]=@Id",
             new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
-                           new SugarParameter("@Id",1),
-                           new SugarParameter("@TestId",0),
+                           new SugarParameter("@ID",1),
                            new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@Const0", 1)
             }, t8.Key, t8.Value, "Update t8 error"
@@ -105,21 +103,20 @@ UNION ALL
             //Where By Expression
             var t9 = db.Updateable(updateObj)
            .Where(it => it.Id==1).ToSql();
-           base.Check(@"UPDATE [Student]  SET
-           [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime,[TestId]=@TestId  WHERE ( [Id] = @Id0 )",
+           base.Check(@"UPDATE [STudent]  SET
+           [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime  WHERE ( [ID] = @Id0 )",
           new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
-                           new SugarParameter("@Id",1),
+                           new SugarParameter("@ID",1),
                            new SugarParameter("@Id0",1),
-                           new SugarParameter("@TestId",0),
                            new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@Name", "jack") },t9.Key,t9.Value,"Upate t9 error"
            );
             updateObj.SchoolId = 18;
             string name = "x";
             var t10 = db.Updateable<Student>().UpdateColumns(it => new Student() { Name =name, SchoolId=updateObj.SchoolId }).Where(it=>it.Id==11).ToSql();
-            base.Check(@"UPDATE [Student]  SET
-            [SchoolId] = @Const0 , [Name] = @const3   WHERE ( [Id] = @Id1 )", new List<SugarParameter>() {
+            base.Check(@"UPDATE [STudent]  SET
+            [SchoolId] = @Const0 , [Name] = @const3   WHERE ( [ID] = @Id1 )", new List<SugarParameter>() {
                            new SugarParameter("@const3","x"),
                            new SugarParameter("@Const0",18),
                            new SugarParameter("@Id1",11)},
