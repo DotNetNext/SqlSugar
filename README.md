@@ -318,3 +318,19 @@ catch (Exception)
   throw;
 }
    ```
+ ##  7. Use SP
+    ```c
+   //1. no result 
+  db.UseStoredProcedure(() =>
+  {
+      string spName = "sp_help";
+      var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+  });
+
+  //2. has result 
+  var result= db.UseStoredProcedure<dynamic>(() =>
+  {
+      string spName = "sp_help";
+      return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+  });
+   ```
