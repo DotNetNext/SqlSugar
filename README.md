@@ -294,29 +294,31 @@ var db = GetInstance();
 //1. no result 
 var result = db.UseTran(() =>
 {
-var beginCount = db.Queryable<Student>().Count();
-db.Ado.ExecuteCommand("delete student");
-var endCount = db.Queryable<Student>().Count();
-throw new Exception("error haha");
+  var beginCount = db.Queryable<Student>().Count();
+  db.Ado.ExecuteCommand("delete student");
+  var endCount = db.Queryable<Student>().Count();
+  throw new Exception("error haha");
 });
 var count = db.Queryable<Student>().Count();
+
 
 //2 has result 
 var result2 = db.UseTran<List<Student>>(() =>
 {
-return db.Queryable<Student>().ToList();
+  return db.Queryable<Student>().ToList();
 });
+
 
 //3 use try
 try
 {
-db.Ado.BeginTran();
-
-db.Ado.CommitTran();
+  db.Ado.BeginTran();
+  xxxx
+  db.Ado.CommitTran();
 }
 catch (Exception)
 {
-db.Ado.RollbackTran();
-throw;
+  db.Ado.RollbackTran();
+  throw;
 }
    ```
