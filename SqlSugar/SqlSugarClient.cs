@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Remoting.Contexts;
@@ -425,6 +426,32 @@ namespace SqlSugar
                 result.IsSuccess = false;
                 this.Ado.RollbackTran();
             }
+            return result;
+        }
+        public void UseStoredProcedure(Action action)
+        {
+            var oldCommandType = this.Ado.CommandType;
+            this.Ado.CommandType = CommandType.StoredProcedure;
+            Ado.IsClearParameters = false;
+            if (action != null)
+            {
+                action();
+            }
+            this.Ado.CommandType = oldCommandType;
+            Ado.IsClearParameters = true;
+        }
+        public T UseStoredProcedure<T>(Func<T> action)
+        {
+            T result = default(T);
+            var oldCommandType = this.Ado.CommandType;
+            this.Ado.CommandType = CommandType.StoredProcedure;
+            Ado.IsClearParameters = false;
+            if (action != null)
+            {
+                result=action();
+            }
+            this.Ado.CommandType = oldCommandType;
+            Ado.IsClearParameters = true;
             return result;
         }
         #endregion

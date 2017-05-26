@@ -17,8 +17,10 @@ namespace SqlSugar
             this.IsClearParameters = true;
             this.CommandTimeOut = 30000;
         }
-        public virtual string SqlParameterKeyWord {
-            get {
+        public virtual string SqlParameterKeyWord
+        {
+            get
+            {
                 return "@";
             }
         }
@@ -86,7 +88,7 @@ namespace SqlSugar
         public virtual void BeginTran()
         {
             CheckConnection();
-            this.Transaction=this.Connection.BeginTransaction();
+            this.Transaction = this.Connection.BeginTransaction();
         }
         public virtual void BeginTran(IsolationLevel iso)
         {
@@ -110,7 +112,7 @@ namespace SqlSugar
                 this.Transaction = null;
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
             }
-        } 
+        }
         #endregion
 
         #region abstract
@@ -133,7 +135,7 @@ namespace SqlSugar
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecLogEvent(sql, pars, false);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection&&this.Transaction==null) this.Close();
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return count;
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] pars)
@@ -191,7 +193,8 @@ namespace SqlSugar
             {
                 return GetString(sql);
             }
-            else {
+            else
+            {
                 return GetString(sql, pars.ToArray());
             }
         }
@@ -276,12 +279,12 @@ namespace SqlSugar
             var parameters = this.GetParameters(whereObj);
             return SqlQuery<T>(sql, parameters);
         }
-        public virtual List<T> SqlQuery<T>(string sql, params SugarParameter[] pars)
+        public virtual List<T> SqlQuery<T>(string sql, params SugarParameter[] parameters)
         {
             var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             builder.SqlQueryBuilder.sql.Append(sql);
-            if (pars != null && pars.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(pars);
+            if (parameters != null && parameters.Any())
+                builder.SqlQueryBuilder.Parameters.AddRange(parameters);
             using (var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 var reval = this.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
@@ -300,6 +303,36 @@ namespace SqlSugar
             {
                 return SqlQuery<T>(sql);
             }
+        }
+        public virtual T SqlQuerySingle<T>(string sql, object whereObj = null)
+        {
+            var result = SqlQuery<T>(sql, whereObj);
+            return result == null ? default(T) : result.FirstOrDefault();
+        }
+        public virtual T SqlQuerySingle<T>(string sql, params SugarParameter[] parameters)
+        {
+            var result = SqlQuery<T>(sql, parameters);
+            return result == null ? default(T) : result.FirstOrDefault();
+        }
+        public virtual T SqlQuerySingle<T>(string sql, List<SugarParameter> parameters)
+        {
+            var result = SqlQuery<T>(sql, parameters);
+            return result == null ? default(T) : result.FirstOrDefault();
+        }
+        public virtual dynamic SqlQueryDynamic(string sql, object parameters = null)
+        {
+            var dt = this.GetDataTable(sql, parameters);
+            return dt == null ? null : this.Context.RewritableMethods.DataTableToDynamic(dt);
+        }
+        public virtual dynamic SqlQueryDynamic(string sql, params SugarParameter[] parameters)
+        {
+            var dt = this.GetDataTable(sql, parameters);
+            return dt == null ? null : this.Context.RewritableMethods.DataTableToDynamic(dt);
+        }
+        public dynamic SqlQueryDynamic(string sql, List<SugarParameter> parameters)
+        {
+            var dt = this.GetDataTable(sql, parameters);
+            return dt == null ? null : this.Context.RewritableMethods.DataTableToDynamic(dt);
         }
         public virtual DataTable GetDataTable(string sql, params SugarParameter[] pars)
         {
@@ -396,7 +429,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        action(sql,this.Context.RewritableMethods.SerializeObject(pars.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql, this.Context.RewritableMethods.SerializeObject(pars.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
                     }
                 }
             }
@@ -411,6 +444,6 @@ namespace SqlSugar
             CheckConnection();
         }
 
-       
+
     }
 }

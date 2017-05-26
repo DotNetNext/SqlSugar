@@ -23,20 +23,39 @@ namespace OrmTest.Demo
             Group();
             Sqlable();
             Tran();
+            StoredProcedure();
+        }
+
+        private static void StoredProcedure()
+        {
+            var db = GetInstance();
+            //1. no result 
+            db.UseStoredProcedure(() =>
+            {
+                string spName = "sp_help";
+                var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+            });
+
+            //2. has result 
+            var result= db.UseStoredProcedure<dynamic>(() =>
+            {
+                string spName = "sp_help";
+                return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+            });
         }
 
         private static void Tran()
         {
             var db = GetInstance();
-           
+
             //1. no result 
-           var result=db.UseTran(() =>
-            {
-                var beginCount = db.Queryable<Student>().Count();
-                db.Ado.ExecuteCommand("delete student");
-                var endCount = db.Queryable<Student>().Count();
-                throw new Exception("error haha");
-            });
+            var result = db.UseTran(() =>
+               {
+                   var beginCount = db.Queryable<Student>().Count();
+                   db.Ado.ExecuteCommand("delete student");
+                   var endCount = db.Queryable<Student>().Count();
+                   throw new Exception("error haha");
+               });
             var count = db.Queryable<Student>().Count();
 
             //2 has result 

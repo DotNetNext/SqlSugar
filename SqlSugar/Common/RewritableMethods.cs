@@ -171,5 +171,22 @@ namespace SqlSugar
                 return DeserializeObject<T>(jsonString);
             }
         }
+
+        public dynamic DataTableToDynamic(DataTable table)
+        {
+            List<Dictionary<string, object>> deserializeObject = new List<Dictionary<string, object>>();
+            Dictionary<string, object> childRow;
+            foreach (DataRow row in table.Rows)
+            {
+                childRow = new Dictionary<string, object>();
+                foreach (DataColumn col in table.Columns)
+                {
+                    childRow.Add(col.ColumnName, row[col]);
+                }
+                deserializeObject.Add(childRow);
+            }
+            return JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(deserializeObject));
+
+        }
     }
 }
