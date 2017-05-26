@@ -58,7 +58,7 @@ namespace SqlSugar
         {
             get
             {
-                return "{0}=N'{1}'";
+                return "[{0}]=N'{1}'";
             }
         }
 

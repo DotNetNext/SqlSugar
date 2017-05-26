@@ -63,7 +63,7 @@ namespace SqlSugar
                     primaryKeyValues.Add(value);
                 }
                 var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
-                Where(string.Format(DeleteBuilder.WhereInTemplate, primaryFields.Single(), inValueString));
+                Where(string.Format(DeleteBuilder.WhereInTemplate,SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
             }
             else
             {
@@ -140,7 +140,7 @@ namespace SqlSugar
             string primaryField = null;
             primaryField = GetPrimaryKeys().FirstOrDefault();
             Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
-            Where(string.Format(DeleteBuilder.WhereInTemplate, primaryField, primaryKeyValues.ToJoinSqlInVals()));
+            Where(string.Format(DeleteBuilder.WhereInTemplate,SqlBuilder.GetTranslationColumnName(primaryField), primaryKeyValues.ToJoinSqlInVals()));
             return this;
         }
 

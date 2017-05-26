@@ -24,7 +24,7 @@ namespace OrmTest.UnitTest
             //db.MappingColumns.Add("id","dbid", "Student");
 
             var t1 = db.Insertable(insertObj).ToSql();
-            base.Check(@"INSERT INTO [Student]  
+            base.Check(@"INSERT INTO [STudent]  
            ([SchoolId],[Name],[CreateTime])
      VALUES
            (@SchoolId,@Name,@CreateTime) ;SELECT SCOPE_IDENTITY();",
@@ -42,7 +42,7 @@ namespace OrmTest.UnitTest
             db.IgnoreColumns = null;
             //Only  insert  Name 
             var t3 = db.Insertable(insertObj).InsertColumns(it => new { it.Name }).ToSql();
-            base.Check(@"INSERT INTO [Student]  
+            base.Check(@"INSERT INTO [STudent]  
            ([Name])
      VALUES
            (@Name) ;SELECT SCOPE_IDENTITY();", new List<SugarParameter>() {
@@ -52,7 +52,7 @@ namespace OrmTest.UnitTest
 
             //Ignore  Name and TestId
             var t4 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ToSql();
-            base.Check(@"INSERT INTO [Student]  
+            base.Check(@"INSERT INTO [STudent]  
            ([SchoolId],[CreateTime])
      VALUES
            (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
@@ -64,7 +64,7 @@ namespace OrmTest.UnitTest
 
             //Ignore  Name and TestId
             var t5 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
-            base.Check(@"INSERT INTO [Student] WITH(UPDLOCK)  
+            base.Check(@"INSERT INTO [STudent] WITH(UPDLOCK)  
            ([SchoolId],[CreateTime])
      VALUES
            (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
@@ -75,29 +75,26 @@ new List<SugarParameter>() {
 );
             //Use Lock
             var t6 = db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
-            base.Check(@"INSERT INTO [Student] WITH(UPDLOCK)  
-           ([SchoolId],[Name],[CreateTime],[TestId])
+            base.Check(@"INSERT INTO [STudent] WITH(UPDLOCK)  
+           ([SchoolId],[Name],[CreateTime])
      VALUES
-           (@SchoolId,@Name,@CreateTime,@TestId) ;SELECT SCOPE_IDENTITY();",
+           (@SchoolId,@Name,@CreateTime) ;SELECT SCOPE_IDENTITY();",
 new List<SugarParameter>() {
                new SugarParameter("@SchoolId",0),
                new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
-               new SugarParameter("@Name","jack"),
-               new SugarParameter("@TestId",0)
+               new SugarParameter("@Name","jack")
 }, t6.Key, t6.Value, "Insert t6 error"
 );
 
             var insertObj2 = new Student() { Name = null,SchoolId=0, CreateTime = Convert.ToDateTime("2010-1-1") };
             var t8 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ToSql();
-            base.Check(@"
-INSERT INTO [Student]  
-           ([SchoolId],[CreateTime],[TestId])
+            base.Check(@"INSERT INTO [STudent]  
+           ([SchoolId],[CreateTime])
      VALUES
-           (@SchoolId,@CreateTime,@TestId) ;SELECT SCOPE_IDENTITY();",
+           (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
                new List<SugarParameter>() {
                new SugarParameter("@SchoolId", 0),
-               new SugarParameter("@CreateTime", Convert.ToDateTime("2010-1-1")),
-               new SugarParameter("@TestId", 0)
+               new SugarParameter("@CreateTime", Convert.ToDateTime("2010-1-1"))
                },
                t8.Key,
                t8.Value,

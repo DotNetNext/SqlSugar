@@ -22,14 +22,14 @@ namespace OrmTest
             var db = GetInstance();
             //by entity
             var t1= db.Deleteable<Student>().Where(new Student() { Id = 1 }).ToSql();
-            base.Check(@"DELETE FROM [Student] WHERE Id IN ('1') ",
+            base.Check(@"DELETE FROM [STudent] WHERE [Id] IN ('1') ",
                null,
                t1.Key,
                null, "Delte t1 error"
            );
             //use lock
             var t2 = db.Deleteable<Student>().With(SqlWith.RowLock).ToSql();
-            base.Check(@"DELETE FROM [Student] WITH(ROWLOCK) ",
+            base.Check(@"DELETE FROM [STudent] WITH(ROWLOCK) ",
                null,
                t2.Key,
                null, "Delte t2 error"
@@ -37,18 +37,18 @@ namespace OrmTest
 
             //by primary key
             var t3 = db.Deleteable<Student>().In(1).ToSql();
-            base.Check(@"DELETE FROM [Student] WHERE Id IN ('1') ",
+            base.Check(@"DELETE FROM [STudent] WHERE [Id] IN ('1') ",
                null,
                t3.Key,
                null, "Delte tt error"
            );
             //by primary key array
             var t4 = db.Deleteable<Student>().In(new int[] { 1,2}).ToSql();
-            base.Check(@"DELETE FROM [Student] WHERE Id IN ('1','2') ", null, t4.Key, null, "Update t4 error");
+            base.Check(@"DELETE FROM [STudent] WHERE [Id] IN ('1','2') ", null, t4.Key, null, "Update t4 error");
 
             //by expression
             var t5 = db.Deleteable<Student>().Where(it=>it.Id==1).ToSql();
-            base.Check(@"DELETE FROM [Student] WHERE ( [Id] = @Id0 ) ", new List<SugarParameter>() {
+            base.Check(@"DELETE FROM [STudent] WHERE ( [ID] = @Id0 ) ", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1)
             }, t5.Key, t5.Value, "Delte t5 error");
         }

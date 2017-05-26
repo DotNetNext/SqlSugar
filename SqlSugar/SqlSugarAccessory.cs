@@ -64,6 +64,12 @@ namespace SqlSugar
         }
         private void InitMppingInfo(EntityInfo entityInfo)
         {
+            if (this.MappingTables == null)
+                this.MappingTables = new MappingTableList();
+            if (this.MappingColumns == null)
+                this.MappingColumns = new MappingColumnList();
+            if (this.IgnoreColumns == null)
+                this.IgnoreColumns = new IgnoreComumnList();
             if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
                 if (entityInfo.DbTableName != entityInfo.EntityName)
