@@ -22,6 +22,23 @@ namespace OrmTest.Demo
             Ado();
             Group();
             Sqlable();
+            Tran();
+        }
+
+        private static void Tran()
+        {
+            var db = GetInstance();
+           
+           var result=db.UseTran(() =>
+            {
+                var count= db.Ado.ExecuteCommand("delete student");
+                throw new Exception("error haha");
+            });
+
+            var result2 = db.UseTran<List<Student>>(() =>
+            {
+                return db.Queryable<Student>().ToList();
+            });
         }
 
         private static void Group()
@@ -34,7 +51,7 @@ namespace OrmTest.Demo
 
             //SQL:
             //SELECT AVG([Id]) AS[idAvg], [Name] AS[name]  FROM[Student] GROUP BY[Name],[Id] HAVING(AVG([Id]) > 0 )
- 
+
             //NBORM.AggregateSum(object thisValue) 
             //NBORM.AggregateAvg<TResult>(TResult thisValue)
             //NBORM.AggregateMin(object thisValue) 
@@ -45,7 +62,7 @@ namespace OrmTest.Demo
         private static void Ado()
         {
             var db = GetInstance();
-            var t1= db.Ado.SqlQuery<string>("select 'a'");
+            var t1 = db.Ado.SqlQuery<string>("select 'a'");
             var t2 = db.Ado.GetInt("select 1");
             var t3 = db.Ado.GetDataTable("select 1 as id");
             //more
@@ -60,13 +77,13 @@ namespace OrmTest.Demo
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
-            var sum = db.Queryable<Student>().Sum(it=>it.Id);
-            var isAny = db.Queryable<Student>().Where(it=>it.Id==-1).Any();
+            var sum = db.Queryable<Student>().Sum(it => it.Id);
+            var isAny = db.Queryable<Student>().Where(it => it.Id == -1).Any();
             var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
             var getListByRename = db.Queryable<School>().AS("Student").ToList();
             var group = db.Queryable<Student>().GroupBy(it => it.Id)
                 .Having(it => NBORM.AggregateCount(it.Id) > 10)
-                .Select(it =>new { id = NBORM.AggregateCount(it.Id) }).ToList();
+                .Select(it => new { id = NBORM.AggregateCount(it.Id) }).ToList();
         }
 
         public static void Page()
@@ -96,8 +113,8 @@ namespace OrmTest.Demo
             var list = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
-            .Where((st,sc)=> sc.Id == 1)
-            .Where((st,sc) => st.Id == 1)
+            .Where((st, sc) => sc.Id == 1)
+            .Where((st, sc) => st.Id == 1)
             .Where((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
 
             //SELECT [st].[Id],[st].[SchoolId],[st].[Name],[st].[CreateTime] FROM [Student] st 
@@ -119,26 +136,26 @@ namespace OrmTest.Demo
             var list = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
-            .Where(st=>st.Name=="jack").ToList();
+            .Where(st => st.Name == "jack").ToList();
 
             //join  3
-            var list2 = db.Queryable<Student, School,Student>((st, sc,st2) => new object[] {
+            var list2 = db.Queryable<Student, School, Student>((st, sc, st2) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id,
               JoinType.Left,st.SchoolId==st2.Id
             })
-            .Where((st, sc, st2)=> st2.Id==1||sc.Id==1||st.Id==1).ToList();
+            .Where((st, sc, st2) => st2.Id == 1 || sc.Id == 1 || st.Id == 1).ToList();
 
             //join return List<ViewModelStudent>
             var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
-            }).Select((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
+            }).Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 
             //join Order By (order by st.id desc,sc.id desc)
             var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
-            .OrderBy(st=>st.Id,OrderByType.Desc)
-            .OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
+            .OrderBy(st => st.Id, OrderByType.Desc)
+            .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
             .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
         }
         public static void Funs()
@@ -179,7 +196,7 @@ namespace OrmTest.Demo
             //NBORM.AggregateMin(object thisValue) 
             //NBORM.AggregateMax(object thisValue) 
             //NBORM.AggregateCount(object thisValue) 
-    }
+        }
         public static void Select()
         {
             var db = GetInstance();
@@ -194,7 +211,7 @@ namespace OrmTest.Demo
             })
          .OrderBy(st => st.Id, OrderByType.Desc)
          .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
-         .Select((st, sc) => new  { Name = st.Name, SchoolId = sc.Id }).ToList();
+         .Select((st, sc) => new { Name = st.Name, SchoolId = sc.Id }).ToList();
         }
 
         private static void Sqlable()
@@ -205,7 +222,7 @@ namespace OrmTest.Demo
                           .Where("st.id>@id")
                           .AddParameters(new { id = 1 })
                           .Select("st.*").ToList();
-          //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
+            //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
         }
 
 

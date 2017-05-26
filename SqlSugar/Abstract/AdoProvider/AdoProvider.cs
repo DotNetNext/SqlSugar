@@ -86,11 +86,13 @@ namespace SqlSugar
         #region Transaction
         public virtual void BeginTran()
         {
-            this.Connection.BeginTransaction();
+            CheckConnection();
+            this.Transaction=this.Connection.BeginTransaction();
         }
         public virtual void BeginTran(IsolationLevel iso)
         {
-            this.Connection.BeginTransaction(iso);
+            CheckConnection();
+            this.Transaction = this.Connection.BeginTransaction(iso);
         }
         public virtual void RollbackTran()
         {

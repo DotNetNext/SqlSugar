@@ -58,6 +58,7 @@
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
+    <Compile Include="Entities\SugarMessageResult.cs" />
     <Compile Include="Interface\IConnectionConfig.cs" />
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerDeleteBuilder.cs" />
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerInsertBuilder.cs" />
