@@ -290,7 +290,7 @@ public int TestId { get; set; }
 
  ##  6. Use Tran
   ```c
-var db = GetInstance();
+
 //1. no result 
 var result = db.UseTran(() =>
 {
