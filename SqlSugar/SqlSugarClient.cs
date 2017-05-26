@@ -34,7 +34,6 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
-            base.InitConstructor();
         }
         /// <summary>
         /// If you do not have system table permissions, use this
@@ -44,9 +43,6 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
-            Check.ArgumentNullException(config.EntityNamespace, ErrorMessage.EntityNamespaceError);
-            base.EntityNamespace = config.EntityNamespace;
-            base.InitConstructor();
         }
         /// <summary>
         /// Read / write mode. If you have system table permissions, use this
@@ -57,7 +53,6 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;
-            base.InitConstructor();
             if (slaveConnectionConfigs.IsNullOrEmpty()) return;
 
             var db = this.Ado;
@@ -73,12 +68,9 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;
-            base.InitConstructor();
             if (slaveConnectionConfigs.IsNullOrEmpty()) return;
 
             var db = this.Ado;
-            Check.ArgumentNullException(masterConnectionConfig.EntityNamespace, ErrorMessage.EntityNamespaceError);
-            base.EntityNamespace = masterConnectionConfig.EntityNamespace;
             db.MasterConnectionConfig = masterConnectionConfig;
             db.SlaveConnectionConfigs = slaveConnectionConfigs.ToList();
         }
@@ -133,6 +125,7 @@ namespace SqlSugar
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
+            InitMppingInfo<T>();
             var result = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
             base.CreateQueryable(result);
             return result;
@@ -159,6 +152,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T,T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
         {
+            InitMppingInfo<T,T2>();
             var queryable = InstanceFactory.GetQueryable<T, T2>(base.CurrentConnectionConfig);
             base.CreateQueryable(queryable);
             string shortName = string.Empty;
@@ -168,6 +162,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T,T2,T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
         {
+            InitMppingInfo<T, T2,T3>();
             var queryable = InstanceFactory.GetQueryable<T, T2,T3>(base.CurrentConnectionConfig);
             base.CreateQueryable(queryable);
             string shortName = string.Empty;
@@ -177,6 +172,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T,T2,T3,T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
         {
+            InitMppingInfo<T, T2,T3,T4>();
             var queryable = InstanceFactory.GetQueryable<T, T2,T3,T4>(base.CurrentConnectionConfig);
             base.CreateQueryable(queryable);
             string shortName = string.Empty;
@@ -238,6 +234,7 @@ namespace SqlSugar
         #region Insertable
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
+            InitMppingInfo<T>();
             var reval = new InsertableProvider<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.Context = this;
@@ -265,6 +262,7 @@ namespace SqlSugar
         #region Deleteable
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
+            InitMppingInfo<T>();
             var reval = new DeleteableProvider<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.Context = this;
@@ -280,6 +278,7 @@ namespace SqlSugar
         #region Updateable
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
+            InitMppingInfo<T>();
             var reval = new UpdateableProvider<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
             reval.Context = this;

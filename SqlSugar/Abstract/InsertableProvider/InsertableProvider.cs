@@ -123,7 +123,7 @@ namespace SqlSugar
                 var currentIgnoreColumns = this.Context.IgnoreColumns.Where(it => it.EntityName == this.EntityInfo.EntityName).ToList();
                 this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
                 {
-                    return !currentIgnoreColumns.Any(i => it.PropertyName.Equals(i.EntityPropertyName, StringComparison.CurrentCulture));
+                    return !currentIgnoreColumns.Any(i => it.PropertyName.Equals(i.PropertyName, StringComparison.CurrentCulture));
                 }).ToList();
             }
             #endregion

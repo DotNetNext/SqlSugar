@@ -289,7 +289,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it=>!it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EnitytName,it.PropertyName)));
+                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it=>!it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName,it.PropertyName)));
             }
             else
             {

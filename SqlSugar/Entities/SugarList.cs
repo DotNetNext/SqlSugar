@@ -27,8 +27,8 @@ namespace SqlSugar
     {
         public void Add(string propertyName, string EntityName)
         {
-            this.RemoveAll(it =>it.EntityName==EntityName&&it.EntityPropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            this.Add(new IgnoreComumn() { EntityPropertyName = propertyName, EntityName = EntityName });
+            this.RemoveAll(it =>it.EntityName==EntityName&&it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            this.Add(new IgnoreComumn() { PropertyName = propertyName, EntityName = EntityName });
         }
 
         public new void Clear()
