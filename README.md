@@ -294,12 +294,8 @@ public int TestId { get; set; }
 //1. no result 
 var result = db.UseTran(() =>
 {
-  var beginCount = db.Queryable<Student>().Count();
   db.Ado.ExecuteCommand("delete student");
-  var endCount = db.Queryable<Student>().Count();
-  throw new Exception("error haha");
 });
-var count = db.Queryable<Student>().Count();
 
 
 //2 has result 
