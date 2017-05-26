@@ -270,7 +270,7 @@ var t10 = db.Updateable<Student>()
  ```
 
  ##  4. Mapping
-Priority level  AS>Add>Attribute
+ ##### Priority level    AS>Add>Attribute
  ### 4.1 Add
  ```c
 db.MappingTables.Add()
