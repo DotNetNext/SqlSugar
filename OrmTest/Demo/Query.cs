@@ -32,9 +32,12 @@ namespace OrmTest.Demo
             //1. no result 
            var result=db.UseTran(() =>
             {
-                var count= db.Ado.ExecuteCommand("delete student");
+                var beginCount = db.Queryable<Student>().Count();
+                db.Ado.ExecuteCommand("delete student");
+                var endCount = db.Queryable<Student>().Count();
                 throw new Exception("error haha");
             });
+            var count = db.Queryable<Student>().Count();
 
             //2 has result 
             var result2 = db.UseTran<List<Student>>(() =>

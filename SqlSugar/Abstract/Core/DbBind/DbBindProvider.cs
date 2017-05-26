@@ -61,21 +61,24 @@ namespace SqlSugar
         }
         public virtual List<T> DataReaderToList<T>(Type type, IDataReader dataReader,string fields)
         {
-            if (type.Name.Contains("KeyValuePair"))
+            using (dataReader)
             {
-                return GetKeyValueList<T>(type, dataReader);
-            }
-            else if (type.IsValueType || type == PubConst.StringType)
-            {
-                return GetValueTypeList<T>(type, dataReader);
-            }
-            else if (type.IsArray)
-            {
-                return GetArrayList<T>(type, dataReader);
-            }
-            else
-            {
-                return GetEntityList<T>(type, Context, dataReader,fields);
+                if (type.Name.Contains("KeyValuePair"))
+                {
+                    return GetKeyValueList<T>(type, dataReader);
+                }
+                else if (type.IsValueType || type == PubConst.StringType)
+                {
+                    return GetValueTypeList<T>(type, dataReader);
+                }
+                else if (type.IsArray)
+                {
+                    return GetArrayList<T>(type, dataReader);
+                }
+                else
+                {
+                    return GetEntityList<T>(type, Context, dataReader, fields);
+                }
             }
         }
         public abstract string ChangeDBTypeToCSharpType(string typeName);
