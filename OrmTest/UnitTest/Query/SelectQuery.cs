@@ -47,15 +47,15 @@ namespace OrmTest.UnitTest
 
 
                 #region sql and parameters validate
-                var ss0 = db.Queryable<Student, School>((st, sc) => new object[] {
+                var t1 = db.Queryable<Student, School>((st, sc) => new object[] {
                     JoinType.Inner,st.Id==sc.Id
-                }).GroupBy(st => st.Id).Having(sc => NBORM.AggregateAvg(sc.Id) == 1).Select(st => new { avgId = NBORM.AggregateAvg(st.Id) }).ToSql();
-                base.Check("SELECT  AVG([st].[Id]) AS [avgId]  FROM [Student] st Inner JOIN School sc ON ( [st].[Id] = [sc].[Id] )  GROUP BY [st].[Id] HAVING (AVG([sc].[Id]) = @Const0 ) ",
+                }).GroupBy(st => st.Id).Having(st => NBORM.AggregateAvg(st.Id) == 1).Select(st => new { avgId = NBORM.AggregateAvg(st.Id) }).ToSql();
+                base.Check("SELECT  AVG([st].[ID]) AS [avgId]  FROM [STudent] st Inner JOIN School sc ON ( [st].[ID] = [sc].[Id] )  GROUP BY [st].[ID] HAVING (AVG([st].[ID]) = @Const0 ) ",
                     new List<SugarParameter>() {
                       new SugarParameter("@Const0",1)
                     }
                     ,
-                    ss0.Key, ss0.Value, " ss0 Error");
+                    t1.Key, t1.Value, " select t1 Error");
 
 
                 var ss1 = db.Queryable<School, School>((st, st2) => new object[] {
