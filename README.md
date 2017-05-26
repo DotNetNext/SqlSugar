@@ -319,7 +319,7 @@ catch (Exception)
 }
    ```
  ##  7. Use SP
-    ```c
+```c
    //1. no result 
   db.UseStoredProcedure(() =>
   {
@@ -333,4 +333,4 @@ catch (Exception)
       string spName = "sp_help";
       return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
   });
-   ```
+```
