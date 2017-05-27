@@ -127,19 +127,8 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
             InitMppingInfo<T>();
-            var result =base.CreateQueryable<T>();
+            var result = base.CreateQueryable<T>();
             return result;
-        }
-
-        /// <summary>
-        /// Lambda Query operation
-        /// </summary>
-        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName)
-        {
-            var queryable = Queryable<SugarDynamic>();
-            queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            return queryable;
         }
         /// <summary>
         /// Lambda Query operation
@@ -147,6 +136,16 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T>(string shortName) where T : class, new()
         {
             var queryable = Queryable<T>();
+            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            return queryable;
+        }
+        /// <summary>
+        /// Lambda Query operation
+        /// </summary>
+        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName)
+        {
+            var queryable = Queryable<SugarDynamic>();
+            queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
@@ -158,7 +157,6 @@ namespace SqlSugar
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-
         public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3>();
@@ -170,8 +168,8 @@ namespace SqlSugar
         public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4>();
-            var types = new Type[] { typeof(T2), typeof(T3),typeof(T4) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3,T4>(base.CurrentConnectionConfig);
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4>(base.CurrentConnectionConfig);
             base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
@@ -233,7 +231,6 @@ namespace SqlSugar
             InsertableProvider<T> reval = base.CreateInsertable(insertObjs);
             return reval;
         }
-
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
             Check.ArgumentNullException(insertObjs, "Insertable.insertObjs can't be null");
@@ -258,17 +255,7 @@ namespace SqlSugar
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             InitMppingInfo<T>();
-            var reval = new UpdateableProvider<T>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.Context = this;
-            reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
-            reval.SqlBuilder = sqlBuilder;
-            reval.UpdateObjs = UpdateObjs;
-            sqlBuilder.UpdateBuilder = reval.UpdateBuilder = InstanceFactory.GetUpdateBuilder(base.CurrentConnectionConfig);
-            sqlBuilder.UpdateBuilder.Builder = sqlBuilder;
-            sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.UpdateBuilder.Context = this;
-            reval.Init();
+            UpdateableProvider<T> reval = base.CreateUpdateable(UpdateObjs);
             return reval;
         }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
@@ -426,7 +413,7 @@ namespace SqlSugar
             Ado.IsClearParameters = false;
             if (action != null)
             {
-                result=action();
+                result = action();
             }
             this.Ado.CommandType = oldCommandType;
             Ado.IsClearParameters = true;

@@ -145,6 +145,22 @@ namespace SqlSugar
             sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this.Context;
             return reval;
         }
+        protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
+        {
+            var reval = new UpdateableProvider<T>();
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
+            reval.Context = this.Context;
+            reval.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            reval.SqlBuilder = sqlBuilder;
+            reval.UpdateObjs = UpdateObjs;
+            sqlBuilder.UpdateBuilder = reval.UpdateBuilder = InstanceFactory.GetUpdateBuilder(this.CurrentConnectionConfig);
+            sqlBuilder.UpdateBuilder.Builder = sqlBuilder;
+            sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
+            sqlBuilder.Context = reval.SqlBuilder.UpdateBuilder.Context = this.Context;
+            reval.Init();
+            return reval;
+        }
+
         protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
         {
             this.CreateQueryable<T>(queryable);
