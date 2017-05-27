@@ -96,7 +96,7 @@ namespace SqlSugar
                                     {
                                         addValue = Guid.Empty;
                                     }
-                                    else if (item.PropertyType == PubConst.GuidType)
+                                    else if (item.PropertyType == PubConst.DateType)
                                     {
                                         addValue = DateTime.MinValue;
                                     }
