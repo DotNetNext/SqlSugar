@@ -73,7 +73,7 @@ namespace SqlSugar
                 this.IgnoreColumns = new IgnoreComumnList();
             if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
-                if (entityInfo.DbTableName != entityInfo.EntityName)
+                if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.IsValuable())
                 {
                     this.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
                 }
