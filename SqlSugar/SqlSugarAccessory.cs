@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public partial class SqlSugarAccessory
     {
+        #region Properties
         public SqlSugarClient Context { get; set; }
         public string EntityNamespace { get; set; }
         public IConnectionConfig CurrentConnectionConfig { get; set; }
@@ -16,8 +17,10 @@ namespace SqlSugar
         public Guid ContextID { get; set; }
         public MappingTableList MappingTables = new MappingTableList();
         public MappingColumnList MappingColumns = new MappingColumnList();
-        public IgnoreComumnList IgnoreColumns = new IgnoreComumnList();
+        public IgnoreComumnList IgnoreColumns = new IgnoreComumnList(); 
+        #endregion
 
+        #region Fields
         protected ISqlBuilder _SqlBuilder;
         protected EntityProvider _EntityProvider;
         protected IAdo _Ado;
@@ -25,9 +28,10 @@ namespace SqlSugar
         protected IRewritableMethods _RewritableMethods;
         protected IDbFirst _DbFirst;
         protected ICodeFirst _CodeFirst;
-        protected IDbMaintenance _DbMaintenance;
+        protected IDbMaintenance _DbMaintenance; 
+        #endregion
 
-
+        #region Init mppingInfo
         protected void InitMppingInfo<T, T2, T3, T4>()
         {
             InitMppingInfo<T, T2, T3>();
@@ -45,7 +49,6 @@ namespace SqlSugar
             InitMppingInfo<T>();
             InitMppingInfo<T2>();
         }
-
         protected void InitMppingInfo<T>()
         {
             string cacheKey = "Context.InitAttributeMappingTables";
@@ -80,65 +83,26 @@ namespace SqlSugar
             if (entityInfo.Columns.Any(it => it.EntityName == entityInfo.EntityName))
             {
                 var mappingColumnInfos = this.MappingColumns.Where(it => it.EntityName == entityInfo.EntityName);
-                foreach (var item in entityInfo.Columns.Where(it=>it.IsIgnore==false))
+                foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
                     if (!mappingColumnInfos.Any(it => it.PropertyName == item.PropertyName))
                         if (item.PropertyName != item.DbColumnName && item.DbColumnName.IsValuable())
                             this.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
                 var ignoreInfos = this.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
-                foreach (var item in entityInfo.Columns.Where(it=>it.IsIgnore))
+                foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore))
                 {
                     if (!ignoreInfos.Any(it => it.PropertyName == item.PropertyName))
-                            this.IgnoreColumns.Add(item.PropertyName, item.EntityName);
+                        this.IgnoreColumns.Add(item.PropertyName, item.EntityName);
                 }
             }
         }
-        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, ref string shortName, params Type[] entityTypeArray)
-        {
-            List<JoinQueryInfo> reval = new List<JoinQueryInfo>();
-            var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
-            ExpressionContext exp = new ExpressionContext();
-            exp.MappingColumns = this.Context.MappingColumns;
-            exp.MappingTables = this.Context.MappingTables;
-            exp.Resolve(joinExpression, ResolveExpressType.Join);
-            int i = 0;
-            var joinArray = exp.Result.GetResultArray();
-            foreach (var type in entityTypeArray)
-            {
-                var isFirst = i == 0;
-                ++i;
-                JoinQueryInfo joinInfo = new JoinQueryInfo();
-                var hasMappingTable = exp.MappingTables.IsValuable();
-                MappingTable mappingInfo = null;
-                if (hasMappingTable)
-                {
-                    mappingInfo = exp.MappingTables.FirstOrDefault(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
-                    joinInfo.TableName = mappingInfo != null ? mappingInfo.DbTableName : type.Name;
-                }
-                else
-                {
-                    joinInfo.TableName = type.Name;
-                }
-                if (isFirst)
-                {
-                    var firstItem = lambdaParameters.First();
-                    lambdaParameters.Remove(firstItem);
-                    shortName = firstItem.Name;
-                }
-                var joinString = joinArray[i * 2 - 2];
-                joinInfo.ShortName = lambdaParameters[i - 1].Name;
-                joinInfo.JoinType = (JoinType)Enum.Parse(typeof(JoinType), joinString);
-                joinInfo.JoinWhere = joinArray[i * 2 - 1];
-                joinInfo.JoinIndex = i;
-                reval.Add((joinInfo));
-            }
-            return reval;
-        }
+        #endregion
 
+        #region Create Instance
         protected ISugarQueryable<T> CreateQueryable<T>() where T : class, new()
         {
-            ISugarQueryable<T> result= InstanceFactory.GetQueryable<T>(this.CurrentConnectionConfig);
+            ISugarQueryable<T> result = InstanceFactory.GetQueryable<T>(this.CurrentConnectionConfig);
             return CreateQueryable(result);
         }
         protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result) where T : class, new()
@@ -181,7 +145,6 @@ namespace SqlSugar
             sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this.Context;
             return reval;
         }
-
         protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
         {
             this.CreateQueryable<T>(queryable);
@@ -189,5 +152,50 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(joinExpression, ref shortName, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
         }
+        #endregion
+
+        #region Private methods
+        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, ref string shortName, params Type[] entityTypeArray)
+        {
+            List<JoinQueryInfo> reval = new List<JoinQueryInfo>();
+            var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
+            ExpressionContext exp = new ExpressionContext();
+            exp.MappingColumns = this.Context.MappingColumns;
+            exp.MappingTables = this.Context.MappingTables;
+            exp.Resolve(joinExpression, ResolveExpressType.Join);
+            int i = 0;
+            var joinArray = exp.Result.GetResultArray();
+            foreach (var type in entityTypeArray)
+            {
+                var isFirst = i == 0;
+                ++i;
+                JoinQueryInfo joinInfo = new JoinQueryInfo();
+                var hasMappingTable = exp.MappingTables.IsValuable();
+                MappingTable mappingInfo = null;
+                if (hasMappingTable)
+                {
+                    mappingInfo = exp.MappingTables.FirstOrDefault(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
+                    joinInfo.TableName = mappingInfo != null ? mappingInfo.DbTableName : type.Name;
+                }
+                else
+                {
+                    joinInfo.TableName = type.Name;
+                }
+                if (isFirst)
+                {
+                    var firstItem = lambdaParameters.First();
+                    lambdaParameters.Remove(firstItem);
+                    shortName = firstItem.Name;
+                }
+                var joinString = joinArray[i * 2 - 2];
+                joinInfo.ShortName = lambdaParameters[i - 1].Name;
+                joinInfo.JoinType = (JoinType)Enum.Parse(typeof(JoinType), joinString);
+                joinInfo.JoinWhere = joinArray[i * 2 - 1];
+                joinInfo.JoinIndex = i;
+                reval.Add((joinInfo));
+            }
+            return reval;
+        }
+        #endregion
     }
 }
