@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\Newtonsoft.Json.dll</HintPath>
@@ -60,6 +63,14 @@
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
     <Compile Include="Entities\SugarMessageResult.cs" />
     <Compile Include="Interface\IConnectionConfig.cs" />
+    <Compile Include="Realization\MySql\Core\DbBind\MySqlDbBind.cs" />
+    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlBuilder.cs" />
+    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlDeleteBuilder.cs" />
+    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlExpressionContext.cs" />
+    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlInsertBuilder.cs" />
+    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlQueryBuilder.cs" />
+    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlUpdateBuilder.cs" />
+    <Compile Include="Realization\MySql\Queryable\MySqlQueryable.cs" />
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerDeleteBuilder.cs" />
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerInsertBuilder.cs" />
     <Compile Include="Entities\EntityColumnInfo.cs" />
@@ -93,6 +104,7 @@
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbMaintenance\SqlServerDbMaintenance.cs" />
     <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerQueryBuilder.cs" />
+    <Compile Include="Realization\SqlServer\MySqlProvider.cs" />
     <Compile Include="Realization\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Realization\SqlServer\Queryable\SqlServerQueryable.cs" />
     <Compile Include="Entities\SugarDynamic.cs" />
@@ -166,9 +178,12 @@
     <Content Include="Lib\Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Realization\MySql\" />
     <Folder Include="Realization\Oracle\" />
     <Folder Include="Realization\Sqlite\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

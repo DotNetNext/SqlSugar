@@ -17,10 +17,10 @@ namespace SqlSugar
         }
 
         #region Private Fileds
-        private List<JoinQueryInfo> _JoinQueryInfos;
+        protected List<JoinQueryInfo> _JoinQueryInfos;
         private List<string> _WhereInfos;
         private string _HavingInfos;
-        private string _TableNameString;
+        protected string _TableNameString;
         #endregion
 
         #region Service object
