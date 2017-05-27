@@ -44,7 +44,7 @@ namespace SqlSugar
         {
             return new MySqlDataAdapter();
         }
-        public override IDbCommand GetCommand(string sql, SugarParameter[] pars)
+        public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             MySqlCommand sqlCommand = new MySqlCommand(sql, (MySqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
@@ -53,9 +53,9 @@ namespace SqlSugar
             {
                 sqlCommand.Transaction = (MySqlTransaction)this.Transaction;
             }
-            if (pars.IsValuable())
+            if (parameters.IsValuable())
             {
-                IDataParameter[] ipars= ToIDbDataParameter(pars);
+                IDataParameter[] ipars= ToIDbDataParameter(parameters);
                 sqlCommand.Parameters.AddRange((SqlParameter[])ipars);
             }
             CheckConnection();
@@ -69,26 +69,29 @@ namespace SqlSugar
         /// if mysql return MySqlParameter[] pars
         /// if sqlerver return SqlParameter[] pars ...
         /// </summary>
-        /// <param name="pars"></param>
+        /// <param name="parameters"></param>
         /// <returns></returns>
-        public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars)
+        public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] parameters)
         {
-            if (pars == null || pars.Length == 0) return null;
-            SqlParameter[] reval = new SqlParameter[pars.Length];
+            if (parameters == null || parameters.Length == 0) return null;
+            SqlParameter[] result = new SqlParameter[parameters.Length];
             int i = 0;
-            foreach (var par in pars)
+            foreach (var paramter in parameters)
             {
-                if (par.Value == null) par.Value = DBNull.Value;
+                if (paramter.Value == null) paramter.Value = DBNull.Value;
                 var p = new SqlParameter();
-                p.ParameterName = par.ParameterName;
-                p.UdtTypeName = par.UdtTypeName;
-                p.Size = par.Size;
-                p.Value = par.Value;
-                p.DbType = par.DbType;
-                reval[i] =p;
+                p.ParameterName = paramter.ParameterName;
+                p.UdtTypeName = paramter.UdtTypeName;
+                p.Size = paramter.Size;
+                p.Value = paramter.Value;
+                p.DbType = paramter.DbType;
+                if (paramter.IsOutput) {
+                    p.Direction = ParameterDirection.Output;
+                }
+                result[i] =p;
                 ++i;
             }
-            return reval;
+            return result;
         }
     }
 }

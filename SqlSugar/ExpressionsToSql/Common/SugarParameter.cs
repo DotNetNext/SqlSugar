@@ -74,5 +74,7 @@ namespace SqlSugar
         {
             this.DbType = System.Data.DbType.String;
         }
+
+        public bool IsOutput { get; set; }
     }
 }
