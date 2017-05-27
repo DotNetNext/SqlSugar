@@ -37,13 +37,11 @@ namespace SqlSugar
             InitMppingInfo<T, T2, T3>();
             InitMppingInfo<T4>();
         }
-
         protected void InitMppingInfo<T, T2, T3>()
         {
             InitMppingInfo<T, T2>();
             InitMppingInfo<T3>();
         }
-
         protected void InitMppingInfo<T, T2>()
         {
             InitMppingInfo<T>();
