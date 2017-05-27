@@ -6,7 +6,6 @@ namespace SqlSugar
 {
     public class MySqlBuilder : SqlBuilderProvider
     {
-        public override string SqlParameterKeyWord { get { return "@"; } }
 
         public override string GetTranslationTableName(string name)
         {
