@@ -127,8 +127,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
             InitMppingInfo<T>();
-            var result = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
-            base.CreateQueryable(result);
+            var result =base.CreateQueryable<T>();
             return result;
         }
 
@@ -155,7 +154,7 @@ namespace SqlSugar
         {
             InitMppingInfo<T, T2>();
             var queryable = InstanceFactory.GetQueryable<T, T2>(base.CurrentConnectionConfig);
-            base.CreateQueryable(queryable);
+            base.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
@@ -165,7 +164,7 @@ namespace SqlSugar
         {
             InitMppingInfo<T, T2, T3>();
             var queryable = InstanceFactory.GetQueryable<T, T2, T3>(base.CurrentConnectionConfig);
-            base.CreateQueryable(queryable);
+            base.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
@@ -175,7 +174,7 @@ namespace SqlSugar
         {
             InitMppingInfo<T, T2, T3, T4>();
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4>(base.CurrentConnectionConfig);
-            base.CreateQueryable(queryable);
+            base.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4));
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
@@ -255,14 +254,7 @@ namespace SqlSugar
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             InitMppingInfo<T>();
-            var reval = new DeleteableProvider<T>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.Context = this;
-            reval.SqlBuilder = sqlBuilder;
-            sqlBuilder.DeleteBuilder = reval.DeleteBuilder = InstanceFactory.GetDeleteBuilder(base.CurrentConnectionConfig);
-            sqlBuilder.DeleteBuilder.Builder = sqlBuilder;
-            sqlBuilder.DeleteBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this;
+            DeleteableProvider<T> reval = base.CreateDeleteable<T>();
             return reval;
         }
         #endregion

@@ -136,7 +136,12 @@ namespace SqlSugar
             return reval;
         }
 
-        protected void CreateQueryable<T>(ISugarQueryable<T> result) where T : class, new()
+        protected ISugarQueryable<T> CreateQueryable<T>() where T : class, new()
+        {
+            ISugarQueryable<T> result= InstanceFactory.GetQueryable<T>(this.CurrentConnectionConfig);
+            return CreateQueryable(result);
+        }
+        protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result) where T : class, new()
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(CurrentConnectionConfig);
             result.Context = this.Context;
@@ -147,6 +152,7 @@ namespace SqlSugar
             result.SqlBuilder.QueryBuilder.EntityType = typeof(T);
             result.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
             result.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(CurrentConnectionConfig);
+            return result;
         }
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
@@ -163,6 +169,17 @@ namespace SqlSugar
             reval.Init();
             return reval;
         }
-
+        protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
+        {
+            var reval = new DeleteableProvider<T>();
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
+            reval.Context = this.Context;
+            reval.SqlBuilder = sqlBuilder;
+            sqlBuilder.DeleteBuilder = reval.DeleteBuilder = InstanceFactory.GetDeleteBuilder(this.CurrentConnectionConfig);
+            sqlBuilder.DeleteBuilder.Builder = sqlBuilder;
+            sqlBuilder.DeleteBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
+            sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this.Context;
+            return reval;
+        }
     }
 }
