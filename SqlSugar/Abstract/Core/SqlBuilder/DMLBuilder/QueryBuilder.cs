@@ -38,7 +38,7 @@ namespace SqlSugar
         public object SelectValue { get; set; }
         public string SelectCacheKey { get; set; }
         public string EntityName { get; set; }
-        public Type EntityType { get; set;}
+        public Type EntityType { get; set; }
         public string TableWithString { get; set; }
         public string GroupByValue { get; set; }
         public int WhereIndex { get; set; }
@@ -200,7 +200,7 @@ namespace SqlSugar
         public virtual string ToSqlString()
         {
             sql = new StringBuilder();
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString+HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
             if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {
@@ -289,7 +289,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it=>!it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName,it.PropertyName)));
+                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
             }
             else
             {
@@ -346,7 +346,9 @@ namespace SqlSugar
         {
             get
             {
-                return this.OrderByValue;
+                if (IsCount) return null;
+                else
+                    return this.OrderByValue;
             }
         }
         public virtual string GetGroupByString

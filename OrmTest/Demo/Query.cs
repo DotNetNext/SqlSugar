@@ -130,7 +130,7 @@ namespace OrmTest.Demo
             var pageSize = 2;
             var totalCount = 0;
             //page
-            var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
+            var page = db.Queryable<Student>().OrderBy(it=>it.Id).ToPageList(pageIndex, pageSize, ref totalCount);
 
             //page join
             var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
