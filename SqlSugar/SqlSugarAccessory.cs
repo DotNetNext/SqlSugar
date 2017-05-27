@@ -181,5 +181,13 @@ namespace SqlSugar
             sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this.Context;
             return reval;
         }
+
+        protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
+        {
+            this.CreateQueryable<T>(queryable);
+            string shortName = string.Empty;
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(joinExpression, ref shortName, types);
+            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+        }
     }
 }

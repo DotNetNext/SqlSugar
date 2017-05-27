@@ -153,31 +153,26 @@ namespace SqlSugar
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2>();
+            var types = new Type[] { typeof(T2) };
             var queryable = InstanceFactory.GetQueryable<T, T2>(base.CurrentConnectionConfig);
-            base.CreateQueryable<T>(queryable);
-            string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2));
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
+
         public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3>();
+            var types = new Type[] { typeof(T2), typeof(T3) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3>(base.CurrentConnectionConfig);
-            base.CreateQueryable<T>(queryable);
-            string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3));
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
         public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4>();
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4>(base.CurrentConnectionConfig);
-            base.CreateQueryable<T>(queryable);
-            string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4));
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            var types = new Type[] { typeof(T2), typeof(T3),typeof(T4) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3,T4>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
         //public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression) where T : class, new()
