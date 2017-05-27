@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -8,131 +6,52 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    public abstract class QueryBuilder : IDMLBuilder
+    public partial class MySqlQueryBuilder : QueryBuilder
     {
-
-        public QueryBuilder()
-        {
-            this.Parameters = new List<SugarParameter>();
-        }
-
-        #region Private Fileds
-        protected List<JoinQueryInfo> _JoinQueryInfos;
-        private List<string> _WhereInfos;
-        private string _HavingInfos;
-        protected string _TableNameString;
-        #endregion
-
-        #region Service object
-        public StringBuilder sql { get; set; }
-        public SqlSugarClient Context { get; set; }
-        public ILambdaExpressions LambdaExpressions { get; set; }
-        public ISqlBuilder Builder { get; set; }
-        #endregion
-
-        #region Splicing basic
-        public bool IsCount { get; set; }
-        public int? Skip { get; set; }
-        public int? Take { get; set; }
-        public string OrderByValue { get; set; }
-        public object SelectValue { get; set; }
-        public string SelectCacheKey { get; set; }
-        public string EntityName { get; set; }
-        public Type EntityType { get; set;}
-        public string TableWithString { get; set; }
-        public string GroupByValue { get; set; }
-        public int WhereIndex { get; set; }
-        public int JoinIndex { get; set; }
-        public virtual List<SugarParameter> Parameters { get; set; }
-        public virtual List<JoinQueryInfo> JoinQueryInfos
-        {
-            get
-            {
-                _JoinQueryInfos = PubMethod.IsNullReturnNew(_JoinQueryInfos);
-                return _JoinQueryInfos;
-            }
-            set { _JoinQueryInfos = value; }
-        }
-        public virtual string TableShortName { get; set; }
-        public virtual List<string> WhereInfos
-        {
-            get
-            {
-                _WhereInfos = PubMethod.IsNullReturnNew(_WhereInfos);
-                return _WhereInfos;
-            }
-            set { _WhereInfos = value; }
-        }
-        public virtual string HavingInfos
-        {
-            get
-            {
-                return _HavingInfos;
-            }
-            set
-            {
-                _HavingInfos = value;
-            }
-        }
-        #endregion
-
-        #region Lambada Type
-        public ResolveExpressType SelectType
-        {
-            get
-            {
-                return this.IsSingle() ? ResolveExpressType.SelectSingle : ResolveExpressType.SelectMultiple;
-            }
-        }
-        public ResolveExpressType WheretType
-        {
-            get
-            {
-                return this.IsSingle() ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
-            }
-        }
-        #endregion
-
         #region Sql Template
-        public virtual string SqlTemplate
+        public override string SqlTemplate
         {
             get
             {
                 return "SELECT {0} FROM {1}{2}{3}{4} ";
             }
         }
-        public virtual string JoinTemplate
+        public override string JoinTemplate
         {
             get
             {
                 return "{0}JOIN {1}{2}ON {3} ";
             }
         }
-        public virtual string PageTempalte
+        public override string PageTempalte
         {
             get
             {
-                return @"WITH PageTable AS(
+                /*
+                 @"WITH PageTable AS(
                           {0}
                   )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER({1}) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN {2} AND {3}";
+                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER({1}) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN {2} AND {3}"
+                 */
+                var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {5},{6}";
+                return template;
             }
         }
-        public virtual string DefaultOrderByTemplate
+        public override string DefaultOrderByTemplate
         {
             get
             {
-                return "ORDER BY GETDATE() ";
+                return "ORDER BY NOW() ";
             }
         }
-        public virtual string OrderByTemplate
+        public override string OrderByTemplate
         {
             get
             {
                 return "ORDER BY ";
             }
         }
-        public virtual string GroupByTemplate
+        public override string GroupByTemplate
         {
             get
             {
@@ -140,35 +59,35 @@ namespace SqlSugar
             }
         }
 
-        public virtual string MaxTemplate
+        public override string MaxTemplate
         {
             get
             {
                 return "MAX({0})";
             }
         }
-        public virtual string MinTemplate
+        public override string MinTemplate
         {
             get
             {
                 return "MIN({0})";
             }
         }
-        public virtual string SumTemplate
+        public override string SumTemplate
         {
             get
             {
                 return "SUM({0})";
             }
         }
-        public virtual string AvgTemplate
+        public override string AvgTemplate
         {
             get
             {
                 return "AVG({0})";
             }
         }
-        public virtual string InTemplate
+        public override string InTemplate
         {
             get
             {
@@ -178,12 +97,12 @@ namespace SqlSugar
         #endregion
 
         #region Common Methods
-        public virtual bool IsSingle()
+        public override bool IsSingle()
         {
             var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty();
             return isSingle;
         }
-        public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
+        public override ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
             this.LambdaExpressions.Clear();
@@ -197,25 +116,25 @@ namespace SqlSugar
             var reval = resolveExpress.Result;
             return reval;
         }
-        public virtual string ToSqlString()
+        public override string ToSqlString()
         {
             sql = new StringBuilder();
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString+HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
             if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {
-                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                return string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
             }
             else if (Skip == null && Take != null)
             {
-                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, 1, Take.ObjToInt());
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                return string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 1, Take.ObjToInt());
             }
             else if (Skip != null && Take != null)
             {
-                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Take);
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                return string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() + 1 : 0, Take);
             }
             else
             {
@@ -223,7 +142,7 @@ namespace SqlSugar
             }
 
         }
-        public virtual string ToJoinString(JoinQueryInfo joinInfo)
+        public override string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(
                 this.JoinTemplate,
@@ -232,7 +151,7 @@ namespace SqlSugar
                 joinInfo.ShortName + PubConst.Space + joinInfo.TableWithString,
                 joinInfo.JoinWhere);
         }
-        public virtual void Clear()
+        public override void Clear()
         {
             this.Skip = 0;
             this.Take = 0;
@@ -240,22 +159,24 @@ namespace SqlSugar
             this.WhereIndex = 0;
             this.Parameters = null;
             this.GroupByValue = null;
-            this._TableNameString = null;
             this.WhereInfos = null;
+            this._TableNameString = null;
             this.JoinQueryInfos = null;
         }
-        public virtual bool IsComplexModel(string sql)
+        public override bool IsComplexModel(string sql)
         {
             return Regex.IsMatch(sql, @"AS \[\w+\.\w+\]");
         }
+
+        
         #endregion
 
         #region Get SQL Partial
-        public virtual string GetSelectValue
+        public override string GetSelectValue
         {
             get
             {
-                if (this.IsCount) return "COUNT(1) AS [Count] ";
+                if (this.IsCount) return "COUNT(1) AS `Count` ";
                 string reval = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {
@@ -272,14 +193,14 @@ namespace SqlSugar
                 return reval;
             }
         }
-        public virtual string GetSelectValueByExpression()
+        public override string GetSelectValueByExpression()
         {
             var expression = this.SelectValue as Expression;
             var reval = GetExpressionValue(expression, this.SelectType).GetResultString();
             this.SelectCacheKey = reval;
             return reval;
         }
-        public virtual string GetSelectValueByString()
+        public override string GetSelectValueByString()
         {
             string reval;
             if (this.SelectValue.IsNullOrEmpty())
@@ -289,7 +210,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it=>!it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EnitytName,it.PropertyName)));
+                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EnitytName, it.PropertyName)));
             }
             else
             {
@@ -299,7 +220,7 @@ namespace SqlSugar
 
             return reval;
         }
-        public virtual string GetWhereValueString
+        public override string GetWhereValueString
         {
             get
             {
@@ -310,7 +231,7 @@ namespace SqlSugar
                 }
             }
         }
-        public virtual string GetJoinValueString
+        public override string GetJoinValueString
         {
             get
             {
@@ -321,7 +242,7 @@ namespace SqlSugar
                 }
             }
         }
-        public virtual string GetTableNameString
+        public override string GetTableNameString
         {
             get
             {
@@ -342,14 +263,14 @@ namespace SqlSugar
                 return result;
             }
         }
-        public virtual string GetOrderByString
+        public override string GetOrderByString
         {
             get
             {
                 return this.OrderByValue;
             }
         }
-        public virtual string GetGroupByString
+        public override string GetGroupByString
         {
             get
             {
