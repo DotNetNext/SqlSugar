@@ -236,19 +236,10 @@ namespace SqlSugar
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
             InitMppingInfo<T>();
-            var reval = new InsertableProvider<T>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.Context = this;
-            reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
-            reval.SqlBuilder = sqlBuilder;
-            reval.InsertObjs = insertObjs;
-            sqlBuilder.InsertBuilder = reval.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
-            sqlBuilder.InsertBuilder.Builder = sqlBuilder;
-            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
-            reval.Init();
+            InsertableProvider<T> reval = base.CreateInsertable(insertObjs);
             return reval;
         }
+
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
             Check.ArgumentNullException(insertObjs, "Insertable.insertObjs can't be null");

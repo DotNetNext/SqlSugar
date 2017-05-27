@@ -148,6 +148,21 @@ namespace SqlSugar
             result.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
             result.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(CurrentConnectionConfig);
         }
+        protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
+        {
+            var reval = new InsertableProvider<T>();
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
+            reval.Context = this.Context;
+            reval.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            reval.SqlBuilder = sqlBuilder;
+            reval.InsertObjs = insertObjs;
+            sqlBuilder.InsertBuilder = reval.InsertBuilder = InstanceFactory.GetInsertBuilder(this.CurrentConnectionConfig);
+            sqlBuilder.InsertBuilder.Builder = sqlBuilder;
+            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
+            sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this.Context;
+            reval.Init();
+            return reval;
+        }
 
     }
 }
