@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{489BB790-226C-4FAD-8D1E-51D72A7FF8E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrmTest", "OrmTest\OrmTest.csproj", "{CB591654-0476-40AA-8508-784CF32BE239}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlServerTest", "OrmTest\SqlServerTest.csproj", "{CB591654-0476-40AA-8508-784CF32BE239}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
