@@ -31,40 +31,40 @@ namespace SqlSugar
         #endregion
 
         #region Init mppingInfo
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>()
+        protected void InitMppingInfo<T, T2>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
-            InitMppingInfo<T8>();
-        }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7>()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6>();
-            InitMppingInfo<T7>();
-        }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6>()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5>();
-            InitMppingInfo<T6>();
-        }
-        protected void InitMppingInfo<T, T2, T3, T4, T5>()
-        {
-            InitMppingInfo<T, T2, T3, T4>();
-            InitMppingInfo<T5>();
-        }
-        protected void InitMppingInfo<T, T2, T3, T4>()
-        {
-            InitMppingInfo<T, T2, T3>();
-            InitMppingInfo<T4>();
+            InitMppingInfo<T>();
+            InitMppingInfo<T2>();
         }
         protected void InitMppingInfo<T, T2, T3>()
         {
             InitMppingInfo<T, T2>();
             InitMppingInfo<T3>();
         }
-        protected void InitMppingInfo<T, T2>()
+        protected void InitMppingInfo<T, T2, T3, T4>()
         {
-            InitMppingInfo<T>();
-            InitMppingInfo<T2>();
+            InitMppingInfo<T, T2, T3>();
+            InitMppingInfo<T4>();
+        }
+        protected void InitMppingInfo<T, T2, T3, T4, T5>()
+        {
+            InitMppingInfo<T, T2, T3, T4>();
+            InitMppingInfo<T5>();
+        }
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6>()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5>();
+            InitMppingInfo<T6>();
+        }
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7>()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6>();
+            InitMppingInfo<T7>();
+        }
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
+            InitMppingInfo<T8>();
         }
         protected void InitMppingInfo<T>()
         {
