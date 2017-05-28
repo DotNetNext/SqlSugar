@@ -32,7 +32,7 @@ namespace OrmTest.UnitTest
             ExpressionContext expContext = GetContext();
             expContext.Resolve(exp, ResolveExpressType.FieldSingle);
             var selectorValue = expContext.Result.GetString();
-            Check(selectorValue, null, expContext.GetTranslationColumnName("Name"), null, "FieldSingle");
+            Check(selectorValue, null, expContext.GetTranslationColumnName("Name"), null, "FieldSingle error");
         }
         private void FieldMultiple()
         {
@@ -40,7 +40,7 @@ namespace OrmTest.UnitTest
             ExpressionContext expContext = GetContext();
             expContext.Resolve(exp, ResolveExpressType.FieldMultiple);
             var selectorValue = expContext.Result.GetString();
-            Check(selectorValue, null, expContext.GetTranslationColumnName("it.Name"), null, "FieldMultiple");
+            Check(selectorValue, null, expContext.GetTranslationColumnName("it.Name"), null, "FieldMultiple error");
         }
 
         public ExpressionContext GetContext()
