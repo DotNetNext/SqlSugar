@@ -12,7 +12,6 @@ namespace SqlSugar
         #region Properties
         public SqlSugarClient Context { get; set; }
         public CommandType CommandType { get; set; }
-        public virtual string SqlParameterKeyWord { get { return "@"; } }
         public DeleteBuilder DeleteBuilder { get; set; }
         public InsertBuilder InsertBuilder { get; set; }
         public QueryBuilder QueryBuilder { get; set; }
@@ -28,11 +27,14 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Methods
+        #region abstract Methods
         public abstract string GetTranslationTableName(string name);
         public abstract string GetTranslationColumnName(string entityName, string propertyName);
         public abstract string GetTranslationColumnName(string propertyName);
         public abstract string GetNoTranslationColumnName(string name);
+        #endregion
+
+        #region SqlTemplate
         public string AppendWhereOrAnd(bool isWhere, string sqlString)
         {
             return isWhere ? (" WHERE " + sqlString) : (" AND " + sqlString);
@@ -41,6 +43,7 @@ namespace SqlSugar
         {
             return " HAVING " + sqlString;
         }
+        public virtual string SqlParameterKeyWord { get { return "@"; } }
         #endregion
     }
 }
