@@ -37,10 +37,27 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
+        public IDbFirst SettingNamespaceTemplate(Func<string> func)
+        {
+            throw new NotImplementedException();
+        }
+
         public IDbFirst SettingPropertyTemplate(Func<string> func)
         {
 
-           throw new NotImplementedException();
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
+        #region Setting Content
+        public IDbFirst IsCreateAttribute(bool isCreateAttribute = true)
+        {
+            return null;
+        }
+        public IDbFirst IsCreateDefaultValue(bool isCreateDefaultValue = true)
+        {
+            return null;
         }
         #endregion
 
@@ -58,7 +75,7 @@ namespace SqlSugar
         public IDbFirst Where(params string[] objectNames)
         {
             throw new NotImplementedException();
-        } 
+        }
         #endregion
 
         public void ToClassStringList()
