@@ -21,7 +21,7 @@ namespace SqlSugar
         {
             get
             {
-                return this.CurrentConnectionConfig.InitKeyType==InitKeyType.SystemTable;
+                return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable;
             }
         }
         #endregion
