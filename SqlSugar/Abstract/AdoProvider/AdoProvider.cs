@@ -138,6 +138,76 @@ namespace SqlSugar
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return count;
         }
+
+        #region Use
+        public SugarMessageResult<bool> UseTran(Action action)
+        {
+            var result = new SugarMessageResult<bool>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    action();
+                this.CommitTran();
+                result.Data = result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+                result.Messaage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+            }
+            return result;
+        }
+        public SugarMessageResult<T> UseTran<T>(Func<T> action)
+        {
+            var result = new SugarMessageResult<T>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    result.Data = action();
+                this.CommitTran();
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+                result.Messaage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+            }
+            return result;
+        }
+        public void UseStoredProcedure(Action action)
+        {
+            var oldCommandType = this.CommandType;
+            this.CommandType = CommandType.StoredProcedure;
+            this.IsClearParameters = false;
+            if (action != null)
+            {
+                action();
+            }
+            this.CommandType = oldCommandType;
+            this.IsClearParameters = true;
+        }
+        public T UseStoredProcedure<T>(Func<T> action)
+        {
+            T result = default(T);
+            var oldCommandType = this.CommandType;
+            this.CommandType = CommandType.StoredProcedure;
+            this.IsClearParameters = false;
+            if (action != null)
+            {
+                result = action();
+            }
+            this.CommandType = oldCommandType;
+            this.IsClearParameters = true;
+            return result;
+        }
+        #endregion
+
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] pars)
         {
             base.SetParSize(pars);

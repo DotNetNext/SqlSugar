@@ -22,28 +22,28 @@ namespace SqlSugar
         ConnectionConfig MasterConnectionConfig { get; set; }
         List<ConnectionConfig> SlaveConnectionConfigs { get; set; }
 
-        CommandType CommandType { get; set; } 
+        CommandType CommandType { get; set; }
         bool IsEnableLogEvent { get; set; }
         Action<string, string> LogEventStarting { get; set; }
         Action<string, string> LogEventCompleted { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
         IDbBind DbBind { get; }
-        void SetCommandToAdapter(IDataAdapter adapter,IDbCommand command);
+        void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
         IDataAdapter GetAdapter();
         IDbCommand GetCommand(string sql, SugarParameter[] parameters);
         DataTable GetDataTable(string sql, object parameters);
         DataTable GetDataTable(string sql, params SugarParameter[] parameters);
-        DataTable GetDataTable(string sql, List<SugarParameter> [] parameters);
+        DataTable GetDataTable(string sql, List<SugarParameter>[] parameters);
         DataSet GetDataSetAll(string sql, object parameters);
         DataSet GetDataSetAll(string sql, params SugarParameter[] parameters);
         DataSet GetDataSetAll(string sql, List<SugarParameter> parameters);
-        IDataReader GetDataReader(string sql,object parameters);
+        IDataReader GetDataReader(string sql, object parameters);
         IDataReader GetDataReader(string sql, params SugarParameter[] parameters);
-        IDataReader GetDataReader(string sql,List<SugarParameter> parameters);
+        IDataReader GetDataReader(string sql, List<SugarParameter> parameters);
         object GetScalar(string sql, object parameters);
         object GetScalar(string sql, params SugarParameter[] parameters);
-        object GetScalar(string sql,List<SugarParameter> parameters);
+        object GetScalar(string sql, List<SugarParameter> parameters);
         int ExecuteCommand(string sql, object parameters);
         int ExecuteCommand(string sql, params SugarParameter[] parameters);
         int ExecuteCommand(string sql, List<SugarParameter> parameters);
@@ -53,9 +53,9 @@ namespace SqlSugar
         int GetInt(string sql, object pars);
         int GetInt(string sql, params SugarParameter[] parameters);
         int GetInt(string sql, List<SugarParameter> parameters);
-        Double GetDouble(string sql,object parameters);
+        Double GetDouble(string sql, object parameters);
         Double GetDouble(string sql, params SugarParameter[] parameters);
-        Double GetDouble(string sql,List<SugarParameter> parameters);
+        Double GetDouble(string sql, List<SugarParameter> parameters);
         decimal GetDecimal(string sql, object parameters);
         decimal GetDecimal(string sql, params SugarParameter[] parameters);
         decimal GetDecimal(string sql, List<SugarParameter> parameters);
@@ -76,11 +76,16 @@ namespace SqlSugar
         void Open();
         void CheckConnection();
 
-         void BeginTran();
-         void BeginTran(IsolationLevel iso);
-         void BeginTran(string transactionName);
-         void BeginTran(IsolationLevel iso, string transactionName);
-         void RollbackTran();
-         void CommitTran();
+        void BeginTran();
+        void BeginTran(IsolationLevel iso);
+        void BeginTran(string transactionName);
+        void BeginTran(IsolationLevel iso, string transactionName);
+        void RollbackTran();
+        void CommitTran();
+
+        SugarMessageResult<bool> UseTran(Action action);
+        SugarMessageResult<T> UseTran<T>(Func<T> action);
+        void UseStoredProcedure(Action action);
+        T UseStoredProcedure<T>(Func<T> action);
     }
 }

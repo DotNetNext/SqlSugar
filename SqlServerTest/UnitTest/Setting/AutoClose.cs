@@ -16,16 +16,12 @@ namespace OrmTest.UnitTest
         }
         public void Init()
         {
-
             //IsAutoCloseConnection
             for (int i = 0; i < this.Count; i++)
             {
                 var db = GetInstance();
                 var x = db.Queryable<Student>().ToList();
             }
-
-
-
         }
         public SqlSugarClient GetInstance()
         {

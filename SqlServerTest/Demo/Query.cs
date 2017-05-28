@@ -30,17 +30,29 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             //1. no result 
-            db.UseStoredProcedure(() =>
+            db.Ado.UseStoredProcedure(() =>
             {
                 string spName = "sp_help";
                 var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
             });
 
             //2. has result 
-            var result= db.UseStoredProcedure<dynamic>(() =>
+            var result= db.Ado.UseStoredProcedure<dynamic>(() =>
             {
                 string spName = "sp_help";
                 return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+            });
+
+            //2. has output 
+            object outPutValue;
+            var outputResult = db.Ado.UseStoredProcedure<dynamic>(() =>
+            {
+                string spName = "sp_school";
+                var p1 = new SugarParameter("@p1", "1");
+                var p2= new SugarParameter("@p2", null,true);//isOutput=true
+                var dbResult= db.Ado.SqlQueryDynamic(spName,new SugarParameter[] {p1,p2 });
+                outPutValue = p2.Value;
+                return dbResult;
             });
         }
 
@@ -49,7 +61,7 @@ namespace OrmTest.Demo
             var db = GetInstance();
 
             //1. no result 
-            var result = db.UseTran(() =>
+            var result = db.Ado.UseTran(() =>
                {
                    var beginCount = db.Queryable<Student>().Count();
                    db.Ado.ExecuteCommand("delete student");
@@ -59,7 +71,7 @@ namespace OrmTest.Demo
             var count = db.Queryable<Student>().Count();
 
             //2 has result 
-            var result2 = db.UseTran<List<Student>>(() =>
+            var result2 = db.Ado.UseTran<List<Student>>(() =>
             {
                 return db.Queryable<Student>().ToList();
             });

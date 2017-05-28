@@ -85,9 +85,7 @@ namespace SqlSugar
                 p.Size = paramter.Size;
                 p.Value = paramter.Value;
                 p.DbType = paramter.DbType;
-                if (paramter.IsOutput) {
-                    p.Direction = ParameterDirection.Output;
-                }
+                p.Direction = paramter.Direction;
                 result[i] =p;
                 ++i;
             }
