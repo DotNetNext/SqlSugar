@@ -69,7 +69,5 @@ namespace SqlSugar
         {
             throw new NotImplementedException();
         }
-
-
     }
 }
