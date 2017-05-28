@@ -7,34 +7,35 @@ namespace SqlSugar
 {
     public partial class DbBindAccessory
     {
-        protected List<T> GetEntityList<T>(Type type, SqlSugarClient context, IDataReader dataReader, string fields)
+        protected List<T> GetEntityList<T>(SqlSugarClient context, IDataReader dataReader, string fields)
         {
+            Type type = typeof(T);
             var cacheManager = context.RewritableMethods.GetCacheInstance<IDataReaderEntityBuilder<T>>();
             string key = "DataReaderToList." + fields + context.CurrentConnectionConfig.DbType + type.FullName;
-            IDataReaderEntityBuilder<T> eblist = null;
+            IDataReaderEntityBuilder<T> entytyList = null;
             if (cacheManager.ContainsKey(key))
             {
-                eblist = cacheManager[key];
+                entytyList = cacheManager[key];
             }
             else
             {
-                eblist =new IDataReaderEntityBuilder<T>(context,dataReader).CreateBuilder(type);
-                cacheManager.Add(key, eblist);
+                entytyList =new IDataReaderEntityBuilder<T>(context,dataReader).CreateBuilder(type);
+                cacheManager.Add(key, entytyList);
             }
-            List<T> list = new List<T>();
+            List<T> result = new List<T>();
             try
             {
-                if (dataReader == null) return list;
+                if (dataReader == null) return result;
                 while (dataReader.Read())
                 {
-                    list.Add(eblist.Build(dataReader));
+                    result.Add(entytyList.Build(dataReader));
                 }
             }
             catch (Exception ex)
             {
                 Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
             }
-            return list;
+            return result;
         }
 
         protected List<T> GetKeyValueList<T>(Type type, IDataReader dataReader)
