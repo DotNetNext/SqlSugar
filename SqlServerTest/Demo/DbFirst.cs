@@ -5,11 +5,13 @@ using System.Text;
 
 namespace OrmTest.Demo
 {
-    public class DbFirst
+    public class DbFirst:DemoBase
     {
         public static void Init()
         {
-
+            var db = GetInstance();
+            //Create all class
+            db.DbFirst.CreateClassFile("c:\\Demo\\all");
         }
     }
 }
