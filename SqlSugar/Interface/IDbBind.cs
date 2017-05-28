@@ -7,6 +7,7 @@ namespace SqlSugar
 {
     public partial interface IDbBind
     {
+        SqlSugarClient Context { get; set; }
         List<string> GuidThrow { get; }
         List<string> IntThrow { get; }
         List<string> StringThrow { get; }
@@ -14,8 +15,7 @@ namespace SqlSugar
         List<string> DoubleThrow { get; }
         List<string> DateThrow { get; }
         List<string> ShortThrow { get; }
-        SqlSugarClient Context { get; set; }
-        List<T> DataReaderToList<T>(Type type, IDataReader reader, string fields);
         string ChangeDBTypeToCSharpType(string typeName);
+        List<T> DataReaderToList<T>(Type type, IDataReader reader, string fields);
     }
 }
