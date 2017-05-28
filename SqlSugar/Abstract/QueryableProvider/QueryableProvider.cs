@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
+    #region T7
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>
     {
         #region Where
@@ -152,7 +153,9 @@ namespace SqlSugar
             return this;
         }
         #endregion
-    }
+    } 
+    #endregion
+    #region T6
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6>
     {
         #region Where
@@ -276,7 +279,9 @@ namespace SqlSugar
             return this;
         }
         #endregion
-    }
+    } 
+    #endregion
+    #region T5
     public partial class QueryableProvider<T, T2, T3, T4, T5> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5>
     {
         #region Where
@@ -381,7 +386,9 @@ namespace SqlSugar
             return this;
         }
         #endregion
-    }
+    } 
+    #endregion
+    #region T4
     public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
     {
         #region Where
@@ -467,7 +474,9 @@ namespace SqlSugar
             return this;
         }
         #endregion
-    }
+    } 
+    #endregion
+    #region T3
     public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
         #region  Group 
@@ -541,7 +550,9 @@ namespace SqlSugar
 
         #endregion
 
-    }
+    } 
+    #endregion
+    #region T2
     public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
     {
         #region Where
@@ -592,7 +603,9 @@ namespace SqlSugar
             return this;
         }
         #endregion
-    }
+    } 
+    #endregion
+    #region T1
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
         public SqlSugarClient Context { get; set; }
@@ -1135,5 +1148,6 @@ namespace SqlSugar
             }
         }
         #endregion
-    }
+    } 
+    #endregion
 }
