@@ -43,7 +43,39 @@ namespace SqlSugar
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2, T3, T4> reval = CreateInstance<T, T2, T3, T4, ISugarQueryable<T, T2, T3, T4>>(className, currentConnectionConfig.DbType);
             return reval;
-        } 
+        }
+        public static ISugarQueryable<T, T2, T3, T4, T5> GetQueryable<T, T2, T3, T4, T5>(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5> reval = CreateInstance<T, T2, T3, T4, T5, ISugarQueryable<T, T2, T3, T4, T5>>(className, currentConnectionConfig.DbType);
+            return reval;
+        }
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6> GetQueryable<T, T2, T3, T4, T5, T6>(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6> reval = CreateInstance<T, T2, T3, T4, T5, T6, ISugarQueryable<T, T2, T3, T4, T5, T6>>(className, currentConnectionConfig.DbType);
+            return reval;
+        }
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GetQueryable<T, T2, T3, T4, T5, T6, T7>(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7> reval = CreateInstance<T, T2, T3, T4, T5, T6, T7, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>>(className, currentConnectionConfig.DbType);
+            return reval;
+        }
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(IConnectionConfig currentConnectionConfig)
+        {
+            CheckConfig(currentConnectionConfig);
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> reval = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8>>(className, currentConnectionConfig.DbType);
+            return reval;
+        }
         #endregion
 
         public static QueryBuilder GetQueryBuilder(IConnectionConfig currentConnectionConfig)
@@ -207,7 +239,99 @@ namespace SqlSugar
             {
                 lock (typeCache)
                 {
-                    type = Type.GetType(className + "`4", true).MakeGenericType(typeof(T), typeof(T2), typeof(T4), typeof(T4));
+                    type = Type.GetType(className + "`4", true).MakeGenericType(typeof(T), typeof(T2), typeof(T3), typeof(T4));
+                    Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
+                    if (!typeCache.ContainsKey(cacheKey))
+                    {
+                        typeCache.Add(cacheKey, type);
+                    }
+                }
+            }
+            var reval = (Restult)Activator.CreateInstance(type, true);
+            return reval;
+        }
+        private static Restult CreateInstance<T, T2, T3, T4, T5, Restult>(string className, string dbType)
+        {
+            var cacheKey = className + typeof(T).FullName + typeof(T2).FullName + typeof(T3).FullName + typeof(T4).FullName + typeof(T5).FullName;
+            Type type;
+            if (typeCache.ContainsKey(cacheKey))
+            {
+                type = typeCache[cacheKey];
+            }
+            else
+            {
+                lock (typeCache)
+                {
+                    type = Type.GetType(className + "`5", true).MakeGenericType(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+                    Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
+                    if (!typeCache.ContainsKey(cacheKey))
+                    {
+                        typeCache.Add(cacheKey, type);
+                    }
+                }
+            }
+            var reval = (Restult)Activator.CreateInstance(type, true);
+            return reval;
+        }
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, Restult>(string className, string dbType)
+        {
+            var cacheKey = className + typeof(T).FullName + typeof(T2).FullName + typeof(T3).FullName + typeof(T4).FullName + typeof(T5).FullName + typeof(T6).FullName;
+            Type type;
+            if (typeCache.ContainsKey(cacheKey))
+            {
+                type = typeCache[cacheKey];
+            }
+            else
+            {
+                lock (typeCache)
+                {
+                    type = Type.GetType(className + "`6", true).MakeGenericType(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
+                    Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
+                    if (!typeCache.ContainsKey(cacheKey))
+                    {
+                        typeCache.Add(cacheKey, type);
+                    }
+                }
+            }
+            var reval = (Restult)Activator.CreateInstance(type, true);
+            return reval;
+        }
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, Restult>(string className, string dbType)
+        {
+            var cacheKey = className + typeof(T).FullName + typeof(T2).FullName + typeof(T3).FullName + typeof(T4).FullName + typeof(T5).FullName + typeof(T6).FullName + typeof(T7).FullName;
+            Type type;
+            if (typeCache.ContainsKey(cacheKey))
+            {
+                type = typeCache[cacheKey];
+            }
+            else
+            {
+                lock (typeCache)
+                {
+                    type = Type.GetType(className + "`7", true).MakeGenericType(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
+                    Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
+                    if (!typeCache.ContainsKey(cacheKey))
+                    {
+                        typeCache.Add(cacheKey, type);
+                    }
+                }
+            }
+            var reval = (Restult)Activator.CreateInstance(type, true);
+            return reval;
+        }
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, Restult>(string className, string dbType)
+        {
+            var cacheKey = className + typeof(T).FullName + typeof(T2).FullName + typeof(T3).FullName + typeof(T4).FullName + typeof(T5).FullName + typeof(T6).FullName + typeof(T7).FullName + typeof(T8).FullName;
+            Type type;
+            if (typeCache.ContainsKey(cacheKey))
+            {
+                type = typeCache[cacheKey];
+            }
+            else
+            {
+                lock (typeCache)
+                {
+                    type = Type.GetType(className + "`8", true).MakeGenericType(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(cacheKey))
                     {
@@ -239,7 +363,7 @@ namespace SqlSugar
             }
             var reval = (T)Activator.CreateInstance(type, true);
             return reval;
-        } 
+        }
         #endregion
 
         private static void CheckConfig(IConnectionConfig currentConnectionConfig)
