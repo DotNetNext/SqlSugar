@@ -124,6 +124,7 @@ namespace SqlSugar
         }
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
         {
+            Check.ArgumentNullException(directoryPath, "directoryPath can't null");
             this.Namespace = nameSpace;
             var classStringList = ToClassStringList(nameSpace);
             if (classStringList.IsValuable())
