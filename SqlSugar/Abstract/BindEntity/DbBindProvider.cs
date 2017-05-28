@@ -32,7 +32,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    return GetEntityList<T>(type, Context, dataReader, fields);
+                    return GetEntityList<T>(Context, dataReader, fields);
                 }
             }
         }
