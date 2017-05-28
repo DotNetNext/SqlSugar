@@ -84,9 +84,9 @@ namespace SqlSugar
         {
             get
             {
-                return @"SELECT Name
-                            FROM sysobjects
-                            WHERE xtype IN('U')";
+                return @"SELECT s.Name,tbp.value as Description
+                            FROM sysobjects s
+					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('U')";
             }
         }
 
@@ -94,9 +94,9 @@ namespace SqlSugar
         {
             get
             {
-                return @"SELECT Name
-                            FROM sysobjects
-                            WHERE xtype IN('V')";
+                return @"SELECT s.Name,tbp.value as Description
+                            FROM sysobjects s
+					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('V')";
             }
         }
 
