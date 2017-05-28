@@ -13,6 +13,9 @@ namespace SqlSugar
         private string PropertyDescriptionTemplate { get; set; }
         private string ConstructorTemplate { get; set; }
         private string NamespaceTemplate { get; set; }
+        private string Namespace { get; set; }
+        private bool IsAttribute { get; set; }
+        private bool IsDefaultValue { get; set; }
         private List<DbTableInfo> TableInfoList { get; set; }
 
         public DbFirstProvider()
@@ -28,7 +31,6 @@ namespace SqlSugar
             {
                 this.TableInfoList.AddRange(this.Context.DbMaintenance.GetViewInfoList());
             }
-
         }
 
         public List<SchemaInfo> GetSchemaInfoList
@@ -40,46 +42,53 @@ namespace SqlSugar
         }
 
         #region Setting Template
-        public IDbFirst SettingClassDescriptionTemplate(Func<string> func)
+        public IDbFirst SettingClassDescriptionTemplate(Func<string, string> func)
         {
-            throw new NotImplementedException();
+            this.ClassDescriptionTemplate = func(this.ClassDescriptionTemplate);
+            return this;
         }
 
-        public IDbFirst SettingClassTemplate(Func<string> func)
+        public IDbFirst SettingClassTemplate(Func<string, string> func)
         {
-            throw new NotImplementedException();
+            this.ClassTemplate = func(this.ClassTemplate);
+            return this;
         }
 
-        public IDbFirst SettingConstructorTemplate(Func<string> func)
+        public IDbFirst SettingConstructorTemplate(Func<string, string> func)
         {
-            throw new NotImplementedException();
+            this.ConstructorTemplate = func(this.ConstructorTemplate);
+            return this;
         }
 
-        public IDbFirst SettingPropertyDescriptionTemplate(Func<string> func)
+        public IDbFirst SettingPropertyDescriptionTemplate(Func<string, string> func)
         {
-            throw new NotImplementedException();
+            this.PropertyDescriptionTemplate = func(this.PropertyDescriptionTemplate);
+            return this;
         }
 
-        public IDbFirst SettingNamespaceTemplate(Func<string> func)
+        public IDbFirst SettingNamespaceTemplate(Func<string, string> func)
         {
-            throw new NotImplementedException();
+            this.NamespaceTemplate = func(this.NamespaceTemplate);
+            return this;
         }
 
-        public IDbFirst SettingPropertyTemplate(Func<string> func)
+        public IDbFirst SettingPropertyTemplate(Func<string, string> func)
         {
-
-            throw new NotImplementedException();
+            this.PropertyTemplate = func(this.PropertyTemplate);
+            return this;
         }
         #endregion
 
         #region Setting Content
         public IDbFirst IsCreateAttribute(bool isCreateAttribute = true)
         {
-            return null;
+            this.IsAttribute = isCreateAttribute;
+            return this;
         }
         public IDbFirst IsCreateDefaultValue(bool isCreateDefaultValue = true)
         {
-            return null;
+            this.IsDefaultValue = isCreateDefaultValue;
+            return this;
         }
         #endregion
 
@@ -93,7 +102,7 @@ namespace SqlSugar
 
         public IDbFirst Where(Func<string, bool> func)
         {
-            this.TableInfoList=this.TableInfoList.Where(it => func(it.Name)).ToList();
+            this.TableInfoList = this.TableInfoList.Where(it => func(it.Name)).ToList();
             return this;
         }
 
@@ -107,13 +116,34 @@ namespace SqlSugar
         }
         #endregion
 
-        public void ToClassStringList()
+        public Dictionary<string, string> ToClassStringList(string nameSpace = "Models")
         {
-            throw new NotImplementedException();
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            this.Namespace = nameSpace;
+            return result;
         }
-        public void CreateClassFile(string savePath)
+        public void CreateClassFile(string directoryPath, string nameSpace = "Models")
         {
-            throw new NotImplementedException();
+            this.Namespace = nameSpace;
+            var classStringList = ToClassStringList(nameSpace);
+            if (classStringList.IsValuable())
+            {
+                foreach (var item in classStringList)
+                {
+                    string className = item.Key;
+                    if (this.Context.MappingTables.IsValuable()) {
+                        var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(item.Key,StringComparison.CurrentCultureIgnoreCase));
+                        if (mappingInfo.IsValuable()) {
+                            className = mappingInfo.EntityName;
+                        }
+                    }
+                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') +string.Format("{0}\\.cs", className), item.Value, Encoding.UTF8);
+                }
+            }
         }
+
+        #region Private methods
+
+        #endregion
     }
 }
