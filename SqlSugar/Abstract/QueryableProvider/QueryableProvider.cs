@@ -10,601 +10,6 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    #region T7
-    public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>
-    {
-        #region Where
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        #endregion
-
-        #region Select
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        #endregion
-
-        #region OrderBy
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        #endregion
-
-        #region GroupBy
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        #endregion
-    } 
-    #endregion
-    #region T6
-    public partial class QueryableProvider<T, T2, T3, T4, T5, T6> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6>
-    {
-        #region Where
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        #endregion
-
-        #region Select
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        #endregion
-
-        #region OrderBy
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        #endregion
-
-        #region GroupBy
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        #endregion
-    } 
-    #endregion
-    #region T5
-    public partial class QueryableProvider<T, T2, T3, T4, T5> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5>
-    {
-        #region Where
-        public new ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        #endregion
-
-        #region Select
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        #endregion
-
-        #region OrderBy
-        public new ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        #endregion
-
-        #region GroupBy
-        public new ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        #endregion
-    } 
-    #endregion
-    #region T4
-    public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
-    {
-        #region Where
-        public new ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        #endregion
-
-        #region Select
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-        #endregion
-
-        #region OrderBy
-        public new ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        #endregion
-
-        #region GroupBy
-        public new ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        #endregion
-    } 
-    #endregion
-    #region T3
-    public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
-    {
-        #region  Group 
-        public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-
-        public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        public new ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        #endregion
-
-        #region Order
-        public ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-
-        public ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        public new ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
-        {
-            _OrderBy(expression);
-            return this;
-        }
-        #endregion
-
-        #region Select
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-
-        public ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, T3, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        #endregion
-
-        #region Where
-        public ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-
-        public new ISugarQueryable<T, T2, T3> Where(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-
-        #endregion
-
-    } 
-    #endregion
-    #region T2
-    public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
-    {
-        #region Where
-        public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        public ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression)
-        {
-            _Where(expression);
-            return this;
-        }
-        #endregion
-
-        #region Select
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
-        {
-            return _Select<TResult>(expression);
-        }
-
-        #endregion
-
-        #region Order
-        public ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
-        {
-            _OrderBy(expression, type);
-            return this;
-        }
-
-        public new ISugarQueryable<T, T2> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
-        {
-            _OrderBy(expression, type);
-            return this;
-        }
-        #endregion
-
-        #region GroupBy
-        public new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-
-        public ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-        #endregion
-    } 
-    #endregion
     #region T1
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
@@ -632,6 +37,7 @@ namespace SqlSugar
         {
             QueryBuilder.Clear();
         }
+
         public ISugarQueryable<T> AS<T2>(string tableName)
         {
             var entityName = typeof(T2).Name;
@@ -1148,6 +554,601 @@ namespace SqlSugar
             }
         }
         #endregion
-    } 
+    }
+    #endregion
+    #region T2
+    public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
+    {
+        #region Where
+        public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+
+        #endregion
+
+        #region Order
+        public ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        #endregion
+
+        #region GroupBy
+        public new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+    }
+    #endregion
+    #region T3
+    public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
+    {
+        #region  Group 
+        public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region Order
+        public ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+
+        public ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Where
+        public ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+
+        #endregion
+
+    }
+    #endregion
+    #region T4
+    public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
+    {
+        #region Where
+        public new ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        #endregion
+
+        #region OrderBy
+        public new ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region GroupBy
+        public new ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+    }
+    #endregion
+    #region T5
+    public partial class QueryableProvider<T, T2, T3, T4, T5> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5>
+    {
+        #region Where
+        public new ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        #endregion
+
+        #region OrderBy
+        public new ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region GroupBy
+        public new ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+    }
+    #endregion
+    #region T6
+    public partial class QueryableProvider<T, T2, T3, T4, T5, T6> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6>
+    {
+        #region Where
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        #endregion
+
+        #region OrderBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region GroupBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+    }
+    #endregion
+    #region T7
+    public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>
+    {
+        #region Where
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        #endregion
+
+        #region OrderBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region GroupBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+    }
     #endregion
 }
