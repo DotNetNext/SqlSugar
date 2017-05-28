@@ -34,6 +34,7 @@ namespace SqlSugar
             }
             return result;
         }
+
         /// <summary>
         ///DataReader to DataReaderToDictionary
         /// </summary>
@@ -112,30 +113,7 @@ namespace SqlSugar
             }
             return reval;
         }
-        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval)
-        {
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            var type = item.PropertyType;
-            var classProperties = type.GetProperties().ToList();
-            foreach (var prop in classProperties)
-            {
-                var name = prop.Name;
-                var typeName = type.Name;
-                if (prop.PropertyType.IsClass())
-                {
-                    result.Add(name, DataReaderToDynamicList_Part(readerValues, prop, reval));
-                }
-                else
-                {
-                    var key = typeName + "." + name;
-                    if (readerValues.ContainsKey(key))
-                    {
-                        result.Add(name, readerValues[key]);
-                    }
-                }
-            }
-            return result;
-        }
+
         /// <summary>
         /// Serialize Object
         /// </summary>
@@ -193,5 +171,33 @@ namespace SqlSugar
         {
             return CacheManager<T>.GetInstance();
         }
+
+        #region Private Methods
+        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval)
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            var type = item.PropertyType;
+            var classProperties = type.GetProperties().ToList();
+            foreach (var prop in classProperties)
+            {
+                var name = prop.Name;
+                var typeName = type.Name;
+                if (prop.PropertyType.IsClass())
+                {
+                    result.Add(name, DataReaderToDynamicList_Part(readerValues, prop, reval));
+                }
+                else
+                {
+                    var key = typeName + "." + name;
+                    if (readerValues.ContainsKey(key))
+                    {
+                        result.Add(name, readerValues[key]);
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
     }
 }
