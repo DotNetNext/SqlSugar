@@ -73,8 +73,8 @@
     <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlQueryBuilder.cs" />
     <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlUpdateBuilder.cs" />
     <Compile Include="Realization\MySql\Queryable\MySqlQueryable.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerDeleteBuilder.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerInsertBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerDeleteBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerInsertBuilder.cs" />
     <Compile Include="Entities\EntityColumnInfo.cs" />
     <Compile Include="Entities\EntityInfo.cs" />
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
@@ -99,13 +99,13 @@
     <Compile Include="Common\SqlException.cs" />
     <Compile Include="Common\RewritableMethods.cs" />
     <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerUpdateBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerUpdateBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbType.cs" />
-    <Compile Include="Realization\SqlServer\Core\DbBind\SqlServerDbBind.cs" />
+    <Compile Include="Realization\SqlServer\DbBind\SqlServerDbBind.cs" />
     <Compile Include="Realization\SqlServer\DbFirst\SqlServerDbFirst.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbMaintenance\SqlServerDbMaintenance.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerQueryBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerQueryBuilder.cs" />
     <Compile Include="Realization\MySql\MySqlProvider.cs" />
     <Compile Include="Realization\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Realization\SqlServer\Queryable\SqlServerQueryable.cs" />
@@ -119,7 +119,7 @@
     <Compile Include="ExpressionsToSql\Common\DateType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
     <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerExpressionContext.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerExpressionContext.cs" />
     <Compile Include="ExpressionsToSql\Method\NBORM.cs" />
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
