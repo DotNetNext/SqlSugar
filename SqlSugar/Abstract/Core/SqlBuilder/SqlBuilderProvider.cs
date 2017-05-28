@@ -9,42 +9,14 @@ namespace SqlSugar
 {
     public abstract partial class SqlBuilderProvider : SqlBuilderAccessory, ISqlBuilder
     {
-        public SqlBuilderProvider()
-        {
-        }
-
+        #region Properties
+        public SqlSugarClient Context { get; set; }
         public CommandType CommandType { get; set; }
         public virtual string SqlParameterKeyWord { get { return "@"; } }
-        public abstract string GetTranslationTableName(string name);
-        public abstract string GetTranslationColumnName(string entityName, string propertyName);
-        public abstract string GetTranslationColumnName(string propertyName);
-        public abstract string GetNoTranslationColumnName(string name);
-
-        public string AppendWhereOrAnd(bool isWhere, string sqlString)
-        {
-            return isWhere ? (" WHERE " + sqlString ):( " AND " + sqlString);
-        }
-        public string AppendHaving(string sqlString)
-        {
-            return  " HAVING " + sqlString;
-        }
-
-
-        public DeleteBuilder DeleteBuilder
-        {
-            get; set;
-        }
-
-        public InsertBuilder InsertBuilder
-        {
-            get; set;
-        }
-
-        public QueryBuilder QueryBuilder
-        {
-            get;set;
-        }
-
+        public DeleteBuilder DeleteBuilder { get; set; }
+        public InsertBuilder InsertBuilder { get; set; }
+        public QueryBuilder QueryBuilder { get; set; }
+        public UpdateBuilder UpdateBuilder { get; set; }
         public SqlQueryBuilder SqlQueryBuilder
         {
             get
@@ -54,15 +26,21 @@ namespace SqlSugar
             }
             set { base._SqlQueryBuilder = value; }
         }
+        #endregion
 
-        public UpdateBuilder UpdateBuilder
+        #region Methods
+        public abstract string GetTranslationTableName(string name);
+        public abstract string GetTranslationColumnName(string entityName, string propertyName);
+        public abstract string GetTranslationColumnName(string propertyName);
+        public abstract string GetNoTranslationColumnName(string name);
+        public string AppendWhereOrAnd(bool isWhere, string sqlString)
         {
-            get; set;
+            return isWhere ? (" WHERE " + sqlString) : (" AND " + sqlString);
         }
-
-        public SqlSugarClient Context
+        public string AppendHaving(string sqlString)
         {
-            get;set;
+            return " HAVING " + sqlString;
         }
+        #endregion
     }
 }
