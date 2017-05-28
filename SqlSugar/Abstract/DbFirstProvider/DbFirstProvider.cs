@@ -49,7 +49,6 @@ namespace SqlSugar
         }
         #endregion
 
-
         #region Setting Content
         public IDbFirst IsCreateAttribute(bool isCreateAttribute = true)
         {
@@ -82,7 +81,7 @@ namespace SqlSugar
         {
             throw new NotImplementedException();
         }
-        public void CreateClassFile()
+        public void CreateClassFile(string savePath)
         {
             throw new NotImplementedException();
         }

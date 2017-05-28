@@ -19,7 +19,7 @@ namespace SqlSugar
         IDbFirst Where(Func<string,bool> func);
         IDbFirst Where(DbObjectType dbObjectType);
         List<SchemaInfo> GetSchemaInfoList { get; }
-        void CreateClassFile();
+        void CreateClassFile(string savePath);
         void ToClassStringList();
     }
 }
