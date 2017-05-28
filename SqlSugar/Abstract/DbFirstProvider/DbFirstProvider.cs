@@ -13,15 +13,22 @@ namespace SqlSugar
         private string PropertyDescriptionTemplate { get; set; }
         private string ConstructorTemplate { get; set; }
         private string NamespaceTemplate { get; set; }
-        private string 
+        private List<DbTableInfo> TableInfoList { get; set; }
 
-        public DbFirstProvider() {
+        public DbFirstProvider()
+        {
             this.ClassTemplate = DefaultTemplate.ClassTemplate;
             this.ClassDescriptionTemplate = DefaultTemplate.ClassDescriptionTemplate;
             this.PropertyTemplate = DefaultTemplate.PropertyTemplate;
             this.PropertyDescriptionTemplate = DefaultTemplate.PropertyDescriptionTemplate;
             this.ConstructorTemplate = DefaultTemplate.ConstructorTemplate;
             this.NamespaceTemplate = DefaultTemplate.NamespaceTemplate;
+            this.TableInfoList = this.Context.DbMaintenance.GetTableInfoList();
+            if (this.Context.DbMaintenance.GetViewInfoList().IsValuable())
+            {
+                this.TableInfoList.AddRange(this.Context.DbMaintenance.GetViewInfoList());
+            }
+
         }
 
         public List<SchemaInfo> GetSchemaInfoList
@@ -79,17 +86,24 @@ namespace SqlSugar
         #region Where
         public IDbFirst Where(DbObjectType dbObjectType)
         {
-            throw new NotImplementedException();
+            if (dbObjectType != DbObjectType.All)
+                this.TableInfoList = this.TableInfoList.Where(it => it.DbObjectType == dbObjectType).ToList();
+            return this;
         }
 
         public IDbFirst Where(Func<string, bool> func)
         {
-            throw new NotImplementedException();
+            this.TableInfoList=this.TableInfoList.Where(it => func(it.Name)).ToList();
+            return this;
         }
 
         public IDbFirst Where(params string[] objectNames)
         {
-            throw new NotImplementedException();
+            if (objectNames.IsValuable())
+            {
+                this.TableInfoList = this.TableInfoList.Where(it => objectNames.Contains(it.Name)).ToList();
+            }
+            return this;
         }
         #endregion
 
