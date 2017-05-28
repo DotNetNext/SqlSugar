@@ -21,5 +21,6 @@ namespace SqlSugar
         List<SchemaInfo> GetSchemaInfoList { get; }
         void CreateClassFile(string directoryPath,  string nameSpace = "Models");
         Dictionary<string, string> ToClassStringList(string nameSpace = "Models");
+        void Init();
     }
 }

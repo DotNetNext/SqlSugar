@@ -26,6 +26,10 @@ namespace SqlSugar
             this.PropertyDescriptionTemplate = DefaultTemplate.PropertyDescriptionTemplate;
             this.ConstructorTemplate = DefaultTemplate.ConstructorTemplate;
             this.NamespaceTemplate = DefaultTemplate.NamespaceTemplate;
+        }
+
+        public void Init()
+        {
             this.TableInfoList = this.Context.DbMaintenance.GetTableInfoList();
             if (this.Context.DbMaintenance.GetViewInfoList().IsValuable())
             {

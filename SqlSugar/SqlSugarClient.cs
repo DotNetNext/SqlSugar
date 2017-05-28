@@ -233,6 +233,7 @@ namespace SqlSugar
                     IDbFirst dbFirst = InstanceFactory.GetDbFirst(this.Context.CurrentConnectionConfig);
                     base._DbFirst = dbFirst;
                     dbFirst.Context = this.Context;
+                    dbFirst.Init();
                 }
                 return base._DbFirst;
             }

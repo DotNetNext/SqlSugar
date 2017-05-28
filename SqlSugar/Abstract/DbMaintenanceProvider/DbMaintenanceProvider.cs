@@ -88,7 +88,7 @@ namespace SqlSugar
              {
                  var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
                  this.Context.Ado.IsEnableLogEvent = false;
-                 var reval = this.Context.Ado.SqlQuery<T>(this.GetColumnInfosByTableNameSql);
+                 var reval = this.Context.Ado.SqlQuery<T>(sql);
                  this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
                  return reval;
              });
