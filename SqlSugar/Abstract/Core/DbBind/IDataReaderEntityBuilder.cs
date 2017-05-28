@@ -15,6 +15,7 @@ namespace SqlSugar
     /// </summary>
     public partial class IDataReaderEntityBuilder<T>
     {
+        #region Properies
         private SqlSugarClient Context = null;
         private IDataReaderEntityBuilder<T> DynamicBuilder;
         private IDataRecord DataRecord;
@@ -22,6 +23,9 @@ namespace SqlSugar
         private IDataReaderEntityBuilder()
         {
         }
+        #endregion
+
+        #region Constructor
 
         public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord)
         {
@@ -29,8 +33,10 @@ namespace SqlSugar
             this.DataRecord = dataRecord;
             this.DynamicBuilder = new IDataReaderEntityBuilder<T>();
             this.ReaderKeys = new List<string>();
-        }
-        #region fields
+        } 
+        #endregion
+
+        #region Fields
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
         private static readonly MethodInfo getValueMethod = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
         private static readonly MethodInfo getBoolean = typeof(IDataRecord).GetMethod("GetBoolean", new Type[] { typeof(int) });
@@ -64,6 +70,7 @@ namespace SqlSugar
         private Load handler;
         #endregion
 
+        #region Public methods
         public T Build(IDataRecord dataRecord)
         {
             return handler(dataRecord);
@@ -118,7 +125,10 @@ namespace SqlSugar
             generator.Emit(OpCodes.Ret);
             DynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
             return DynamicBuilder;
-        }
+        } 
+        #endregion
+
+        #region Private methods
         private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
         {
 
@@ -302,6 +312,7 @@ namespace SqlSugar
             {
                 throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", propertyName, transformedPropertyName, objType));
             }
-        }
+        } 
+        #endregion
     }
 }
