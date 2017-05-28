@@ -17,13 +17,9 @@ namespace SqlSugar
             this.IsClearParameters = true;
             this.CommandTimeOut = 30000;
         }
-        public virtual string SqlParameterKeyWord
-        {
-            get
-            {
-                return "@";
-            }
-        }
+
+        #region Properties
+        public virtual string SqlParameterKeyWord { get { return "@"; } }
         public IDbTransaction Transaction { get; set; }
         public virtual SqlSugarClient Context { get; set; }
         public virtual ConnectionConfig MasterConnectionConfig { get; set; }
@@ -47,7 +43,13 @@ namespace SqlSugar
         public virtual bool IsClearParameters { get; set; }
         public virtual Action<string, string> LogEventStarting { get; set; }
         public virtual Action<string, string> LogEventCompleted { get; set; }
+        #endregion
 
+        #region Connection
+        public virtual void Open()
+        {
+            CheckConnection();
+        }
         public virtual void Close()
         {
             if (this.Transaction != null)
@@ -83,6 +85,8 @@ namespace SqlSugar
                 this.Connection.Open();
             }
         }
+
+        #endregion
 
         #region Transaction
         public virtual void BeginTran()
@@ -248,6 +252,8 @@ namespace SqlSugar
             return scalar;
         }
         #endregion
+
+        #region Methods
 
         public virtual string GetString(string sql, object pars)
         {
@@ -485,6 +491,9 @@ namespace SqlSugar
                 return ExecuteCommand(sql, pars.ToArray());
             }
         }
+        #endregion
+
+        #region  Helper
 
         public virtual void ExecLogEvent(string sql, SugarParameter[] pars, bool isStarting = true)
         {
@@ -508,11 +517,9 @@ namespace SqlSugar
         {
             if (obj == null) return null;
             return base.GetParameters(obj, propertyInfo, this.SqlParameterKeyWord);
-        }
-        public virtual void Open()
-        {
-            CheckConnection();
-        }
+        } 
+        #endregion
+
 
 
     }
