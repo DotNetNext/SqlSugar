@@ -50,10 +50,10 @@
   <ItemGroup>
     <Compile Include="Abstract\CodeFirstProvider\CodeFirstProvider.cs" />
     <Compile Include="Abstract\AdoProvider\AdoAccessory.cs" />
-    <Compile Include="BindEntity\DbBindAccessory.cs" />
-    <Compile Include="BindEntity\DbBindProvider.cs" />
-    <Compile Include="BindEntity\IDataReaderEntityBuilder.cs" />
-    <Compile Include="BindEntity\IDataRecordExtensions.cs" />
+    <Compile Include="Abstract\DbBindProvider\DbBindAccessory.cs" />
+    <Compile Include="Abstract\DbBindProvider\DbBindProvider.cs" />
+    <Compile Include="Abstract\DbBindProvider\IDataReaderEntityBuilder.cs" />
+    <Compile Include="Abstract\DbBindProvider\IDataRecordExtensions.cs" />
     <Compile Include="Abstract\DbFirstProvider\DbFirstProvider.cs" />
     <Compile Include="Abstract\DbMaintenanceProvider\DbMaintenanceProvider.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
