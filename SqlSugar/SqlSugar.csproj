@@ -62,6 +62,7 @@
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
     <Compile Include="Entities\SugarMessageResult.cs" />
+    <Compile Include="Enum\InitKeyType.cs" />
     <Compile Include="Realization\MySql\DbType.cs" />
     <Compile Include="Realization\MySql\Core\DbBind\MySqlDbBind.cs" />
     <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlBuilder.cs" />
