@@ -190,28 +190,28 @@ namespace SqlSugar
         #region Private methods
         protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, ref string shortName, params Type[] entityTypeArray)
         {
-            List<JoinQueryInfo> reval = new List<JoinQueryInfo>();
+            List<JoinQueryInfo> result = new List<JoinQueryInfo>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
-            ExpressionContext exp = new ExpressionContext();
-            exp.MappingColumns = this.Context.MappingColumns;
-            exp.MappingTables = this.Context.MappingTables;
-            exp.Resolve(joinExpression, ResolveExpressType.Join);
+            ExpressionContext expressionContext = new ExpressionContext();
+            expressionContext.MappingColumns = this.Context.MappingColumns;
+            expressionContext.MappingTables = this.Context.MappingTables;
+            expressionContext.Resolve(joinExpression, ResolveExpressType.Join);
             int i = 0;
-            var joinArray = exp.Result.GetResultArray();
-            foreach (var type in entityTypeArray)
+            var joinArray = expressionContext.Result.GetResultArray();
+            foreach (var entityType in entityTypeArray)
             {
                 var isFirst = i == 0;++i;
                 JoinQueryInfo joinInfo = new JoinQueryInfo();
-                var hasMappingTable = exp.MappingTables.IsValuable();
+                var hasMappingTable = expressionContext.MappingTables.IsValuable();
                 MappingTable mappingInfo = null;
                 if (hasMappingTable)
                 {
-                    mappingInfo = exp.MappingTables.FirstOrDefault(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
-                    joinInfo.TableName = mappingInfo != null ? mappingInfo.DbTableName : type.Name;
+                    mappingInfo = expressionContext.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityType.Name, StringComparison.CurrentCultureIgnoreCase));
+                    joinInfo.TableName = mappingInfo != null ? mappingInfo.DbTableName : entityType.Name;
                 }
                 else
                 {
-                    joinInfo.TableName = type.Name;
+                    joinInfo.TableName = entityType.Name;
                 }
                 if (isFirst)
                 {
@@ -224,9 +224,9 @@ namespace SqlSugar
                 joinInfo.JoinType = (JoinType)Enum.Parse(typeof(JoinType), joinString);
                 joinInfo.JoinWhere = joinArray[i * 2 - 1];
                 joinInfo.JoinIndex = i;
-                reval.Add((joinInfo));
+                result.Add((joinInfo));
             }
-            return reval;
+            return result;
         }
         #endregion
     }
