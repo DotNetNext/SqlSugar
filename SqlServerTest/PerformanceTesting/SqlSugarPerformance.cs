@@ -16,7 +16,7 @@ namespace OrmTest.PerformanceTesting
         }
         public void Select()
         {
-            SqlSugarClient db = new SqlSugarClient(new SystemTableConfig()
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
                 DbType = DbType.SqlServer,

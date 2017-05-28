@@ -12,7 +12,7 @@ namespace SqlSugar
             throw new SqlSugarException("SqlSugarException.NotSupportedException：" + message);
         }
 
-        public static void ConnectionConfig(IConnectionConfig config)
+        public static void ConnectionConfig(ConnectionConfig config)
         {
             if (config == null || config.ConnectionString.IsNullOrEmpty() || config.DbType.IsNullOrEmpty())
             {

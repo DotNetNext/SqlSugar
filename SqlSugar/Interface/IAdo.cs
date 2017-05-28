@@ -19,8 +19,8 @@ namespace SqlSugar
         SqlSugarClient Context { get; set; }
         void ExecLogEvent(string sql, SugarParameter[] pars, bool isStarting = true);
 
-        IConnectionConfig MasterConnectionConfig { get; set; }
-        List<IConnectionConfig> SlaveConnectionConfigs { get; set; }
+        ConnectionConfig MasterConnectionConfig { get; set; }
+        List<ConnectionConfig> SlaveConnectionConfigs { get; set; }
 
         CommandType CommandType { get; set; } 
         bool IsEnableLogEvent { get; set; }

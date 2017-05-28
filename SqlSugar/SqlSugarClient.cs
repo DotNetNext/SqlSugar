@@ -21,36 +21,24 @@ namespace SqlSugar
         {
             get
             {
-                return this.CurrentConnectionConfig is SystemTableConfig;
+                return this.CurrentConnectionConfig.InitKeyType==InitKeyType.SystemTable;
             }
         }
         #endregion
 
         #region Constructor
-        /// <summary>
-        /// If you have system table permissions, use this
-        /// </summary>
-        /// <param name="config"></param>
-        public SqlSugarClient(SystemTableConfig config)
+        public SqlSugarClient(ConnectionConfig config)
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
         }
+
         /// <summary>
-        /// If you do not have system table permissions, use this
-        /// </summary>
-        /// <param name="config"></param>
-        public SqlSugarClient(AttributeConfig config)
-        {
-            base.Context = this;
-            base.CurrentConnectionConfig = config;
-        }
-        /// <summary>
-        /// Read / write mode. If you have system table permissions, use this
+        /// Read / write mode
         /// </summary>
         /// <param name="masterConnectionConfig"></param>
         /// <param name="slaveConnectionConfigs"></param>
-        public SqlSugarClient(SystemTableConfig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
+        public SqlSugarClient(ConnectionConfig masterConnectionConfig, ConnectionConfig[] slaveConnectionConfigs)
         {
             base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;
@@ -60,22 +48,6 @@ namespace SqlSugar
             db.MasterConnectionConfig = masterConnectionConfig;
             db.SlaveConnectionConfigs = slaveConnectionConfigs.ToList();
         }
-        /// <summary>
-        /// Read / write mode. If you do not have system table permissions, use this
-        /// </summary>
-        /// <param name="masterConnectionConfig"></param>
-        /// <param name="slaveConnectionConfigs"></param>
-        public SqlSugarClient(AttributeConfig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
-        {
-            base.Context = this;
-            base.CurrentConnectionConfig = masterConnectionConfig;
-            if (slaveConnectionConfigs.IsNullOrEmpty()) return;
-
-            var db = this.Ado;
-            db.MasterConnectionConfig = masterConnectionConfig;
-            db.SlaveConnectionConfigs = slaveConnectionConfigs.ToList();
-        }
-
         #endregion
 
         #region  ADO Method

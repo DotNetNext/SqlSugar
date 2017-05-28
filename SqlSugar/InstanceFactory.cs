@@ -12,65 +12,57 @@ namespace SqlSugar
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 
         #region Queryable
-        public static ISugarQueryable<T> GetQueryable<T>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T> GetQueryable<T>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T> reval = CreateInstance<T, ISugarQueryable<T>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-        public static ISugarQueryable<T, T2> GetQueryable<T, T2>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2> GetQueryable<T, T2>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2> reval = CreateInstance<T, T2, ISugarQueryable<T, T2>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-        public static ISugarQueryable<T, T2, T3> GetQueryable<T, T2, T3>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3> GetQueryable<T, T2, T3>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2, T3> reval = CreateInstance<T, T2, T3, ISugarQueryable<T, T2, T3>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-        public static ISugarQueryable<T, T2, T3, T4> GetQueryable<T, T2, T3, T4>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4> GetQueryable<T, T2, T3, T4>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2, T3, T4> reval = CreateInstance<T, T2, T3, T4, ISugarQueryable<T, T2, T3, T4>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-        public static ISugarQueryable<T, T2, T3, T4, T5> GetQueryable<T, T2, T3, T4, T5>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5> GetQueryable<T, T2, T3, T4, T5>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2, T3, T4, T5> reval = CreateInstance<T, T2, T3, T4, T5, ISugarQueryable<T, T2, T3, T4, T5>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-        public static ISugarQueryable<T, T2, T3, T4, T5, T6> GetQueryable<T, T2, T3, T4, T5, T6>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6> GetQueryable<T, T2, T3, T4, T5, T6>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2, T3, T4, T5, T6> reval = CreateInstance<T, T2, T3, T4, T5, T6, ISugarQueryable<T, T2, T3, T4, T5, T6>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GetQueryable<T, T2, T3, T4, T5, T6, T7>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GetQueryable<T, T2, T3, T4, T5, T6, T7>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7> reval = CreateInstance<T, T2, T3, T4, T5, T6, T7, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>>(className, currentConnectionConfig.DbType);
             return reval;
         }
-        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(IConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType, className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> reval = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8>>(className, currentConnectionConfig.DbType);
@@ -78,76 +70,65 @@ namespace SqlSugar
         }
         #endregion
 
-        public static QueryBuilder GetQueryBuilder(IConnectionConfig currentConnectionConfig)
+        public static QueryBuilder GetQueryBuilder(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             QueryBuilder reval = CreateInstance<QueryBuilder>(GetClassName(currentConnectionConfig.DbType, "QueryBuilder"), currentConnectionConfig.DbType);
             return reval;
         }
-        public static InsertBuilder GetInsertBuilder(IConnectionConfig currentConnectionConfig)
+        public static InsertBuilder GetInsertBuilder(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             InsertBuilder reval = CreateInstance<InsertBuilder>(GetClassName(currentConnectionConfig.DbType, "InsertBuilder"), currentConnectionConfig.DbType);
             return reval;
         }
-        public static UpdateBuilder GetUpdateBuilder(IConnectionConfig currentConnectionConfig)
+        public static UpdateBuilder GetUpdateBuilder(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             UpdateBuilder reval = CreateInstance<UpdateBuilder>(GetClassName(currentConnectionConfig.DbType, "UpdateBuilder"), currentConnectionConfig.DbType);
             return reval;
         }
-        public static DeleteBuilder GetDeleteBuilder(IConnectionConfig currentConnectionConfig)
+        public static DeleteBuilder GetDeleteBuilder(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             DeleteBuilder reval = CreateInstance<DeleteBuilder>(GetClassName(currentConnectionConfig.DbType, "DeleteBuilder"), currentConnectionConfig.DbType);
             return reval;
         }
 
-        public static ILambdaExpressions GetLambdaExpressions(IConnectionConfig currentConnectionConfig)
+        public static ILambdaExpressions GetLambdaExpressions(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             ILambdaExpressions reval = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType, "ExpressionContext"), currentConnectionConfig.DbType);
             return reval;
         }
 
-        public static ISqlBuilder GetSqlbuilder(IConnectionConfig currentConnectionConfig)
+        public static ISqlBuilder GetSqlbuilder(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             ISqlBuilder reval = CreateInstance<ISqlBuilder>(GetClassName(currentConnectionConfig.DbType, "Builder"), currentConnectionConfig.DbType);
             return reval;
         }
 
-        public static IDbBind GetDbBind(IConnectionConfig currentConnectionConfig)
+        public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             IDbBind reval = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType, "DbBind"), currentConnectionConfig.DbType);
             return reval;
         }
 
-        public static IDbMaintenance GetDbMaintenance(IConnectionConfig currentConnectionConfig)
+        public static IDbMaintenance GetDbMaintenance(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             IDbMaintenance reval = CreateInstance<IDbMaintenance>(GetClassName(currentConnectionConfig.DbType, "DbMaintenance"), currentConnectionConfig.DbType);
             return reval;
         }
 
-        public static IDbFirst GetDbFirst(IConnectionConfig currentConnectionConfig)
+        public static IDbFirst GetDbFirst(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             IDbFirst reval = CreateInstance<IDbFirst>(GetClassName(currentConnectionConfig.DbType, "DbFirst"), currentConnectionConfig.DbType);
             return reval;
         }
 
-        public static ICodeFirst GetCodeFirst(IConnectionConfig currentConnectionConfig)
+        public static ICodeFirst GetCodeFirst(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             ICodeFirst reval = CreateInstance<ICodeFirst>(GetClassName(currentConnectionConfig.DbType, "CodeFirst"), currentConnectionConfig.DbType);
             return reval;
         }
 
-        public static IAdo GetAdo(IConnectionConfig currentConnectionConfig)
+        public static IAdo GetAdo(ConnectionConfig currentConnectionConfig)
         {
-            CheckConfig(currentConnectionConfig);
             IAdo reval = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType, "Provider"), currentConnectionConfig.DbType);
             return reval;
         }
@@ -365,11 +346,5 @@ namespace SqlSugar
             return reval;
         }
         #endregion
-
-        private static void CheckConfig(IConnectionConfig currentConnectionConfig)
-        {
-            Check.ArgumentNullException(currentConnectionConfig, ErrorMessage.ConnectionConfigIsNull);
-        }
-
     }
 }
