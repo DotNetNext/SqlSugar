@@ -140,7 +140,7 @@ namespace SqlSugar
         #region Core
         public virtual int ExecuteCommand(string sql, params SugarParameter[] pars)
         {
-            base.SetParSize(pars);
+            base.SetParamterSize(pars);
             ExecLogEvent(sql, pars, true);
             IDbCommand sqlCommand = GetCommand(sql, pars);
             int count = sqlCommand.ExecuteNonQuery();
@@ -222,7 +222,7 @@ namespace SqlSugar
 
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] pars)
         {
-            base.SetParSize(pars);
+            base.SetParamterSize(pars);
             ExecLogEvent(sql, pars, true);
             IDbCommand sqlCommand = GetCommand(sql, pars);
             IDataReader sqlDataReader = sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
@@ -233,7 +233,7 @@ namespace SqlSugar
         }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] pars)
         {
-            base.SetParSize(pars);
+            base.SetParamterSize(pars);
             ExecLogEvent(sql, pars, true);
             IDataAdapter dataAdapter = this.GetAdapter();
             IDbCommand sqlCommand = GetCommand(sql, pars);
@@ -248,7 +248,7 @@ namespace SqlSugar
         }
         public virtual object GetScalar(string sql, params SugarParameter[] pars)
         {
-            base.SetParSize(pars);
+            base.SetParamterSize(pars);
             ExecLogEvent(sql, pars, true);
             IDbCommand sqlCommand = GetCommand(sql, pars);
             object scalar = sqlCommand.ExecuteScalar();
