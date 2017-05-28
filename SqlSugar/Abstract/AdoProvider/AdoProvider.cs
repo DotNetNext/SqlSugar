@@ -527,8 +527,5 @@ namespace SqlSugar
             return base.GetParameters(obj, propertyInfo, this.SqlParameterKeyWord);
         } 
         #endregion
-
-
-
     }
 }
