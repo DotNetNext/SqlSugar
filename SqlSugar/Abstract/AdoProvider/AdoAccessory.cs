@@ -69,7 +69,6 @@ namespace SqlSugar
             {
                 propertiesObj = entityType.GetProperties();
             }
-            string replaceGuid = Guid.NewGuid().ToString();
             foreach (PropertyInfo r in propertiesObj)
             {
                 var value = r.GetValue(parameters, null);
