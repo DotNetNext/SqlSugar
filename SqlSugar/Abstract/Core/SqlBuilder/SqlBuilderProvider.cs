@@ -34,7 +34,7 @@ namespace SqlSugar
         public abstract string GetNoTranslationColumnName(string name);
         #endregion
 
-        #region SqlTemplate
+        #region Common SqlTemplate
         public string AppendWhereOrAnd(bool isWhere, string sqlString)
         {
             return isWhere ? (" WHERE " + sqlString) : (" AND " + sqlString);
