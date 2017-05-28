@@ -48,7 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="Demo\DbFirst.cs" />
     <Compile Include="Demo\Delete.cs" />
+    <Compile Include="Demo\DemoBase.cs" />
     <Compile Include="Demo\Insert.cs" />
     <Compile Include="Demo\Query.cs" />
     <Compile Include="Demo\Update.cs" />

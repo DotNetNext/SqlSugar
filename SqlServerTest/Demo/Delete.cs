@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.Demo
 {
-    public class Delete
+    public class Delete:DemoBase
     {
         public static void Init()
         {
@@ -28,18 +28,6 @@ namespace OrmTest.Demo
 
             //by expression
             var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
-        }
-
-        public static SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            db.Ado.IsEnableLogEvent = true;
-            db.Ado.LogEventStarting = (sql, pars) =>
-            {
-                Console.WriteLine(sql + "\r\n" + db.RewritableMethods.SerializeObject(pars));
-                Console.WriteLine();
-            };
-            return db;
         }
     }
 }

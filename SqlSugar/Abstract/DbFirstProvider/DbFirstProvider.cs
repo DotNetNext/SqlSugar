@@ -119,6 +119,13 @@ namespace SqlSugar
         public Dictionary<string, string> ToClassStringList(string nameSpace = "Models")
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
+            if (this.TableInfoList.IsValuable())
+            {
+                foreach (var tableInfo in this.TableInfoList)
+                {
+
+                }
+            }
             this.Namespace = nameSpace;
             return result;
         }
@@ -132,13 +139,15 @@ namespace SqlSugar
                 foreach (var item in classStringList)
                 {
                     string className = item.Key;
-                    if (this.Context.MappingTables.IsValuable()) {
-                        var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(item.Key,StringComparison.CurrentCultureIgnoreCase));
-                        if (mappingInfo.IsValuable()) {
+                    if (this.Context.MappingTables.IsValuable())
+                    {
+                        var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(item.Key, StringComparison.CurrentCultureIgnoreCase));
+                        if (mappingInfo.IsValuable())
+                        {
                             className = mappingInfo.EntityName;
                         }
                     }
-                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') +string.Format("{0}\\.cs", className), item.Value, Encoding.UTF8);
+                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("{0}\\.cs", className), item.Value, Encoding.UTF8);
                 }
             }
         }

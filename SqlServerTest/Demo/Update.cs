@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace OrmTest.Demo
 {
-    public class Update
+    public class Update : DemoBase
     {
-        public static void Init() {
+        public static void Init()
+        {
             var db = GetInstance();
             var updateObj = new Student() { Id = 1, Name = "jack", SchoolId = 0, CreateTime = Convert.ToDateTime("2017-05-21 09:56:12.610") };
             var updateObjs = new List<Student>() { updateObj, new Student() { Id = 2, Name = "sun", SchoolId = 0 } }.ToArray();
@@ -19,7 +20,7 @@ namespace OrmTest.Demo
 
 
             //update reutrn Update Count
-            var t1= db.Updateable(updateObj).ExecuteCommand();
+            var t1 = db.Updateable(updateObj).ExecuteCommand();
 
             //Only  update  Name 
             var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
@@ -47,23 +48,12 @@ namespace OrmTest.Demo
 
             //Update By Expression  Where By Expression
             var t10 = db.Updateable<Student>()
-                .UpdateColumns(it => new Student() { Name="a",CreateTime=DateTime.Now })
+                .UpdateColumns(it => new Student() { Name = "a", CreateTime = DateTime.Now })
                 .Where(it => it.Id == 11).ExecuteCommand();
 
             //Rename 
             db.Updateable<School>().AS("Student").UpdateColumns(it => new School() { Name = "jack" }).Where(it => it.Id == 1).ExecuteCommand();
             //Update Student set Name='jack' Where Id=1
-        }
-        public static SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            db.Ado.IsEnableLogEvent = true;
-            db.Ado.LogEventStarting = (sql, pars) =>
-            {
-                Console.WriteLine(sql + "\r\n" + db.RewritableMethods.SerializeObject(pars));
-                Console.WriteLine();
-            };
-            return db;
         }
     }
 }

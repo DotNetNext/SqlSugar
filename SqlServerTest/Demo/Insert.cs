@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace OrmTest.Demo
 {
-    public class Insert
+    public class Insert:DemoBase
     {
-        public static void Init() {
+        public static void Init()
+        {
             var db = GetInstance();
             db.IgnoreColumns.Add("TestId", "Student");
 
-            var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") ,SchoolId=1};
+            var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1"), SchoolId = 1 };
 
             //Insert reutrn Insert Count
             var t2 = db.Insertable(insertObj).ExecuteCommand();
@@ -24,20 +25,20 @@ namespace OrmTest.Demo
 
 
             //Only  insert  Name 
-            var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name,it.SchoolId }).ExecuteReutrnIdentity();
+            var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.SchoolId }).ExecuteReutrnIdentity();
 
 
             //Ignore TestId
             var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReutrnIdentity();
-           
-  
+
+
             //Ignore   TestId
             var t6 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReutrnIdentity();
-      
+
 
             //Use Lock
             var t8 = db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
-          
+
 
             var insertObj2 = new Student() { Name = null, CreateTime = Convert.ToDateTime("2010-1-1") };
             var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ExecuteCommand();
@@ -49,18 +50,6 @@ namespace OrmTest.Demo
                 insertObjs.Add(new Student() { Name = "name" + i });
             }
             var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
-        }
-
-        public static SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            db.Ado.IsEnableLogEvent = true;
-            db.Ado.LogEventStarting = (sql, pars) =>
-            {
-                Console.WriteLine(sql + "\r\n" + db.RewritableMethods.SerializeObject(pars));
-                Console.WriteLine();
-            };
-            return db;
         }
     }
 }

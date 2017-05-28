@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.Demo
 {
-    public class Query
+    public class Query:DemoBase
     {
 
         public static void Init()
@@ -272,19 +272,6 @@ namespace OrmTest.Demo
                           .AddParameters(new { id = 1 })
                           .Select("st.*").ToList();
             //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
-        }
-
-
-        public static SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig{ ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            db.Ado.IsEnableLogEvent = true;
-            db.Ado.LogEventStarting = (sql, pars) =>
-            {
-                Console.WriteLine(sql + "\r\n" + db.RewritableMethods.SerializeObject(pars));
-                Console.WriteLine();
-            };
-            return db;
         }
     }
 }
