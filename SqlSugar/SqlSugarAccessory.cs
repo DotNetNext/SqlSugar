@@ -200,8 +200,7 @@ namespace SqlSugar
             var joinArray = exp.Result.GetResultArray();
             foreach (var type in entityTypeArray)
             {
-                var isFirst = i == 0;
-                ++i;
+                var isFirst = i == 0;++i;
                 JoinQueryInfo joinInfo = new JoinQueryInfo();
                 var hasMappingTable = exp.MappingTables.IsValuable();
                 MappingTable mappingInfo = null;
