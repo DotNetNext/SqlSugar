@@ -29,34 +29,34 @@ namespace OrmTest.UnitTest
         {
             using (var db = GetInstance())
             {
-                var s1 = db.Queryable<Student>().ToSql();
-                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]", null, s1.Key, null, "single s1 Error");
+                var t1 = db.Queryable<Student>().ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]", null, t1.Key, null, "single t1 Error");
 
-                var s2 = db.Queryable<Student>().With(SqlWith.NoLock).ToSql();
-                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] WITH(NOLOCK)", null, s2.Key, null, "single s2 Error");
+                var t2 = db.Queryable<Student>().With(SqlWith.NoLock).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] WITH(NOLOCK)", null, t2.Key, null, "single t2 Error");
 
-                var s3 = db.Queryable<Student>().OrderBy(it=>it.Id).ToSql();
-                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] ORDER BY [ID] ASC", null, s3.Key, null, "single s3 Error");
+                var t3 = db.Queryable<Student>().OrderBy(it=>it.Id).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] ORDER BY [ID] ASC", null, t3.Key, null, "single t3 Error");
 
-                var s4 = db.Queryable<Student>().OrderBy(it => it.Id).Take(3).ToSql();
+                var t4 = db.Queryable<Student>().OrderBy(it => it.Id).Take(3).ToSql();
                 base.Check(@"WITH PageTable AS(
                           SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  
                   )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 1 AND 3", null, s4.Key, null, "single s4 Error");
+                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 1 AND 3", null, t4.Key, null, "single t4 Error");
 
-                var s5 = db.Queryable<Student>().OrderBy(it => it.Id).Skip(3).ToSql();
+                var t5 = db.Queryable<Student>().OrderBy(it => it.Id).Skip(3).ToSql();
                 base.Check(@"WITH PageTable AS(
                           SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  
                   )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 4 AND 9223372036854775807", null, s5.Key,null, "single s5 Error");
+                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 4 AND 9223372036854775807", null, t5.Key,null, "single t5 Error");
 
                 int pageIndex = 2;
                 int pageSize = 10;
-                var s6 = db.Queryable<Student>().OrderBy(it => it.Id,OrderByType.Desc).Skip((pageIndex-1)*pageSize).Take(pageSize*pageIndex).ToSql();
+                var t6 = db.Queryable<Student>().OrderBy(it => it.Id,OrderByType.Desc).Skip((pageIndex-1)*pageSize).Take(pageSize*pageIndex).ToSql();
                 base.Check(@"WITH PageTable AS(
                           SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  
                   )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 11 AND 20", null, s6.Key, null, "single s6 Error");
+                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 11 AND 20", null, t6.Key, null, "single t6 Error");
 
 
                 int studentCount=db.Ado.GetInt("select count(1) from Student");
@@ -65,11 +65,11 @@ namespace OrmTest.UnitTest
                     throw new Exception(" single countIsSuccess Error");
                 }
 
-                var s7 = db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).ToPageList(pageIndex,pageSize,ref studentCount);
+                var t7 = db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).ToPageList(pageIndex,pageSize,ref studentCount);
                 countIsSuccess = studentCount == db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).Count();
                 if (!countIsSuccess)
                 {
-                    throw new Exception("single s7 Error");
+                    throw new Exception("single t7 Error");
                 }
 
                 int studentMin = db.Ado.GetInt("select min(id)  from Student");
@@ -100,7 +100,7 @@ namespace OrmTest.UnitTest
                     throw new Exception("single sumIsSuccess Error");
                 }
 
-                var s8 = db.Queryable<Student>()
+                var t8 = db.Queryable<Student>()
                     .Where(it=>it.Id==1)
                     .WhereIF(true,it=> NBORM.Contains(it.Name,"a"))
                     .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).With(SqlWith.NoLock).ToSql();
@@ -109,7 +109,7 @@ namespace OrmTest.UnitTest
                   )
                   SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 11 AND 20", new List<SugarParameter>() {
                                new SugarParameter("@Id0",1),new SugarParameter("@MethodConst1","a")
-               }, s8.Key, s8.Value,"single s8 Error");
+               }, t8.Key, t8.Value,"single t8 Error");
             }
         }
 
