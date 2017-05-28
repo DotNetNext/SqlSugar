@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SqlSugar.Abstract.DbFirstProvider
+namespace SqlSugar
 {
     public class DefaultTemplate
     {
@@ -33,7 +33,7 @@ public {PropertyType} {PropertyName} {get;set;}\r\n";
         /// Nullable:{IsNullable}
         /// </summary>\r\n";
 
-        public static string ConstructorTemplate = @"           this.$PropertyName =Convert.To$PropertyType(""{0}"")\r\n";
+        public static string ConstructorTemplate = @"           this.$PropertyName =Convert.To{PropertyType}(""{DefaultValue}"");\r\n";
 
         public static string NamespaceTemplate = @"using System;
         using System.Linq;

@@ -7,6 +7,22 @@ namespace SqlSugar
     public abstract partial class DbFirstProvider : IDbFirst
     {
         public virtual SqlSugarClient Context { get; set; }
+        private string ClassTemplate { get; set; }
+        private string ClassDescriptionTemplate { get; set; }
+        private string PropertyTemplate { get; set; }
+        private string PropertyDescriptionTemplate { get; set; }
+        private string ConstructorTemplate { get; set; }
+        private string NamespaceTemplate { get; set; }
+        private string 
+
+        public DbFirstProvider() {
+            this.ClassTemplate = DefaultTemplate.ClassTemplate;
+            this.ClassDescriptionTemplate = DefaultTemplate.ClassDescriptionTemplate;
+            this.PropertyTemplate = DefaultTemplate.PropertyTemplate;
+            this.PropertyDescriptionTemplate = DefaultTemplate.PropertyDescriptionTemplate;
+            this.ConstructorTemplate = DefaultTemplate.ConstructorTemplate;
+            this.NamespaceTemplate = DefaultTemplate.NamespaceTemplate;
+        }
 
         public List<SchemaInfo> GetSchemaInfoList
         {
