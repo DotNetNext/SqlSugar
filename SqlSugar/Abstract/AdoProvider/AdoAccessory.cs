@@ -89,7 +89,7 @@ namespace SqlSugar
                     var par = new SugarParameter(sqlParameterKeyWord + r.Name, value);
                     SetParameterSize(par);
                     if (value == DBNull.Value)
-                    {//防止文件类型报错
+                    {
                         SetSqlDbType(r, par);
                     }
                     listParams.Add(par);
