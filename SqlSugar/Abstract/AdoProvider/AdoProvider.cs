@@ -8,15 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
+    ///<summary>
+    /// ** description：ActiveX Data Objects
+    /// ** author：sunkaixuan
+    /// ** date：2017/1/2
+    /// ** email:610262374@qq.com
+    /// </summary>
     public abstract partial class AdoProvider : AdoAccessory, IAdo
     {
+        #region Constructor
         public AdoProvider()
         {
             this.IsEnableLogEvent = false;
             this.CommandType = CommandType.Text;
             this.IsClearParameters = true;
             this.CommandTimeOut = 30000;
-        }
+        } 
+        #endregion
 
         #region Properties
         public virtual string SqlParameterKeyWord { get { return "@"; } }
