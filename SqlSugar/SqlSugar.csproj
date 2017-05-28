@@ -61,6 +61,7 @@
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
+    <Compile Include="Interface\ICacheManager.cs" />
     <Compile Include="Entities\SugarMessageResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />
     <Compile Include="Realization\MySql\DbType.cs" />

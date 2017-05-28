@@ -69,7 +69,7 @@ namespace SqlSugar
         #region Private
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
-            return CacheFactory.Func<List<T>>(cacheKey,
+            return this.Context.RewritableMethods.GetCacheInstance<List<T>>().Func(cacheKey,
              (cm, key) =>
              {
                  return cm[cacheKey];

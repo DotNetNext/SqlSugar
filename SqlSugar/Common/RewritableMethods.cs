@@ -188,5 +188,10 @@ namespace SqlSugar
             return JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(deserializeObject));
 
         }
+
+        public ICacheManager<T> GetCacheInstance<T>()
+        {
+            return CacheManager<T>.GetInstance();
+        }
     }
 }
