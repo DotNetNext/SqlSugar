@@ -11,7 +11,6 @@ namespace SqlSugar
     {
         #region Properties
         public SqlSugarClient Context { get; set; }
-        public string EntityNamespace { get; set; }
         public ConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get; set; }
         public Guid ContextID { get; set; }
