@@ -41,21 +41,21 @@ namespace SqlSugar
 
         protected virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
         {
-            List<SugarParameter> listParams = new List<SugarParameter>();
+            List<SugarParameter> result = new List<SugarParameter>();
             if (parameters != null)
             {
                 var entityType = parameters.GetType();
                 var isDictionary = entityType.IsIn(PubConst.DicArraySO, PubConst.DicArraySS);
                 if (isDictionary)
                 {
-                    DictionaryToParameters(parameters, sqlParameterKeyWord, listParams, entityType);
+                    DictionaryToParameters(parameters, sqlParameterKeyWord, result, entityType);
                 }
                 else
                 {
-                    ProperyToParameter(parameters, propertyInfo, sqlParameterKeyWord, listParams, entityType);
+                    ProperyToParameter(parameters, propertyInfo, sqlParameterKeyWord, result, entityType);
                 }
             }
-            return listParams.ToArray();
+            return result.ToArray();
         }
 
         protected void ProperyToParameter(object parameters, PropertyInfo[] propertyInfo, string sqlParameterKeyWord, List<SugarParameter> listParams, Type entityType)
