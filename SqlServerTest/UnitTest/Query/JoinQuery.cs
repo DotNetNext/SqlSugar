@@ -36,7 +36,7 @@ namespace OrmTest.UnitTest
                             .Where("st.id>@id")
                             .AddParameters(new { id = 1 })
                             .Select("st.*").ToSql();
-                string sql = @"SELECT st.* FROM [STudent] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id ";
+                string sql = @"SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id ";
                 base.Check(sql,new List<SugarParameter>() {new SugarParameter("@id",1)}, join3.Key, join3.Value, "join 3 Error");
             }
         }

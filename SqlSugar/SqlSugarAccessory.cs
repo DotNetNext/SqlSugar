@@ -70,18 +70,18 @@ namespace SqlSugar
         protected void InitMppingInfo<T>()
         {
             string cacheKey = "Context.InitAttributeMappingTables"+typeof(T).FullName;
-            CacheFactory.Action<EntityInfo>(cacheKey,
+           var entityInfo=CacheFactory.Func<EntityInfo>(cacheKey,
              (cm, key) =>
              {
                  var cacheInfo = cm[key];
-                 InitMppingInfo(cacheInfo);
+                 return cacheInfo;
              },
              (cm, key) =>
              {
                  var reval = this.Context.EntityProvider.GetEntityInfo<T>();
-                 InitMppingInfo(reval);
                  return reval;
              });
+            InitMppingInfo(entityInfo);
         }
         private void InitMppingInfo(EntityInfo entityInfo)
         {
