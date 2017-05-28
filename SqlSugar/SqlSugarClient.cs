@@ -50,7 +50,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region  ADO Method
+        #region  ADO Methods
         /// <summary>
         ///Database operation
         /// </summary>
