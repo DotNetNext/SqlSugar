@@ -16,6 +16,7 @@ namespace OrmTest.Demo
 
             //Create student calsss
             db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\2");
+            //Where(array)
 
             //Mapping name
             db.MappingTables.Add("ClassStudent", "Student");
