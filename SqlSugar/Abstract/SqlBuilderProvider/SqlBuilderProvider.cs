@@ -44,6 +44,7 @@ namespace SqlSugar
             return " HAVING " + sqlString;
         }
         public virtual string SqlParameterKeyWord { get { return "@"; } }
+        public virtual string SqlFalse { get { return "1=2 "; } }
         #endregion
     }
 }

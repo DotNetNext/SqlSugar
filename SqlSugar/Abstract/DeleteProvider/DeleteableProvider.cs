@@ -44,7 +44,7 @@ namespace SqlSugar
         {
             if (deleteObjs == null || deleteObjs.Count() == 0)
             {
-                Where("1=2 ");
+                Where(SqlBuilder.SqlFalse);
                 return this;
             }
             string tableName = this.Context.EntityProvider.GetTableName<T>();
@@ -123,7 +123,7 @@ namespace SqlSugar
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
             {
-                Where("1=2 ");
+                Where(SqlBuilder.SqlFalse);
                 return this;
             }
             return In<PkType>(primaryKeyValues.ToArray());
@@ -133,7 +133,7 @@ namespace SqlSugar
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
             {
-                Where("1=2 ");
+                Where(SqlBuilder.SqlFalse);
                 return this;
             }
             string tableName = this.Context.EntityProvider.GetTableName<T>();
