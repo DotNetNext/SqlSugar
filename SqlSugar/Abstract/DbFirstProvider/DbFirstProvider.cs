@@ -132,7 +132,7 @@ namespace SqlSugar
                     var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
                     string className = tableInfo.Name;
                     string classText = this.ClassTemplate;
-                    string ConstructorText = IsDefaultValue ? DbFirstTemplate.ConstructorTemplate : null;
+                    string ConstructorText = IsDefaultValue ? this.ConstructorTemplate : null;
                     if (this.Context.MappingTables.IsValuable())
                     {
                         var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(tableInfo.Name, StringComparison.CurrentCultureIgnoreCase));
@@ -148,15 +148,15 @@ namespace SqlSugar
                     classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
                     classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
                     classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + ";\r\n") : this.UsingTemplate);
-                    classText = classText.Replace(DbFirstTemplate.KeyClassDescription, DbFirstTemplate.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
+                    classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
                     classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name): null);
                     if (columns.IsValuable())
                     {
                         foreach (var item in columns)
                         {
                             var isLast = columns.Last() == item;
-                            string PropertyText = DbFirstTemplate.PropertyTemplate;
-                            string PropertyDescriptionText = DbFirstTemplate.PropertyDescriptionTemplate;
+                            string PropertyText = this.PropertyTemplate;
+                            string PropertyDescriptionText = this.PropertyDescriptionTemplate;
                             string propertyName = GetPropertyName(item);
                             string propertyTypeName = GetPropertyTypeName(item);
                             PropertyText = GetPropertyText(item, PropertyText);
@@ -166,7 +166,7 @@ namespace SqlSugar
                             if (ConstructorText.IsValuable() && item.DefaultValue.IsValuable())
                             {
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
-                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (isLast ? "" : DbFirstTemplate.ConstructorTemplate);
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (isLast ? "" : this.ConstructorTemplate);
                             }
                         }
                     }
