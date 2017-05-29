@@ -72,7 +72,7 @@ namespace SqlSugar
                          WHERE xtype IN('u',
                                         'v') )
                       AND (systypes.name <> 'sysname')
-                      AND sysobjects.name='student'
+                      AND sysobjects.name='{0}'
                       AND systypes.name<>'geometry'
                       AND systypes.name<>'geography'
                     ORDER BY syscolumns.colid";

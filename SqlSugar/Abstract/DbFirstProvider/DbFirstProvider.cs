@@ -250,7 +250,6 @@ namespace SqlSugar
             {
                 result += "?";
             }
-
             return result;
         }
         private string GetPropertyTypeConvert(DbColumnInfo item)

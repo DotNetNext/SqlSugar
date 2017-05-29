@@ -40,7 +40,7 @@ namespace SqlSugar
         {
             if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
             string key = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower();
-            return GetListOrCache<DbColumnInfo>(key, this.GetColumnInfosByTableNameSql);
+            return GetListOrCache<DbColumnInfo>(key,string.Format(this.GetColumnInfosByTableNameSql,tableName));
         }
 
         public virtual List<string> GetIsIdentities(string tableName)
