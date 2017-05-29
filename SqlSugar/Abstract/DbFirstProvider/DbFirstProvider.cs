@@ -12,7 +12,7 @@ namespace SqlSugar
         private string PropertyTemplate { get; set; }
         private string PropertyDescriptionTemplate { get; set; }
         private string ConstructorTemplate { get; set; }
-        private string NamespaceTemplate { get; set; }
+        private string UsingTemplate { get; set; }
         private string Namespace { get; set; }
         private bool IsAttribute { get; set; }
         private bool IsDefaultValue { get; set; }
@@ -20,12 +20,12 @@ namespace SqlSugar
 
         public DbFirstProvider()
         {
-            this.ClassTemplate = DefaultTemplate.ClassTemplate;
-            this.ClassDescriptionTemplate = DefaultTemplate.ClassDescriptionTemplate;
-            this.PropertyTemplate = DefaultTemplate.PropertyTemplate;
-            this.PropertyDescriptionTemplate = DefaultTemplate.PropertyDescriptionTemplate;
-            this.ConstructorTemplate = DefaultTemplate.ConstructorTemplate;
-            this.NamespaceTemplate = DefaultTemplate.NamespaceTemplate;
+            this.ClassTemplate = DbFirstTemplate.ClassTemplate;
+            this.ClassDescriptionTemplate = DbFirstTemplate.ClassDescriptionTemplate;
+            this.PropertyTemplate = DbFirstTemplate.PropertyTemplate;
+            this.PropertyDescriptionTemplate = DbFirstTemplate.PropertyDescriptionTemplate;
+            this.ConstructorTemplate = DbFirstTemplate.ConstructorTemplate;
+            this.UsingTemplate = DbFirstTemplate.UsingTemplate;
         }
 
         public void Init()
@@ -72,7 +72,7 @@ namespace SqlSugar
 
         public IDbFirst SettingNamespaceTemplate(Func<string, string> func)
         {
-            this.NamespaceTemplate = func(this.NamespaceTemplate);
+            this.UsingTemplate = func(this.UsingTemplate);
             return this;
         }
 
@@ -122,36 +122,59 @@ namespace SqlSugar
 
         public Dictionary<string, string> ToClassStringList(string nameSpace = "Models")
         {
+            this.Namespace = nameSpace;
             Dictionary<string, string> result = new Dictionary<string, string>();
             if (this.TableInfoList.IsValuable())
             {
                 foreach (var tableInfo in this.TableInfoList)
                 {
-
+                    var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
+                    string className = tableInfo.Name;
+                    string classText = this.ClassTemplate;
+                    string ConstructorText = DbFirstTemplate.ConstructorTemplate;
+                    if (this.Context.MappingTables.IsValuable())
+                    {
+                        var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(tableInfo.Name, StringComparison.CurrentCultureIgnoreCase));
+                        if (mappingInfo.IsValuable())
+                        {
+                            className = mappingInfo.EntityName;
+                        }
+                        if (mappingInfo != null)
+                        {
+                            classText = classText.Replace(DbFirstTemplate.KeyClassName, mappingInfo.EntityName);
+                        }
+                    }
+                    classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
+                    classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
+                    classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + "\r\t") : this.UsingTemplate);
+                    classText = classText.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description);
+                    classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
+                    if (columns.IsValuable())
+                    {
+                        foreach (var item in columns)
+                        {
+                            string PropertyText = DbFirstTemplate.PropertyTemplate;
+                            string PropertyDescriptionText = DbFirstTemplate.PropertyDescriptionTemplate;
+                            string SugarColumnText = DbFirstTemplate.ValueSugarCoulmn;
+                            var hasSugarColumn = item.IsPrimarykey == true || item.IsIdentity == true||item.DbColumnName.IsValuable();
+                            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType,item.DataType);
+                            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, item.DbColumnName);
+                        }
+                    }
+                    result.Add(className, classText);
                 }
             }
-            this.Namespace = nameSpace;
             return result;
         }
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
         {
             Check.ArgumentNullException(directoryPath, "directoryPath can't null");
-            this.Namespace = nameSpace;
             var classStringList = ToClassStringList(nameSpace);
             if (classStringList.IsValuable())
             {
                 foreach (var item in classStringList)
                 {
-                    string className = item.Key;
-                    if (this.Context.MappingTables.IsValuable())
-                    {
-                        var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(item.Key, StringComparison.CurrentCultureIgnoreCase));
-                        if (mappingInfo.IsValuable())
-                        {
-                            className = mappingInfo.EntityName;
-                        }
-                    }
-                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("{0}\\.cs", className), item.Value, Encoding.UTF8);
+                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("{0}\\.cs", item.Key), item.Value, Encoding.UTF8);
                 }
             }
         }
