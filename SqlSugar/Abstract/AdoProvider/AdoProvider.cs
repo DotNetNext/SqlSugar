@@ -23,10 +23,11 @@ namespace SqlSugar
             this.CommandType = CommandType.Text;
             this.IsClearParameters = true;
             this.CommandTimeOut = 30000;
-        } 
+        }
         #endregion
 
         #region Properties
+        protected List<IDataParameter> OutputParameters { get; set; }
         public virtual string SqlParameterKeyWord { get { return "@"; } }
         public IDbTransaction Transaction { get; set; }
         public virtual SqlSugarClient Context { get; set; }
@@ -137,20 +138,6 @@ namespace SqlSugar
         public abstract void BeginTran(IsolationLevel iso, string transactionName);//Only SqlServer 
         #endregion
 
-        #region Core
-        public virtual int ExecuteCommand(string sql, params SugarParameter[] pars)
-        {
-            base.SetParamterSize(pars);
-            ExecLogEvent(sql, pars, true);
-            IDbCommand sqlCommand = GetCommand(sql, pars);
-            int count = sqlCommand.ExecuteNonQuery();
-            if (this.IsClearParameters)
-                sqlCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars, false);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
-            return count;
-        }
-
         #region Use
         public SugarMessageResult<bool> UseTran(Action action)
         {
@@ -220,21 +207,34 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Core
+        public virtual int ExecuteCommand(string sql, params SugarParameter[] pars)
+        {
+            base.SetParamterSize(pars);
+            SurroundingEvent(sql, pars, true);
+            IDbCommand sqlCommand = GetCommand(sql, pars);
+            int count = sqlCommand.ExecuteNonQuery();
+            if (this.IsClearParameters)
+                sqlCommand.Parameters.Clear();
+            SurroundingEvent(sql, pars, false);
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
+            return count;
+        }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] pars)
         {
             base.SetParamterSize(pars);
-            ExecLogEvent(sql, pars, true);
+            SurroundingEvent(sql, pars, true);
             IDbCommand sqlCommand = GetCommand(sql, pars);
             IDataReader sqlDataReader = sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars, false);
+            SurroundingEvent(sql, pars, false);
             return sqlDataReader;
         }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] pars)
         {
             base.SetParamterSize(pars);
-            ExecLogEvent(sql, pars, true);
+            SurroundingEvent(sql, pars, true);
             IDataAdapter dataAdapter = this.GetAdapter();
             IDbCommand sqlCommand = GetCommand(sql, pars);
             this.SetCommandToAdapter(dataAdapter, sqlCommand);
@@ -242,20 +242,20 @@ namespace SqlSugar
             dataAdapter.Fill(ds);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars, false);
+            SurroundingEvent(sql, pars, false);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return ds;
         }
         public virtual object GetScalar(string sql, params SugarParameter[] pars)
         {
             base.SetParamterSize(pars);
-            ExecLogEvent(sql, pars, true);
+            SurroundingEvent(sql, pars, true);
             IDbCommand sqlCommand = GetCommand(sql, pars);
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            ExecLogEvent(sql, pars, false);
+            SurroundingEvent(sql, pars, false);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return scalar;
         }
@@ -503,29 +503,46 @@ namespace SqlSugar
 
         #region  Helper
 
-        public virtual void ExecLogEvent(string sql, SugarParameter[] pars, bool isStarting = true)
+        public virtual void SurroundingEvent(string sql, SugarParameter[] parameters, bool isBefore = true)
         {
+            var isAfter = !isBefore;
+            if (isAfter)
+            {
+                var hasParameter = parameters.IsValuable();
+                if (hasParameter)
+                {
+                    foreach (var outputParameter in parameters.Where(it => it.Direction == ParameterDirection.Output))
+                    {
+                       var gobalOutputParamter=this.OutputParameters.Single(it => it.ParameterName == outputParameter.ParameterName);
+                        outputParameter.Value = gobalOutputParamter.Value;
+                        this.OutputParameters.Remove(gobalOutputParamter);
+                    }
+                }
+            }
+            if (isBefore) {
+
+            }
             if (this.IsEnableLogEvent)
             {
-                Action<string, string> action = isStarting ? LogEventStarting : LogEventCompleted;
+                Action<string, string> action = isBefore ? LogEventStarting : LogEventCompleted;
                 if (action != null)
                 {
-                    if (pars == null || pars.Length == 0)
+                    if (parameters == null || parameters.Length == 0)
                     {
                         action(sql, null);
                     }
                     else
                     {
-                        action(sql, this.Context.RewritableMethods.SerializeObject(pars.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql, this.Context.RewritableMethods.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
                     }
                 }
             }
         }
-        public virtual SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null)
+        public virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo = null)
         {
-            if (obj == null) return null;
-            return base.GetParameters(obj, propertyInfo, this.SqlParameterKeyWord);
-        } 
+            if (parameters == null) return null;
+            return base.GetParameters(parameters, propertyInfo, this.SqlParameterKeyWord);
+        }
         #endregion
     }
 }

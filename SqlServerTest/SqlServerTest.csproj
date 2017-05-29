@@ -48,12 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="Demo\DbFirst.cs" />
-    <Compile Include="Demo\Delete.cs" />
-    <Compile Include="Demo\DemoBase.cs" />
-    <Compile Include="Demo\Insert.cs" />
-    <Compile Include="Demo\Query.cs" />
-    <Compile Include="Demo\Update.cs" />
+    <Compile Include="Demos\DbFirst.cs" />
+    <Compile Include="Demos\Delete.cs" />
+    <Compile Include="Demos\DemoBase.cs" />
+    <Compile Include="Demos\Insert.cs" />
+    <Compile Include="Demos\Query.cs" />
+    <Compile Include="Demos\Update.cs" />
     <Compile Include="Models\ViewModelStudent.cs" />
     <Compile Include="PerformanceTesting\PerformanceBase.cs" />
     <Compile Include="PerformanceTesting\SqlSugarPerformance.cs" />
