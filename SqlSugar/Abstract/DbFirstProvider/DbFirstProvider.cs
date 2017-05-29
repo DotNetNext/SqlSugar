@@ -178,6 +178,9 @@ namespace SqlSugar
                             }
                         }
                     }
+                    if (!columns.Any(it => it.DefaultValue != null)) {
+                        ConstructorText = null;
+                    }
                     classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
                     classText = classText.Replace(DbFirstTemplate.KeyPropertyName, null);
                     result.Add(className, classText);
