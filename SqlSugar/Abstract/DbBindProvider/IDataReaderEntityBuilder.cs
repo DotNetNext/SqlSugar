@@ -196,7 +196,7 @@ namespace SqlSugar
                     case "string":
                         CheckType(stringThrow, objTypeName, transformedPropertyName, propertyName);
                         method = getString; break;
-                    case "dateTime":
+                    case "DateTime":
                         CheckType(dateThrow, objTypeName, transformedPropertyName, propertyName);
                         if (objTypeName != "datetime")
                             method = getOtherNull.MakeGenericMethod(bindType);
@@ -258,7 +258,7 @@ namespace SqlSugar
                     case "string":
                         CheckType(stringThrow, objTypeName, transformedPropertyName, propertyName);
                         method = getString; break;
-                    case "dateTime":
+                    case "DateTime":
                         CheckType(dateThrow, objTypeName, transformedPropertyName, propertyName);
                         if (objTypeName != "datetime")
                             method = getOther.MakeGenericMethod(bindType);

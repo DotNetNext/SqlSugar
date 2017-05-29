@@ -29,7 +29,7 @@ namespace SqlSugar
                 case "datetime":
                 case "date":
                 case "datetime2":
-                    reval = "dateTime";
+                    reval = "DateTime";
                     break;
                 case "single":
                 case "decimal":
@@ -61,7 +61,7 @@ namespace SqlSugar
                     reval = "float";
                     break;
                 case "smalldatetime":
-                    reval = "dateTime";
+                    reval = "DateTime";
                     break;
                 case "smallint":
                     reval = "short";
@@ -70,7 +70,7 @@ namespace SqlSugar
                     reval = "decimal";
                     break;
                 case "timestamp":
-                    reval = "dateTime";
+                    reval = "DateTime";
                     break;
                 case "tinyint":
                     reval = "byte";
