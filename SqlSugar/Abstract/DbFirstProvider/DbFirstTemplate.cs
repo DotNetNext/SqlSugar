@@ -8,10 +8,10 @@ namespace SqlSugar
     public class DbFirstTemplate
     {
         #region Template
-        public static string ClassTemplate = "{using}\r\n" +
-                                              "namespace {Namespace}\r\n" +
-                                              "{\r\n" +
-                                              "{ClassDescription}{SugarTable}\r\n" +
+        public static string ClassTemplate =   "{using}\r\n" +
+                                               "namespace {Namespace}\r\n" +
+                                               "{\r\n" +
+                                               "{ClassDescription}{SugarTable}\r\n" +
                                                 ClassSpace+"public class {ClassName}\r\n" +
                                                 ClassSpace + "{\r\n" +
                                                 PropertySpace + "public {ClassName}(){\r\n" +
@@ -37,24 +37,24 @@ namespace SqlSugar
 
         public static string ConstructorTemplate = PropertySpace + "this.{$PropertyName} =Convert.To{PropertyType}(\"{DefaultValue}\");\r\n";
 
-        public static string UsingTemplate = "using System;\r\n" +
-                                              "using System.Linq;\r\n" +
-                                              "using System.Text;" + "\r\n";
+        public static string UsingTemplate =   "using System;\r\n" +
+                                               "using System.Linq;\r\n" +
+                                               "using System.Text;" + "\r\n";
         #endregion
 
         #region Replace Key
-        public const string KeySugarTable = "{SugarTable}";
+        public const string KeyUsing = "{using}";
+        public const string KeyNamespace = "{Namespace}";
         public const string KeyClassName = "{ClassName}";
+        public const string KeyIsNullable = "{IsNullable}";
+        public const string KeySugarTable = "{SugarTable}";
         public const string KeyConstructor = "{Constructor}";
-        public const string KeyPropertyDescription = "{PropertyDescription}";
-        public const string KeyClassDescription = "{ClassDescription}";
         public const string KeySugarColumn = "{SugarColumn}";
         public const string KeyPropertyType = "{PropertyType}";
         public const string KeyPropertyName = "{PropertyName}";
         public const string KeyDefaultValue = "{DefaultValue}";
-        public const string KeyIsNullable = "{IsNullable}";
-        public const string KeyNamespace = "{Namespace}";
-        public const string KeyUsing = "{using}";
+        public const string KeyClassDescription = "{ClassDescription}";
+        public const string KeyPropertyDescription = "{PropertyDescription}";
         #endregion
 
         #region Replace Value
@@ -62,7 +62,9 @@ namespace SqlSugar
         public const string ValueSugarCoulmn = "[SugarColumn({0})]";
         #endregion
 
+        #region Space
         public const string PropertySpace = "           ";
-        public const string ClassSpace = "    ";
+        public const string ClassSpace = "    "; 
+        #endregion
     }
 }

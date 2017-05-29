@@ -160,6 +160,7 @@ namespace SqlSugar
                             PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                             PropertyText = PropertyDescriptionText + PropertyText;
                             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast?"":("\r\n" + DbFirstTemplate.KeyPropertyName)));
+                            ConstructorText = string.Format(ConstructorText,);
                         }
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
