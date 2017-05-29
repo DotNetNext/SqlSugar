@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public abstract partial class DbFirstProvider : IDbFirst
@@ -16,6 +18,13 @@ namespace SqlSugar
         private string Namespace { get; set; }
         private bool IsAttribute { get; set; }
         private bool IsDefaultValue { get; set; }
+        private ISqlBuilder SqlBuilder
+        {
+            get
+            {
+                return InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            }
+        }
         private List<DbTableInfo> TableInfoList { get; set; }
 
         public DbFirstProvider()
@@ -131,7 +140,7 @@ namespace SqlSugar
                     var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
                     string className = tableInfo.Name;
                     string classText = this.ClassTemplate;
-                    string ConstructorText =IsDefaultValue? DbFirstTemplate.ConstructorTemplate:null;
+                    string ConstructorText = IsDefaultValue ? DbFirstTemplate.ConstructorTemplate : null;
                     if (this.Context.MappingTables.IsValuable())
                     {
                         var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(tableInfo.Name, StringComparison.CurrentCultureIgnoreCase));
@@ -147,7 +156,7 @@ namespace SqlSugar
                     classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
                     classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
                     classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + "\r\t") : this.UsingTemplate);
-                    classText = classText.Replace(DbFirstTemplate.KeyClassDescription,DbFirstTemplate.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description+"\r\n"));
+                    classText = classText.Replace(DbFirstTemplate.KeyClassDescription, DbFirstTemplate.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
                     classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
                     if (columns.IsValuable())
                     {
@@ -156,17 +165,16 @@ namespace SqlSugar
                             var isLast = columns.Last() == item;
                             string PropertyText = DbFirstTemplate.PropertyTemplate;
                             string PropertyDescriptionText = DbFirstTemplate.PropertyDescriptionTemplate;
-                            string propertyName=GetPropertyName(item);
+                            string propertyName = GetPropertyName(item);
                             string propertyTypeName = GetPropertyTypeName(item);
                             PropertyText = GetPropertyText(item, PropertyText);
                             PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                             PropertyText = PropertyDescriptionText + PropertyText;
-                            classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast?"":("\r\n" + DbFirstTemplate.KeyPropertyName)));
-                            if (ConstructorText.IsValuable()&&item.DefaultValue.IsValuable())
+                            classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
+                            if (ConstructorText.IsValuable() && item.DefaultValue.IsValuable())
                             {
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
-                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyType, propertyTypeName);
-                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) +(isLast?"":"\r\n"+DbFirstTemplate.KeyPropertyName);
+                                ConstructorText  = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (isLast ? "" : DbFirstTemplate.ConstructorTemplate);
                             }
                         }
                     }
@@ -180,16 +188,21 @@ namespace SqlSugar
 
         private string GetProertypeDefaultValue(DbColumnInfo item)
         {
-            if (item.DefaultValue == null) return null;
-            string result = item.DefaultValue.TrimStart('(').TrimEnd(')').TrimStart('\'').TrimEnd('\'');
-            if (item.DefaultValue.GetType() == PubConst.DateType)
+            var result = item.DefaultValue;
+            if (result == null) return null;
+            if (Regex.IsMatch(result, @"^\(\'(.+)\'\)$"))
             {
-                return result.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.fff");
+                result = Regex.Match(result, @"^\(\'(.+)\'\)$").Groups[1].Value;
             }
-            else
+            if (Regex.IsMatch(result, @"^\((.+)\)$"))
             {
-                return result;
+                result = Regex.Match(result, @"^\((.+)\)$").Groups[1].Value;
             }
+            if (result.Equals(this.SqlBuilder.SqlDateNow,StringComparison.CurrentCultureIgnoreCase))
+            {
+                result = "DateTime.Now";
+            }
+            return result;
         }
 
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
@@ -242,7 +255,9 @@ namespace SqlSugar
         }
         private string GetPropertyTypeConvert(DbColumnInfo item)
         {
-            string result = "(\""+GetProertypeDefaultValue(item) +"\")";
+            var convertString = GetProertypeDefaultValue(item);
+            if (convertString == "DateTime.Now"|| convertString==null) return convertString;
+            string result = this.Context.Ado.DbBind.GetCSharpConvert(item.DataType) + "(\"" + convertString + "\")";
             return result;
         }
 

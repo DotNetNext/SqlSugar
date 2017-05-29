@@ -20,6 +20,7 @@ namespace SqlSugar
 
         string SqlParameterKeyWord { get; }
         string SqlFalse { get; }
+        string SqlDateNow { get; }
 
         string GetTranslationTableName(string name);
         string GetTranslationColumnName(string entityName, string propertyName);
