@@ -147,9 +147,9 @@ namespace SqlSugar
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
                     classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
-                    classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + "\r\t") : this.UsingTemplate);
+                    classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + "\r\n") : this.UsingTemplate);
                     classText = classText.Replace(DbFirstTemplate.KeyClassDescription, DbFirstTemplate.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
-                    classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
+                    classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name): null);
                     if (columns.IsValuable())
                     {
                         foreach (var item in columns)
@@ -218,16 +218,29 @@ namespace SqlSugar
         private string GetPropertyText(DbColumnInfo item, string PropertyText)
         {
             string SugarColumnText = DbFirstTemplate.ValueSugarCoulmn;
-            var hasSugarColumn = item.IsPrimarykey == true || item.IsIdentity == true || item.DbColumnName.IsValuable();
+            var propertyName = GetPropertyName(item);
+            var isMappingColumn = propertyName != item.DbColumnName;
+            var hasSugarColumn = item.IsPrimarykey == true || item.IsIdentity == true || isMappingColumn;
             if (hasSugarColumn && this.IsAttribute)
             {
+                List<string> joinList = new List<string>();
+                if (item.IsPrimarykey) {
+                    joinList.Add("IsPrimarykey=true");
+                }
+                if (item.IsIdentity)
+                {
+                    joinList.Add("IsIdentity=true");
+                }
+                if (isMappingColumn) {
+                    joinList.Add("ColumnName=\""+item.DbColumnName+"\"");
+                }
+                SugarColumnText = string.Format(SugarColumnText,string.Join(",",joinList));
             }
             else
             {
                 SugarColumnText = null;
             }
             string typeString = GetPropertyTypeName(item);
-            var propertyName = GetPropertyName(item);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeySugarColumn, SugarColumnText);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType, typeString);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
