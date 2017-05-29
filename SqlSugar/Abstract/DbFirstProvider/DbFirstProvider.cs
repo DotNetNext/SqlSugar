@@ -156,11 +156,16 @@ namespace SqlSugar
                             var isLast = columns.Last() == item;
                             string PropertyText = DbFirstTemplate.PropertyTemplate;
                             string PropertyDescriptionText = DbFirstTemplate.PropertyDescriptionTemplate;
+                            string propertyName=GetPropertyName(item);
+                            string propertyTypeName = GetPropertyTypeName(item);
+                            string proertypeDefaultValue = GetProertypeDefaultValue(item);
                             PropertyText = GetPropertyText(item, PropertyText);
                             PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                             PropertyText = PropertyDescriptionText + PropertyText;
                             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast?"":("\r\n" + DbFirstTemplate.KeyPropertyName)));
-                            ConstructorText = string.Format(ConstructorText,);
+                            ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName,propertyName);
+                            ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyType, propertyTypeName);
+                            ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, propertyName);
                         }
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
@@ -168,6 +173,11 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private string GetProertypeDefaultValue(DbColumnInfo item)
+        {
+            return item.Value.ObjToString();
         }
 
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
@@ -188,22 +198,37 @@ namespace SqlSugar
         {
             string SugarColumnText = DbFirstTemplate.ValueSugarCoulmn;
             var hasSugarColumn = item.IsPrimarykey == true || item.IsIdentity == true || item.DbColumnName.IsValuable();
-            if (hasSugarColumn&&this.IsAttribute)
+            if (hasSugarColumn && this.IsAttribute)
             {
             }
             else
             {
                 SugarColumnText = null;
             }
-            string typeString = this.Context.Ado.DbBind.ChangeDBTypeToCSharpType(item.DataType);
-            if (typeString != "string" && item.IsNullable) {
-                typeString += "?";
-            }
+            string typeString = GetPropertyTypeName(item);
+            var propertyName = GetPropertyName(item);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeySugarColumn, SugarColumnText);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType, typeString);
-            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, item.DbColumnName);
+            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
             return PropertyText;
         }
+
+        private static string GetPropertyName(DbColumnInfo item)
+        {
+            return item.DbColumnName;
+        }
+
+        private string GetPropertyTypeName(DbColumnInfo item)
+        {
+            string typeString = this.Context.Ado.DbBind.ChangeDBTypeToCSharpType(item.DataType);
+            if (typeString != "string" && item.IsNullable)
+            {
+                typeString += "?";
+            }
+
+            return typeString;
+        }
+
         private string GetPropertyDescriptionText(DbColumnInfo item, string propertyDescriptionText)
         {
             propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyPropertyDescription, item.ColumnDescription);
