@@ -15,7 +15,8 @@ namespace SqlSugar
         List<string> DoubleThrow { get; }
         List<string> DateThrow { get; }
         List<string> ShortThrow { get; }
-        string ChangeDBTypeToCSharpType(string typeName);
+        string GetCSharpType(string dbTypeName);
+        string GetCSharpConvert(string dbTypeName);
         List<T> DataReaderToList<T>(Type type, IDataReader reader, string fields);
     }
 }

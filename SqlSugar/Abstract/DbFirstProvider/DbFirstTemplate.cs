@@ -35,7 +35,7 @@ namespace SqlSugar
                                                 PropertySpace + "/// Nullable:{IsNullable}\r\n" +
                                                 PropertySpace + "/// </summary>";
 
-        public static string ConstructorTemplate = PropertySpace + "this.{$PropertyName} =Convert.To{PropertyType}(\"{DefaultValue}\");\r\n";
+        public static string ConstructorTemplate = PropertySpace + "this.{PropertyName} =Convert.To{PropertyType}(\"{DefaultValue}\");\r\n";
 
         public static string UsingTemplate =   "using System;\r\n" +
                                                "using System.Linq;\r\n" +

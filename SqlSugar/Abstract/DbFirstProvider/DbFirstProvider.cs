@@ -163,9 +163,12 @@ namespace SqlSugar
                             PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                             PropertyText = PropertyDescriptionText + PropertyText;
                             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast?"":("\r\n" + DbFirstTemplate.KeyPropertyName)));
-                            ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName,propertyName);
-                            ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyType, propertyTypeName);
-                            ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, propertyName);
+                            if (ConstructorText.IsValuable()&&item.DefaultValue.IsValuable())
+                            {
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyType, propertyTypeName);
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, proertypeDefaultValue)+(isLast?"":"\r\n"+DbFirstTemplate.KeyPropertyName);
+                            }
                         }
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
@@ -177,7 +180,16 @@ namespace SqlSugar
 
         private string GetProertypeDefaultValue(DbColumnInfo item)
         {
-            return item.Value.ObjToString();
+            if (item.DefaultValue == null) return null;
+            string result = item.DefaultValue.TrimStart('(').TrimEnd(')').TrimStart('\'').TrimEnd('\'');
+            if (item.DefaultValue.GetType() == PubConst.DateType)
+            {
+                return result.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.fff");
+            }
+            else
+            {
+                return result;
+            }
         }
 
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")

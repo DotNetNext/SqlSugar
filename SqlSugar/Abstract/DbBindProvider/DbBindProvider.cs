@@ -36,7 +36,8 @@ namespace SqlSugar
                 }
             }
         }
-        public abstract string ChangeDBTypeToCSharpType(string typeName);
+        public abstract string GetCSharpType(string dbTypeName);
+        public abstract string GetCSharpConvert(string dbTypeName);
 
         #endregion
 
