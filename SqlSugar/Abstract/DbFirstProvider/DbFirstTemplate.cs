@@ -11,7 +11,7 @@ namespace SqlSugar
         public static string ClassTemplate = "{using}\r\n" +
                                               "namespace {Namespace}\r\n" +
                                               "{\r\n" +
-                                              "{ClassDescription}\r\n{SugarTable}\r\n" +
+                                              "{ClassDescription}{SugarTable}\r\n" +
                                                 ClassSpace+"public class {ClassName}\r\n" +
                                                 ClassSpace + "{\r\n" +
                                                 PropertySpace + "public {ClassName}(){\r\n" +
@@ -23,7 +23,7 @@ namespace SqlSugar
         public static string ClassDescriptionTemplate =
                                                 ClassSpace + "///<summary>\r\n" +
                                                 ClassSpace + "///{ClassDescription}" +
-                                                ClassSpace + "/// </summary>\r\n";
+                                                ClassSpace + "///</summary>";
 
         public static string PropertyTemplate = PropertySpace + "{SugarColumn}\r\n" +
                                                 PropertySpace + "public {PropertyType} {PropertyName} {get;set;}\r\n";
