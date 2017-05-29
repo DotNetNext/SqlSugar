@@ -147,7 +147,7 @@ namespace SqlSugar
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
                     classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
-                    classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + "\r\n") : this.UsingTemplate);
+                    classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + ";\r\n") : this.UsingTemplate);
                     classText = classText.Replace(DbFirstTemplate.KeyClassDescription, DbFirstTemplate.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
                     classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name): null);
                     if (columns.IsValuable())
@@ -225,7 +225,7 @@ namespace SqlSugar
             {
                 List<string> joinList = new List<string>();
                 if (item.IsPrimarykey) {
-                    joinList.Add("IsPrimarykey=true");
+                    joinList.Add("IsPrimaryKey=true"); 
                 }
                 if (item.IsIdentity)
                 {
