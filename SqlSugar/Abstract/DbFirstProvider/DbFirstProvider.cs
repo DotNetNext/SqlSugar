@@ -174,11 +174,12 @@ namespace SqlSugar
                             if (ConstructorText.IsValuable() && item.DefaultValue.IsValuable())
                             {
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
-                                ConstructorText  = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (isLast ? "" : DbFirstTemplate.ConstructorTemplate);
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (isLast ? "" : DbFirstTemplate.ConstructorTemplate);
                             }
                         }
                     }
-                    if (!columns.Any(it => it.DefaultValue != null)) {
+                    if (!columns.Any(it => it.DefaultValue != null))
+                    {
                         ConstructorText = null;
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
@@ -201,7 +202,7 @@ namespace SqlSugar
             {
                 result = Regex.Match(result, @"^\((.+)\)$").Groups[1].Value;
             }
-            if (result.Equals(this.SqlBuilder.SqlDateNow,StringComparison.CurrentCultureIgnoreCase))
+            if (result.Equals(this.SqlBuilder.SqlDateNow, StringComparison.CurrentCultureIgnoreCase))
             {
                 result = "DateTime.Now";
             }
@@ -240,10 +241,22 @@ namespace SqlSugar
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
             return PropertyText;
         }
-
-        private static string GetPropertyName(DbColumnInfo item)
+        private string GetEnityName(DbColumnInfo item)
         {
-            return item.DbColumnName;
+            var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(item.TableName, StringComparison.CurrentCultureIgnoreCase));
+            return mappingInfo == null ? item.TableName : mappingInfo.EntityName;
+        }
+        private string GetPropertyName(DbColumnInfo item)
+        {
+            if (this.Context.MappingColumns.IsValuable())
+            {
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.DbColumnName == item.DbColumnName && it.EntityName == GetEnityName(item));
+                return mappingInfo == null ? item.DbColumnName : mappingInfo.PropertyName;
+            }
+            else
+            {
+                return item.DbColumnName;
+            }
         }
 
         private string GetPropertyTypeName(DbColumnInfo item)
@@ -258,7 +271,7 @@ namespace SqlSugar
         private string GetPropertyTypeConvert(DbColumnInfo item)
         {
             var convertString = GetProertypeDefaultValue(item);
-            if (convertString == "DateTime.Now"|| convertString==null) return convertString;
+            if (convertString == "DateTime.Now" || convertString == null) return convertString;
             string result = this.Context.Ado.DbBind.GetCSharpConvert(item.DataType) + "(\"" + convertString + "\")";
             return result;
         }

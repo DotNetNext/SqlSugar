@@ -20,6 +20,7 @@ namespace OrmTest.Demo
 
             //Mapping name
             db.MappingTables.Add("ClassStudent", "Student");
+            db.MappingColumns.Add("NewId", "Id", "ClassStudent");
             db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\3");
 
             //Remove mapping
@@ -27,6 +28,12 @@ namespace OrmTest.Demo
 
             //Create class with default value
             db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\Demo\\4","Demo.Models");
+
+
+            //Mapping and Attribute
+            db.MappingTables.Add("ClassStudent", "Student");
+            db.MappingColumns.Add("NewId", "Id", "ClassStudent");
+            db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
         }
     }
 }
