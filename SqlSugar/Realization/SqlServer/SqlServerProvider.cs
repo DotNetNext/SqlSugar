@@ -77,19 +77,19 @@ namespace SqlSugar
         {
             if (parameters == null || parameters.Length == 0) return null;
             SqlParameter[] result = new SqlParameter[parameters.Length];
-            int i = 0;
+            int index = 0;
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                var p = new SqlParameter();
-                p.ParameterName = parameter.ParameterName;
-                p.UdtTypeName = parameter.UdtTypeName;
-                p.Size = parameter.Size;
-                p.Value = parameter.Value;
-                p.DbType = parameter.DbType;
-                p.Direction = parameter.Direction;
-                result[i] = p;
-                ++i;
+                var sqlParameter = new SqlParameter();
+                sqlParameter.ParameterName = parameter.ParameterName;
+                sqlParameter.UdtTypeName = parameter.UdtTypeName;
+                sqlParameter.Size = parameter.Size;
+                sqlParameter.Value = parameter.Value;
+                sqlParameter.DbType = parameter.DbType;
+                sqlParameter.Direction = parameter.Direction;
+                result[index] = sqlParameter;
+                ++index;
             }
             return result;
         }
