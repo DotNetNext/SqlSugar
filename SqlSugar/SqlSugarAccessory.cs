@@ -25,8 +25,6 @@ namespace SqlSugar
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
         protected IRewritableMethods _RewritableMethods;
-        protected IDbFirst _DbFirst;
-        protected ICodeFirst _CodeFirst;
         protected IDbMaintenance _DbMaintenance;
         #endregion
 

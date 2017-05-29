@@ -228,14 +228,10 @@ namespace SqlSugar
         {
             get
             {
-                if (base._DbFirst == null)
-                {
-                    IDbFirst dbFirst = InstanceFactory.GetDbFirst(this.Context.CurrentConnectionConfig);
-                    base._DbFirst = dbFirst;
-                    dbFirst.Context = this.Context;
-                    dbFirst.Init();
-                }
-                return base._DbFirst;
+                IDbFirst dbFirst = InstanceFactory.GetDbFirst(this.Context.CurrentConnectionConfig);
+                dbFirst.Context = this.Context;
+                dbFirst.Init();
+                return dbFirst;
             }
         }
         #endregion
@@ -245,13 +241,9 @@ namespace SqlSugar
         {
             get
             {
-                if (base._CodeFirst == null)
-                {
-                    ICodeFirst codeFirst = InstanceFactory.GetCodeFirst(this.Context.CurrentConnectionConfig);
-                    base._CodeFirst = codeFirst;
-                    codeFirst.Context = this.Context;
-                }
-                return base._CodeFirst;
+                ICodeFirst codeFirst = InstanceFactory.GetCodeFirst(this.Context.CurrentConnectionConfig);
+                codeFirst.Context = this.Context;
+                return codeFirst;
             }
         }
         #endregion
