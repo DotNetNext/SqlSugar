@@ -153,7 +153,7 @@ namespace SqlSugar
                     {
                         if (this.Context.IgnoreComumnList != null
                             && this.Context.IgnoreComumnList.Any(
-                                it => it.EntityName == item.Type.Name && it.EntityPropertyName == property.Name))
+                                it => it.EntityName == item.Type.Name && it.PropertyName == property.Name))
                         {
                             continue;
                         }

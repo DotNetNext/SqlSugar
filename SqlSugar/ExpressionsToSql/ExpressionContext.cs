@@ -11,7 +11,7 @@ namespace SqlSugar
     /// ** description：Expression to sql 
     /// ** author：sunkaixuan
     /// ** date：2017/1/14
-    /// ** qq:610262374
+    /// ** email:610262374@qq.com
     public class ExpressionContext : ExpResolveAccessory
     {
 

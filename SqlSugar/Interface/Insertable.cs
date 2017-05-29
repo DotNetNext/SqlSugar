@@ -18,6 +18,5 @@ namespace SqlSugar
         IInsertable<T> IgnoreColumns(Func<string,bool> ignoreColumMethod);
         IInsertable<T> Where(bool isInsertNull, bool isOffIdentity = false);
         KeyValuePair<string, List<SugarParameter>> ToSql();
-        EntityInfo EntityInfo { get; set; }
     }
 }

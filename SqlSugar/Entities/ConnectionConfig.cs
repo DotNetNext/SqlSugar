@@ -5,18 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class SystemTableConfig : IConnectionConfig
+    public class ConnectionConfig
     {
+        /// <summary>
+        ///DbType.SqlServer Or Other
+        /// </summary>
         public string DbType { get; set; }
+        /// <summary>
+        ///Database Connection string
+        /// </summary>
         public string ConnectionString { get; set; }
+        /// <summary>
+        /// true does not need to close the connection
+        /// </summary>
         public bool IsAutoCloseConnection { get; set; }
-    }
-
-    public class AttributeConfig : IConnectionConfig
-    {
-        public string EntityNamespace { get; set; }
-        public string DbType { get; set; }
-        public string ConnectionString { get; set; }
-        public bool IsAutoCloseConnection { get; set; }
+        /// <summary>
+        /// Default SystemTable,If you do not have system table permissions, use attribute
+        /// </summary>
+        public InitKeyType InitKeyType = InitKeyType.SystemTable;
     }
 }

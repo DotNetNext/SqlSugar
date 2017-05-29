@@ -11,26 +11,6 @@ namespace SqlSugar
     {
         public SqlSugarClient Context { get; set; }
 
-        public List<EntityInfo> GetAllEntities()
-        {
-            string cacheKey = "GetAllEntities";
-            return CacheFactory.Func<List<EntityInfo>>(cacheKey,
-            (cm, key) =>
-            {
-                return cm[key];
-
-            }, (cm, key) =>
-            {
-                List<EntityInfo> reval = new List<EntityInfo>();
-                var classes = Assembly.Load(this.Context.EntityNamespace.Split('.').First()).GetTypes();
-                foreach (var item in classes)
-                {
-                    if (item.FullName.Contains(this.Context.EntityNamespace))
-                        reval.Add(GetEntityInfo(item));
-                }
-                return reval;
-            });
-        }
         public EntityInfo GetEntityInfo<T>()
         {
             return GetEntityInfo(typeof(T));
@@ -38,7 +18,7 @@ namespace SqlSugar
         public EntityInfo GetEntityInfo(Type type)
         {
             string cacheKey = "GetEntityInfo" + type.FullName;
-            return CacheFactory.Func<EntityInfo>(cacheKey,
+            return this.Context.RewritableMethods.GetCacheInstance<EntityInfo>().Func(cacheKey,
             (cm, key) =>
             {
                 return cm[cacheKey];
@@ -112,7 +92,7 @@ namespace SqlSugar
                 .Select(it => (SugarColumn)it)
                 .FirstOrDefault();
                 column.DbTableName = result.DbTableName;
-                column.EnitytName = result.EntityName;
+                column.EntityName = result.EntityName;
                 column.PropertyName = property.Name;
                 column.PropertyInfo = property;
                 if (sugarColumn.IsNullOrEmpty())

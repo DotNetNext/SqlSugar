@@ -12,19 +12,11 @@ namespace SqlSugar
     {
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
         List<T> DataReaderToDynamicList<T>(IDataReader reader);
-
-        /// <summary>
-        /// Serialize Object
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         string SerializeObject(object value);
-        /// <summary>
-        /// Serialize Object
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         T DeserializeObject<T>(string value);
         T TranslateCopy<T>(T sourceObject);
+        dynamic DataTableToDynamic(DataTable table);
+        ICacheManager<T> GetCacheInstance<T>();
+     
     }
 }

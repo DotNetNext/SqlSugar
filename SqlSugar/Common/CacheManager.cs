@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Linq.Expressions;
-
 namespace SqlSugar
 {
-    internal class CacheManager<V>
+    public class CacheManager<V> : ICacheManager<V>
     {
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();
         private static CacheManager<V> _instance = null;
@@ -26,7 +25,7 @@ namespace SqlSugar
         {
             return this.InstanceCache.ContainsKey(key);
         }
-   
+
         public V Get(string key)
         {
             if (this.ContainsKey(key))
@@ -34,7 +33,7 @@ namespace SqlSugar
             else
                 return default(V);
         }
-    
+
         public static CacheManager<V> GetInstance()
         {
             if (_instance == null)
@@ -43,12 +42,12 @@ namespace SqlSugar
                         _instance = new CacheManager<V>();
             return _instance;
         }
-     
+
         public void Add(string key, V value)
         {
             this.InstanceCache.GetOrAdd(key, value);
         }
- 
+
         public void Add(string key, V value, int cacheDurationInSeconds)
         {
             Add(key, value);
@@ -65,21 +64,17 @@ namespace SqlSugar
             return this.InstanceCache.Keys;
         }
 
-    }
-
-    internal class CacheFactory {
-        public static void Action<T>(string cacheKey, Action<CacheManager<T>, string> successAction, Func<CacheManager<T>, string, T> errorAction)
+        public void Action(string cacheKey, Action<ICacheManager<V>, string> successAction, Func<ICacheManager<V>, string, V> errorAction)
         {
-            var cm = CacheManager<T>.GetInstance();
-            if (cm.ContainsKey(cacheKey)) successAction(cm, cacheKey);
+            if (this.ContainsKey(cacheKey)) successAction(this, cacheKey);
             else
             {
-                cm.Add(cacheKey, errorAction(cm, cacheKey));
+                this.Add(cacheKey, errorAction(this, cacheKey));
             }
         }
-        public static T Func<T>(string cacheKey, Func<CacheManager<T>, string, T> successAction, Func<CacheManager<T>, string, T> errorAction)
+        public V Func(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction)
         {
-            var cm = CacheManager<T>.GetInstance();
+            var cm = CacheManager<V>.GetInstance();
             if (cm.ContainsKey(cacheKey)) return successAction(cm, cacheKey);
             else
             {

@@ -15,101 +15,109 @@ namespace SqlSugar
         protected ICodeFirst _CodeFirst;
         protected IDbMaintenance _DbMaintenance;
         protected IDbConnection _DbConnection;
-        public virtual void SetParSize(SugarParameter[] pars)
+        public virtual void SetParamterSize(SugarParameter[] parameters)
         {
-            if (pars != null)
+            if (parameters != null)
             {
-                foreach (var par in pars)
+                foreach (var parameter in parameters)
                 {
-                    this.SetParSize(par);
+                    this.SetParameterSize(parameter);
                 }
             }
         }
-        public virtual void SetParSize(SugarParameter par)
+        public virtual void SetParameterSize(SugarParameter parameters)
         {
-            int size = par.Size;
+            int size = parameters.Size;
             if (size < 4000)
             {
-                par.Size = 4000;
+                parameters.Size = 4000;
             }
         }
 
-        public virtual void SetSqlDbType(PropertyInfo prop, SugarParameter par)
+        public virtual void SetSqlDbType(PropertyInfo propertyInfo, SugarParameter parameter)
         {
 
         }
 
-        protected virtual SugarParameter[] GetParameters(object whereObj, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
+        protected virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
         {
-            List<SugarParameter> listParams = new List<SugarParameter>();
-            if (whereObj != null)
+            List<SugarParameter> result = new List<SugarParameter>();
+            if (parameters != null)
             {
-                var type = whereObj.GetType();
-                var isDic = type.IsIn(PubConst.DicArraySO, PubConst.DicArraySS);
-                if (isDic)
+                var entityType = parameters.GetType();
+                var isDictionary = entityType.IsIn(PubConst.DicArraySO, PubConst.DicArraySS);
+                if (isDictionary)
                 {
-                    if (type == PubConst.DicArraySO)
-                    {
-                        var newObj = (Dictionary<string, object>)whereObj;
-                        var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
-                        foreach (var par in pars)
-                        {
-                            SetParSize(par);
-                        }
-                        listParams.AddRange(pars);
-                    }
-                    else
-                    {
-                        var newObj = (Dictionary<string, string>)whereObj;
-                        var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
-                        foreach (var par in pars)
-                        {
-                            SetParSize(par);
-                        }
-                        listParams.AddRange(pars); ;
-                    }
+                    DictionaryToParameters(parameters, sqlParameterKeyWord, result, entityType);
                 }
                 else
                 {
-                    PropertyInfo[] propertiesObj = null;
-                    if (propertyInfo != null)
-                    {
-                        propertiesObj = propertyInfo;
-                    }
-                    else
-                    {
-                        propertiesObj = type.GetProperties();
-                    }
-                    string replaceGuid = Guid.NewGuid().ToString();
-                    foreach (PropertyInfo r in propertiesObj)
-                    {
-                        var value = r.GetValue(whereObj, null);
-                        if (r.PropertyType.IsEnum)
-                        {
-                            value = Convert.ToInt64(value);
-                        }
-                        if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
-                        if (r.Name.ToLower().Contains("hierarchyid"))
-                        {
-                            var par = new SugarParameter(sqlParameterKeyWord + r.Name, SqlDbType.Udt);
-                            par.UdtTypeName = "HIERARCHYID";
-                            par.Value = value;
-                            listParams.Add(par);
-                        }
-                        else
-                        {
-                            var par = new SugarParameter(sqlParameterKeyWord + r.Name, value);
-                            SetParSize(par);
-                            if (value == DBNull.Value)
-                            {//防止文件类型报错
-                                SetSqlDbType(r, par);
-                            }
-                            listParams.Add(par);
-                        }
-                    }
+                    ProperyToParameter(parameters, propertyInfo, sqlParameterKeyWord, result, entityType);
                 }
             }
-            return listParams.ToArray();
+            return result.ToArray();
+        }
+
+        protected void ProperyToParameter(object parameters, PropertyInfo[] propertyInfo, string sqlParameterKeyWord, List<SugarParameter> listParams, Type entityType)
+        {
+            PropertyInfo[] propertiesObj = null;
+            if (propertyInfo != null)
+            {
+                propertiesObj = propertyInfo;
+            }
+            else
+            {
+                propertiesObj = entityType.GetProperties();
+            }
+            foreach (PropertyInfo r in propertiesObj)
+            {
+                var value = r.GetValue(parameters, null);
+                if (r.PropertyType.IsEnum)
+                {
+                    value = Convert.ToInt64(value);
+                }
+                if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
+                if (r.Name.ToLower().Contains("hierarchyid"))
+                {
+                    var par = new SugarParameter(sqlParameterKeyWord + r.Name, SqlDbType.Udt);
+                    par.UdtTypeName = "HIERARCHYID";
+                    par.Value = value;
+                    listParams.Add(par);
+                }
+                else
+                {
+                    var par = new SugarParameter(sqlParameterKeyWord + r.Name, value);
+                    SetParameterSize(par);
+                    if (value == DBNull.Value)
+                    {
+                        SetSqlDbType(r, par);
+                    }
+                    listParams.Add(par);
+                }
+            }
+        }
+        protected void DictionaryToParameters(object parameters, string sqlParameterKeyWord, List<SugarParameter> listParams, Type entityType)
+        {
+            if (entityType == PubConst.DicArraySO)
+            {
+                var newObj = (Dictionary<string, object>)parameters;
+                var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
+                foreach (var par in pars)
+                {
+                    SetParameterSize(par);
+                }
+                listParams.AddRange(pars);
+            }
+            else
+            {
+                var newObj = (Dictionary<string, string>)parameters;
+                var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
+                foreach (var par in pars)
+                {
+                    SetParameterSize(par);
+                }
+                listParams.AddRange(pars); ;
+            }
         }
     }
 }

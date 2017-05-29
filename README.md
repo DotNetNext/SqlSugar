@@ -1,5 +1,9 @@
 # SqlSugar 4.X  API
+## Contactinfomation  
+Email:610262374@qq.com 
+QQ Group:225982985
 
+## 3.x API
 3.X https://github.com/sunkaixuan/SqlSugar/tree/master
 
 ##  1. Query
@@ -264,3 +268,69 @@ var t10 = db.Updateable<Student>()
  .UpdateColumns(it => new Student() { Name="a",CreateTime=DateTime.Now })
  .Where(it => it.Id == 11).ExecuteCommand();
  ```
+
+ ##  5. Table structure is different from entity
+ ##### Priority level： 
+ AS>Add>Attribute
+ ### 5.1 Add
+ ```c
+db.MappingTables.Add()
+db.MappingColumns.Add()
+db.IgnoreColumns.Add()
+ ```
+ ### 5.2 AS
+  ```c
+db.Queryable<T>().As("tableName").ToList();
+ ```
+### 5.3 Attribute
+ ```c
+[SugarColumn(IsIgnore=true)]
+public int TestId { get; set; }
+  ```
+
+ ##  6. Use Tran
+  ```c
+
+//1. no result 
+var result = db.UseTran(() =>
+{
+  db.Ado.ExecuteCommand("delete student");
+});
+
+
+//2 has result 
+var result2 = db.UseTran<List<Student>>(() =>
+{
+  return db.Queryable<Student>().ToList();
+});
+
+
+//3 use try
+try
+{
+  db.Ado.BeginTran();
+  xxxx
+  db.Ado.CommitTran();
+}
+catch (Exception)
+{
+  db.Ado.RollbackTran();
+  throw;
+}
+   ```
+ ##  7. Use SP
+```c
+   //1. no result 
+  db.UseStoredProcedure(() =>
+  {
+      string spName = "sp_help";
+      var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+  });
+
+  //2. has result 
+  var result= db.UseStoredProcedure<dynamic>(() =>
+  {
+      string spName = "sp_help";
+      return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+  });
+```

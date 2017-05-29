@@ -19,12 +19,22 @@ namespace SqlSugar
         public List<DbTableInfo> GetViewInfoList()
         {
             string key = "DbMaintenanceProvider.GetViewInfoList";
-            return GetListOrCache<DbTableInfo>(key, this.GetViewInfoListSql);
+            var result= GetListOrCache<DbTableInfo>(key, this.GetViewInfoListSql);
+            foreach (var item in result)
+            {
+                item.DbObjectType = DbObjectType.View;
+            }
+            return result;
         }
         public List<DbTableInfo> GetTableInfoList()
         {
             string key = "DbMaintenanceProvider.GetTableInfoList";
-            return GetListOrCache<DbTableInfo>(key, this.GetTableInfoListSql);
+            var result= GetListOrCache<DbTableInfo>(key, this.GetTableInfoListSql);
+            foreach (var item in result)
+            {
+                item.DbObjectType = DbObjectType.Table;
+            }
+            return result;
         }
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
@@ -69,7 +79,7 @@ namespace SqlSugar
         #region Private
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
-            return CacheFactory.Func<List<T>>(cacheKey,
+            return this.Context.RewritableMethods.GetCacheInstance<List<T>>().Func(cacheKey,
              (cm, key) =>
              {
                  return cm[cacheKey];
@@ -78,7 +88,7 @@ namespace SqlSugar
              {
                  var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
                  this.Context.Ado.IsEnableLogEvent = false;
-                 var reval = this.Context.Ado.SqlQuery<T>(this.GetColumnInfosByTableNameSql);
+                 var reval = this.Context.Ado.SqlQuery<T>(sql);
                  this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
                  return reval;
              });

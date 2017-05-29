@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Remoting.Contexts;
@@ -11,7 +12,7 @@ namespace SqlSugar
     /// ** description：Create database access object
     /// ** author：sunkaixuan
     /// ** date：2017/1/2
-    /// ** qq:610262374
+    /// ** email:610262374@qq.com
     /// </summary>
     public partial class SqlSugarClient : SqlSugarAccessory, IDisposable
     {
@@ -20,72 +21,36 @@ namespace SqlSugar
         {
             get
             {
-                return this.CurrentConnectionConfig is SystemTableConfig;
+                return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable;
             }
         }
         #endregion
 
         #region Constructor
-        /// <summary>
-        /// If you have system table permissions, use this
-        /// </summary>
-        /// <param name="config"></param>
-        public SqlSugarClient(SystemTableConfig config)
+        public SqlSugarClient(ConnectionConfig config)
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
-            base.InitConstructor();
         }
+
         /// <summary>
-        /// If you do not have system table permissions, use this
-        /// </summary>
-        /// <param name="config"></param>
-        public SqlSugarClient(AttributeConfig config)
-        {
-            base.Context = this;
-            base.CurrentConnectionConfig = config;
-            Check.ArgumentNullException(config.EntityNamespace, ErrorMessage.EntityNamespaceError);
-            base.EntityNamespace = config.EntityNamespace;
-            base.InitConstructor();
-        }
-        /// <summary>
-        /// Read / write mode. If you have system table permissions, use this
+        /// Read / write mode
         /// </summary>
         /// <param name="masterConnectionConfig"></param>
         /// <param name="slaveConnectionConfigs"></param>
-        public SqlSugarClient(SystemTableConfig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
+        public SqlSugarClient(ConnectionConfig masterConnectionConfig, ConnectionConfig[] slaveConnectionConfigs)
         {
             base.Context = this;
             base.CurrentConnectionConfig = masterConnectionConfig;
-            base.InitConstructor();
             if (slaveConnectionConfigs.IsNullOrEmpty()) return;
 
             var db = this.Ado;
             db.MasterConnectionConfig = masterConnectionConfig;
             db.SlaveConnectionConfigs = slaveConnectionConfigs.ToList();
         }
-        /// <summary>
-        /// Read / write mode. If you do not have system table permissions, use this
-        /// </summary>
-        /// <param name="masterConnectionConfig"></param>
-        /// <param name="slaveConnectionConfigs"></param>
-        public SqlSugarClient(AttributeConfig masterConnectionConfig, IConnectionConfig[] slaveConnectionConfigs)
-        {
-            base.Context = this;
-            base.CurrentConnectionConfig = masterConnectionConfig;
-            base.InitConstructor();
-            if (slaveConnectionConfigs.IsNullOrEmpty()) return;
-
-            var db = this.Ado;
-            Check.ArgumentNullException(masterConnectionConfig.EntityNamespace, ErrorMessage.EntityNamespaceError);
-            base.EntityNamespace = masterConnectionConfig.EntityNamespace;
-            db.MasterConnectionConfig = masterConnectionConfig;
-            db.SlaveConnectionConfigs = slaveConnectionConfigs.ToList();
-        }
-
         #endregion
 
-        #region  ADO Method
+        #region  ADO Methods
         /// <summary>
         ///Database operation
         /// </summary>
@@ -133,20 +98,9 @@ namespace SqlSugar
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
-            var result = InstanceFactory.GetQueryable<T>(base.CurrentConnectionConfig);
-            base.CreateQueryable(result);
+            InitMppingInfo<T>();
+            var result = base.CreateQueryable<T>();
             return result;
-        }
-
-        /// <summary>
-        /// Lambda Query operation
-        /// </summary>
-        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName)
-        {
-            var queryable = Queryable<SugarDynamic>();
-            queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            return queryable;
         }
         /// <summary>
         /// Lambda Query operation
@@ -157,98 +111,79 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
         }
-        public virtual ISugarQueryable<T,T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
+        /// <summary>
+        /// Lambda Query operation
+        /// </summary>
+        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName)
         {
+            var queryable = Queryable<SugarDynamic>();
+            queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
+            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2>();
+            var types = new Type[] { typeof(T2) };
             var queryable = InstanceFactory.GetQueryable<T, T2>(base.CurrentConnectionConfig);
-            base.CreateQueryable(queryable);
-            string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2));
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        public virtual ISugarQueryable<T,T2,T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression) where T : class, new()
         {
-            var queryable = InstanceFactory.GetQueryable<T, T2,T3>(base.CurrentConnectionConfig);
-            base.CreateQueryable(queryable);
-            string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3));
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            InitMppingInfo<T, T2, T3>();
+            var types = new Type[] { typeof(T2), typeof(T3) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        public virtual ISugarQueryable<T,T2,T3,T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression) where T : class, new()
         {
-            var queryable = InstanceFactory.GetQueryable<T, T2,T3,T4>(base.CurrentConnectionConfig);
-            base.CreateQueryable(queryable);
-            string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4));
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            InitMppingInfo<T, T2, T3, T4>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        //public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression) where T : class, new()
-        //{
-        //    var queryable = Queryable<T>();
-        //    string shortName = string.Empty;
-        //    queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5));
-        //    queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-        //    return queryable;
-        //}
-        //public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object[]>> joinExpression) where T : class, new()
-        //{
-        //    var queryable = Queryable<T>();
-        //    string shortName = string.Empty;
-        //    queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
-        //    queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-        //    return queryable;
-        //}
-        //public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression) where T : class, new()
-        //{
-        //    var queryable = Queryable<T>();
-        //    string shortName = string.Empty;
-        //    queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
-        //    queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-        //    return queryable;
-        //}
-        //public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression) where T : class, new()
-        //{
-        //    var queryable = Queryable<T>();
-        //    string shortName = string.Empty;
-        //    queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
-        //    queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-        //    return queryable;
-        //}
-        //public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]>> joinExpression) where T : class, new()
-        //{
-        //    var queryable = Queryable<T>();
-        //    string shortName = string.Empty;
-        //    queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9));
-        //    queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-        //    return queryable;
-        //}
-        //public virtual ISugarQueryable<T> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T10, object[]>> joinExpression) where T : class, new()
-        //{
-        //    var queryable = Queryable<T>();
-        //    string shortName = string.Empty;
-        //    queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = base.GetJoinInfos(joinExpression, ref shortName, typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10));
-        //    queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-        //    return queryable;
-        //}
-
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression) where T : class, new()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(base.CurrentConnectionConfig);
+            base.CreateQueryJoin(joinExpression, types, queryable);
+            return queryable;
+        }
         #endregion
 
         #region Insertable
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
-            var reval = new InsertableProvider<T>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.Context = this;
-            reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
-            reval.SqlBuilder = sqlBuilder;
-            reval.InsertObjs = insertObjs;
-            sqlBuilder.InsertBuilder = reval.InsertBuilder = InstanceFactory.GetInsertBuilder(base.CurrentConnectionConfig);
-            sqlBuilder.InsertBuilder.Builder = sqlBuilder;
-            sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this;
-            reval.Init();
+            InitMppingInfo<T>();
+            InsertableProvider<T> reval = base.CreateInsertable(insertObjs);
             return reval;
         }
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
@@ -265,14 +200,8 @@ namespace SqlSugar
         #region Deleteable
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
-            var reval = new DeleteableProvider<T>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.Context = this;
-            reval.SqlBuilder = sqlBuilder;
-            sqlBuilder.DeleteBuilder = reval.DeleteBuilder = InstanceFactory.GetDeleteBuilder(base.CurrentConnectionConfig);
-            sqlBuilder.DeleteBuilder.Builder = sqlBuilder;
-            sqlBuilder.DeleteBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this;
+            InitMppingInfo<T>();
+            DeleteableProvider<T> reval = base.CreateDeleteable<T>();
             return reval;
         }
         #endregion
@@ -280,17 +209,8 @@ namespace SqlSugar
         #region Updateable
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
-            var reval = new UpdateableProvider<T>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.CurrentConnectionConfig); ;
-            reval.Context = this;
-            reval.EntityInfo = this.EntityProvider.GetEntityInfo<T>();
-            reval.SqlBuilder = sqlBuilder;
-            reval.UpdateObjs = UpdateObjs;
-            sqlBuilder.UpdateBuilder = reval.UpdateBuilder = InstanceFactory.GetUpdateBuilder(base.CurrentConnectionConfig);
-            sqlBuilder.UpdateBuilder.Builder = sqlBuilder;
-            sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.UpdateBuilder.Context = this;
-            reval.Init();
+            InitMppingInfo<T>();
+            UpdateableProvider<T> reval = base.CreateUpdateable(UpdateObjs);
             return reval;
         }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
@@ -313,6 +233,7 @@ namespace SqlSugar
                     IDbFirst dbFirst = InstanceFactory.GetDbFirst(this.Context.CurrentConnectionConfig);
                     base._DbFirst = dbFirst;
                     dbFirst.Context = this.Context;
+                    dbFirst.Init();
                 }
                 return base._DbFirst;
             }

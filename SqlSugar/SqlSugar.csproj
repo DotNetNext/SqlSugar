@@ -31,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -44,46 +45,52 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\CodeFirstProvider\CodeFirstProvider.cs" />
     <Compile Include="Abstract\AdoProvider\AdoAccessory.cs" />
-    <Compile Include="Abstract\Core\DbBind\DbBindAccessory.cs" />
-    <Compile Include="Abstract\Core\DbBind\DbBindProvider.cs" />
-    <Compile Include="Abstract\Core\DbBind\IDataReaderEntityBuilder.cs" />
-    <Compile Include="Abstract\Core\DbBind\IDataRecordExtensions.cs" />
+    <Compile Include="Abstract\DbBindProvider\DbBindAccessory.cs" />
+    <Compile Include="Abstract\DbBindProvider\DbBindProvider.cs" />
+    <Compile Include="Abstract\DbBindProvider\IDataReaderEntityBuilder.cs" />
+    <Compile Include="Abstract\DbBindProvider\IDataRecordExtensions.cs" />
     <Compile Include="Abstract\DbFirstProvider\DbFirstProvider.cs" />
+    <Compile Include="Abstract\DbFirstProvider\DefaultTemplate.cs" />
     <Compile Include="Abstract\DbMaintenanceProvider\DbMaintenanceProvider.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
     <Compile Include="Abstract\EntityProvider\EntityProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
-    <Compile Include="Interface\IConnectionConfig.cs" />
-    <Compile Include="Realization\MySql\Core\DbBind\MySqlDbBind.cs" />
-    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlBuilder.cs" />
-    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlDeleteBuilder.cs" />
-    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlExpressionContext.cs" />
-    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlInsertBuilder.cs" />
-    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlQueryBuilder.cs" />
-    <Compile Include="Realization\MySql\Core\SqlBuilder\MySqlUpdateBuilder.cs" />
+    <Compile Include="Entities\SchemaInfo.cs" />
+    <Compile Include="Enum\DbObjectType.cs" />
+    <Compile Include="ExpressionsToSql\Common\FileHeper.cs" />
+    <Compile Include="Interface\ICacheManager.cs" />
+    <Compile Include="Entities\SugarMessageResult.cs" />
+    <Compile Include="Enum\InitKeyType.cs" />
+    <Compile Include="Realization\MySql\DbType.cs" />
+    <Compile Include="Realization\MySql\DbBind\MySqlDbBind.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlDeleteBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlExpressionContext.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlInsertBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlQueryBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlUpdateBuilder.cs" />
     <Compile Include="Realization\MySql\Queryable\MySqlQueryable.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerDeleteBuilder.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerInsertBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerDeleteBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerInsertBuilder.cs" />
     <Compile Include="Entities\EntityColumnInfo.cs" />
     <Compile Include="Entities\EntityInfo.cs" />
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
-    <Compile Include="Abstract\Core\SqlBuilder\DMLBuilder\DeleteBuilder.cs" />
-    <Compile Include="Abstract\Core\SqlBuilder\DMLBuilder\InsertBuilder.cs" />
-    <Compile Include="Abstract\Core\SqlBuilder\DMLBuilder\QueryBuilder.cs" />
-    <Compile Include="Abstract\Core\SqlBuilder\DMLBuilder\SqlQueryBuilder.cs" />
-    <Compile Include="Abstract\Core\SqlBuilder\DMLBuilder\UpdateBuilder.cs" />
-    <Compile Include="Abstract\Core\SqlBuilder\SqlBuilderAccessory.cs" />
-    <Compile Include="Abstract\Core\SqlBuilder\SqlBuilderProvider.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\Detail\DeleteBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\Detail\InsertBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\Detail\QueryBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\Detail\SqlQueryBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\Detail\UpdateBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider.cs" />
     <Compile Include="Common\CacheManager.cs" />
     <Compile Include="Common\Check.cs" />
     <Compile Include="Common\CommonExtensions.cs" />
@@ -96,14 +103,14 @@
     <Compile Include="Common\SqlException.cs" />
     <Compile Include="Common\RewritableMethods.cs" />
     <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerUpdateBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerUpdateBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbType.cs" />
-    <Compile Include="Realization\SqlServer\Core\DbBind\SqlServerDbBind.cs" />
+    <Compile Include="Realization\SqlServer\DbBind\SqlServerDbBind.cs" />
     <Compile Include="Realization\SqlServer\DbFirst\SqlServerDbFirst.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbMaintenance\SqlServerDbMaintenance.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerQueryBuilder.cs" />
-    <Compile Include="Realization\SqlServer\MySqlProvider.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerQueryBuilder.cs" />
+    <Compile Include="Realization\MySql\MySqlProvider.cs" />
     <Compile Include="Realization\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Realization\SqlServer\Queryable\SqlServerQueryable.cs" />
     <Compile Include="Entities\SugarDynamic.cs" />
@@ -116,7 +123,7 @@
     <Compile Include="ExpressionsToSql\Common\DateType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
     <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />
-    <Compile Include="Realization\SqlServer\Core\SqlBuilder\SqlServerExpressionContext.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerExpressionContext.cs" />
     <Compile Include="ExpressionsToSql\Method\NBORM.cs" />
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
@@ -174,15 +181,12 @@
     <Compile Include="SqlSugarClient.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Lib\MySql.Data.dll" />
     <Content Include="Lib\Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Realization\Oracle\" />
     <Folder Include="Realization\Sqlite\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

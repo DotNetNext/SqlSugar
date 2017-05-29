@@ -14,7 +14,14 @@ namespace SqlSugar
             this.Value = value;
             this.ParameterName = name;
         }
-
+        public SugarParameter(string name, object value,bool isOutput)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            if (isOutput) {
+                this.Direction = ParameterDirection.Output;
+            }
+        }
         public override System.Data.DbType DbType
         {
             get; set;
