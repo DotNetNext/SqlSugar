@@ -25,7 +25,7 @@ namespace OrmTest.Demo
             //Remove mapping
             db.MappingTables.Clear();
 
-            Create class with default value
+            //Create class with default value
             db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\Demo\\4","Demo.Models");
         }
     }
