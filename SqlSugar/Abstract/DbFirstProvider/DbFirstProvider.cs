@@ -131,7 +131,7 @@ namespace SqlSugar
                     var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
                     string className = tableInfo.Name;
                     string classText = this.ClassTemplate;
-                    string ConstructorText = DbFirstTemplate.ConstructorTemplate;
+                    string ConstructorText =IsDefaultValue? DbFirstTemplate.ConstructorTemplate:null;
                     if (this.Context.MappingTables.IsValuable())
                     {
                         var mappingInfo = this.Context.MappingTables.FirstOrDefault(it => it.DbTableName.Equals(tableInfo.Name, StringComparison.CurrentCultureIgnoreCase));
@@ -162,6 +162,7 @@ namespace SqlSugar
                             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast?"":("\r\n" + DbFirstTemplate.KeyPropertyName)));
                         }
                     }
+                    classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
                     result.Add(className, classText);
                 }
             }
@@ -176,7 +177,7 @@ namespace SqlSugar
             {
                 foreach (var item in classStringList)
                 {
-                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("{0}\\.cs", item.Key), item.Value, Encoding.UTF8);
+                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("{0}.cs", item.Key), item.Value, Encoding.UTF8);
                 }
             }
         }
@@ -193,8 +194,12 @@ namespace SqlSugar
             {
                 SugarColumnText = null;
             }
+            string typeString = this.Context.Ado.DbBind.ChangeDBTypeToCSharpType(item.DataType);
+            if (typeString != "string" && item.IsNullable) {
+                typeString += "?";
+            }
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeySugarColumn, SugarColumnText);
-            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType, this.Context.Ado.DbBind.ChangeDBTypeToCSharpType(item.DataType));
+            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType, typeString);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, item.DbColumnName);
             return PropertyText;
         }
