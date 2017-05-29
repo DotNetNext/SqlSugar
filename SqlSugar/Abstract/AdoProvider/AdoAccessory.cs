@@ -60,39 +60,39 @@ namespace SqlSugar
 
         protected void ProperyToParameter(object parameters, PropertyInfo[] propertyInfo, string sqlParameterKeyWord, List<SugarParameter> listParams, Type entityType)
         {
-            PropertyInfo[] propertiesObj = null;
+            PropertyInfo[] properties = null;
             if (propertyInfo != null)
             {
-                propertiesObj = propertyInfo;
+                properties = propertyInfo;
             }
             else
             {
-                propertiesObj = entityType.GetProperties();
+                properties = entityType.GetProperties();
             }
-            foreach (PropertyInfo r in propertiesObj)
+            foreach (PropertyInfo properyty in properties)
             {
-                var value = r.GetValue(parameters, null);
-                if (r.PropertyType.IsEnum)
+                var value = properyty.GetValue(parameters, null);
+                if (properyty.PropertyType.IsEnum)
                 {
                     value = Convert.ToInt64(value);
                 }
                 if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
-                if (r.Name.ToLower().Contains("hierarchyid"))
+                if (properyty.Name.ToLower().Contains("hierarchyid"))
                 {
-                    var par = new SugarParameter(sqlParameterKeyWord + r.Name, SqlDbType.Udt);
-                    par.UdtTypeName = "HIERARCHYID";
-                    par.Value = value;
-                    listParams.Add(par);
+                    var parameter = new SugarParameter(sqlParameterKeyWord + properyty.Name, SqlDbType.Udt);
+                    parameter.UdtTypeName = "HIERARCHYID";
+                    parameter.Value = value;
+                    listParams.Add(parameter);
                 }
                 else
                 {
-                    var par = new SugarParameter(sqlParameterKeyWord + r.Name, value);
-                    SetParameterSize(par);
+                    var parameter = new SugarParameter(sqlParameterKeyWord + properyty.Name, value);
+                    SetParameterSize(parameter);
                     if (value == DBNull.Value)
                     {
-                        SetSqlDbType(r, par);
+                        SetSqlDbType(properyty, parameter);
                     }
-                    listParams.Add(par);
+                    listParams.Add(parameter);
                 }
             }
         }
@@ -100,23 +100,23 @@ namespace SqlSugar
         {
             if (entityType == PubConst.DicArraySO)
             {
-                var newObj = (Dictionary<string, object>)parameters;
-                var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
-                foreach (var par in pars)
+                var dictionaryParameters = (Dictionary<string, object>)parameters;
+                var sugarParameters = dictionaryParameters.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
+                foreach (var sugarParameter in sugarParameters)
                 {
-                    SetParameterSize(par);
+                    SetParameterSize(sugarParameter);
                 }
-                listParams.AddRange(pars);
+                listParams.AddRange(sugarParameters);
             }
             else
             {
-                var newObj = (Dictionary<string, string>)parameters;
-                var pars = newObj.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
-                foreach (var par in pars)
+                var dictionaryParameters = (Dictionary<string, string>)parameters;
+                var sugarParameters = dictionaryParameters.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
+                foreach (var sugarParameter in sugarParameters)
                 {
-                    SetParameterSize(par);
+                    SetParameterSize(sugarParameter);
                 }
-                listParams.AddRange(pars); ;
+                listParams.AddRange(sugarParameters); ;
             }
         }
     }
