@@ -11,16 +11,8 @@ QQ Group:225982985
 ### 1.1 Create Connection
 If you have system table permissions, use SystemTableConfig,else use AttributeConfig
 ```c
-     SqlSugarClient db = new SqlSugarClient(new SystemTableConfig() 
-     { ConnectionString = Config.ConnectionString, DbType =DbType.SqlServer, IsAutoCloseConnection = true });
+SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
 ```
-
-SystemTableConfig：
-https://github.com/sunkaixuan/SqlSugar/wiki/SystemTableConfig
-
-AttrbuteConfig
-https://github.com/sunkaixuan/SqlSugar/wiki/AttributeCofnig
-
 
 ### 1.2 Introduction
 ```c
@@ -321,16 +313,28 @@ catch (Exception)
  ##  7. Use SP
 ```c
    //1. no result 
-  db.UseStoredProcedure(() =>
+  db.Ado.UseStoredProcedure(() =>
   {
       string spName = "sp_help";
       var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
   });
 
   //2. has result 
-  var result= db.UseStoredProcedure<dynamic>(() =>
+  var result= db.Ado.UseStoredProcedure<dynamic>(() =>
   {
       string spName = "sp_help";
       return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+  });
+  
+  //3. has output 
+  object outPutValue;
+  var outputResult = db.Ado.UseStoredProcedure<dynamic>(() =>
+  {
+      string spName = "sp_school";
+      var p1 = new SugarParameter("@p1", "1");
+      var p2= new SugarParameter("@p2", null,true);//isOutput=true
+      var dbResult= db.Ado.SqlQueryDynamic(spName,new SugarParameter[] {p1,p2 });
+      outPutValue = p2.Value;
+      return dbResult;
   });
 ```
