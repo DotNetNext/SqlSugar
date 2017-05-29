@@ -46,14 +46,6 @@ namespace SqlSugar
             }
         }
 
-        public List<SchemaInfo> GetSchemaInfoList
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         #region Setting Template
         public IDbFirst SettingClassDescriptionTemplate(Func<string, string> func)
         {
