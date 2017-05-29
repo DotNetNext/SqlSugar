@@ -80,6 +80,9 @@ namespace SqlSugar
                     IsMember = parameter.ChildExpression is MemberExpression,
                     MemberName = parameter.CommonTempData
                 };
+                if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now") {
+                    methodCallExpressionArgs.IsMember = false;
+                }
                 var value = methodCallExpressionArgs.MemberName;
                 if (methodCallExpressionArgs.IsMember)
                 {

@@ -133,6 +133,10 @@ namespace OrmTest.Demo
             var group = db.Queryable<Student>().GroupBy(it => it.Id)
                 .Having(it => NBORM.AggregateCount(it.Id) > 10)
                 .Select(it => new { id = NBORM.AggregateCount(it.Id) }).ToList();
+
+            var between = db.Queryable<Student>().Where(it => NBORM.Between(it.Id, 1, 20)).ToList();
+
+            var getTodayList = db.Queryable<Student>().Where(it => NBORM.DateIsSame(it.CreateTime, DateTime.Now)).ToList();
         }
 
         public static void Page()

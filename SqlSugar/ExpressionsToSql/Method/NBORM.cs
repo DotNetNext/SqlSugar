@@ -18,6 +18,7 @@ namespace SqlSugar
         public static bool EndsWith(object thisValue, string parameterValue) { throw new NotImplementedException(); }
         public new static bool Equals(object thisValue, object parameterValue) { throw new NotImplementedException(); }
         public static bool DateIsSame(DateTime date1, DateTime date2) {  throw new NotImplementedException();}
+        public static bool DateIsSame(DateTime? date1, DateTime? date2) { throw new NotImplementedException(); }
         public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType)  { throw new NotImplementedException(); }
         public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotImplementedException(); }
         public static DateTime DateAdd(DateTime date, int addValue) { throw new NotImplementedException(); }
