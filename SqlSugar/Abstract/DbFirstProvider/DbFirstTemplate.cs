@@ -8,37 +8,38 @@ namespace SqlSugar
     public class DbFirstTemplate
     {
         #region Template
-        public static string ClassTemplate = @"{using}
-namespace {Namespace}
-{
-    {ClassDescription}{SugarTable}
-    public class {ClassName}
-    {
-        public {ClassName}(){
-           {Constructor}
-        }
-        {PropertyDescription}
-        {Property}
-    }
-}";
-        public static string ClassDescriptionTemplate = @"    /// <summary>
-    ///{ClassDescription}
-    /// </summary>\r\n";
+        public static string ClassTemplate = "{using}\r\n" +
+                                              "namespace {Namespace}\r\n" +
+                                              "{\r\n" +
+                                              "{ClassDescription}\r\n{SugarTable}\r\n" +
+                                                ClassSpace+"public class {ClassName}\r\n" +
+                                                ClassSpace + "{\r\n" +
+                                                PropertySpace + "public {ClassName}(){\r\n" +
+                                                "{Constructor}\r\n" +
+                                                PropertySpace + "}\r\n" +
+                                                "{PropertyName}\r\n" +
+                                                 ClassSpace + "}\r\n" +
+                                                "}\r\n";
+        public static string ClassDescriptionTemplate =
+                                                ClassSpace + "///<summary>\r\n" +
+                                                ClassSpace + "///{ClassDescription}" +
+                                                ClassSpace + "/// </summary>\r\n";
 
-        public static string PropertyTemplate = @"           {SugarColumn}
-public {PropertyType} {PropertyName} {get;set;}\r\n";
+        public static string PropertyTemplate = PropertySpace + "{SugarColumn}\r\n" +
+                                                PropertySpace + "public {PropertyType} {PropertyName} {get;set;}\r\n";
 
-        public static string PropertyDescriptionTemplate = @"/// <summary>
-        /// Desc:{PropertyDescription}
-        /// Default:{DefaultValue}
-        /// Nullable:{IsNullable}
-        /// </summary>\r\n";
+        public static string PropertyDescriptionTemplate =
+                                                PropertySpace + "/// <summary>\r\n" +
+                                                PropertySpace + "/// Desc:{PropertyDescription}\r\n" +
+                                                PropertySpace + "/// Default:{DefaultValue}\r\n" +
+                                                PropertySpace + "/// Nullable:{IsNullable}\r\n" +
+                                                PropertySpace + "/// </summary>";
 
-        public static string ConstructorTemplate = @"           this.{$PropertyName} =Convert.To{PropertyType}(""{DefaultValue}"");\r\n";
+        public static string ConstructorTemplate = PropertySpace + "this.{$PropertyName} =Convert.To{PropertyType}(\"{DefaultValue}\");\r\n";
 
-        public static string UsingTemplate = @"using System;
-using System.Linq;
-using System.Text;"+"\r\n";
+        public static string UsingTemplate = "using System;\r\n" +
+                                              "using System.Linq;\r\n" +
+                                              "using System.Text;" + "\r\n";
         #endregion
 
         #region Replace Key
@@ -58,7 +59,10 @@ using System.Text;"+"\r\n";
 
         #region Replace Value
         public const string ValueSugarTable = "[SugarTable(\"{0}\")]";
-        public const string ValueSugarCoulmn= "[SugarColumn({0})]";
+        public const string ValueSugarCoulmn = "[SugarColumn({0})]";
         #endregion
+
+        public const string PropertySpace = "           ";
+        public const string ClassSpace = "    ";
     }
 }

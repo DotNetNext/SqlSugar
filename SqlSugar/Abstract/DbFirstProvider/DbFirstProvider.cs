@@ -153,12 +153,13 @@ namespace SqlSugar
                     {
                         foreach (var item in columns)
                         {
+                            var isLast = columns.Last() == item;
                             string PropertyText = DbFirstTemplate.PropertyTemplate;
                             string PropertyDescriptionText = DbFirstTemplate.PropertyDescriptionTemplate;
-                            string SugarColumnText = DbFirstTemplate.ValueSugarCoulmn;
-                            var hasSugarColumn = item.IsPrimarykey == true || item.IsIdentity == true||item.DbColumnName.IsValuable();
-                            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType,item.DataType);
-                            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, item.DbColumnName);
+                            PropertyText = GetPropertyText(item, PropertyText);
+                            PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
+                            PropertyText = PropertyDescriptionText + PropertyText;
+                            classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast?"":("\r\n" + DbFirstTemplate.KeyPropertyName)));
                         }
                     }
                     result.Add(className, classText);
@@ -166,6 +167,7 @@ namespace SqlSugar
             }
             return result;
         }
+
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
         {
             Check.ArgumentNullException(directoryPath, "directoryPath can't null");
@@ -180,6 +182,29 @@ namespace SqlSugar
         }
 
         #region Private methods
+        private string GetPropertyText(DbColumnInfo item, string PropertyText)
+        {
+            string SugarColumnText = DbFirstTemplate.ValueSugarCoulmn;
+            var hasSugarColumn = item.IsPrimarykey == true || item.IsIdentity == true || item.DbColumnName.IsValuable();
+            if (hasSugarColumn&&this.IsAttribute)
+            {
+            }
+            else
+            {
+                SugarColumnText = null;
+            }
+            PropertyText = PropertyText.Replace(DbFirstTemplate.KeySugarColumn, SugarColumnText);
+            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType, this.Context.Ado.DbBind.ChangeDBTypeToCSharpType(item.DataType));
+            PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, item.DbColumnName);
+            return PropertyText;
+        }
+        private string GetPropertyDescriptionText(DbColumnInfo item, string propertyDescriptionText)
+        {
+            propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyPropertyDescription, item.ColumnDescription);
+            propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyDefaultValue, item.Value.ObjToString());
+            propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyIsNullable, item.IsNullable.ObjToString());
+            return propertyDescriptionText;
+        }
 
         #endregion
     }
