@@ -164,7 +164,7 @@ namespace SqlSugar
             List<string> dateThrow = bind.DateThrow;
             List<string> shortThrow = bind.ShortThrow;
             MethodInfo method = null;
-            var transformedPropertyName = bind.ChangeDBTypeToCSharpType(dbTypeName);
+            var transformedPropertyName = bind.GetCSharpType(dbTypeName);
             var objTypeName = bindType.Name.ToLower();
             var isEnum = bindType.IsEnum;
             if (isEnum)

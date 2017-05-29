@@ -1,8 +1,10 @@
-﻿namespace SqlSugar
+﻿using System;
+
+namespace SqlSugar
 {
     public class MySqlDbBind : DbBindProvider
     {
-        public override string ChangeDBTypeToCSharpType(string typeName)
+        public override string GetCSharpType(string typeName)
         {
                 string reval;
                 switch (typeName.ToLower())
@@ -90,6 +92,11 @@
                         break;
                 }
                 return reval;
+        }
+
+        public override string GetCSharpConvert(string dbTypeName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

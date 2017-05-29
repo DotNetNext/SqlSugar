@@ -158,7 +158,6 @@ namespace SqlSugar
                             string PropertyDescriptionText = DbFirstTemplate.PropertyDescriptionTemplate;
                             string propertyName=GetPropertyName(item);
                             string propertyTypeName = GetPropertyTypeName(item);
-                            string proertypeDefaultValue = GetProertypeDefaultValue(item);
                             PropertyText = GetPropertyText(item, PropertyText);
                             PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                             PropertyText = PropertyDescriptionText + PropertyText;
@@ -167,11 +166,12 @@ namespace SqlSugar
                             {
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyType, propertyTypeName);
-                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, proertypeDefaultValue)+(isLast?"":"\r\n"+DbFirstTemplate.KeyPropertyName);
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) +(isLast?"":"\r\n"+DbFirstTemplate.KeyPropertyName);
                             }
                         }
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
+                    classText = classText.Replace(DbFirstTemplate.KeyPropertyName, null);
                     result.Add(className, classText);
                 }
             }
@@ -232,13 +232,18 @@ namespace SqlSugar
 
         private string GetPropertyTypeName(DbColumnInfo item)
         {
-            string typeString = this.Context.Ado.DbBind.ChangeDBTypeToCSharpType(item.DataType);
-            if (typeString != "string" && item.IsNullable)
+            string result = this.Context.Ado.DbBind.GetCSharpType(item.DataType);
+            if (result != "string" && item.IsNullable)
             {
-                typeString += "?";
+                result += "?";
             }
 
-            return typeString;
+            return result;
+        }
+        private string GetPropertyTypeConvert(DbColumnInfo item)
+        {
+            string result = "(\""+GetProertypeDefaultValue(item) +"\")";
+            return result;
         }
 
         private string GetPropertyDescriptionText(DbColumnInfo item, string propertyDescriptionText)
