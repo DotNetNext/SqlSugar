@@ -130,6 +130,10 @@ namespace OrmTest.Demo
             var isAny = db.Queryable<Student>().Where(it => it.Id == -1).Any();
             var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
             var getListByRename = db.Queryable<School>().AS("Student").ToList();
+            var in1 = db.Queryable<Student>().In(it=>it.Id,new int[] { 1, 2, 3 }).ToList();
+            var in2 = db.Queryable<Student>().In(new int[] { 1, 2, 3 }).ToList();
+            int[] array = new int[] { 1, 2 };
+            var in3 = db.Queryable<Student>().Where(it=>NBORM.ContainsArray(array, it.Id)).ToList();
             var group = db.Queryable<Student>().GroupBy(it => it.Id)
                 .Having(it => NBORM.AggregateCount(it.Id) > 10)
                 .Select(it => new { id = NBORM.AggregateCount(it.Id) }).ToList();

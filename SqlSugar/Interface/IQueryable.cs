@@ -42,7 +42,7 @@ namespace SqlSugar
         //ISugarQueryable<T> WhereIF<T2, T3, T4>(bool isWhere, Expression<Func<T2, T3, T4, bool>> expression);
         //ISugarQueryable<T> WhereIF<T2, T3, T4, T5>(bool isWhere, Expression<Func<T2, T3, T4, T5, bool>> expression);
         //ISugarQueryable<T> WhereIF<T2, T3, T4, T5, T6>(bool isWhere, Expression<Func<T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T> In(params object[] pkValues);
+        ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues);
 
         T InSingle(object pkValue);
         ISugarQueryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues);

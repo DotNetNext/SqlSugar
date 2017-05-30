@@ -13,7 +13,7 @@ namespace SqlSugar
         public static string ToUpper(object thisValue) { throw new NotImplementedException(); }
         public static string Trim(object thisValue) { throw new NotImplementedException(); }
         public static bool Contains(string thisValue, string parameterValue) {  throw new NotImplementedException();}
-        public static bool ContainsArray(object [] thisValue, string parameterValue) { throw new NotImplementedException(); }
+        public static bool ContainsArray<T>(T [] thisValue, object parameterValue) { throw new NotImplementedException(); }
         public static bool StartsWith(object thisValue, string parameterValue) { throw new NotImplementedException(); }
         public static bool EndsWith(object thisValue, string parameterValue) { throw new NotImplementedException(); }
         public new static bool Equals(object thisValue, object parameterValue) { throw new NotImplementedException(); }

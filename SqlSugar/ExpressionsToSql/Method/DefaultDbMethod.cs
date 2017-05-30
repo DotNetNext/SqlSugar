@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,12 +40,20 @@ namespace SqlSugar
         }
         public virtual string ContainsArray(MethodCallExpressionModel model)
         {
-            var inValues = (object[])model.Args[0].MemberValue;
+            var inValueIEnumerable = (IEnumerable)model.Args[0].MemberValue;
+            List<object>  inValues = new List<object>();
+            if (inValueIEnumerable != null)
+            {
+                foreach (var item in inValueIEnumerable)
+                {
+                    inValues.Add(item);
+                }
+            }
             var value = model.Args[1].MemberName;
             string inValueString = null;
-            if (inValues != null && inValues.Length > 0)
+            if (inValues != null && inValues.Count > 0)
             {
-                inValueString = inValues.ToJoinSqlInVals();
+                inValueString = inValues.ToArray().ToJoinSqlInVals();
             }
             else {
                return " (1=2) ";

@@ -80,7 +80,8 @@ namespace SqlSugar
                     IsMember = parameter.ChildExpression is MemberExpression,
                     MemberName = parameter.CommonTempData
                 };
-                if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now") {
+                if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now")
+                {
                     methodCallExpressionArgs.IsMember = false;
                 }
                 var value = methodCallExpressionArgs.MemberName;
@@ -119,9 +120,11 @@ namespace SqlSugar
                 case "Trim":
                     return this.Context.DbMehtods.Trim(model);
                 case "Contains":
-                        return this.Context.DbMehtods.Contains(model);
+                    return this.Context.DbMehtods.Contains(model);
                 case "ContainsArray":
-                        return this.Context.DbMehtods.ContainsArray(model);
+                    var result = this.Context.DbMehtods.ContainsArray(model);
+                    this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
+                    return result;
                 case "Equals":
                     return this.Context.DbMehtods.Equals(model);
                 case "DateIsSame":
@@ -143,7 +146,7 @@ namespace SqlSugar
                 case "EndsWith":
                     return this.Context.DbMehtods.EndsWith(model);
                 case "ToInt32":
-                     return this.Context.DbMehtods.ToInt32(model);
+                    return this.Context.DbMehtods.ToInt32(model);
                 case "ToInt64":
                     return this.Context.DbMehtods.ToInt64(model);
                 case "ToDate":

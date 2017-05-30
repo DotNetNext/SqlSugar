@@ -141,7 +141,7 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> In(params object[] pkValues)
+        public ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues)
         {
             if (pkValues == null || pkValues.Length == 0)
             {
