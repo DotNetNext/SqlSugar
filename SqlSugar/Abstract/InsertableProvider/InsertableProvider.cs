@@ -34,7 +34,7 @@ namespace SqlSugar
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
-            return Ado.ExecuteCommand(sql, InsertBuilder.Parameters.ToArray());
+            return Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
         }
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
@@ -51,7 +51,7 @@ namespace SqlSugar
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
-            return Ado.GetInt(sql, InsertBuilder.Parameters.ToArray());
+            return Ado.GetInt(sql, InsertBuilder.Parameters==null?null:InsertBuilder.Parameters.ToArray());
         }
         #endregion
 
