@@ -58,7 +58,7 @@ namespace SqlSugar
                 }
                 if (methodCallExpressionArgs.IsMember == false)
                 {
-                    var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.METHODCONST + this.Context.ParameterIndex;
+                    var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
                     this.Context.ParameterIndex++;
                     methodCallExpressionArgs.MemberName = parameterName;
                     methodCallExpressionArgs.MemberValue = value;
@@ -95,7 +95,7 @@ namespace SqlSugar
                 }
                 if (methodCallExpressionArgs.IsMember == false)
                 {
-                    var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.METHODCONST + this.Context.ParameterIndex;
+                    var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
                     this.Context.ParameterIndex++;
                     methodCallExpressionArgs.MemberName = parameterName;
                     methodCallExpressionArgs.MemberValue = value;
@@ -185,7 +185,7 @@ namespace SqlSugar
 
         private void CheckMethod(MethodCallExpression expression)
         {
-            Check.Exception(expression.Method.ReflectedType.FullName != ExpressionConst.NBORMFULLNAME, ExpressionErrorMessage.MethodError);
+            Check.Exception(expression.Method.ReflectedType.FullName != ExpressionConst.SqlFuncFullName, ExpressionErrorMessage.MethodError);
         }
     }
 }

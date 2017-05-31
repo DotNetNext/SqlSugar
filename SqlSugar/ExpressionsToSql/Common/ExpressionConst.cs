@@ -13,9 +13,9 @@ namespace SqlSugar
         public const string Format2 = "o__o";
         public const string Format3 = "(";
         public const string Format4 = ")";
-        public const string NBORMFULLNAME = "SqlSugar.NBORM";
-        public const string METHODCONST = "MethodConst";
-        public const string CONST = "Const";
+        public const string SqlFuncFullName = "SqlSugar.SqlFunc"; 
+        public const string MethodConst = "MethodConst";
+        public const string Const = "Const";
         public readonly static Type MemberExpressionType = typeof(MemberExpression);
         public readonly static Type ConstantExpressionType = typeof(ConstantExpression);
         public readonly static Type StringType = typeof(string);

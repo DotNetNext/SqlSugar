@@ -59,7 +59,7 @@ namespace OrmTest.UnitTest
 
         private void Length()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.Length("aaaa") >1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Length("aaaa") >1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -72,7 +72,7 @@ namespace OrmTest.UnitTest
         private void Replace()
         {
             var x2 = Guid.NewGuid();
-            Expression<Func<Student, bool>> exp = it => NBORM.Replace("aaaa","a", "1") == "a";
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Replace("aaaa","a", "1") == "a";
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -85,7 +85,7 @@ namespace OrmTest.UnitTest
         private void Substring()
         {
             var x2 = Guid.NewGuid();
-            Expression<Func<Student, bool>> exp = it => NBORM.Substring("aaaa",0,2) == "a";
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Substring("aaaa",0,2) == "a";
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -98,7 +98,7 @@ namespace OrmTest.UnitTest
         private void ToBool()
         {
             var x2 = Guid.NewGuid();
-            Expression<Func<Student, bool>> exp = it => NBORM.ToBool("true") == true;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToBool("true") == true;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -111,7 +111,7 @@ namespace OrmTest.UnitTest
         private void ToDouble()
         {
             var x2 = Guid.NewGuid();
-            Expression<Func<Student, bool>> exp = it => NBORM.ToDouble("2") == 2;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToDouble("2") == 2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -124,7 +124,7 @@ namespace OrmTest.UnitTest
         private void ToGuid()
         {
             var x2 = Guid.NewGuid();
-            Expression<Func<Student, bool>> exp = it => NBORM.ToGuid("A94027A3-476E-478D-8228-F4054394B874") == x2;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToGuid("A94027A3-476E-478D-8228-F4054394B874") == x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -137,7 +137,7 @@ namespace OrmTest.UnitTest
         private void ToDecimal()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.ToDecimal("22") == 1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToDecimal("22") == 1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -150,7 +150,7 @@ namespace OrmTest.UnitTest
         private void Tostring()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.ToString("2015-1-1") == "a";
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToString("2015-1-1") == "a";
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -163,7 +163,7 @@ namespace OrmTest.UnitTest
         private void ToDate()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.ToDate("2015-1-1") == x2;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToDate("2015-1-1") == x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -176,7 +176,7 @@ namespace OrmTest.UnitTest
         private void ToInt64()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.ToInt64("3") == 1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToInt64("3") == 1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -189,7 +189,7 @@ namespace OrmTest.UnitTest
         private void ToInt32()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.ToInt32("3")== 1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToInt32("3")== 1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -202,7 +202,7 @@ namespace OrmTest.UnitTest
         private void DateValue()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateValue(x2,DateType.Year)==1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateValue(x2,DateType.Year)==1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -214,7 +214,7 @@ namespace OrmTest.UnitTest
 
         private void StartsWith()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.StartsWith(it.Name, "a");
+            Expression<Func<Student, bool>> exp = it => SqlFunc.StartsWith(it.Name, "a");
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -225,7 +225,7 @@ namespace OrmTest.UnitTest
         }
         private void EndsWith()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.EndsWith(it.Name, "a");
+            Expression<Func<Student, bool>> exp = it => SqlFunc.EndsWith(it.Name, "a");
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -236,7 +236,7 @@ namespace OrmTest.UnitTest
         }
         private void Between()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.Between(it.Name,1, 2);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Between(it.Name,1, 2);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -249,7 +249,7 @@ namespace OrmTest.UnitTest
         private void DateAddByType()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateAdd(x2, 11, DateType.Millisecond)==x2;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 11, DateType.Millisecond)==x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -262,7 +262,7 @@ namespace OrmTest.UnitTest
         private void DateAddDay()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateAdd(x2, 1)==x2;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 1)==x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -275,7 +275,7 @@ namespace OrmTest.UnitTest
         private void DateIsSameByType()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateIsSame(x2,x2, DateType.Millisecond);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2,x2, DateType.Millisecond);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -288,7 +288,7 @@ namespace OrmTest.UnitTest
         private void DateIsSameByDay()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => NBORM.DateIsSame(x2,x2);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2,x2);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -300,7 +300,7 @@ namespace OrmTest.UnitTest
 
         private void Equals()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.Equals(it.Name, "a");
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Equals(it.Name, "a");
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -310,7 +310,7 @@ namespace OrmTest.UnitTest
             }, "Equals1 error");
 
 
-            Expression<Func<Student, bool>> exp2 = it => NBORM.Equals("a",it.Name);
+            Expression<Func<Student, bool>> exp2 = it => SqlFunc.Equals("a",it.Name);
             SqlServerExpressionContext expContext2 = new SqlServerExpressionContext();
             expContext2.Resolve(exp2, ResolveExpressType.WhereSingle);
             var value2 = expContext2.Result.GetString();
@@ -321,7 +321,7 @@ namespace OrmTest.UnitTest
         }
         private void Equals_2()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.Equals(it.Name, it.Name);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Equals(it.Name, it.Name);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -331,7 +331,7 @@ namespace OrmTest.UnitTest
             }, "Equals1 error");
 
 
-            Expression<Func<Student, bool>> exp2 = it => NBORM.Equals("a", "a2");
+            Expression<Func<Student, bool>> exp2 = it => SqlFunc.Equals("a", "a2");
             SqlServerExpressionContext expContext2 = new SqlServerExpressionContext();
             expContext2.Resolve(exp2, ResolveExpressType.WhereSingle);
             var value2 = expContext2.Result.GetString();
@@ -343,7 +343,7 @@ namespace OrmTest.UnitTest
 
         private void Contains()
         {
-            Expression<Func<Student, bool>> exp = it => NBORM.Contains(it.Name, "a");
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Contains(it.Name, "a");
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -356,7 +356,7 @@ namespace OrmTest.UnitTest
         private void ContainsArray()
         {
             string[] array = new string[] { "1","2"};
-            Expression<Func<Student, bool>> exp = it => NBORM.ContainsArray(array, it.Name);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ContainsArray(array, it.Name);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -366,7 +366,7 @@ namespace OrmTest.UnitTest
 
         private void Trim()
         {
-            Expression<Func<Student, bool>> exp = it =>NBORM.Trim("  a")==it.Name;
+            Expression<Func<Student, bool>> exp = it =>SqlFunc.Trim("  a")==it.Name;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -378,7 +378,7 @@ namespace OrmTest.UnitTest
 
         private void ToUpper()
         {
-            Expression<Func<Student, bool>> exp = it =>"a"== NBORM.ToUpper(it.Id) ;
+            Expression<Func<Student, bool>> exp = it =>"a"== SqlFunc.ToUpper(it.Id) ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -389,7 +389,7 @@ namespace OrmTest.UnitTest
         }
         private void ToLower()
         {
-            Expression<Func<Student, bool>> exp = it => "a" == NBORM.ToLower(it.Id);
+            Expression<Func<Student, bool>> exp = it => "a" == SqlFunc.ToLower(it.Id);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -402,7 +402,7 @@ namespace OrmTest.UnitTest
         #region StringIsNullOrEmpty
         private void StringIsNullOrEmpty()
         {
-            Expression<Func<Student, bool>> exp = it => it.Id > 2 || NBORM.IsNullOrEmpty(it.Id); ;
+            Expression<Func<Student, bool>> exp = it => it.Id > 2 || SqlFunc.IsNullOrEmpty(it.Id); ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -413,7 +413,7 @@ namespace OrmTest.UnitTest
         }
         private void StringIsNullOrEmpty2()
         {
-            Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(true); ;
+            Expression<Func<Student, bool>> exp = it => 2 == it.Id || SqlFunc.IsNullOrEmpty(true); ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -426,7 +426,7 @@ namespace OrmTest.UnitTest
         private void StringIsNullOrEmpty3()
         {
             int a = 1;
-            Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(a); ;
+            Expression<Func<Student, bool>> exp = it => 2 == it.Id || SqlFunc.IsNullOrEmpty(a); ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -439,7 +439,7 @@ namespace OrmTest.UnitTest
         private void StringIsNullOrEmpty4()
         {
             WhereConst.name = "xx";
-            Expression<Func<Student, bool>> exp = it => 2 == it.Id || NBORM.IsNullOrEmpty(WhereConst.name); ;
+            Expression<Func<Student, bool>> exp = it => 2 == it.Id || SqlFunc.IsNullOrEmpty(WhereConst.name); ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();

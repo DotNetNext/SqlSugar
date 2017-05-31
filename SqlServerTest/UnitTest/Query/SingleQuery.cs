@@ -102,7 +102,7 @@ namespace OrmTest.UnitTest
 
                 var t8 = db.Queryable<Student>()
                     .Where(it=>it.Id==1)
-                    .WhereIF(true,it=> NBORM.Contains(it.Name,"a"))
+                    .WhereIF(true,it=> SqlFunc.Contains(it.Name,"a"))
                     .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).With(SqlWith.NoLock).ToSql();
                 base.Check(@"WITH PageTable AS(
                           SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] WITH(NOLOCK)   WHERE ( [ID] = @Id0 )  AND  ([Name] like '%'+@MethodConst1+'%')  

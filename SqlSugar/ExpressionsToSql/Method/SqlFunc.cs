@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class NBORM
+    public class SqlFunc
     {
         public static bool IsNullOrEmpty(object thisValue) { throw new NotImplementedException(); }
         public static string ToLower(object thisValue) { throw new NotImplementedException(); }

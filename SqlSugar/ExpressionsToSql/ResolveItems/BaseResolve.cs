@@ -154,7 +154,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.CONST + Context.ParameterIndex;
+                    var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.Const + Context.ParameterIndex;
                     Context.ParameterIndex++;
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
                     appendValue = string.Format(" {0} ", appendValue);
