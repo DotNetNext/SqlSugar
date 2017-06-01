@@ -76,7 +76,7 @@ namespace SqlSugar
                     reval = "byte";
                     break;
                 case "uniqueidentifier":
-                    reval = "guid";
+                    reval = "Guid";
                     break;
                 case "varbinary":
                     reval = "byte[]";

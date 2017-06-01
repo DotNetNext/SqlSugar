@@ -267,7 +267,7 @@ namespace SqlSugar
         private string GetPropertyTypeName(DbColumnInfo item)
         {
             string result = this.Context.Ado.DbBind.GetCSharpType(item.DataType);
-            if (result != "string" && item.IsNullable)
+            if (result != "string"&&result!="byte[]"&&result!="object"&& item.IsNullable)
             {
                 result += "?";
             }

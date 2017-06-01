@@ -216,7 +216,7 @@ namespace SqlSugar
                             method = getOtherNull.MakeGenericMethod(bindType);
                         else
                             method = getConvertDouble; break;
-                    case "guid":
+                    case "Guid":
                         CheckType(guidThrow, objTypeName, transformedPropertyName, propertyName);
                         if (objTypeName != "guid")
                             method = getOtherNull.MakeGenericMethod(bindType);
