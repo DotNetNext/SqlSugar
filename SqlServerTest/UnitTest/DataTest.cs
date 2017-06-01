@@ -41,6 +41,7 @@ namespace OrmTest.UnitTest
             };
             var id = db.Insertable<DataTestInfo>(insertObject).ExecuteReutrnIdentity();
             var data = db.Queryable<DataTestInfo>().InSingle(id);
+            db.Updateable(data).ExecuteCommand();
         }
         public SqlSugarClient GetInstance()
         {

@@ -14,11 +14,33 @@ namespace SqlSugar
             this.Value = value;
             this.ParameterName = name;
         }
-        public SugarParameter(string name, object value,bool isOutput)
+        public SugarParameter(string name, object value, Type type)
         {
             this.Value = value;
             this.ParameterName = name;
-            if (isOutput) {
+            if (type == PubConst.ByteArrayType)
+            {
+                this.DbType = System.Data.DbType.Binary;
+            }
+            else if (type == PubConst.GuidType)
+            {
+                this.DbType = System.Data.DbType.Guid;
+            }
+            else if (type == PubConst.IntType)
+            {
+                this.DbType = System.Data.DbType.Int32;
+            }
+            else if (type == PubConst.DateType)
+            {
+                this.DbType = System.Data.DbType.Date;
+            }
+        }
+        public SugarParameter(string name, object value, bool isOutput)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            if (isOutput)
+            {
                 this.Direction = ParameterDirection.Output;
             }
         }
@@ -74,7 +96,7 @@ namespace SqlSugar
 
         public override DataRowVersion SourceVersion
         {
-            get;set;
+            get; set;
         }
 
         public override void ResetDbType()

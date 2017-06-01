@@ -14,6 +14,7 @@ namespace SqlSugar
         internal static Type GuidType = typeof(Guid);
         internal static Type DateType = typeof(DateTime);
         internal static Type ByteType = typeof(Byte);
+        internal static Type ByteArrayType = typeof(byte[]);
         internal static Type BoolType = typeof(bool);
         internal static Type ObjType = typeof(object);
         internal static Type Dob = typeof(double);

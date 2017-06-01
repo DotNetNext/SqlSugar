@@ -132,7 +132,7 @@ namespace SqlSugar
                 foreach (var item in this.InsertBuilder.DbColumnInfoList)
                 {
                     if (this.InsertBuilder.Parameters == null) this.InsertBuilder.Parameters = new List<SugarParameter>();
-                    var paramters = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value);
+                    var paramters = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value,item.PropertyType);
                     if (InsertBuilder.IsInsertNull && paramters.Value == null) {
                         continue;
                     }
@@ -155,6 +155,7 @@ namespace SqlSugar
                         Value = column.PropertyInfo.GetValue(item,null),
                         DbColumnName = GetDbColumnName(column.PropertyName),
                         PropertyName = column.PropertyName,
+                        PropertyType=PubMethod.GetUnderType(column.PropertyInfo),
                         TableId = i
                     };
                     insertItem.Add(columnInfo);
