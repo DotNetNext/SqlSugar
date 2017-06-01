@@ -49,7 +49,9 @@ namespace OrmTest.Demo
             {
                 insertObjs.Add(new Student() { Name = "name" + i });
             }
-            var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
+            var t10 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
+
+            var t11 = db.Insertable(insertObjs.ToArray()).ExecuteCommand();
         }
     }
 }

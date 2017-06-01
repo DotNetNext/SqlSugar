@@ -20,14 +20,14 @@ var getAll = db.Queryable<Student>().ToList();
 var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
 var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
 var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
-var getByFuns = db.Queryable<Student>().Where(it => NBORM.IsNullOrEmpty(it.Name)).ToList();
+var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
 var sum = db.Queryable<Student>().Sum(it=>it.Id);
 var isAny = db.Queryable<Student>().Where(it=>it.Id==-1).Any();
 var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
 var getListByRename = db.Queryable<School>().AS("Student").ToList();
 var group = db.Queryable<Student>().GroupBy(it => it.Id)
-.Having(it => NBORM.AggregateCount(it.Id) > 10)
-.Select(it =>new { id = NBORM.AggregateCount(it.Id) }).ToList();
+.Having(it => SqlFunc.AggregateCount(it.Id) > 10)
+.Select(it =>new { id = SqlFunc.AggregateCount(it.Id) }).ToList();
 ``` 
 
 ### 1.3 Page
@@ -81,41 +81,41 @@ JoinType.Left,st.SchoolId==sc.Id
 
 ### 1.5 SqlFunctions
 ```c
-var t1 = db.Queryable<Student>().Where(it => NBORM.ToLower(it.Name) == NBORM.ToLower("JACK")).ToList();
+var t1 = db.Queryable<Student>().Where(it => SqlFunc.ToLower(it.Name) == SqlFunc.ToLower("JACK")).ToList();
 //SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
 
 /***More Functions***/
-//NBORM.IsNullOrEmpty(object thisValue)
-//NBORM.ToLower(object thisValue) 
-//NBORM.string ToUpper(object thisValue) 
-//NBORM.string Trim(object thisValue) 
-//NBORM.bool Contains(string thisValue, string parameterValue) 
-//NBORM.ContainsArray(object[] thisValue, string parameterValue) 
-//NBORM.StartsWith(object thisValue, string parameterValue) 
-//NBORM.EndsWith(object thisValue, string parameterValue)
-//NBORM.Equals(object thisValue, object parameterValue) 
-//NBORM.DateIsSame(DateTime date1, DateTime date2)
-//NBORM.DateIsSame(DateTime date1, DateTime date2, DateType dataType) 
-//NBORM.DateAdd(DateTime date, int addValue, DateType millisecond) 
-//NBORM.DateAdd(DateTime date, int addValue) 
-//NBORM.DateValue(DateTime date, DateType dataType) 
-//NBORM.Between(object value, object start, object end) 
-//NBORM.ToInt32(object value) 
-//NBORM.ToInt64(object value)
-//NBORM.ToDate(object value) 
-//NBORM.ToString(object value) 
-//NBORM.ToDecimal(object value) 
-//NBORM.ToGuid(object value) 
-//NBORM.ToDouble(object value) 
-//NBORM.ToBool(object value) 
-//NBORM.Substring(object value, int index, int length)
-//NBORM.Replace(object value, string oldChar, string newChar)
-//NBORM.Length(object value) { throw new NotImplementedException(); }
-//NBORM.AggregateSum(object thisValue) 
-//NBORM.AggregateAvg<TResult>(TResult thisValue)
-//NBORM.AggregateMin(object thisValue) 
-//NBORM.AggregateMax(object thisValue) 
-//NBORM.AggregateCount(object thisValue) 
+//SqlFunc.IsNullOrEmpty(object thisValue)
+//SqlFunc.ToLower(object thisValue) 
+//SqlFunc.string ToUpper(object thisValue) 
+//SqlFunc.string Trim(object thisValue) 
+//SqlFunc.bool Contains(string thisValue, string parameterValue) 
+//SqlFunc.ContainsArray(object[] thisValue, string parameterValue) 
+//SqlFunc.StartsWith(object thisValue, string parameterValue) 
+//SqlFunc.EndsWith(object thisValue, string parameterValue)
+//SqlFunc.Equals(object thisValue, object parameterValue) 
+//SqlFunc.DateIsSame(DateTime date1, DateTime date2)
+//SqlFunc.DateIsSame(DateTime date1, DateTime date2, DateType dataType) 
+//SqlFunc.DateAdd(DateTime date, int addValue, DateType millisecond) 
+//SqlFunc.DateAdd(DateTime date, int addValue) 
+//SqlFunc.DateValue(DateTime date, DateType dataType) 
+//SqlFunc.Between(object value, object start, object end) 
+//SqlFunc.ToInt32(object value) 
+//SqlFunc.ToInt64(object value)
+//SqlFunc.ToDate(object value) 
+//SqlFunc.ToString(object value) 
+//SqlFunc.ToDecimal(object value) 
+//SqlFunc.ToGuid(object value) 
+//SqlFunc.ToDouble(object value) 
+//SqlFunc.ToBool(object value) 
+//SqlFunc.Substring(object value, int index, int length)
+//SqlFunc.Replace(object value, string oldChar, string newChar)
+//SqlFunc.Length(object value) { throw new NotImplementedException(); }
+//SqlFunc.AggregateSum(object thisValue) 
+//SqlFunc.AggregateAvg<TResult>(TResult thisValue)
+//SqlFunc.AggregateMin(object thisValue) 
+//SqlFunc.AggregateMax(object thisValue) 
+//SqlFunc.AggregateCount(object thisValue) 
 ```
 
 ### 1.6 Select
