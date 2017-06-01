@@ -108,7 +108,7 @@ namespace SqlSugar
                 }
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass())
+                    if (propertyInfo.PropertyType.IsClass()&& propertyInfo.PropertyType!=PubConst.ByteArrayType)
                     {
                         BindClass(generator, result, propertyInfo);
                     }
