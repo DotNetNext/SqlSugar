@@ -54,9 +54,11 @@
     <Compile Include="Demos\Insert.cs" />
     <Compile Include="Demos\Query.cs" />
     <Compile Include="Demos\Update.cs" />
+    <Compile Include="Models\DataTestInfo.cs" />
     <Compile Include="Models\ViewModelStudent.cs" />
     <Compile Include="PerformanceTesting\PerformanceBase.cs" />
     <Compile Include="PerformanceTesting\SqlSugarPerformance.cs" />
+    <Compile Include="UnitTest\DataTest.cs" />
     <Compile Include="UnitTest\Delete.cs" />
     <Compile Include="UnitTest\UnitTestBase.cs" />
     <Compile Include="UnitTest\ExpressionTest\Field.cs" />

@@ -72,7 +72,7 @@ namespace SqlSugar
 
         public virtual bool TruncateTable(string tableName)
         {
-            this.Context.Ado.ExecuteCommand(this.TruncateTableSql);
+            this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql,tableName));
             return true;
         }
 
