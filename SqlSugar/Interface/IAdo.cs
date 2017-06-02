@@ -34,7 +34,7 @@ namespace SqlSugar
         IDbCommand GetCommand(string sql, SugarParameter[] parameters);
         DataTable GetDataTable(string sql, object parameters);
         DataTable GetDataTable(string sql, params SugarParameter[] parameters);
-        DataTable GetDataTable(string sql, List<SugarParameter>[] parameters);
+        DataTable GetDataTable(string sql, List<SugarParameter> parameters);
         DataSet GetDataSetAll(string sql, object parameters);
         DataSet GetDataSetAll(string sql, params SugarParameter[] parameters);
         DataSet GetDataSetAll(string sql, List<SugarParameter> parameters);

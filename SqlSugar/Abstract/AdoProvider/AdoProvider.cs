@@ -428,7 +428,7 @@ namespace SqlSugar
         {
             return GetDataTable(sql, this.GetParameters(pars));
         }
-        public virtual DataTable GetDataTable(string sql, List<SugarParameter>[] pars)
+        public virtual DataTable GetDataTable(string sql, List<SugarParameter> pars)
         {
             if (pars == null)
             {

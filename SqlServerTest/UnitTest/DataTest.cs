@@ -31,7 +31,6 @@ namespace OrmTest.UnitTest
                 Guid2 = null,
                 Image1 = new byte[] { 1, 2 },
                 Image2 = new byte[] { 2, 3 },
-                Int1 = 5,
                 Int2 = 6,
                 Money1 = 7,
                 Money2 = 8,
@@ -41,7 +40,33 @@ namespace OrmTest.UnitTest
             };
             var id = db.Insertable<DataTestInfo>(insertObject).ExecuteReutrnIdentity();
             var data = db.Queryable<DataTestInfo>().InSingle(id);
+            if (
+                insertObject.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") != data.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") ||
+                insertObject.Decimal1 != data.Decimal1 ||
+                insertObject.Float1 != data.Float1 ||
+                insertObject.Float2 != data.Float2 ||
+                insertObject.Int2 != data.Int2 ||
+                insertObject.Money1 != data.Money1 ||
+               string.Join(",", insertObject.Varbinary1) != string.Join(",", data.Varbinary1) ||
+                insertObject.String != data.String)
+            {
+                throw new Exception("DataTest Error");
+            }
+            data.Float1= data.Float1+1;
             db.Updateable(data).ExecuteCommand();
+            data = db.Queryable<DataTestInfo>().InSingle(id);
+            if (
+                insertObject.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") != data.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") ||
+                insertObject.Decimal1 != data.Decimal1 ||
+                (insertObject.Float1+1) != data.Float1 ||
+                insertObject.Float2 != data.Float2 ||
+                insertObject.Int2 != data.Int2 ||
+                insertObject.Money1 != data.Money1 ||
+            string.Join(",", insertObject.Varbinary1) != string.Join(",", data.Varbinary1) ||
+                insertObject.String != data.String)
+            {
+                throw new Exception("DataTest Error");
+            }
         }
         public SqlSugarClient GetInstance()
         {
