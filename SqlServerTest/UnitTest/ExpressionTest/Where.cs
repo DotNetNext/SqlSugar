@@ -30,6 +30,8 @@ namespace OrmTest.UnitTest
                 whereSingle7(new Student() { Id = 1 });
                 whereSingle8(new Student() { Id = 1 });
                 whereSingle9(new Student() { Id = 1 });
+                whereSingle10();
+                whereSingle11();
                 WhereMultiple1();
                 WhereMultiple2();
           
@@ -176,6 +178,34 @@ namespace OrmTest.UnitTest
             {
                 new SugarParameter("@Name0",null)
             }, "whereSingle9");
+        }
+
+
+        private void whereSingle10()
+        {
+            Expression<Func<Student, bool>> exp = it => true;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( 1 = 1 )", new List<SugarParameter>()
+            {
+              
+            }, "whereSingle10");
+        }
+
+
+        private void whereSingle11()
+        {
+            Expression<Func<Student, bool>> exp = it => !true;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( 1 = 2 )", new List<SugarParameter>()
+            {
+
+            }, "whereSingle11");
         }
     }
 
