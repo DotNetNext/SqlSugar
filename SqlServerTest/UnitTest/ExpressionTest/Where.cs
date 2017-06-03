@@ -167,14 +167,15 @@ namespace OrmTest.UnitTest
 
         private void whereSingle9(Student st)
         {
-            //Expression<Func<Student, bool>> exp = it => it.Name == st.Name;
-            //ExpressionContext expContext = new ExpressionContext();
-            //expContext.Resolve(exp, ResolveExpressType.WhereSingle);
-            //var value = expContext.Result.GetString();
-            //var pars = expContext.Parameters;
-            //base.Check(value, pars, "( [Name] IS NULL )", new List<SugarParameter>() {
-
-            //}, "whereSingle9");
+            Expression<Func<Student, bool>> exp = it => it.Name == st.Name;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Name] = @Name0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Name0",null)
+            }, "whereSingle9");
         }
     }
 
