@@ -1,0 +1,36 @@
+﻿using OrmTest.Demo;
+using OrmTest.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace OrmTest.Demo
+{
+    /// <summary>
+    /// Secure string operations
+    /// </summary>
+    public class JoinSql : DemoBase
+    {
+        public static void Init()
+        {
+            var db = GetInstance();
+            //propertyName is valid
+            string propertyName = "Id";
+            string dbColumnName = db.EntityProvider.GetDbColumnName<Student>(propertyName);
+            var list = db.Queryable<Student>().OrderBy(dbColumnName).ToList();
+
+            //propertyName is invalid
+            try
+            {
+                propertyName = "Id'";
+                dbColumnName = db.EntityProvider.GetDbColumnName<Student>(propertyName);
+                var list2 = db.Queryable<Student>().OrderBy(dbColumnName).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+    }
+}
