@@ -14,6 +14,19 @@ namespace SqlSugar
             return string.Format("( {0}='' OR {0} IS NULL )", parameter.MemberName);
         }
 
+        public virtual string HasValue(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("( {0}<>'' AND {0} IS NOT NULL )", parameter.MemberName);
+        }
+
+        public virtual string HasNumber(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("( {0}>0 AND {0} IS NOT NULL )", parameter.MemberName);
+        }
+
+
         public virtual string ToUpper(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

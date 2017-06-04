@@ -22,6 +22,8 @@ namespace OrmTest.UnitTest
             for (int i = 0; i < base.Count; i++)
             {
                 #region StringIsNullOrEmpty
+                HasValue();
+                HasNumber();
                 StringIsNullOrEmpty();
                 StringIsNullOrEmpty2();
                 StringIsNullOrEmpty3();
@@ -463,6 +465,31 @@ namespace OrmTest.UnitTest
             }, "StringIsNullOrEmpty5 error");
         }
         #endregion
+
+        private void HasValue()
+        {
+            Expression<Func<Student, bool>> exp = it => SqlFunc.HasValue(it.Name);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Name]<>'' AND [Name] IS NOT NULL )", new List<SugarParameter>() {
+              
+            }, "HasValue error");
+        }
+
+        private void HasNumber()
+        {
+            Expression<Func<Student, bool>> exp = it => SqlFunc.HasNumber(it.Id);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Id]>0 AND [Id] IS NOT NULL )", new List<SugarParameter>() {
+
+
+            }, "HasNumber error");
+        }
     }
 }
 

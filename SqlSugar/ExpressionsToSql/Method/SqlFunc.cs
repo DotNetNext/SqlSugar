@@ -8,6 +8,8 @@ namespace SqlSugar
 {
     public class SqlFunc
     {
+        public static bool HasNumber(object thisValue) { throw new NotImplementedException(); }
+        public static bool HasValue(object thisValue){ throw new NotImplementedException(); }
         public static bool IsNullOrEmpty(object thisValue) { throw new NotImplementedException(); }
         public static string ToLower(object thisValue) { throw new NotImplementedException(); }
         public static string ToUpper(object thisValue) { throw new NotImplementedException(); }

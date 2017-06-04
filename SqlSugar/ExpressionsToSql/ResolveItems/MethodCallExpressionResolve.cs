@@ -111,6 +111,10 @@ namespace SqlSugar
         {
             switch (name)
             {
+                case "HasNumber":
+                    return this.Context.DbMehtods.HasNumber(model);
+                case "HasValue":
+                    return this.Context.DbMehtods.HasValue(model);
                 case "IsNullOrEmpty":
                     return this.Context.DbMehtods.IsNullOrEmpty(model);
                 case "ToLower":

@@ -11,6 +11,8 @@ namespace SqlSugar
 {
     public interface IDbMethods
     {
+        string HasNumber(MethodCallExpressionModel model);
+        string HasValue(MethodCallExpressionModel model);
         string IsNullOrEmpty(MethodCallExpressionModel model);
         string ToLower(MethodCallExpressionModel model);
         string ToUpper(MethodCallExpressionModel model);
