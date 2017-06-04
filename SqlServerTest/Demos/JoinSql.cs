@@ -14,6 +14,21 @@ namespace OrmTest.Demo
     {
         public static void Init()
         {
+            Where();
+            OrderBy();
+        }
+
+        private static void Where()
+        {
+            var db = GetInstance();
+            //Parameterized processing
+            string value = "1;drop table Student";
+            var list = db.Queryable<Student>().Where("id=@id",new { id = value }).ToList();
+            // Nothing happened
+        }
+
+        private static void OrderBy()
+        {
             var db = GetInstance();
             //propertyName is valid
             string propertyName = "Id";
