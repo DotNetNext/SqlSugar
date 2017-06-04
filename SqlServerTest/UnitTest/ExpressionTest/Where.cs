@@ -32,6 +32,7 @@ namespace OrmTest.UnitTest
                 whereSingle9(new Student() { Id = 1 });
                 whereSingle10();
                 whereSingle11();
+                whereSingle12();
                 WhereMultiple1();
                 WhereMultiple2();
           
@@ -206,6 +207,19 @@ namespace OrmTest.UnitTest
             {
 
             }, "whereSingle11");
+        }
+
+        private void whereSingle12()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool1==true;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool1] = @Bool10 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Bool10",true)
+            }, "whereSingle12");
         }
     }
 
