@@ -28,7 +28,7 @@ namespace SqlSugar
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters==null?null:DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
-            return Db.GetInt(sql, paramters);
+            return Db.ExecuteCommand(sql, paramters);
         }
         public IDeleteable<T> AS(string tableName)
         {
