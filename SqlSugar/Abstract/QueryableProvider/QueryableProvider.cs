@@ -412,7 +412,7 @@ namespace SqlSugar
             if (pageIndex == 0)
                 pageIndex = 1;
             QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            QueryBuilder.Take = pageSize;
+            QueryBuilder.Take = pageSize * pageIndex;
             return ToDataTable();
         }
         public DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
@@ -430,7 +430,7 @@ namespace SqlSugar
             if (pageIndex == 0)
                 pageIndex = 1;
             QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            QueryBuilder.Take = pageSize;
+            QueryBuilder.Take = pageSize * pageIndex;
             return ToList();
         }
         public List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
