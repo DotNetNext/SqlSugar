@@ -20,12 +20,15 @@ namespace SqlSugar
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
                 case ResolveExpressType.Update:
+                    var nodeType = expression.NodeType;
                     base.Expression = expression.Operand;
-                    if (base.Expression is BinaryExpression||parameter.BaseExpression is BinaryExpression)
+                    if (base.Expression is BinaryExpression || parameter.BaseExpression is BinaryExpression)
                     {
                         BaseParameter.ChildExpression = base.Expression;
                         parameter.CommonTempData = CommonTempDataType.Default;
                         base.Start();
+                        if (nodeType == ExpressionType.Not)
+                            AppendNot(parameter.CommonTempData);
                         parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
                         parameter.BaseParameter.ChildExpression = base.Expression;
                         parameter.CommonTempData = null;
@@ -34,6 +37,19 @@ namespace SqlSugar
                     {
                         BaseParameter.ChildExpression = base.Expression;
                         parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+                        if (nodeType == ExpressionType.Not)
+                            AppendNot(parameter.CommonTempData);
+                        base.Start();
+                        parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
+                        parameter.BaseParameter.ChildExpression = base.Expression;
+                        parameter.CommonTempData = null;
+                    }
+                    else
+                    {
+                        BaseParameter.ChildExpression = base.Expression;
+                        parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+                        if (nodeType == ExpressionType.Not)
+                            AppendNot(parameter.CommonTempData);
                         base.Start();
                         parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
                         parameter.BaseParameter.ChildExpression = base.Expression;

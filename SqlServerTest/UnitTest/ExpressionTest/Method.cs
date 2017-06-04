@@ -26,6 +26,7 @@ namespace OrmTest.UnitTest
                 StringIsNullOrEmpty2();
                 StringIsNullOrEmpty3();
                 StringIsNullOrEmpty4();
+                StringIsNullOrEmpty5();
                 #endregion
                 ToUpper();
                 ToLower();
@@ -448,7 +449,19 @@ namespace OrmTest.UnitTest
                 new SugarParameter("@MethodConst1","xx"),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty4 error");
-        } 
+        }
+        private void StringIsNullOrEmpty5()
+        {
+            WhereConst.name = "xx";
+            Expression<Func<Student, bool>> exp =it=>!SqlFunc.IsNullOrEmpty(WhereConst.name);;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "NOT( @MethodConst0='' OR @MethodConst0 IS NULL )", new List<SugarParameter>() {
+               new SugarParameter("@MethodConst0","xx")
+            }, "StringIsNullOrEmpty5 error");
+        }
         #endregion
     }
 }

@@ -180,5 +180,9 @@ namespace SqlSugar
                 this.Context.Result.Append(" " + ExpressionConst.Format1 + parameter.BaseParameter.Index);
             }
         }
+        protected void AppendNot(object Value)
+        {
+            this.Context.Result.Append("NOT");
+        }
     }
 }
