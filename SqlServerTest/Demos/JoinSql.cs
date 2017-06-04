@@ -22,9 +22,9 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             //Parameterized processing
-            string value = "1;drop table Student";
-            var list = db.Queryable<Student>().Where("id=@id",new { id = value }).ToList();
-            // Nothing happened
+            string value = "'jack';drop table Student";
+            var list = db.Queryable<Student>().Where("name=@name", new { name = value }).ToList();
+            //Nothing happened
         }
 
         private static void OrderBy()
