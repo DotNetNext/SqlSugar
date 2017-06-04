@@ -24,6 +24,7 @@ namespace OrmTest.Demo
 
             //Only  update  Name 
             var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
+            var t3_1 = db.Updateable(updateObj).UpdateColumns(it => it=="Name").ExecuteCommand();
 
 
             //Ignore  Name and TestId

@@ -77,7 +77,7 @@ namespace SqlSugar
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
-            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
+            var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Array).GetResultArray();
             List<string> primaryKeys = GetPrimaryKeys();
             foreach (var item in this.UpdateBuilder.DbColumnInfoList)
             {
@@ -87,7 +87,21 @@ namespace SqlSugar
                     item.IsPrimarykey = true;
                 }
             }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.PropertyName) || it.IsPrimarykey == true).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumns.Contains(it.PropertyName) || it.IsPrimarykey || it.IsIdentity).ToList();
+            return this;
+        }
+
+        public IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod) {
+            List<string> primaryKeys = GetPrimaryKeys();
+            foreach (var item in this.UpdateBuilder.DbColumnInfoList)
+            {
+                var mappingInfo = primaryKeys.SingleOrDefault(i => item.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+                if (mappingInfo != null && mappingInfo.Any())
+                {
+                    item.IsPrimarykey = true;
+                }
+            }
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumMethod(it.PropertyName) || it.IsPrimarykey ||it.IsIdentity).ToList();
             return this;
         }
         public IUpdateable<T> UpdateColumns(Expression<Func<T, T>> columns)
