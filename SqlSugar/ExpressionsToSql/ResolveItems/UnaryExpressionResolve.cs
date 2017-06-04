@@ -22,43 +22,47 @@ namespace SqlSugar
                 case ResolveExpressType.Update:
                     var nodeType = expression.NodeType;
                     base.Expression = expression.Operand;
+                    var isMember = expression.Operand is MemberExpression;
                     if (base.Expression is BinaryExpression || parameter.BaseExpression is BinaryExpression)
                     {
-                        BaseParameter.ChildExpression = base.Expression;
-                        parameter.CommonTempData = CommonTempDataType.Default;
-                        base.Start();
-                        if (nodeType == ExpressionType.Not)
-                            AppendNot(parameter.CommonTempData);
-                        parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
-                        parameter.BaseParameter.ChildExpression = base.Expression;
-                        parameter.CommonTempData = null;
+                        Default(parameter, nodeType);
                     }
-                    else if (base.Expression is MemberExpression || base.Expression is ConstantExpression)
+                    else if (base.Expression is MemberExpression || base.Expression is ConstantExpression||isMember)
                     {
-                        BaseParameter.ChildExpression = base.Expression;
-                        parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
-                        if (nodeType == ExpressionType.Not)
-                            AppendNot(parameter.CommonTempData);
-                        base.Start();
-                        parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
-                        parameter.BaseParameter.ChildExpression = base.Expression;
-                        parameter.CommonTempData = null;
+                        ChildNodeSet(parameter, nodeType);
                     }
                     else
                     {
-                        BaseParameter.ChildExpression = base.Expression;
-                        parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
-                        if (nodeType == ExpressionType.Not)
-                            AppendNot(parameter.CommonTempData);
-                        base.Start();
-                        parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
-                        parameter.BaseParameter.ChildExpression = base.Expression;
-                        parameter.CommonTempData = null;
+                        Default(parameter, nodeType);
                     }
                     break;
                 default:
                     break;
             }
+        }
+
+        private void ChildNodeSet(ExpressionParameter parameter, ExpressionType nodeType)
+        {
+            BaseParameter.ChildExpression = base.Expression;
+            parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+            if (nodeType == ExpressionType.Not)
+                AppendNot(parameter.CommonTempData);
+            base.Start();
+            parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
+            parameter.BaseParameter.ChildExpression = base.Expression;
+            parameter.CommonTempData = null;
+        }
+
+        private void Default(ExpressionParameter parameter, ExpressionType nodeType)
+        {
+            BaseParameter.ChildExpression = base.Expression;
+            parameter.CommonTempData = CommonTempDataType.Default;
+            if (nodeType == ExpressionType.Not)
+                AppendNot(parameter.CommonTempData);
+            base.Start();
+            parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
+            parameter.BaseParameter.ChildExpression = base.Expression;
+            parameter.CommonTempData = null;
         }
     }
 }

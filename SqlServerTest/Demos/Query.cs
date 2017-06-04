@@ -24,6 +24,7 @@ namespace OrmTest.Demo
             Sqlable();
             Tran();
             StoredProcedure();
+            Enum();
         }
 
         private static void StoredProcedure()
@@ -55,7 +56,6 @@ namespace OrmTest.Demo
                 return dbResult;
             });
         }
-
         private static void Tran()
         {
             var db = GetInstance();
@@ -89,7 +89,6 @@ namespace OrmTest.Demo
                 throw;
             }
         }
-
         private static void Group()
         {
             var db = GetInstance();
@@ -107,7 +106,6 @@ namespace OrmTest.Demo
             //SqlFunc.AggregateMax(object thisValue) 
             //SqlFunc.AggregateCount(object thisValue) 
         }
-
         private static void Ado()
         {
             var db = GetInstance();
@@ -117,7 +115,6 @@ namespace OrmTest.Demo
             //more
             //db.Ado.GetXXX...
         }
-
         public static void Easy()
         {
             var db = GetInstance();
@@ -142,7 +139,6 @@ namespace OrmTest.Demo
 
             var getTodayList = db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(it.CreateTime, DateTime.Now)).ToList();
         }
-
         public static void Page()
         {
             var db = GetInstance();
@@ -270,7 +266,6 @@ namespace OrmTest.Demo
          .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
          .Select((st, sc) => new { Name = st.Name, SchoolId = sc.Id }).ToList();
         }
-
         private static void Sqlable()
         {
             var db = GetInstance();
@@ -280,6 +275,11 @@ namespace OrmTest.Demo
                           .AddParameters(new { id = 1 })
                           .Select("st.*").ToList();
             //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
+        }
+        private static void Enum()
+        {
+            var db = GetInstance();
+           // var list = db.Queryable<StudentEnum>().AS("Student").Where(it=>it.SchoolId== SchoolEnum.HarvardUniversity).ToList();
         }
     }
 }

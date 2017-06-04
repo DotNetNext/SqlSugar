@@ -28,5 +28,12 @@ namespace SqlSugar
         {
             this.AppendType = ExpressionResultAppendType.AppendTempDate;
         }
+        public Expression OppsiteExpression
+        {
+            get
+            {
+                return this.IsLeft == true ? this.BaseParameter.RightExpression : this.BaseParameter.LeftExpression;
+            }
+        }
     }
 }

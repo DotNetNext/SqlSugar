@@ -50,7 +50,7 @@ namespace SqlSugar
         private static readonly MethodInfo getInt32 = typeof(IDataRecord).GetMethod("GetInt32", new Type[] { typeof(int) });
         private static readonly MethodInfo getInt64 = typeof(IDataRecord).GetMethod("GetInt64", new Type[] { typeof(int) });
         private static readonly MethodInfo getString = typeof(IDataRecord).GetMethod("GetString", new Type[] { typeof(int) });
-        private static readonly MethodInfo getEnum = typeof(IDataRecordExtensions).GetMethod("getEnum");
+        private static readonly MethodInfo getEnum = typeof(IDataRecordExtensions).GetMethod("GetEnum");
         private static readonly MethodInfo getConvertFloat = typeof(IDataRecordExtensions).GetMethod("GetConvertFloat");
         private static readonly MethodInfo getConvertBoolean = typeof(IDataRecordExtensions).GetMethod("GetConvertBoolean");
         private static readonly MethodInfo getConvertByte = typeof(IDataRecordExtensions).GetMethod("GetConvertByte");
@@ -287,7 +287,7 @@ namespace SqlSugar
                     case "byte":
                         method = getByte; break;
                     case "enum":
-                        method = getEnum; break;
+                        method = getEnum.MakeGenericMethod(bindType); break;
                     case "short":
                         CheckType(shortThrow, objTypeName, transformedPropertyName, propertyName);
                         var isNotShort = objTypeName != "int16" && objTypeName != "short";
