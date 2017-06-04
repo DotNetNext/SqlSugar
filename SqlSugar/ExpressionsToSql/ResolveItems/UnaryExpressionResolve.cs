@@ -23,17 +23,18 @@ namespace SqlSugar
                     var nodeType = expression.NodeType;
                     base.Expression = expression.Operand;
                     var isMember = expression.Operand is MemberExpression;
+                    var isConst = expression.Operand is ConstantExpression;
                     if (base.Expression is BinaryExpression || parameter.BaseExpression is BinaryExpression)
                     {
-                        Default(parameter, nodeType);
+                        Append(parameter, nodeType);
                     }
-                    else if (base.Expression is MemberExpression || base.Expression is ConstantExpression||isMember)
+                    else if (isMember || isConst)
                     {
-                        ChildNodeSet(parameter, nodeType);
+                        Result(parameter, nodeType);
                     }
                     else
                     {
-                        Default(parameter, nodeType);
+                        Append(parameter, nodeType);
                     }
                     break;
                 default:
@@ -41,7 +42,7 @@ namespace SqlSugar
             }
         }
 
-        private void ChildNodeSet(ExpressionParameter parameter, ExpressionType nodeType)
+        private void Result(ExpressionParameter parameter, ExpressionType nodeType)
         {
             BaseParameter.ChildExpression = base.Expression;
             parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
@@ -53,7 +54,7 @@ namespace SqlSugar
             parameter.CommonTempData = null;
         }
 
-        private void Default(ExpressionParameter parameter, ExpressionType nodeType)
+        private void Append(ExpressionParameter parameter, ExpressionType nodeType)
         {
             BaseParameter.ChildExpression = base.Expression;
             parameter.CommonTempData = CommonTempDataType.Default;

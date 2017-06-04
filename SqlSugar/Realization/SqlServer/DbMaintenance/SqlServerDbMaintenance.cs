@@ -47,17 +47,16 @@ namespace SqlSugar
 	                       columnproperty(syscolumns.id,syscolumns.name,'IsIdentity')as IsIdentity,
                            (CASE
                                 WHEN EXISTS
-                                       (SELECT 1
-                                        FROM sysobjects
-                                        WHERE xtype= 'pk'
-                                          AND name IN
-                                            (SELECT name
-                                             FROM sysindexes
-                                             WHERE indid IN
-                                                 (SELECT indid
-                                                  FROM sysindexkeys
-                                                  WHERE id = syscolumns.id
-                                                    AND colid=syscolumns.colid ))) THEN 1
+                                       ( 
+                                             	select 1
+												from sysindexes i
+												join sysindexkeys k on i.id = k.id and i.indid = k.indid
+												join sysobjects o on i.id = o.id
+												join syscolumns c on i.id=c.id and k.colid = c.colid
+												where o.xtype = 'U' 
+												and exists(select 1 from sysobjects where xtype = 'PK' and name = i.name) 
+												and o.name=sysobjects.name and c.name=syscolumns.name
+                                       ) THEN 1
                                 ELSE 0
                             END) AS IsPrimaryKey
                     FROM syscolumns
