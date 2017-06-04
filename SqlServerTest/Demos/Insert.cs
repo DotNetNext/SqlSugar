@@ -24,8 +24,9 @@ namespace OrmTest.Demo
             var t3 = db.Insertable(insertObj).ExecuteReutrnIdentity();
 
 
-            //Only  insert  Name 
+            //Only  insert  Name and SchoolId
             var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.SchoolId }).ExecuteReutrnIdentity();
+            var t4_1 = db.Insertable(insertObj).InsertColumns(it => it=="Name"||it== "SchoolId").ExecuteReutrnIdentity();
 
 
             //Ignore TestId
