@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             var baseParameter = parameter.BaseParameter;
             var isLeft = parameter.IsLeft;
-            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.ChildNodeSet);
+            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var expression = base.Expression as MemberExpression;
             if (expression.Expression != null&& expression.Expression.NodeType!= ExpressionType.Parameter) {
                 var value= ExpressionTool.GetMemberValue(expression.Member, expression);
@@ -95,7 +95,7 @@ namespace SqlSugar
 
         private string AppendMember(ExpressionParameter parameter, bool? isLeft, string fieldName)
         {
-            if (parameter.BaseExpression is BinaryExpression)
+            if (parameter.BaseExpression is BinaryExpression|| (parameter.BaseParameter.CommonTempData!=null&&parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Append)))
             {
                 fieldName = string.Format(" {0} ", fieldName);
                 if (isLeft == true)

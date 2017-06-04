@@ -279,7 +279,7 @@ namespace OrmTest.Demo
         private static void Enum()
         {
             var db = GetInstance();
-           // var list = db.Queryable<StudentEnum>().AS("Student").Where(it=>it.SchoolId== SchoolEnum.HarvardUniversity).ToList();
+            var list = db.Queryable<StudentEnum>().AS("Student").Where(it=>it.SchoolId== SchoolEnum.HarvardUniversity).ToList();
         }
     }
 }

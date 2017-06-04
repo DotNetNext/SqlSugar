@@ -45,7 +45,7 @@ namespace SqlSugar
         private void Result(ExpressionParameter parameter, ExpressionType nodeType)
         {
             BaseParameter.ChildExpression = base.Expression;
-            parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+            parameter.CommonTempData = CommonTempDataType.Result;
             if (nodeType == ExpressionType.Not)
                 AppendNot(parameter.CommonTempData);
             base.Start();
@@ -57,7 +57,8 @@ namespace SqlSugar
         private void Append(ExpressionParameter parameter, ExpressionType nodeType)
         {
             BaseParameter.ChildExpression = base.Expression;
-            parameter.CommonTempData = CommonTempDataType.Default;
+            this.IsLeft = parameter.IsLeft;
+            parameter.CommonTempData = CommonTempDataType.Append;
             if (nodeType == ExpressionType.Not)
                 AppendNot(parameter.CommonTempData);
             base.Start();

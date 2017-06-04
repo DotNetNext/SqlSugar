@@ -9,7 +9,8 @@ namespace SqlSugar
     public enum CommonTempDataType
     {
         Default = 0,
-        ChildNodeSet = 1,
-        Simple = 2
+        Result = 1,
+        Append=2,
+        Simple = 3
     }
 }

@@ -57,6 +57,7 @@ namespace SqlSugar
                 }
                 else {
                     base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, operatorValue);
+                    base.Context.Result.Replace(ExpressionConst.Format1 +(parameter.Index+1), operatorValue);
                 }
                 base.Context.Result.Append(ExpressionConst.Format4);
                 if (parameter.BaseExpression is BinaryExpression && parameter.IsLeft == true)

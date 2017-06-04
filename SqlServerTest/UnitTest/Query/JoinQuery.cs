@@ -48,7 +48,7 @@ namespace OrmTest.UnitTest
                 var join1 = db.Queryable<Student, School>((st, sc) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id
                 }).Where(st => st.Id > 0).Select<Student>("*").ToSql();
-                base.Check(@"SELECT * FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] =[sc].[Id])   WHERE ( [st].[ID] > @Id0 ) ",
+                base.Check(@"SELECT * FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
                     new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
                     }, join1.Key, join1.Value, "join 1 Error");
@@ -61,10 +61,10 @@ namespace OrmTest.UnitTest
                 var join2 = db.Queryable<Student, School>((st, sc) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id
                 }).Where(st => st.Id > 2).Select<Student>("*").ToSql();
-                base.Check(@"SELECT * FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] =[sc].[Id])   WHERE ( [st].[ID] > @Id0 ) ",
+                base.Check(@"SELECT * FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
     new List<SugarParameter>() {
                         new SugarParameter("@Id0",2)
-    }, join2.Key, join2.Value, "join 1 Error");
+    }, join2.Key, join2.Value, "join 2 Error");
             }
         }
 

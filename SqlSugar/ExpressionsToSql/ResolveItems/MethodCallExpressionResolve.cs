@@ -39,7 +39,7 @@ namespace SqlSugar
         {
             foreach (var item in args)
             {
-                parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+                parameter.CommonTempData = CommonTempDataType.Result;
                 base.Expression = item;
                 base.Start();
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
@@ -72,7 +72,7 @@ namespace SqlSugar
         {
             foreach (var item in args)
             {
-                parameter.CommonTempData = CommonTempDataType.ChildNodeSet;
+                parameter.CommonTempData = CommonTempDataType.Result;
                 base.Expression = item;
                 base.Start();
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
