@@ -42,5 +42,10 @@ namespace SqlSugar
         {
             throw new NotImplementedException();
         }
+
+        public ICodeFirst Where(Func<string, bool> filterMethod)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

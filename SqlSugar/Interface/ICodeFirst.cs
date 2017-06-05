@@ -10,6 +10,7 @@ namespace SqlSugar
         ICodeFirst IsBackupTable(bool isCreateTable = false);
         ICodeFirst IsBackupData(bool isCreateTable = true);
         ICodeFirst IsDeleteNoExistColumn(bool isDeleteNoExistColumn = true);
+        ICodeFirst Where(Func<string, bool> filterMethod);
         void InitTables(string entitiesNamespace);
         void InitTables(string [] entitiesNamespaces);
         void InitTables(Type [] entityTypes);
