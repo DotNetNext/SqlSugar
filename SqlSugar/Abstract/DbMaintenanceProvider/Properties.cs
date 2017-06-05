@@ -21,6 +21,7 @@ namespace SqlSugar
         protected abstract string AddColumnToTableSql { get; }
         protected abstract string BackupDataBaseSql { get; }
         protected abstract string CreateTableSql { get; }
+        protected abstract string BackupTableSql { get; }
         protected abstract string TruncateTableSql { get; } 
         #endregion
     }

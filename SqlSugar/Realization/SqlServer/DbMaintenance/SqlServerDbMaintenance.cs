@@ -86,7 +86,7 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return @"USE master;BACKUP DATABASE {0} TO disk = '{1}'";
             }
         }
         protected override string CreateTableSql
@@ -103,7 +103,14 @@ namespace SqlSugar
             {
                 return "TRUNCATE TABLE {0}";
             }
-        } 
+        }
+        protected override string BackupTableSql
+        {
+            get
+            {
+                return "SELECT {0} *　INTO {1} FROM  {2}";
+            }
+        }
         #endregion
     }
 }
