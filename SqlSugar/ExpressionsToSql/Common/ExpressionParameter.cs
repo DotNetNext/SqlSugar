@@ -15,6 +15,7 @@ namespace SqlSugar
         public Expression LeftExpression { get; set; }
         public Expression RightExpression { get; set; }
         public Expression CurrentExpression { get; set; }
+        public string OperatorValue { get; set; }
         public bool? IsLeft { get; set; }
         public int Index { get; set; }
         public bool ValueIsNull { get; set; }

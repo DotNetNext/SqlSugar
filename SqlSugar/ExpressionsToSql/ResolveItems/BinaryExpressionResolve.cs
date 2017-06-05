@@ -18,7 +18,8 @@ namespace SqlSugar
             else
             {
                 var expression = this.Expression as BinaryExpression;
-                var operatorValue = ExpressionTool.GetOperator(expression.NodeType);
+                var operatorValue =parameter.OperatorValue=ExpressionTool.GetOperator(expression.NodeType);
+                var isEqual = expression.NodeType==ExpressionType.Equal;
                 var isComparisonOperator =
                                             expression.NodeType != ExpressionType.And &&
                                             expression.NodeType != ExpressionType.AndAlso &&
@@ -53,7 +54,7 @@ namespace SqlSugar
                 base.IsLeft = null;
                 if (lsbs && parameter.ValueIsNull)
                 {
-                    base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, "IS");
+                    base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, isEqual?"IS":"IS NOT");
                 }
                 else {
                     base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, operatorValue);
