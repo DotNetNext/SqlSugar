@@ -162,6 +162,7 @@ namespace SqlSugar
         public virtual void Clear()
         {
             base._Result = null;
+            base._Parameters = new List<SugarParameter>();
         }
         #endregion
     }

@@ -192,7 +192,6 @@ namespace SqlSugar
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
             resolveExpress.Resolve(expression, resolveType);
-            this.Parameters = new List<SugarParameter>();
             this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
             return reval;

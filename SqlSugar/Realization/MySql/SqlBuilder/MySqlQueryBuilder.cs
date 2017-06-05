@@ -75,7 +75,7 @@ namespace SqlSugar
                 }
                 if (this.SelectType == ResolveExpressType.SelectMultiple)
                 {
-                    this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this._JoinQueryInfos.Select(it => it.TableName));
+                    this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
                 }
                 return reval;
             }

@@ -11,6 +11,7 @@ namespace SqlSugar
         public InsertBuilder()
         {
             this.sql = new StringBuilder();
+            this.Parameters = new List<SugarParameter>();
             this.DbColumnInfoList = new List<DbColumnInfo>();
         }
         public SqlSugarClient Context { get; set; }
@@ -93,7 +94,6 @@ namespace SqlSugar
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
             resolveExpress.Resolve(expression, resolveType);
-            this.Parameters = new List<SugarParameter>();
             this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
             return reval;

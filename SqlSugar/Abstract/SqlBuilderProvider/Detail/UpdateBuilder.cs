@@ -14,6 +14,7 @@ namespace SqlSugar
             this.DbColumnInfoList = new List<DbColumnInfo>();
             this.SetValues = new List<KeyValuePair<string, string>>();
             this.WhereValues = new List<string>();
+            this.Parameters = new List<SugarParameter>();
         }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
@@ -119,7 +120,6 @@ namespace SqlSugar
                 resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
             }
             resolveExpress.Resolve(expression, resolveType);
-            this.Parameters = new List<SugarParameter>();
             this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
             return reval;
