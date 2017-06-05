@@ -208,54 +208,54 @@ namespace SqlSugar
         #endregion
 
         #region Core
-        public virtual int ExecuteCommand(string sql, params SugarParameter[] pars)
+        public virtual int ExecuteCommand(string sql, params SugarParameter[] parameters)
         {
-            base.SetParamterSize(pars);
-            SurroundingEvent(sql, pars, true);
-            IDbCommand sqlCommand = GetCommand(sql, pars);
+            base.SetParamterSize(parameters);
+            SurroundingEvent(sql, parameters, true);
+            IDbCommand sqlCommand = GetCommand(sql, parameters);
             int count = sqlCommand.ExecuteNonQuery();
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, pars, false);
+            SurroundingEvent(sql, parameters, false);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return count;
         }
-        public virtual IDataReader GetDataReader(string sql, params SugarParameter[] pars)
+        public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
         {
-            base.SetParamterSize(pars);
-            SurroundingEvent(sql, pars, true);
-            IDbCommand sqlCommand = GetCommand(sql, pars);
+            base.SetParamterSize(parameters);
+            SurroundingEvent(sql, parameters, true);
+            IDbCommand sqlCommand = GetCommand(sql, parameters);
             IDataReader sqlDataReader = sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, pars, false);
+            SurroundingEvent(sql, parameters, false);
             return sqlDataReader;
         }
-        public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] pars)
+        public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
         {
-            base.SetParamterSize(pars);
-            SurroundingEvent(sql, pars, true);
+            base.SetParamterSize(parameters);
+            SurroundingEvent(sql, parameters, true);
             IDataAdapter dataAdapter = this.GetAdapter();
-            IDbCommand sqlCommand = GetCommand(sql, pars);
+            IDbCommand sqlCommand = GetCommand(sql, parameters);
             this.SetCommandToAdapter(dataAdapter, sqlCommand);
             DataSet ds = new DataSet();
             dataAdapter.Fill(ds);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, pars, false);
+            SurroundingEvent(sql, parameters, false);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return ds;
         }
-        public virtual object GetScalar(string sql, params SugarParameter[] pars)
+        public virtual object GetScalar(string sql, params SugarParameter[] parameters)
         {
-            base.SetParamterSize(pars);
-            SurroundingEvent(sql, pars, true);
-            IDbCommand sqlCommand = GetCommand(sql, pars);
+            base.SetParamterSize(parameters);
+            SurroundingEvent(sql, parameters, true);
+            IDbCommand sqlCommand = GetCommand(sql, parameters);
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, pars, false);
+            SurroundingEvent(sql, parameters, false);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return scalar;
         }
@@ -263,105 +263,105 @@ namespace SqlSugar
 
         #region Methods
 
-        public virtual string GetString(string sql, object pars)
+        public virtual string GetString(string sql, object parameters)
         {
-            return GetString(sql, this.GetParameters(pars));
+            return GetString(sql, this.GetParameters(parameters));
         }
-        public virtual string GetString(string sql, params SugarParameter[] pars)
+        public virtual string GetString(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToString(GetScalar(sql, pars));
+            return Convert.ToString(GetScalar(sql, parameters));
         }
-        public virtual string GetString(string sql, List<SugarParameter> pars)
+        public virtual string GetString(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetString(sql);
             }
             else
             {
-                return GetString(sql, pars.ToArray());
+                return GetString(sql, parameters.ToArray());
             }
         }
-        public virtual int GetInt(string sql, object pars)
+        public virtual int GetInt(string sql, object parameters)
         {
-            return GetInt(sql, this.GetParameters(pars));
+            return GetInt(sql, this.GetParameters(parameters));
         }
-        public virtual int GetInt(string sql, params SugarParameter[] pars)
+        public virtual int GetInt(string sql, params SugarParameter[] parameters)
         {
-            return GetScalar(sql, pars).ObjToInt();
+            return GetScalar(sql, parameters).ObjToInt();
         }
-        public virtual int GetInt(string sql, List<SugarParameter> pars)
+        public virtual int GetInt(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetInt(sql);
             }
             else
             {
-                return GetInt(sql, pars.ToArray());
+                return GetInt(sql, parameters.ToArray());
             }
         }
-        public virtual Double GetDouble(string sql, object pars)
+        public virtual Double GetDouble(string sql, object parameters)
         {
-            return GetDouble(sql, this.GetParameters(pars));
+            return GetDouble(sql, this.GetParameters(parameters));
         }
-        public virtual Double GetDouble(string sql, params SugarParameter[] pars)
+        public virtual Double GetDouble(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToDouble(GetScalar(sql, pars));
+            return Convert.ToDouble(GetScalar(sql, parameters));
         }
-        public virtual Double GetDouble(string sql, List<SugarParameter> pars)
+        public virtual Double GetDouble(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetDouble(sql);
             }
             else
             {
-                return GetDouble(sql, pars.ToArray());
+                return GetDouble(sql, parameters.ToArray());
             }
         }
-        public virtual decimal GetDecimal(string sql, object pars)
+        public virtual decimal GetDecimal(string sql, object parameters)
         {
-            return GetDecimal(sql, this.GetParameters(pars));
+            return GetDecimal(sql, this.GetParameters(parameters));
         }
-        public virtual decimal GetDecimal(string sql, params SugarParameter[] pars)
+        public virtual decimal GetDecimal(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToDecimal(GetScalar(sql, pars));
+            return Convert.ToDecimal(GetScalar(sql, parameters));
         }
-        public virtual decimal GetDecimal(string sql, List<SugarParameter> pars)
+        public virtual decimal GetDecimal(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetDecimal(sql);
             }
             else
             {
-                return GetDecimal(sql, pars.ToArray());
+                return GetDecimal(sql, parameters.ToArray());
             }
         }
-        public virtual DateTime GetDateTime(string sql, object pars)
+        public virtual DateTime GetDateTime(string sql, object parameters)
         {
-            return GetDateTime(sql, this.GetParameters(pars));
+            return GetDateTime(sql, this.GetParameters(parameters));
         }
-        public virtual DateTime GetDateTime(string sql, params SugarParameter[] pars)
+        public virtual DateTime GetDateTime(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToDateTime(GetScalar(sql, pars));
+            return Convert.ToDateTime(GetScalar(sql, parameters));
         }
-        public virtual DateTime GetDateTime(string sql, List<SugarParameter> pars)
+        public virtual DateTime GetDateTime(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetDateTime(sql);
             }
             else
             {
-                return GetDateTime(sql, pars.ToArray());
+                return GetDateTime(sql, parameters.ToArray());
             }
         }
-        public virtual List<T> SqlQuery<T>(string sql, object whereObj = null)
+        public virtual List<T> SqlQuery<T>(string sql, object parameters = null)
         {
-            var parameters = this.GetParameters(whereObj);
-            return SqlQuery<T>(sql, parameters);
+            var sugarParameters = this.GetParameters(parameters);
+            return SqlQuery<T>(sql, sugarParameters);
         }
         public virtual List<T> SqlQuery<T>(string sql, params SugarParameter[] parameters)
         {
@@ -388,9 +388,9 @@ namespace SqlSugar
                 return SqlQuery<T>(sql);
             }
         }
-        public virtual T SqlQuerySingle<T>(string sql, object whereObj = null)
+        public virtual T SqlQuerySingle<T>(string sql, object parameters = null)
         {
-            var result = SqlQuery<T>(sql, whereObj);
+            var result = SqlQuery<T>(sql, parameters);
             return result == null ? default(T) : result.FirstOrDefault();
         }
         public virtual T SqlQuerySingle<T>(string sql, params SugarParameter[] parameters)
@@ -418,85 +418,85 @@ namespace SqlSugar
             var dt = this.GetDataTable(sql, parameters);
             return dt == null ? null : this.Context.RewritableMethods.DataTableToDynamic(dt);
         }
-        public virtual DataTable GetDataTable(string sql, params SugarParameter[] pars)
+        public virtual DataTable GetDataTable(string sql, params SugarParameter[] parameters)
         {
-            var ds = GetDataSetAll(sql, pars);
+            var ds = GetDataSetAll(sql, parameters);
             if (ds.Tables.Count != 0 && ds.Tables.Count > 0) return ds.Tables[0];
             return new DataTable();
         }
-        public virtual DataTable GetDataTable(string sql, object pars)
+        public virtual DataTable GetDataTable(string sql, object parameters)
         {
-            return GetDataTable(sql, this.GetParameters(pars));
+            return GetDataTable(sql, this.GetParameters(parameters));
         }
-        public virtual DataTable GetDataTable(string sql, List<SugarParameter> pars)
+        public virtual DataTable GetDataTable(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetDataTable(sql);
             }
             else
             {
-                return GetDataTable(sql, pars.ToArray());
+                return GetDataTable(sql, parameters.ToArray());
             }
         }
-        public virtual DataSet GetDataSetAll(string sql, object pars)
+        public virtual DataSet GetDataSetAll(string sql, object parameters)
         {
-            return GetDataSetAll(sql, this.GetParameters(pars));
+            return GetDataSetAll(sql, this.GetParameters(parameters));
         }
-        public virtual DataSet GetDataSetAll(string sql, List<SugarParameter> pars)
+        public virtual DataSet GetDataSetAll(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetDataSetAll(sql);
             }
             else
             {
-                return GetDataSetAll(sql, pars.ToArray());
+                return GetDataSetAll(sql, parameters.ToArray());
             }
         }
-        public virtual IDataReader GetDataReader(string sql, object pars)
+        public virtual IDataReader GetDataReader(string sql, object parameters)
         {
-            return GetDataReader(sql, this.GetParameters(pars));
+            return GetDataReader(sql, this.GetParameters(parameters));
         }
-        public virtual IDataReader GetDataReader(string sql, List<SugarParameter> pars)
+        public virtual IDataReader GetDataReader(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetDataReader(sql);
             }
             else
             {
-                return GetDataReader(sql, pars.ToArray());
+                return GetDataReader(sql, parameters.ToArray());
             }
         }
-        public virtual object GetScalar(string sql, object pars)
+        public virtual object GetScalar(string sql, object parameters)
         {
-            return GetScalar(sql, this.GetParameters(pars));
+            return GetScalar(sql, this.GetParameters(parameters));
         }
-        public virtual object GetScalar(string sql, List<SugarParameter> pars)
+        public virtual object GetScalar(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return GetScalar(sql);
             }
             else
             {
-                return GetScalar(sql, pars.ToArray());
+                return GetScalar(sql, parameters.ToArray());
             }
         }
-        public virtual int ExecuteCommand(string sql, object pars)
+        public virtual int ExecuteCommand(string sql, object parameters)
         {
-            return ExecuteCommand(sql, GetParameters(pars));
+            return ExecuteCommand(sql, GetParameters(parameters));
         }
-        public virtual int ExecuteCommand(string sql, List<SugarParameter> pars)
+        public virtual int ExecuteCommand(string sql, List<SugarParameter> parameters)
         {
-            if (pars == null)
+            if (parameters == null)
             {
                 return ExecuteCommand(sql);
             }
             else
             {
-                return ExecuteCommand(sql, pars.ToArray());
+                return ExecuteCommand(sql, parameters.ToArray());
             }
         }
         #endregion

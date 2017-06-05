@@ -62,20 +62,20 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> AddParameters(object whereObj)
+        public ISugarQueryable<T> AddParameters(object parameters)
         {
-            if (whereObj != null)
-                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
             return this;
         }
-        public ISugarQueryable<T> AddParameters(SugarParameter[] pars)
+        public ISugarQueryable<T> AddParameters(SugarParameter[] parameters)
         {
-            QueryBuilder.Parameters.AddRange(pars);
+            QueryBuilder.Parameters.AddRange(parameters);
             return this;
         }
-        public ISugarQueryable<T> AddParameters(SugarParameter par)
+        public ISugarQueryable<T> AddParameters(SugarParameter parameter)
         {
-            QueryBuilder.Parameters.Add(par);
+            QueryBuilder.Parameters.Add(parameter);
             return this;
         }
 
@@ -119,12 +119,12 @@ namespace SqlSugar
             this._Having(expression);
             return this;
         }
-        public ISugarQueryable<T> Having(string whereString, object whereObj = null)
+        public ISugarQueryable<T> Having(string whereString, object parameters = null)
         {
 
             QueryBuilder.HavingInfos = SqlBuilder.AppendHaving(whereString);
-            if (whereObj != null)
-                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
             return this;
         }
 
