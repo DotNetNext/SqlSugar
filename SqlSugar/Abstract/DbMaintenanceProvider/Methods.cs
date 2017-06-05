@@ -1,46 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
+
 namespace SqlSugar
 {
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
-        protected abstract string GetViewInfoListSql { get; }
-        protected abstract string GetTableInfoListSql { get; }
-        protected abstract string GetColumnInfosByTableNameSql { get; }
-        protected abstract string AddColumnToTableSql { get; }
-        protected abstract string BackupDataBaseSql { get; }
-        protected abstract string CreateTableSql { get; }
-        protected abstract string TruncateTableSql { get; }
-
-        public SqlSugarClient Context { get; set; }
+        #region DML
         public List<DbTableInfo> GetViewInfoList()
         {
             string key = "DbMaintenanceProvider.GetViewInfoList";
-            var result= GetListOrCache<DbTableInfo>(key, this.GetViewInfoListSql);
+            var result = GetListOrCache<DbTableInfo>(key, this.GetViewInfoListSql);
             foreach (var item in result)
             {
                 item.DbObjectType = DbObjectType.View;
             }
             return result;
         }
+
         public List<DbTableInfo> GetTableInfoList()
         {
             string key = "DbMaintenanceProvider.GetTableInfoList";
-            var result= GetListOrCache<DbTableInfo>(key, this.GetTableInfoListSql);
+            var result = GetListOrCache<DbTableInfo>(key, this.GetTableInfoListSql);
             foreach (var item in result)
             {
                 item.DbObjectType = DbObjectType.Table;
             }
             return result;
         }
+
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
             string key = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower();
-            return GetListOrCache<DbColumnInfo>(key,string.Format(this.GetColumnInfosByTableNameSql,tableName));
+            return GetListOrCache<DbColumnInfo>(key, string.Format(this.GetColumnInfosByTableNameSql, tableName));
         }
 
         public virtual List<string> GetIsIdentities(string tableName)
@@ -54,12 +48,10 @@ namespace SqlSugar
             var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
             return result.Select(it => it.DbColumnName).ToList();
         }
+        #endregion
 
+        #region DDL
         public bool AddColumnToTable(string tableName, DbColumnInfo column)
-        {
-            throw new NotImplementedException();
-        }
-        public bool BackupDataBase()
         {
             throw new NotImplementedException();
         }
@@ -72,9 +64,15 @@ namespace SqlSugar
 
         public virtual bool TruncateTable(string tableName)
         {
-            this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql,tableName));
+            this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql, tableName));
             return true;
         }
+
+        public bool BackupDataBase()
+        {
+            throw new NotImplementedException();
+        } 
+        #endregion
 
         #region Private
         private List<T> GetListOrCache<T>(string cacheKey, string sql)

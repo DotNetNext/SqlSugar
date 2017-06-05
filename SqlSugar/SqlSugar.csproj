@@ -56,7 +56,8 @@
     <Compile Include="Abstract\DbBindProvider\IDataRecordExtensions.cs" />
     <Compile Include="Abstract\DbFirstProvider\DbFirstProvider.cs" />
     <Compile Include="Abstract\DbFirstProvider\DbFirstTemplate.cs" />
-    <Compile Include="Abstract\DbMaintenanceProvider\DbMaintenanceProvider.cs" />
+    <Compile Include="Abstract\DbMaintenanceProvider\Methods.cs" />
+    <Compile Include="Abstract\DbMaintenanceProvider\Properties.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
     <Compile Include="Abstract\EntityProvider\EntityProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
