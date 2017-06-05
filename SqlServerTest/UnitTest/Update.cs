@@ -75,17 +75,17 @@ namespace OrmTest.UnitTest
             }, t6.Key, t6.Value, "Update t6 error");
 
 
-            //update List<T>
-            var t7 = db.Updateable(updateObjs).With(SqlWith.UpdLock).ToSql();
-            base.Check(@"UPDATE S SET S.[SchoolId]=T.[SchoolId],S.[Name]=T.[Name],S.[CreateTime]=T.[CreateTime] FROM [STudent] S WITH(UPDLOCK)   INNER JOIN             (
+//            //update List<T>
+//            var t7 = db.Updateable(updateObjs).With(SqlWith.UpdLock).ToSql();
+//            base.Check(@"UPDATE S SET S.[SchoolId]=T.[SchoolId],S.[Name]=T.[Name],S.[CreateTime]=T.[CreateTime] FROM [STudent] S WITH(UPDLOCK)   INNER JOIN             (
               
- SELECT N'1' AS ID,N'0' AS SchoolId,N'jack' AS Name,'2017-05-21 09:56:12.610' AS CreateTime		
-UNION ALL 
- SELECT N'2' AS ID,N'0' AS SchoolId,N'sun' AS Name,NULL AS CreateTime
+// SELECT N'1' AS ID,N'0' AS SchoolId,N'jack' AS Name,'2017-05-21 09:56:12.610' AS CreateTime		
+//UNION ALL 
+// SELECT N'2' AS ID,N'0' AS SchoolId,N'sun' AS Name,NULL AS CreateTime
 
 
-            ) T ON S.[Id]=T.[Id]
-                ; ", null, t7.Key, null,"Update t7 error");
+//            ) T ON S.[Id]=T.[Id]
+//                ; ", null, t7.Key, null,"Update t7 error");
 
             //Re Set Value
             var t8 = db.Updateable(updateObj)
