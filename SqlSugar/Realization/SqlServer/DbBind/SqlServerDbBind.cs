@@ -6,7 +6,7 @@ namespace SqlSugar
 {
     public class SqlServerDbBind : DbBindProvider
     {
-        public override string GetCSharpType(string dbTypeName)
+        public override string GetPropertyType(string dbTypeName)
         {
             string reval = string.Empty;
             switch (dbTypeName.ToLower())

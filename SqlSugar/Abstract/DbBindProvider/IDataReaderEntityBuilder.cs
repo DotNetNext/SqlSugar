@@ -164,14 +164,14 @@ namespace SqlSugar
             List<string> dateThrow = bind.DateThrow;
             List<string> shortThrow = bind.ShortThrow;
             MethodInfo method = null;
-            var transformedPropertyName = bind.GetCSharpType(dbTypeName);
+            var propertyType = bind.GetPropertyType(dbTypeName);
             var objTypeName = bindType.Name.ToLower();
             var isEnum = bindType.IsEnum;
             if (isEnum)
             {
-                transformedPropertyName = "enum";
+                propertyType = "enum";
             }
-            else if (transformedPropertyName.IsIn("byte[]", "other", "object") || dbTypeName.Contains("hierarchyid"))
+            else if (propertyType.IsIn("byte[]", "other", "object") || dbTypeName.Contains("hierarchyid"))
             {
                 generator.Emit(OpCodes.Call, getValueMethod);
                 generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
@@ -179,10 +179,10 @@ namespace SqlSugar
             }
             if (isNullableType)
             {
-                switch (transformedPropertyName)
+                switch (propertyType)
                 {
                     case "int":
-                        CheckType(intThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(intThrow, objTypeName, propertyType, propertyName);
                         var isNotInt = objTypeName != "int32";
                         if (isNotInt)
                             method = getOtherNull.MakeGenericMethod(bindType);
@@ -194,30 +194,30 @@ namespace SqlSugar
                         else
                             method = getConvertBoolean; break;
                     case "string":
-                        CheckType(stringThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(stringThrow, objTypeName, propertyType, propertyName);
                         method = getString; break;
                     case "DateTime":
-                        CheckType(dateThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(dateThrow, objTypeName, propertyType, propertyName);
                         if (objTypeName != "datetime")
                             method = getOtherNull.MakeGenericMethod(bindType);
                         else
                             method = getConvertDateTime; break;
                     case "decimal":
-                        CheckType(decimalThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(decimalThrow, objTypeName, propertyType, propertyName);
                         var isNotDecimal = objTypeName != "decimal";
                         if (isNotDecimal)
                             method = getOtherNull.MakeGenericMethod(bindType);
                         else
                             method = getConvertDecimal; break;
                     case "double":
-                        CheckType(doubleThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(doubleThrow, objTypeName, propertyType, propertyName);
                         var isNotDouble = objTypeName != "double";
                         if (isNotDouble)
                             method = getOtherNull.MakeGenericMethod(bindType);
                         else
                             method = getConvertDouble; break;
                     case "Guid":
-                        CheckType(guidThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(guidThrow, objTypeName, propertyType, propertyName);
                         if (objTypeName != "guid")
                             method = getOtherNull.MakeGenericMethod(bindType);
                         else
@@ -227,7 +227,7 @@ namespace SqlSugar
                     case "enum":
                         method = getConvertEnum_Null.MakeGenericMethod(bindType); break;
                     case "short":
-                        CheckType(shortThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(shortThrow, objTypeName, propertyType, propertyName);
                         var isNotShort = objTypeName != "int16" && objTypeName != "short";
                         if (isNotShort)
                             method = getOtherNull.MakeGenericMethod(bindType);
@@ -241,10 +241,10 @@ namespace SqlSugar
             }
             else
             {
-                switch (transformedPropertyName)
+                switch (propertyType)
                 {
                     case "int":
-                        CheckType(intThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(intThrow, objTypeName, propertyType, propertyName);
                         var isNotInt = objTypeName != "int32";
                         if (isNotInt)
                             method = getOther.MakeGenericMethod(bindType);
@@ -256,30 +256,30 @@ namespace SqlSugar
                         else
                             method = getBoolean; break;
                     case "string":
-                        CheckType(stringThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(stringThrow, objTypeName, propertyType, propertyName);
                         method = getString; break;
                     case "DateTime":
-                        CheckType(dateThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(dateThrow, objTypeName, propertyType, propertyName);
                         if (objTypeName != "datetime")
                             method = getOther.MakeGenericMethod(bindType);
                         else
                             method = getDateTime; break;
                     case "decimal":
-                        CheckType(decimalThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(decimalThrow, objTypeName, propertyType, propertyName);
                         var isNotDecimal = objTypeName != "decimal";
                         if (isNotDecimal)
                             method = getOther.MakeGenericMethod(bindType);
                         else
                             method = getDecimal; break;
                     case "double":
-                        CheckType(doubleThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(doubleThrow, objTypeName, propertyType, propertyName);
                         var isNotDouble = objTypeName != "double";
                         if (isNotDouble)
                             method = getOther.MakeGenericMethod(bindType);
                         else
                             method = getDouble; break;
                     case "guid":
-                        CheckType(guidThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(guidThrow, objTypeName, propertyType, propertyName);
                         if (objTypeName != "guid")
                             method = getOther.MakeGenericMethod(bindType);
                         else
@@ -289,7 +289,7 @@ namespace SqlSugar
                     case "enum":
                         method = getEnum.MakeGenericMethod(bindType); break;
                     case "short":
-                        CheckType(shortThrow, objTypeName, transformedPropertyName, propertyName);
+                        CheckType(shortThrow, objTypeName, propertyType, propertyName);
                         var isNotShort = objTypeName != "int16" && objTypeName != "short";
                         if (isNotShort)
                             method = getOther.MakeGenericMethod(bindType);

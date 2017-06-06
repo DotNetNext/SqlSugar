@@ -266,7 +266,7 @@ namespace SqlSugar
 
         private string GetPropertyTypeName(DbColumnInfo item)
         {
-            string result = this.Context.Ado.DbBind.GetCSharpType(item.DataType);
+            string result = this.Context.Ado.DbBind.GetPropertyType(item.DataType);
             if (result != "string"&&result!="byte[]"&&result!="object"&& item.IsNullable)
             {
                 result += "?";
@@ -277,7 +277,7 @@ namespace SqlSugar
         {
             var convertString = GetProertypeDefaultValue(item);
             if (convertString == "DateTime.Now" || convertString == null) return convertString;
-            string result = this.Context.Ado.DbBind.GetCSharpConvert(item.DataType) + "(\"" + convertString + "\")";
+            string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";
             return result;
         }
 

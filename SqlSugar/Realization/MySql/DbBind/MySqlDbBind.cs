@@ -4,7 +4,7 @@ namespace SqlSugar
 {
     public class MySqlDbBind : DbBindProvider
     {
-        public override string GetCSharpType(string typeName)
+        public override string GetPropertyType(string typeName)
         {
                 string reval;
                 switch (typeName.ToLower())
@@ -94,7 +94,7 @@ namespace SqlSugar
                 return reval;
         }
 
-        public override string GetCSharpConvert(string dbTypeName)
+        public override string GetConvertString(string dbTypeName)
         {
             throw new NotImplementedException();
         }

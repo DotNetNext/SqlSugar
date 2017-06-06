@@ -14,8 +14,8 @@ namespace SqlSugar
         #endregion
 
         #region Public methods
-        public abstract string GetCSharpType(string dbTypeName);
-        public virtual string GetCSharpConvert(string dbTypeName)
+        public abstract string GetPropertyType(string dbTypeName);
+        public virtual string GetConvertString(string dbTypeName)
         {
             string reval = string.Empty;
             switch (dbTypeName.ToLower())
