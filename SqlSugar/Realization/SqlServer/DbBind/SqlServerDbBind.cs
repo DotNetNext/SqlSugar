@@ -6,92 +6,41 @@ namespace SqlSugar
 {
     public class SqlServerDbBind : DbBindProvider
     {
-        public override string GetPropertyTypeName(string dbTypeName)
+        public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
-            string reval = string.Empty;
-            switch (dbTypeName.ToLower())
+            get
             {
-                case "int":
-                    reval = "int";
-                    break;
-                case "text":
-                    reval = "string";
-                    break;
-                case "bigint":
-                    reval = "long";
-                    break;
-                case "bit":
-                    reval = "bool";
-                    break;
-                case "char":
-                    reval = "string";
-                    break;
-                case "datetime":
-                case "date":
-                case "datetime2":
-                    reval = "DateTime";
-                    break;
-                case "single":
-                case "decimal":
-                    reval = "decimal";
-                    break;
-                case "float":
-                    reval = "double";
-                    break;
-                case "binary":
-                case "image":
-                    reval = "byte[]";
-                    break;
-                case "money":
-                    reval = "decimal";
-                    break;
-                case "nchar":
-                    reval = "string";
-                    break;
-                case "ntext":
-                    reval = "string";
-                    break;
-                case "numeric":
-                    reval = "decimal";
-                    break;
-                case "nvarchar":
-                    reval = "string";
-                    break;
-                case "real":
-                    reval = "float";
-                    break;
-                case "smalldatetime":
-                    reval = "DateTime";
-                    break;
-                case "smallint":
-                    reval = "short";
-                    break;
-                case "smallmoney":
-                    reval = "decimal";
-                    break;
-                case "timestamp":
-                    reval = "DateTime";
-                    break;
-                case "tinyint":
-                    reval = "byte";
-                    break;
-                case "uniqueidentifier":
-                    reval = "Guid";
-                    break;
-                case "varbinary":
-                    reval = "byte[]";
-                    break;
-                case "varchar":
-                    reval = "string";
-                    break;
-                case "Variant":
-                    reval = "object";
-                    break;
-                default:
-                    reval = "other";
-                    break;
+                return new List<KeyValuePair<string, CSharpDataType>>()
+                {
+                  new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@int),
+                  new KeyValuePair<string, CSharpDataType>("sql_variant",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("ntext",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("nchar",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
+                  new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
+                  new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("smalldatetime",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("datetime2",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("single",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("smallmoney",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@double),
+                  new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@float),
+                  new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
+                  new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@byte),
+                  new KeyValuePair<string, CSharpDataType>("uniqueidentifier",CSharpDataType.Guid),
+                  new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("image",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray)};
             }
-            return reval;
         }
     }
 }

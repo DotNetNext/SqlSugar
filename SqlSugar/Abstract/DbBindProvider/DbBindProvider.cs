@@ -14,7 +14,7 @@ namespace SqlSugar
         #endregion
 
         #region Public methods
-        public abstract string GetPropertyTypeName(string dbTypeName);
+        public abstract List<KeyValuePair<string, CSharpDataType>> MappingTypes { get; }
         public virtual string GetConvertString(string dbTypeName)
         {
             string reval = string.Empty;
@@ -117,6 +117,24 @@ namespace SqlSugar
             }
             return reval;
         }
+        public virtual string GetPropertyTypeName(string dbTypeName)
+        {
+            dbTypeName = dbTypeName.ToLower();
+            var propertyTypes = MappingTypes.Where(it => it.Key == dbTypeName);
+            if (propertyTypes == null)
+            {
+                return "other";
+            }
+            else if (propertyTypes.First().Value == CSharpDataType.byteArray)
+            {
+                return "byte[]";
+            }
+            else
+            {
+                return propertyTypes.First().Value.ToString();
+            }
+        }
+
         public virtual List<T> DataReaderToList<T>(Type type, IDataReader dataReader, string fields)
         {
             using (dataReader)

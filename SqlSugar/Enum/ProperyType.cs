@@ -20,6 +20,7 @@ namespace SqlSugar
         @long,
         @object,
         @other,
-        @byteArray
+        @byteArray,
+        @float
     }
 }
