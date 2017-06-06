@@ -15,24 +15,6 @@ namespace SqlSugar
         protected ICodeFirst _CodeFirst;
         protected IDbMaintenance _DbMaintenance;
         protected IDbConnection _DbConnection;
-        public virtual void SetParamterSize(SugarParameter[] parameters)
-        {
-            if (parameters != null)
-            {
-                foreach (var parameter in parameters)
-                {
-                    this.SetParameterSize(parameter);
-                }
-            }
-        }
-        public virtual void SetParameterSize(SugarParameter parameters)
-        {
-            int size = parameters.Size;
-            if (size < 4000)
-            {
-                parameters.Size = 4000;
-            }
-        }
 
         public virtual void SetSqlDbType(PropertyInfo propertyInfo, SugarParameter parameter)
         {
@@ -87,7 +69,6 @@ namespace SqlSugar
                 else
                 {
                     var parameter = new SugarParameter(sqlParameterKeyWord + properyty.Name, value);
-                    SetParameterSize(parameter);
                     if (value == DBNull.Value)
                     {
                         SetSqlDbType(properyty, parameter);
@@ -102,20 +83,12 @@ namespace SqlSugar
             {
                 var dictionaryParameters = (Dictionary<string, object>)parameters;
                 var sugarParameters = dictionaryParameters.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
-                foreach (var sugarParameter in sugarParameters)
-                {
-                    SetParameterSize(sugarParameter);
-                }
                 listParams.AddRange(sugarParameters);
             }
             else
             {
                 var dictionaryParameters = (Dictionary<string, string>)parameters;
                 var sugarParameters = dictionaryParameters.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));
-                foreach (var sugarParameter in sugarParameters)
-                {
-                    SetParameterSize(sugarParameter);
-                }
                 listParams.AddRange(sugarParameters); ;
             }
         }

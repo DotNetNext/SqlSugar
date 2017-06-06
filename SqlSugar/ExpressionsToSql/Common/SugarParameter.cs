@@ -64,9 +64,34 @@ namespace SqlSugar
             get; set;
         }
 
+        public int _Size;
+
         public override int Size
         {
-            get; set;
+            get
+            {
+                if (_Size == 0 && Value != null)
+                {
+                    var length = Value.ToString().Length;
+                    if (length < 4000)
+                    {
+                        _Size = 4000;
+                    }
+                    else
+                    {
+                        _Size = -1;
+                    }
+                }
+                if (_Size == 0)
+                {
+                    _Size = 4000;
+                }
+                return _Size;
+            }
+            set
+            {
+                _Size = value;
+            }
         }
 
         public override string SourceColumn
