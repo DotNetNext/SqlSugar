@@ -36,9 +36,109 @@ namespace SqlSugar
                 }
             }
         }
-        public abstract string GetCSharpType(string dbTypeName);
-        public abstract string GetCSharpConvert(string dbTypeName);
+        public virtual string GetCSharpConvert(string dbTypeName)
+        {
+            string reval = string.Empty;
+            switch (dbTypeName.ToLower())
+            {
+                #region Int
+                case "int":
+                    reval = "Convert.ToInt32";
+                    break;
+                #endregion
 
+                #region String
+                case "nchar":
+                case "char":
+                case "ntext":
+                case "nvarchar":
+                case "varchar":
+                case "text":
+                    reval = "Convert.ToString";
+                    break;
+                #endregion
+
+                #region Long
+                case "bigint":
+                    reval = "Convert.ToInt64";
+                    break;
+                #endregion
+
+                #region Bool
+                case "bit":
+                    reval = "Convert.ToBoolean";
+                    break;
+
+                #endregion
+
+                #region Datetime
+                case "timestamp":
+                case "smalldatetime":
+                case "datetime":
+                case "date":
+                case "datetime2":
+                    reval = "Convert.ToDateTime";
+                    break;
+                #endregion
+
+                #region Decimal
+                case "smallmoney":
+                case "single":
+                case "numeric":
+                case "money":
+                case "decimal":
+                    reval = "Convert.ToDecimal";
+                    break;
+                #endregion
+
+                #region Double
+                case "float":
+                    reval = "Convert.ToDouble";
+                    break;
+                #endregion
+
+                #region Byte[]
+                case "varbinary":
+                case "binary":
+                case "image":
+                    reval = "byte[]";
+                    break;
+                #endregion
+
+                #region Float
+                case "real":
+                    reval = "Convert.ToSingle";
+                    break;
+                #endregion
+
+                #region Short
+                case "smallint":
+                    reval = "Convert.ToInt16";
+                    break;
+                #endregion
+
+                #region Byte
+                case "tinyint":
+                    reval = "Convert.ToByte";
+                    break;
+
+                #endregion
+
+                #region Guid
+                case "uniqueidentifier":
+                    reval = "Guid.Parse";
+                    break;
+                #endregion
+
+                #region Null
+                default:
+                    reval = null;
+                    break;
+                    #endregion
+            }
+            return reval;
+        }
+        public abstract string GetCSharpType(string dbTypeName);
         #endregion
 
         #region Throw rule
