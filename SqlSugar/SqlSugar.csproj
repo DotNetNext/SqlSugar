@@ -65,6 +65,7 @@
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
     <Compile Include="Entities\SchemaInfo.cs" />
     <Compile Include="Enum\DbObjectType.cs" />
+    <Compile Include="Enum\ProperyType.cs" />
     <Compile Include="ExpressionsToSql\Common\FileHeper.cs" />
     <Compile Include="Interface\ICacheManager.cs" />
     <Compile Include="Entities\SugarMessageResult.cs" />
