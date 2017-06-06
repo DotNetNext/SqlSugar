@@ -11,10 +11,10 @@ namespace SqlSugar
     {
         #region Properties
         public virtual SqlSugarClient Context { get; set; }
+        public abstract List<KeyValuePair<string, CSharpDataType>> MappingTypes { get; }
         #endregion
 
         #region Public methods
-        public abstract List<KeyValuePair<string, CSharpDataType>> MappingTypes { get; }
         public virtual string GetConvertString(string dbTypeName)
         {
             string reval = string.Empty;
@@ -134,7 +134,6 @@ namespace SqlSugar
                 return propertyTypes.First().Value.ToString();
             }
         }
-
         public virtual List<T> DataReaderToList<T>(Type type, IDataReader dataReader, string fields)
         {
             using (dataReader)
