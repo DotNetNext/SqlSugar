@@ -4,7 +4,7 @@ namespace SqlSugar
 {
     public class MySqlDbBind : DbBindProvider
     {
-        public override string GetPropertyType(string typeName)
+        public override string GetPropertyTypeName(string typeName)
         {
                 string reval;
                 switch (typeName.ToLower())

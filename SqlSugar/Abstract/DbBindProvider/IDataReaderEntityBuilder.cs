@@ -152,7 +152,7 @@ namespace SqlSugar
         private void BindMethod(ILGenerator generator, PropertyInfo bindProperty, int ordinal)
         {
             var isNullableType = false;
-            var bindType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
+            var bindPropertyType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
             string dbTypeName = DataRecord.GetDataTypeName(ordinal);
             string propertyName = bindProperty.Name;
             var bind = Context.Ado.DbBind;
@@ -164,14 +164,14 @@ namespace SqlSugar
             List<string> dateThrow = bind.DateThrow;
             List<string> shortThrow = bind.ShortThrow;
             MethodInfo method = null;
-            var propertyType = bind.GetPropertyType(dbTypeName);
-            var objTypeName = bindType.Name.ToLower();
-            var isEnum = bindType.IsEnum;
+            var validPropertyTypeName = bind.GetPropertyTypeName(dbTypeName);
+            var bindProperyTypeName = bindPropertyType.Name.ToLower();
+            var isEnum = bindPropertyType.IsEnum;
             if (isEnum)
             {
-                propertyType = "enum";
+                validPropertyTypeName = "enum";
             }
-            else if (propertyType.IsIn("byte[]", "other", "object") || dbTypeName.Contains("hierarchyid"))
+            else if (validPropertyTypeName.IsIn("byte[]", "other", "object") || dbTypeName.Contains("hierarchyid"))
             {
                 generator.Emit(OpCodes.Call, getValueMethod);
                 generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
@@ -179,124 +179,124 @@ namespace SqlSugar
             }
             if (isNullableType)
             {
-                switch (propertyType)
+                switch (validPropertyTypeName)
                 {
                     case "int":
-                        CheckType(intThrow, objTypeName, propertyType, propertyName);
-                        var isNotInt = objTypeName != "int32";
+                        CheckType(intThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotInt = bindProperyTypeName != "int32";
                         if (isNotInt)
-                            method = getOtherNull.MakeGenericMethod(bindType);
+                            method = getOtherNull.MakeGenericMethod(bindPropertyType);
                         else
                             method = getConvertInt32; break;
                     case "bool":
-                        if (objTypeName != "bool" && objTypeName != "boolean")
-                            method = getOtherNull.MakeGenericMethod(bindType);
+                        if (bindProperyTypeName != "bool" && bindProperyTypeName != "boolean")
+                            method = getOtherNull.MakeGenericMethod(bindPropertyType);
                         else
                             method = getConvertBoolean; break;
                     case "string":
-                        CheckType(stringThrow, objTypeName, propertyType, propertyName);
+                        CheckType(stringThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
                         method = getString; break;
                     case "DateTime":
-                        CheckType(dateThrow, objTypeName, propertyType, propertyName);
-                        if (objTypeName != "datetime")
-                            method = getOtherNull.MakeGenericMethod(bindType);
+                        CheckType(dateThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        if (bindProperyTypeName != "datetime")
+                            method = getOtherNull.MakeGenericMethod(bindPropertyType);
                         else
                             method = getConvertDateTime; break;
                     case "decimal":
-                        CheckType(decimalThrow, objTypeName, propertyType, propertyName);
-                        var isNotDecimal = objTypeName != "decimal";
+                        CheckType(decimalThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotDecimal = bindProperyTypeName != "decimal";
                         if (isNotDecimal)
-                            method = getOtherNull.MakeGenericMethod(bindType);
+                            method = getOtherNull.MakeGenericMethod(bindPropertyType);
                         else
                             method = getConvertDecimal; break;
                     case "double":
-                        CheckType(doubleThrow, objTypeName, propertyType, propertyName);
-                        var isNotDouble = objTypeName != "double";
+                        CheckType(doubleThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotDouble = bindProperyTypeName != "double";
                         if (isNotDouble)
-                            method = getOtherNull.MakeGenericMethod(bindType);
+                            method = getOtherNull.MakeGenericMethod(bindPropertyType);
                         else
                             method = getConvertDouble; break;
                     case "Guid":
-                        CheckType(guidThrow, objTypeName, propertyType, propertyName);
-                        if (objTypeName != "guid")
-                            method = getOtherNull.MakeGenericMethod(bindType);
+                        CheckType(guidThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        if (bindProperyTypeName != "guid")
+                            method = getOtherNull.MakeGenericMethod(bindPropertyType);
                         else
                             method = getConvertGuid; break;
                     case "byte":
                         method = getConvertByte; break;
                     case "enum":
-                        method = getConvertEnum_Null.MakeGenericMethod(bindType); break;
+                        method = getConvertEnum_Null.MakeGenericMethod(bindPropertyType); break;
                     case "short":
-                        CheckType(shortThrow, objTypeName, propertyType, propertyName);
-                        var isNotShort = objTypeName != "int16" && objTypeName != "short";
+                        CheckType(shortThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotShort = bindProperyTypeName != "int16" && bindProperyTypeName != "short";
                         if (isNotShort)
-                            method = getOtherNull.MakeGenericMethod(bindType);
+                            method = getOtherNull.MakeGenericMethod(bindPropertyType);
                         else
                             method = getConvertInt16;
                         break;
                     default:
-                        method = getOtherNull.MakeGenericMethod(bindType); break;
+                        method = getOtherNull.MakeGenericMethod(bindPropertyType); break;
                 }
                 generator.Emit(OpCodes.Call, method);
             }
             else
             {
-                switch (propertyType)
+                switch (validPropertyTypeName)
                 {
                     case "int":
-                        CheckType(intThrow, objTypeName, propertyType, propertyName);
-                        var isNotInt = objTypeName != "int32";
+                        CheckType(intThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotInt = bindProperyTypeName != "int32";
                         if (isNotInt)
-                            method = getOther.MakeGenericMethod(bindType);
+                            method = getOther.MakeGenericMethod(bindPropertyType);
                         else
                             method = getInt32; break;
                     case "bool":
-                        if (objTypeName != "bool" && objTypeName != "boolean")
-                            method = getOther.MakeGenericMethod(bindType);
+                        if (bindProperyTypeName != "bool" && bindProperyTypeName != "boolean")
+                            method = getOther.MakeGenericMethod(bindPropertyType);
                         else
                             method = getBoolean; break;
                     case "string":
-                        CheckType(stringThrow, objTypeName, propertyType, propertyName);
+                        CheckType(stringThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
                         method = getString; break;
                     case "DateTime":
-                        CheckType(dateThrow, objTypeName, propertyType, propertyName);
-                        if (objTypeName != "datetime")
-                            method = getOther.MakeGenericMethod(bindType);
+                        CheckType(dateThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        if (bindProperyTypeName != "datetime")
+                            method = getOther.MakeGenericMethod(bindPropertyType);
                         else
                             method = getDateTime; break;
                     case "decimal":
-                        CheckType(decimalThrow, objTypeName, propertyType, propertyName);
-                        var isNotDecimal = objTypeName != "decimal";
+                        CheckType(decimalThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotDecimal = bindProperyTypeName != "decimal";
                         if (isNotDecimal)
-                            method = getOther.MakeGenericMethod(bindType);
+                            method = getOther.MakeGenericMethod(bindPropertyType);
                         else
                             method = getDecimal; break;
                     case "double":
-                        CheckType(doubleThrow, objTypeName, propertyType, propertyName);
-                        var isNotDouble = objTypeName != "double";
+                        CheckType(doubleThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotDouble = bindProperyTypeName != "double";
                         if (isNotDouble)
-                            method = getOther.MakeGenericMethod(bindType);
+                            method = getOther.MakeGenericMethod(bindPropertyType);
                         else
                             method = getDouble; break;
                     case "guid":
-                        CheckType(guidThrow, objTypeName, propertyType, propertyName);
-                        if (objTypeName != "guid")
-                            method = getOther.MakeGenericMethod(bindType);
+                        CheckType(guidThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        if (bindProperyTypeName != "guid")
+                            method = getOther.MakeGenericMethod(bindPropertyType);
                         else
                             method = getGuid; break;
                     case "byte":
                         method = getByte; break;
                     case "enum":
-                        method = getEnum.MakeGenericMethod(bindType); break;
+                        method = getEnum.MakeGenericMethod(bindPropertyType); break;
                     case "short":
-                        CheckType(shortThrow, objTypeName, propertyType, propertyName);
-                        var isNotShort = objTypeName != "int16" && objTypeName != "short";
+                        CheckType(shortThrow, bindProperyTypeName, validPropertyTypeName, propertyName);
+                        var isNotShort = bindProperyTypeName != "int16" && bindProperyTypeName != "short";
                         if (isNotShort)
-                            method = getOther.MakeGenericMethod(bindType);
+                            method = getOther.MakeGenericMethod(bindPropertyType);
                         else
                             method = getInt16;
                         break;
-                    default: method = getOther.MakeGenericMethod(bindType); break; ;
+                    default: method = getOther.MakeGenericMethod(bindPropertyType); break; ;
                 }
                 generator.Emit(OpCodes.Call, method);
                 if (method == getValueMethod)
