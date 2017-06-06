@@ -151,7 +151,7 @@ namespace SqlSugar
             int i = 0;
             foreach (var item in UpdateObjs)
             {
-                List<DbColumnInfo> insertItem = new List<DbColumnInfo>();
+                List<DbColumnInfo> updateItem = new List<DbColumnInfo>();
                 foreach (var column in EntityInfo.Columns)
                 {
                     var columnInfo = new DbColumnInfo()
@@ -162,9 +162,13 @@ namespace SqlSugar
                         PropertyType=PubMethod.GetUnderType(column.PropertyInfo),
                         TableId = i
                     };
-                    insertItem.Add(columnInfo);
+                    if (columnInfo.PropertyType.IsEnum)
+                    {
+                        columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                    }
+                    updateItem.Add(columnInfo);
                 }
-                this.UpdateBuilder.DbColumnInfoList.AddRange(insertItem);
+                this.UpdateBuilder.DbColumnInfoList.AddRange(updateItem);
                 ++i;
             }
         }

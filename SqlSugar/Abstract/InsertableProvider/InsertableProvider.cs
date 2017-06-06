@@ -165,6 +165,9 @@ namespace SqlSugar
                         PropertyType = PubMethod.GetUnderType(column.PropertyInfo),
                         TableId = i
                     };
+                    if (columnInfo.PropertyType.IsEnum) {
+                        columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                    }
                     insertItem.Add(columnInfo);
                 }
                 this.InsertBuilder.DbColumnInfoList.AddRange(insertItem);
