@@ -215,6 +215,9 @@ namespace SqlSugar
                     method = getValueMethod;
                     break;
             }
+            if (method == null&&bindPropertyType == PubConst.StringType) {
+                method = getString;
+            }
             if (method == null)
                 method = getOtherNull.MakeGenericMethod(bindPropertyType);
             generator.Emit(OpCodes.Call, method);
