@@ -118,6 +118,16 @@ namespace SqlSugar
             return reval;
         }
 
+        public static string GetConvertString(this IDataRecord dr, int i)
+        {
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            var reval =Convert.ToString(dr.GetValue(i));
+            return reval;
+        }
+
         public static Nullable<T> GetOtherNull<T>(this IDataReader dr, int i) where T : struct
         {
             if (dr.IsDBNull(i))

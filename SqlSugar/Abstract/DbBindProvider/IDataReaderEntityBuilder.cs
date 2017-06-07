@@ -51,6 +51,7 @@ namespace SqlSugar
         private static readonly MethodInfo getInt64 = typeof(IDataRecord).GetMethod("GetInt64", new Type[] { typeof(int) });
         private static readonly MethodInfo getString = typeof(IDataRecord).GetMethod("GetString", new Type[] { typeof(int) });
         private static readonly MethodInfo getEnum = typeof(IDataRecordExtensions).GetMethod("GetEnum");
+        private static readonly MethodInfo getConvertString = typeof(IDataRecordExtensions).GetMethod("GetConvertString");
         private static readonly MethodInfo getConvertFloat = typeof(IDataRecordExtensions).GetMethod("GetConvertFloat");
         private static readonly MethodInfo getConvertBoolean = typeof(IDataRecordExtensions).GetMethod("GetConvertBoolean");
         private static readonly MethodInfo getConvertByte = typeof(IDataRecordExtensions).GetMethod("GetConvertByte");
@@ -216,7 +217,7 @@ namespace SqlSugar
                     break;
             }
             if (method == null&&bindPropertyType == PubConst.StringType) {
-                method = getString;
+                method = getConvertString;
             }
             if (method == null)
                 method = getOtherNull.MakeGenericMethod(bindPropertyType);
