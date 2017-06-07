@@ -88,7 +88,6 @@ namespace SqlSugar
                 return "ALERT TABLE {0} ALTER COLUMN {1}{2} {3} ";
             }
         }
-
         protected override string BackupDataBaseSql
         {
             get

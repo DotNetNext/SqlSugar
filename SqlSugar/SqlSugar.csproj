@@ -95,7 +95,6 @@
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider.cs" />
     <Compile Include="Common\CacheManager.cs" />
     <Compile Include="Common\Check.cs" />
-    <Compile Include="Common\CommonExtensions.cs" />
     <Compile Include="Common\DbExtensions.cs" />
     <Compile Include="Common\ErrorMessage.cs" />
     <Compile Include="Common\IsWhatExtensions.cs" />

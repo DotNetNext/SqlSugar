@@ -8,24 +8,30 @@ namespace SqlSugar
 {
     public class SqlFunc
     {
-        public static bool HasNumber(object thisValue) { throw new NotImplementedException(); }
-        public static bool HasValue(object thisValue){ throw new NotImplementedException(); }
+        public static bool HasNumber(object thisValue)
+        {
+            return thisValue.ObjToInt() > 0;
+        }
+        public static bool HasValue(object thisValue)
+        {
+            return thisValue.IsValuable();
+        }
         public static bool IsNullOrEmpty(object thisValue) { throw new NotImplementedException(); }
         public static string ToLower(object thisValue) { throw new NotImplementedException(); }
         public static string ToUpper(object thisValue) { throw new NotImplementedException(); }
         public static string Trim(object thisValue) { throw new NotImplementedException(); }
-        public static bool Contains(string thisValue, string parameterValue) {  throw new NotImplementedException();}
-        public static bool ContainsArray<T>(T [] thisValue, object parameterValue) { throw new NotImplementedException(); }
+        public static bool Contains(string thisValue, string parameterValue) { throw new NotImplementedException(); }
+        public static bool ContainsArray<T>(T[] thisValue, object parameterValue) { throw new NotImplementedException(); }
         public static bool StartsWith(object thisValue, string parameterValue) { throw new NotImplementedException(); }
         public static bool EndsWith(object thisValue, string parameterValue) { throw new NotImplementedException(); }
         public new static bool Equals(object thisValue, object parameterValue) { throw new NotImplementedException(); }
-        public static bool DateIsSame(DateTime date1, DateTime date2) {  throw new NotImplementedException();}
+        public static bool DateIsSame(DateTime date1, DateTime date2) { throw new NotImplementedException(); }
         public static bool DateIsSame(DateTime? date1, DateTime? date2) { throw new NotImplementedException(); }
-        public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType)  { throw new NotImplementedException(); }
+        public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType) { throw new NotImplementedException(); }
         public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotImplementedException(); }
         public static DateTime DateAdd(DateTime date, int addValue) { throw new NotImplementedException(); }
         public static int DateValue(DateTime date, DateType dataType) { throw new NotImplementedException(); }
-        public static bool Between(object value, object start, object end){ throw new NotImplementedException();}
+        public static bool Between(object value, object start, object end) { throw new NotImplementedException(); }
         public static int ToInt32(object value) { throw new NotImplementedException(); }
         public static long ToInt64(object value) { throw new NotImplementedException(); }
         public static DateTime ToDate(object value) { throw new NotImplementedException(); }
@@ -35,7 +41,7 @@ namespace SqlSugar
         public static double ToDouble(object value) { throw new NotImplementedException(); }
         public static bool ToBool(object value) { throw new NotImplementedException(); }
         public static string Substring(object value, int index, int length) { throw new NotImplementedException(); }
-        public static string Replace(object value,string oldChar, string newChar) { throw new NotImplementedException(); }
+        public static string Replace(object value, string oldChar, string newChar) { throw new NotImplementedException(); }
         public static int Length(object value) { throw new NotImplementedException(); }
         public static TResult AggregateSum<TResult>(TResult thisValue) { throw new NotImplementedException(); }
         public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotImplementedException(); }

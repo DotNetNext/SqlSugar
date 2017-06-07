@@ -96,7 +96,7 @@ namespace SqlSugar
                 string fileName = propertyInfo.Name;
                 if (mappingColumns != null)
                 {
-                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName.Equals(propertyInfo.Name));
+                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName==type.Name&&it.PropertyName.Equals(propertyInfo.Name));
                     if (mappInfo != null)
                     {
                         fileName = mappInfo.DbColumnName;
