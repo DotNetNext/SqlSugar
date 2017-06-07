@@ -8,6 +8,7 @@ namespace SqlSugar
     {
         SqlSugarClient Context { get; set; }
 
+        #region DML
         List<DbTableInfo> GetViewInfoList();
 
         List<DbTableInfo> GetTableInfoList();
@@ -17,7 +18,16 @@ namespace SqlSugar
         List<string> GetIsIdentities(string tableName);
 
         List<string> GetPrimaries(string tableName);
+        #endregion
 
+        #region Check
+        bool IsAnyTable(string tableName);
+        bool IsAnyColumn(string tableName, string column);
+        bool IsPrimaryKey(string tableName, string column);
+        bool IsIdentity(string tableName, string column);
+        #endregion
+
+        #region DDL
         bool TruncateTable(string tableName);
 
         bool CreateTable(string tableName, List<DbColumnInfo> columns);
@@ -25,5 +35,6 @@ namespace SqlSugar
         bool AddColumnToTable(string tableName, DbColumnInfo column);
 
         bool BackupDataBase();
+        #endregion
     }
 }

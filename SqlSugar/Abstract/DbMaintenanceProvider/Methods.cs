@@ -50,6 +50,25 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Check
+        public bool IsAnyTable(string tableName)
+        {
+            return true;
+        }
+        public bool IsAnyColumn(string tableName,string column)
+        {
+            return true;
+        }
+        public bool IsPrimaryKey(string tableName, string column)
+        {
+            return true;
+        }
+        public bool IsIdentity(string tableName, string column)
+        {
+            return true;
+        }
+        #endregion
+
         #region DDL
         public bool AddColumnToTable(string tableName, DbColumnInfo column)
         {
@@ -71,7 +90,7 @@ namespace SqlSugar
         public bool BackupDataBase()
         {
             throw new NotImplementedException();
-        } 
+        }
         #endregion
 
         #region Private

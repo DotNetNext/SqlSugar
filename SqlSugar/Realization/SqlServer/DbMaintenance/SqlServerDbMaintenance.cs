@@ -82,6 +82,13 @@ namespace SqlSugar
                 return "ALERT TABLE {0} ADD {1} {2} {3}";
             }
         }
+        protected override string AlterColumnToTableSql {
+            get
+            {
+                return "ALERT TABLE {0} ALTER COLUMN {1}{2} {3} ";
+            }
+        }
+
         protected override string BackupDataBaseSql
         {
             get
@@ -93,8 +100,14 @@ namespace SqlSugar
         {
             get
             {
-                return @"CREATE TABLE {0}
-                         {1}";
+                return "CREATE TABLE {0}(\r\n{1})";
+            }
+        }
+        protected override string CreateTableColumn
+        {
+            get
+            {
+                return @"{0} {1}{2} {3}{4}\r\n";
             }
         }
         protected override string TruncateTableSql
