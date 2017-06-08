@@ -44,10 +44,22 @@ namespace SqlSugar
         {
             return thisValue.StartsWith(parameterValue);
         }
-        public static bool EndsWith(object thisValue, string parameterValue) { throw new NotImplementedException(); }
-        public new static bool Equals(object thisValue, object parameterValue) { throw new NotImplementedException(); }
-        public static bool DateIsSame(DateTime date1, DateTime date2) { throw new NotImplementedException(); }
-        public static bool DateIsSame(DateTime? date1, DateTime? date2) { throw new NotImplementedException(); }
+        public static bool EndsWith(string thisValue, string parameterValue)
+        {
+            return thisValue.EndsWith(parameterValue);
+        }
+        public new static bool Equals(object thisValue, object parameterValue)
+        {
+            return thisValue.Equals(parameterValue);
+        }
+        public static bool DateIsSame(DateTime date1, DateTime date2)
+        {
+            return date1.ToString("yyyy-MM-dd") == date2.ToString("yyyy-MM-dd");
+        }
+        public static bool DateIsSame(DateTime? date1, DateTime? date2)
+        {
+            return ((DateTime)date1).ToString("yyyy-MM-dd") == ((DateTime)date2).ToString("yyyy-MM-dd");
+        }
         public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType) { throw new NotImplementedException(); }
         public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotImplementedException(); }
         public static DateTime DateAdd(DateTime date, int addValue) { throw new NotImplementedException(); }
@@ -63,7 +75,7 @@ namespace SqlSugar
         public static bool ToBool(object value) { throw new NotImplementedException(); }
         public static string Substring(object value, int index, int length) { throw new NotImplementedException(); }
         public static string Replace(object value, string oldChar, string newChar) { throw new NotImplementedException(); }
-        public static int Length(object value) { throw new NotImplementedException(); }
+        public static int Length(object value) { return value.ObjToString().Length; }
         public static TResult AggregateSum<TResult>(TResult thisValue) { throw new NotImplementedException(); }
         public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotImplementedException(); }
         public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotImplementedException(); }
