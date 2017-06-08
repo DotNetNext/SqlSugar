@@ -65,7 +65,7 @@ namespace SqlSugar
             {
                 this.Transaction = null;
             }
-            if (this.Connection != null && this.Connection.State != ConnectionState.Open)
+            if (this.Connection != null && this.Connection.State == ConnectionState.Open)
             {
                 this.Connection.Close();
             }
