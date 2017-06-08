@@ -52,7 +52,7 @@ namespace OrmTest.UnitTest
 
                 int pageIndex = 2;
                 int pageSize = 10;
-                var t6 = db.Queryable<Student>().OrderBy(it => it.Id,OrderByType.Desc).Skip((pageIndex-1)*pageSize).Take(pageSize*pageIndex).ToSql();
+                var t6 = db.Queryable<Student>().OrderBy(it => it.Id,OrderByType.Desc).Skip((pageIndex-1)*pageSize).Take(pageSize).ToSql();
                 base.Check(@"WITH PageTable AS(
                           SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  
                   )
@@ -65,7 +65,7 @@ namespace OrmTest.UnitTest
                     throw new Exception(" single countIsSuccess Error");
                 }
 
-                var t7 = db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).ToPageList(pageIndex,pageSize,ref studentCount);
+                var t7 = db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToPageList(pageIndex,pageSize,ref studentCount);
                 countIsSuccess = studentCount == db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).Count();
                 if (!countIsSuccess)
                 {
@@ -103,7 +103,7 @@ namespace OrmTest.UnitTest
                 var t8 = db.Queryable<Student>()
                     .Where(it=>it.Id==1)
                     .WhereIF(true,it=> SqlFunc.Contains(it.Name,"a"))
-                    .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).With(SqlWith.NoLock).ToSql();
+                    .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize ).With(SqlWith.NoLock).ToSql();
                 base.Check(@"WITH PageTable AS(
                           SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] WITH(NOLOCK)   WHERE ( [ID] = @Id0 )  AND  ([Name] like '%'+@MethodConst1+'%')  
                   )

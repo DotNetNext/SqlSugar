@@ -214,7 +214,7 @@ namespace SqlSugar
             else if (Skip != null && Take != null)
             {
                 if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Take);
+                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Skip.ObjToInt() +Take.ObjToInt());
             }
             else
             {
