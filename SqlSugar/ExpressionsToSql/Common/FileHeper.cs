@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class FileHeper
+    internal class FileHeper
     {
         public static void CreateFile(string filePath, string text, Encoding encoding)
         {
@@ -33,8 +33,9 @@ namespace SqlSugar
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                throw ex;
             }
         }
         public static bool IsExistDirectory(string directoryPath)
