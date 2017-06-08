@@ -72,20 +72,18 @@ namespace SqlSugar
             {
                 if (_Size == 0 && Value != null)
                 {
-                    var length = Value.ToString().Length;
-                    if (length < 4000)
-                    {
-                        _Size = 4000;
-                    }
+                    var isByteArray = Value.GetType() == PubConst.ByteArrayType;
+                    if (isByteArray)
+                        _Size = -1;
                     else
                     {
-                        _Size = -1;
+                        var length = Value.ToString().Length;
+                        _Size = length < 4000 ? 4000 : -1;
+
                     }
                 }
                 if (_Size == 0)
-                {
                     _Size = 4000;
-                }
                 return _Size;
             }
             set
