@@ -210,28 +210,28 @@ namespace SqlSugar
         #region Core
         public virtual int ExecuteCommand(string sql, params SugarParameter[] parameters)
         {
-            SurroundingEvent(sql, parameters, true);
+            ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             int count = sqlCommand.ExecuteNonQuery();
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, parameters, false);
+            ExecuteAfter(sql, parameters);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return count;
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
         {
-            SurroundingEvent(sql, parameters, true);
+            ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             IDataReader sqlDataReader = sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, parameters, false);
+            ExecuteAfter(sql, parameters);
             return sqlDataReader;
         }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
         {
-            SurroundingEvent(sql, parameters, true);
+            ExecuteBefore(sql, parameters);
             IDataAdapter dataAdapter = this.GetAdapter();
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             this.SetCommandToAdapter(dataAdapter, sqlCommand);
@@ -239,19 +239,19 @@ namespace SqlSugar
             dataAdapter.Fill(ds);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, parameters, false);
+            ExecuteAfter(sql, parameters);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return ds;
         }
         public virtual object GetScalar(string sql, params SugarParameter[] parameters)
         {
-            SurroundingEvent(sql, parameters, true);
+            ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             object scalar = sqlCommand.ExecuteScalar();
             scalar = (scalar == null ? 0 : scalar);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
-            SurroundingEvent(sql, parameters, false);
+            ExecuteAfter(sql, parameters);
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
             return scalar;
         }
@@ -498,29 +498,39 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
-
-        public virtual void SurroundingEvent(string sql, SugarParameter[] parameters, bool isBefore = true)
+        public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
-            var isAfter = !isBefore;
-            if (isAfter)
+            if (this.IsEnableLogEvent)
             {
-                var hasParameter = parameters.IsValuable();
-                if (hasParameter)
+                Action<string, string> action = LogEventStarting;
+                if (action != null)
                 {
-                    foreach (var outputParameter in parameters.Where(it => it.Direction == ParameterDirection.Output))
+                    if (parameters == null || parameters.Length == 0)
                     {
-                       var gobalOutputParamter=this.OutputParameters.Single(it => it.ParameterName == outputParameter.ParameterName);
-                        outputParameter.Value = gobalOutputParamter.Value;
-                        this.OutputParameters.Remove(gobalOutputParamter);
+                        action(sql, null);
+                    }
+                    else
+                    {
+                        action(sql, this.Context.RewritableMethods.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
                     }
                 }
             }
-            if (isBefore) {
-
+        }
+        public virtual void ExecuteAfter(string sql, SugarParameter[] parameters)
+        {
+            var hasParameter = parameters.IsValuable();
+            if (hasParameter)
+            {
+                foreach (var outputParameter in parameters.Where(it => it.Direction == ParameterDirection.Output))
+                {
+                    var gobalOutputParamter = this.OutputParameters.Single(it => it.ParameterName == outputParameter.ParameterName);
+                    outputParameter.Value = gobalOutputParamter.Value;
+                    this.OutputParameters.Remove(gobalOutputParamter);
+                }
             }
             if (this.IsEnableLogEvent)
             {
-                Action<string, string> action = isBefore ? LogEventStarting : LogEventCompleted;
+                Action<string, string> action = LogEventCompleted;
                 if (action != null)
                 {
                     if (parameters == null || parameters.Length == 0)

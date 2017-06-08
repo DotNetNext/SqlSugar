@@ -17,7 +17,8 @@ namespace SqlSugar
         IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
         SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null);
         SqlSugarClient Context { get; set; }
-        void SurroundingEvent(string sql, SugarParameter[] pars, bool isBefore = true);
+        void ExecuteBefore(string sql, SugarParameter[] pars);
+        void ExecuteAfter(string sql, SugarParameter[] pars);
 
         ConnectionConfig MasterConnectionConfig { get; set; }
         List<ConnectionConfig> SlaveConnectionConfigs { get; set; }
