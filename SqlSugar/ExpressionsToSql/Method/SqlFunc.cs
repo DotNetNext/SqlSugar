@@ -60,26 +60,26 @@ namespace SqlSugar
         {
             return ((DateTime)date1).ToString("yyyy-MM-dd") == ((DateTime)date2).ToString("yyyy-MM-dd");
         }
-        public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType) { throw new NotImplementedException(); }
-        public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotImplementedException(); }
-        public static DateTime DateAdd(DateTime date, int addValue) { throw new NotImplementedException(); }
-        public static int DateValue(DateTime date, DateType dataType) { throw new NotImplementedException(); }
-        public static bool Between(object value, object start, object end) { throw new NotImplementedException(); }
-        public static int ToInt32(object value) { throw new NotImplementedException(); }
-        public static long ToInt64(object value) { throw new NotImplementedException(); }
-        public static DateTime ToDate(object value) { throw new NotImplementedException(); }
-        public static string ToString(object value) { throw new NotImplementedException(); }
-        public static decimal ToDecimal(object value) { throw new NotImplementedException(); }
-        public static Guid ToGuid(object value) { throw new NotImplementedException(); }
-        public static double ToDouble(object value) { throw new NotImplementedException(); }
-        public static bool ToBool(object value) { throw new NotImplementedException(); }
-        public static string Substring(object value, int index, int length) { throw new NotImplementedException(); }
-        public static string Replace(object value, string oldChar, string newChar) { throw new NotImplementedException(); }
+        public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static DateTime DateAdd(DateTime date, int addValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static int DateValue(DateTime date, DateType dataType) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static bool Between(object value, object start, object end) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static int ToInt32(object value) { return value.ObjToInt(); }
+        public static long ToInt64(object value) { return Convert.ToInt64(value); }
+        public static DateTime ToDate(object value) { return value.ObjToDate(); }
+        public static string ToString(object value) { return value.ObjToString(); }
+        public static decimal ToDecimal(object value) { return value.ObjToDecimal(); }
+        public static Guid ToGuid(object value) { return Guid.Parse(value.ObjToString()); }
+        public static double ToDouble(object value) { return value.ObjToMoney(); }
+        public static bool ToBool(object value) { return value.ObjToBool(); }
+        public static string Substring(object value, int index, int length) { return value.ObjToString().Substring(index, length); }
+        public static string Replace(object value, string oldChar, string newChar) { return value.ObjToString().Replace(oldChar, newChar); }
         public static int Length(object value) { return value.ObjToString().Length; }
-        public static TResult AggregateSum<TResult>(TResult thisValue) { throw new NotImplementedException(); }
-        public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotImplementedException(); }
-        public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotImplementedException(); }
-        public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotImplementedException(); }
-        public static TResult AggregateCount<TResult>(TResult thisValue) { throw new NotImplementedException(); }
+        public static TResult AggregateSum<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
     }
 }
