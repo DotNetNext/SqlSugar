@@ -168,7 +168,8 @@ namespace SqlSugar
             {
                 case CSharpDataType.@int:
                     CheckType(bind.IntThrow, bindProperyTypeName, validPropertyName, propertyName);
-                    method = isNullableType ? getConvertInt32 : getInt32;
+                    if (bindProperyTypeName.IsContainsIn("int","int32","int64"))
+                        method = isNullableType ? getConvertInt32 : getInt32;
                     break;
                 case CSharpDataType.@bool:
                     if (bindProperyTypeName == "bool" || bindProperyTypeName == "boolean")
@@ -220,7 +221,7 @@ namespace SqlSugar
                 method = getConvertString;
             }
             if (method == null)
-                method = getOtherNull.MakeGenericMethod(bindPropertyType);
+                method =isNullableType? getOtherNull.MakeGenericMethod(bindPropertyType):getOther.MakeGenericMethod(bindPropertyType);
             generator.Emit(OpCodes.Call, method);
             if (method == getValueMethod)
             {
