@@ -26,7 +26,7 @@ namespace SqlSugar
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
         public List<string> WhereValues { get; set; }
         public List<KeyValuePair<string, string>> SetValues { get; set; }
-        public bool IsUpdateNull { get; set; }
+        public bool IsNoUpdateNull { get; set; }
         public List<string> PrimaryKeys { get; set; }
         public bool IsOffIdentity { get; set; }
 
@@ -126,6 +126,10 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
+            if (IsNoUpdateNull)
+            {
+                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
+            }
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
             if (isSingle)

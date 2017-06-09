@@ -122,6 +122,9 @@ namespace SqlSugar
         public IUpdateable<T> Where(bool isUpdateNull, bool IsOffIdentity = false)
         {
             UpdateBuilder.IsOffIdentity = IsOffIdentity;
+            if (this.UpdateBuilder.LambdaExpressions == null)
+                this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
+            this.UpdateBuilder.IsNoUpdateNull = isUpdateNull;
             return this;
         }
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)

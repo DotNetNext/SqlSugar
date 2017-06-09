@@ -26,6 +26,7 @@ namespace SqlSugar
         protected ILambdaExpressions _LambdaExpressions;
         protected IRewritableMethods _RewritableMethods;
         protected IDbMaintenance _DbMaintenance;
+        protected QueryFilterProvider _QueryFilterProvider;
         #endregion
 
         #region Init mppingInfo
