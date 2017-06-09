@@ -21,6 +21,6 @@ namespace SqlSugar
     public class SqlFilterResult
     {
         public string Sql { get; set; }
-        public List<SugarParameter> Parameters { get; set; }
+        public object Parameters { get; set; }
     }
 }

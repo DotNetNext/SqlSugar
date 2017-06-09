@@ -43,6 +43,7 @@ namespace SqlSugar
         public string GroupByValue { get; set; }
         public int WhereIndex { get; set; }
         public int JoinIndex { get; set; }
+        public bool IsDisabledGobalFilter { get; set; }
         public virtual List<SugarParameter> Parameters { get; set; }
         public virtual List<JoinQueryInfo> JoinQueryInfos
         {
@@ -198,6 +199,20 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
+            if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
+            {
+                var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
+                foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
+                {
+                    var filterResult = item.FilterValue(this.Context);
+                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(),filterResult.Sql));
+                    var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
+                    if (filterParamters.IsValuable())
+                    {
+                        this.Parameters.AddRange(filterParamters);
+                    }
+                }
+            }
             sql = new StringBuilder();
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
             if (IsCount) { return sql.ToString(); }
@@ -214,7 +229,7 @@ namespace SqlSugar
             else if (Skip != null && Take != null)
             {
                 if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Skip.ObjToInt() +Take.ObjToInt());
+                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Skip.ObjToInt() + Take.ObjToInt());
             }
             else
             {

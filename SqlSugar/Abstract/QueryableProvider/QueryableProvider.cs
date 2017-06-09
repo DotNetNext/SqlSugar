@@ -62,6 +62,21 @@ namespace SqlSugar
             return this;
         }
 
+        public ISugarQueryable<T> Filter(string FilterName,bool isDisabledGobalFilter = false)
+        {
+            QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
+            if (this.Context.QueryFilter.GeFilterList.IsValuable()&&FilterName.IsValuable())
+            {
+                var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName&&it.IsJoinQuery == !QueryBuilder.IsSingle());
+                foreach (var item in list)
+                {
+                    var filterResult = item.FilterValue(this.Context);
+                    Where(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(),filterResult.Sql), filterResult.Parameters);
+                }
+            }
+            return this;
+        }
+
         public ISugarQueryable<T> AddParameters(object parameters)
         {
             if (parameters != null)

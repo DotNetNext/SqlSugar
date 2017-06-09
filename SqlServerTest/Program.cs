@@ -40,6 +40,7 @@ namespace OrmTest
             OrmTest.Demo.Update.Init();
             OrmTest.Demo.DbFirst.Init();
             OrmTest.Demo.JoinSql.Init();
+            OrmTest.Demo.Filter.Init();
         }
     }
 }
