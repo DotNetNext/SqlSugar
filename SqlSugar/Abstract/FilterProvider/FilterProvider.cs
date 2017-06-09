@@ -5,15 +5,17 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class QueryFilterProvider
+    public class QueryFilterProvider : IFilter
     {
-        internal SqlSugarClient Context{ get; set; }
+        internal SqlSugarClient Context { get; set; }
         private List<SqlFilterItem> _Filters { get; set; }
 
-        public void Add(SqlFilterItem filter)
+        public IFilter Add(SqlFilterItem filter)
         {
             if (_Filters == null)
                 _Filters = new List<SqlFilterItem>();
+            _Filters.Add(filter);
+            return this;
         }
 
         public void Remove(string filterName)
