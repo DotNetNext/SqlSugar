@@ -21,7 +21,7 @@ namespace SqlSugar
         public List<SugarParameter> Parameters { get; set; }
         public string TableWithString { get; set; }
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
-        public bool IsInsertNull { get; set; }
+        public bool IsNoInsertNull { get; set; }
         public bool IsReturnIdentity { get; set; }
         public EntityInfo EntityInfo { get;  set; }
 
@@ -100,7 +100,7 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
-            if (IsInsertNull)
+            if (IsNoInsertNull)
             {
                 DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
             }

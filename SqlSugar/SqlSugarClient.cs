@@ -283,6 +283,25 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Gobal Filter
+        public QueryFilterProvider QueryFilter
+        {
+            get
+            {
+                if (base._QueryFilterProvider == null)
+                {
+                    base._QueryFilterProvider = new QueryFilterProvider();
+                    base._QueryFilterProvider.Context = this;
+                }
+                return _QueryFilterProvider;
+            }
+            set
+            {
+                base._QueryFilterProvider = value;
+            }
+        }
+        #endregion
+
         #region Dispose OR Close
         public virtual void Close()
         {

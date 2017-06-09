@@ -96,12 +96,12 @@ namespace SqlSugar
             return this;
         }
 
-        public IInsertable<T> Where(bool isInsertNull, bool isOffIdentity = false)
+        public IInsertable<T> Where(bool isNoInsertNull, bool isOffIdentity = false)
         {
             this.IsOffIdentity = IsOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
-            this.InsertBuilder.IsInsertNull = isInsertNull;
+            this.InsertBuilder.IsNoInsertNull = isNoInsertNull;
             return this;
         }
         #endregion
@@ -139,7 +139,7 @@ namespace SqlSugar
                 {
                     if (this.InsertBuilder.Parameters == null) this.InsertBuilder.Parameters = new List<SugarParameter>();
                     var paramters = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType);
-                    if (InsertBuilder.IsInsertNull && paramters.Value == null)
+                    if (InsertBuilder.IsNoInsertNull && paramters.Value == null)
                     {
                         continue;
                     }

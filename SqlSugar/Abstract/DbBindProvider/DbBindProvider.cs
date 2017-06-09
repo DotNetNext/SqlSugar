@@ -199,7 +199,7 @@ namespace SqlSugar
         {
             get
             {
-                return new List<string>() { "int32", "datetime", "decimal", "double", "byte", "string" };
+                return new List<string>() { "int32", "datetime", "decimal", "double", "byte" };
             }
         }
         public virtual List<string> StringThrow

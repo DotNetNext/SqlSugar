@@ -60,10 +60,12 @@
     <Compile Include="Abstract\DbMaintenanceProvider\Properties.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
     <Compile Include="Abstract\EntityProvider\EntityProvider.cs" />
+    <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
     <Compile Include="Entities\SchemaInfo.cs" />
+    <Compile Include="Entities\SqlFilter.cs" />
     <Compile Include="Enum\DbObjectType.cs" />
     <Compile Include="Enum\ProperyType.cs" />
     <Compile Include="ExpressionsToSql\Common\FileHeper.cs" />

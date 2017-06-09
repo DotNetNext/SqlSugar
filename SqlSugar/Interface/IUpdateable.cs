@@ -12,7 +12,7 @@ namespace SqlSugar
         int ExecuteCommand();
         IUpdateable<T> AS(string tableName);
         IUpdateable<T> With(string lockString);
-        IUpdateable<T> Where(bool isUpdateNull,bool IsOffIdentity = false);
+        IUpdateable<T> Where(bool isNoUpdateNull,bool IsOffIdentity = false);
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);
         IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod);

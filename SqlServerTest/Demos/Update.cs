@@ -55,6 +55,9 @@ namespace OrmTest.Demo
             //Rename 
             db.Updateable<School>().AS("Student").UpdateColumns(it => new School() { Name = "jack" }).Where(it => it.Id == 1).ExecuteCommand();
             //Update Student set Name='jack' Where Id=1
+
+            //Column is null no update
+            db.Updateable(updateObj).Where(true).ExecuteCommand();
         }
     }
 }
