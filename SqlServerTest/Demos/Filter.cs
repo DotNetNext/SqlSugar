@@ -22,6 +22,11 @@ namespace OrmTest.Demo
             var sql2 = db.Queryable<Student, School>((f, s) => new object[] { JoinType.Left, f.SchoolId == s.Id }).ToSql();
 
             //Specify name filter 
+            var sql3 = db.Queryable<Student>().Filter("query1").ToSql();
+
+            //Specify key filter  and disabled global filter
+            string key = "query1";
+            var sql4 = db.Queryable<Student>().Filter(key,true).ToSql();
 
         }
 
@@ -33,17 +38,26 @@ namespace OrmTest.Demo
              {
                  FilterValue = filterDb =>
                  {
-                     return new SqlFilterResult() { Sql = " isDelete=0", Parameters = new { id=1} };
+                     return new SqlFilterResult() { Sql = " isDelete=0" };
                  },
-                 IsJoinQuery = false
+                 IsJoinQuery = false 
              }).Add(new SqlFilterItem()
              {
                  FilterValue = filterDb =>
                  {
-                     return new SqlFilterResult() { Sql = " f.isDelete=0", Parameters = new { id=1 } };
+                     return new SqlFilterResult() { Sql = " f.isDelete=0" };
                  },
                  IsJoinQuery = true
-             });
+             })
+            .Add(new SqlFilterItem()
+            {
+                FilterName = "query1",
+                FilterValue = filterDb =>
+                {
+                    return new SqlFilterResult() { Sql = " id>@id", Parameters = new { id = 1 } };
+                },
+                IsJoinQuery = false
+            });
             return db;
         }
     }
