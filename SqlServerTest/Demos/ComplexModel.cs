@@ -13,6 +13,21 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             var students = db.Queryable<CMStudent>().ToList();
+            if (students != null)
+            {
+                foreach (var item in students)
+                {
+                    Console.WriteLine(item.SchoolName);
+                    if (item.SchoolSingle != null)
+                    {
+                        Console.WriteLine(item.SchoolSingle.Name);
+                    }
+                    if (item.SchoolList != null)
+                    {
+                        Console.WriteLine(item.SchoolList.Count);
+                    }
+                }
+            }
         }
     }
 
