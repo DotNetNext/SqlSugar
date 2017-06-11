@@ -64,6 +64,7 @@
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
+    <Compile Include="Entities\ModelContext.cs" />
     <Compile Include="Entities\SchemaInfo.cs" />
     <Compile Include="Entities\SqlFilter.cs" />
     <Compile Include="Enum\DbObjectType.cs" />
