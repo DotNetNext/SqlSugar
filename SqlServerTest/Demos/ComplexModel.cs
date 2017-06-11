@@ -12,7 +12,7 @@ namespace OrmTest.Demo
         public static void Init()
         {
             var db = GetInstance();
-            var student = db.Queryable<CMStudent>().ToList();
+            var students = db.Queryable<CMStudent>().ToList();
         }
     }
 
@@ -24,11 +24,23 @@ namespace OrmTest.Demo
         public int SchoolId { get; set; }
 
         [SugarColumn(IsIgnore = true)]
+        public string SchoolName
+        {
+            get
+            {
+                if (this.SchoolSingle != null)
+                    return this.SchoolSingle.Name;
+                else
+                    return null;
+            }
+        }
+
+        [SugarColumn(IsIgnore = true)]
         public CMSchool SchoolSingle
         {
             get
             {
-                return base.CreateMapping<CMSchool>().Single(it => it.Id == this.Id);
+                return base.CreateMapping<CMSchool>().Single(it => it.Id == this.SchoolId);
             }
         }
 
@@ -37,7 +49,7 @@ namespace OrmTest.Demo
         {
             get
             {
-                return base.CreateMapping<CMSchool>().Where(it => it.Id == this.Id).ToList();
+                return base.CreateMapping<CMSchool>().Where(it => it.Id == this.SchoolId).ToList();
             }
         }
     }

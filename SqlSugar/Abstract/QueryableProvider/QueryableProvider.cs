@@ -504,20 +504,39 @@ namespace SqlSugar
             List<TResult> result = null;
             var sqlObj = this.ToSql();
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
+            var entityType = typeof(TResult);
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
-                var tType = typeof(TResult);
-                if (tType.IsAnonymousType() || isComplexModel)
+                if (entityType.IsAnonymousType() || isComplexModel)
                 {
                     result = this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
                 }
                 else
                 {
-                    result = this.Bind.DataReaderToList<TResult>(tType, dataReader, QueryBuilder.SelectCacheKey);
+                    result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
                 }
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Context.Close();
             }
             RestoreMapping();
+            if (result.IsValuable())
+            {
+                if (entityType.BaseType.IsValuable() && entityType.BaseType == PubConst.ModelType)
+                {
+                    foreach (var item in result)
+                    {
+                       var contextProperty=item.GetType().GetProperty("Context");
+                        ConnectionConfig config = new ConnectionConfig();
+                        config =this.Context.CurrentConnectionConfig;
+                        var newClient = new SqlSugarClient(config);
+                        newClient.MappingColumns = this.Context.MappingColumns;
+                        newClient.MappingTables = this.Context.MappingTables;
+                        newClient.IgnoreColumns = this.Context.IgnoreColumns;
+                        newClient.Ado.MasterConnectionConfig = this.Context.Ado.MasterConnectionConfig;
+                        newClient.Ado.SlaveConnectionConfigs = this.Context.Ado.SlaveConnectionConfigs;
+                        contextProperty.SetValue(item, newClient, null);
+                    }
+                }
+            }
             return result;
         }
         protected List<string> GetPrimaryKeys()

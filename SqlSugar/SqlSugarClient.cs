@@ -98,6 +98,7 @@ namespace SqlSugar
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
         {
+
             InitMppingInfo<T>();
             var result = base.CreateQueryable<T>();
             return result;

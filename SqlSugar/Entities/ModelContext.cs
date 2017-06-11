@@ -7,10 +7,14 @@ namespace SqlSugar
 {
     public class ModelContext
     {
-        internal SqlSugarClient Context { get; set; }
-        public ISugarQueryable<T> CreateMapping<T>()where T:class,new()
+        [SugarColumn(IsIgnore = true)]
+        public SqlSugarClient Context { get; set; }
+        public ISugarQueryable<T> CreateMapping<T>() where T : class, new()
         {
-            return Context.Queryable<T>();
+            using (Context)
+            {
+                return Context.Queryable<T>();
+            }
         }
     }
 }

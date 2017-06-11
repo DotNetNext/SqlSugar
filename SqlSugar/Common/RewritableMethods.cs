@@ -89,7 +89,7 @@ namespace SqlSugar
                                 var addValue = readerValues[name];
                                 if (addValue == DBNull.Value)
                                 {
-                                    if (item.PropertyType.IsIn(PubConst.IntType, PubConst.DecType, PubConst.Dob, PubConst.ByteType))
+                                    if (item.PropertyType.IsIn(PubConst.IntType, PubConst.DecType, PubConst.DobType, PubConst.ByteType))
                                     {
                                         addValue = 0;
                                     }

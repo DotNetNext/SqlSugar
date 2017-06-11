@@ -17,7 +17,8 @@ namespace SqlSugar
         internal static Type ByteArrayType = typeof(byte[]);
         internal static Type BoolType = typeof(bool);
         internal static Type ObjType = typeof(object);
-        internal static Type Dob = typeof(double);
+        internal static Type DobType = typeof(double);
+        internal static Type ModelType= typeof(ModelContext);
         internal static Type DicSS = typeof(KeyValuePair<string, string>);
         internal static Type DicSi = typeof(KeyValuePair<string, int>);
         internal static Type Dicii = typeof(KeyValuePair<int, int>);
