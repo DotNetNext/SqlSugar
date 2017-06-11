@@ -139,9 +139,9 @@ namespace SqlSugar
         #endregion
 
         #region Use
-        public SugarMessageResult<bool> UseTran(Action action)
+        public DbResult<bool> UseTran(Action action)
         {
-            var result = new SugarMessageResult<bool>();
+            var result = new DbResult<bool>();
             try
             {
                 this.BeginTran();
@@ -159,9 +159,9 @@ namespace SqlSugar
             }
             return result;
         }
-        public SugarMessageResult<T> UseTran<T>(Func<T> action)
+        public DbResult<T> UseTran<T>(Func<T> action)
         {
-            var result = new SugarMessageResult<T>();
+            var result = new DbResult<T>();
             try
             {
                 this.BeginTran();

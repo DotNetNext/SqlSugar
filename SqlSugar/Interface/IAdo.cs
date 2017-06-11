@@ -84,8 +84,8 @@ namespace SqlSugar
         void RollbackTran();
         void CommitTran();
 
-        SugarMessageResult<bool> UseTran(Action action);
-        SugarMessageResult<T> UseTran<T>(Func<T> action);
+        DbResult<bool> UseTran(Action action);
+        DbResult<T> UseTran<T>(Func<T> action);
         void UseStoredProcedure(Action action);
         T UseStoredProcedure<T>(Func<T> action);
     }

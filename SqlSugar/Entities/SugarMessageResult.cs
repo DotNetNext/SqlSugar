@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SugarMessageResult<T>
+    public class DbResult<T>
     {
         public bool IsSuccess { get; set; }
         public Exception Exception { get; set; }
