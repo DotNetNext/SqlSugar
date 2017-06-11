@@ -518,27 +518,10 @@ namespace SqlSugar
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Context.Close();
             }
             RestoreMapping();
-            if (result.IsValuable())
-            {
-                if (entityType.BaseType.IsValuable() && entityType.BaseType == PubConst.ModelType)
-                {
-                    foreach (var item in result)
-                    {
-                       var contextProperty=item.GetType().GetProperty("Context");
-                        ConnectionConfig config = new ConnectionConfig();
-                        config =this.Context.CurrentConnectionConfig;
-                        var newClient = new SqlSugarClient(config);
-                        newClient.MappingColumns = this.Context.MappingColumns;
-                        newClient.MappingTables = this.Context.MappingTables;
-                        newClient.IgnoreColumns = this.Context.IgnoreColumns;
-                        newClient.Ado.MasterConnectionConfig = this.Context.Ado.MasterConnectionConfig;
-                        newClient.Ado.SlaveConnectionConfigs = this.Context.Ado.SlaveConnectionConfigs;
-                        contextProperty.SetValue(item, newClient, null);
-                    }
-                }
-            }
+            SetContextModel(result, entityType);
             return result;
         }
+
         protected List<string> GetPrimaryKeys()
         {
             if (this.Context.IsSystemTablesConfig)
@@ -566,6 +549,29 @@ namespace SqlSugar
             if (IsAs)
             {
                 this.Context.MappingTables = OldMappingTableList == null ? new MappingTableList() : OldMappingTableList;
+            }
+        }
+
+        private void SetContextModel<TResult>(List<TResult> result, Type entityType)
+        {
+            if (result.IsValuable())
+            {
+                if (entityType.BaseType.IsValuable() && entityType.BaseType == PubConst.ModelType)
+                {
+                    foreach (var item in result)
+                    {
+                        var contextProperty = item.GetType().GetProperty("Context");
+                        ConnectionConfig config = new ConnectionConfig();
+                        config = this.Context.CurrentConnectionConfig;
+                        var newClient = new SqlSugarClient(config);
+                        newClient.MappingColumns = this.Context.MappingColumns;
+                        newClient.MappingTables = this.Context.MappingTables;
+                        newClient.IgnoreColumns = this.Context.IgnoreColumns;
+                        newClient.Ado.MasterConnectionConfig = this.Context.Ado.MasterConnectionConfig;
+                        newClient.Ado.SlaveConnectionConfigs = this.Context.Ado.SlaveConnectionConfigs;
+                        contextProperty.SetValue(item, newClient, null);
+                    }
+                }
             }
         }
         #endregion
