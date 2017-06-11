@@ -121,6 +121,8 @@ namespace OrmTest.Demo
             var getAll = db.Queryable<Student>().ToList();
             var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
+            var getSingleOrDefault = db.Queryable<Student>().Single();
+            var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var sum = db.Queryable<Student>().Sum(it => it.Id);
