@@ -18,15 +18,22 @@ namespace OrmTest.Demo
             var db = GetInstance1();
 
             var sql = db.Queryable<Student>().ToSql();
+            //SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  isDelete=0 
 
             var sql2 = db.Queryable<Student, School>((f, s) => new object[] { JoinType.Left, f.SchoolId == s.Id }).ToSql();
+            //SELECT[f].[ID],[f].[SchoolId],[f].[Name],[f].[CreateTime]
+            //FROM[STudent] f Left JOIN School s ON([f].[SchoolId] = [s].[Id])   WHERE f.isDelete=0 
+
 
             //Specify name filter 
             var sql3 = db.Queryable<Student>().Filter("query1").ToSql();
+            //SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  WHERE  id>@id  AND  isDelete=0 
+
 
             //Specify key filter  and disabled global filter
             string key = "query1";
             var sql4 = db.Queryable<Student>().Filter(key,true).ToSql();
+            //SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  WHERE  id>@id  
 
         }
 
