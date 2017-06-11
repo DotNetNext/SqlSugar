@@ -54,6 +54,7 @@
     <Compile Include="Demos\Delete.cs" />
     <Compile Include="Demos\DemoBase.cs" />
     <Compile Include="Demos\Insert.cs" />
+    <Compile Include="Demos\MasterSlave.cs" />
     <Compile Include="Demos\Query.cs" />
     <Compile Include="Demos\Update.cs" />
     <Compile Include="Models\DataTestInfo.cs" />
