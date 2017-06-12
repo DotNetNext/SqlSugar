@@ -22,7 +22,7 @@ namespace SqlSugar
                 case ResolveExpressType.FieldMultiple:
                     Check.ThrowNotSupportedException("NewArrayExpression");
                     break;
-                case ResolveExpressType.Array:
+                case ResolveExpressType.ArraySingle:
                     foreach (var item in expression.Expressions)
                     {
                         base.Expression = item;

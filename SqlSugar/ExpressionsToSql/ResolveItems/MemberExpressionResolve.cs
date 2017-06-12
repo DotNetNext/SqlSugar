@@ -84,7 +84,7 @@ namespace SqlSugar
                     fieldName = getMultipleName(parameter, expression, isLeft);
                     base.Context.Result.Append(fieldName);
                     break;
-                case ResolveExpressType.Array:
+                case ResolveExpressType.ArraySingle:
                     fieldName = getArrayName(parameter, expression, isLeft);
                     base.Context.Result.Append(fieldName);
                     break;

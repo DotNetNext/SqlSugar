@@ -489,7 +489,12 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            GroupBy(lamResult.GetResultString());
+            string result = lamResult.GetResultString();
+            if (result.IsNullOrEmpty()) {
+                 lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
+                result =string.Join(",",lamResult.GetResultArray().Select(it=>this.SqlBuilder.GetTranslationColumnName(typeof(T).Name,it)));
+            }
+            GroupBy(result);
             return this;
         }
         protected ISugarQueryable<T> _Having(Expression expression)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest.Demo
 {
-    public class Query:DemoBase
+    public class Query : DemoBase
     {
 
         public static void Init()
@@ -38,11 +38,11 @@ namespace OrmTest.Demo
             });
 
             //2. has result 
-            var result= db.Ado.UseStoredProcedure<dynamic>(() =>
-            {
-                string spName = "sp_help";
-                return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-            });
+            var result = db.Ado.UseStoredProcedure<dynamic>(() =>
+             {
+                 string spName = "sp_help";
+                 return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+             });
 
             //2. has output 
             object outPutValue;
@@ -50,8 +50,8 @@ namespace OrmTest.Demo
             {
                 string spName = "sp_school";
                 var p1 = new SugarParameter("@p1", "1");
-                var p2= new SugarParameter("@p2", null,true);//isOutput=true
-                var dbResult= db.Ado.SqlQueryDynamic(spName,new SugarParameter[] {p1,p2 });
+                var p2 = new SugarParameter("@p2", null, true);//isOutput=true
+                var dbResult = db.Ado.SqlQueryDynamic(spName, new SugarParameter[] { p1, p2 });
                 outPutValue = p2.Value;
                 return dbResult;
             });
@@ -97,6 +97,11 @@ namespace OrmTest.Demo
                 .GroupBy(it => it.Id).Having(it => SqlFunc.AggregateAvg(it.Id) > 0)
                 .Select(it => new { idAvg = SqlFunc.AggregateAvg(it.Id), name = it.Name }).ToList();
 
+
+            var list2 = db.Queryable<Student>()
+             .GroupBy(it => new { it.Id, it.Name }).Having(it => SqlFunc.AggregateAvg(it.Id) > 0)
+             .Select(it => new { idAvg = SqlFunc.AggregateAvg(it.Id), name = it.Name }).ToList();
+
             //SQL:
             //SELECT AVG([Id]) AS[idAvg], [Name] AS[name]  FROM[Student] GROUP BY[Name],[Id] HAVING(AVG([Id]) > 0 )
 
@@ -120,7 +125,7 @@ namespace OrmTest.Demo
             var db = GetInstance();
             var getAll = db.Queryable<Student>().ToList();
             var getId = db.Queryable<Student>().Select(it => it.Id).ToList();
-            var getNew= db.Queryable<Student>().Where(it=>it.Id==1).Select(it =>new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id),it.Name,it.SchoolId }).ToList();
+            var getNew = db.Queryable<Student>().Where(it => it.Id == 1).Select(it => new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id), it.Name, it.SchoolId }).ToList();
             var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
             var getSingleOrDefault = db.Queryable<Student>().Single();
@@ -131,10 +136,10 @@ namespace OrmTest.Demo
             var isAny = db.Queryable<Student>().Where(it => it.Id == -1).Any();
             var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
             var getListByRename = db.Queryable<School>().AS("Student").ToList();
-            var in1 = db.Queryable<Student>().In(it=>it.Id,new int[] { 1, 2, 3 }).ToList();
+            var in1 = db.Queryable<Student>().In(it => it.Id, new int[] { 1, 2, 3 }).ToList();
             var in2 = db.Queryable<Student>().In(new int[] { 1, 2, 3 }).ToList();
             int[] array = new int[] { 1, 2 };
-            var in3 = db.Queryable<Student>().Where(it=>SqlFunc.ContainsArray(array, it.Id)).ToList();
+            var in3 = db.Queryable<Student>().Where(it => SqlFunc.ContainsArray(array, it.Id)).ToList();
             var group = db.Queryable<Student>().GroupBy(it => it.Id)
                 .Having(it => SqlFunc.AggregateCount(it.Id) > 10)
                 .Select(it => new { id = SqlFunc.AggregateCount(it.Id) }).ToList();
@@ -150,7 +155,7 @@ namespace OrmTest.Demo
             var pageSize = 2;
             var totalCount = 0;
             //page
-            var page = db.Queryable<Student>().OrderBy(it=>it.Id).ToPageList(pageIndex, pageSize, ref totalCount);
+            var page = db.Queryable<Student>().OrderBy(it => it.Id).ToPageList(pageIndex, pageSize, ref totalCount);
 
             //page join
             var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
@@ -283,7 +288,7 @@ namespace OrmTest.Demo
         private static void Enum()
         {
             var db = GetInstance();
-            var list = db.Queryable<StudentEnum>().AS("Student").Where(it=>it.SchoolId== SchoolEnum.HarvardUniversity).ToList();
+            var list = db.Queryable<StudentEnum>().AS("Student").Where(it => it.SchoolId == SchoolEnum.HarvardUniversity).ToList();
         }
     }
 }

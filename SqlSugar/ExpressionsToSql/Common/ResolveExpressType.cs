@@ -14,8 +14,9 @@ namespace SqlSugar
         FieldSingle=5,
         FieldMultiple=7,
         Join=8,
-        Array=9,
-        Update=10
+        ArraySingle=9,
+        ArrayMultiple = 10,
+        Update =11
 
     }
 }
