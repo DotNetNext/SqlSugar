@@ -71,7 +71,7 @@
     <Compile Include="Enum\ProperyType.cs" />
     <Compile Include="ExpressionsToSql\Common\FileHeper.cs" />
     <Compile Include="Interface\ICacheManager.cs" />
-    <Compile Include="Entities\SugarMessageResult.cs" />
+    <Compile Include="Entities\DbResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />
     <Compile Include="Interface\IFilter.cs" />
     <Compile Include="Realization\MySql\DbType.cs" />
