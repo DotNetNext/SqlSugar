@@ -89,8 +89,28 @@ namespace SqlSugar
 
         private void NoExistLogic(EntityInfo entityInfo)
         {
-            string tableString = GetCreateTableString(entityInfo);
-            this.Context.Ado.ExecuteCommand(tableString);
+            var tableName = GetTableName(entityInfo);
+            List<DbColumnInfo> columns = new List<DbColumnInfo>();
+            if (entityInfo.Columns.IsValuable())
+            {
+                foreach (var item in entityInfo.Columns)
+                {
+                    DbColumnInfo dbColumnInfo = new DbColumnInfo()
+                    {
+                        Length = item.Length,
+                        DataType = this.Context.Ado.DbBind.GetDbTypeName(item.PropertyInfo.PropertyType.Name),
+                        TableId = entityInfo.Columns.IndexOf(item),
+                        DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
+                        IsPrimarykey = item.IsPrimarykey,
+                        IsIdentity = item.IsIdentity,
+                        TableName = tableName,
+                        IsNullable = PubMethod.IsNullable(item.PropertyInfo),
+                        DefaultValue = item.DefaultValue,
+                        ColumnDescription = item.ColumnDescription
+                    };
+                }
+            }
+            this.Context.DbMaintenance.CreateTable(tableName, columns);
         }
 
         private void ExistLogic(EntityInfo entityInfo)

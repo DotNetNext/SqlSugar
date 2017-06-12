@@ -15,6 +15,20 @@ namespace SqlSugar
         #endregion
 
         #region Public methods
+        public string GetDbTypeName(string csharpTypeName)
+        {
+            if (csharpTypeName == PubConst.ByteArrayType.Name)
+            {
+                return "varbinary";
+            }
+            var mappings = this.MappingTypes.Where(it => it.Value.ToString() == csharpTypeName);
+            return mappings.IsValuable() ? mappings.First().Key : "varchar";
+        }
+        public string GetCsharpTypeName(string dbTypeName)
+        {
+            var mappings = this.MappingTypes.Where(it => it.Key == dbTypeName);
+            return mappings.IsValuable() ? mappings.First().Key : "string";
+        }
         public virtual string GetConvertString(string dbTypeName)
         {
             string reval = string.Empty;

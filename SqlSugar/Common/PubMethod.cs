@@ -24,6 +24,13 @@ namespace SqlSugar
             return unType;
         }
 
+        internal static bool IsNullable(PropertyInfo propertyInfo)
+        {
+            Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+            return unType!=null;
+        }
+
+
         internal static T IsNullReturnNew<T>(T returnObj) where T :  new()
         {
             if (returnObj.IsNullOrEmpty())
