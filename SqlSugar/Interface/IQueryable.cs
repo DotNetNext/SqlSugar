@@ -40,6 +40,9 @@ namespace SqlSugar
         ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T> GroupBy(string groupFileds);
 
+        ISugarQueryable<T> PartitionBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T> PartitionBy(string groupFileds);
+
         ISugarQueryable<T> Skip(int index);
         ISugarQueryable<T> Take(int num);
 

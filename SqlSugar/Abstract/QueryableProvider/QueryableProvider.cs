@@ -62,16 +62,16 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> Filter(string FilterName,bool isDisabledGobalFilter = false)
+        public ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
-            if (this.Context.QueryFilter.GeFilterList.IsValuable()&&FilterName.IsValuable())
+            if (this.Context.QueryFilter.GeFilterList.IsValuable() && FilterName.IsValuable())
             {
-                var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName&&it.IsJoinQuery == !QueryBuilder.IsSingle());
+                var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName && it.IsJoinQuery == !QueryBuilder.IsSingle());
                 foreach (var item in list)
                 {
                     var filterResult = item.FilterValue(this.Context);
-                    Where(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(),filterResult.Sql), filterResult.Parameters);
+                    Where(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(), filterResult.Sql), filterResult.Parameters);
                 }
             }
             return this;
@@ -253,6 +253,22 @@ namespace SqlSugar
                 QueryBuilder.GroupByValue = QueryBuilder.GroupByTemplate;
             }
             QueryBuilder.GroupByValue += string.IsNullOrEmpty(croupByValue) ? groupFileds : ("," + groupFileds);
+            return this;
+        }
+
+        public ISugarQueryable<T> PartitionBy(Expression<Func<T, object>> expression)
+        {
+            _PartitionBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T> PartitionBy(string groupFileds)
+        {
+            var partitionByValue = QueryBuilder.PartitionByValue;
+            if (QueryBuilder.PartitionByValue.IsNullOrEmpty())
+            {
+                QueryBuilder.PartitionByValue = QueryBuilder.PartitionByTemplate;
+            }
+            QueryBuilder.PartitionByValue += string.IsNullOrEmpty(partitionByValue) ? groupFileds : ("," + groupFileds);
             return this;
         }
 
@@ -499,10 +515,30 @@ namespace SqlSugar
             }
             else
             {
-                lamResult=QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
                 result = lamResult.GetResultString();
             }
             GroupBy(result);
+            return this;
+        }
+        public ISugarQueryable<T> _PartitionBy(Expression expression)
+        {
+            LambdaExpression lambda = expression as LambdaExpression;
+            expression = lambda.Body;
+            var isSingle = QueryBuilder.IsSingle();
+            ExpressionResult lamResult = null;
+            string result = null;
+            if (expression is NewExpression)
+            {
+                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
+                result = string.Join(",", lamResult.GetResultArray().Select(it => this.SqlBuilder.GetTranslationColumnName(typeof(T).Name, it)));
+            }
+            else
+            {
+                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                result = lamResult.GetResultString();
+            }
+            PartitionBy(result);
             return this;
         }
         protected ISugarQueryable<T> _Having(Expression expression)

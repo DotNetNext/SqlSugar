@@ -41,6 +41,7 @@ namespace SqlSugar
         public Type EntityType { get; set; }
         public string TableWithString { get; set; }
         public string GroupByValue { get; set; }
+        public string PartitionByValue { get; set; }
         public int WhereIndex { get; set; }
         public int JoinIndex { get; set; }
         public bool IsDisabledGobalFilter { get; set; }
@@ -140,7 +141,13 @@ namespace SqlSugar
                 return "GROUP BY ";
             }
         }
-
+        public virtual string PartitionByTemplate
+        {
+            get
+            {
+                return "PARTITION BY ";
+            }
+        }
         public virtual string MaxTemplate
         {
             get
