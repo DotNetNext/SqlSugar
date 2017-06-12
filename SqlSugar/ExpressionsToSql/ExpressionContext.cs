@@ -164,6 +164,13 @@ namespace SqlSugar
             base._Result = null;
             base._Parameters = new List<SugarParameter>();
         }
+        public ExpressionContext GetCopyContext()
+        {
+            ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
+            copyContext.Index = this.Index + 1;
+            copyContext.ParameterIndex = this.ParameterIndex + 1;
+            return copyContext;
+        }
         #endregion
     }
 }

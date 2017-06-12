@@ -8,6 +8,14 @@ namespace SqlSugar
 {
     public abstract partial class DefaultDbMethod : IDbMethods
     {
+        public virtual string IIF(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+        }
+
         public virtual string IsNullOrEmpty(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -54,7 +62,7 @@ namespace SqlSugar
         public virtual string ContainsArray(MethodCallExpressionModel model)
         {
             var inValueIEnumerable = (IEnumerable)model.Args[0].MemberValue;
-            List<object>  inValues = new List<object>();
+            List<object> inValues = new List<object>();
             if (inValueIEnumerable != null)
             {
                 foreach (var item in inValueIEnumerable)
@@ -68,10 +76,11 @@ namespace SqlSugar
             {
                 inValueString = inValues.ToArray().ToJoinSqlInVals();
             }
-            else {
-               return " (1=2) ";
+            else
+            {
+                return " (1=2) ";
             }
-            return string.Format(" ({0} IN ({1})) ", value,inValueString);
+            return string.Format(" ({0} IN ({1})) ", value, inValueString);
         }
 
         public string Equals(MethodCallExpressionModel model)
@@ -93,7 +102,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (DATEDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName); 
+            return string.Format(" (DATEDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
         public string DateAddByType(MethodCallExpressionModel model)
@@ -108,7 +117,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" (DATEADD(day,{1},{0})) ", parameter.MemberName, parameter2.MemberName); 
+            return string.Format(" (DATEADD(day,{1},{0})) ", parameter.MemberName, parameter2.MemberName);
         }
 
         public string Between(MethodCallExpressionModel model)
@@ -192,7 +201,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format("SUBSTRING({0},1 + {1},{2})", parameter.MemberName,parameter2.MemberName, parameter3.MemberName);
+            return string.Format("SUBSTRING({0},1 + {1},{2})", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
         public string Length(MethodCallExpressionModel model)

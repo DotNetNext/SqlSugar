@@ -21,6 +21,8 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                IIF();
+                IIF2();
                 #region StringIsNullOrEmpty
                 HasValue();
                 HasNumber();
@@ -62,7 +64,7 @@ namespace OrmTest.UnitTest
 
         private void Length()
         {
-            Expression<Func<Student, bool>> exp = it => SqlFunc.Length("aaaa") >1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Length("aaaa") > 1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -75,7 +77,7 @@ namespace OrmTest.UnitTest
         private void Replace()
         {
             var x2 = Guid.NewGuid();
-            Expression<Func<Student, bool>> exp = it => SqlFunc.Replace("aaaa","a", "1") == "a";
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Replace("aaaa", "a", "1") == "a";
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -88,7 +90,7 @@ namespace OrmTest.UnitTest
         private void Substring()
         {
             var x2 = Guid.NewGuid();
-            Expression<Func<Student, bool>> exp = it => SqlFunc.Substring("aaaa",0,2) == "a";
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Substring("aaaa", 0, 2) == "a";
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -192,7 +194,7 @@ namespace OrmTest.UnitTest
         private void ToInt32()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => SqlFunc.ToInt32("3")== 1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToInt32("3") == 1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -205,7 +207,7 @@ namespace OrmTest.UnitTest
         private void DateValue()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => SqlFunc.DateValue(x2,DateType.Year)==1;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateValue(x2, DateType.Year) == 1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -239,7 +241,7 @@ namespace OrmTest.UnitTest
         }
         private void Between()
         {
-            Expression<Func<Student, bool>> exp = it => SqlFunc.Between(it.Name,1, 2);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Between(it.Name, 1, 2);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -252,7 +254,7 @@ namespace OrmTest.UnitTest
         private void DateAddByType()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 11, DateType.Millisecond)==x2;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 11, DateType.Millisecond) == x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -265,7 +267,7 @@ namespace OrmTest.UnitTest
         private void DateAddDay()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 1)==x2;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 1) == x2;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -278,7 +280,7 @@ namespace OrmTest.UnitTest
         private void DateIsSameByType()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2,x2, DateType.Millisecond);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2, x2, DateType.Millisecond);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -291,7 +293,7 @@ namespace OrmTest.UnitTest
         private void DateIsSameByDay()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2,x2);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2, x2);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -313,7 +315,7 @@ namespace OrmTest.UnitTest
             }, "Equals1 error");
 
 
-            Expression<Func<Student, bool>> exp2 = it => SqlFunc.Equals("a",it.Name);
+            Expression<Func<Student, bool>> exp2 = it => SqlFunc.Equals("a", it.Name);
             SqlServerExpressionContext expContext2 = new SqlServerExpressionContext();
             expContext2.Resolve(exp2, ResolveExpressType.WhereSingle);
             var value2 = expContext2.Result.GetString();
@@ -358,18 +360,18 @@ namespace OrmTest.UnitTest
 
         private void ContainsArray()
         {
-            string[] array = new string[] { "1","2"};
+            string[] array = new string[] { "1", "2" };
             Expression<Func<Student, bool>> exp = it => SqlFunc.ContainsArray(array, it.Name);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, null, "  ([Name] IN ('1','2')) ",null, "Contains2 error");
+            base.Check(value, null, "  ([Name] IN ('1','2')) ", null, "Contains2 error");
         }
 
         private void Trim()
         {
-            Expression<Func<Student, bool>> exp = it =>SqlFunc.Trim("  a")==it.Name;
+            Expression<Func<Student, bool>> exp = it => SqlFunc.Trim("  a") == it.Name;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -381,7 +383,7 @@ namespace OrmTest.UnitTest
 
         private void ToUpper()
         {
-            Expression<Func<Student, bool>> exp = it =>"a"== SqlFunc.ToUpper(it.Id) ;
+            Expression<Func<Student, bool>> exp = it => "a" == SqlFunc.ToUpper(it.Id);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -455,7 +457,7 @@ namespace OrmTest.UnitTest
         private void StringIsNullOrEmpty5()
         {
             WhereConst.name = "xx";
-            Expression<Func<Student, bool>> exp =it=>!SqlFunc.IsNullOrEmpty(WhereConst.name);;
+            Expression<Func<Student, bool>> exp = it => !SqlFunc.IsNullOrEmpty(WhereConst.name); ;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
@@ -473,8 +475,9 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Name]<>'' AND [Name] IS NOT NULL )", new List<SugarParameter>() {
-              
+            base.Check(value, pars, "( [Name]<>'' AND [Name] IS NOT NULL )", new List<SugarParameter>()
+            {
+
             }, "HasValue error");
         }
 
@@ -485,10 +488,41 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Id]>0 AND [Id] IS NOT NULL )", new List<SugarParameter>() {
+            base.Check(value, pars, "( [Id]>0 AND [Id] IS NOT NULL )", new List<SugarParameter>()
+            {
 
 
             }, "HasNumber error");
+        }
+
+        private void IIF()
+        {
+            Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(it.Id == 1, 1, 2);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( CASE  WHEN ( [Id] = @Id1 ) THEN @MethodConst2  ELSE @MethodConst3 END )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Id1",1),
+                     new SugarParameter("@MethodConst2",1),
+                     new SugarParameter("@MethodConst3",2)
+            }, "IIF error");
+        }
+
+        private void IIF2()
+        {
+            Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(SqlFunc.Contains(it.Name,"a"), 1, 2);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( CASE  WHEN  ([Name] like '%'+@MethodConst1+'%')  THEN @MethodConst2  ELSE @MethodConst3 END )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@MethodConst1","a"),
+                     new SugarParameter("@MethodConst2",1),
+                     new SugarParameter("@MethodConst3",2)
+            }, "IIF error");
         }
     }
 }

@@ -22,12 +22,12 @@ namespace SqlSugar
             {
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
-                    WhereMethod(parameter, isLeft, name, args, model);
+                    Where(parameter, isLeft, name, args, model);
                     break;
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
                 case ResolveExpressType.Update:
-                    SelectMethod(parameter, isLeft, name, args, model);
+                    Select(parameter, isLeft, name, args, model);
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
@@ -35,82 +35,96 @@ namespace SqlSugar
                     break;
             }
         }
-        private void SelectMethod(ExpressionParameter parameter, bool? isLeft, string name, System.Collections.ObjectModel.ReadOnlyCollection<Expression> args, MethodCallExpressionModel model)
+        private void Select(ExpressionParameter parameter, bool? isLeft, string name, System.Collections.ObjectModel.ReadOnlyCollection<Expression> args, MethodCallExpressionModel model)
         {
             foreach (var item in args)
             {
-                parameter.CommonTempData = CommonTempDataType.Result;
-                base.Expression = item;
-                base.Start();
-                var methodCallExpressionArgs = new MethodCallExpressionArgs()
+                var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
+                if (isBinaryExpression)
                 {
-                    IsMember = parameter.ChildExpression is MemberExpression,
-                    MemberName = parameter.CommonTempData
-                };
-                var value = methodCallExpressionArgs.MemberName;
-                if (methodCallExpressionArgs.IsMember)
-                {
-                    var childExpression = parameter.ChildExpression as MemberExpression;
-                    if (childExpression.Expression != null && childExpression.Expression is ConstantExpression)
-                    {
-                        methodCallExpressionArgs.IsMember = false;
-                    }
+                    Binary(parameter, model, item);
                 }
-                if (methodCallExpressionArgs.IsMember == false)
+                else
                 {
-                    var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
-                    this.Context.ParameterIndex++;
-                    methodCallExpressionArgs.MemberName = parameterName;
-                    methodCallExpressionArgs.MemberValue = value;
-                    this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                    Default(parameter, model, item);
                 }
-                model.Args.Add(methodCallExpressionArgs);
             }
             parameter.BaseParameter.CommonTempData = GetMdthodValue(name, model);
         }
-        private void WhereMethod(ExpressionParameter parameter, bool? isLeft, string name, System.Collections.ObjectModel.ReadOnlyCollection<Expression> args, MethodCallExpressionModel model)
+        private void Where(ExpressionParameter parameter, bool? isLeft, string name, System.Collections.ObjectModel.ReadOnlyCollection<Expression> args, MethodCallExpressionModel model)
         {
             foreach (var item in args)
             {
-                parameter.CommonTempData = CommonTempDataType.Result;
-                base.Expression = item;
-                base.Start();
-                var methodCallExpressionArgs = new MethodCallExpressionArgs()
+                var isBinaryExpression = item is BinaryExpression||item is MethodCallExpression;
+                if (isBinaryExpression)
                 {
-                    IsMember = parameter.ChildExpression is MemberExpression,
-                    MemberName = parameter.CommonTempData
-                };
-                if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now")
-                {
-                    methodCallExpressionArgs.IsMember = false;
+                    Binary(parameter, model, item);
                 }
-                var value = methodCallExpressionArgs.MemberName;
-                if (methodCallExpressionArgs.IsMember)
+                else
                 {
-                    var childExpression = parameter.ChildExpression as MemberExpression;
-                    if (childExpression.Expression != null && childExpression.Expression is ConstantExpression)
-                    {
-                        methodCallExpressionArgs.IsMember = false;
-                    }
+                    Default(parameter, model, item);
                 }
-                if (methodCallExpressionArgs.IsMember == false)
-                {
-                    var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
-                    this.Context.ParameterIndex++;
-                    methodCallExpressionArgs.MemberName = parameterName;
-                    methodCallExpressionArgs.MemberValue = value;
-                    this.Context.Parameters.Add(new SugarParameter(parameterName, value));
-                }
-                model.Args.Add(methodCallExpressionArgs);
             }
             var methodValue = GetMdthodValue(name, model);
             base.AppendValue(parameter, isLeft, methodValue);
+        }
+        private void Binary(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
+        {
+            var newContext = this.Context.GetCopyContext();
+            newContext.Resolve(item, this.Context.ResolveType);
+            this.Context.Index = newContext.Index ;
+            this.Context.ParameterIndex = newContext.ParameterIndex ;
+            if (newContext.Parameters.IsValuable())
+            {
+                this.Context.Parameters.AddRange(newContext.Parameters);
+            }
+            var methodCallExpressionArgs = new MethodCallExpressionArgs()
+            {
+                IsMember = true,
+                MemberName = newContext.Result.GetResultString()
+            };
+            model.Args.Add(methodCallExpressionArgs);
+        }
+        private void Default(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
+        {
+            parameter.CommonTempData = CommonTempDataType.Result;
+            base.Expression = item;
+            base.Start();
+            var methodCallExpressionArgs = new MethodCallExpressionArgs()
+            {
+                IsMember = parameter.ChildExpression is MemberExpression,
+                MemberName = parameter.CommonTempData
+            };
+            if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now")
+            {
+                methodCallExpressionArgs.IsMember = false;
+            }
+            var value = methodCallExpressionArgs.MemberName;
+            if (methodCallExpressionArgs.IsMember)
+            {
+                var childExpression = parameter.ChildExpression as MemberExpression;
+                if (childExpression.Expression != null && childExpression.Expression is ConstantExpression)
+                {
+                    methodCallExpressionArgs.IsMember = false;
+                }
+            }
+            if (methodCallExpressionArgs.IsMember == false)
+            {
+                var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
+                this.Context.ParameterIndex++;
+                methodCallExpressionArgs.MemberName = parameterName;
+                methodCallExpressionArgs.MemberValue = value;
+                this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+            }
+            model.Args.Add(methodCallExpressionArgs);
         }
 
         private object GetMdthodValue(string name, MethodCallExpressionModel model)
         {
             switch (name)
             {
+                case "IIF":
+                    return this.Context.DbMehtods.IIF(model);
                 case "HasNumber":
                     return this.Context.DbMehtods.HasNumber(model);
                 case "HasValue":
