@@ -1,46 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 namespace SqlSugar
 {
     public partial class CodeFirstProvider : ICodeFirst
     {
+        #region Properties
         public virtual SqlSugarClient Context { get; set; }
+        #endregion
+
+        #region Fields
+        private bool _isBackupData = true;
+        private bool _isBackupTable = false;
+        private bool _isDeleteNoExistColumn = true;
+        #endregion
+
+        #region Public methods
 
         public void InitTables(Type entityType)
         {
-            throw new NotImplementedException();
+            var executeResult = Context.Ado.UseTran(() =>
+            {
+                Execute(entityType);
+            });
+            Check.Exception(!executeResult.IsSuccess, executeResult.Messaage);
         }
 
         public void InitTables(Type[] entityTypes)
         {
-            throw new NotImplementedException();
+            if (entityTypes.IsValuable())
+            {
+                foreach (var item in entityTypes)
+                {
+                    InitTables(item);
+                }
+            }
         }
 
         public void InitTables(string entitiesNamespace)
         {
-            throw new NotImplementedException();
+            var types = Assembly.Load(entitiesNamespace).GetTypes();
+            InitTables(types);
         }
 
         public void InitTables(string[] entitiesNamespaces)
         {
-            throw new NotImplementedException();
+            if (entitiesNamespaces.IsValuable())
+            {
+                foreach (var item in entitiesNamespaces)
+                {
+                    InitTables(item);
+                }
+            }
         }
 
-        public ICodeFirst IsBackupData(bool isCreateTable = true)
+        public ICodeFirst IsBackupData(bool isBackupData = true)
         {
-            throw new NotImplementedException();
+            _isBackupData = isBackupData;
+            return this;
         }
 
-        public ICodeFirst IsBackupTable(bool isCreateTable = false)
+        public ICodeFirst IsBackupTable(bool isBackupTable = false)
         {
-            throw new NotImplementedException();
+            _isBackupTable = isBackupTable;
+            return this;
         }
 
         public ICodeFirst IsDeleteNoExistColumn(bool isDeleteNoExistColumn = true)
         {
+            _isDeleteNoExistColumn = isDeleteNoExistColumn;
+            return this;
+        }
+        #endregion
+
+        #region Core
+        private void Execute(Type entityType)
+        {
+            var entityInfo = this.Context.EntityProvider.GetEntityInfo(entityType);
+            var tableName = GetTableName(entityInfo);
+            var isAny = this.Context.DbMaintenance.IsAnyTable(tableName);
+            if (isAny)
+                ExistLogic(entityInfo);
+            else
+                NoExistLogic(entityInfo);
+        }
+
+        private void NoExistLogic(EntityInfo entityInfo)
+        {
+            string tableString = GetCreateTableString(entityInfo);
+            this.Context.Ado.ExecuteCommand(tableString);
+        }
+
+        private void ExistLogic(EntityInfo entityInfo)
+        {
             throw new NotImplementedException();
         }
+
+        public string GetCreateTableString(EntityInfo entityInfo)
+        {
+            StringBuilder result = new StringBuilder();
+            var tableName = GetTableName(entityInfo);
+            return result.ToString();
+        }
+
+        public string GetCreateColumnsString(EntityInfo entityInfo)
+        {
+            StringBuilder result = new StringBuilder();
+            var tableName = GetTableName(entityInfo);
+
+            return result.ToString();
+        }
+
+        private static string GetTableName(EntityInfo entityInfo)
+        {
+            return entityInfo.DbTableName == null ? entityInfo.EntityName : entityInfo.DbTableName;
+        }
+        #endregion
     }
 }

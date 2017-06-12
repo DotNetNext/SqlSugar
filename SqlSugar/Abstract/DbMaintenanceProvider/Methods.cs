@@ -53,24 +53,38 @@ namespace SqlSugar
         #region Check
         public bool IsAnyTable(string tableName)
         {
-            return true;
+            var tables = GetTableInfoList();
+            if (tables == null) return false;
+            else return tables.Any(it => it.Name.Equals(tableName, StringComparison.CurrentCultureIgnoreCase));
         }
-        public bool IsAnyColumn(string tableName,string column)
+        public bool IsAnyColumn(string tableName, string columnName)
         {
-            return true;
+            var isAny = IsAnyTable(tableName);
+            Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
+            var columns = GetColumnInfosByTableName(tableName);
+            if (columns.IsNullOrEmpty()) return false;
+            return columns.Any(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
         }
-        public bool IsPrimaryKey(string tableName, string column)
+        public bool IsPrimaryKey(string tableName, string columnName)
         {
-            return true;
+            var isAny = IsAnyTable(tableName);
+            Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
+            var columns = GetColumnInfosByTableName(tableName);
+            if (columns.IsNullOrEmpty()) return false;
+            return columns.Any(it => it.IsPrimarykey = true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
         }
-        public bool IsIdentity(string tableName, string column)
+        public bool IsIdentity(string tableName, string columnName)
         {
-            return true;
+            var isAny = IsAnyTable(tableName);
+            Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
+            var columns = GetColumnInfosByTableName(tableName);
+            if (columns.IsNullOrEmpty()) return false;
+            return columns.Any(it => it.IsIdentity = true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
         }
         #endregion
 
         #region DDL
-        public bool AddColumnToTable(string tableName, DbColumnInfo column)
+        public bool AddColumnToTable(string tableName, DbColumnInfo columnName)
         {
             throw new NotImplementedException();
         }
