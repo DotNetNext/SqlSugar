@@ -102,6 +102,11 @@ namespace OrmTest.Demo
              .GroupBy(it => new { it.Id, it.Name }).Having(it => SqlFunc.AggregateAvg(it.Id) > 0)
              .Select(it => new { idAvg = SqlFunc.AggregateAvg(it.Id), name = it.Name }).ToList();
 
+            // group id,name take first
+            var list3 = db.Queryable<Student>()
+                .PartitionBy(it => new { it.Id, it.Name }).Take(1).ToList();
+
+
             //SQL:
             //SELECT AVG([Id]) AS[idAvg], [Name] AS[name]  FROM[Student] GROUP BY[Name],[Id] HAVING(AVG([Id]) > 0 )
 

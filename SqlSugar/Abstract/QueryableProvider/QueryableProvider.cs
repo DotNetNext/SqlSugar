@@ -258,6 +258,8 @@ namespace SqlSugar
 
         public ISugarQueryable<T> PartitionBy(Expression<Func<T, object>> expression)
         {
+            if (QueryBuilder.Take == null)
+                QueryBuilder.Take = 0;
             _PartitionBy(expression);
             return this;
         }

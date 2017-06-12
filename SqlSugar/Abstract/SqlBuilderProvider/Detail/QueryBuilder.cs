@@ -226,16 +226,27 @@ namespace SqlSugar
             if (Skip != null && Take == null)
             {
                 if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
+                if (this.PartitionByValue.IsValuable()) {
+                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+                }
                 return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
             }
             else if (Skip == null && Take != null)
             {
                 if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
+                if (this.PartitionByValue.IsValuable())
+                {
+                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+                }
                 return string.Format(PageTempalte, sql.ToString(), GetOrderByString, 1, Take.ObjToInt());
             }
             else if (Skip != null && Take != null)
             {
                 if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
+                if (this.PartitionByValue.IsValuable())
+                {
+                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+                }
                 return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Skip.ObjToInt() + Take.ObjToInt());
             }
             else
