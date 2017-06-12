@@ -487,12 +487,20 @@ namespace SqlSugar
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
+            LambdaExpression lambda = expression as LambdaExpression;
+            expression = lambda.Body;
             var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            string result = lamResult.GetResultString();
-            if (result.IsNullOrEmpty()) {
-                 lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
-                result =string.Join(",",lamResult.GetResultArray().Select(it=>this.SqlBuilder.GetTranslationColumnName(typeof(T).Name,it)));
+            ExpressionResult lamResult = null;
+            string result = null;
+            if (expression is NewExpression)
+            {
+                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
+                result = string.Join(",", lamResult.GetResultArray().Select(it => this.SqlBuilder.GetTranslationColumnName(typeof(T).Name, it)));
+            }
+            else
+            {
+                lamResult=QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                result = lamResult.GetResultString();
             }
             GroupBy(result);
             return this;
