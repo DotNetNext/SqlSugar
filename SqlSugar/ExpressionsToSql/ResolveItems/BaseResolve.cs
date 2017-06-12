@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 namespace SqlSugar
 {
@@ -197,6 +198,93 @@ namespace SqlSugar
                 MemberName = newContext.Result.GetResultString()
             };
             return methodCallExpressionArgs;
+        }
+
+        protected void ResolveNewExpressions(ExpressionParameter parameter, int i, Expression item, string memberName)
+        {
+            if (item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
+            {
+                this.Expression = item;
+                this.Start();
+                string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
+                parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+            }
+            else if (item is MethodCallExpression)
+            {
+                this.Expression = item;
+                this.Start();
+                parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+            }
+            else if (item is MemberExpression || item is UnaryExpression)
+            {
+                if (this.Context.Result.IsLockCurrentParameter == false)
+                {
+                    this.Context.Result.CurrentParameter = parameter;
+                    this.Context.Result.IsLockCurrentParameter = true;
+                    parameter.IsAppendTempDate();
+                    this.Expression = item;
+                    this.Start();
+                    parameter.IsAppendResult();
+                    this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                    this.Context.Result.CurrentParameter = null;
+                }
+            }
+            else if (item is BinaryExpression)
+            {
+                if (this.Context.Result.IsLockCurrentParameter == false)
+                {
+                    this.Context.Result.CurrentParameter = parameter;
+                    this.Context.Result.IsLockCurrentParameter = true;
+                    parameter.IsAppendTempDate();
+                    this.Expression = item;
+                    parameter.CommonTempData = "simple";
+                    this.Start();
+                    parameter.CommonTempData = null;
+                    parameter.IsAppendResult();
+                    this.Context.Result.TrimEnd();
+                    this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                    this.Context.Result.CurrentParameter = null;
+                }
+            }
+            else if (item.Type.IsClass())
+            {
+                this.Expression = item;
+                this.Start();
+                var shortName = parameter.CommonTempData;
+                var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
+                foreach (var property in listProperties)
+                {
+                    if (this.Context.IgnoreComumnList != null
+                        && this.Context.IgnoreComumnList.Any(
+                            it => it.EntityName == item.Type.Name && it.PropertyName == property.Name))
+                    {
+                        continue;
+                    }
+                    if (property.PropertyType.IsClass())
+                    {
+
+                    }
+                    else
+                    {
+                        var asName = "[" + item.Type.Name + "." + property.Name + "]";
+                        var columnName = property.Name;
+                        if (Context.IsJoin)
+                        {
+                            this.Context.Result.Append(Context.GetAsString(asName, columnName, shortName.ObjToString()));
+                        }
+                        else
+                        {
+                            this.Context.Result.Append(Context.GetAsString(asName, columnName));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Check.ThrowNotSupportedException(item.GetType().Name);
+
+            }
         }
 
         protected void AppendNot(object Value)
