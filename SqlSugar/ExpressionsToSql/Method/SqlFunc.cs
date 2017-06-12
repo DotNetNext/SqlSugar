@@ -66,7 +66,7 @@ namespace SqlSugar
         public static DateTime DateAdd(DateTime date, int addValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
         public static int DateValue(DateTime date, DateType dataType) { throw new NotSupportedException("This method is not supported by the current parameter"); }
         public static bool Between(object value, object start, object end) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static bool IIF(bool Expression, object thenValue, object elseValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult IIF<TResult>(bool Expression, TResult thenValue, TResult elseValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
         public static int ToInt32(object value) { return value.ObjToInt(); }
         public static long ToInt64(object value) { return Convert.ToInt64(value); }
         public static DateTime ToDate(object value) { return value.ObjToDate(); }

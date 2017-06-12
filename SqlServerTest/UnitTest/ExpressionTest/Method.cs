@@ -497,32 +497,34 @@ namespace OrmTest.UnitTest
 
         private void IIF()
         {
-            Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(it.Id == 1, 1, 2);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(it.Id == 1, 1, 2)==1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( CASE  WHEN ( [Id] = @Id1 ) THEN @MethodConst2  ELSE @MethodConst3 END )", new List<SugarParameter>()
+            base.Check(value, pars, "(( CASE  WHEN ( [Id] = @Id1 ) THEN @MethodConst2  ELSE @MethodConst3 END ) = @Const4 )", new List<SugarParameter>()
             {
                      new SugarParameter("@Id1",1),
                      new SugarParameter("@MethodConst2",1),
-                     new SugarParameter("@MethodConst3",2)
+                     new SugarParameter("@MethodConst3",2),
+                     new SugarParameter("@Const4",1)
             }, "IIF error");
         }
 
         private void IIF2()
         {
-            Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(SqlFunc.Contains(it.Name,"a"), 1, 2);
+            Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(SqlFunc.Contains(it.Name,"a"), 1, 2)==1;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( CASE  WHEN  ([Name] like '%'+@MethodConst1+'%')  THEN @MethodConst2  ELSE @MethodConst3 END )", new List<SugarParameter>()
+            base.Check(value, pars, "(( CASE  WHEN  ([Name] like '%'+@MethodConst1+'%')  THEN @MethodConst2  ELSE @MethodConst3 END ) = @Const4 )", new List<SugarParameter>()
             {
                      new SugarParameter("@MethodConst1","a"),
                      new SugarParameter("@MethodConst2",1),
-                     new SugarParameter("@MethodConst3",2)
-            }, "IIF error");
+                     new SugarParameter("@MethodConst3",2),
+                                     new SugarParameter("@Const4",1)
+            }, "IIF2 error");
         }
     }
 }
