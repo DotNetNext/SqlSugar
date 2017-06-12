@@ -180,6 +180,25 @@ namespace SqlSugar
                 this.Context.Result.Append(" " + ExpressionConst.Format1 + parameter.BaseParameter.Index);
             }
         }
+
+        protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item)
+        {
+            var newContext = this.Context.GetCopyContext();
+            newContext.Resolve(item, this.Context.ResolveType);
+            this.Context.Index = newContext.Index;
+            this.Context.ParameterIndex = newContext.ParameterIndex;
+            if (newContext.Parameters.IsValuable())
+            {
+                this.Context.Parameters.AddRange(newContext.Parameters);
+            }
+            var methodCallExpressionArgs = new MethodCallExpressionArgs()
+            {
+                IsMember = true,
+                MemberName = newContext.Result.GetResultString()
+            };
+            return methodCallExpressionArgs;
+        }
+
         protected void AppendNot(object Value)
         {
             this.Context.Result.Append("NOT");

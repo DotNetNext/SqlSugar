@@ -42,7 +42,7 @@ namespace SqlSugar
                 var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
                 if (isBinaryExpression)
                 {
-                    Binary(parameter, model, item);
+                    model.Args.Add(GetMethodCallArgs(parameter, item));
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace SqlSugar
                 var isBinaryExpression = item is BinaryExpression||item is MethodCallExpression;
                 if (isBinaryExpression)
                 {
-                    Binary(parameter, model, item);
+                    model.Args.Add(GetMethodCallArgs(parameter, item));
                 }
                 else
                 {
@@ -67,23 +67,6 @@ namespace SqlSugar
             }
             var methodValue = GetMdthodValue(name, model);
             base.AppendValue(parameter, isLeft, methodValue);
-        }
-        private void Binary(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
-        {
-            var newContext = this.Context.GetCopyContext();
-            newContext.Resolve(item, this.Context.ResolveType);
-            this.Context.Index = newContext.Index ;
-            this.Context.ParameterIndex = newContext.ParameterIndex ;
-            if (newContext.Parameters.IsValuable())
-            {
-                this.Context.Parameters.AddRange(newContext.Parameters);
-            }
-            var methodCallExpressionArgs = new MethodCallExpressionArgs()
-            {
-                IsMember = true,
-                MemberName = newContext.Result.GetResultString()
-            };
-            model.Args.Add(methodCallExpressionArgs);
         }
         private void Default(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
