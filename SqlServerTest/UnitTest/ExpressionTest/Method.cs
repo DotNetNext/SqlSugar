@@ -502,12 +502,12 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( CASE  WHEN ( [Id] = @Id1 ) THEN @MethodConst2  ELSE @MethodConst3 END ) = @Const4 )", new List<SugarParameter>()
+            base.Check(value, pars, "(( CASE  WHEN ( [Id] = @Id0 ) THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
             {
-                     new SugarParameter("@Id1",1),
-                     new SugarParameter("@MethodConst2",1),
-                     new SugarParameter("@MethodConst3",2),
-                     new SugarParameter("@Const4",1)
+                     new SugarParameter("@Id0",1),
+                     new SugarParameter("@MethodConst1",1),
+                     new SugarParameter("@MethodConst2",2),
+                     new SugarParameter("@Const3",1)
             }, "IIF error");
         }
 
@@ -518,12 +518,12 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( CASE  WHEN  ([Name] like '%'+@MethodConst1+'%')  THEN @MethodConst2  ELSE @MethodConst3 END ) = @Const4 )", new List<SugarParameter>()
+            base.Check(value, pars, "(( CASE  WHEN  ([Name] like '%'+@MethodConst0+'%')  THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
             {
-                     new SugarParameter("@MethodConst1","a"),
-                     new SugarParameter("@MethodConst2",1),
-                     new SugarParameter("@MethodConst3",2),
-                                     new SugarParameter("@Const4",1)
+                     new SugarParameter("@MethodConst0","a"),
+                     new SugarParameter("@MethodConst1",1),
+                     new SugarParameter("@MethodConst2",2),
+                                     new SugarParameter("@Const3",1)
             }, "IIF2 error");
         }
     }

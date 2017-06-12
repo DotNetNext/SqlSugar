@@ -167,8 +167,8 @@ namespace SqlSugar
         public ExpressionContext GetCopyContext()
         {
             ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
-            copyContext.Index = this.Index + 1;
-            copyContext.ParameterIndex = this.ParameterIndex + 1;
+            copyContext.Index = this.Index;
+            copyContext.ParameterIndex = this.ParameterIndex;
             return copyContext;
         }
         #endregion
