@@ -34,6 +34,7 @@ namespace OrmTest.UnitTest
                 whereSingle11();
                 whereSingle12();
                 whereSingle13();
+                whereSingle14();
                 WhereMultiple1();
                 WhereMultiple2();
           
@@ -234,6 +235,19 @@ namespace OrmTest.UnitTest
             {
  
             }, "whereSingle13");
+        }
+
+        private void whereSingle14()
+        {
+            Expression<Func<Student, bool>> exp = it =>true&& it.Name != null;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( 1 = 1 ) AND( [Name] IS NOT NULL ))", new List<SugarParameter>()
+            {
+
+            }, "whereSingle14");
         }
     }
 

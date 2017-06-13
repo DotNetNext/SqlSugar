@@ -33,11 +33,18 @@ namespace SqlSugar
                     {
                         var parentIsBinary = parameter.BaseParameter.CurrentExpression is BinaryExpression;
                         var parentIsRoot = parameter.BaseParameter.CurrentExpression is LambdaExpression;
-                        if (parentIsRoot&& value!=null&&value.GetType()==PubConst.BoolType) {
-                            this.Context.Result.Append(value.ObjToBool()?"( 1 = 1 ) ": "( 1 = 2 ) ");
+                        if (parentIsRoot && value != null && value.GetType() == PubConst.BoolType)
+                        {
+                            this.Context.Result.Append(value.ObjToBool() ? "( 1 = 1 ) " : "( 1 = 2 ) ");
                             break;
                         }
-                        if (value == null && parentIsBinary) {
+                        if (parentIsBinary && value != null && value.GetType() == PubConst.BoolType && parameter.OppsiteExpression is BinaryExpression)
+                        {
+                            AppendMember(parameter,isLeft,(value.ObjToBool() ? "( 1 = 1 ) " : "( 1 = 2 ) "));
+                            break;
+                        }
+                        if (value == null && parentIsBinary)
+                        {
                             parameter.BaseParameter.ValueIsNull = true;
                             value = "NULL";
                         }

@@ -106,7 +106,22 @@ namespace SqlSugar
             }
             return null;
         }
+        protected void AppendMember(ExpressionParameter parameter, bool? isLeft, object appendValue) {
 
+            Context.ParameterIndex++;
+            if (isLeft == true)
+            {
+                appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+            }
+            if (this.Context.Result.Contains(ExpressionConst.Format0))
+            {
+                this.Context.Result.Replace(ExpressionConst.Format0, appendValue.ObjToString());
+            }
+            else
+            {
+                this.Context.Result.Append(appendValue);
+            }
+        }
         protected void AppendValue(ExpressionParameter parameter, bool? isLeft, object value)
         {
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)

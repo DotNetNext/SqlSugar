@@ -119,9 +119,11 @@ namespace OrmTest.Demo
         private static void Ado()
         {
             var db = GetInstance();
+            db.Ado.BeginTran();
             var t1 = db.Ado.SqlQuery<string>("select 'a'");
             var t2 = db.Ado.GetInt("select 1");
             var t3 = db.Ado.GetDataTable("select 1 as id");
+            db.Ado.CommitTran();
             //more
             //db.Ado.GetXXX...
         }
