@@ -15,6 +15,10 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
             var isValidNativeMethod = MethodMapping.ContainsKey(methodName)&&express.Method.DeclaringType.Namespace==("System");
+            if (!isValidNativeMethod&&express.Method.DeclaringType.Namespace== "System.Linq"&&methodName=="Contains") {
+                methodName = "ContainsArray";
+                isValidNativeMethod = true;
+            }
             if (isValidNativeMethod)
             {
                 NativeExtensionMethod(parameter, express, isLeft, MethodMapping[methodName]);
@@ -240,6 +244,7 @@ namespace SqlSugar
             { "Length","Length"},
             { "Replace","Replace"},
             { "Contains","Contains"},
+            { "ContainsArray","ContainsArray"},
             { "EndsWith","EndsWith"},
             { "StartsWith","StartsWith"},
             { "HasValue","HasValue"},

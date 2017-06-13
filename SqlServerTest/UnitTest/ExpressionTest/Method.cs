@@ -23,6 +23,7 @@ namespace OrmTest.UnitTest
             {
 
                 //Native methods
+                ExtendContainsArray();
                 ConvetToString();
                 ExtendToString();
                 ExtendSubstring();
@@ -414,6 +415,16 @@ namespace OrmTest.UnitTest
             base.Check(value, pars, " ([Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains error");
+        }
+
+        private void ExtendContainsArray() {
+            string[] array = new string[] { "1", "2" };
+            Expression<Func<Student, bool>> exp = it => array.Contains(it.Name);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, null, "  ([Name] IN ('1','2')) ", null, "Contains2 error");
         }
 
         private void ContainsArray()
