@@ -90,11 +90,11 @@
     <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
-    <Compile Include="Abstract\SqlBuilderProvider\Detail\DeleteBuilder.cs" />
-    <Compile Include="Abstract\SqlBuilderProvider\Detail\InsertBuilder.cs" />
-    <Compile Include="Abstract\SqlBuilderProvider\Detail\QueryBuilder.cs" />
-    <Compile Include="Abstract\SqlBuilderProvider\Detail\SqlQueryBuilder.cs" />
-    <Compile Include="Abstract\SqlBuilderProvider\Detail\UpdateBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\DeleteBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\InsertBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\QueryBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\SqlQueryBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\UpdateBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider.cs" />
     <Compile Include="Common\CacheManager.cs" />
