@@ -59,11 +59,12 @@ namespace OrmTest.Demo
         private static void Tran()
         {
             var db = GetInstance();
-
+            var x=db.Insertable(new Student() { CreateTime = DateTime.Now, Name = "tran" }).ExecuteCommand();
             //1. no result 
             var result = db.Ado.UseTran(() =>
                {
-                   var beginCount = db.Queryable<Student>().Count();
+          
+                   var beginCount = db.Queryable<Student>().ToList();
                    db.Ado.ExecuteCommand("delete student");
                    var endCount = db.Queryable<Student>().Count();
                    throw new Exception("error haha");

@@ -223,7 +223,8 @@ namespace SqlSugar
         {
             ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
-            IDataReader sqlDataReader = sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
+            var isAutoClose = this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
+            IDataReader sqlDataReader =  sqlCommand.ExecuteReader(isAutoClose?CommandBehavior.CloseConnection:CommandBehavior.Default);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecuteAfter(sql, parameters);

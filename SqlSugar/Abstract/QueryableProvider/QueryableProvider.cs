@@ -566,7 +566,6 @@ namespace SqlSugar
                 {
                     result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
                 }
-                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Context.Close();
             }
             RestoreMapping();
             SetContextModel(result, entityType);
