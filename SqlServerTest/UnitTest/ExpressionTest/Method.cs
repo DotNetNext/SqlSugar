@@ -78,7 +78,7 @@ namespace OrmTest.UnitTest
             var pars = expContext.Parameters;
             base.Check(value, pars, "(CAST([Id] AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
                  new SugarParameter("@Const0","a")
-            }, "To_string error");
+            }, "ExtendToString error");
         }
 
         private void ConvetToString()
@@ -90,7 +90,7 @@ namespace OrmTest.UnitTest
             var pars = expContext.Parameters;
             base.Check(value, pars, "(CAST([Id] AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
                  new SugarParameter("@Const0","a")
-            }, "To_string error");
+            }, "ConvetToString error");
         }
 
 
