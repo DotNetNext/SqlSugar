@@ -13,16 +13,11 @@ namespace SqlSugar
         {
             var express = base.Expression as MethodCallExpression;
             var isLeft = parameter.IsLeft;
-            var isValidNativeMethod =
-                express.Method.Name.IsIn(
-                               "ToString", "ToInt32", "ToInt64", 
-                               "Length", "Replace", "Substring",
-                               "Contains", "EndsWith", "StartsWith",
-                               "HasValue", "Trim", "Equals",
-                               "ToLower", "ToUpper"); 
+            string methodName = express.Method.Name;
+            var isValidNativeMethod = MethodMapping.ContainsKey(methodName)&&express.Method.DeclaringType.Namespace==("System");
             if (isValidNativeMethod)
             {
-                NativeExtensionMethod(parameter, express, isLeft);
+                NativeExtensionMethod(parameter, express, isLeft, MethodMapping[methodName]);
             }
             else
             {
@@ -56,10 +51,9 @@ namespace SqlSugar
             }
         }
 
-        private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
+        private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft,string name)
         {
             var method = express.Method;
-            string name = method.Name;
             var args = express.Arguments.Cast<Expression>().ToList();
             MethodCallExpressionModel model = new MethodCallExpressionModel();
             model.Args = new List<MethodCallExpressionArgs>();
@@ -68,7 +62,7 @@ namespace SqlSugar
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
                     if (express.Object != null)
-                        args.Insert(0,express.Object);
+                        args.Insert(0, express.Object);
                     Where(parameter, isLeft, name, args, model);
                     break;
                 case ResolveExpressType.SelectSingle:
@@ -233,6 +227,28 @@ namespace SqlSugar
             }
             return null;
         }
+
+        private static Dictionary<string, string> MethodMapping = new Dictionary<string, string>() {
+            { "ToString","ToString"},
+            { "ToInt32","ToInt32"},
+            { "ToInt16","ToInt32"},
+            { "ToInt64","ToInt64"},
+            { "ToDecimal","ToDecimal"},
+            { "ToDateTime","ToDate"},
+            { "ToBoolean","ToBool"},
+            { "ToDouble","ToDouble"},
+            { "Length","Length"},
+            { "Replace","Replace"},
+            { "Contains","Contains"},
+            { "EndsWith","EndsWith"},
+            { "StartsWith","StartsWith"},
+            { "HasValue","HasValue"},
+            { "Trim","Trim"},
+            { "Equals","Equals"},
+            { "ToLower","ToLower"},
+            { "ToUpper","ToUpper"},
+            { "Substring","Substring"}
+        };
 
         private void CheckMethod(MethodCallExpression expression)
         {

@@ -26,6 +26,7 @@ namespace OrmTest.UnitTest
                 ConvetToString();
                 ExtendToString();
                 ExtendSubstring();
+                ExtendDate();
 
                 //SqlFun methods
                 IIF();
@@ -222,7 +223,19 @@ namespace OrmTest.UnitTest
                 new SugarParameter("@MethodConst0","2015-1-1"),new SugarParameter("@Const1",x2)
             }, "ToDate error");
         }
-
+        private void ExtendDate()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => Convert.ToDateTime("2015-1-1") == x2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS DATETIME) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","2015-1-1"),new SugarParameter("@Const1",x2)
+            }, "ExtendDate error");
+        }
+        
         private void ToInt64()
         {
             var x2 = DateTime.Now;
