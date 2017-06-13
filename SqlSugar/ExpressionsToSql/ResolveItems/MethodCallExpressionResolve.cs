@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -12,10 +13,29 @@ namespace SqlSugar
         {
             var express = base.Expression as MethodCallExpression;
             var isLeft = parameter.IsLeft;
+            var isValidNativeMethod =
+                express.Method.Name.IsIn(
+                               "ToString", "ToInt32", "ToInt64", 
+                               "Length", "Replace", "Substring",
+                               "Contains", "EndsWith", "StartsWith",
+                               "HasValue", "Trim", "Equals",
+                               "ToLower", "ToUpper"); 
+            if (isValidNativeMethod)
+            {
+                NativeExtensionMethod(parameter, express, isLeft);
+            }
+            else
+            {
+                SqlFuncMethod(parameter, express, isLeft);
+            }
+        }
+
+        private void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
+        {
             CheckMethod(express);
             var method = express.Method;
             string name = method.Name;
-            var args = express.Arguments;
+            var args = express.Arguments.Cast<Expression>().ToList();
             MethodCallExpressionModel model = new MethodCallExpressionModel();
             model.Args = new List<MethodCallExpressionArgs>();
             switch (this.Context.ResolveType)
@@ -35,7 +55,37 @@ namespace SqlSugar
                     break;
             }
         }
-        private void Select(ExpressionParameter parameter, bool? isLeft, string name, System.Collections.ObjectModel.ReadOnlyCollection<Expression> args, MethodCallExpressionModel model)
+
+        private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
+        {
+            var method = express.Method;
+            string name = method.Name;
+            var args = express.Arguments.Cast<Expression>().ToList();
+            MethodCallExpressionModel model = new MethodCallExpressionModel();
+            model.Args = new List<MethodCallExpressionArgs>();
+            switch (this.Context.ResolveType)
+            {
+                case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
+                    if (express.Object != null)
+                        args.Insert(0,express.Object);
+                    Where(parameter, isLeft, name, args, model);
+                    break;
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.Update:
+                    if (express.Object != null)
+                        args.Insert(0, express.Object);
+                    Select(parameter, isLeft, name, args, model);
+                    break;
+                case ResolveExpressType.FieldSingle:
+                case ResolveExpressType.FieldMultiple:
+                default:
+                    break;
+            }
+        }
+
+        private void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model)
         {
             foreach (var item in args)
             {
@@ -51,11 +101,11 @@ namespace SqlSugar
             }
             parameter.BaseParameter.CommonTempData = GetMdthodValue(name, model);
         }
-        private void Where(ExpressionParameter parameter, bool? isLeft, string name, System.Collections.ObjectModel.ReadOnlyCollection<Expression> args, MethodCallExpressionModel model)
+        private void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model)
         {
             foreach (var item in args)
             {
-                var isBinaryExpression = item is BinaryExpression||item is MethodCallExpression;
+                var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
                 if (isBinaryExpression)
                 {
                     model.Args.Add(GetMethodCallArgs(parameter, item));

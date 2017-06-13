@@ -21,6 +21,13 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+
+                //Native methods
+                ConvetToString();
+                ExtendToString();
+                ExtendSubstring();
+
+                //SqlFun methods
                 IIF();
                 IIF2();
                 #region StringIsNullOrEmpty
@@ -62,6 +69,31 @@ namespace OrmTest.UnitTest
             base.End("Method Test");
         }
 
+        private void ExtendToString()
+        {
+            Expression<Func<Student, bool>> exp = it => it.Id.ToString() == "a";
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST([Id] AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
+                 new SugarParameter("@Const0","a")
+            }, "To_string error");
+        }
+
+        private void ConvetToString()
+        {
+            Expression<Func<Student, bool>> exp = it => Convert.ToString(it.Id) == "a";
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST([Id] AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
+                 new SugarParameter("@Const0","a")
+            }, "To_string error");
+        }
+
+
         private void Length()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Length("aaaa") > 1;
@@ -99,6 +131,19 @@ namespace OrmTest.UnitTest
                 new SugarParameter("@MethodConst0","aaaa"),   new SugarParameter("@MethodConst1",0) ,   new SugarParameter("@MethodConst2",2),new SugarParameter("@Const3","a")
             }, "Substring error");
         }
+        private void ExtendSubstring()
+        {
+            var x2 = Guid.NewGuid();
+            Expression<Func<Student, bool>> exp = it =>"aaaa".Substring(0, 2)== "a";
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(SUBSTRING(@MethodConst0,1 + @MethodConst1,@MethodConst2) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","aaaa"),   new SugarParameter("@MethodConst1",0) ,   new SugarParameter("@MethodConst2",2),new SugarParameter("@Const3","a")
+            }, "Substring error");
+        }
+        
 
         private void ToBool()
         {
