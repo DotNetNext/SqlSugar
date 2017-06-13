@@ -177,8 +177,8 @@
     <Compile Include="Interface\ILambdaExpressions.cs" />
     <Compile Include="Interface\Insertable.cs" />
     <Compile Include="Interface\IQueryable.cs" />
-    <Compile Include="Interface\ISqlBuilder\IDMLBuilder.cs" />
-    <Compile Include="Interface\ISqlBuilder\ISqlBuilder.cs" />
+    <Compile Include="Interface\IDMLBuilder.cs" />
+    <Compile Include="Interface\ISqlBuilder.cs" />
     <Compile Include="Interface\IRewritableMethods.cs" />
     <Compile Include="Interface\IUpdateable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
