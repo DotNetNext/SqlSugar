@@ -26,7 +26,7 @@ namespace SqlSugar
         {
             get
             {
-                return ExpressionConst.GetThrowMessage("Please use the following methods in the SqlFunc class, such as SqlFunc.IsNullOrEmpty (it.Name) for Lambda parsing", "拉姆达解析请使用 SqlFunc 类下面的方法，例如 SqlFunc.IsNullOrEmpty(it.Name)");
+                return ExpressionConst.GetThrowMessage("Expression parsing does not support the current function. There are many functions available in the SqlFunc class, for example, it=>SqlFunc.HasValue(it.Id)", "拉姆达解析不支持当前函数，SqlFunc这个类里面有大量函数可用，例如 it=>SqlFunc.HasValue(it.Id)");
             }
         }
     }
