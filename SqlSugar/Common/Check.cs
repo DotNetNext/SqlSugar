@@ -36,11 +36,5 @@ namespace SqlSugar
                 throw new SqlSugarException(string.Format(message, args));
         }
 
-        internal static void Exception(bool v, object xX)
-        {
-            throw new NotImplementedException();
-        }
     }
-
-
 }
