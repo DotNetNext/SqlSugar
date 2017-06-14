@@ -98,7 +98,7 @@ namespace SqlSugar
 
         public IInsertable<T> Where(bool isNoInsertNull, bool isOffIdentity = false)
         {
-            this.IsOffIdentity = IsOffIdentity;
+            this.IsOffIdentity = isOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
             this.InsertBuilder.IsNoInsertNull = isNoInsertNull;

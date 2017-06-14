@@ -89,11 +89,12 @@ new List<SugarParameter>() {
             var insertObj2 = new Student() { Name = null,SchoolId=0, CreateTime = Convert.ToDateTime("2010-1-1") };
             var t8 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ToSql();
             base.Check(@"INSERT INTO [STudent]  
-           ([SchoolId],[CreateTime])
+           ([ID],[SchoolId],[CreateTime])
      VALUES
-           (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
+           (@ID,@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
                new List<SugarParameter>() {
                new SugarParameter("@SchoolId", 0),
+               new SugarParameter("@ID", 0),
                new SugarParameter("@CreateTime", Convert.ToDateTime("2010-1-1"))
                },
                t8.Key,

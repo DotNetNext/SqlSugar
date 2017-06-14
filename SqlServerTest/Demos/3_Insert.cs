@@ -42,7 +42,7 @@ namespace OrmTest.Demo
 
 
             var insertObj2 = new Student() { Name = null, CreateTime = Convert.ToDateTime("2010-1-1") };
-            var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ExecuteCommand();
+            var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, false/*off identity*/).ExecuteCommand();
 
             //Insert List<T>
             var insertObjs = new List<Student>();
