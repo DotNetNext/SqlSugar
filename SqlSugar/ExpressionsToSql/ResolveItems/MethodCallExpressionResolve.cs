@@ -148,6 +148,7 @@ namespace SqlSugar
                 this.Context.Parameters.Add(new SugarParameter(parameterName, value));
             }
             model.Args.Add(methodCallExpressionArgs);
+            parameter.ChildExpression = null;
         }
 
         private object GetMdthodValue(string name, MethodCallExpressionModel model)
