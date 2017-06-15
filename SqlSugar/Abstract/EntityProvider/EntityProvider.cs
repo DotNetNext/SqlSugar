@@ -49,6 +49,16 @@ namespace SqlSugar
                 return mappingInfo == null ? typeName : mappingInfo.DbTableName;
             }
         }
+        public string GetTableName(Type entityType)
+        {
+            var typeName = entityType.Name;
+            if (this.Context.MappingTables == null || this.Context.MappingTables.Count == 0) return typeName;
+            else
+            {
+                var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.EntityName == typeName);
+                return mappingInfo == null ? typeName : mappingInfo.DbTableName;
+            }
+        }
         public string GetEntityName(string tableName)
         {
             if (this.Context.MappingTables == null || this.Context.MappingTables.Count == 0) return tableName;

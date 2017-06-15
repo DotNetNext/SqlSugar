@@ -67,18 +67,18 @@ namespace SqlSugar
         }
         protected void InitMppingInfo<T>()
         {
-            string cacheKey = "Context.InitAttributeMappingTables"+typeof(T).FullName;
-           var entityInfo=this.Context.RewritableMethods.GetCacheInstance<EntityInfo>().Func(cacheKey,
-             (cm, key) =>
-             {
-                 var cacheInfo = cm[key];
-                 return cacheInfo;
-             },
-             (cm, key) =>
-             {
-                 var reval = this.Context.EntityProvider.GetEntityInfo<T>();
-                 return reval;
-             });
+            string cacheKey = "Context.InitAttributeMappingTables" + typeof(T).FullName;
+            var entityInfo = this.Context.RewritableMethods.GetCacheInstance<EntityInfo>().Func(cacheKey,
+              (cm, key) =>
+              {
+                  var cacheInfo = cm[key];
+                  return cacheInfo;
+              },
+              (cm, key) =>
+              {
+                  var reval = this.Context.EntityProvider.GetEntityInfo<T>();
+                  return reval;
+              });
             InitMppingInfo(entityInfo);
         }
         private void InitMppingInfo(EntityInfo entityInfo)
@@ -184,6 +184,14 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(joinExpression, ref shortName, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
         }
+        protected string CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
+        {
+            this.CreateQueryable<T>(queryable);
+            string shortName = string.Empty;
+            queryable.SqlBuilder.QueryBuilder.EasyJoinInfo = this.GetEasyJoinInfo(joinExpression, ref shortName,queryable.SqlBuilder,types);
+            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName + "," + queryable.SqlBuilder.QueryBuilder.EasyJoinInfo;
+            return null;
+        }
         #endregion
 
         #region Private methods
@@ -199,7 +207,7 @@ namespace SqlSugar
             var joinArray = expressionContext.Result.GetResultArray();
             foreach (var entityType in entityTypeArray)
             {
-                var isFirst = i == 0;++i;
+                var isFirst = i == 0; ++i;
                 JoinQueryInfo joinInfo = new JoinQueryInfo();
                 var hasMappingTable = expressionContext.MappingTables.IsValuable();
                 MappingTable mappingInfo = null;
@@ -225,6 +233,20 @@ namespace SqlSugar
                 joinInfo.JoinIndex = i;
                 result.Add((joinInfo));
             }
+            return result;
+        }
+        protected string GetEasyJoinInfo(Expression joinExpression, ref string shortName, ISqlBuilder builder, params Type[] entityTypeArray)
+        {
+            string result = null;
+            var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
+            shortName = lambdaParameters.First().Name;
+            var index = 1;
+            foreach (var item in entityTypeArray)
+            {
+                result+=builder.GetTranslationTableName(item.Name) +PubConst.Space+lambdaParameters[index].Name+",";
+                ++index;
+            }
+            result = result.TrimEnd(',');
             return result;
         }
         #endregion

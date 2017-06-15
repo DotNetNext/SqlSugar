@@ -14,6 +14,9 @@ namespace SqlSugar
     /// ** email:610262374@qq.com
     public class ExpressionContext : ExpResolveAccessory
     {
+        #region Fields
+        private bool _IsSingle = true; 
+        #endregion
 
         #region properties
         public IDbMethods DbMehtods { get; set; }
@@ -22,15 +25,24 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public MappingTableList MappingTables { get; set; }
         public IgnoreComumnList IgnoreComumnList { get; set; }
-        public List<JoinQueryInfo> JoinQueryInfos { get; set; }
-
+        public bool IsSingle
+        {
+            get
+            {
+                return _IsSingle;
+            }
+            set {
+                _IsSingle = value;
+            }
+        }
         public bool IsJoin
         {
             get
             {
-                return JoinQueryInfos.IsValuable();
+                return !IsSingle;
             }
         }
+        public List<JoinQueryInfo> JoinQueryInfos { get; set; }
         public ResolveExpressType ResolveType { get; set; }
         public Expression Expression { get; set; }
         public ExpressionResult Result

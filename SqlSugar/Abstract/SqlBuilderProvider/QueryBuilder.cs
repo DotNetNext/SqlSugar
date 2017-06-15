@@ -46,6 +46,7 @@ namespace SqlSugar
         public int JoinIndex { get; set; }
         public bool IsDisabledGobalFilter { get; set; }
         public virtual List<SugarParameter> Parameters { get; set; }
+        public string EasyJoinInfo { get; set; }
         public virtual List<JoinQueryInfo> JoinQueryInfos
         {
             get
@@ -188,7 +189,7 @@ namespace SqlSugar
         #region Common Methods
         public virtual bool IsSingle()
         {
-            var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty();
+            var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty()&&EasyJoinInfo.IsNullOrEmpty();
             return isSingle;
         }
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
@@ -196,6 +197,7 @@ namespace SqlSugar
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
             this.LambdaExpressions.Clear();
             resolveExpress.JoinQueryInfos = Builder.QueryBuilder.JoinQueryInfos;
+            resolveExpress.IsSingle = IsSingle();
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
@@ -212,7 +214,7 @@ namespace SqlSugar
                 foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
                 {
                     var filterResult = item.FilterValue(this.Context);
-                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(),filterResult.Sql));
+                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql));
                     var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
                     if (filterParamters.IsValuable())
                     {
@@ -226,7 +228,8 @@ namespace SqlSugar
             if (Skip != null && Take == null)
             {
                 if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                if (this.PartitionByValue.IsValuable()) {
+                if (this.PartitionByValue.IsValuable())
+                {
                     this.OrderByValue = this.PartitionByValue + this.OrderByValue;
                 }
                 return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);

@@ -12,6 +12,7 @@ namespace SqlSugar
         MappingTableList MappingTables { get; set; }
         IgnoreComumnList IgnoreComumnList { get; set; }
         List<JoinQueryInfo> JoinQueryInfos { get; set; }
+        bool IsSingle { get; set; }
         SqlSugarClient Context { get; set; }
         IDbMethods DbMehtods { get; set; }
         Expression Expression { get; set; }
