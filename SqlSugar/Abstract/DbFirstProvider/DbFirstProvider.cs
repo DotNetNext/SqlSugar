@@ -39,10 +39,11 @@ namespace SqlSugar
 
         public void Init()
         {
-            this.TableInfoList = this.Context.DbMaintenance.GetTableInfoList();
-            if (this.Context.DbMaintenance.GetViewInfoList().IsValuable())
+            this.TableInfoList =this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
+            var viewList = this.Context.DbMaintenance.GetViewInfoList();
+            if (viewList.IsValuable())
             {
-                this.TableInfoList.AddRange(this.Context.DbMaintenance.GetViewInfoList());
+                this.TableInfoList.AddRange(viewList);
             }
         }
 
@@ -198,6 +199,7 @@ namespace SqlSugar
             {
                 result = "DateTime.Now";
             }
+            result = result.Replace("\r", "\t").Replace("\n", "\t");
             return result;
         }
 
@@ -284,7 +286,7 @@ namespace SqlSugar
         private string GetPropertyDescriptionText(DbColumnInfo item, string propertyDescriptionText)
         {
             propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyPropertyDescription, item.ColumnDescription);
-            propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyDefaultValue, item.Value.ObjToString());
+            propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyDefaultValue, GetProertypeDefaultValue(item));
             propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyIsNullable, item.IsNullable.ObjToString());
             return propertyDescriptionText;
         }

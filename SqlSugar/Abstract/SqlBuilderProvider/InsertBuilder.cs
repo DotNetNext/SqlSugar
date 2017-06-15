@@ -148,7 +148,7 @@ namespace SqlSugar
                 var type = value.GetType();
                 if (type == PubConst.DateType)
                 {
-                    return "'" + value.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.ms") + "'";
+                    return "'" + value.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.fff") + "'";
                 }
                 else if (type == PubConst.StringType|| type == PubConst.ObjType)
                 {
