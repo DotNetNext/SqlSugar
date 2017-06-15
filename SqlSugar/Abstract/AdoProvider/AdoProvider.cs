@@ -369,7 +369,6 @@ namespace SqlSugar
             using (var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 var reval = this.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
-                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
                 builder.SqlQueryBuilder.Clear();
                 return reval;
             }
