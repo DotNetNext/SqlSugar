@@ -430,7 +430,7 @@ namespace OrmTest.UnitTest
         }
 
         private void ExtendContainsArray() {
-            string[] array = new string[] { "1", "2" };
+            var array = new string[] { "1", "2" }.ToList();
             Expression<Func<Student, bool>> exp = it => array.Contains(it.Name);
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);

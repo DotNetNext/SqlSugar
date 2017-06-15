@@ -15,7 +15,7 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
             var isValidNativeMethod = MethodMapping.ContainsKey(methodName)&&express.Method.DeclaringType.Namespace==("System");
-            if (!isValidNativeMethod&&express.Method.DeclaringType.Namespace== "System.Linq"&&methodName=="Contains") {
+            if (!isValidNativeMethod&&express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic")&&methodName=="Contains") {
                 methodName = "ContainsArray";
                 isValidNativeMethod = true;
             }
