@@ -13,11 +13,19 @@ namespace SqlSugar
         {
             this.Value = value;
             this.ParameterName = name;
+            if (value != null) {
+                SettingDataType(value.GetType());
+            }
         }
         public SugarParameter(string name, object value, Type type)
         {
             this.Value = value;
             this.ParameterName = name;
+            SettingDataType(type);
+        }
+
+        private void SettingDataType(Type type)
+        {
             if (type == PubConst.ByteArrayType)
             {
                 this.DbType = System.Data.DbType.Binary;
