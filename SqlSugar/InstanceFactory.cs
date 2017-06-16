@@ -14,24 +14,45 @@ namespace SqlSugar
         #region Queryable
         public static ISugarQueryable<T> GetQueryable<T>(ConnectionConfig currentConnectionConfig)
         {
-            string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
-            ISugarQueryable<T> result = CreateInstance<T, ISugarQueryable<T>>(className);
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerQueryable<T>();
+            }
+            else
+            {
+                string className = "Queryable";
+                className = GetClassName(currentConnectionConfig.DbType, className);
+                ISugarQueryable<T> result = CreateInstance<T, ISugarQueryable<T>>(className);
+                return result;
+            }
         }
         public static ISugarQueryable<T, T2> GetQueryable<T, T2>(ConnectionConfig currentConnectionConfig)
         {
-            string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
-            ISugarQueryable<T, T2> result = CreateInstance<T, T2, ISugarQueryable<T, T2>>(className);
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerQueryable<T, T2>();
+            }
+            else
+            {
+                string className = "Queryable";
+                className = GetClassName(currentConnectionConfig.DbType, className);
+                ISugarQueryable<T, T2> result = CreateInstance<T, T2, ISugarQueryable<T, T2>>(className);
+                return result;
+            }
         }
         public static ISugarQueryable<T, T2, T3> GetQueryable<T, T2, T3>(ConnectionConfig currentConnectionConfig)
         {
-            string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
-            ISugarQueryable<T, T2, T3> result = CreateInstance<T, T2, T3, ISugarQueryable<T, T2, T3>>(className);
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerQueryable<T, T2, T3>();
+            }
+            else
+            {
+                string className = "Queryable";
+                className = GetClassName(currentConnectionConfig.DbType, className);
+                ISugarQueryable<T, T2, T3> result = CreateInstance<T, T2, T3, ISugarQueryable<T, T2, T3>>(className);
+                return result;
+            }
         }
         public static ISugarQueryable<T, T2, T3, T4> GetQueryable<T, T2, T3, T4>(ConnectionConfig currentConnectionConfig)
         {
@@ -72,8 +93,15 @@ namespace SqlSugar
 
         public static QueryBuilder GetQueryBuilder(ConnectionConfig currentConnectionConfig)
         {
-            QueryBuilder result = CreateInstance<QueryBuilder>(GetClassName(currentConnectionConfig.DbType, "QueryBuilder"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerQueryBuilder();
+            }
+            else
+            {
+                QueryBuilder result = CreateInstance<QueryBuilder>(GetClassName(currentConnectionConfig.DbType, "QueryBuilder"));
+                return result;
+            }
         }
         public static InsertBuilder GetInsertBuilder(ConnectionConfig currentConnectionConfig)
         {
@@ -93,8 +121,15 @@ namespace SqlSugar
 
         public static ILambdaExpressions GetLambdaExpressions(ConnectionConfig currentConnectionConfig)
         {
-            ILambdaExpressions result = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType, "ExpressionContext"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerExpressionContext();
+            }
+            else
+            {
+                ILambdaExpressions result = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType, "ExpressionContext"));
+                return result;
+            }
         }
 
         public static ISqlBuilder GetSqlbuilder(ConnectionConfig currentConnectionConfig)
@@ -161,15 +196,15 @@ namespace SqlSugar
         }
         private static Restult CreateInstance<T, T2, T3, T4, T5, T6, Restult>(string className)
         {
-            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5),typeof(T6));
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
         }
         private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, Restult>(string className)
         {
-            return CreateInstance< Restult > (className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5),typeof(T6),typeof(T7));
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
         }
         private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, Restult>(string className)
         {
-            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7),typeof(T8));
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
         }
         private static Restult CreateInstance<Restult>(string className, params Type[] types)
         {
