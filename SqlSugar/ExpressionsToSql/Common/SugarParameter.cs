@@ -13,7 +13,8 @@ namespace SqlSugar
         {
             this.Value = value;
             this.ParameterName = name;
-            if (value != null) {
+            if (value != null)
+            {
                 SettingDataType(value.GetType());
             }
         }
@@ -38,9 +39,21 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.Int32;
             }
+            else if (type == PubConst.ShortType)
+            {
+                this.DbType = System.Data.DbType.Int16;
+            }
+            else if (type == PubConst.LongType)
+            {
+                this.DbType = System.Data.DbType.Int64;
+            }
             else if (type == PubConst.DateType)
             {
                 this.DbType = System.Data.DbType.Date;
+            }
+            else if (type == PubConst.DobType)
+            {
+                this.DbType = System.Data.DbType.Double;
             }
         }
         public SugarParameter(string name, object value, bool isOutput)

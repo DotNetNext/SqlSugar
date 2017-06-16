@@ -9,7 +9,9 @@ namespace SqlSugar
         internal const string AssemblyName = "SqlSugar";
         internal const string Space = " ";
         internal static Type StringType = typeof(string);
+        internal static Type ShortType = typeof(short);
         internal static Type IntType = typeof(int);
+        internal static Type LongType = typeof(long);
         internal static Type DecType = typeof(decimal);
         internal static Type GuidType = typeof(Guid);
         internal static Type DateType = typeof(DateTime);
