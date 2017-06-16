@@ -253,8 +253,7 @@ namespace SqlSugar
             { "Equals","Equals"},
             { "ToLower","ToLower"},
             { "ToUpper","ToUpper"},
-            { "Substring","Substring"},
-            { "Trim","Trim"}
+            { "Substring","Substring"}
         };
 
         private void CheckMethod(MethodCallExpression expression)

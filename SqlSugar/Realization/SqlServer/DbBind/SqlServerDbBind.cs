@@ -22,6 +22,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
+                  new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("smalldatetime",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
