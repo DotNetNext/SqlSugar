@@ -189,6 +189,7 @@ namespace SqlSugar
                     if (bindProperyTypeName == "decimal")
                         method = isNullableType ? getConvertDecimal : getDecimal;
                     break;
+                case CSharpDataType.@float:
                 case CSharpDataType.@double:
                     CheckType(bind.DoubleThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "double")
