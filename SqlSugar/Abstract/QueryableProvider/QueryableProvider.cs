@@ -156,11 +156,17 @@ namespace SqlSugar
             return this;
         }
 
+        public T InSingle(object pkValue)
+        {
+            var list = In(pkValue).ToList();
+            if (list == null) return default(T);
+            else return list.SingleOrDefault();
+        }
         public ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues)
         {
             if (pkValues == null || pkValues.Length == 0)
             {
-                Where("1=2 ");
+                Where(SqlBuilder.SqlFalse);
                 return this;
             }
             var pks = GetPrimaryKeys().Select(it => SqlBuilder.GetTranslationTableName(it)).ToList();
@@ -169,12 +175,6 @@ namespace SqlSugar
             string shortName = QueryBuilder.TableShortName == null ? null : (QueryBuilder.TableShortName + ".");
             filed = shortName + filed;
             return In(filed, pkValues);
-        }
-        public T InSingle(object pkValue)
-        {
-            var list = In(pkValue).ToList();
-            if (list == null) return default(T);
-            else return list.SingleOrDefault();
         }
         public ISugarQueryable<T> In<FieldType>(string filed, params FieldType[] inValues)
         {
@@ -223,7 +223,30 @@ namespace SqlSugar
             var fieldName = lamResult.GetResultString();
             return In(fieldName, inValues);
         }
-
+        public ISugarQueryable<T> In<TParamter>(List<TParamter> pkValues) {
+            if (pkValues == null || pkValues.Count == 0)
+            {
+                Where(SqlBuilder.SqlFalse);
+                return this;
+            }
+            return In(pkValues.ToArray());
+        }
+        public ISugarQueryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues) {
+            if (inValues == null || inValues.Count == 0)
+            {
+                Where(SqlBuilder.SqlFalse);
+                return this;
+            }
+            return In(InFieldName, inValues.ToArray());
+        }
+        public ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues) {
+            if (inValues == null || inValues.Count == 0)
+            {
+                Where(SqlBuilder.SqlFalse);
+                return this;
+            }
+            return In(expression, inValues.ToArray());
+        }
         public ISugarQueryable<T> OrderBy(string orderFileds)
         {
             var orderByValue = QueryBuilder.OrderByValue;

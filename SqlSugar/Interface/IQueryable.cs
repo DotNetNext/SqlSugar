@@ -33,6 +33,9 @@ namespace SqlSugar
         ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues);
         ISugarQueryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues);
         ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        ISugarQueryable<T> In<TParamter>(List<TParamter> pkValues);
+        ISugarQueryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues);
+        ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
 
         ISugarQueryable<T> OrderBy(string orderFileds);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);

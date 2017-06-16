@@ -9,7 +9,7 @@ namespace SqlSugar
 {
     public partial class SqlSugarAccessory
     {
-        #region Properties
+        = =#region Properties
         public SqlSugarClient Context { get; set; }
         public ConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get; set; }
