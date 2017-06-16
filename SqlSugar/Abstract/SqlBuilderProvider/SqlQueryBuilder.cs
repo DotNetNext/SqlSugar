@@ -18,7 +18,7 @@ namespace SqlSugar
             {
                 if (this._Fields.IsNullOrEmpty())
                 {
-                    this._Fields = Regex.Match(this.sql.ToString(), @"select(.*?)from", RegexOptions.IgnoreCase).Groups[1].Value;
+                    this._Fields = Regex.Match(this.sql.ObjToString().Replace("\n",string.Empty).Replace("\r", string.Empty).Trim(), @"select(.*?)from", RegexOptions.IgnoreCase).Groups[1].Value;
                     if (this._Fields.IsNullOrEmpty())
                     {
                         this._Fields = "*";

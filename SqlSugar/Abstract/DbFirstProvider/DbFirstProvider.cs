@@ -40,7 +40,7 @@ namespace SqlSugar
         public void Init()
         {
             this.TableInfoList =this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
-            var viewList = this.Context.DbMaintenance.GetViewInfoList();
+            var viewList = this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetViewInfoList());
             if (viewList.IsValuable())
             {
                 this.TableInfoList.AddRange(viewList);
@@ -177,6 +177,7 @@ namespace SqlSugar
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
                     classText = classText.Replace(DbFirstTemplate.KeyPropertyName, null);
+                    result.Remove(className);
                     result.Add(className, classText);
                 }
             }

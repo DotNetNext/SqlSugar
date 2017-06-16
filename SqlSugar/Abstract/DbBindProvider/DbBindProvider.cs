@@ -139,6 +139,9 @@ namespace SqlSugar
             {
                 return "other";
             }
+            else if (dbTypeName == "xml") {
+                return "string";
+            }
             else if (propertyTypes.First().Value == CSharpDataType.byteArray)
             {
                 return "byte[]";
