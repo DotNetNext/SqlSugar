@@ -189,7 +189,7 @@ namespace SqlSugar
         #region Common Methods
         public virtual bool IsSingle()
         {
-            var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty()&&EasyJoinInfo.IsNullOrEmpty();
+            var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty() && EasyJoinInfo.IsNullOrEmpty();
             return isSingle;
         }
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
@@ -381,9 +381,20 @@ namespace SqlSugar
         {
             get
             {
+                if (this.OrderByValue == null) return null;
                 if (IsCount) return null;
                 else
-                    return this.OrderByValue;
+                {
+                    if (!IsSingle() && (Take != null || Skip != null))
+                    {
+                        var result= Regex.Replace(this.OrderByValue,@"\[\w+\]\.", "");
+                        return result;
+                    }
+                    else
+                    {
+                        return this.OrderByValue;
+                    }
+                }
             }
         }
         public virtual string GetGroupByString
