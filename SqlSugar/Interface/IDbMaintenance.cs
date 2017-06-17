@@ -29,6 +29,7 @@ namespace SqlSugar
 
         #region Get Sql
         string GetCreateTableSql(string tableName, List<DbColumnInfo> columns);
+        string GetAddColumnSql(string tableName, DbColumnInfo columnName);
         #endregion
 
         #region DDL

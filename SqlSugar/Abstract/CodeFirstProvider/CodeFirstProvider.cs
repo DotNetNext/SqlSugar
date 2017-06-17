@@ -55,24 +55,6 @@ namespace SqlSugar
                 }
             }
         }
-
-        public ICodeFirst IsBackupData(bool isBackupData = true)
-        {
-            _isBackupData = isBackupData;
-            return this;
-        }
-
-        public ICodeFirst IsBackupTable(bool isBackupTable = false)
-        {
-            _isBackupTable = isBackupTable;
-            return this;
-        }
-
-        public ICodeFirst IsDeleteNoExistColumn(bool isDeleteNoExistColumn = true)
-        {
-            _isDeleteNoExistColumn = isDeleteNoExistColumn;
-            return this;
-        }
         #endregion
 
         #region Core
@@ -95,19 +77,7 @@ namespace SqlSugar
             {
                 foreach (var item in entityInfo.Columns)
                 {
-                    DbColumnInfo dbColumnInfo = new DbColumnInfo()
-                    {
-                        Length = item.Length,
-                        DataType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(item.PropertyInfo).Name),
-                        TableId = entityInfo.Columns.IndexOf(item),
-                        DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
-                        IsPrimarykey = item.IsPrimarykey,
-                        IsIdentity = item.IsIdentity,
-                        TableName = tableName,
-                        IsNullable = item.IsNullable,
-                        DefaultValue = item.DefaultValue,
-                        ColumnDescription = item.ColumnDescription
-                    };
+                    DbColumnInfo dbColumnInfo = EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
             }
@@ -116,7 +86,19 @@ namespace SqlSugar
 
         private void ExistLogic(EntityInfo entityInfo)
         {
-            throw new NotImplementedException();
+            if (entityInfo.Columns.IsValuable())
+            {
+                var tableName = GetTableName(entityInfo);
+                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
+                var errorColumns = dbColumns.Where(dbColumn => !entityInfo.Columns.Any(entityCoulmn => dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName))).ToList();
+                var addColumns= entityInfo.Columns.Where(entityColumn => !dbColumns.Any(dbColumn => entityColumn.DbColumnName.Equals(dbColumn.DbColumnName))).ToList();
+
+                foreach (var item in addColumns)
+                {
+                    this.Context.DbMaintenance.AddColumnToTable(tableName,EntityColumnToDbColumn(entityInfo,tableName,item));
+                }
+            }
+         //   this.Context.DbMaintenance.CreateTable(tableName, columns);
         }
 
         public string GetCreateTableString(EntityInfo entityInfo)
@@ -138,6 +120,23 @@ namespace SqlSugar
         {
             return entityInfo.DbTableName == null ? entityInfo.EntityName : entityInfo.DbTableName;
         }
+        private DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        {
+            return new DbColumnInfo()
+            {
+                Length = item.Length,
+                DataType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(item.PropertyInfo).Name),
+                TableId = entityInfo.Columns.IndexOf(item),
+                DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
+                IsPrimarykey = item.IsPrimarykey,
+                IsIdentity = item.IsIdentity,
+                TableName = tableName,
+                IsNullable = item.IsNullable,
+                DefaultValue = item.DefaultValue,
+                ColumnDescription = item.ColumnDescription
+            };
+        }
+
         #endregion
     }
 }

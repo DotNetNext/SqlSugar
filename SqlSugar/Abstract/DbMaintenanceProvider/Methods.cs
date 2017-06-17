@@ -92,22 +92,35 @@ namespace SqlSugar
             {
                 string columnName = item.DbColumnName;
                 string dataType = item.DataType;
-                string dataSize = item.Length > 0 ? string.Format("({0})",item.Length) : null;
+                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey =item.IsPrimarykey? this.CreateTablePirmaryKey:null;
-                string identity =  item.IsIdentity? this.CreateTableIdentity:null;
-                string addItem= string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey,identity);
+                string primaryKey = item.IsPrimarykey ? this.CreateTablePirmaryKey : null;
+                string identity = item.IsIdentity ? this.CreateTableIdentity : null;
+                string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql,tableName, string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql, tableName, string.Join(",\r\n", columnArray));
             return tableString;
+        }
+        public virtual string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = columnInfo.DbColumnName;
+            string dataType = columnInfo.DataType;
+            string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
+            string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+            string primaryKey = columnInfo.IsPrimarykey ? this.CreateTablePirmaryKey : null;
+            string identity = columnInfo.IsIdentity ? this.CreateTableIdentity : null;
+            string result = string.Format(this.AddColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
         }
         #endregion
 
         #region DDL
         public bool AddColumnToTable(string tableName, DbColumnInfo columnName)
         {
-            throw new NotImplementedException();
+            string sql = GetAddColumnSql(tableName, columnName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
         }
 
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
@@ -116,8 +129,9 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public bool DropTable(string tableName) {
-            this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql,tableName));
+        public bool DropTable(string tableName)
+        {
+            this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
             return true;
         }
         public virtual bool TruncateTable(string tableName)
@@ -128,8 +142,9 @@ namespace SqlSugar
 
         public bool BackupDataBase(string databaseName, string fullFileName)
         {
-             var directory=FileHelper.GetDirectoryFromFilePath(fullFileName);
-            if (!FileHelper.IsExistDirectory(directory)) {
+            var directory = FileHelper.GetDirectoryFromFilePath(fullFileName);
+            if (!FileHelper.IsExistDirectory(directory))
+            {
                 FileHelper.CreateDirectory(directory);
             }
             this.Context.Ado.ExecuteCommand(string.Format(this.BackupDataBaseSql, databaseName, fullFileName));

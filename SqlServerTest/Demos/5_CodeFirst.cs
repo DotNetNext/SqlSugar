@@ -20,6 +20,7 @@ namespace OrmTest.Demo
         public DateTime? DateTime { get; set; }
         [SugarColumn(IsNullable = true)]
         public double? Dob { get; set; }
+        public string A { get; set; }
     }
     public class CodeFirst : DemoBase
     {
@@ -32,9 +33,9 @@ namespace OrmTest.Demo
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute
             });
-            if (db.DbMaintenance.IsAnyTable("CodeTable"))
-                db.DbMaintenance.DropTable("CodeTable");
-            db.DbMaintenance.BackupDataBase("SqlSugar4XTest","c:\\back\\1.bak");
+            //if (db.DbMaintenance.IsAnyTable("CodeTable"))
+            //    db.DbMaintenance.DropTable("CodeTable");
+            //db.DbMaintenance.BackupDataBase("SqlSugar4XTest","c:\\back\\1.bak");
             db.CodeFirst.InitTables(typeof(CodeTable));
         }
     }
