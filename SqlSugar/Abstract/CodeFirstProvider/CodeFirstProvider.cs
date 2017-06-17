@@ -11,14 +11,7 @@ namespace SqlSugar
         public virtual SqlSugarClient Context { get; set; }
         #endregion
 
-        #region Fields
-        private bool _isBackupData = true;
-        private bool _isBackupTable = false;
-        private bool _isDeleteNoExistColumn = true;
-        #endregion
-
         #region Public methods
-
         public void InitTables(Type entityType)
         {
             var executeResult = Context.Ado.UseTran(() =>
@@ -90,15 +83,19 @@ namespace SqlSugar
             {
                 var tableName = GetTableName(entityInfo);
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
-                var errorColumns = dbColumns.Where(dbColumn => !entityInfo.Columns.Any(entityCoulmn => dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName))).ToList();
+                var droupColumns = dbColumns.Where(dbColumn => !entityInfo.Columns.Any(entityCoulmn => dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName))).ToList();
                 var addColumns= entityInfo.Columns.Where(entityColumn => !dbColumns.Any(dbColumn => entityColumn.DbColumnName.Equals(dbColumn.DbColumnName))).ToList();
 
                 foreach (var item in addColumns)
                 {
                     this.Context.DbMaintenance.AddColumnToTable(tableName,EntityColumnToDbColumn(entityInfo,tableName,item));
                 }
+
+                foreach (var item in droupColumns)
+                {
+                    this.Context.DbMaintenance.DropColumn(tableName,item.DbColumnName);
+                }
             }
-         //   this.Context.DbMaintenance.CreateTable(tableName, columns);
         }
 
         public string GetCreateTableString(EntityInfo entityInfo)
@@ -136,7 +133,6 @@ namespace SqlSugar
                 ColumnDescription = item.ColumnDescription
             };
         }
-
         #endregion
     }
 }

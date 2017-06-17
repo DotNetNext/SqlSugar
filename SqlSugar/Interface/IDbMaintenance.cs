@@ -27,11 +27,6 @@ namespace SqlSugar
         bool IsIdentity(string tableName, string column);
         #endregion
 
-        #region Get Sql
-        string GetCreateTableSql(string tableName, List<DbColumnInfo> columns);
-        string GetAddColumnSql(string tableName, DbColumnInfo columnName);
-        #endregion
-
         #region DDL
         bool DropTable(string tableName);
         bool TruncateTable(string tableName);
@@ -41,6 +36,7 @@ namespace SqlSugar
         bool AddColumnToTable(string tableName, DbColumnInfo column);
 
         bool BackupDataBase(string databaseName,string fullFileName);
+        bool DropColumn(string tableName,string columnName);
         #endregion
     }
 }

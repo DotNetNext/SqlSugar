@@ -83,38 +83,6 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Get Sql
-        public virtual string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
-        {
-            List<string> columnArray = new List<string>();
-            Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
-            foreach (var item in columns)
-            {
-                string columnName = item.DbColumnName;
-                string dataType = item.DataType;
-                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
-                string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey = item.IsPrimarykey ? this.CreateTablePirmaryKey : null;
-                string identity = item.IsIdentity ? this.CreateTableIdentity : null;
-                string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey, identity);
-                columnArray.Add(addItem);
-            }
-            string tableString = string.Format(this.CreateTableSql, tableName, string.Join(",\r\n", columnArray));
-            return tableString;
-        }
-        public virtual string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
-        {
-            string columnName = columnInfo.DbColumnName;
-            string dataType = columnInfo.DataType;
-            string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
-            string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-            string primaryKey = columnInfo.IsPrimarykey ? this.CreateTablePirmaryKey : null;
-            string identity = columnInfo.IsIdentity ? this.CreateTableIdentity : null;
-            string result = string.Format(this.AddColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
-            return result;
-        }
-        #endregion
-
         #region DDL
         public bool AddColumnToTable(string tableName, DbColumnInfo columnName)
         {
@@ -122,7 +90,6 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
             string sql = GetCreateTableSql(tableName, columns);
@@ -132,6 +99,10 @@ namespace SqlSugar
         public bool DropTable(string tableName)
         {
             this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
+            return true;
+        }
+        public bool DropColumn(string tableName, string columnName) {
+            this.Context.Ado.ExecuteCommand(string.Format(this.DropColumnToTableSql, tableName,columnName));
             return true;
         }
         public virtual bool TruncateTable(string tableName)
@@ -168,6 +139,35 @@ namespace SqlSugar
                  this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
                  return reval;
              });
+        }
+        private string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
+        {
+            List<string> columnArray = new List<string>();
+            Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
+            foreach (var item in columns)
+            {
+                string columnName = item.DbColumnName;
+                string dataType = item.DataType;
+                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+                string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+                string primaryKey = item.IsPrimarykey ? this.CreateTablePirmaryKey : null;
+                string identity = item.IsIdentity ? this.CreateTableIdentity : null;
+                string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey, identity);
+                columnArray.Add(addItem);
+            }
+            string tableString = string.Format(this.CreateTableSql, tableName, string.Join(",\r\n", columnArray));
+            return tableString;
+        }
+        private string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = columnInfo.DbColumnName;
+            string dataType = columnInfo.DataType;
+            string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
+            string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+            string primaryKey = columnInfo.IsPrimarykey ? this.CreateTablePirmaryKey : null;
+            string identity = columnInfo.IsIdentity ? this.CreateTableIdentity : null;
+            string result = string.Format(this.AddColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
         }
         #endregion
     }

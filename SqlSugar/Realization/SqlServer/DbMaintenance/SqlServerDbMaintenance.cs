@@ -131,7 +131,13 @@ namespace SqlSugar
                 return "DROP TABLE {0}";
             }
         }
-
+        protected override string DropColumnToTableSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} DROP COLUMN {1}";
+            }
+        }
         #endregion
 
         #region Scattered
