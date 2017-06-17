@@ -108,6 +108,7 @@ namespace SqlSugar
                         DefaultValue = item.DefaultValue,
                         ColumnDescription = item.ColumnDescription
                     };
+                    columns.Add(dbColumnInfo);
                 }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns);

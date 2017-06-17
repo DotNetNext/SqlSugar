@@ -119,6 +119,8 @@ namespace SqlSugar
                         column.IsPrimarykey = sugarColumn.IsPrimaryKey;
                         column.IsIdentity = sugarColumn.IsIdentity;
                         column.ColumnDescription = sugarColumn.ColumnDescription;
+                        column.IsNullable = sugarColumn.IsNullable;
+                        column.Length = sugarColumn.Length;
                     }
                     else
                     {

@@ -21,7 +21,13 @@ namespace SqlSugar
             {
                 return "varbinary";
             }
-            var mappings = this.MappingTypes.Where(it => it.Value.ToString() == csharpTypeName);
+            if (csharpTypeName == "Int32")
+                csharpTypeName = "int";
+            if (csharpTypeName == "Int16")
+                csharpTypeName = "short";
+            if (csharpTypeName == "Int64")
+                csharpTypeName = "long";
+            var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName,StringComparison.CurrentCultureIgnoreCase));
             return mappings.IsValuable() ? mappings.First().Key : "varchar";
         }
         public string GetCsharpTypeName(string dbTypeName)

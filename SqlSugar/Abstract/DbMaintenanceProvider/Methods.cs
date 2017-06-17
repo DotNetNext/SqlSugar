@@ -83,6 +83,27 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Get Sql
+        public virtual string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
+        {
+            List<string> columnArray = new List<string>();
+            Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
+            foreach (var item in columns)
+            {
+                string columnName = item.DbColumnName;
+                string dataType = item.DataType;
+                string dataSize = item.Length > 0 ? string.Format("({0})",item.Length) : null;
+                string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+                string primaryKey =item.IsPrimarykey? this.CreateTablePirmaryKey:null;
+                string identity =  item.IsIdentity? this.CreateTableIdentity:null;
+                string addItem= string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey,identity);
+                columnArray.Add(addItem);
+            }
+            string tableString = string.Format(this.CreateTableSql,tableName, string.Join(",\r\n", columnArray));
+            return tableString;
+        }
+        #endregion
+
         #region DDL
         public bool AddColumnToTable(string tableName, DbColumnInfo columnName)
         {
@@ -91,7 +112,8 @@ namespace SqlSugar
 
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
-            this.Context.Ado.ExecuteCommand(this.CreateTableSql);
+            string sql = GetCreateTableSql(tableName, columns);
+            this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
 

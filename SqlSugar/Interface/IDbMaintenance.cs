@@ -27,6 +27,10 @@ namespace SqlSugar
         bool IsIdentity(string tableName, string column);
         #endregion
 
+        #region Get Sql
+        string GetCreateTableSql(string tableName, List<DbColumnInfo> columns);
+        #endregion
+
         #region DDL
         bool TruncateTable(string tableName);
 

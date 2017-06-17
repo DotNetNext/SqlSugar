@@ -24,7 +24,14 @@ namespace SqlSugar
         protected abstract string CreateTableSql { get; }
         protected abstract string CreateTableColumn { get; }
         protected abstract string BackupTableSql { get; }
-        protected abstract string TruncateTableSql { get; } 
+        protected abstract string TruncateTableSql { get; }
+        #endregion
+
+        #region Scattered
+        protected abstract string CreateTableNull { get; }
+        protected abstract string CreateTableNotNull { get; }
+        protected abstract string CreateTablePirmaryKey { get; }
+        protected abstract string CreateTableIdentity { get; }
         #endregion
     }
 }

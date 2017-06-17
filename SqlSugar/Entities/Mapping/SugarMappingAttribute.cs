@@ -58,6 +58,20 @@ namespace SqlSugar
             get { return _ColumnDescription; }
             set { _ColumnDescription = value; }
         }
+
+        private int _Length;
+        public int Length
+        {
+            get { return _Length; }
+            set { _Length = value; }
+        }
+
+        private bool _IsNullable;
+        public bool IsNullable
+        {
+            get { return _IsNullable; }
+            set { _IsNullable = value; }
+        }
     }
 
 }

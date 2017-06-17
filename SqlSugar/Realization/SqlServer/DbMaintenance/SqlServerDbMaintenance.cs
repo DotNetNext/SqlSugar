@@ -106,7 +106,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"{0} {1}{2} {3}{4}\r\n";
+                return "{0} {1}{2} {3} {4} {5}";
             }
         }
         protected override string TruncateTableSql
@@ -121,6 +121,41 @@ namespace SqlSugar
             get
             {
                 return "SELECT {0} *　INTO {1} FROM  {2}";
+            }
+        }
+
+
+        #endregion
+
+        #region Scattered
+        protected override string CreateTableNull
+        {
+            get
+            {
+                return "NULL";
+            }
+        }
+        protected override string CreateTableNotNull
+        {
+            get
+            {
+                return "NOT NULL";
+            }
+        }
+
+        protected override string CreateTablePirmaryKey
+        {
+            get
+            {
+                return "PRIMARY KEY";
+            }
+        }
+
+        protected override string CreateTableIdentity
+        {
+            get
+            {
+                return "IDENTITY(1,1)";
             }
         }
         #endregion
