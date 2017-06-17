@@ -154,7 +154,8 @@ namespace SqlSugar
                             this.Context.DbMaintenance.DropConstraint(tableName, constraintName);
                         this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
                         this.Context.DbMaintenance.AddColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
-                        this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                        if (item.IsPrimarykey)
+                            this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
                     }
                 }
                 if (isChange && IsBackupTable)
