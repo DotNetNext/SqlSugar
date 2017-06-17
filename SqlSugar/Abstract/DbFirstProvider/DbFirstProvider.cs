@@ -122,6 +122,7 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Core
         public Dictionary<string, string> ToClassStringList(string nameSpace = "Models")
         {
             this.Namespace = nameSpace;
@@ -150,7 +151,7 @@ namespace SqlSugar
                     classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
                     classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + ";\r\n") : this.UsingTemplate);
                     classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
-                    classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name): null);
+                    classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
                     if (columns.IsValuable())
                     {
                         foreach (var item in columns)
@@ -183,7 +184,21 @@ namespace SqlSugar
             }
             return result;
         }
+        public void CreateClassFile(string directoryPath, string nameSpace = "Models")
+        {
+            Check.ArgumentNullException(directoryPath, "directoryPath can't null");
+            var classStringList = ToClassStringList(nameSpace);
+            if (classStringList.IsValuable())
+            {
+                foreach (var item in classStringList)
+                {
+                    FileHelper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("\\{0}.cs", item.Key), item.Value, Encoding.UTF8);
+                }
+            }
+        } 
+        #endregion
 
+        #region Private methods
         private string GetProertypeDefaultValue(DbColumnInfo item)
         {
             var result = item.DefaultValue;
@@ -203,21 +218,6 @@ namespace SqlSugar
             result = result.Replace("\r", "\t").Replace("\n", "\t");
             return result;
         }
-
-        public void CreateClassFile(string directoryPath, string nameSpace = "Models")
-        {
-            Check.ArgumentNullException(directoryPath, "directoryPath can't null");
-            var classStringList = ToClassStringList(nameSpace);
-            if (classStringList.IsValuable())
-            {
-                foreach (var item in classStringList)
-                {
-                    FileHelper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("\\{0}.cs", item.Key), item.Value, Encoding.UTF8);
-                }
-            }
-        }
-
-        #region Private methods
         private string GetPropertyText(DbColumnInfo item, string PropertyText)
         {
             string SugarColumnText = DbFirstTemplate.ValueSugarCoulmn;
@@ -266,7 +266,6 @@ namespace SqlSugar
                 return item.DbColumnName;
             }
         }
-
         private string GetPropertyTypeName(DbColumnInfo item)
         {
             string result = this.Context.Ado.DbBind.GetPropertyTypeName(item.DataType);
@@ -283,7 +282,6 @@ namespace SqlSugar
             string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";
             return result;
         }
-
         private string GetPropertyDescriptionText(DbColumnInfo item, string propertyDescriptionText)
         {
             propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyPropertyDescription, item.ColumnDescription);
@@ -291,7 +289,6 @@ namespace SqlSugar
             propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyIsNullable, item.IsNullable.ObjToString());
             return propertyDescriptionText;
         }
-
         #endregion
     }
 }
