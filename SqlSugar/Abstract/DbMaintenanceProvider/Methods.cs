@@ -180,7 +180,7 @@ namespace SqlSugar
                 string dataType = item.DataType;
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey = item.IsPrimarykey ? this.CreateTablePirmaryKey : null;
+                string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);

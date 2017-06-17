@@ -70,6 +70,7 @@ namespace SqlSugar
         private void NoExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);
+            Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.IsValuable())
             {
@@ -80,6 +81,11 @@ namespace SqlSugar
                 }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns);
+            var pkColumns= entityInfo.Columns.Where(it => it.IsPrimarykey).ToList();
+            foreach (var item in pkColumns)
+            {
+                this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+            }
         }
         private void ExistLogic(EntityInfo entityInfo)
         {
@@ -133,6 +139,7 @@ namespace SqlSugar
                 foreach (var item in entityColumns)
                 {
                     var dbColumn = dbColumns.FirstOrDefault(dc => dc.DbColumnName.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
+                    if (dbColumn == null) continue;
                     var pkDiff = item.IsPrimarykey != dbColumn.IsPrimarykey;
                     var idEntityDiff = item.IsIdentity != dbColumn.IsIdentity;
                     if (dbColumn != null && pkDiff && !idEntityDiff)

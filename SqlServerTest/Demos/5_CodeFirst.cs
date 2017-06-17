@@ -11,8 +11,8 @@ namespace OrmTest.Demo
      
         [SugarColumn(IsNullable =false ,IsPrimaryKey =true,IsIdentity =true)]
         public int Id { get; set; }
-        [SugarColumn(Length = 21)]
-        public string Name { get; set; }
+        [SugarColumn(Length = 21,OldColumnName = "Name2")]
+        public string Name{ get; set; }
         [SugarColumn(IsNullable = true)]
         public bool IsOk { get; set; }
         public Guid Guid { get; set; }
