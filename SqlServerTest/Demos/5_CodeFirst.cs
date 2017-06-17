@@ -8,6 +8,8 @@ namespace OrmTest.Demo
 {
     public class CodeTable
     {
+     
+        [SugarColumn(IsNullable =false ,IsPrimaryKey =true,IsIdentity =true)]
         public int Id { get; set; }
         [SugarColumn(Length = 21)]
         public string Name { get; set; }

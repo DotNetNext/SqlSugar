@@ -77,12 +77,16 @@ namespace SqlSugar
             if (columns.IsNullOrEmpty()) return false;
             return columns.Any(it => it.IsIdentity = true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
         }
+        public virtual bool IsAnyConstraint(string constraintName)
+        {
+            return this.Context.Ado.GetInt("select  object_id('" + constraintName + "')") > 0;
+        }
         #endregion
 
         #region DDL
         public virtual bool AddPrimaryKey(string tableName, string columnName)
         {
-            string sql = string.Format(this.AddPrimaryKeySql, string.Format("PK_{0}_{1}", tableName, columnName), columnName);
+            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", tableName, columnName), columnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -190,8 +194,8 @@ namespace SqlSugar
             string dataType = columnInfo.DataType;
             string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-            string primaryKey = columnInfo.IsPrimarykey ? this.CreateTablePirmaryKey : null;
-            string identity = columnInfo.IsIdentity ? this.CreateTableIdentity : null;
+            string primaryKey = null;
+            string identity = null;
             string result = string.Format(this.AddColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
             return result;
         }
