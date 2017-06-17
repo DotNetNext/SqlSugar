@@ -12,6 +12,7 @@ namespace SqlSugar
         public PropertyInfo PropertyInfo { get; set; }
         public string PropertyName { get; set; }
         public string DbColumnName { get; set; }
+        public string OldDbColumnName { get; set; }
         public int Length { get; set; }
         public string ColumnDescription { get; set; }
         public string DefaultValue { get; set; }

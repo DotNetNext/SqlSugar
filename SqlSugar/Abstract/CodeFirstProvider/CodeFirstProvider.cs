@@ -59,7 +59,7 @@ namespace SqlSugar
         #region Core Logic
         private void Execute(Type entityType)
         {
-            var entityInfo = this.Context.EntityProvider.GetEntityInfo(entityType);
+            var entityInfo =this.Context.EntityProvider.GetEntityInfo(entityType);
             var tableName = GetTableName(entityInfo);
             var isAny = this.Context.DbMaintenance.IsAnyTable(tableName);
             if (isAny)
@@ -86,33 +86,44 @@ namespace SqlSugar
             if (entityInfo.Columns.IsValuable())
             {
                 var tableName = GetTableName(entityInfo);
-                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
-                var droupColumns = dbColumns.Where(dbColumn => !entityInfo.Columns.Any(entityCoulmn => dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName))).ToList();
-                var addColumns = entityInfo.Columns.Where(entityColumn => !dbColumns.Any(dbColumn => entityColumn.DbColumnName.Equals(dbColumn.DbColumnName))).ToList();
-                var alterColumns = dbColumns.Where(dbColumn => entityInfo.Columns
-                                            .Any(entityCoulmn =>
-                                                                  dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName)
-                                                                  && ((entityCoulmn.Length != dbColumn.Length && PubMethod.GetUnderType(entityCoulmn.PropertyInfo).IsIn(PubConst.StringType)) || entityCoulmn.IsNullable != dbColumn.IsNullable)
-                                                                  )).ToList();
+                var dbColumns =this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
+                var entityColumns = entityInfo.Columns.Where(it=>it.IsIgnore==false).ToList();
+                var dropColumns = dbColumns
+                                          .Where(dc =>!entityColumns.Any(ec =>dc.DbColumnName.Equals(ec.OldDbColumnName,StringComparison.CurrentCultureIgnoreCase)))
+                                          .Where(dc => !entityColumns.Any(ec => dc.DbColumnName.Equals(ec.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
+                                          .ToList();
+                var addColumns = entityColumns
+                                          .Where(ec=>ec.OldDbColumnName.IsNullOrEmpty()||!dbColumns.Any(dc=>dc.DbColumnName.Equals(ec.OldDbColumnName,StringComparison.CurrentCultureIgnoreCase)))
+                                          .Where(ec => !dbColumns.Any(dc => ec.DbColumnName.Equals(dc.DbColumnName,StringComparison.CurrentCultureIgnoreCase))).ToList();
+                var alterColumns = entityColumns
+                                           .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName,StringComparison.CurrentCultureIgnoreCase)))
+                                           .Where(ec =>
+                                                          dbColumns.Any(dc =>dc.DbColumnName.Equals(ec.DbColumnName)
+                                                               && ((ec.Length != dc.Length && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) || ec.IsNullable != dc.IsNullable))).ToList();
+                var renameColumns = entityColumns
+                    .Where(it => !string.IsNullOrEmpty(it.OldDbColumnName))
+                    .Where(entityColumn =>dbColumns.Any(dbColumn => entityColumn.OldDbColumnName.Equals(dbColumn.DbColumnName,StringComparison.CurrentCultureIgnoreCase)))
+                    .ToList();
+
                 var isChange = false;
                 foreach (var item in addColumns)
                 {
                     this.Context.DbMaintenance.AddColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
                     isChange = true;
                 }
-                foreach (var item in droupColumns)
+                foreach (var item in dropColumns)
                 {
                     this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
                     isChange = true;
                 }
                 foreach (var item in alterColumns)
                 {
-                    var newitem = this.Context.RewritableMethods.TranslateCopy(item);
-                    newitem.IsPrimarykey = false;
-                    newitem.IsIdentity = false;
-                    if (newitem.Length > 0)
-                        newitem.Length = newitem.Length / 2;
-                    this.Context.DbMaintenance.UpdateColumn(tableName, newitem);
+                    this.Context.DbMaintenance.UpdateColumn(tableName, EntityColumnToDbColumn(entityInfo,tableName,item));
+                    isChange = true;
+                }
+                foreach (var item in renameColumns)
+                {
+                    this.Context.DbMaintenance.RenameColumn(tableName,item.OldDbColumnName,item.DbColumnName);
                     isChange = true;
                 }
                 if (isChange && IsBackupTable)
@@ -134,7 +145,6 @@ namespace SqlSugar
         {
             StringBuilder result = new StringBuilder();
             var tableName = GetTableName(entityInfo);
-
             return result.ToString();
         }
         private static string GetTableName(EntityInfo entityInfo)
@@ -153,7 +163,8 @@ namespace SqlSugar
                 TableName = tableName,
                 IsNullable = item.IsNullable,
                 DefaultValue = item.DefaultValue,
-                ColumnDescription = item.ColumnDescription
+                ColumnDescription = item.ColumnDescription,
+                Length=item.Length
             };
             return result;
         }

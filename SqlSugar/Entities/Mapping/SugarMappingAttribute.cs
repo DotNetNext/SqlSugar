@@ -72,6 +72,14 @@ namespace SqlSugar
             get { return _IsNullable; }
             set { _IsNullable = value; }
         }
+
+        private string _OldColumnName;
+        public string OldColumnName
+        {
+            get { return _OldColumnName; }
+            set { _OldColumnName = value; }
+        }
+        
     }
 
 }

@@ -152,6 +152,11 @@ namespace SqlSugar
                 return "ALTER TABLE {0} DROP CONSTRAINT  {1}";
             }
         }
+        protected override string RenameColumnSql {
+            get {
+                return "exec sp_rename '{0}.{1}','{2}','column';";
+            }
+        }
         #endregion
 
         #region Scattered

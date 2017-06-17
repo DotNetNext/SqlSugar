@@ -9,7 +9,7 @@ namespace OrmTest.Demo
     public class CodeTable
     {
         public int Id { get; set; }
-        [SugarColumn(Length = 2)]
+        [SugarColumn(Length = 21)]
         public string Name { get; set; }
         [SugarColumn(IsNullable = true)]
         public bool IsOk { get; set; }
@@ -17,13 +17,16 @@ namespace OrmTest.Demo
         public decimal Decimal { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime? DateTime { get; set; }
-        [SugarColumn(IsNullable = true)]
-        public double? Dob { get; set; }
+        [SugarColumn(IsNullable = true,OldColumnName = "Dob")]
+        public double? Dob2 { get; set; }
+        [SugarColumn(Length =10)]
         public string A { get; set; }
     }
     public class CodeTable2 {
         public int Id { get; set; }
         public string Name { get; set; }
+        [SugarColumn(IsIgnore =true)]
+        public string TestId { get; set; }
     }
     public class CodeFirst : DemoBase
     {
@@ -38,10 +41,10 @@ namespace OrmTest.Demo
             });
 
             //Backup table
-            db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
+            //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
 
             //No backup table
-            //db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
+            db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
         }
     }
 }

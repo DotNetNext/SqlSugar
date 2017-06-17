@@ -29,6 +29,7 @@ namespace SqlSugar
         protected abstract string DropColumnToTableSql { get; }
         protected abstract string DropConstraintSql { get; }
         protected abstract string AddPrimaryKeySql { get; }
+        protected abstract string RenameColumnSql { get; }
         #endregion
 
         #region Scattered

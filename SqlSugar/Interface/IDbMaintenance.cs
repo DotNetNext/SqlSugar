@@ -34,6 +34,7 @@ namespace SqlSugar
         bool BackupDataBase(string databaseName,string fullFileName);
         bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue);
         bool DropColumn(string tableName,string columnName);
+        bool RenameColumn(string tableName, string oldColumnName, string newColumnName);
         #endregion
     }
 }

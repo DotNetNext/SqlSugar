@@ -13,13 +13,13 @@ namespace SqlSugar
                 return new List<KeyValuePair<string, CSharpDataType>>()
                 {
                   new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@int),
+                  new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("sql_variant",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("ntext",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("nchar",CSharpDataType.@string),
-                  new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),

@@ -92,8 +92,9 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool UpdateColumn(string tableName, DbColumnInfo column) {
-            string sql = GetUpdateColumnSql(tableName,column);
+        public virtual bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            string sql = GetUpdateColumnSql(tableName, column);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -134,9 +135,15 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(string.Format(this.BackupDataBaseSql, databaseName, fullFileName));
             return true;
         }
-        public virtual bool BackupTable(string oldTableName, string newTableName,int maxBackupDataRows=int.MaxValue)
+        public virtual bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue)
         {
             string sql = string.Format(this.BackupTableSql, maxBackupDataRows, newTableName, oldTableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
+        {
+            string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -194,8 +201,8 @@ namespace SqlSugar
             string dataType = columnInfo.DataType;
             string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-            string primaryKey = columnInfo.IsPrimarykey ? this.CreateTablePirmaryKey : null;
-            string identity = columnInfo.IsIdentity ? this.CreateTableIdentity : null;
+            string primaryKey = null;
+            string identity = null;
             string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
             return result;
         }
