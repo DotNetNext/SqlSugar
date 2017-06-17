@@ -18,6 +18,7 @@ namespace SqlSugar
 
         #region Private Fileds
         protected List<JoinQueryInfo> _JoinQueryInfos;
+        protected Dictionary<string, string> _EasyJoinInfos;
         private List<string> _WhereInfos;
         private string _HavingInfos;
         protected string _TableNameString;
@@ -46,7 +47,15 @@ namespace SqlSugar
         public int JoinIndex { get; set; }
         public bool IsDisabledGobalFilter { get; set; }
         public virtual List<SugarParameter> Parameters { get; set; }
-        public string EasyJoinInfo { get; set; }
+        public Dictionary<string, string> EasyJoinInfos
+        {
+            get
+            {
+                _EasyJoinInfos = PubMethod.IsNullReturnNew(_EasyJoinInfos);
+                return _EasyJoinInfos;
+            }
+            set { _EasyJoinInfos = value; }
+        }
         public virtual List<JoinQueryInfo> JoinQueryInfos
         {
             get
@@ -189,7 +198,7 @@ namespace SqlSugar
         #region Common Methods
         public virtual bool IsSingle()
         {
-            var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty() && EasyJoinInfo.IsNullOrEmpty();
+            var isSingle = Builder.QueryBuilder.JoinQueryInfos.IsNullOrEmpty() && !EasyJoinInfos.Any();
             return isSingle;
         }
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
@@ -374,6 +383,17 @@ namespace SqlSugar
                 {
                     result += GetJoinValueString + PubConst.Space;
                 }
+                if (this.EasyJoinInfos.IsValuable())
+                {
+                    if (this.TableWithString.IsValuable())
+                    {
+                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} {2} ", it.Value, it.Key, TableWithString)));
+                    }
+                    else
+                    {
+                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} ", it.Value, it.Key)));
+                    }
+                }
                 return result;
             }
         }
@@ -387,7 +407,7 @@ namespace SqlSugar
                 {
                     if (!IsSingle() && (Take != null || Skip != null))
                     {
-                        var result= Regex.Replace(this.OrderByValue,@"\[\w+\]\.", "");
+                        var result = Regex.Replace(this.OrderByValue, @"\[\w+\]\.", "");
                         return result;
                     }
                     else

@@ -184,13 +184,12 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(joinExpression, ref shortName, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
         }
-        protected string CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
+        protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.EasyJoinInfo = this.GetEasyJoinInfo(joinExpression, ref shortName,queryable.SqlBuilder,types);
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName + "," + queryable.SqlBuilder.QueryBuilder.EasyJoinInfo;
-            return null;
+            queryable.SqlBuilder.QueryBuilder.EasyJoinInfos = this.GetEasyJoinInfo(joinExpression, ref shortName,queryable.SqlBuilder,types);
+            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
         }
         #endregion
 
@@ -235,18 +234,17 @@ namespace SqlSugar
             }
             return result;
         }
-        protected string GetEasyJoinInfo(Expression joinExpression, ref string shortName, ISqlBuilder builder, params Type[] entityTypeArray)
+        protected Dictionary<string,string> GetEasyJoinInfo(Expression joinExpression, ref string shortName, ISqlBuilder builder, params Type[] entityTypeArray)
         {
-            string result = null;
+            Dictionary<string, string> result = new Dictionary<string, string>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
             shortName = lambdaParameters.First().Name;
             var index = 1;
             foreach (var item in entityTypeArray)
             {
-                result+=builder.GetTranslationTableName(item.Name) +PubConst.Space+lambdaParameters[index].Name+",";
+                result.Add(PubConst.Space +lambdaParameters[index].Name, item.Name);
                 ++index;
             }
-            result = result.TrimEnd(',');
             return result;
         }
         #endregion
