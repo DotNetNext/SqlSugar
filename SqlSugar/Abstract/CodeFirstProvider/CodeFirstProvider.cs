@@ -20,7 +20,6 @@ namespace SqlSugar
             });
             Check.Exception(!executeResult.IsSuccess, executeResult.Messaage);
         }
-
         public void InitTables(Type[] entityTypes)
         {
             if (entityTypes.IsValuable())
@@ -31,13 +30,11 @@ namespace SqlSugar
                 }
             }
         }
-
         public void InitTables(string entitiesNamespace)
         {
             var types = Assembly.Load(entitiesNamespace).GetTypes();
             InitTables(types);
         }
-
         public void InitTables(string[] entitiesNamespaces)
         {
             if (entitiesNamespaces.IsValuable())
