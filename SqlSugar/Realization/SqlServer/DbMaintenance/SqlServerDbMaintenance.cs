@@ -75,6 +75,13 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string AddPrimaryKeySql
+        {
+            get
+            {
+                return "ALTER TABLE {0} ADD CONSTRAINT {1} PRIMARY KEY({2})";
+            }
+        }
         protected override string AddColumnToTableSql
         {
             get
@@ -121,7 +128,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT {0} *　INTO {1} FROM  {2}";
+                return "SELECT TOP {0} *　INTO {1} FROM  {2}";
             }
         }
         protected override string DropTableSql
@@ -136,6 +143,13 @@ namespace SqlSugar
             get
             {
                 return "ALTER TABLE {0} DROP COLUMN {1}";
+            }
+        }
+        protected override string DropConstraintSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} DROP CONSTRAINT  {1}";
             }
         }
         #endregion
@@ -155,7 +169,6 @@ namespace SqlSugar
                 return "NOT NULL";
             }
         }
-
         protected override string CreateTablePirmaryKey
         {
             get
@@ -163,7 +176,6 @@ namespace SqlSugar
                 return "PRIMARY KEY";
             }
         }
-
         protected override string CreateTableIdentity
         {
             get

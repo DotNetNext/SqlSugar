@@ -61,7 +61,6 @@ namespace SqlSugar
             else
                 NoExistLogic(entityInfo);
         }
-
         private void NoExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);
@@ -76,7 +75,6 @@ namespace SqlSugar
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns);
         }
-
         private void ExistLogic(EntityInfo entityInfo)
         {
             if (entityInfo.Columns.IsValuable())
@@ -85,26 +83,22 @@ namespace SqlSugar
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
                 var droupColumns = dbColumns.Where(dbColumn => !entityInfo.Columns.Any(entityCoulmn => dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName))).ToList();
                 var addColumns= entityInfo.Columns.Where(entityColumn => !dbColumns.Any(dbColumn => entityColumn.DbColumnName.Equals(dbColumn.DbColumnName))).ToList();
-
                 foreach (var item in addColumns)
                 {
                     this.Context.DbMaintenance.AddColumnToTable(tableName,EntityColumnToDbColumn(entityInfo,tableName,item));
                 }
-
                 foreach (var item in droupColumns)
                 {
                     this.Context.DbMaintenance.DropColumn(tableName,item.DbColumnName);
                 }
             }
         }
-
         public string GetCreateTableString(EntityInfo entityInfo)
         {
             StringBuilder result = new StringBuilder();
             var tableName = GetTableName(entityInfo);
             return result.ToString();
         }
-
         public string GetCreateColumnsString(EntityInfo entityInfo)
         {
             StringBuilder result = new StringBuilder();
@@ -112,7 +106,6 @@ namespace SqlSugar
 
             return result.ToString();
         }
-
         private static string GetTableName(EntityInfo entityInfo)
         {
             return entityInfo.DbTableName == null ? entityInfo.EntityName : entityInfo.DbTableName;

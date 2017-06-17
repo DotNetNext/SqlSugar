@@ -28,8 +28,10 @@ namespace SqlSugar
         bool TruncateTable(string tableName);
         bool CreateTable(string tableName, List<DbColumnInfo> columns);
         bool AddColumnToTable(string tableName, DbColumnInfo column);
-        bool AddKey(string tableName,string columnName,bool isPrimaryKey, bool isIdentity);
+        bool AddPrimaryKey(string tableName,string columnName);
+        bool DropConstraint(string tableName, string constraintName);
         bool BackupDataBase(string databaseName,string fullFileName);
+        bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue);
         bool DropColumn(string tableName,string columnName);
         #endregion
     }

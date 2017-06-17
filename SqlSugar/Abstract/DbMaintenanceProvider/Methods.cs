@@ -8,7 +8,7 @@ namespace SqlSugar
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
         #region DML
-        public List<DbTableInfo> GetViewInfoList()
+        public virtual List<DbTableInfo> GetViewInfoList()
         {
             string key = "DbMaintenanceProvider.GetViewInfoList";
             var result = GetListOrCache<DbTableInfo>(key, this.GetViewInfoListSql);
@@ -18,8 +18,7 @@ namespace SqlSugar
             }
             return result;
         }
-
-        public List<DbTableInfo> GetTableInfoList()
+        public virtual List<DbTableInfo> GetTableInfoList()
         {
             string key = "DbMaintenanceProvider.GetTableInfoList";
             var result = GetListOrCache<DbTableInfo>(key, this.GetTableInfoListSql);
@@ -29,20 +28,17 @@ namespace SqlSugar
             }
             return result;
         }
-
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
             string key = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower();
             return GetListOrCache<DbColumnInfo>(key, string.Format(this.GetColumnInfosByTableNameSql, tableName));
         }
-
         public virtual List<string> GetIsIdentities(string tableName)
         {
             var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
             return result.Select(it => it.DbColumnName).ToList();
         }
-
         public virtual List<string> GetPrimaries(string tableName)
         {
             var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
@@ -51,13 +47,13 @@ namespace SqlSugar
         #endregion
 
         #region Check
-        public bool IsAnyTable(string tableName)
+        public virtual bool IsAnyTable(string tableName)
         {
             var tables = GetTableInfoList();
             if (tables == null) return false;
             else return tables.Any(it => it.Name.Equals(tableName, StringComparison.CurrentCultureIgnoreCase));
         }
-        public bool IsAnyColumn(string tableName, string columnName)
+        public virtual bool IsAnyColumn(string tableName, string columnName)
         {
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
@@ -65,7 +61,7 @@ namespace SqlSugar
             if (columns.IsNullOrEmpty()) return false;
             return columns.Any(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
         }
-        public bool IsPrimaryKey(string tableName, string columnName)
+        public virtual bool IsPrimaryKey(string tableName, string columnName)
         {
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
@@ -73,7 +69,7 @@ namespace SqlSugar
             if (columns.IsNullOrEmpty()) return false;
             return columns.Any(it => it.IsPrimarykey = true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
         }
-        public bool IsIdentity(string tableName, string columnName)
+        public virtual bool IsIdentity(string tableName, string columnName)
         {
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
@@ -84,9 +80,15 @@ namespace SqlSugar
         #endregion
 
         #region DDL
-        public bool AddColumnToTable(string tableName, DbColumnInfo columnName)
+        public virtual bool AddPrimaryKey(string tableName, string columnName)
         {
-            string sql = GetAddColumnSql(tableName, columnName);
+            string sql = string.Format(this.AddPrimaryKeySql, string.Format("PK_{0}_{1}", tableName, columnName), columnName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool AddColumnToTable(string tableName, DbColumnInfo columnInfo)
+        {
+            string sql = GetAddColumnSql(tableName, columnInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -96,13 +98,20 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public bool DropTable(string tableName)
+        public virtual bool DropTable(string tableName)
         {
             this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
             return true;
         }
-        public bool DropColumn(string tableName, string columnName) {
-            this.Context.Ado.ExecuteCommand(string.Format(this.DropColumnToTableSql, tableName,columnName));
+        public virtual bool DropColumn(string tableName, string columnName)
+        {
+            this.Context.Ado.ExecuteCommand(string.Format(this.DropColumnToTableSql, tableName, columnName));
+            return true;
+        }
+        public virtual bool DropConstraint(string tableName, string constraintName)
+        {
+            string sql = string.Format(this.DropConstraintSql, tableName, constraintName);
+            this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool TruncateTable(string tableName)
@@ -110,8 +119,7 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql, tableName));
             return true;
         }
-
-        public bool BackupDataBase(string databaseName, string fullFileName)
+        public virtual bool BackupDataBase(string databaseName, string fullFileName)
         {
             var directory = FileHelper.GetDirectoryFromFilePath(fullFileName);
             if (!FileHelper.IsExistDirectory(directory))
@@ -119,6 +127,12 @@ namespace SqlSugar
                 FileHelper.CreateDirectory(directory);
             }
             this.Context.Ado.ExecuteCommand(string.Format(this.BackupDataBaseSql, databaseName, fullFileName));
+            return true;
+        }
+        public virtual bool BackupTable(string oldTableName, string newTableName,int maxBackupDataRows=int.MaxValue)
+        {
+            string sql = string.Format(this.BackupTableSql, maxBackupDataRows, newTableName, oldTableName);
+            this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         #endregion
