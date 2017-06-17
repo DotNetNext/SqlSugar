@@ -47,7 +47,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Core
+        #region Core Logic
         private void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityProvider.GetEntityInfo(entityType);
@@ -92,7 +92,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Private methods
+        #region Helper methods
         public string GetCreateTableString(EntityInfo entityInfo)
         {
             StringBuilder result = new StringBuilder();
