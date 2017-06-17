@@ -86,9 +86,14 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool AddColumnToTable(string tableName, DbColumnInfo columnInfo)
+        public virtual bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
             string sql = GetAddColumnSql(tableName, columnInfo);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool UpdateColumn(string tableName, DbColumnInfo column) {
+            string sql = GetUpdateColumnSql(tableName,column);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -181,6 +186,17 @@ namespace SqlSugar
             string primaryKey = columnInfo.IsPrimarykey ? this.CreateTablePirmaryKey : null;
             string identity = columnInfo.IsIdentity ? this.CreateTableIdentity : null;
             string result = string.Format(this.AddColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
+        }
+        private string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = columnInfo.DbColumnName;
+            string dataType = columnInfo.DataType;
+            string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
+            string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+            string primaryKey = columnInfo.IsPrimarykey ? this.CreateTablePirmaryKey : null;
+            string identity = columnInfo.IsIdentity ? this.CreateTableIdentity : null;
+            string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
             return result;
         }
         #endregion

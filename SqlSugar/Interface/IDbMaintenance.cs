@@ -27,7 +27,8 @@ namespace SqlSugar
         bool DropTable(string tableName);
         bool TruncateTable(string tableName);
         bool CreateTable(string tableName, List<DbColumnInfo> columns);
-        bool AddColumnToTable(string tableName, DbColumnInfo column);
+        bool AddColumn(string tableName, DbColumnInfo column);
+        bool UpdateColumn(string tableName, DbColumnInfo column);
         bool AddPrimaryKey(string tableName,string columnName);
         bool DropConstraint(string tableName, string constraintName);
         bool BackupDataBase(string databaseName,string fullFileName);

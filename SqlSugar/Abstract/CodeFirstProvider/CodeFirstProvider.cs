@@ -80,13 +80,25 @@ namespace SqlSugar
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
                 var droupColumns = dbColumns.Where(dbColumn => !entityInfo.Columns.Any(entityCoulmn => dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName))).ToList();
                 var addColumns= entityInfo.Columns.Where(entityColumn => !dbColumns.Any(dbColumn => entityColumn.DbColumnName.Equals(dbColumn.DbColumnName))).ToList();
+                var alterColumns = dbColumns.Where(dbColumn => entityInfo.Columns
+                                            .Any(entityCoulmn => 
+                                                                  dbColumn.DbColumnName.Equals(entityCoulmn.DbColumnName)
+                                                                  &&((entityCoulmn.Length!=dbColumn.Length&&PubMethod.GetUnderType(entityCoulmn.PropertyInfo).IsIn(PubConst.StringType))||entityCoulmn.IsNullable!=dbColumn.IsNullable)
+                                                                  )).ToList();
                 foreach (var item in addColumns)
                 {
-                    this.Context.DbMaintenance.AddColumnToTable(tableName,EntityColumnToDbColumn(entityInfo,tableName,item));
+                    this.Context.DbMaintenance.AddColumn(tableName,EntityColumnToDbColumn(entityInfo,tableName,item));
                 }
                 foreach (var item in droupColumns)
                 {
                     this.Context.DbMaintenance.DropColumn(tableName,item.DbColumnName);
+                }
+                foreach (var item in alterColumns)
+                {
+                    var newitem = this.Context.RewritableMethods.TranslateCopy(item);
+                    newitem.IsPrimarykey = false;
+                    newitem.IsIdentity = false;
+                    this.Context.DbMaintenance.UpdateColumn(tableName, newitem);
                 }
             }
         }

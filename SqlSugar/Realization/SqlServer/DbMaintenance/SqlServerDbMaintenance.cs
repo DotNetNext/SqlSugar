@@ -93,7 +93,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ALTER COLUMN {1}{2} {3} ";
+                return "ALTER TABLE {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
             }
         }
         protected override string BackupDataBaseSql
