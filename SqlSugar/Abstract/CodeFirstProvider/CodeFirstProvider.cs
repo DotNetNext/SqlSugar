@@ -98,13 +98,13 @@ namespace SqlSugar
                     DbColumnInfo dbColumnInfo = new DbColumnInfo()
                     {
                         Length = item.Length,
-                        DataType = this.Context.Ado.DbBind.GetDbTypeName(item.PropertyInfo.PropertyType.Name),
+                        DataType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(item.PropertyInfo).Name),
                         TableId = entityInfo.Columns.IndexOf(item),
                         DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
                         IsPrimarykey = item.IsPrimarykey,
                         IsIdentity = item.IsIdentity,
                         TableName = tableName,
-                        IsNullable = PubMethod.IsNullable(item.PropertyInfo),
+                        IsNullable = item.IsNullable,
                         DefaultValue = item.DefaultValue,
                         ColumnDescription = item.ColumnDescription
                     };

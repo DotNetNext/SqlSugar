@@ -82,7 +82,8 @@ namespace SqlSugar
                 return "ALERT TABLE {0} ADD {1} {2} {3}";
             }
         }
-        protected override string AlterColumnToTableSql {
+        protected override string AlterColumnToTableSql
+        {
             get
             {
                 return "ALERT TABLE {0} ALTER COLUMN {1}{2} {3} ";
@@ -123,7 +124,13 @@ namespace SqlSugar
                 return "SELECT {0} *　INTO {1} FROM  {2}";
             }
         }
-
+        protected override string DropTableSql
+        {
+            get
+            {
+                return "DROP TABLE {0}";
+            }
+        }
 
         #endregion
 

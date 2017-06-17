@@ -69,7 +69,7 @@
     <Compile Include="Entities\SqlFilter.cs" />
     <Compile Include="Enum\DbObjectType.cs" />
     <Compile Include="Enum\ProperyType.cs" />
-    <Compile Include="ExpressionsToSql\Common\FileHeper.cs" />
+    <Compile Include="Common\FileHelper.cs" />
     <Compile Include="Interface\ICacheManager.cs" />
     <Compile Include="Entities\DbResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />

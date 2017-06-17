@@ -25,6 +25,7 @@ namespace SqlSugar
         protected abstract string CreateTableColumn { get; }
         protected abstract string BackupTableSql { get; }
         protected abstract string TruncateTableSql { get; }
+        protected abstract string DropTableSql { get; }
         #endregion
 
         #region Scattered

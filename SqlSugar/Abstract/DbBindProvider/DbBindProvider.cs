@@ -27,6 +27,8 @@ namespace SqlSugar
                 csharpTypeName = "short";
             if (csharpTypeName == "Int64")
                 csharpTypeName = "long";
+            if (csharpTypeName == "Boolean")
+                csharpTypeName = "bool";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName,StringComparison.CurrentCultureIgnoreCase));
             return mappings.IsValuable() ? mappings.First().Key : "varchar";
         }

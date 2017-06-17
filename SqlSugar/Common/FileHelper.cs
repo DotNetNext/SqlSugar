@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    internal class FileHeper
+    internal class FileHelper
     {
         public static void CreateFile(string filePath, string text, Encoding encoding)
         {

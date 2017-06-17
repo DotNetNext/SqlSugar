@@ -116,16 +116,24 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-
+        public bool DropTable(string tableName) {
+            this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql,tableName));
+            return true;
+        }
         public virtual bool TruncateTable(string tableName)
         {
             this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql, tableName));
             return true;
         }
 
-        public bool BackupDataBase()
+        public bool BackupDataBase(string databaseName, string fullFileName)
         {
-            throw new NotImplementedException();
+             var directory=FileHelper.GetDirectoryFromFilePath(fullFileName);
+            if (!FileHelper.IsExistDirectory(directory)) {
+                FileHelper.CreateDirectory(directory);
+            }
+            this.Context.Ado.ExecuteCommand(string.Format(this.BackupDataBaseSql, databaseName, fullFileName));
+            return true;
         }
         #endregion
 

@@ -10,8 +10,16 @@ namespace OrmTest.Demo
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
-        [SugarColumn(Length=40)]
+        [SugarColumn(Length = 40)]
         public string Name { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public bool IsOk { get; set; }
+        public Guid Guid { get; set; }
+        public decimal Decimal { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public DateTime? DateTime { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public double? Dob { get; set; }
     }
     public class CodeFirst : DemoBase
     {
@@ -24,7 +32,9 @@ namespace OrmTest.Demo
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute
             });
-
+            if (db.DbMaintenance.IsAnyTable("CodeTable"))
+                db.DbMaintenance.DropTable("CodeTable");
+            db.DbMaintenance.BackupDataBase("SqlSugar4XTest","c:\\back\\1.bak");
             db.CodeFirst.InitTables(typeof(CodeTable));
         }
     }

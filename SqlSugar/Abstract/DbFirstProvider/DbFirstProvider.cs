@@ -212,7 +212,7 @@ namespace SqlSugar
             {
                 foreach (var item in classStringList)
                 {
-                    FileHeper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("\\{0}.cs", item.Key), item.Value, Encoding.UTF8);
+                    FileHelper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("\\{0}.cs", item.Key), item.Value, Encoding.UTF8);
                 }
             }
         }

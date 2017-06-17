@@ -32,13 +32,14 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        bool DropTable(string tableName);
         bool TruncateTable(string tableName);
 
         bool CreateTable(string tableName, List<DbColumnInfo> columns);
 
         bool AddColumnToTable(string tableName, DbColumnInfo column);
 
-        bool BackupDataBase();
+        bool BackupDataBase(string databaseName,string fullFileName);
         #endregion
     }
 }
