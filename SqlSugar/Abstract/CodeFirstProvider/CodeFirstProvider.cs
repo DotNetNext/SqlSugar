@@ -93,6 +93,9 @@ namespace SqlSugar
                 }
             }
         }
+        #endregion
+
+        #region Private methods
         public string GetCreateTableString(EntityInfo entityInfo)
         {
             StringBuilder result = new StringBuilder();
