@@ -9,16 +9,22 @@ namespace SqlSugar
 {
     public class SqlQueryBuilder : IDMLBuilder
     {
-        public SqlSugarClient Context { get; set; }
 
-        private string _Fields { get; set; }
+        #region  Fields
+        private string _Fields;
+        private StringBuilder _Sql;
+        private List<SugarParameter> _Parameters;
+        #endregion
+
+        #region Properties
+        public SqlSugarClient Context { get; set; }
         public string Fields
         {
             get
             {
                 if (this._Fields.IsNullOrEmpty())
                 {
-                    this._Fields = Regex.Match(this.sql.ObjToString().Replace("\n",string.Empty).Replace("\r", string.Empty).Trim(), @"select(.*?)from", RegexOptions.IgnoreCase).Groups[1].Value;
+                    this._Fields = Regex.Match(this.sql.ObjToString().Replace("\n", string.Empty).Replace("\r", string.Empty).Trim(), @"select(.*?)from", RegexOptions.IgnoreCase).Groups[1].Value;
                     if (this._Fields.IsNullOrEmpty())
                     {
                         this._Fields = "*";
@@ -31,8 +37,6 @@ namespace SqlSugar
                 _Fields = value;
             }
         }
-
-        private StringBuilder _Sql;
         public StringBuilder sql
         {
             get
@@ -45,7 +49,6 @@ namespace SqlSugar
                 _Sql = value;
             }
         }
-
         public string SqlTemplate
         {
             get
@@ -53,8 +56,6 @@ namespace SqlSugar
                 return null;
             }
         }
-
-        private List<SugarParameter> _Parameters;
         public List<SugarParameter> Parameters
         {
             get
@@ -67,7 +68,9 @@ namespace SqlSugar
                 _Parameters = value;
             }
         }
+        #endregion
 
+        #region Methods
         public string ToSqlString()
         {
             return sql.ToString();
@@ -75,6 +78,7 @@ namespace SqlSugar
         public void Clear()
         {
             this.sql = null;
-        }
+        } 
+        #endregion
     }
 }
