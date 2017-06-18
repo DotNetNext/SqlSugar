@@ -7,7 +7,11 @@ namespace SqlSugar
 {
     public class DeleteBuilder : IDMLBuilder
     {
+        #region Fields
         private List<string> _WhereInfos;
+        #endregion
+
+        #region Common Properties
         public EntityInfo EntityInfo { get; set; }
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
@@ -24,6 +28,9 @@ namespace SqlSugar
             }
             set { _WhereInfos = value; }
         }
+        #endregion
+
+        #region Sql Template
         public string SqlTemplate
         {
             get
@@ -31,7 +38,6 @@ namespace SqlSugar
                 return "DELETE FROM {0}{1}";
             }
         }
-
         public string WhereInTemplate
         {
             get
@@ -39,7 +45,6 @@ namespace SqlSugar
                 return "{0} IN ({1})";
             }
         }
-
         public string WhereInOrTemplate
         {
             get
@@ -61,7 +66,6 @@ namespace SqlSugar
                 return "[{0}]=N'{1}'";
             }
         }
-
         public string WhereInAreaTemplate
         {
             get
@@ -69,7 +73,9 @@ namespace SqlSugar
                 return "({0})";
             }
         }
+        #endregion
 
+        #region Get Sql
         public virtual string GetTableNameString
         {
             get
@@ -101,11 +107,13 @@ namespace SqlSugar
             }
         }
 
-        public void Clear()
+        #endregion
+
+        #region Public methods
+        public virtual void Clear()
         {
         }
-
-        public string ToSqlString()
+        public virtual string ToSqlString()
         {
             return string.Format(SqlTemplate, GetTableNameString, GetWhereString);
         }
@@ -121,6 +129,7 @@ namespace SqlSugar
             this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
             return reval;
-        }
+        } 
+        #endregion
     }
 }
