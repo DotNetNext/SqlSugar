@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
-
 namespace SqlSugar
 {
     public class InsertBuilder : IDMLBuilder
     {
+        #region  Init
         public InsertBuilder()
         {
             this.sql = new StringBuilder();
             this.Parameters = new List<SugarParameter>();
             this.DbColumnInfoList = new List<DbColumnInfo>();
         }
+
+        #endregion
+
+        #region Common Properties
         public SqlSugarClient Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public ISqlBuilder Builder { get; set; }
@@ -23,8 +27,10 @@ namespace SqlSugar
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
         public bool IsNoInsertNull { get; set; }
         public bool IsReturnIdentity { get; set; }
-        public EntityInfo EntityInfo { get;  set; }
+        public EntityInfo EntityInfo { get; set; }
+        #endregion
 
+        #region SqlTemplate
         public virtual string SqlTemplate
         {
             get
@@ -46,19 +52,20 @@ namespace SqlSugar
                 }
             }
         }
-
-        public virtual string SqlTemplateBatch {
-            get {
+        public virtual string SqlTemplateBatch
+        {
+            get
+            {
                 return "INSERT {0} ({1})";
             }
         }
-
-        public virtual string SqlTemplateBatchSelect {
-            get {
+        public virtual string SqlTemplateBatchSelect
+        {
+            get
+            {
                 return "{0} AS {1}";
             }
         }
-
         public virtual string SqlTemplateBatchUnion
         {
             get
@@ -67,6 +74,9 @@ namespace SqlSugar
             }
         }
 
+        #endregion
+
+        #region Methods
         public virtual void Clear()
         {
 
@@ -84,8 +94,6 @@ namespace SqlSugar
                 return result;
             }
         }
-
-
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
@@ -112,16 +120,18 @@ namespace SqlSugar
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
-            else {
+            else
+            {
                 StringBuilder batchInsetrSql = new StringBuilder();
                 int pageSize = 200;
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
-                while (pageCount >= pageIndex) {
+                while (pageCount >= pageIndex)
+                {
                     batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
                     int i = 0;
-                    foreach (var columns in groupList.Skip((pageIndex-1)*pageSize).Take(pageSize).ToList())
+                    foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
                     {
                         var isFirst = i == 0;
                         if (!isFirst)
@@ -137,27 +147,29 @@ namespace SqlSugar
                 return batchInsetrSql.ToString();
             }
         }
-
-        public object FormatValue(object value)
+        public virtual object FormatValue(object value)
         {
             if (value == null)
             {
                 return "NULL";
             }
-            else {
+            else
+            {
                 var type = value.GetType();
                 if (type == PubConst.DateType)
                 {
                     return "'" + value.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.fff") + "'";
                 }
-                else if (type == PubConst.StringType|| type == PubConst.ObjType)
+                else if (type == PubConst.StringType || type == PubConst.ObjType)
                 {
                     return "N'" + value.ToString().ToSqlFilter() + "'";
                 }
-                else {
+                else
+                {
                     return "N'" + value.ToString() + "'";
                 }
             }
-        }
+        } 
+        #endregion
     }
 }
