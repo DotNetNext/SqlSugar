@@ -16,11 +16,6 @@ namespace SqlSugar
         protected IDbMaintenance _DbMaintenance;
         protected IDbConnection _DbConnection;
 
-        public virtual void SetSqlDbType(PropertyInfo propertyInfo, SugarParameter parameter)
-        {
-
-        }
-
         protected virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
         {
             List<SugarParameter> result = new List<SugarParameter>();
@@ -39,7 +34,6 @@ namespace SqlSugar
             }
             return result.ToArray();
         }
-
         protected void ProperyToParameter(object parameters, PropertyInfo[] propertyInfo, string sqlParameterKeyWord, List<SugarParameter> listParams, Type entityType)
         {
             PropertyInfo[] properties = null;
@@ -69,10 +63,6 @@ namespace SqlSugar
                 else
                 {
                     var parameter = new SugarParameter(sqlParameterKeyWord + properyty.Name, value);
-                    if (value == DBNull.Value)
-                    {
-                        SetSqlDbType(properyty, parameter);
-                    }
                     listParams.Add(parameter);
                 }
             }
