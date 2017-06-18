@@ -42,7 +42,6 @@ namespace OrmTest
             OrmTest.Demo.DbFirst.Init();
             OrmTest.Demo.JoinSql.Init();
             OrmTest.Demo.Filter.Init();
-            OrmTest.Demo.MaterSlave.Init();
             OrmTest.Demo.ComplexModel.Init();
             OrmTest.Demo.CodeFirst.Init();
         }

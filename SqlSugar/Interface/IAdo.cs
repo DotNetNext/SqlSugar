@@ -20,9 +20,6 @@ namespace SqlSugar
         void ExecuteBefore(string sql, SugarParameter[] pars);
         void ExecuteAfter(string sql, SugarParameter[] pars);
 
-        ConnectionConfig MasterConnectionConfig { get; set; }
-        List<ConnectionConfig> SlaveConnectionConfigs { get; set; }
-
         CommandType CommandType { get; set; }
         bool IsEnableLogEvent { get; set; }
         Action<string, string> LogEventStarting { get; set; }

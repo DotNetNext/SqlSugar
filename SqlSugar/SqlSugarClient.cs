@@ -32,22 +32,6 @@ namespace SqlSugar
             base.Context = this;
             base.CurrentConnectionConfig = config;
         }
-
-        /// <summary>
-        /// Read / write mode
-        /// </summary>
-        /// <param name="masterConnectionConfig"></param>
-        /// <param name="slaveConnectionConfigs"></param>
-        public SqlSugarClient(ConnectionConfig masterConnectionConfig, ConnectionConfig[] slaveConnectionConfigs)
-        {
-            base.Context = this;
-            base.CurrentConnectionConfig = masterConnectionConfig;
-            if (slaveConnectionConfigs.IsNullOrEmpty()) return;
-
-            var db = this.Ado;
-            db.MasterConnectionConfig = masterConnectionConfig;
-            db.SlaveConnectionConfigs = slaveConnectionConfigs.ToList();
-        }
         #endregion
 
         #region  ADO Methods

@@ -31,8 +31,6 @@ namespace SqlSugar
         public virtual string SqlParameterKeyWord { get { return "@"; } }
         public IDbTransaction Transaction { get; set; }
         public virtual SqlSugarClient Context { get; set; }
-        public virtual ConnectionConfig MasterConnectionConfig { get; set; }
-        public virtual List<ConnectionConfig> SlaveConnectionConfigs { get; set; }
         public virtual IDbBind DbBind
         {
             get

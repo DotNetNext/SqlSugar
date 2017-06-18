@@ -640,8 +640,6 @@ namespace SqlSugar
                         newClient.MappingColumns = this.Context.MappingColumns;
                         newClient.MappingTables = this.Context.MappingTables;
                         newClient.IgnoreColumns = this.Context.IgnoreColumns;
-                        newClient.Ado.MasterConnectionConfig = this.Context.Ado.MasterConnectionConfig;
-                        newClient.Ado.SlaveConnectionConfigs = this.Context.Ado.SlaveConnectionConfigs;
                         contextProperty.SetValue(item, newClient, null);
                     }
                 }
