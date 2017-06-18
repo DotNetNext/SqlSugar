@@ -16,27 +16,13 @@ namespace SqlSugar
     public partial class IDataReaderEntityBuilder<T>
     {
         #region Properies
-        private SqlSugarClient Context = null;
-        private IDataReaderEntityBuilder<T> DynamicBuilder;
-        private IDataRecord DataRecord;
         private List<string> ReaderKeys { get; set; }
-        private IDataReaderEntityBuilder()
-        {
-        }
-        #endregion
-
-        #region Constructor
-
-        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord)
-        {
-            this.Context = context;
-            this.DataRecord = dataRecord;
-            this.DynamicBuilder = new IDataReaderEntityBuilder<T>();
-            this.ReaderKeys = new List<string>();
-        }
         #endregion
 
         #region Fields
+        private SqlSugarClient Context = null;
+        private IDataReaderEntityBuilder<T> DynamicBuilder;
+        private IDataRecord DataRecord;
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
         private static readonly MethodInfo getValueMethod = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
         private static readonly MethodInfo getBoolean = typeof(IDataRecord).GetMethod("GetBoolean", new Type[] { typeof(int) });
@@ -69,6 +55,21 @@ namespace SqlSugar
         private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarClient) });
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
+        #endregion
+
+        #region Constructor
+        private IDataReaderEntityBuilder()
+        {
+
+        }
+
+        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord)
+        {
+            this.Context = context;
+            this.DataRecord = dataRecord;
+            this.DynamicBuilder = new IDataReaderEntityBuilder<T>();
+            this.ReaderKeys = new List<string>();
+        }
         #endregion
 
         #region Public methods
@@ -132,7 +133,6 @@ namespace SqlSugar
         #region Private methods
         private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
         {
-
 
         }
         private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
