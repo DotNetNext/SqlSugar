@@ -3,9 +3,6 @@
 Email:610262374@qq.com 
 QQ Group:225982985
 
-## 3.x API
-3.X https://github.com/sunkaixuan/SqlSugar/tree/master
-
 ##  1. Query
 
 ### 1.1 Create Connection
@@ -400,3 +397,5 @@ var db = GetInstance();
     .CreateClassFile("c:\\Demo\\6");
 }
 ```
+More
+http://www.codeisbug.com/Doc/8
