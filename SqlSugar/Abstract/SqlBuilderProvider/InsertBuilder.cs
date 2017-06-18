@@ -158,7 +158,16 @@ namespace SqlSugar
                 var type = value.GetType();
                 if (type == PubConst.DateType)
                 {
-                    return "'" + value.ObjToDate().ToString("yyyy-MM-dd hh:mm:ss.fff") + "'";
+                    var date = value.ObjToDate();
+                    if (date < Convert.ToDateTime("1900-1-1"))
+                    {
+                        date = Convert.ToDateTime("1900-1-1");
+                    }
+                    return "'" + date.ToString("yyyy-MM-dd hh:mm:ss.fff") + "'";
+                }
+                else if (type == PubConst.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
                 }
                 else if (type == PubConst.StringType || type == PubConst.ObjType)
                 {
@@ -169,7 +178,7 @@ namespace SqlSugar
                     return "N'" + value.ToString() + "'";
                 }
             }
-        } 
+        }
         #endregion
     }
 }

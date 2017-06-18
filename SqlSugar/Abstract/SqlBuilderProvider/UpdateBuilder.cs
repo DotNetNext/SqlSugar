@@ -258,6 +258,10 @@ namespace SqlSugar
                     }
                     return "'" + date.ToString("yyyy-MM-dd hh:mm:ss.fff") + "'";
                 }
+                else if (type == PubConst.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
                 else if (type == PubConst.StringType || type == PubConst.ObjType)
                 {
                     return "N'" + value.ToString().ToSqlFilter() + "'";
