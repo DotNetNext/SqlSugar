@@ -145,10 +145,22 @@ namespace SqlSugar
         public int SampleEachIndex { get; set; }
     }
 
+    /// <summary>
+    /// 字典排序类
+    /// </summary>
     public class OrderByDictionary
     {
+        /// <summary>
+        /// 排序字段
+        /// </summary>
         public string OrderByField { get; set; }
+        /// <summary>
+        /// 排序类型
+        /// </summary>
         public OrderByType OrderByType { get; set; }
+        /// <summary>
+        /// 排序字符串
+        /// </summary>
         public string OrderByString
         {
             get
@@ -156,6 +168,9 @@ namespace SqlSugar
                 return string.Format(" {0} {1} ", OrderByField, OrderByType.ToString());
             }
         }
+        /// <summary>
+        /// 排序字符返转
+        /// </summary>
         public string OrderByStringReverse
         {
             get
@@ -163,20 +178,29 @@ namespace SqlSugar
                 return string.Format(" {0} {1} ", OrderByField, OrderByTypeReverse.ToString());
             }
         }
+        /// <summary>
+        /// 排序字符返转
+        /// </summary>
         public OrderByType OrderByTypeReverse
         {
             get
             {
-                return IsAsc ? OrderByType.desc : OrderByType.asc;
+                return IsAsc ? OrderByType.Desc : OrderByType.Asc;
             }
         }
+        /// <summary>
+        /// 是升序
+        /// </summary>
         public bool IsAsc
         {
             get
             {
-                return OrderByType == OrderByType.asc;
+                return OrderByType == OrderByType.Asc;
             }
         }
+        /// <summary>
+        /// 比较符
+        /// </summary>
         public string Symbol
         {
             get
@@ -184,6 +208,9 @@ namespace SqlSugar
                 return IsAsc ? "<" : ">";
             }
         }
+        /// <summary>
+        /// 比较符反转
+        /// </summary>
         public string SymbolReverse
         {
             get

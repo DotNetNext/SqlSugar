@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data.SqlClient;
 
 namespace SqlSugar
 {
@@ -34,5 +35,9 @@ namespace SqlSugar
         /// GroupBy临时数据
         /// </summary>
         public string GroupBy { get; set; }
+        /// <summary>
+        /// 参数
+        /// </summary>
+        public List<SqlParameter> Params = new List<SqlParameter>();
     }
 }

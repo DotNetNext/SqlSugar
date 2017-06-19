@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Data;
 namespace SqlSugar
 {
+    /// <summary>
+    /// Taskable扩展类
+    /// </summary>
     public static class TaskExtensions
     {
         /// <summary>
@@ -48,7 +51,6 @@ namespace SqlSugar
         /// 获取平均值
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="count"></param>
         /// <returns></returns>
         public static int Avg(this TaskableWithCount<int> thisValue)
         {
@@ -61,7 +63,6 @@ namespace SqlSugar
         /// 获取平均值
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="count"></param>
         /// <returns></returns>
         public static decimal Avg(this TaskableWithCount<decimal> thisValue)
         {
@@ -74,7 +75,6 @@ namespace SqlSugar
         /// 获取平均值
         /// </summary>
         /// <param name="thisValue"></param>
-        /// <param name="count"></param>
         /// <returns></returns>
         public static double Avg(this TaskableWithCount<double> thisValue)
         {
@@ -186,16 +186,16 @@ namespace SqlSugar
 
 
      
-        /// <summary>
+       /// <summary>
         /// 将结果集合并到一个集合
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="thisValue"></param>
-        /// <returns></returns>
+       /// </summary>
+       /// <typeparam name="DataTable"></typeparam>
+       /// <param name="thisValue"></param>
+       /// <returns></returns>
         public static IEnumerable<DataRow> MergeTable<DataTable>(this Taskable<DataTable> thisValue)
         {
 
-            var isDataTable = typeof(DataTable) == typeof(DataTable);
+            var isDataTable = typeof(System.Data.DataTable) == typeof(DataTable);
             if (!isDataTable)
             {
                 Check.Exception(isDataTable, "TaskExtensions.MergeTable.thisValue T只能为DataTable。");
