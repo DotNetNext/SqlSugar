@@ -229,6 +229,13 @@ namespace OrmTest.Demo
             .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
             .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 
+
+            //join  2
+            var list4_1 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id&& st.Name == "jack"
+            }).ToList();
+
+
             //The simple use of Join 2 table
             var list5 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st,sc)=>new {st.Name,st.Id,schoolName=sc.Name}).ToList();
 

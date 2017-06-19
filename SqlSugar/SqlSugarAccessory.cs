@@ -181,8 +181,12 @@ namespace SqlSugar
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(joinExpression, ref shortName, types);
+            List<SugarParameter> paramters =new List<SugarParameter>();
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(joinExpression,ref  paramters, ref shortName, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            if (paramters != null) {
+                queryable.SqlBuilder.QueryBuilder.Parameters.AddRange(paramters);
+            }
         }
         protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
         {
@@ -194,7 +198,7 @@ namespace SqlSugar
         #endregion
 
         #region Private methods
-        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression, ref string shortName, params Type[] entityTypeArray)
+        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression,ref List<SugarParameter> parameters, ref string shortName, params Type[] entityTypeArray)
         {
             List<JoinQueryInfo> result = new List<JoinQueryInfo>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
@@ -204,6 +208,7 @@ namespace SqlSugar
             expressionContext.Resolve(joinExpression, ResolveExpressType.Join);
             int i = 0;
             var joinArray = expressionContext.Result.GetResultArray();
+            parameters = expressionContext.Parameters;
             foreach (var entityType in entityTypeArray)
             {
                 var isFirst = i == 0; ++i;
