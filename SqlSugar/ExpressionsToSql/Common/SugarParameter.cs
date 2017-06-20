@@ -55,6 +55,18 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.Double;
             }
+            else if (type == PubConst.DecType)
+            {
+                this.DbType = System.Data.DbType.Decimal;
+            }
+            else if (type == PubConst.ByteType)
+            {
+                this.DbType = System.Data.DbType.Byte;
+            }
+            else if (type == PubConst.FloatType)
+            {
+                this.DbType = System.Data.DbType.Single;
+            }
         }
         public SugarParameter(string name, object value, bool isOutput)
         {
