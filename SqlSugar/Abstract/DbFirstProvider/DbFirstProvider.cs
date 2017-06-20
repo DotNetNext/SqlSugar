@@ -39,6 +39,9 @@ namespace SqlSugar
 
         public void Init()
         {
+            if (!this.Context.DbMaintenance.IsAnySystemTablePermissions()) {
+                Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
+            }
             this.TableInfoList =this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
             var viewList = this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetViewInfoList());
             if (viewList.IsValuable())

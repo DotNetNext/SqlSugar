@@ -32,6 +32,10 @@ namespace SqlSugar
         protected abstract string RenameColumnSql { get; }
         #endregion
 
+        #region Check
+        protected abstract string CheckSystemTablePermissionsSql { get; }
+        #endregion
+
         #region Scattered
         protected abstract string CreateTableNull { get; }
         protected abstract string CreateTableNotNull { get; }

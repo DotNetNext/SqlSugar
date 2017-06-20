@@ -99,6 +99,19 @@ namespace SqlSugar
         {
             return this.Context.Ado.GetInt("select  object_id('" + constraintName + "')") > 0;
         }
+        public virtual bool IsAnySystemTablePermissions()
+        {
+            string sql = this.CheckSystemTablePermissionsSql;
+            try
+            {
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         #endregion
 
         #region DDL

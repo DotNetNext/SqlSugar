@@ -22,6 +22,10 @@ namespace SqlSugar
         }
         public void InitTables(Type entityType)
         {
+            if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
+            {
+                Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
+            }
             Check.Exception(this.Context.IsSystemTablesConfig, "Please set SqlSugarClent Parameter ConnectionConfig.InitKeyType=InitKeyType.Attribute ");
             var executeResult = Context.Ado.UseTran(() =>
             {
