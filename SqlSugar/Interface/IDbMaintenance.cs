@@ -22,6 +22,7 @@ namespace SqlSugar
         bool IsPrimaryKey(string tableName, string column);
         bool IsIdentity(string tableName, string column);
         bool IsAnyConstraint(string ConstraintName);
+        bool IsAnySystemTablePermissions();
         #endregion
 
         #region DDL

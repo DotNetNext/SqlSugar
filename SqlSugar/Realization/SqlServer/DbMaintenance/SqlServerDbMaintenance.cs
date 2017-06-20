@@ -152,9 +152,21 @@ namespace SqlSugar
                 return "ALTER TABLE {0} DROP CONSTRAINT  {1}";
             }
         }
-        protected override string RenameColumnSql {
-            get {
+        protected override string RenameColumnSql
+        {
+            get
+            {
                 return "exec sp_rename '{0}.{1}','{2}','column';";
+            }
+        }
+        #endregion
+
+        #region Check
+        protected override string CheckSystemTablePermissionsSql
+        {
+            get
+            {
+                return "select top 1 id from sysobjects";
             }
         }
         #endregion

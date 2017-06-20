@@ -36,13 +36,31 @@ namespace SqlSugar
         }
         public virtual List<string> GetIsIdentities(string tableName)
         {
-            var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
-            return result.Select(it => it.DbColumnName).ToList();
+            string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + tableName.ToLower();
+            return this.Context.RewritableMethods.GetCacheInstance<List<string>>().Func(cacheKey,
+                    (cm, key) =>
+                    {
+                        return cm[cacheKey];
+
+                    }, (cm, key) =>
+                    {
+                        var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
+                        return result.Select(it => it.DbColumnName).ToList();
+                    });
         }
         public virtual List<string> GetPrimaries(string tableName)
         {
-            var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
-            return result.Select(it => it.DbColumnName).ToList();
+            string cacheKey = "DbMaintenanceProvider.GetPrimaries" + tableName.ToLower();
+            return this.Context.RewritableMethods.GetCacheInstance<List<string>>().Func(cacheKey,
+            (cm, key) =>
+            {
+                return cm[cacheKey];
+
+            }, (cm, key) =>
+            {
+                var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
+                return result.Select(it => it.DbColumnName).ToList();
+            });
         }
         #endregion
 
@@ -80,6 +98,19 @@ namespace SqlSugar
         public virtual bool IsAnyConstraint(string constraintName)
         {
             return this.Context.Ado.GetInt("select  object_id('" + constraintName + "')") > 0;
+        }
+        public virtual bool IsAnySystemTablePermissions()
+        {
+            string sql = this.CheckSystemTablePermissionsSql;
+            try
+            {
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         #endregion
 
