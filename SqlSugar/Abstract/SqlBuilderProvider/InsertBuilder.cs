@@ -163,7 +163,7 @@ namespace SqlSugar
                     {
                         date = Convert.ToDateTime("1900-1-1");
                     }
-                    return "'" + date.ToString("yyyy-MM-dd hh:mm:ss.fff") + "'";
+                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
                 else if (type == PubConst.BoolType)
                 {
