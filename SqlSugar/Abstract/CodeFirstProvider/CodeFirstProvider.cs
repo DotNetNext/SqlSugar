@@ -111,7 +111,9 @@ namespace SqlSugar
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
-                                                               && ((ec.Length != dc.Length && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) || ec.IsNullable != dc.IsNullable))).ToList();
+                                                               && ((ec.Length != dc.Length && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
+                                                                    ec.IsNullable != dc.IsNullable ||
+                                                                    IsSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
                     .Where(it => !string.IsNullOrEmpty(it.OldDbColumnName))
                     .Where(entityColumn => dbColumns.Any(dbColumn => entityColumn.OldDbColumnName.Equals(dbColumn.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
@@ -210,6 +212,13 @@ namespace SqlSugar
                 Length = item.Length
             };
             return result;
+        }
+
+        private bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
+        {
+            var propType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(ec.PropertyInfo).Name);
+            var dataType = dc.DataType;
+            return propType != dataType;
         }
         #endregion
     }
