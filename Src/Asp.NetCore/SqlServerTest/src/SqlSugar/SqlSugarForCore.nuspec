@@ -1,0 +1,29 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>sqlSugarCore</id>
+    <version>4.0.0.1</version>
+    <authors>sunkaixuan</authors>
+    <owners>Landa</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Asp.net Core ORM SqlSugar ORM,core 1.0,High-performance, lightweight https://github.com/sunkaixuan/SqlSugar</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Asp.net core orm</tags>
+    <dependencies>
+           <group targetFramework=".NETStandard1.6">
+              <dependency id="System.Data.Common" version="4.1.0" />
+              <dependency id="System.Data.SqlClient" version="4.1.0" />
+              <dependency id="Newtonsoft.Json" version="9.0.1" />
+              <dependency id="System.Collections.NonGeneric" version="4.0.1" />
+              <dependency id="System.Dynamic.Runtime" version="4.0.11" />
+              <dependency id="System.Reflection.Emit.Lightweight" version="4.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+   <file src="F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\Src\Asp.NetCore\SqlServerTest\src\SqlSugar\bin\Debug\netstandard1.6\SqlSugar.dll"></file>
+  </files>
+</package>
