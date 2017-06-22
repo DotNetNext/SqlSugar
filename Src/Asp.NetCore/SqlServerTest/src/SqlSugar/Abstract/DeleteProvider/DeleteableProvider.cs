@@ -123,6 +123,21 @@ namespace SqlSugar
             return this;
         }
 
+        public IDeleteable<T> Where(string whereString, SugarParameter parameter)
+        {
+            DeleteBuilder.Parameters.Add(parameter);
+            return this;
+        }
+        public IDeleteable<T> Where(string whereString, SugarParameter[] parameters)
+        {
+            DeleteBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public IDeleteable<T> Where(string whereString, List<SugarParameter> parameters)
+        {
+            DeleteBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
         public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)

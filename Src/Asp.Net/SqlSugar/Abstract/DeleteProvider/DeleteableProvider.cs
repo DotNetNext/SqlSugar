@@ -26,7 +26,7 @@ namespace SqlSugar
         {
             DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
-            var paramters = DeleteBuilder.Parameters==null?null:DeleteBuilder.Parameters.ToArray();
+            var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
             return Db.ExecuteCommand(sql, paramters);
         }
@@ -63,7 +63,7 @@ namespace SqlSugar
                     primaryKeyValues.Add(value);
                 }
                 var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
-                Where(string.Format(DeleteBuilder.WhereInTemplate,SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
+                Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
             }
             else
             {
@@ -114,7 +114,8 @@ namespace SqlSugar
             DeleteBuilder.WhereInfos.Add(whereString);
             if (parameters != null)
             {
-                if (DeleteBuilder.Parameters == null) {
+                if (DeleteBuilder.Parameters == null)
+                {
                     DeleteBuilder.Parameters = new List<SugarParameter>();
                 }
                 DeleteBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
@@ -122,6 +123,21 @@ namespace SqlSugar
             return this;
         }
 
+        public IDeleteable<T> Where(string whereString, SugarParameter parameter)
+        {
+            DeleteBuilder.Parameters.Add(parameter);
+            return this;
+        }
+        public IDeleteable<T> Where(string whereString, SugarParameter[] parameters)
+        {
+            DeleteBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public IDeleteable<T> Where(string whereString, List<SugarParameter> parameters)
+        {
+            DeleteBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
         public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
@@ -143,7 +159,7 @@ namespace SqlSugar
             string primaryField = null;
             primaryField = GetPrimaryKeys().FirstOrDefault();
             Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
-            Where(string.Format(DeleteBuilder.WhereInTemplate,SqlBuilder.GetTranslationColumnName(primaryField), primaryKeyValues.ToJoinSqlInVals()));
+            Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryField), primaryKeyValues.ToJoinSqlInVals()));
             return this;
         }
 
