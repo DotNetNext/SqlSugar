@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>sqlSugar</id>
+    <version>4.0.1</version>
+    <title>SqlSugar SqlServer ORM</title>
+    <authors>sun kaixuan</authors>
+    <owners>landa</owners>
+     <licenseUrl>https://github.com/sunkaixuan/SqlSugar</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SqlSugar ORM  .NET 4.0+ High-performance, lightweight http://www.cnblogs.com/sunkaixuan/p/5654695.html</description>
+    <copyright>Copyright 2017</copyright>
+    <tags>asp.net orm</tags>
+
+  </metadata>
+</package>
