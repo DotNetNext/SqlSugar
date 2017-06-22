@@ -26,7 +26,7 @@ namespace SqlSugar
         {
             DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
-            var paramters = DeleteBuilder.Parameters==null?null:DeleteBuilder.Parameters.ToArray();
+            var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
             return Db.ExecuteCommand(sql, paramters);
         }
@@ -63,7 +63,7 @@ namespace SqlSugar
                     primaryKeyValues.Add(value);
                 }
                 var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
-                Where(string.Format(DeleteBuilder.WhereInTemplate,SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
+                Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
             }
             else
             {
@@ -109,12 +109,16 @@ namespace SqlSugar
             return this;
         }
 
-        public IDeleteable<T> Where(string whereString, object whereObj = null)
+        public IDeleteable<T> Where(string whereString, object parameters = null)
         {
             DeleteBuilder.WhereInfos.Add(whereString);
-            if (whereObj != null)
+            if (parameters != null)
             {
-                DeleteBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
+                if (DeleteBuilder.Parameters == null)
+                {
+                    DeleteBuilder.Parameters = new List<SugarParameter>();
+                }
+                DeleteBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
             }
             return this;
         }
@@ -140,7 +144,7 @@ namespace SqlSugar
             string primaryField = null;
             primaryField = GetPrimaryKeys().FirstOrDefault();
             Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
-            Where(string.Format(DeleteBuilder.WhereInTemplate,SqlBuilder.GetTranslationColumnName(primaryField), primaryKeyValues.ToJoinSqlInVals()));
+            Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryField), primaryKeyValues.ToJoinSqlInVals()));
             return this;
         }
 

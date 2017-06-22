@@ -26,7 +26,7 @@ namespace OrmTest
         //    new SelectQuery(1).Init();
         //    new AutoClose(1).Init();
         //    new Insert(1).Init();
-        //    new Delete(1).Init();
+            new Delete(1).Init();
         //    new Update(1).Init();
         //    new Mapping(1).Init();
         //    new DataTest(1).Init();
