@@ -48,7 +48,7 @@ namespace SqlSugar
             foreach (PropertyInfo properyty in properties)
             {
                 var value = properyty.GetValue(parameters, null);
-                if (properyty.PropertyType.IsEnum)
+                if (properyty.PropertyType.IsEnum())
                 {
                     value = Convert.ToInt64(value);
                 }

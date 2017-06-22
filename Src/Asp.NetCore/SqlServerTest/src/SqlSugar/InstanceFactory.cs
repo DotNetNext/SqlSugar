@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
     public class InstanceFactory
     {
-        static Assembly assembly = Assembly.Load(PubConst.AssemblyName);
+        static Assembly assembly = CoreMethod.LoadAssembly(PubConst.AssemblyName);
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 
         #region Queryable

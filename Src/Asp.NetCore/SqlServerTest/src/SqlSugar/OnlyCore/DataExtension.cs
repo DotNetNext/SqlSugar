@@ -218,7 +218,6 @@ namespace SqlSugar
                 return Rows[thisIndex];
             }
         }
-
         private int index = -1;
         private List<DataRow> Rows = null;
         /// <summary>
@@ -354,6 +353,14 @@ namespace SqlSugar
             }
         }
 
+        public object this[DataColumn column]
+        {
+            get
+            {
+                return obj[column.ColumnName];
+            }
+        }
+
         /// <summary>
         /// Get Item By Index
         /// </summary>
@@ -392,7 +399,7 @@ namespace SqlSugar
     /// <summary>
     /// 数据填充器
     /// </summary>
-    public class SqlDataAdapter
+    public class SqlDataAdapter: IDataAdapter
     {
         private SqlCommand command;
         private string sql;
@@ -405,6 +412,11 @@ namespace SqlSugar
         public SqlDataAdapter(SqlCommand command)
         {
             this.command = command;
+        }
+
+        public SqlDataAdapter()
+        {
+
         }
 
         /// <summary>
@@ -430,6 +442,9 @@ namespace SqlSugar
                     this.command = new SqlCommand(this.sql, this._sqlConnection);
                 }
                 return this.command;
+            }
+            set {
+                this.command = value;
             }
         }
 

@@ -167,7 +167,7 @@ namespace SqlSugar
                 {
                     return GetKeyValueList<T>(type, dataReader);
                 }
-                else if (type.IsValueType || type == PubConst.StringType)
+                else if (type.IsValueType() || type == PubConst.StringType)
                 {
                     return GetValueTypeList<T>(type, dataReader);
                 }

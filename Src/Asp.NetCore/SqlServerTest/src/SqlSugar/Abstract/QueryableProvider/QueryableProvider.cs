@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -629,7 +630,7 @@ namespace SqlSugar
         {
             if (result.IsValuable())
             {
-                if (entityType.BaseType.IsValuable() && entityType.BaseType == PubConst.ModelType)
+                if (entityType.GetTypeInfo().BaseType.IsValuable() && entityType.GetTypeInfo().BaseType == PubConst.ModelType)
                 {
                     foreach (var item in result)
                     {

@@ -111,7 +111,7 @@ namespace SqlSugar
             object reval = null;
             FieldInfo field = (FieldInfo)memberExpr.Member;
             reval = field.GetValue(memberExpr.Member);
-            if (reval != null && reval.GetType().IsClass && reval.GetType() != ExpressionConst.StringType)
+            if (reval != null && reval.GetType().IsClass() && reval.GetType() != ExpressionConst.StringType)
             {
                 var fieldName = memberExpr.Member.Name;
                 var proInfo = reval.GetType().GetProperty(fieldName);
@@ -137,7 +137,7 @@ namespace SqlSugar
             object reval = null;
             PropertyInfo pro = (PropertyInfo)memberExpr.Member;
             reval = pro.GetValue(memberExpr.Member, null);
-            if (reval != null && reval.GetType().IsClass && reval.GetType() != ExpressionConst.StringType)
+            if (reval != null && reval.GetType().IsClass() && reval.GetType() != ExpressionConst.StringType)
             {
                 var fieldName = memberExpr.Member.Name;
                 var proInfo = reval.GetType().GetProperty(fieldName);
@@ -161,7 +161,7 @@ namespace SqlSugar
         public static object DynamicInvoke(MemberExpression expression)
         {
             object value = Expression.Lambda(expression).Compile().DynamicInvoke();
-            if (value != null && value.GetType().IsClass && value.GetType() != ExpressionConst.StringType)
+            if (value != null && value.GetType().IsClass()& value.GetType() != ExpressionConst.StringType)
             {
                 value = Expression.Lambda(expression).Compile().DynamicInvoke();
             }
@@ -180,7 +180,7 @@ namespace SqlSugar
 
         public static bool IsEntity(Type type)
         {
-            return type.IsClass && type!=ExpressionConst.StringType;
+            return type.IsClass() && type!=ExpressionConst.StringType;
         }
 
         public static bool IsValueType(Type type)

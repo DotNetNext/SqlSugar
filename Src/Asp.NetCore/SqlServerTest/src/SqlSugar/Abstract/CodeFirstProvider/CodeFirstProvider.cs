@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 namespace SqlSugar
 {
@@ -45,7 +46,7 @@ namespace SqlSugar
         }
         public void InitTables(string entitiesNamespace)
         {
-            var types = Assembly.Load(entitiesNamespace).GetTypes();
+            var types = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName(entitiesNamespace)).GetTypes();
             InitTables(types);
         }
         public void InitTables(params string[] entitiesNamespaces)
