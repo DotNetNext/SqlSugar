@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class CoreMethod
+    public class ReflectionExtensions
     {
         public static Assembly LoadAssembly(string name)
         {
