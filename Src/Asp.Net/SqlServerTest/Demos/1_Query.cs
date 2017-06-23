@@ -25,6 +25,26 @@ namespace OrmTest.Demo
             Tran();
             StoredProcedure();
             Enum();
+            Simple();
+        }
+
+        private static void Simple()
+        {
+            //SqlSugarClient
+            var db = GetInstance();
+            var student1 = db.Queryable<Student>().InSingle(1);
+
+            //get SimpleClient
+            var sdb = db.SimpleClient;
+            var student2 = sdb.GetById<Student>(1);
+            sdb.DeleteById<Student>(1);
+            sdb.Insert(new Student() { Name = "xx" });
+            sdb.Update<Student>(it => new Student { Name = "newvalue" }, it => it.Id == 1);//only update name where id=1
+            sdb.Update(new Student() { Name="newavalue" ,Id=1});//update all where id=1
+
+            //SimpleClient Get SqlSugarClient
+            var student3=sdb.FullClient.Queryable<Student>().InSingle(1);
+
         }
 
         private static void StoredProcedure()

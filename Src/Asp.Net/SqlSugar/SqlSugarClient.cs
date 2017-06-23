@@ -206,7 +206,7 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7,bool>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
@@ -331,7 +331,7 @@ namespace SqlSugar
         #endregion
 
         #region Gobal Filter
-        public QueryFilterProvider QueryFilter
+        public virtual QueryFilterProvider QueryFilter
         {
             get
             {
@@ -345,6 +345,19 @@ namespace SqlSugar
             set
             {
                 base._QueryFilterProvider = value;
+            }
+        }
+        #endregion
+
+        #region SimpleClient
+        public virtual SimpleClient SimpleClient
+        {
+            get
+            {
+                if (_SimpleClient == null) {
+                    _SimpleClient = new SimpleClient(this);
+                }
+                return _SimpleClient;
             }
         }
         #endregion

@@ -63,6 +63,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="SimpleClient.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
     <Compile Include="Entities\ModelContext.cs" />
     <Compile Include="Entities\SchemaInfo.cs" />

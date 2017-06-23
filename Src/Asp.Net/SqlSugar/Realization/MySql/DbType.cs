@@ -7,6 +7,6 @@ namespace SqlSugar.Realization.MySql
 {
     public partial class DbType
     {
-        public const string MySql = "MySql";
+      //  public const string MySql = "MySql";
     }
 }
