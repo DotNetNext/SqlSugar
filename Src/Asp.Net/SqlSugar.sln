@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar", "SqlSugar\SqlSug
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlServerTest", "SqlServerTest\SqlServerTest.csproj", "{CB591654-0476-40AA-8508-784CF32BE239}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlTest", "MySqlTest\MySqlTest.csproj", "{B72FC095-9AFA-4375-AF14-402339BAF1DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CB591654-0476-40AA-8508-784CF32BE239}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB591654-0476-40AA-8508-784CF32BE239}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB591654-0476-40AA-8508-784CF32BE239}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B72FC095-9AFA-4375-AF14-402339BAF1DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B72FC095-9AFA-4375-AF14-402339BAF1DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B72FC095-9AFA-4375-AF14-402339BAF1DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B72FC095-9AFA-4375-AF14-402339BAF1DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

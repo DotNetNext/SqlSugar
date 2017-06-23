@@ -5,8 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public partial class DbType
+    public class mySqlDbFirst : DbFirstProvider
     {
-        public const string MySql = "MySql";
     }
 }
