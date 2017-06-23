@@ -1,13 +1,16 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using MySql.Data.MySqlClient;
-
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 namespace SqlSugar
 {
     public class MySqlProvider : AdoProvider
     {
-        public MySqlProvider() {}
+        public MySqlProvider() { }
         public override IDbConnection Connection
         {
             get
@@ -23,13 +26,10 @@ namespace SqlSugar
                 base._DbConnection = value;
             }
         }
-        /// <summary>
-        /// Only SqlServer
-        /// </summary>
-        /// <param name="transactionName"></param>
+        
         public override void BeginTran(string transactionName)
         {
-            throw  new NotImplementedException();
+            ((MySqlConnection)this.Connection).BeginTransaction();
         }
         /// <summary>
         /// Only SqlServer
@@ -38,7 +38,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
-            throw new NotImplementedException();
+            ((MySqlConnection)this.Connection).BeginTransaction(iso);
         }
         public override IDataAdapter GetAdapter()
         {
@@ -55,8 +55,8 @@ namespace SqlSugar
             }
             if (parameters.IsValuable())
             {
-                IDataParameter[] ipars= ToIDbDataParameter(parameters);
-                sqlCommand.Parameters.AddRange((SqlParameter[])ipars);
+                IDataParameter[] ipars = ToIDbDataParameter(parameters);
+                sqlCommand.Parameters.AddRange((MySqlParameter[])ipars);
             }
             CheckConnection();
             return sqlCommand;
@@ -74,20 +74,24 @@ namespace SqlSugar
         public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] parameters)
         {
             if (parameters == null || parameters.Length == 0) return null;
-            SqlParameter[] result = new SqlParameter[parameters.Length];
-            int i = 0;
-            foreach (var paramter in parameters)
+            MySqlParameter[] result = new MySqlParameter[parameters.Length];
+            int index = 0;
+            foreach (var parameter in parameters)
             {
-                if (paramter.Value == null) paramter.Value = DBNull.Value;
-                var p = new SqlParameter();
-                p.ParameterName = paramter.ParameterName;
-                p.UdtTypeName = paramter.UdtTypeName;
-                p.Size = paramter.Size;
-                p.Value = paramter.Value;
-                p.DbType = paramter.DbType;
-                p.Direction = paramter.Direction;
-                result[i] =p;
-                ++i;
+                if (parameter.Value == null) parameter.Value = DBNull.Value;
+                var sqlParameter = new MySqlParameter();
+                sqlParameter.ParameterName = parameter.ParameterName;
+                sqlParameter.Size = parameter.Size;
+                sqlParameter.Value = parameter.Value;
+                sqlParameter.DbType = parameter.DbType;
+                sqlParameter.Direction = parameter.Direction;
+                result[index] = sqlParameter;
+                if (sqlParameter.Direction == ParameterDirection.Output) {
+                    if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
+                    this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
+                    this.OutputParameters.Add(sqlParameter);
+                }
+                ++index;
             }
             return result;
         }
