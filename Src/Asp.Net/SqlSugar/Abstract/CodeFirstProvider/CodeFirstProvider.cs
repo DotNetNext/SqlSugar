@@ -14,13 +14,13 @@ namespace SqlSugar
         #endregion
 
         #region Public methods
-        public ICodeFirst BackupTable(int maxBackupDataRows = int.MaxValue)
+        public virtual ICodeFirst BackupTable(int maxBackupDataRows = int.MaxValue)
         {
             this.IsBackupTable = true;
             this.MaxBackupDataRows = maxBackupDataRows;
             return this;
         }
-        public void InitTables(Type entityType)
+        public virtual void InitTables(Type entityType)
         {
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {
@@ -33,7 +33,7 @@ namespace SqlSugar
             });
             Check.Exception(!executeResult.IsSuccess, executeResult.Messaage);
         }
-        public void InitTables(Type[] entityTypes)
+        public virtual void InitTables(Type[] entityTypes)
         {
             if (entityTypes.IsValuable())
             {
@@ -43,12 +43,12 @@ namespace SqlSugar
                 }
             }
         }
-        public void InitTables(string entitiesNamespace)
+        public virtual void InitTables(string entitiesNamespace)
         {
             var types = Assembly.Load(entitiesNamespace).GetTypes();
             InitTables(types);
         }
-        public void InitTables(params string[] entitiesNamespaces)
+        public virtual void InitTables(params string[] entitiesNamespaces)
         {
             if (entitiesNamespaces.IsValuable())
             {
@@ -61,7 +61,7 @@ namespace SqlSugar
         #endregion
 
         #region Core Logic
-        private void Execute(Type entityType)
+        protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityProvider.GetEntityInfo(entityType);
             var tableName = GetTableName(entityInfo);
@@ -71,7 +71,7 @@ namespace SqlSugar
             else
                 NoExistLogic(entityInfo);
         }
-        private void NoExistLogic(EntityInfo entityInfo)
+        public virtual void NoExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);
             Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
@@ -91,7 +91,7 @@ namespace SqlSugar
                 this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
             }
         }
-        private void ExistLogic(EntityInfo entityInfo)
+        public virtual void ExistLogic(EntityInfo entityInfo)
         {
             if (entityInfo.Columns.IsValuable())
             {
@@ -192,11 +192,11 @@ namespace SqlSugar
             var tableName = GetTableName(entityInfo);
             return result.ToString();
         }
-        private static string GetTableName(EntityInfo entityInfo)
+        protected  string GetTableName(EntityInfo entityInfo)
         {
             return entityInfo.DbTableName == null ? entityInfo.EntityName : entityInfo.DbTableName;
         }
-        private DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        protected DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
             var result = new DbColumnInfo()
             {
@@ -214,7 +214,7 @@ namespace SqlSugar
             return result;
         }
 
-        private bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
+        protected bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
         {
             var propType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(ec.PropertyInfo).Name);
             var dataType = dc.DataType;

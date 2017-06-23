@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class MySqlDbMaintenance:DbMaintenanceProvider
+    public class MySqlDbMaintenance : DbMaintenanceProvider
     {
         #region DML
         protected override string GetColumnInfosByTableNameSql
@@ -81,7 +81,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1})";
+                return "CREATE TABLE {0}(\r\n{1}, PRIMARY KEY (`{2}`))";
             }
         }
         protected override string CreateTableColumn
@@ -150,7 +150,7 @@ namespace SqlSugar
         {
             get
             {
-                return "NULL";
+                return "DEFAULT NULL";
             }
         }
         protected override string CreateTableNotNull
@@ -171,8 +171,43 @@ namespace SqlSugar
         {
             get
             {
-                return "IDENTITY(1,1)";
+                return "AUTO_INCREMENT";
             }
+        }
+        #endregion
+
+        #region Methods
+        public override bool CreateTable(string tableName, List<DbColumnInfo> columns)
+        {
+            if (columns.IsValuable())
+            {
+                foreach (var item in columns)
+                {
+                    if (item.DbColumnName.Equals("GUID",StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        item.Length = 10;
+                    }
+                }
+            }
+            return base.CreateTable(tableName,columns);
+        }
+        protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
+        {
+            List<string> columnArray = new List<string>();
+            Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
+            foreach (var item in columns)
+            {
+                string columnName = item.DbColumnName;
+                string dataType = item.DataType;
+                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+                string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+                string primaryKey = null;
+                string identity = item.IsIdentity ? this.CreateTableIdentity : null;
+                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
+                columnArray.Add(addItem);
+            }
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray), columns.First(it=>it.IsPrimarykey).DbColumnName);
+            return tableString;
         }
         #endregion
     }

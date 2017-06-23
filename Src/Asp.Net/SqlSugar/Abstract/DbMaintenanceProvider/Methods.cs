@@ -201,7 +201,7 @@ namespace SqlSugar
                  return reval;
              });
         }
-        private string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
+        protected virtual string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
             List<string> columnArray = new List<string>();
             Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
@@ -213,13 +213,13 @@ namespace SqlSugar
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
-                string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey, identity);
+                string addItem = string.Format(this.CreateTableColumn,this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql, tableName, string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql,this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
-        private string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
+        protected virtual string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
         {
             string columnName = columnInfo.DbColumnName;
             string dataType = columnInfo.DataType;
@@ -230,7 +230,7 @@ namespace SqlSugar
             string result = string.Format(this.AddColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
             return result;
         }
-        private string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
+        protected virtual string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
         {
             string columnName = columnInfo.DbColumnName;
             string dataType = columnInfo.DataType;

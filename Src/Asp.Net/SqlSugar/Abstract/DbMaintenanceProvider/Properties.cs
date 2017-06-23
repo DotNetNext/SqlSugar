@@ -8,7 +8,20 @@ namespace SqlSugar
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
         #region Context
+        private ISqlBuilder _SqlBuilder;
         public SqlSugarClient Context { get; set; }
+        public ISqlBuilder SqlBuilder
+        {
+            get
+            {
+                if (_SqlBuilder == null)
+                {
+                    _SqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+                    _SqlBuilder.Context = this.Context;
+                }
+                return _SqlBuilder;
+            }
+        }
         #endregion
 
         #region DML
