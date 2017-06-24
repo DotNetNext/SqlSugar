@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class MySqlCodeFirst:CodeFirstProvider
+    public class MySqlCodeFirst : CodeFirstProvider
     {
         public override void NoExistLogic(EntityInfo entityInfo)
         {
@@ -37,7 +37,8 @@ namespace SqlSugar
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length
             };
-            if (result.DataType.Equals("varchar",StringComparison.CurrentCultureIgnoreCase)&& result.Length == 0) {
+            if (result.DataType.Equals("varchar", StringComparison.CurrentCultureIgnoreCase) && result.Length == 0)
+            {
                 result.Length = 1;
             }
             return result;
@@ -47,10 +48,20 @@ namespace SqlSugar
         {
             foreach (var item in dbColumns)
             {
-                if (item.DataType == "DateTime") {
+                if (item.DataType == "DateTime")
+                {
                     item.Length = 0;
                 }
             }
+        }
+
+        protected override void ChangeKey(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        {
+            this.Context.DbMaintenance.UpdateColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
+            if (!item.IsPrimarykey)
+                this.Context.DbMaintenance.DropConstraint(tableName,null);
+            if (item.IsPrimarykey)
+                this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
     }
 }

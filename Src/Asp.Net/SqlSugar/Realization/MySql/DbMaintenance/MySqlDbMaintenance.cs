@@ -104,7 +104,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT TOP {0} *　INTO {1} FROM  {2}";
+                return "SELECT  *　INTO {1} FROM  {2} limit 0,{0}";
             }
         }
         protected override string DropTableSql
@@ -125,7 +125,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} DROP CONSTRAINT  {1}";
+                return "ALTER TABLE {0} drop primary key;";
             }
         }
         protected override string RenameColumnSql

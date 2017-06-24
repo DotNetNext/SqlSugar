@@ -13,7 +13,7 @@ namespace OrmTest.Demo
         public int Id { get; set; }
         [SugarColumn(Length = 21,OldColumnName = "Name2")]
         public string Name{ get; set; }
-        [SugarColumn(IsNullable = true,Length =10)]
+        [SugarColumn(IsNullable = true,Length =11)]
         public string IsOk { get; set; }
         public Guid Guid { get; set; }
         public decimal Decimal { get; set; }

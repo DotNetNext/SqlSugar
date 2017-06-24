@@ -163,13 +163,7 @@ namespace SqlSugar
                     }
                     else if (pkDiff || idEntityDiff)
                     {
-                        string constraintName = string.Format("PK_{0}_{1}", tableName, item.DbColumnName);
-                        if (this.Context.DbMaintenance.IsAnyConstraint(constraintName))
-                            this.Context.DbMaintenance.DropConstraint(tableName, constraintName);
-                        this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
-                        this.Context.DbMaintenance.AddColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
-                        if (item.IsPrimarykey)
-                            this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                        ChangeKey(entityInfo, tableName, item);
                     }
                 }
                 if (isChange && IsBackupTable)
@@ -177,6 +171,17 @@ namespace SqlSugar
                     this.Context.DbMaintenance.BackupTable(tableName, tableName + DateTime.Now.ToString("yyyyMMddHHmmss"), MaxBackupDataRows);
                 }
             }
+        }
+
+        protected virtual void ChangeKey(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        {
+            string constraintName = string.Format("PK_{0}_{1}", tableName, item.DbColumnName);
+            if (this.Context.DbMaintenance.IsAnyConstraint(constraintName))
+                this.Context.DbMaintenance.DropConstraint(tableName, constraintName);
+            this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
+            this.Context.DbMaintenance.AddColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
+            if (item.IsPrimarykey)
+                this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
 
         protected virtual void ConvertColumns(List<DbColumnInfo> dbColumns)
