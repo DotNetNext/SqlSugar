@@ -2,7 +2,10 @@
 {
     public class MySqlQueryable<T>:QueryableProvider<T> 
     {
-    
+        public override ISugarQueryable<T> With(string withString)
+        {
+            return this;
+        }
     }
     public class MySqlQueryable<T,T2> : QueryableProvider<T,T2>
     {

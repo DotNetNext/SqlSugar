@@ -38,7 +38,7 @@ namespace SqlSugar
             QueryBuilder.Clear();
         }
 
-        public ISugarQueryable<T> AS<T2>(string tableName)
+        public virtual ISugarQueryable<T> AS<T2>(string tableName)
         {
             var entityName = typeof(T2).Name;
             IsAs = true;
@@ -56,13 +56,13 @@ namespace SqlSugar
             this.Context.MappingTables.Add(entityName, tableName);
             return this;
         }
-        public ISugarQueryable<T> With(string withString)
+        public virtual ISugarQueryable<T> With(string withString)
         {
             QueryBuilder.TableWithString = withString;
             return this;
         }
 
-        public ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        public virtual ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
             if (this.Context.QueryFilter.GeFilterList.IsValuable() && FilterName.IsValuable())
@@ -77,24 +77,24 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> AddParameters(object parameters)
+        public virtual ISugarQueryable<T> AddParameters(object parameters)
         {
             if (parameters != null)
                 QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
             return this;
         }
-        public ISugarQueryable<T> AddParameters(SugarParameter[] parameters)
+        public virtual ISugarQueryable<T> AddParameters(SugarParameter[] parameters)
         {
             QueryBuilder.Parameters.AddRange(parameters);
             return this;
         }
-        public ISugarQueryable<T> AddParameters(SugarParameter parameter)
+        public virtual ISugarQueryable<T> AddParameters(SugarParameter parameter)
         {
             QueryBuilder.Parameters.Add(parameter);
             return this;
         }
 
-        public ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        public virtual ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
         {
 
             QueryBuilder.JoinIndex = +1;
@@ -115,12 +115,12 @@ namespace SqlSugar
             this._Where(expression);
             return this;
         }
-        public ISugarQueryable<T> Where(string whereString, object whereObj = null)
+        public virtual ISugarQueryable<T> Where(string whereString, object whereObj = null)
         {
             this.Where<T>(whereString, whereObj);
             return this;
         }
-        public ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
+        public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;
             whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString));
@@ -129,12 +129,12 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> Having(Expression<Func<T, bool>> expression)
+        public virtual ISugarQueryable<T> Having(Expression<Func<T, bool>> expression)
         {
             this._Having(expression);
             return this;
         }
-        public ISugarQueryable<T> Having(string whereString, object parameters = null)
+        public virtual ISugarQueryable<T> Having(string whereString, object parameters = null)
         {
 
             QueryBuilder.HavingInfos = SqlBuilder.AppendHaving(whereString);
@@ -149,20 +149,20 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null)
+        public virtual ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null)
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
             return this;
         }
 
-        public T InSingle(object pkValue)
+        public virtual T InSingle(object pkValue)
         {
             var list = In(pkValue).ToList();
             if (list == null) return default(T);
             else return list.SingleOrDefault();
         }
-        public ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues)
+        public virtual ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues)
         {
             if (pkValues == null || pkValues.Length == 0)
             {
@@ -176,7 +176,7 @@ namespace SqlSugar
             filed = shortName + filed;
             return In(filed, pkValues);
         }
-        public ISugarQueryable<T> In<FieldType>(string filed, params FieldType[] inValues)
+        public virtual ISugarQueryable<T> In<FieldType>(string filed, params FieldType[] inValues)
         {
             if (inValues.Length == 1)
             {
@@ -216,14 +216,14 @@ namespace SqlSugar
             }
             return this;
         }
-        public ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
+        public virtual ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
             return In(fieldName, inValues);
         }
-        public ISugarQueryable<T> In<TParamter>(List<TParamter> pkValues) {
+        public virtual ISugarQueryable<T> In<TParamter>(List<TParamter> pkValues) {
             if (pkValues == null || pkValues.Count == 0)
             {
                 Where(SqlBuilder.SqlFalse);
@@ -231,7 +231,7 @@ namespace SqlSugar
             }
             return In(pkValues.ToArray());
         }
-        public ISugarQueryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues) {
+        public virtual ISugarQueryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues) {
             if (inValues == null || inValues.Count == 0)
             {
                 Where(SqlBuilder.SqlFalse);
@@ -239,7 +239,7 @@ namespace SqlSugar
             }
             return In(InFieldName, inValues.ToArray());
         }
-        public ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues) {
+        public virtual ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues) {
             if (inValues == null || inValues.Count == 0)
             {
                 Where(SqlBuilder.SqlFalse);
@@ -247,7 +247,7 @@ namespace SqlSugar
             }
             return In(expression, inValues.ToArray());
         }
-        public ISugarQueryable<T> OrderBy(string orderFileds)
+        public virtual ISugarQueryable<T> OrderBy(string orderFileds)
         {
             var orderByValue = QueryBuilder.OrderByValue;
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
@@ -257,18 +257,18 @@ namespace SqlSugar
             QueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
             return this;
         }
-        public ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        public virtual ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
         {
             this._OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
+        public virtual ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
             return this;
         }
 
-        public ISugarQueryable<T> GroupBy(string groupFileds)
+        public virtual ISugarQueryable<T> GroupBy(string groupFileds)
         {
             var croupByValue = QueryBuilder.GroupByValue;
             if (QueryBuilder.GroupByValue.IsNullOrEmpty())
@@ -279,14 +279,14 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> PartitionBy(Expression<Func<T, object>> expression)
+        public virtual ISugarQueryable<T> PartitionBy(Expression<Func<T, object>> expression)
         {
             if (QueryBuilder.Take == null)
                 QueryBuilder.Take = 0;
             _PartitionBy(expression);
             return this;
         }
-        public ISugarQueryable<T> PartitionBy(string groupFileds)
+        public virtual ISugarQueryable<T> PartitionBy(string groupFileds)
         {
             var partitionByValue = QueryBuilder.PartitionByValue;
             if (QueryBuilder.PartitionByValue.IsNullOrEmpty())
@@ -297,18 +297,18 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T> Skip(int num)
+        public virtual ISugarQueryable<T> Skip(int num)
         {
             QueryBuilder.Skip = num;
             return this;
         }
-        public ISugarQueryable<T> Take(int num)
+        public virtual ISugarQueryable<T> Take(int num)
         {
             QueryBuilder.Take = num;
             return this;
         }
 
-        public T Single()
+        public virtual T Single()
         {
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
@@ -326,13 +326,13 @@ namespace SqlSugar
                 return default(T);
             }
         }
-        public T Single(Expression<Func<T, bool>> expression)
+        public virtual T Single(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
             return Single();
         }
 
-        public T First()
+        public virtual T First()
         {
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
@@ -350,27 +350,27 @@ namespace SqlSugar
                 return default(T);
             }
         }
-        public T First(Expression<Func<T, bool>> expression)
+        public virtual T First(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
             return First();
         }
 
-        public bool Any(Expression<Func<T, bool>> expression)
+        public virtual bool Any(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
             return Any();
         }
-        public bool Any()
+        public virtual bool Any()
         {
             return this.Count() > 0;
         }
 
-        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _Select<TResult>(expression);
         }
-        public ISugarQueryable<TResult> Select<TResult>(string selectValue) where TResult : class, new()
+        public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue) where TResult : class, new()
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
@@ -378,13 +378,13 @@ namespace SqlSugar
             QueryBuilder.SelectValue = selectValue;
             return reval;
         }
-        public ISugarQueryable<T> Select(string selectValue)
+        public virtual ISugarQueryable<T> Select(string selectValue)
         {
             QueryBuilder.SelectValue = selectValue;
             return this;
         }
 
-        public int Count()
+        public virtual int Count()
         {
             QueryBuilder.IsCount = true;
             var sql = QueryBuilder.ToSqlString();
@@ -394,76 +394,76 @@ namespace SqlSugar
             return reval;
         }
 
-        public TResult Max<TResult>(string maxField)
+        public virtual TResult Max<TResult>(string maxField)
         {
             this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
-        public TResult Max<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual TResult Max<TResult>(Expression<Func<T, TResult>> expression)
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Max<TResult>(lamResult.GetResultString());
         }
-        public TResult Min<TResult>(string minField)
+        public virtual TResult Min<TResult>(string minField)
         {
             this.Select(string.Format(QueryBuilder.MinTemplate, minField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
-        public TResult Min<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual TResult Min<TResult>(Expression<Func<T, TResult>> expression)
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Min<TResult>(lamResult.GetResultString());
         }
-        public TResult Sum<TResult>(string sumField)
+        public virtual TResult Sum<TResult>(string sumField)
         {
             this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
-        public TResult Sum<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual TResult Sum<TResult>(Expression<Func<T, TResult>> expression)
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Sum<TResult>(lamResult.GetResultString());
         }
-        public TResult Avg<TResult>(string avgField)
+        public virtual TResult Avg<TResult>(string avgField)
         {
             this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
             var reval = this._ToList<TResult>().SingleOrDefault();
             return reval;
         }
-        public TResult Avg<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual TResult Avg<TResult>(Expression<Func<T, TResult>> expression)
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Avg<TResult>(lamResult.GetResultString());
         }
 
-        public string ToJson()
+        public virtual string ToJson()
         {
             return this.Context.RewritableMethods.SerializeObject(this.ToList());
         }
-        public string ToJsonPage(int pageIndex, int pageSize)
+        public virtual string ToJsonPage(int pageIndex, int pageSize)
         {
             return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize));
         }
-        public string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
+        public virtual string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
             return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber));
         }
 
-        public DataTable ToDataTable()
+        public virtual DataTable ToDataTable()
         {
             var sqlObj = this.ToSql();
             RestoreMapping();
             var result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
             return result;
         }
-        public DataTable ToDataTablePage(int pageIndex, int pageSize)
+        public virtual DataTable ToDataTablePage(int pageIndex, int pageSize)
         {
             if (pageIndex == 0)
                 pageIndex = 1;
@@ -471,17 +471,17 @@ namespace SqlSugar
             QueryBuilder.Take = pageSize;
             return ToDataTable();
         }
-        public DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
+        public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {
             totalNumber = this.Count();
             return ToDataTablePage(pageIndex, pageSize);
         }
 
-        public List<T> ToList()
+        public virtual List<T> ToList()
         {
             return _ToList<T>();
         }
-        public List<T> ToPageList(int pageIndex, int pageSize)
+        public virtual List<T> ToPageList(int pageIndex, int pageSize)
         {
             if (pageIndex == 0)
                 pageIndex = 1;
@@ -489,13 +489,13 @@ namespace SqlSugar
             QueryBuilder.Take = pageSize;
             return ToList();
         }
-        public List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
+        public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
             totalNumber = this.Count();
             return ToPageList(pageIndex, pageSize);
         }
 
-        public KeyValuePair<string, List<SugarParameter>> ToSql()
+        public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             string sql = QueryBuilder.ToSqlString();
             RestoreMapping();
