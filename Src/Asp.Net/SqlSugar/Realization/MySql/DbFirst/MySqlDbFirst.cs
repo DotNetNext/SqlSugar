@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class mySqlDbFirst : DbFirstProvider
+    public class MySqlDbFirst : DbFirstProvider
     {
     }
 }
