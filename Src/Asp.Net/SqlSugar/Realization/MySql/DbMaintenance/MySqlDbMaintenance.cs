@@ -76,7 +76,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"USE master;BACKUP DATABASE {0} TO disk = '{1}'";
+                return "mysqldump.exe  {0} -uroot -p > {1}  ";
             }
         }
         protected override string CreateTableSql
