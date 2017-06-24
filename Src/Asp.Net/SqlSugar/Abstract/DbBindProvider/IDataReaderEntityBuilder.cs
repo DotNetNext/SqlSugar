@@ -208,11 +208,12 @@ namespace SqlSugar
                     break;
                 case CSharpDataType.@short:
                     CheckType(bind.ShortThrow, bindProperyTypeName, validPropertyName, propertyName);
-                    if (bindProperyTypeName == "int16" && bindProperyTypeName == "short")
+                    if (bindProperyTypeName == "int16" || bindProperyTypeName == "short")
                         method = isNullableType ? getConvertInt16 : getInt16;
                     break;
                 case CSharpDataType.@long:
-                    method = isNullableType ? getConvetInt64 : getInt64;
+                    if (bindProperyTypeName == "int64" || bindProperyTypeName == "long")
+                        method = isNullableType ? getConvetInt64 : getInt64;
                     break;
                 default:
                     method = getValueMethod;

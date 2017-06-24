@@ -22,5 +22,14 @@ namespace SqlSugar
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns);
         }
+        protected override void ConvertColumns(List<DbColumnInfo> dbColumns)
+        {
+            foreach (var item in dbColumns)
+            {
+                if (item.DataType == "DateTime") {
+                    item.Length = 0;
+                }
+            }
+        }
     }
 }

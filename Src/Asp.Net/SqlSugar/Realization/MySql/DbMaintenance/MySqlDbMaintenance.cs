@@ -21,9 +21,10 @@ namespace SqlSugar
                                     column_default  AS  `DefaultValue`,
                                     column_comment  AS  `ColumnDescription`,
                                     CASE WHEN COLUMN_KEY = 'PRI'
-                                    THEN 1 ELSE 0 END AS `IsPrimaryKey`,
+                                    THEN true ELSE false END AS `IsPrimaryKey`,
+                                    CASE WHEN EXTRA='auto_increment' THEN true ELSE false END as IsIdentity,
                                     CASE WHEN is_nullable = 'YES'
-                                    THEN 1 ELSE 0 END AS `IsNullable`
+                                    THEN true ELSE false END AS `IsNullable`
                                     FROM
                                     Information_schema.columns where TABLE_NAME='{0}' ORDER BY TABLE_NAME";
                 return sql;
@@ -67,7 +68,8 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
+                // return "ALTER TABLE {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
+                return "alter table {0} change  column {1} {1} {2}{3} {4} {5} {6}";
             }
         }
         protected override string BackupDataBaseSql

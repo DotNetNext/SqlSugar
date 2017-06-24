@@ -99,6 +99,7 @@ namespace SqlSugar
 
                 var tableName = GetTableName(entityInfo);
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
+                ConvertColumns(dbColumns);
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
                 var dropColumns = dbColumns
                                           .Where(dc => !entityColumns.Any(ec => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
@@ -176,6 +177,11 @@ namespace SqlSugar
                     this.Context.DbMaintenance.BackupTable(tableName, tableName + DateTime.Now.ToString("yyyyMMddHHmmss"), MaxBackupDataRows);
                 }
             }
+        }
+
+        protected virtual void ConvertColumns(List<DbColumnInfo> dbColumns)
+        {
+           
         }
         #endregion
 
