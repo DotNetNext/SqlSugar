@@ -53,7 +53,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ADD CONSTRAINT {1} PRIMARY KEY({2})";
+                return "ALTER TABLE {0} ADD PRIMARY KEY({2}) /*{1}*/";
             }
         }
         protected override string AddColumnToTableSql
@@ -81,7 +81,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1}, PRIMARY KEY (`{2}`))";
+                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey)";
             }
         }
         protected override string CreateTableColumn
@@ -189,7 +189,15 @@ namespace SqlSugar
                     }
                 }
             }
-            return base.CreateTable(tableName,columns);
+            string sql = GetCreateTableSql(tableName, columns);
+            string primaryKeyInfo = null;
+            if (columns.Any(it => it.IsIdentity)) {
+                primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsIdentity).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
+
+            }
+            sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
         }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
@@ -199,6 +207,9 @@ namespace SqlSugar
             {
                 string columnName = item.DbColumnName;
                 string dataType = item.DataType;
+                if (dataType == "varchar"&& item.Length==0) {
+                    item.Length = 1;
+                }
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
@@ -206,9 +217,10 @@ namespace SqlSugar
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray), columns.First(it=>it.IsPrimarykey).DbColumnName);
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
+
         #endregion
     }
 }

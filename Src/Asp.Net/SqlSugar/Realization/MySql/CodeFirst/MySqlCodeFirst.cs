@@ -9,14 +9,14 @@ namespace SqlSugar
     {
         public override void NoExistLogic(EntityInfo entityInfo)
         {
-            var tableName = base.GetTableName(entityInfo);
+            var tableName = GetTableName(entityInfo);
             Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.IsValuable())
             {
                 foreach (var item in entityInfo.Columns)
                 {
-                    DbColumnInfo dbColumnInfo = base.EntityColumnToDbColumn(entityInfo, tableName, item);
+                    DbColumnInfo dbColumnInfo = EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
             }
