@@ -26,7 +26,7 @@ namespace SqlSugar
                                     CASE WHEN is_nullable = 'YES'
                                     THEN true ELSE false END AS `IsNullable`
                                     FROM
-                                    Information_schema.columns where TABLE_NAME='{0}' ORDER BY TABLE_NAME";
+                                    Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY TABLE_NAME";
                 return sql;
             }
         }
