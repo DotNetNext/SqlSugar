@@ -222,7 +222,10 @@ namespace SqlSugar
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
-
+        public override bool IsAnyConstraint(string constraintName)
+        {
+            throw new NotSupportedException("MySql IsAnyConstraint NotSupportedException");
+        }
         #endregion
     }
 }
