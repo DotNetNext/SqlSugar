@@ -16,12 +16,33 @@ namespace SqlSugar
             {
                 foreach (var item in entityInfo.Columns)
                 {
-                    DbColumnInfo dbColumnInfo = EntityColumnToDbColumn(entityInfo, tableName, item);
+                    DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns);
         }
+        protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        {
+            var result = new DbColumnInfo()
+            {
+                DataType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(item.PropertyInfo).Name),
+                TableId = entityInfo.Columns.IndexOf(item),
+                DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
+                IsPrimarykey = item.IsPrimarykey,
+                IsIdentity = item.IsIdentity,
+                TableName = tableName,
+                IsNullable = item.IsNullable,
+                DefaultValue = item.DefaultValue,
+                ColumnDescription = item.ColumnDescription,
+                Length = item.Length
+            };
+            if (result.DataType.Equals("varchar",StringComparison.CurrentCultureIgnoreCase)&& result.Length == 0) {
+                result.Length = 1;
+            }
+            return result;
+        }
+
         protected override void ConvertColumns(List<DbColumnInfo> dbColumns)
         {
             foreach (var item in dbColumns)

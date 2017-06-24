@@ -186,23 +186,23 @@ namespace SqlSugar
         #endregion
 
         #region Helper methods
-        public string GetCreateTableString(EntityInfo entityInfo)
+        public virtual string GetCreateTableString(EntityInfo entityInfo)
         {
             StringBuilder result = new StringBuilder();
             var tableName = GetTableName(entityInfo);
             return result.ToString();
         }
-        public string GetCreateColumnsString(EntityInfo entityInfo)
+        public virtual string GetCreateColumnsString(EntityInfo entityInfo)
         {
             StringBuilder result = new StringBuilder();
             var tableName = GetTableName(entityInfo);
             return result.ToString();
         }
-        protected  string GetTableName(EntityInfo entityInfo)
+        protected virtual string GetTableName(EntityInfo entityInfo)
         {
             return entityInfo.DbTableName == null ? entityInfo.EntityName : entityInfo.DbTableName;
         }
-        protected DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        protected virtual DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
             var result = new DbColumnInfo()
             {
@@ -220,7 +220,7 @@ namespace SqlSugar
             return result;
         }
 
-        protected bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
+        protected virtual bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
         {
             var propType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(ec.PropertyInfo).Name);
             var dataType = dc.DataType;
