@@ -20,7 +20,7 @@ namespace OrmTest.UnitTest
 
             var db = GetInstance();
             var t1= db.Queryable<Student>().Where(it=>it.Id==1).ToSql();
-            base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE ( [ID] = @Id0 ) ", null, t1.Key, null,"Mapping t1 error");
+            base.Check("SELECT `ID`,`SchoolId`,`Name`,`CreateTime` FROM `STudent`  WHERE ( `ID` = @Id0 ) ", null, t1.Key, null,"Mapping t1 error");
 
             db.MappingColumns.Add("Id", "id", "School");
             var t2 = db.Queryable<Student, School>((st, sc) => new object[] {
@@ -32,14 +32,14 @@ namespace OrmTest.UnitTest
             .GroupBy(st => st.Id)
             .GroupBy((st,sc) => sc.Id).OrderBy(st => st.Id,OrderByType.Asc)
             .Select((st,sc)=> new { stid=st.Id,scid=sc.Id}).ToSql();
-            base.Check(@"SELECT  [st].[ID] AS [stid] , [sc].[id] AS [scid]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[id] )   WHERE ( [st].[ID] = @Id0 )  AND ( [sc].[id] = @Id1 )  AND ( [sc].[id] = [st].[ID] )GROUP BY [st].[ID],[sc].[id]ORDER BY [st].[ID] ASC ",
+            base.Check(@"SELECT  `st`.`ID` AS `stid` , `sc`.`id` AS `scid`  FROM `STudent` st Left JOIN School sc ON ( `st`.`SchoolId` = `sc`.`id` )   WHERE ( `st`.`ID` = @Id0 )  AND ( `sc`.`id` = @Id1 )  AND ( `sc`.`id` = `st`.`ID` )GROUP BY `st`.`ID`,`sc`.`id`ORDER BY `st`.`ID` ASC ",
                 null, t2.Key, null, " Mapping t2 error");
             var x2 = GetInstance();
         }
 
         public SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() {InitKeyType=InitKeyType.Attribute, ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() {InitKeyType=InitKeyType.Attribute, ConnectionString = Config.ConnectionString, DbType = DbType.MySql, IsAutoCloseConnection = true });
             return db;
         }
     }
