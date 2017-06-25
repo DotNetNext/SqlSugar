@@ -78,14 +78,14 @@ namespace SqlSugar
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.IsValuable())
             {
-                foreach (var item in entityInfo.Columns.Where(it=>it.IsIgnore==false))
+                foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
                     DbColumnInfo dbColumnInfo = EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns);
-            var pkColumns= entityInfo.Columns.Where(it => it.IsPrimarykey).ToList();
+            var pkColumns = entityInfo.Columns.Where(it => it.IsPrimarykey).ToList();
             foreach (var item in pkColumns)
             {
                 this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
@@ -186,7 +186,7 @@ namespace SqlSugar
 
         protected virtual void ConvertColumns(List<DbColumnInfo> dbColumns)
         {
-           
+
         }
         #endregion
 
@@ -212,7 +212,6 @@ namespace SqlSugar
             var propertyType = PubMethod.GetUnderType(item.PropertyInfo);
             var result = new DbColumnInfo()
             {
-                DataType = propertyType.IsEnum?"int":this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name),
                 TableId = entityInfo.Columns.IndexOf(item),
                 DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
                 IsPrimarykey = item.IsPrimarykey,
@@ -223,6 +222,14 @@ namespace SqlSugar
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length
             };
+            if (propertyType.IsEnum)
+            {
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length>9?PubConst.LongType.Name:PubConst.IntType.Name);
+            }
+            else
+            {
+                this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+            }
             return result;
         }
 
