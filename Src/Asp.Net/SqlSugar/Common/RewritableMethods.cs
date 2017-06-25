@@ -102,6 +102,13 @@ namespace SqlSugar
                                         addValue = DateTime.MinValue;
                                     }
                                 }
+                                else
+                                {
+                                    if (item.PropertyType == PubConst.IntType)
+                                    {
+                                        addValue = Convert.ToInt32(addValue);
+                                    }
+                                }
                                 result.Add(name, addValue);
                             }
                         }

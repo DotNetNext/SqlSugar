@@ -49,47 +49,48 @@ namespace OrmTest.Demo
 
         private static void StoredProcedure()
         {
-            var db = GetInstance();
-            //1. no result 
-            db.Ado.UseStoredProcedure(() =>
-            {
-                string spName = "sp_help";
-                var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-            });
+            //var db = GetInstance();
+            ////1. no result 
+            //db.Ado.UseStoredProcedure(() =>
+            //{
+            //    string spName = "sp_help";
+            //    var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+            //});
 
-            //2. has result 
-            var result = db.Ado.UseStoredProcedure<dynamic>(() =>
-             {
-                 string spName = "sp_help";
-                 return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-             });
+            ////2. has result 
+            //var result = db.Ado.UseStoredProcedure<dynamic>(() =>
+            // {
+            //     string spName = "sp_help";
+            //     return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
+            // });
 
-            //2. has output 
-            object outPutValue;
-            var outputResult = db.Ado.UseStoredProcedure<dynamic>(() =>
-            {
-                string spName = "sp_school";
-                var p1 = new SugarParameter("@p1", "1");
-                var p2 = new SugarParameter("@p2", null, true);//isOutput=true
-                var dbResult = db.Ado.SqlQueryDynamic(spName, new SugarParameter[] { p1, p2 });
-                outPutValue = p2.Value;
-                return dbResult;
-            });
+            ////2. has output 
+            //object outPutValue;
+            //var outputResult = db.Ado.UseStoredProcedure<dynamic>(() =>
+            //{
+            //    string spName = "sp_school";
+            //    var p1 = new SugarParameter("@p1", "1");
+            //    var p2 = new SugarParameter("@p2", null, true);//isOutput=true
+            //    var dbResult = db.Ado.SqlQueryDynamic(spName, new SugarParameter[] { p1, p2 });
+            //    outPutValue = p2.Value;
+            //    return dbResult;
+            //});
         }
         private static void Tran()
         {
             var db = GetInstance();
             var x=db.Insertable(new Student() { CreateTime = DateTime.Now, Name = "tran" }).ExecuteCommand();
+            var count1 = db.Queryable<Student>().Count();
             //1. no result 
             var result = db.Ado.UseTran(() =>
                {
           
                    var beginCount = db.Queryable<Student>().ToList();
-                   db.Ado.ExecuteCommand("delete student");
+                   db.Ado.ExecuteCommand("delete from student");
                    var endCount = db.Queryable<Student>().Count();
                    throw new Exception("error haha");
                });
-            var count = db.Queryable<Student>().Count();
+            var count2 = db.Queryable<Student>().Count();
 
             //2 has result 
             var result2 = db.Ado.UseTran<List<Student>>(() =>
