@@ -24,8 +24,8 @@ namespace OrmTest.UnitTest
             //db.MappingColumns.Add("id","dbid", "Student");
 
             var t1 = db.Insertable(insertObj).ToSql();
-            base.Check(@"INSERT INTO [STudent]  
-           ([SchoolId],[Name],[CreateTime])
+            base.Check(@"INSERT INTO `STudent`  
+           (`SchoolId`,`Name`,`CreateTime`)
      VALUES
            (@SchoolId,@Name,@CreateTime) ;SELECT SCOPE_IDENTITY();",
            new List<SugarParameter>() {
@@ -42,8 +42,8 @@ namespace OrmTest.UnitTest
             db.IgnoreColumns = null;
             //Only  insert  Name 
             var t3 = db.Insertable(insertObj).InsertColumns(it => new { it.Name }).ToSql();
-            base.Check(@"INSERT INTO [STudent]  
-           ([Name])
+            base.Check(@"INSERT INTO `STudent`  
+           (`Name`)
      VALUES
            (@Name) ;SELECT SCOPE_IDENTITY();", new List<SugarParameter>() {
                            new SugarParameter("@Name","jack")
@@ -52,8 +52,8 @@ namespace OrmTest.UnitTest
 
             //Ignore  Name and TestId
             var t4 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ToSql();
-            base.Check(@"INSERT INTO [STudent]  
-           ([SchoolId],[CreateTime])
+            base.Check(@"INSERT INTO `STudent`  
+           (`SchoolId`,`CreateTime`)
      VALUES
            (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
       new List<SugarParameter>() {
@@ -64,8 +64,8 @@ namespace OrmTest.UnitTest
 
             //Ignore  Name and TestId
             var t5 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
-            base.Check(@"INSERT INTO [STudent] WITH(UPDLOCK)  
-           ([SchoolId],[CreateTime])
+            base.Check(@"INSERT INTO `STudent` WITH(UPDLOCK)  
+           (`SchoolId`,`CreateTime`)
      VALUES
            (@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
 new List<SugarParameter>() {
@@ -75,8 +75,8 @@ new List<SugarParameter>() {
 );
             //Use Lock
             var t6 = db.Insertable(insertObj).With(SqlWith.UpdLock).ToSql();
-            base.Check(@"INSERT INTO [STudent] WITH(UPDLOCK)  
-           ([SchoolId],[Name],[CreateTime])
+            base.Check(@"INSERT INTO `STudent` WITH(UPDLOCK)  
+           (`SchoolId`,`Name`,`CreateTime`)
      VALUES
            (@SchoolId,@Name,@CreateTime) ;SELECT SCOPE_IDENTITY();",
 new List<SugarParameter>() {
@@ -88,8 +88,8 @@ new List<SugarParameter>() {
 
             var insertObj2 = new Student() { Name = null,SchoolId=0, CreateTime = Convert.ToDateTime("2010-1-1") };
             var t8 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ToSql();
-            base.Check(@"INSERT INTO [STudent]  
-           ([ID],[SchoolId],[CreateTime])
+            base.Check(@"INSERT INTO `STudent`  
+           (`ID`,`SchoolId`,`CreateTime`)
      VALUES
            (@ID,@SchoolId,@CreateTime) ;SELECT SCOPE_IDENTITY();",
                new List<SugarParameter>() {

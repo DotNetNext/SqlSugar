@@ -50,7 +50,7 @@ namespace OrmTest.UnitTest
                 var t1 = db.Queryable<Student, School>((st, sc) => new object[] {
                     JoinType.Inner,st.Id==sc.Id
                 }).GroupBy(st => st.Id).Having(st => SqlFunc.AggregateAvg(st.Id) == 1).Select(st => new { avgId = SqlFunc.AggregateAvg(st.Id) }).ToSql();
-                base.Check("SELECT  AVG([st].[ID]) AS [avgId]  FROM [STudent] st Inner JOIN School sc ON ( [st].[ID] = [sc].[Id] )  GROUP BY [st].[ID] HAVING (AVG([st].[ID]) = @Const0 ) ",
+                base.Check("SELECT  AVG(`st`.`ID`) AS `avgId`  FROM `STudent` st Inner JOIN School sc ON ( `st`.`ID` = `sc`.`Id` )  GROUP BY `st`.`ID` HAVING (AVG(`st`.`ID`) = @Const0 ) ",
                     new List<SugarParameter>() {
                       new SugarParameter("@Const0",1)
                     }
@@ -64,7 +64,7 @@ namespace OrmTest.UnitTest
                           .Where(st => st.Id > 0)
                           .Select((st, st2) => new { stid = st.Id, scId = st2.Id, xx = st }).ToSql();
 
-                base.Check("SELECT  [st].[Id] AS [stid] , [st2].[Id] AS [scId] , [st].[Id] AS [School.Id] , [st].[Name] AS [School.Name]  FROM [School] st Left JOIN School st2 ON ( [st].[Id] = [st2].[Id] )   WHERE ( [st].[Id] > @Id0 ) "
+                base.Check("SELECT  `st`.`Id` AS `stid` , `st2`.`Id` AS `scId` , `st`.`Id` AS `School.Id` , `st`.`Name` AS `School.Name`  FROM `School` st Left JOIN School st2 ON ( `st`.`Id` = `st2`.`Id` )   WHERE ( `st`.`Id` > @Id0 ) "
                     , new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
                     }, t2.Key, t2.Value, "select t2  Error");
@@ -75,7 +75,7 @@ namespace OrmTest.UnitTest
                           JoinType.Left,sc2.Id==sc.Id
                 }).Where(st => st.Id > 0)
                 .Select<School>((st) => new School() { Id = st.Id }).ToSql();
-                base.Check("SELECT  [st].[ID] AS [Id]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )  Left JOIN School sc2 ON ( [sc2].[Id] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
+                base.Check("SELECT  `st`.`ID` AS `Id`  FROM `STudent` st Left JOIN School sc ON ( `st`.`SchoolId` = `sc`.`Id` )  Left JOIN School sc2 ON ( `sc2`.`Id` = `sc`.`Id` )   WHERE ( `st`.`ID` > @Id0 ) ",
                    new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
                     }, t3.Key, t3.Value, "select t3 Error");
@@ -87,7 +87,7 @@ namespace OrmTest.UnitTest
 
         public SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.MySql });
             return db;
         }
     }
