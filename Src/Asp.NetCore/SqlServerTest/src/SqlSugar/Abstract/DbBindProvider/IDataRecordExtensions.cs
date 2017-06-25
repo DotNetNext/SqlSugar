@@ -7,6 +7,23 @@ namespace SqlSugar
 {
     public static partial class IDataRecordExtensions
     {
+
+        public static Guid GetStringGuid(this IDataRecord dr, int i)
+        {
+            var reval =Guid.Parse(dr.GetValue(i).ToString());
+            return reval;
+        }
+
+        public static Guid? GetConvertStringGuid(this IDataRecord dr, int i)
+        {
+            if (dr.IsDBNull(i))
+            {
+                return Guid.Empty;
+            }
+            var reval = Guid.Parse(dr.GetValue(i).ToString());
+            return reval;
+        }
+
         public static bool? GetConvertBoolean(this IDataRecord dr, int i)
         {
             if (dr.IsDBNull(i))
@@ -57,7 +74,7 @@ namespace SqlSugar
             return reval;
         }
 
- 
+
         public static double? GetConvertDouble(this IDataRecord dr, int i)
         {
             if (dr.IsDBNull(i))
@@ -124,7 +141,7 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval =Convert.ToString(dr.GetValue(i));
+            var reval = Convert.ToString(dr.GetValue(i));
             return reval;
         }
 
@@ -138,7 +155,7 @@ namespace SqlSugar
 
         }
 
-        public static T GetOther<T>(this IDataReader dr, int i) 
+        public static T GetOther<T>(this IDataReader dr, int i)
         {
             return (T)Convert.ChangeType(dr.GetValue(i), typeof(T));
         }
@@ -161,7 +178,7 @@ namespace SqlSugar
             return t;
         }
 
-        public static object GetEntity(this IDataReader dr, SqlSugarClient context) 
+        public static object GetEntity(this IDataReader dr, SqlSugarClient context)
         {
             return null;
         }

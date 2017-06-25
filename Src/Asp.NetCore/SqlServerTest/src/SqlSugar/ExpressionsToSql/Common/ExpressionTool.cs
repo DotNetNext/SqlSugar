@@ -161,7 +161,7 @@ namespace SqlSugar
         public static object DynamicInvoke(MemberExpression expression)
         {
             object value = Expression.Lambda(expression).Compile().DynamicInvoke();
-            if (value != null && value.GetType().IsClass()& value.GetType() != ExpressionConst.StringType)
+            if (value != null && value.GetType().IsClass() && value.GetType() != ExpressionConst.StringType)
             {
                 value = Expression.Lambda(expression).Compile().DynamicInvoke();
             }

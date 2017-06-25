@@ -102,12 +102,20 @@ namespace SqlSugar
                                         addValue = DateTime.MinValue;
                                     }
                                 }
+                                else
+                                {
+                                    if (item.PropertyType == PubConst.IntType)
+                                    {
+                                        addValue = Convert.ToInt32(addValue);
+                                    }
+                                }
                                 result.Add(name, addValue);
                             }
                         }
                     }
                     var stringValue = SerializeObject(result);
-                    if (stringValue.IsValuable()) {
+                    if (stringValue.IsValuable())
+                    {
                         stringValue = stringValue.Replace(":{}", ":null");
                     }
                     reval.Add((T)DeserializeObject<T>(stringValue));

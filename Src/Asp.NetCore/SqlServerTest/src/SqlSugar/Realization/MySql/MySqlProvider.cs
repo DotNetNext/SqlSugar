@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,16 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class SqlServerProvider : AdoProvider
+    public class MySqlProvider : AdoProvider
     {
-        public SqlServerProvider() { }
+        public MySqlProvider() { }
         public override IDbConnection Connection
         {
             get
             {
                 if (base._DbConnection == null)
                 {
-                    base._DbConnection = new SqlConnection(base.Context.CurrentConnectionConfig.ConnectionString);
+                    base._DbConnection = new MySqlConnection(base.Context.CurrentConnectionConfig.ConnectionString);
                 }
                 return base._DbConnection;
             }
@@ -25,13 +26,10 @@ namespace SqlSugar
                 base._DbConnection = value;
             }
         }
-        /// <summary>
-        /// Only SqlServer
-        /// </summary>
-        /// <param name="transactionName"></param>
+        
         public override void BeginTran(string transactionName)
         {
-            ((SqlConnection)this.Connection).BeginTransaction(transactionName);
+            ((MySqlConnection)this.Connection).BeginTransaction();
         }
         /// <summary>
         /// Only SqlServer
@@ -40,32 +38,32 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
-            ((SqlConnection)this.Connection).BeginTransaction(iso, transactionName);
+            ((MySqlConnection)this.Connection).BeginTransaction(iso);
         }
         public override IDataAdapter GetAdapter()
         {
-            return new SqlDataAdapter();
+            return new MySqlDataAdapter();
         }
         public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
-            SqlCommand sqlCommand = new SqlCommand(sql, (SqlConnection)this.Connection);
+            MySqlCommand sqlCommand = new MySqlCommand(sql, (MySqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (this.Transaction != null)
             {
-                sqlCommand.Transaction = (SqlTransaction)this.Transaction;
+                sqlCommand.Transaction = (MySqlTransaction)this.Transaction;
             }
             if (parameters.IsValuable())
             {
                 IDataParameter[] ipars = ToIDbDataParameter(parameters);
-                sqlCommand.Parameters.AddRange((SqlParameter[])ipars);
+                sqlCommand.Parameters.AddRange((MySqlParameter[])ipars);
             }
             CheckConnection();
             return sqlCommand;
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
         {
-            ((SqlDataAdapter)dataAdapter).SelectCommand = (SqlCommand)command;
+            ((MySqlDataAdapter)dataAdapter).SelectCommand = (MySqlCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
@@ -76,14 +74,13 @@ namespace SqlSugar
         public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] parameters)
         {
             if (parameters == null || parameters.Length == 0) return null;
-            SqlParameter[] result = new SqlParameter[parameters.Length];
+            MySqlParameter[] result = new MySqlParameter[parameters.Length];
             int index = 0;
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                var sqlParameter = new SqlParameter();
+                var sqlParameter = new MySqlParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
-                //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;

@@ -1,7 +1,8 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
+    "MySql.Data": "7.0.7-m61",
     "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1",
     "System.Collections.NonGeneric": "4.0.1",

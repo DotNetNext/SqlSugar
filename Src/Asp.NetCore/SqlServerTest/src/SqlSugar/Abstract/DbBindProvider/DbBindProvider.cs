@@ -15,7 +15,7 @@ namespace SqlSugar
         #endregion
 
         #region Public methods
-        public string GetDbTypeName(string csharpTypeName)
+        public virtual string GetDbTypeName(string csharpTypeName)
         {
             if (csharpTypeName == PubConst.ByteArrayType.Name)
             {

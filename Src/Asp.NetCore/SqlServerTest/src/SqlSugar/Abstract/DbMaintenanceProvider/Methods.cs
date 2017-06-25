@@ -31,12 +31,12 @@ namespace SqlSugar
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
-            string key = "DbMaintenanceProvider.GetColumnInfosByTableName." + tableName.ToLower();
+            string key = "DbMaintenanceProvider.GetColumnInfosByTableName." +this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             return GetListOrCache<DbColumnInfo>(key, string.Format(this.GetColumnInfosByTableNameSql, tableName));
         }
         public virtual List<string> GetIsIdentities(string tableName)
         {
-            string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + tableName.ToLower();
+            string cacheKey = "DbMaintenanceProvider.GetIsIdentities" +this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             return this.Context.RewritableMethods.GetCacheInstance<List<string>>().Func(cacheKey,
                     (cm, key) =>
                     {
@@ -50,7 +50,7 @@ namespace SqlSugar
         }
         public virtual List<string> GetPrimaries(string tableName)
         {
-            string cacheKey = "DbMaintenanceProvider.GetPrimaries" + tableName.ToLower();
+            string cacheKey = "DbMaintenanceProvider.GetPrimaries" +this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             return this.Context.RewritableMethods.GetCacheInstance<List<string>>().Func(cacheKey,
             (cm, key) =>
             {
@@ -67,12 +67,15 @@ namespace SqlSugar
         #region Check
         public virtual bool IsAnyTable(string tableName)
         {
+            tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
             var tables = GetTableInfoList();
             if (tables == null) return false;
             else return tables.Any(it => it.Name.Equals(tableName, StringComparison.CurrentCultureIgnoreCase));
         }
         public virtual bool IsAnyColumn(string tableName, string columnName)
         {
+            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -81,6 +84,7 @@ namespace SqlSugar
         }
         public virtual bool IsPrimaryKey(string tableName, string columnName)
         {
+            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -89,6 +93,7 @@ namespace SqlSugar
         }
         public virtual bool IsIdentity(string tableName, string columnName)
         {
+            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -117,46 +122,56 @@ namespace SqlSugar
         #region DDL
         public virtual bool AddPrimaryKey(string tableName, string columnName)
         {
-            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", tableName, columnName), columnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            columnName=this.SqlBuilder.GetTranslationTableName(columnName);
+            string sql = string.Format(this.AddPrimaryKeySql,tableName, string.Format("PK_{0}_{1}",this.SqlBuilder.GetNoTranslationColumnName(tableName), this.SqlBuilder.GetNoTranslationColumnName(columnName)), columnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = GetAddColumnSql(tableName, columnInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool UpdateColumn(string tableName, DbColumnInfo column)
         {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = GetUpdateColumnSql(tableName, column);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = GetCreateTableSql(tableName, columns);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool DropTable(string tableName)
         {
-            this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql,tableName));
             return true;
         }
         public virtual bool DropColumn(string tableName, string columnName)
         {
+            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             this.Context.Ado.ExecuteCommand(string.Format(this.DropColumnToTableSql, tableName, columnName));
             return true;
         }
         public virtual bool DropConstraint(string tableName, string constraintName)
         {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = string.Format(this.DropConstraintSql, tableName, constraintName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool TruncateTable(string tableName)
         {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql, tableName));
             return true;
         }
@@ -172,12 +187,17 @@ namespace SqlSugar
         }
         public virtual bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue)
         {
-            string sql = string.Format(this.BackupTableSql, maxBackupDataRows, newTableName, oldTableName);
+            oldTableName = this.SqlBuilder.GetTranslationTableName(oldTableName);
+            newTableName = this.SqlBuilder.GetTranslationTableName(newTableName);
+            string sql = string.Format(this.BackupTableSql, maxBackupDataRows,newTableName , oldTableName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
         {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            oldColumnName = this.SqlBuilder.GetTranslationColumnName(oldColumnName);
+            newColumnName = this.SqlBuilder.GetTranslationColumnName(newColumnName);
             string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
@@ -201,27 +221,28 @@ namespace SqlSugar
                  return reval;
              });
         }
-        private string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
+        protected virtual string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
             List<string> columnArray = new List<string>();
             Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
             foreach (var item in columns)
             {
-                string columnName = item.DbColumnName;
+                string columnName =this.SqlBuilder.GetTranslationTableName(item.DbColumnName);
                 string dataType = item.DataType;
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
-                string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, primaryKey, identity);
+                string addItem = string.Format(this.CreateTableColumn,columnName, dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql, tableName, string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql,this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
-        private string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
+        protected virtual string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
         {
-            string columnName = columnInfo.DbColumnName;
+            string columnName=this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataType = columnInfo.DataType;
             string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
@@ -230,9 +251,10 @@ namespace SqlSugar
             string result = string.Format(this.AddColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
             return result;
         }
-        private string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
+        protected virtual string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
         {
-            string columnName = columnInfo.DbColumnName;
+            string columnName =this.SqlBuilder.GetTranslationTableName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataType = columnInfo.DataType;
             string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;

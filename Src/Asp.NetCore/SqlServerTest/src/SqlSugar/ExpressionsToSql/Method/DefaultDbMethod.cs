@@ -83,21 +83,21 @@ namespace SqlSugar
             return string.Format(" ({0} IN ({1})) ", value, inValueString);
         }
 
-        public string Equals(MethodCallExpressionModel model)
+        public virtual string Equals(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} = {1}) ", parameter.MemberName, parameter2.MemberName); ;
         }
 
-        public string DateIsSameDay(MethodCallExpressionModel model)
+        public virtual string DateIsSameDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" (DATEDIFF(day,{0},{1})=0) ", parameter.MemberName, parameter2.MemberName); ;
         }
 
-        public string DateIsSameByType(MethodCallExpressionModel model)
+        public virtual string DateIsSameByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -105,7 +105,7 @@ namespace SqlSugar
             return string.Format(" (DATEDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
-        public string DateAddByType(MethodCallExpressionModel model)
+        public virtual string DateAddByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -113,14 +113,14 @@ namespace SqlSugar
             return string.Format(" (DATEADD({2},{1},{0})) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
-        public string DateAddDay(MethodCallExpressionModel model)
+        public virtual string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" (DATEADD(day,{1},{0})) ", parameter.MemberName, parameter2.MemberName);
         }
 
-        public string Between(MethodCallExpressionModel model)
+        public virtual string Between(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter1 = model.Args[1];
@@ -128,75 +128,75 @@ namespace SqlSugar
             return string.Format(" ({0} BETWEEN {1} AND {2}) ", parameter.MemberName, parameter1.MemberName, parameter2.MemberName);
         }
 
-        public string StartsWith(MethodCallExpressionModel model)
+        public virtual string StartsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like {1}+'%') ", parameter.MemberName, parameter2.MemberName);
         }
 
-        public string EndsWith(MethodCallExpressionModel model)
+        public virtual string EndsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like '%'+{1}) ", parameter.MemberName, parameter2.MemberName);
         }
 
-        public string DateValue(MethodCallExpressionModel model)
+        public virtual string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0}({1})) ", parameter2.MemberName, parameter.MemberName);
         }
 
-        public string ToInt32(MethodCallExpressionModel model)
+        public virtual string ToInt32(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS INT)", parameter.MemberName);
         }
 
-        public string ToInt64(MethodCallExpressionModel model)
+        public virtual string ToInt64(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS BIGINT)", parameter.MemberName);
         }
 
-        public string ToString(MethodCallExpressionModel model)
+        public virtual string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS NVARCHAR(MAX))", parameter.MemberName);
         }
 
-        public string ToGuid(MethodCallExpressionModel model)
+        public virtual string ToGuid(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS UNIQUEIDENTIFIER)", parameter.MemberName);
         }
 
-        public string ToDouble(MethodCallExpressionModel model)
+        public virtual string ToDouble(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS FLOAT)", parameter.MemberName);
         }
 
-        public string ToBool(MethodCallExpressionModel model)
+        public virtual string ToBool(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS BIT)", parameter.MemberName);
         }
 
-        public string ToDate(MethodCallExpressionModel model)
+        public virtual string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS DATETIME)", parameter.MemberName);
         }
 
-        public string ToDecimal(MethodCallExpressionModel model)
+        public virtual string ToDecimal(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS MONEY)", parameter.MemberName);
         }
-        public string Substring(MethodCallExpressionModel model)
+        public virtual string Substring(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -204,13 +204,13 @@ namespace SqlSugar
             return string.Format("SUBSTRING({0},1 + {1},{2})", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
-        public string Length(MethodCallExpressionModel model)
+        public virtual string Length(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("LEN({0})", parameter.MemberName);
         }
 
-        public string Replace(MethodCallExpressionModel model)
+        public virtual string Replace(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -218,31 +218,31 @@ namespace SqlSugar
             return string.Format("REPLACE({0},{1},{2})", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
-        public string AggregateSum(MethodCallExpressionModel model)
+        public virtual string AggregateSum(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("SUM({0})", parameter.MemberName);
         }
 
-        public string AggregateAvg(MethodCallExpressionModel model)
+        public virtual string AggregateAvg(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("AVG({0})", parameter.MemberName);
         }
 
-        public string AggregateMin(MethodCallExpressionModel model)
+        public virtual string AggregateMin(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("MIN({0})", parameter.MemberName);
         }
 
-        public string AggregateMax(MethodCallExpressionModel model)
+        public virtual string AggregateMax(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("MAX({0})", parameter.MemberName);
         }
 
-        public string AggregateCount(MethodCallExpressionModel model)
+        public virtual string AggregateCount(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format("COUNT({0})", parameter.MemberName);

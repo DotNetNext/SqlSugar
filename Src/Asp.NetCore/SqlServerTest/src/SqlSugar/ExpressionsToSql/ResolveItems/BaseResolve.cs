@@ -282,7 +282,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        var asName = "[" + item.Type.Name + "." + property.Name + "]";
+                        var asName = this.Context.GetTranslationText(item.Type.Name + "." + property.Name );
                         var columnName = property.Name;
                         if (Context.IsJoin)
                         {

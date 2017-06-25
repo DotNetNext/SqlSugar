@@ -142,7 +142,7 @@ namespace SqlSugar
             }
         }
 
-        private string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        protected virtual string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
             int pageSize = 200;
@@ -204,7 +204,7 @@ namespace SqlSugar
             return batchUpdateSql.ToString();
         }
 
-        private string ToSingleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        protected virtual string ToSingleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             string columnsString = string.Join(",", groupList.First().Where(it => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Select(it =>
             {
