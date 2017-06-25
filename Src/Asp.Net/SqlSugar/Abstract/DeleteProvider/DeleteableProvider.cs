@@ -58,7 +58,7 @@ namespace SqlSugar
                 foreach (var deleteObj in deleteObjs)
                 {
                     var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
-                    var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
+                    var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName,StringComparison.CurrentCultureIgnoreCase));
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     primaryKeyValues.Add(value);
                 }
