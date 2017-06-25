@@ -228,7 +228,7 @@ namespace SqlSugar
             }
             else
             {
-                this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
             }
             return result;
         }
