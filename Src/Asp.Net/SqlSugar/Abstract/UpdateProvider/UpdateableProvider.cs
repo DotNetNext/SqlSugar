@@ -135,7 +135,8 @@ namespace SqlSugar
         }
         public IUpdateable<T> With(string lockString)
         {
-            this.UpdateBuilder.TableWithString = lockString;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+                this.UpdateBuilder.TableWithString = lockString;
             return this;
         }
 

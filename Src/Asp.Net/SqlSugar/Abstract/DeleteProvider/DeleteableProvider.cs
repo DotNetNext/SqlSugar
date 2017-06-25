@@ -171,7 +171,8 @@ namespace SqlSugar
 
         public IDeleteable<T> With(string lockString)
         {
-            DeleteBuilder.TableWithString = lockString;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+                DeleteBuilder.TableWithString = lockString;
             return this;
         }
 

@@ -92,7 +92,8 @@ namespace SqlSugar
 
         public IInsertable<T> With(string lockString)
         {
-            this.InsertBuilder.TableWithString = lockString;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+                this.InsertBuilder.TableWithString = lockString;
             return this;
         }
 
@@ -165,7 +166,8 @@ namespace SqlSugar
                         PropertyType = PubMethod.GetUnderType(column.PropertyInfo),
                         TableId = i
                     };
-                    if (columnInfo.PropertyType.IsEnum) {
+                    if (columnInfo.PropertyType.IsEnum)
+                    {
                         columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                     }
                     insertItem.Add(columnInfo);
