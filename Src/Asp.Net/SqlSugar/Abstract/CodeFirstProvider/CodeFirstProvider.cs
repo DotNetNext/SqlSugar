@@ -112,7 +112,7 @@ namespace SqlSugar
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
-                                                               && ((ec.Length != dc.Length && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
+                                                               && ((ec.Length != dc.Length &&!PubMethod.GetUnderType(ec.PropertyInfo).IsEnum&& PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
@@ -235,9 +235,18 @@ namespace SqlSugar
 
         protected virtual bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
         {
-            var propType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(ec.PropertyInfo).Name);
+            var propertyType = PubMethod.GetUnderType(ec.PropertyInfo);
+            var properyTypeName = string.Empty;
+            if (propertyType.IsEnum)
+            {
+                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(ec.Length > 9 ? PubConst.LongType.Name : PubConst.IntType.Name);
+            }
+            else
+            {
+                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+            }
             var dataType = dc.DataType;
-            return propType != dataType;
+            return properyTypeName != dataType;
         }
         #endregion
     }

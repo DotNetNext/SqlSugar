@@ -37,11 +37,14 @@ namespace SqlSugar
 
         public override string GetTranslationColumnName(string propertyName)
         {
-            return "[" + propertyName + "]";
+            if (propertyName.Contains("[")) return propertyName;
+            else
+                return "[" + propertyName + "]";
         }
 
         public override string GetNoTranslationColumnName(string name)
         {
+            if (!name.Contains("[")) return name;
             return name == null ? string.Empty : Regex.Match(name, @"\[(.*?)\]").Groups[1].Value;
         }
     }
