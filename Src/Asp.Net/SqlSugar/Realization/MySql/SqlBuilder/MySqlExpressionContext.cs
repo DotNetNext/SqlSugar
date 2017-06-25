@@ -59,21 +59,21 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} like {1}) ", parameter.MemberName, "%" + parameter2.MemberName + "%" );
+            return string.Format(" ({0} like concat('%',{1},'%')) ", parameter.MemberName, parameter2.MemberName  );
         }
 
         public override string StartsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} like {1}) ", parameter.MemberName, parameter2.MemberName + "%");
+            return string.Format(" ({0} like concat({1},'%')) ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string EndsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} like {1}) ", parameter.MemberName, "%"+parameter2.MemberName);
+            return string.Format(" ({0} like concat('%',{1}))", parameter.MemberName,parameter2.MemberName);
         }
 
         public override string DateIsSameDay(MethodCallExpressionModel model)
@@ -121,13 +121,13 @@ namespace SqlSugar
         public override string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS CHAR", parameter.MemberName);
+            return string.Format(" CAST({0} AS CHAR)", parameter.MemberName);
         }
 
         public override string ToGuid(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS CHAR", parameter.MemberName);
+            return string.Format(" CAST({0} AS CHAR)", parameter.MemberName);
         }
 
         public override string ToDouble(MethodCallExpressionModel model)
