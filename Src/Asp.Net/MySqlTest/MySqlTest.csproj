@@ -102,7 +102,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DataBase\script.sql" />
+    <Content Include="DataBase\sqlsugar4xtest.sql" />
     <Content Include="OtherDll\SyntacticSugar.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
