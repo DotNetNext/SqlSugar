@@ -209,9 +209,10 @@ namespace SqlSugar
         }
         protected virtual DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
+            var propertyType = PubMethod.GetUnderType(item.PropertyInfo);
             var result = new DbColumnInfo()
             {
-                DataType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(item.PropertyInfo).Name),
+                DataType = propertyType.IsEnum?"int":this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name),
                 TableId = entityInfo.Columns.IndexOf(item),
                 DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
                 IsPrimarykey = item.IsPrimarykey,

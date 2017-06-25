@@ -117,13 +117,13 @@ namespace SqlSugar
         #region DDL
         public virtual bool AddPrimaryKey(string tableName, string columnName)
         {
-            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", tableName, columnName), columnName);
+            string sql = string.Format(this.AddPrimaryKeySql,this.SqlBuilder.GetTranslationTableName(tableName), string.Format("PK_{0}_{1}", tableName, columnName), columnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
-            string sql = GetAddColumnSql(tableName, columnInfo);
+            string sql = GetAddColumnSql(this.SqlBuilder.GetTranslationTableName(tableName), columnInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -135,13 +135,13 @@ namespace SqlSugar
         }
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
-            string sql = GetCreateTableSql(tableName, columns);
+            string sql = GetCreateTableSql(this.SqlBuilder.GetTranslationTableName(tableName), columns);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool DropTable(string tableName)
         {
-            this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
+            this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, this.SqlBuilder.GetTranslationTableName(tableName)));
             return true;
         }
         public virtual bool DropColumn(string tableName, string columnName)
@@ -151,13 +151,13 @@ namespace SqlSugar
         }
         public virtual bool DropConstraint(string tableName, string constraintName)
         {
-            string sql = string.Format(this.DropConstraintSql, tableName, constraintName);
+            string sql = string.Format(this.DropConstraintSql, this.SqlBuilder.GetTranslationTableName(tableName), constraintName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool TruncateTable(string tableName)
         {
-            this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql, tableName));
+            this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql, this.SqlBuilder.GetTranslationTableName(tableName)));
             return true;
         }
         public virtual bool BackupDataBase(string databaseName, string fullFileName)

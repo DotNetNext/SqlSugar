@@ -16,7 +16,11 @@ namespace SqlSugar
             var mappingInfo = context
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-            return "[" + (mappingInfo == null ? name : mappingInfo.DbTableName) + "]";
+            name = (mappingInfo == null ? name : mappingInfo.DbTableName);
+            if (name.Contains("["))
+                return name;
+            else
+                return "[" + name + "]";
         }
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {
