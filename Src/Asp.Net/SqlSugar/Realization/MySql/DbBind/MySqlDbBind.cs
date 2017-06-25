@@ -1,10 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SqlSugar
 {
     public class MySqlDbBind : DbBindProvider
     {
+        public override string GetDbTypeName(string csharpTypeName)
+        {
+            if (csharpTypeName == PubConst.ByteArrayType.Name)
+            {
+                return "blob";
+            }
+            if (csharpTypeName == "Int32")
+                csharpTypeName = "int";
+            if (csharpTypeName == "Int16")
+                csharpTypeName = "short";
+            if (csharpTypeName == "Int64")
+                csharpTypeName = "long";
+            if (csharpTypeName == "Boolean")
+                csharpTypeName = "bool";
+            var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
+            return mappings.IsValuable() ? mappings.First().Key : "varchar";
+        }
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
             get
@@ -48,6 +66,13 @@ namespace SqlSugar
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.Guid),
                 };
+            }
+        }
+        public override List<string> StringThrow
+        {
+            get
+            {
+                return new List<string>() { "int32", "datetime", "decimal", "double", "byte"};
             }
         }
     }

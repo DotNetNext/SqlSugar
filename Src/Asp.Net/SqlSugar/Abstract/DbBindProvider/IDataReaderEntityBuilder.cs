@@ -36,6 +36,8 @@ namespace SqlSugar
         private static readonly MethodInfo getInt32 = typeof(IDataRecord).GetMethod("GetInt32", new Type[] { typeof(int) });
         private static readonly MethodInfo getInt64 = typeof(IDataRecord).GetMethod("GetInt64", new Type[] { typeof(int) });
         private static readonly MethodInfo getString = typeof(IDataRecord).GetMethod("GetString", new Type[] { typeof(int) });
+        private static readonly MethodInfo getStringGuid = typeof(IDataRecordExtensions).GetMethod("GetStringGuid");
+        private static readonly MethodInfo getConvertStringGuid = typeof(IDataRecordExtensions).GetMethod("GetConvertStringGuid");
         private static readonly MethodInfo getEnum = typeof(IDataRecordExtensions).GetMethod("GetEnum");
         private static readonly MethodInfo getConvertString = typeof(IDataRecordExtensions).GetMethod("GetConvertString");
         private static readonly MethodInfo getConvertFloat = typeof(IDataRecordExtensions).GetMethod("GetConvertFloat");
@@ -178,6 +180,9 @@ namespace SqlSugar
                 case CSharpDataType.@string:
                     CheckType(bind.StringThrow, bindProperyTypeName, validPropertyName, propertyName);
                     method = getString;
+                    if (bindProperyTypeName == "guid") {
+                        method = getConvertStringGuid ;
+                    }
                     break;
                 case CSharpDataType.DateTime:
                     CheckType(bind.DateThrow, bindProperyTypeName, validPropertyName, propertyName);
@@ -198,7 +203,7 @@ namespace SqlSugar
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "guid")
-                        method = isNullableType ? getConvertGuid : getGuid;
+                        method = isNullableType ? getConvertStringGuid : getStringGuid;
                     break;
                 case CSharpDataType.@byte:
                     method = isNullableType ? getConvertByte : getByte;

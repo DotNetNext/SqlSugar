@@ -17,6 +17,7 @@ namespace OrmTest.UnitTest
 
         public void Init()
         {
+            var guid = Guid.Parse("d8268a7e-a2d1-4329-9990-9bd801292415");
             var db = GetInstance();
             db.DbMaintenance.TruncateTable("DataTestInfo");
             var insertObject = new DataTestInfo()
@@ -27,8 +28,8 @@ namespace OrmTest.UnitTest
                 Decimal2 = 2,
                 Float1 = 3,
                 Float2 = 4,
-                Guid1 = Guid.Empty,
-                Guid2 = null,
+                Guid1 = guid,
+                Guid2 = guid,
                 Image1 = new byte[] { 1, 2 },
                 Image2 = new byte[] { 2, 3 },
                 Int2 = 6,
@@ -41,12 +42,13 @@ namespace OrmTest.UnitTest
             var id = db.Insertable<DataTestInfo>(insertObject).ExecuteReutrnIdentity();
             var data = db.Queryable<DataTestInfo>().InSingle(id);
             if (
-                insertObject.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") != data.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") ||
+                insertObject.Datetime1.ToString("yyyy-MM-dd") != data.Datetime1.ToString("yyyy-MM-dd") ||
                 insertObject.Decimal1 != data.Decimal1 ||
                 insertObject.Float1 != data.Float1 ||
                 insertObject.Float2 != data.Float2 ||
                 insertObject.Int2 != data.Int2 ||
                 insertObject.Money1 != data.Money1 ||
+                insertObject.Guid2!=data.Guid2||
                string.Join(",", insertObject.Varbinary1) != string.Join(",", data.Varbinary1) ||
                 insertObject.String != data.String)
             {
@@ -56,7 +58,7 @@ namespace OrmTest.UnitTest
             db.Updateable(data).ExecuteCommand();
             data = db.Queryable<DataTestInfo>().InSingle(id);
             if (
-                insertObject.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") != data.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") ||
+                insertObject.Datetime1.ToString("yyyy-MM-dd") != data.Datetime1.ToString("yyyy-MM-dd") ||
                 insertObject.Decimal1 != data.Decimal1 ||
                 (insertObject.Float1+1) != data.Float1 ||
                 insertObject.Float2 != data.Float2 ||
@@ -70,7 +72,7 @@ namespace OrmTest.UnitTest
         }
         public SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.MySql, IsAutoCloseConnection = true });
             return db;
         }
     }
