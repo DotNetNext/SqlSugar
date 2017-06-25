@@ -183,7 +183,7 @@ namespace SqlSugar
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
             List<SugarParameter> paramters =new List<SugarParameter>();
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(joinExpression,ref  paramters, ref shortName, types);
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(queryable.SqlBuilder,joinExpression, ref  paramters, ref shortName, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             if (paramters != null) {
                 queryable.SqlBuilder.QueryBuilder.Parameters.AddRange(paramters);
@@ -199,11 +199,11 @@ namespace SqlSugar
         #endregion
 
         #region Private methods
-        protected List<JoinQueryInfo> GetJoinInfos(Expression joinExpression,ref List<SugarParameter> parameters, ref string shortName, params Type[] entityTypeArray)
+        protected List<JoinQueryInfo> GetJoinInfos(ISqlBuilder sqlBuilder,Expression joinExpression,ref List<SugarParameter> parameters, ref string shortName, params Type[] entityTypeArray)
         {
             List<JoinQueryInfo> result = new List<JoinQueryInfo>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
-            ExpressionContext expressionContext = new ExpressionContext();
+            ILambdaExpressions expressionContext = sqlBuilder.QueryBuilder.LambdaExpressions;
             expressionContext.MappingColumns = this.Context.MappingColumns;
             expressionContext.MappingTables = this.Context.MappingTables;
             expressionContext.Resolve(joinExpression, ResolveExpressType.Join);
@@ -238,6 +238,7 @@ namespace SqlSugar
                 joinInfo.JoinIndex = i;
                 result.Add((joinInfo));
             }
+            expressionContext.Clear();
             return result;
         }
         protected Dictionary<string,string> GetEasyJoinInfo(Expression joinExpression, ref string shortName, ISqlBuilder builder, params Type[] entityTypeArray)
