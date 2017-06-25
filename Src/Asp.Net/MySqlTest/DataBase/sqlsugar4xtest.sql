@@ -99,7 +99,7 @@ CREATE TABLE `datatestinfo2` (
 DROP TABLE IF EXISTS `school`;
 CREATE TABLE `school` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(1) NOT NULL,
+  `Name` varchar(100) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=gbk;
 
@@ -114,7 +114,7 @@ DROP TABLE IF EXISTS `student`;
 CREATE TABLE `student` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `SchoolId` int(11) DEFAULT NULL,
-  `Name` varchar(1) DEFAULT NULL,
+  `Name` varchar(100) DEFAULT NULL,
   `CreateTime` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=28352 DEFAULT CHARSET=gbk;
