@@ -79,7 +79,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST([Id] AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(`Id` AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
                  new SugarParameter("@Const0","a")
             }, "ExtendToString error");
         }
@@ -91,7 +91,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST([Id] AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(`Id` AS NVARCHAR(MAX)) = @Const0 )", new List<SugarParameter>() {
                  new SugarParameter("@Const0","a")
             }, "ConvetToString error");
         }
@@ -284,7 +284,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ([Name] like @MethodConst0+'%') ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like @MethodConst0+'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "StartsWith error");
         }
@@ -295,7 +295,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ([Name] like '%'+@MethodConst0) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like '%'+@MethodConst0) ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "EndsWith");
         }
@@ -306,7 +306,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ([Name] BETWEEN @MethodConst0 AND @MethodConst1) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` BETWEEN @MethodConst0 AND @MethodConst1) ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",1),new SugarParameter("@MethodConst1",2),
             }, "Between error");
         }
@@ -370,7 +370,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ([Name] = @MethodConst0) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` = @MethodConst0) ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Equals1 error");
 
@@ -380,7 +380,7 @@ namespace OrmTest.UnitTest
             expContext2.Resolve(exp2, ResolveExpressType.WhereSingle);
             var value2 = expContext2.Result.GetString();
             var pars2 = expContext2.Parameters;
-            base.Check(value2, pars2, " (@MethodConst0 = [Name]) ", new List<SugarParameter>() {
+            base.Check(value2, pars2, " (@MethodConst0 = `Name`) ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Equals2 error");
         }
@@ -391,7 +391,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ([Name] = [Name]) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` = `Name`) ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Equals1 error");
 
@@ -413,7 +413,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ([Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains error");
         }
@@ -424,7 +424,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ([Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains2 error");
         }
@@ -436,7 +436,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, null, "  ([Name] IN ('1','2')) ", null, "Contains2 error");
+            base.Check(value, null, "  (`Name` IN ('1','2')) ", null, "Contains2 error");
         }
 
         private void ContainsArray()
@@ -447,7 +447,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, null, "  ([Name] IN ('1','2')) ", null, "Contains2 error");
+            base.Check(value, null, "  (`Name` IN ('1','2')) ", null, "Contains2 error");
         }
 
         private void Trim()
@@ -457,7 +457,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((rtrim(ltrim(@MethodConst0))) = [Name] )", new List<SugarParameter>() {
+            base.Check(value, pars, "((rtrim(ltrim(@MethodConst0))) = `Name` )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","  a")
             }, "Trim error");
         }
@@ -469,7 +469,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( @Const0 = (UPPER([Id])) )", new List<SugarParameter>() {
+            base.Check(value, pars, "( @Const0 = (UPPER(`Id`)) )", new List<SugarParameter>() {
                 new SugarParameter("@Const0","a")
             }, "ToUpper error");
         }
@@ -480,7 +480,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( @Const0 = (LOWER([Id])) )", new List<SugarParameter>() {
+            base.Check(value, pars, "( @Const0 = (LOWER(`Id`)) )", new List<SugarParameter>() {
                 new SugarParameter("@Const0","a")
             }, "ToLower error");
         }
@@ -493,7 +493,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( [Id] > @Id0 ) OR ( [Id]='' OR [Id] IS NULL ))", new List<SugarParameter>() {
+            base.Check(value, pars, "(( `Id` > @Id0 ) OR ( `Id`='' OR `Id` IS NULL ))", new List<SugarParameter>() {
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty error");
         }
@@ -504,7 +504,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( @Id0 = [Id] ) OR ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
+            base.Check(value, pars, "(( @Id0 = `Id` ) OR ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst1",true),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty2 error");
@@ -517,7 +517,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( @Id0 = [Id] ) OR ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
+            base.Check(value, pars, "(( @Id0 = `Id` ) OR ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst1",1),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty3 error");
@@ -530,7 +530,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( @Id0 = [Id] ) OR ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
+            base.Check(value, pars, "(( @Id0 = `Id` ) OR ( @MethodConst1='' OR @MethodConst1 IS NULL ))", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst1","xx"),
                 new SugarParameter("@Id0",2)
             }, "StringIsNullOrEmpty4 error");
@@ -556,7 +556,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Name]<>'' AND [Name] IS NOT NULL )", new List<SugarParameter>()
+            base.Check(value, pars, "( `Name`<>'' AND `Name` IS NOT NULL )", new List<SugarParameter>()
             {
 
             }, "HasValue error");
@@ -569,7 +569,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Id]>0 AND [Id] IS NOT NULL )", new List<SugarParameter>()
+            base.Check(value, pars, "( `Id`>0 AND `Id` IS NOT NULL )", new List<SugarParameter>()
             {
 
 
@@ -583,7 +583,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( CASE  WHEN ( [Id] = @Id0 ) THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
+            base.Check(value, pars, "(( CASE  WHEN ( `Id` = @Id0 ) THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
             {
                      new SugarParameter("@Id0",1),
                      new SugarParameter("@MethodConst1",1),
@@ -599,7 +599,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( CASE  WHEN  ([Name] like '%'+@MethodConst0+'%')  THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
+            base.Check(value, pars, "(( CASE  WHEN  (`Name` like '%'+@MethodConst0+'%')  THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
             {
                      new SugarParameter("@MethodConst0","a"),
                      new SugarParameter("@MethodConst1",1),
