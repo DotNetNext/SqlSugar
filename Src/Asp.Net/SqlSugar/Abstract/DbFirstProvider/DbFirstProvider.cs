@@ -39,10 +39,11 @@ namespace SqlSugar
 
         public void Init()
         {
-            if (!this.Context.DbMaintenance.IsAnySystemTablePermissions()) {
+            if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
+            {
                 Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
             }
-            this.TableInfoList =this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
+            this.TableInfoList = this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
             var viewList = this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetViewInfoList());
             if (viewList.IsValuable())
             {
@@ -198,7 +199,7 @@ namespace SqlSugar
                     FileHelper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("\\{0}.cs", item.Key), item.Value, Encoding.UTF8);
                 }
             }
-        } 
+        }
         #endregion
 
         #region Private methods
@@ -230,17 +231,19 @@ namespace SqlSugar
             if (hasSugarColumn && this.IsAttribute)
             {
                 List<string> joinList = new List<string>();
-                if (item.IsPrimarykey) {
-                    joinList.Add("IsPrimaryKey=true"); 
+                if (item.IsPrimarykey)
+                {
+                    joinList.Add("IsPrimaryKey=true");
                 }
                 if (item.IsIdentity)
                 {
                     joinList.Add("IsIdentity=true");
                 }
-                if (isMappingColumn) {
-                    joinList.Add("ColumnName=\""+item.DbColumnName+"\"");
+                if (isMappingColumn)
+                {
+                    joinList.Add("ColumnName=\"" + item.DbColumnName + "\"");
                 }
-                SugarColumnText = string.Format(SugarColumnText,string.Join(",",joinList));
+                SugarColumnText = string.Format(SugarColumnText, string.Join(",", joinList));
             }
             else
             {
@@ -272,7 +275,7 @@ namespace SqlSugar
         private string GetPropertyTypeName(DbColumnInfo item)
         {
             string result = this.Context.Ado.DbBind.GetPropertyTypeName(item.DataType);
-            if (result != "string"&&result!="byte[]"&&result!="object"&& item.IsNullable)
+            if (result != "string" && result != "byte[]" && result != "object" && item.IsNullable)
             {
                 result += "?";
             }
@@ -287,10 +290,18 @@ namespace SqlSugar
         }
         private string GetPropertyDescriptionText(DbColumnInfo item, string propertyDescriptionText)
         {
-            propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyPropertyDescription, item.ColumnDescription);
+            propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyPropertyDescription, GetColumnDescription(item.ColumnDescription));
             propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyDefaultValue, GetProertypeDefaultValue(item));
             propertyDescriptionText = propertyDescriptionText.Replace(DbFirstTemplate.KeyIsNullable, item.IsNullable.ObjToString());
             return propertyDescriptionText;
+        }
+        private string GetColumnDescription(string columnDescription)
+        {
+            if (columnDescription == null) return columnDescription;
+            columnDescription = columnDescription.Replace("\r", "\t");
+            columnDescription = columnDescription.Replace("\n", "\t");
+            columnDescription = Regex.Replace(columnDescription, "\t{2,}", "\t");
+            return columnDescription;
         }
         #endregion
     }
