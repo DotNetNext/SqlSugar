@@ -4,7 +4,7 @@ Email:610262374@qq.com
 QQ Group:225982985
 
 ## Nuget 
-Install-Package sqlSugar
+Install-Package sqlSugar  
 Install-Package sqlSugarCore
 
 ##  1. Query
