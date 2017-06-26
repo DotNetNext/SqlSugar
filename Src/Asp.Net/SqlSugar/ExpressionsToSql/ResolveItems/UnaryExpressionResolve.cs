@@ -24,7 +24,11 @@ namespace SqlSugar
                     base.Expression = expression.Operand;
                     var isMember = expression.Operand is MemberExpression;
                     var isConst = expression.Operand is ConstantExpression;
-                    if (base.Expression is BinaryExpression || parameter.BaseExpression is BinaryExpression)
+                    if (baseParameter.CurrentExpression is NewArrayExpression)
+                    {
+                        Result(parameter, nodeType);
+                    }
+                    else if (base.Expression is BinaryExpression || parameter.BaseExpression is BinaryExpression || baseParameter.CommonTempData.ObjToString() == CommonTempDataType.Append.ToString())
                     {
                         Append(parameter, nodeType);
                     }

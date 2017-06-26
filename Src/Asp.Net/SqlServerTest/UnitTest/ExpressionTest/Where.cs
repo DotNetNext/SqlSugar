@@ -21,6 +21,7 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                whereSingle15();
                 whereSingle1();
                 whereSingle2();
                 whereSingle3();
@@ -35,6 +36,7 @@ namespace OrmTest.UnitTest
                 whereSingle12();
                 whereSingle13();
                 whereSingle14();
+                whereSingle15();
                 WhereMultiple1();
                 WhereMultiple2();
           
@@ -248,6 +250,19 @@ namespace OrmTest.UnitTest
             {
 
             }, "whereSingle14");
+        }
+
+        private void whereSingle15()
+        {
+            Expression<Func<DataTestInfo, bool>> exp = it =>it.Money2 == 1;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Money2] = @Const0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Const0",1)
+            }, "whereSingle15");
         }
     }
 
