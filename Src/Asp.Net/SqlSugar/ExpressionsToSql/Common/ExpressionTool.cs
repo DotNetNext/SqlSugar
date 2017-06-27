@@ -158,7 +158,7 @@ namespace SqlSugar
             return reval;
         }
 
-        public static object DynamicInvoke(MemberExpression expression)
+        public static object DynamicInvoke(Expression expression)
         {
             object value = Expression.Lambda(expression).Compile().DynamicInvoke();
             if (value != null && value.GetType().IsClass && value.GetType() != ExpressionConst.StringType)

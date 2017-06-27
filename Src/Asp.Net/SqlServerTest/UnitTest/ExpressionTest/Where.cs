@@ -21,6 +21,7 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                whereSingle16();
                 whereSingle15();
                 whereSingle1();
                 whereSingle2();
@@ -263,6 +264,21 @@ namespace OrmTest.UnitTest
             {
                 new SugarParameter("@Const0",1)
             }, "whereSingle15");
+        }
+
+        private void whereSingle16()
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("key", "x1");
+            Expression<Func<DataTestInfo, bool>> exp = it => it.String == dic["key"];
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [String] = @Const0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Const0",dic["key"])
+            }, "whereSingle16");
         }
     }
 
