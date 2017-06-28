@@ -38,10 +38,18 @@ namespace SqlSugar
                             this.Context.Result.Append(value.ObjToBool() ? "( 1 = 1 ) " : "( 1 = 2 ) ");
                             break;
                         }
-                        if (parentIsBinary && value != null && value.GetType() == PubConst.BoolType && parameter.OppsiteExpression is BinaryExpression)
+                        if (parentIsBinary && value != null && value.GetType() == PubConst.BoolType && parameter.BaseExpression != null)
                         {
-                            AppendMember(parameter,isLeft,(value.ObjToBool() ? "( 1 = 1 ) " : "( 1 = 2 ) "));
-                            break;
+                            var isLogicOperator =
+                               parameter.BaseExpression.NodeType == ExpressionType.And ||
+                               parameter.BaseExpression.NodeType == ExpressionType.AndAlso ||
+                               parameter.BaseExpression.NodeType == ExpressionType.Or ||
+                               parameter.BaseExpression.NodeType == ExpressionType.OrElse;
+                            if (isLogicOperator)
+                            {
+                                AppendMember(parameter, isLeft, (value.ObjToBool() ? "( 1 = 1 ) " : "( 1 = 2 ) "));
+                                break;
+                            }
                         }
                         if (value == null && parentIsBinary)
                         {
