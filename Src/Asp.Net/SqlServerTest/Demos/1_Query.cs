@@ -219,6 +219,15 @@ namespace OrmTest.Demo
             var list2 = db.Queryable<Student>()
                  .WhereIF(!string.IsNullOrEmpty(name), it => it.Name == name)
                  .WhereIF(!string.IsNullOrEmpty(name2), it => it.Name == name2).ToList();
+
+
+
+            //join 
+            var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            })
+            .WhereIf(false, (st, sc) => sc.Id == 1)
+            .WhereIf(false, (st, sc) => st.Id == 1).ToList();
         }
         public static void Join()
         {
