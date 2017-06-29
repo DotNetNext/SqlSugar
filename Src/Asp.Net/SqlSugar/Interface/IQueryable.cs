@@ -29,6 +29,7 @@ namespace SqlSugar
         ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null);
 
+     
         T InSingle(object pkValue);
         ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues);
         ISugarQueryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues);
@@ -86,9 +87,8 @@ namespace SqlSugar
         DataTable ToDataTablePage(int pageIndex, int pageSize);
         DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber);
 
-        List<T> ToPageList(int pageIndex, int pageSize);
-        List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);
-
+        List<T> ToPageList(int pageIndex, int pageSize);      
+        List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber, bool? expression = false);
         void Clear();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>

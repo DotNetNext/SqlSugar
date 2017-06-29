@@ -113,6 +113,16 @@ namespace SqlSugar
                 return "SELECT {0} FROM {1}{2}{3}{4} ";
             }
         }
+        public virtual string SqlTemplateExpression
+        {
+            get
+            {
+                if (this.IsCount)
+                    return "SELECT COUNT(1) AS `Count` FROM (SELECT {0} FROM {1} ) AS candidate {2} {3} {4}";
+                else
+                    return "SELECT * FROM (SELECT {0} FROM {1} ) AS candidate {2} {3} {4}";
+            }
+        }
         public virtual string JoinTemplate
         {
             get
@@ -121,6 +131,16 @@ namespace SqlSugar
             }
         }
         public virtual string PageTempalte
+        {
+            get
+            {
+                return @"WITH PageTable AS(
+                          {0}
+                  )
+                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER({1}) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN {2} AND {3}";
+            }
+        }
+        public virtual string PageTempalteExpression
         {
             get
             {
@@ -267,6 +287,58 @@ namespace SqlSugar
             }
 
         }
+        public virtual string ToSqlStringExpression()
+        {
+            if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
+            {
+                var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
+                foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
+                {
+                    var filterResult = item.FilterValue(this.Context);
+                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql));
+                    var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
+                    if (filterParamters.IsValuable())
+                    {
+                        this.Parameters.AddRange(filterParamters);
+                    }
+                }
+            }
+            sql = new StringBuilder();
+            sql.AppendFormat(SqlTemplate, GetSelectValueExpression, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            if (IsCount) { return sql.ToString(); }
+            if (Skip != null && Take == null)
+            {
+                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
+                if (this.PartitionByValue.IsValuable())
+                {
+                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+                }
+                return string.Format(PageTempalteExpression, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
+            }
+            else if (Skip == null && Take != null)
+            {
+                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
+                if (this.PartitionByValue.IsValuable())
+                {
+                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+                }
+                return string.Format(PageTempalteExpression, sql.ToString(), GetOrderByString, 1, Take.ObjToInt());
+            }
+            else if (Skip != null && Take != null)
+            {
+                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
+                if (this.PartitionByValue.IsValuable())
+                {
+                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+                }
+                return string.Format(PageTempalteExpression, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Skip.ObjToInt() + Take.ObjToInt());
+            }
+            else
+            {
+                return sql.ToString();
+            }
+
+        }
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(
@@ -316,6 +388,28 @@ namespace SqlSugar
                 return reval;
             }
         }
+        public virtual string GetSelectValueExpression
+        {
+            get
+            {
+                // if (this.IsCount) return "COUNT(1) AS [Count] ";
+                string reval = string.Empty;
+                if (this.SelectValue == null || this.SelectValue is string)
+                {
+                    reval = GetSelectValueByString();
+                }
+                else
+                {
+                    reval = GetSelectValueByExpression();
+                }
+                if (this.SelectType == ResolveExpressType.SelectMultiple)
+                {
+                    this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this._JoinQueryInfos.Select(it => it.TableName));
+                }
+                return reval;
+            }
+        }
+
         public virtual string GetSelectValueByExpression()
         {
             var expression = this.SelectValue as Expression;

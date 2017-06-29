@@ -396,7 +396,15 @@ namespace SqlSugar
             QueryBuilder.IsCount = false;
             return reval;
         }
-
+        public virtual int CountExpression()
+        {
+            QueryBuilder.IsCount = true;
+            var sql = QueryBuilder.ToSqlStringExpression();
+            var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            RestoreMapping();
+            QueryBuilder.IsCount = false;
+            return reval;
+        }
         public virtual TResult Max<TResult>(string maxField)
         {
             this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
@@ -484,6 +492,10 @@ namespace SqlSugar
         {
             return _ToList<T>();
         }
+        public virtual List<T> ToListExpression()
+        {
+            return _ToListExpression<T>();
+        }
         public virtual List<T> ToPageList(int pageIndex, int pageSize)
         {
             if (pageIndex == 0)
@@ -492,19 +504,46 @@ namespace SqlSugar
             QueryBuilder.Take = pageSize;
             return ToList();
         }
-        public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
+        public virtual List<T> ToPageList(int pageIndex, int pageSize, bool? expression)
         {
-            totalNumber = this.Count();
-            return ToPageList(pageIndex, pageSize);
-        }
+            if (pageIndex == 0)
+                pageIndex = 1;
+            QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+            QueryBuilder.Take = pageSize;
 
+            if ((bool)expression)
+                return ToListExpression();
+            else
+                return ToList();
+        }
+        public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber, bool? expression = false)
+        {
+            if ((bool)expression)
+            {
+                totalNumber = this.CountExpression();
+            }
+            else
+            {
+                totalNumber = this.Count();
+            }
+            if (totalNumber == 0)
+            {
+                return new List<T>();
+            }
+            return ToPageList(pageIndex, pageSize, expression);
+        }
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             string sql = QueryBuilder.ToSqlString();
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
         }
-
+        public virtual KeyValuePair<string, List<SugarParameter>> ToSqlExpression()
+        {
+            string sql = QueryBuilder.ToSqlStringExpression();
+            RestoreMapping();
+            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+        }
 
         #region Private Methods
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
@@ -580,6 +619,27 @@ namespace SqlSugar
         {
             List<TResult> result = null;
             var sqlObj = this.ToSql();
+            var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
+            var entityType = typeof(TResult);
+            using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
+            {
+                if (entityType.IsAnonymousType() || isComplexModel)
+                {
+                    result = this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
+                }
+                else
+                {
+                    result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
+                }
+            }
+            RestoreMapping();
+            SetContextModel(result, entityType);
+            return result;
+        }
+        protected List<TResult> _ToListExpression<TResult>()
+        {
+            List<TResult> result = null;
+            var sqlObj = this.ToSqlExpression();
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
