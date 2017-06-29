@@ -142,6 +142,12 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+        public virtual bool AlterColumn(string tableName, DbColumnInfo column)
+        {
+            string sql = GetAlterColumnSql(tableName, column);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
@@ -256,6 +262,17 @@ namespace SqlSugar
             string columnName =this.SqlBuilder.GetTranslationTableName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataType = columnInfo.DataType;
+            string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
+            string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+            string primaryKey = null;
+            string identity = null;
+            string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
+        }
+        private string GetAlterColumnSql(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = columnInfo.DbColumnName;
+            string dataType = columnInfo.DbColumnType;
             string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
             string primaryKey = null;
