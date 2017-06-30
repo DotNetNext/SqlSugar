@@ -226,8 +226,8 @@ namespace OrmTest.Demo
             var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
-            .WhereIf(false, (st, sc) => sc.Id == 1)
-            .WhereIf(false, (st, sc) => st.Id == 1).ToList();
+            .WhereIF(false, (st, sc) => sc.Id == 1)
+            .WhereIF(false, (st, sc) => st.Id == 1).ToList();
         }
         public static void Join()
         {

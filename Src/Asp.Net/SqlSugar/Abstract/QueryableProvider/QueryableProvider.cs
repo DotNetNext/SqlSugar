@@ -665,13 +665,13 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public ISugarQueryable<T, T2> WhereIf(bool isWhere, Expression<Func<T, bool>> expression)
+        public ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
-        public ISugarQueryable<T, T2> WhereIf(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -788,21 +788,21 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3> WhereIf(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
+        public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3> WhereIf(bool isWhere,Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere,Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public  ISugarQueryable<T, T2, T3> WhereIf(bool isWhere, Expression<Func<T, bool>> expression)
+        public  ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -837,28 +837,28 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4> WhereIf(bool isWhere, Expression<Func<T, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4> WhereIf(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4> WhereIf(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -958,35 +958,35 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5> WhereIf(bool isWhere, Expression<Func<T, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5> WhereIf(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5> WhereIf(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -1105,42 +1105,42 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIf(bool isWhere, Expression<Func<T, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIf(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIf(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -1278,49 +1278,49 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIf(bool isWhere, Expression<Func<T, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIf(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIf(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -1478,56 +1478,56 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIf(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
