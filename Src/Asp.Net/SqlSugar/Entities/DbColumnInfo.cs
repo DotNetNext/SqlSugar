@@ -9,6 +9,7 @@ namespace SqlSugar
         public string TableName { get; set; }
         public int TableId { get; set; }
         public string DbColumnName { get; set; }
+        public string DbColumnType { get; set; }
         public string PropertyName { get; set; }
         public string DataType { get; set; }
         public Type PropertyType { get; set; }

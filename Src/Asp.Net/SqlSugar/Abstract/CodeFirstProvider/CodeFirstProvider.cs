@@ -98,28 +98,43 @@ namespace SqlSugar
                 Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
 
                 var tableName = GetTableName(entityInfo);
+                //从数据库中取出当前表结构
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
                 ConvertColumns(dbColumns);
+                //从实体中得出表结构
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+                //实体与数据库表中对比得出删除的列
                 var dropColumns = dbColumns
                                           .Where(dc => !entityColumns.Any(ec => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                           .Where(dc => !entityColumns.Any(ec => dc.DbColumnName.Equals(ec.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                           .ToList();
+                //实体与数据库表中对比得出新增的列
                 var addColumns = entityColumns
                                           .Where(ec => ec.OldDbColumnName.IsNullOrEmpty() || !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                           .Where(ec => !dbColumns.Any(dc => ec.DbColumnName.Equals(dc.DbColumnName, StringComparison.CurrentCultureIgnoreCase))).ToList();
+                //实体与数据库表中对比得出修改的列
                 var alterColumns = entityColumns
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
-                                                               && ((ec.Length != dc.Length &&!PubMethod.GetUnderType(ec.PropertyInfo).IsEnum&& PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
+                                                               && ((ec.Length != dc.Length && !PubMethod.GetUnderType(ec.PropertyInfo).IsEnum && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsSamgeType(ec, dc)))).ToList();
+                //实体与数据库表中对比得出重命名的列
                 var renameColumns = entityColumns
                     .Where(it => !string.IsNullOrEmpty(it.OldDbColumnName))
                     .Where(entityColumn => dbColumns.Any(dbColumn => entityColumn.OldDbColumnName.Equals(dbColumn.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                     .ToList();
 
+                //将实体中修改类型的数据与新增列的数据进行筛选，
+                //排除新增列中指定修改类型的数据
+                //再过滤吊修改列的数据，最后实体与数据库表中对比得出修改类型的列
+                var reColumnsType = entityColumns
+                    .Where(it => !addColumns.Any(a=> it.DbColumnName.Equals(a.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
+                    .Where(it => !alterColumns.Any(a => it.DbColumnName.Equals(a.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
+                    .Where(it => !string.IsNullOrEmpty(it.ColumnType))
+                    .Where(ec => !dbColumns.Any(dc => ec.ColumnType.Equals(dc.DataType, StringComparison.CurrentCultureIgnoreCase)))
+                    .ToList();
 
                 var isChange = false;
                 foreach (var item in addColumns)
@@ -142,7 +157,11 @@ namespace SqlSugar
                     this.Context.DbMaintenance.RenameColumn(tableName, item.OldDbColumnName, item.DbColumnName);
                     isChange = true;
                 }
-
+                foreach (var item in reColumnsType)
+                {
+                    this.Context.DbMaintenance.AlterColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
+                    isChange = true;
+                }
                 foreach (var item in entityColumns)
                 {
                     var dbColumn = dbColumns.FirstOrDefault(dc => dc.DbColumnName.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
@@ -214,6 +233,7 @@ namespace SqlSugar
             {
                 TableId = entityInfo.Columns.IndexOf(item),
                 DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
+                DbColumnType = item.ColumnType,
                 IsPrimarykey = item.IsPrimarykey,
                 IsIdentity = item.IsIdentity,
                 TableName = tableName,
@@ -224,11 +244,18 @@ namespace SqlSugar
             };
             if (propertyType.IsEnum)
             {
-                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length>9?PubConst.LongType.Name:PubConst.IntType.Name);
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? PubConst.LongType.Name : PubConst.IntType.Name);
             }
             else
             {
-                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+                if (string.IsNullOrWhiteSpace(item.ColumnType))
+                {
+                    result.DataType = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+                }
+                else
+                {
+                    result.DataType = item.ColumnType;
+                }
             }
             return result;
         }
