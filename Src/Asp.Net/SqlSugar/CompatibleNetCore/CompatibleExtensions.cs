@@ -70,10 +70,14 @@ namespace SqlSugar
             return type.GetTypeInfo().IsValueType;
         }
 
-
         public static bool IsEntity(this Type type)
         {
             return type.GetTypeInfo().IsClass();
+        }
+
+        public static Type ReflectedType(this MethodInfo method)
+        {
+            return method.ReflectedType;
         }
     }
 }

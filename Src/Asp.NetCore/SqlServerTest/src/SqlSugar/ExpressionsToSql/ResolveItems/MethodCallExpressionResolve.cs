@@ -14,17 +14,15 @@ namespace SqlSugar
             var express = base.Expression as MethodCallExpression;
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
-            if (methodName == "get_Item")
-            {
-                string paramterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
+            if (methodName == "get_Item") {
+                string paramterName =this.Context.SqlParameterKeyWord+ExpressionConst.Const + this.Context.ParameterIndex;
                 this.Context.Parameters.Add(new SugarParameter(paramterName, ExpressionTool.DynamicInvoke(express)));
-                this.Context.Result.Append(string.Format(" {0} ", paramterName));
+                this.Context.Result.Append(string.Format(" {0} ",paramterName));
                 this.Context.ParameterIndex++;
                 return;
             }
-            var isValidNativeMethod = MethodMapping.ContainsKey(methodName) && express.Method.DeclaringType.Namespace == ("System");
-            if (!isValidNativeMethod&&express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains")
-            {
+            var isValidNativeMethod = MethodMapping.ContainsKey(methodName)&&express.Method.DeclaringType.Namespace==("System");
+            if (!isValidNativeMethod&&express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic")&&methodName=="Contains") {
                 methodName = "ContainsArray";
                 isValidNativeMethod = true;
             }
@@ -267,7 +265,7 @@ namespace SqlSugar
 
         private void CheckMethod(MethodCallExpression expression)
         {
-            Check.Exception(expression.Method.DeclaringType.FullName != ExpressionConst.SqlFuncFullName, string.Format(ExpressionErrorMessage.MethodError, expression.Method.Name));
+            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName,string.Format(ExpressionErrorMessage.MethodError, expression.Method.Name));
         }
     }
 }

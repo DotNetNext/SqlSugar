@@ -265,7 +265,7 @@ namespace SqlSugar
 
         private void CheckMethod(MethodCallExpression expression)
         {
-            Check.Exception(expression.Method.ReflectedType.FullName != ExpressionConst.SqlFuncFullName,string.Format(ExpressionErrorMessage.MethodError, expression.Method.Name));
+            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName,string.Format(ExpressionErrorMessage.MethodError, expression.Method.Name));
         }
     }
 }
