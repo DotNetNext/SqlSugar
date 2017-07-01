@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using System.Reflection;
 namespace SqlSugar
 {
     #region T1
@@ -632,7 +632,7 @@ namespace SqlSugar
         {
             if (result.IsValuable())
             {
-                if (entityType.BaseType.IsValuable() && entityType.BaseType == PubConst.ModelType)
+                if (entityType.GetTypeInfo().BaseType.IsValuable() && entityType.GetTypeInfo().BaseType == PubConst.ModelType)
                 {
                     foreach (var item in result)
                     {
@@ -1478,7 +1478,7 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
