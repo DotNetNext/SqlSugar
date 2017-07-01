@@ -138,6 +138,10 @@ namespace SqlSugar
         /// <returns></returns>
         public T DeserializeObject<T>(string value)
         {
+            if (value.IsValuable())
+            {
+                value = value.Replace(":{}", ":null");
+            }
             return JsonConvert.DeserializeObject<T>(value);
         }
 
