@@ -167,7 +167,7 @@ namespace SqlSugar
 
         public static bool IsClass(this Type thisValue)
         {
-            return thisValue != StringType && thisValue.IsClass;
+            return thisValue != StringType && thisValue.IsEntity();
         }
     }
 }

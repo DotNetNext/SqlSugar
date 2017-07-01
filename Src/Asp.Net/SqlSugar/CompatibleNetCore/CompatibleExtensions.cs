@@ -72,7 +72,7 @@ namespace SqlSugar
 
         public static bool IsEntity(this Type type)
         {
-            return type.GetTypeInfo().IsClass();
+            return type.GetTypeInfo().IsClass;
         }
 
         public static Type ReflectedType(this MethodInfo method)
