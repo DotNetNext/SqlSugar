@@ -80,4 +80,12 @@ namespace SqlSugar
             return method.ReflectedType;
         }
     }
+
+    public static class ReflectionCore
+    {
+        public static Assembly Load(string name)
+        {
+            return Assembly.Load(name);
+        }
+    }
 }
