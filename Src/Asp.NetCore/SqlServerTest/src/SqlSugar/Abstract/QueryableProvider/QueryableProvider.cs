@@ -795,14 +795,14 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere,Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public  ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -1278,7 +1278,7 @@ namespace SqlSugar
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public  new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);

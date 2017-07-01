@@ -8,7 +8,7 @@ namespace SqlSugar
 {
     public class InstanceFactory
     {
-        static Assembly assembly = ReflectionExtensions.LoadAssembly(PubConst.AssemblyName);
+        static Assembly assembly = ReflectionCore.Load(PubConst.AssemblyName);
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 
         #region Queryable

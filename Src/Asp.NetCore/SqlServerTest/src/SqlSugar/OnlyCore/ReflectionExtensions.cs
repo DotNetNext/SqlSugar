@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class ReflectionExtensions
+    public static class ReflectionCore
     {
-        public static Assembly LoadAssembly(string name)
+        public static Assembly Load(string name)
         {
-            return  Assembly.Load(new AssemblyName(PubConst.AssemblyName)) ;
+            return Assembly.Load(new AssemblyName(PubConst.AssemblyName));
         }
     }
 }

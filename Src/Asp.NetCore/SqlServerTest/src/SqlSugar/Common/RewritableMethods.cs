@@ -114,10 +114,6 @@ namespace SqlSugar
                         }
                     }
                     var stringValue = SerializeObject(result);
-                    if (stringValue.IsValuable())
-                    {
-                        stringValue = stringValue.Replace(":{}", ":null");
-                    }
                     reval.Add((T)DeserializeObject<T>(stringValue));
                 }
                 reader.Close();

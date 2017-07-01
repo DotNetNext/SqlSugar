@@ -45,7 +45,7 @@ namespace SqlSugar
         }
         public virtual void InitTables(string entitiesNamespace)
         {
-            var types =ReflectionExtensions.LoadAssembly(entitiesNamespace).GetTypes();
+            var types = ReflectionCore.Load(entitiesNamespace).GetTypes();
             InitTables(types);
         }
         public virtual void InitTables(params string[] entitiesNamespaces)

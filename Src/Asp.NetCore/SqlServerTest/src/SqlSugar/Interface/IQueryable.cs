@@ -15,7 +15,7 @@ namespace SqlSugar
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> With(string withString);
-        ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter= false);
         ISugarQueryable<T> AddParameters(object pars);
         ISugarQueryable<T> AddParameters(SugarParameter[] pars);
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
@@ -57,7 +57,7 @@ namespace SqlSugar
 
         bool Any(Expression<Func<T, bool>> expression);
         bool Any();
-
+ 
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(string select) where TResult : class, new();
         ISugarQueryable<T> Select(string select);
@@ -97,7 +97,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression);
 
-        ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        new ISugarQueryable<T, T2> WhereIF(bool isWhere,Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         #endregion
 
@@ -122,7 +122,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, T3, bool>> expression);
 
-        ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
         #endregion
@@ -188,7 +188,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
 
 
-        ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
@@ -228,7 +228,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
 
-        ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
