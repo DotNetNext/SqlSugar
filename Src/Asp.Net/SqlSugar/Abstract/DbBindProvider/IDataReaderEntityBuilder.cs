@@ -164,7 +164,7 @@ namespace SqlSugar
             validPropertyName = validPropertyName == "byte[]" ? "byteArray" : validPropertyName;
             CSharpDataType validPropertyType = (CSharpDataType)Enum.Parse(typeof(CSharpDataType), validPropertyName);
             string bindProperyTypeName = bindPropertyType.Name.ToLower();
-            bool isEnum = bindPropertyType.IsEnum;
+            bool isEnum = bindPropertyType.IsEnum();
             if (isEnum) { validPropertyType = CSharpDataType.@enum; }
             switch (validPropertyType)
             {

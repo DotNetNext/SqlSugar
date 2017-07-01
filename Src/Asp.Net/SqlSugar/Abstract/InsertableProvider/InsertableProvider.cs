@@ -166,7 +166,7 @@ namespace SqlSugar
                         PropertyType = PubMethod.GetUnderType(column.PropertyInfo),
                         TableId = i
                     };
-                    if (columnInfo.PropertyType.IsEnum)
+                    if (columnInfo.PropertyType.IsEnum())
                     {
                         columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                     }
