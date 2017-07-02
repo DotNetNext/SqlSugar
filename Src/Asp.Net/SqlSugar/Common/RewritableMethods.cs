@@ -183,6 +183,16 @@ namespace SqlSugar
             return CacheManager<T>.GetInstance();
         }
 
+        public void RemoveCacheAll()
+        {
+            CacheManager.RemoveAllCache();
+        }
+
+        public void RemoveCache<T>(string key)
+        {
+            CacheManager<T>.GetInstance().Remove(key);
+        }
+
         #region Private Methods
         private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval)
         {
