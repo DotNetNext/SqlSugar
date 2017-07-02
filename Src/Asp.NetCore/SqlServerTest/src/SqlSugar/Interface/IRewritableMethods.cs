@@ -17,6 +17,9 @@ namespace SqlSugar
         T TranslateCopy<T>(T sourceObject);
         dynamic DataTableToDynamic(DataTable table);
         ICacheManager<T> GetCacheInstance<T>();
-     
+        void RemoveCacheAll();
+        void RemoveCacheAll<T>();
+        void RemoveCache<T>(string key);
+
     }
 }

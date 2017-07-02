@@ -39,6 +39,7 @@ namespace SqlSugar
 
         public void Init()
         {
+            this.Context.RewritableMethods.RemoveCacheAll();
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {
                 Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");

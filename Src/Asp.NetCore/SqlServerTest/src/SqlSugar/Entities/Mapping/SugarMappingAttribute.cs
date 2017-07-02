@@ -79,7 +79,13 @@ namespace SqlSugar
             get { return _OldColumnName; }
             set { _OldColumnName = value; }
         }
-        
+
+        private string _ColumnDataType;
+        public string ColumnDataType
+        {
+            get { return _ColumnDataType; }
+            set { _ColumnDataType = value; }
+        }
     }
 
 }

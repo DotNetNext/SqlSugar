@@ -22,5 +22,6 @@ namespace SqlSugar
         public string EntityName { get;  set; }
         public string DbTableName { get; set; }
         public bool IsIgnore { get;  set; }
+        public string DataType { get; set; }
     }
 }

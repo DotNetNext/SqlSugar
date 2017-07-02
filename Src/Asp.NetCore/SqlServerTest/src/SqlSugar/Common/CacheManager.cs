@@ -39,7 +39,11 @@ namespace SqlSugar
             if (_instance == null)
                 lock (_instanceLock)
                     if (_instance == null)
+                    {
                         _instance = new CacheManager<V>();
+                        Action addItem =()=> { CacheManager<V>.GetInstance().RemoveAllCache(); };
+                        CacheManager.Add(addItem);
+                    }
             return _instance;
         }
 
@@ -57,6 +61,14 @@ namespace SqlSugar
         {
             V val;
             this.InstanceCache.TryRemove(key, out val);
+        }
+
+        public void RemoveAllCache()
+        {
+            foreach (var key in GetAllKey())
+            {
+                this.Remove(key);
+            }
         }
 
         public IEnumerable<string> GetAllKey()
@@ -81,6 +93,25 @@ namespace SqlSugar
                 var reval = errorAction(cm, cacheKey);
                 cm.Add(cacheKey, reval);
                 return reval;
+            }
+        }
+    }
+    public static class CacheManager
+    {
+        private static List<Action> removeActions = new List<Action>();
+        internal static void Add(Action removeAction)
+        {
+            removeActions.Add(removeAction);
+        }
+
+        public static void RemoveAllCache()
+        {
+            lock (removeActions)
+            {
+                foreach (var item in removeActions)
+                {
+                    item();
+                }
             }
         }
     }
