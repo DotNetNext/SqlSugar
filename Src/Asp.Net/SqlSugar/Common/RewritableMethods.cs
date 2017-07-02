@@ -188,6 +188,11 @@ namespace SqlSugar
             CacheManager.RemoveAllCache();
         }
 
+        public void RemoveCacheAll<T>()
+        {
+            CacheManager<T>.GetInstance().RemoveAllCache();
+        }
+
         public void RemoveCache<T>(string key)
         {
             CacheManager<T>.GetInstance().Remove(key);
