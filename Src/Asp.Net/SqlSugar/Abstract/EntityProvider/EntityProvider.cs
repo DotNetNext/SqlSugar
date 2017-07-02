@@ -122,6 +122,7 @@ namespace SqlSugar
                         column.IsNullable = sugarColumn.IsNullable;
                         column.Length = sugarColumn.Length;
                         column.OldDbColumnName = sugarColumn.OldColumnName;
+                        column.DataType = sugarColumn.ColumnDataType;
                     }
                     else
                     {

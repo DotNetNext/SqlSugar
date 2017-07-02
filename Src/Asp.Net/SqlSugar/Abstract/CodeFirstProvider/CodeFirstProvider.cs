@@ -113,7 +113,7 @@ namespace SqlSugar
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
-                                                               && ((ec.Length != dc.Length &&!PubMethod.GetUnderType(ec.PropertyInfo).IsEnum()&& PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
+                                                               && ((ec.Length != dc.Length && !PubMethod.GetUnderType(ec.PropertyInfo).IsEnum() && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
@@ -223,9 +223,13 @@ namespace SqlSugar
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length
             };
-            if (propertyType.IsEnum())
+            if (!string.IsNullOrEmpty(item.DataType))
             {
-                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length>9?PubConst.LongType.Name:PubConst.IntType.Name);
+                result.DataType = item.DataType;
+            }
+            else if (propertyType.IsEnum())
+            {
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? PubConst.LongType.Name : PubConst.IntType.Name);
             }
             else
             {
@@ -236,6 +240,10 @@ namespace SqlSugar
 
         protected virtual bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
         {
+            if (!string.IsNullOrEmpty(ec.DataType))
+            {
+                return ec.DataType != dc.DataType;
+            }
             var propertyType = PubMethod.GetUnderType(ec.PropertyInfo);
             var properyTypeName = string.Empty;
             if (propertyType.IsEnum())

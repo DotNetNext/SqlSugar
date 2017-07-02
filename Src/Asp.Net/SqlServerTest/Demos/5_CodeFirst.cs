@@ -16,6 +16,7 @@ namespace OrmTest.Demo
         [SugarColumn(IsNullable = true,Length =10)]
         public string IsOk { get; set; }
         public Guid Guid { get; set; }
+        [SugarColumn(ColumnDataType ="int")]
         public decimal Decimal { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime? DateTime { get; set; }
