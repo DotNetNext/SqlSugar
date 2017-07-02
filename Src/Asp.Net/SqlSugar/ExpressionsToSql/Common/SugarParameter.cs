@@ -49,7 +49,7 @@ namespace SqlSugar
             }
             else if (type == PubConst.DateType)
             {
-                this.DbType = System.Data.DbType.Date;
+                this.DbType = System.Data.DbType.DateTime;
             }
             else if (type == PubConst.DobType)
             {
