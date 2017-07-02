@@ -123,7 +123,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;
-            whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString));
+            whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString+PubConst.Space));
             if (whereObj != null)
                 QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
