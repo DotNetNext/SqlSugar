@@ -26,8 +26,8 @@ namespace OrmTest.Demo
             //by primary key array
             var t4 = db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
 
-            //by expression
-            var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
+            //by expression   id>1 and id==1
+            var t5 = db.Deleteable<Student>().Where(it => it.Id > 1).Where(it => it.Id == 1).ExecuteCommand();
         }
     }
 }
