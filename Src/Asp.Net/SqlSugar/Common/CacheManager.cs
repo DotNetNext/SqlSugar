@@ -39,7 +39,10 @@ namespace SqlSugar
             if (_instance == null)
                 lock (_instanceLock)
                     if (_instance == null)
+                    {
                         _instance = new CacheManager<V>();
+                        CacheManager.Add(_instance.InstanceCache);
+                    }
             return _instance;
         }
 
@@ -81,6 +84,25 @@ namespace SqlSugar
                 var reval = errorAction(cm, cacheKey);
                 cm.Add(cacheKey, reval);
                 return reval;
+            }
+        }
+    }
+    public static class CacheManager
+    {
+        private static List<object> CacheObjects = new List<object>();
+        internal static void Add(object CacheObject)
+        {
+            CacheObjects.Add(CacheObject);
+        }
+
+        public static void RemoveAllCache()
+        {
+            lock (CacheObjects)
+            {
+                for (int i = 0; i < CacheObjects.Count; i++)
+                {
+                    CacheObjects[i] = Activator.CreateInstance(CacheObjects[i].GetType(), true);
+                }
             }
         }
     }
