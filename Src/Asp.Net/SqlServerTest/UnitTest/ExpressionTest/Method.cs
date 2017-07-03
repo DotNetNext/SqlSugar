@@ -46,6 +46,7 @@ namespace OrmTest.UnitTest
                 Trim();
                 Contains();
                 Contains2();
+                Contains3();
                 ContainsArray();
                 StartsWith();
                 EndsWith();
@@ -427,6 +428,18 @@ namespace OrmTest.UnitTest
             base.Check(value, pars, " ([Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains2 error");
+        }
+        private void Contains3(string name = "a")
+        {
+            Expression<Func<Student, bool>> exp = it => !SqlFunc.Contains(it.Name, name)&&it.Id==1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(NOT ([Name] like '%'+@MethodConst0+'%')  AND( [Id] = @Id1 ))", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","a"),
+                 new SugarParameter("@Id1",1)
+            }, "Contains3 error");
         }
 
         private void ExtendContainsArray() {
