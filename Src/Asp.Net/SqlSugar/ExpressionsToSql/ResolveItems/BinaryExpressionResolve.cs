@@ -18,13 +18,9 @@ namespace SqlSugar
             else
             {
                 var expression = this.Expression as BinaryExpression;
-                var operatorValue =parameter.OperatorValue=ExpressionTool.GetOperator(expression.NodeType);
-                var isEqual = expression.NodeType==ExpressionType.Equal;
-                var isComparisonOperator =
-                                            expression.NodeType != ExpressionType.And &&
-                                            expression.NodeType != ExpressionType.AndAlso &&
-                                            expression.NodeType != ExpressionType.Or &&
-                                            expression.NodeType != ExpressionType.OrElse;
+                var operatorValue = parameter.OperatorValue = ExpressionTool.GetOperator(expression.NodeType);
+                var isEqual = expression.NodeType == ExpressionType.Equal;
+                var isComparisonOperator =ExpressionTool.IsComparisonOperator(expression);
                 base.ExactExpression = expression;
                 var leftExpression = expression.Left;
                 var rightExpression = expression.Right;
@@ -40,8 +36,9 @@ namespace SqlSugar
                     base.Context.Result.Append(ExpressionConst.Format3);
                     base.Context.Result.Append(ExpressionConst.Format0);
                 }
-                else {
-                    base.Context.Result.Replace(ExpressionConst.Format0,ExpressionConst.Format3+ ExpressionConst.Format0);
+                else
+                {
+                    base.Context.Result.Replace(ExpressionConst.Format0, ExpressionConst.Format3 + ExpressionConst.Format0);
                 }
                 parameter.LeftExpression = leftExpression;
                 parameter.RightExpression = rightExpression;
@@ -54,16 +51,17 @@ namespace SqlSugar
                 base.IsLeft = null;
                 if (lsbs && parameter.ValueIsNull)
                 {
-                    base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, isEqual?"IS":"IS NOT");
+                    base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, isEqual ? "IS" : "IS NOT");
                 }
-                else {
+                else
+                {
                     base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, operatorValue);
-                    base.Context.Result.Replace(ExpressionConst.Format1 +(parameter.Index+1), operatorValue);
+                    base.Context.Result.Replace(ExpressionConst.Format1 + (parameter.Index + 1), operatorValue);
                 }
                 base.Context.Result.Append(ExpressionConst.Format4);
                 if (parameter.BaseExpression is BinaryExpression && parameter.IsLeft == true)
                 {
-                    base.Context.Result.Append(" "+ExpressionConst.Format1 + parameter.BaseParameter.Index+" ");
+                    base.Context.Result.Append(" " + ExpressionConst.Format1 + parameter.BaseParameter.Index + " ");
                 }
             }
         }

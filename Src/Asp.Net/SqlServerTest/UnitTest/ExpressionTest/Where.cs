@@ -21,6 +21,7 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                whereSingle18();
                 whereSingle17();
                 whereSingle16();
                 whereSingle15();
@@ -293,6 +294,19 @@ namespace OrmTest.UnitTest
             {
                 new SugarParameter("@MethodConst1","a")
             }, "whereSingle17");
+        }
+
+        private void whereSingle18()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => !it.Bool1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "NOT ( [Bool1]=1 )  ", new List<SugarParameter>()
+            {
+   
+            }, "whereSingle18");
         }
     }
 
