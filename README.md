@@ -4,8 +4,8 @@ Email:610262374@qq.com
 QQ Group:225982985
 
 ## Nuget 
-Install-Package sqlSugar  
-Install-Package sqlSugarCore
+Install-Package sqlSugar  (MySql、SqlServer、Sqlite、Oracle)  
+Install-Package sqlSugarCore  (MySql、SqlServer、sqlite、Oracle)
 
 ##  1. Query
 
@@ -311,7 +311,7 @@ catch (Exception)
   throw;
 }
    ```
- ##  7. Use SP
+ ##  7. Use Store Procedure
 ```c
    //1. no result 
   db.Ado.UseStoredProcedure(() =>
@@ -401,5 +401,11 @@ var db = GetInstance();
     .CreateClassFile("c:\\Demo\\6");
 }
 ```
+## 8.Code First
+```
+db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
+db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
+```
+
 More
 http://www.codeisbug.com/Doc/8
