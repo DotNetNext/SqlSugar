@@ -251,6 +251,30 @@ namespace SqlSugar
             DeleteableProvider<T> reval = base.CreateDeleteable<T>();
             return reval;
         }
+        public virtual IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
+        {
+            return this.Deleteable<T>().Where(expression);
+        }
+        public virtual IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
+        {
+            return this.Deleteable<T>().In(primaryKeyValue);
+        }
+        public virtual IDeleteable<T> Deleteable<T>(dynamic [] primaryKeyValues) where T : class, new()
+        {
+            return this.Deleteable<T>().In(primaryKeyValues);
+        }
+        public virtual IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
+        {
+            return this.Deleteable<T>().In(pkValue);
+        }
+        public virtual IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
+        {
+            return this.Deleteable<T>().Where(deleteObj);
+        }
+        public virtual IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
+        {
+            return this.Deleteable<T>().Where(deleteObjs);
+        }
         #endregion
 
         #region Updateable

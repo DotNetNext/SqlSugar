@@ -304,7 +304,15 @@ namespace SqlSugar
 
         protected void AppendNot(object Value)
         {
-            this.Context.Result.Append("NOT");
+            var isAppend = !this.Context.Result.Contains(ExpressionConst.Format0);
+            if (isAppend)
+            {
+                this.Context.Result.Append("NOT");
+            }
+            else
+            {
+                this.Context.Result.Replace(ExpressionConst.Format0, "NOT");
+            }
         }
     }
 }
