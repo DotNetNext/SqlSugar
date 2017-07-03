@@ -30,6 +30,7 @@ namespace OrmTest.UnitTest
                 ExtendDate();
 
                 //SqlFun methods
+                MappingColumn();
                 IIF();
                 IIF2();
                 #region StringIsNullOrEmpty
@@ -588,7 +589,17 @@ namespace OrmTest.UnitTest
 
             }, "HasNumber error");
         }
-
+        private void MappingColumn() {
+            Expression<Func<Student, bool>> exp = it => SqlFunc.MappingColumn(it.Id,"Name") == 1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(Name = @Const1 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Const1",1)
+            }, "MappingColumn error");
+        }
         private void IIF()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(it.Id == 1, 1, 2)==1;

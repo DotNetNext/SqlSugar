@@ -247,5 +247,12 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format("COUNT({0})", parameter.MemberName);
         }
+
+        public virtual string MappingColumn(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return string.Format("{0}", parameter1.MemberValue);
+        }
     }
 }
