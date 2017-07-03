@@ -61,8 +61,11 @@ namespace SqlSugar
                     else
                     {
                         fieldName = getSingleName(parameter, expression, isLeft);
+                        if (expression.Type == PubConst.BoolType&&baseParameter.OperatorValue.IsNullOrEmpty()) {
+                            fieldName= "( "+fieldName+"=1 )";
+                        }
                         fieldName = AppendMember(parameter, isLeft, fieldName);
-                    }
+                     }
                     break;
                 case ResolveExpressType.WhereMultiple:
                     if (isSetTempData)

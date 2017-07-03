@@ -46,7 +46,17 @@ namespace SqlSugar
                     return null;
             }
         }
-
+        public static bool IsLogicOperator(string operatorValue)
+        {
+            return operatorValue=="&&"|| operatorValue=="||";
+        }
+        public static bool IsComparisonOperator(BinaryExpression expression)
+        {
+            return expression.NodeType != ExpressionType.And &&
+                                        expression.NodeType != ExpressionType.AndAlso &&
+                                        expression.NodeType != ExpressionType.Or &&
+                                        expression.NodeType != ExpressionType.OrElse;
+        }
         public static object GetMemberValue(MemberInfo member, Expression expression)
         {
             var memberInfos = new Stack<MemberInfo>();

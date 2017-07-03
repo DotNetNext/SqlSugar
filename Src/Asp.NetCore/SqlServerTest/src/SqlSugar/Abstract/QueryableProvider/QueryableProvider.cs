@@ -665,7 +665,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public new ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -675,6 +675,18 @@ namespace SqlSugar
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2>  Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         #endregion
@@ -802,10 +814,23 @@ namespace SqlSugar
             return this;
         }
 
-        public  ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public  new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2,T3> Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2,T3> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         #endregion
@@ -837,7 +862,7 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public new ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -862,6 +887,19 @@ namespace SqlSugar
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3,T4> Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3,T4> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         #endregion
@@ -958,7 +996,7 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -990,6 +1028,19 @@ namespace SqlSugar
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4,T5> Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4,T5> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         #endregion
@@ -1105,7 +1156,7 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -1144,6 +1195,19 @@ namespace SqlSugar
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         #endregion
@@ -1324,6 +1388,19 @@ namespace SqlSugar
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         #endregion
@@ -1531,6 +1608,19 @@ namespace SqlSugar
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
             return this;
         }
         #endregion

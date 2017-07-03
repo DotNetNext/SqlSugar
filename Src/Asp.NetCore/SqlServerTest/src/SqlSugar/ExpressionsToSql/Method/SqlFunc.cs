@@ -83,5 +83,6 @@ namespace SqlSugar
         public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
         public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
         public static TResult AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult MappingColumn<TResult>(TResult oldColumnName,string newColumnName) { throw new NotSupportedException("This method is not supported by the current parameter"); }
     }
 }

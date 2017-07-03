@@ -32,7 +32,20 @@ namespace SqlSugar
                     {
                         Append(parameter, nodeType);
                     }
-                    else if (isMember || isConst)
+                    else if (isMember)
+                    {
+                        var isComparisonOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue)||baseParameter.OperatorValue.IsNullOrEmpty();
+                        var memberExpression = (base.Expression as MemberExpression);
+                        if (memberExpression.Type== PubConst.BoolType&& isComparisonOperator)
+                        {
+                            Append(parameter, nodeType);
+                        }
+                        else
+                        {
+                            Result(parameter, nodeType);
+                        }
+                    }
+                    else if (isConst)
                     {
                         Result(parameter, nodeType);
                     }
