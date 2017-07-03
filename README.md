@@ -4,7 +4,7 @@ Email:610262374@qq.com
 QQ Group:225982985
 
 ## Nuget 
-Install-Package sqlSugar  (MySql、SqlServer、Sqlite、Oracle)
+Install-Package sqlSugar  (MySql、SqlServer、Sqlite、Oracle)  
 Install-Package sqlSugarCore  (MySql、SqlServer、sqlite、Oracle)
 
 ##  1. Query
