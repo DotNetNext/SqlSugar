@@ -7,6 +7,9 @@ QQ Group:225982985
 Install-Package sqlSugar  (MySql、SqlServer、Sqlite、Oracle)  
 Install-Package sqlSugarCore  (MySql、SqlServer、sqlite、Oracle)
 
+## Here's the history version
+https://github.com/sunkaixuan/SqlSugar/tree/master
+
 ##  1. Query
 
 ### 1.1 Create Connection
