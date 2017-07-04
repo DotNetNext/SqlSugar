@@ -37,7 +37,7 @@ namespace SqlSugar
             if (Skip != null && Take == null)
             {
                 if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                return string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
+                return string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt(), long.MaxValue);
             }
             else if (Skip == null && Take != null)
             {
@@ -47,7 +47,7 @@ namespace SqlSugar
             else if (Skip != null && Take != null)
             {
                 if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                return string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() + 1 : 0, Take);
+                return string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace SqlSugar
             }
 
         }
-        
+
         #endregion
 
         #region Get SQL Partial
