@@ -182,7 +182,7 @@ namespace OrmTest.Demo
         public static void Page()
         {
             var db = GetInstance();
-            var pageIndex = 1;
+            var pageIndex = 2;
             var pageSize = 2;
             var totalCount = 0;
             //page
