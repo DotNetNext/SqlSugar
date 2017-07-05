@@ -116,6 +116,8 @@ new List<SugarParameter>() {
 
             insertObj.Name = null;
             var t10 = db.Insertable(insertObj).ExecuteCommand();
+
+            var t11 = db.Insertable(new MyStudent() { Id = 1, Name = "张三" }).AS("Student").ToSql();
         }
 
         public SqlSugarClient GetInstance()
@@ -123,5 +125,11 @@ new List<SugarParameter>() {
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
             return db;
         }
+    }
+
+    public class MyStudent {
+
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
