@@ -284,6 +284,11 @@ namespace SqlSugar
             UpdateableProvider<T> reval = base.CreateUpdateable(UpdateObjs);
             return reval;
         }
+        public virtual IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new()
+        {
+            Check.ArgumentNullException(UpdateObjs, "Updateable.UpdateObjs can't be null");
+            return Updateable(UpdateObjs.ToArray());
+        }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
         {
             return this.Updateable(new T[] { UpdateObj });

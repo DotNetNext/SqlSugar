@@ -18,10 +18,19 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.WhereMultiple:
                     break;
-                case ResolveExpressType.SelectSingle:
-                case ResolveExpressType.SelectMultiple:
                 case ResolveExpressType.Update:
                     parameter.BaseParameter.CommonTempData = expression.Name;
+                    break;
+                case ResolveExpressType.SelectSingle:
+                case ResolveExpressType.SelectMultiple:
+                    if (parameter.BaseParameter!=null&&parameter.BaseParameter.CurrentExpression.NodeType == ExpressionType.Lambda)
+                    {
+                        this.Context.Result.Append(expression.Name + ".*");
+                    }
+                    else
+                    {
+                        parameter.BaseParameter.CommonTempData = expression.Name;
+                    }
                     break;
                 case ResolveExpressType.FieldSingle:
                     break;
