@@ -385,13 +385,14 @@ namespace SqlSugar
                 }
                 if (this.EasyJoinInfos.IsValuable())
                 {
+
                     if (this.TableWithString.IsValuable())
                     {
-                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} {2} ", it.Value, it.Key, TableWithString)));
+                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} {2} ",GetTableName(it.Value), it.Key, TableWithString)));
                     }
                     else
                     {
-                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} ", it.Value, it.Key)));
+                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} ", GetTableName(it.Value), it.Key)));
                     }
                 }
                 return result;
@@ -425,5 +426,11 @@ namespace SqlSugar
             }
         }
         #endregion
+
+        private string GetTableName(string entityName)
+        {
+            var result = this.Context.EntityProvider.GetTableName(entityName);
+            return this.Builder.GetTranslationTableName(result);
+        }
     }
 }

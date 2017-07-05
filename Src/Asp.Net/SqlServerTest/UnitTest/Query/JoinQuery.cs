@@ -23,9 +23,21 @@ namespace OrmTest.UnitTest
                 Q1();
                 Q2();
                 Q3();
+                Q4();
             }
             base.End("Method Test");
         }
+        private void Q4()
+        {
+            using (var db = GetInstance())
+            {
+                db.MappingTables.Add("School", "SchoolTable");
+                var join4 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select(st=>st).ToSql();
+                string sql = @"SELECT st.* FROM [STudent] st  ,[SchoolTable]  sc  WHERE ( [st].[SchoolId] = [sc].[Id] )  ";
+                base.Check(sql, null, join4.Key, null, "join 4 Error");
+            }
+        }
+
 
         private void Q3()
         {
