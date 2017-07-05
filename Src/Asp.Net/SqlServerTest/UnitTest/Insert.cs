@@ -118,6 +118,12 @@ new List<SugarParameter>() {
             var t10 = db.Insertable(insertObj).ExecuteCommand();
 
             var t11 = db.Insertable(new MyStudent() { Id = 1, Name = "张三" }).AS("Student").ToSql();
+            base.Check(@"INSERT INTO [Student]  
+           ([Name])
+     VALUES
+           (@Name) ;SELECT SCOPE_IDENTITY();", new List<SugarParameter>() {
+                           new SugarParameter("@Name","张三")
+            }, t11.Key, t11.Value, "Insert t11 error");
         }
 
         public SqlSugarClient GetInstance()
