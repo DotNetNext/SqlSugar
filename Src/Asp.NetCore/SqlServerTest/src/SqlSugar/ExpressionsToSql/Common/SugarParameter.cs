@@ -67,6 +67,10 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.Single;
             }
+            else if (type == PubConst.BoolType)
+            {
+                this.DbType = System.Data.DbType.Boolean;
+            }
         }
         public SugarParameter(string name, object value, bool isOutput)
         {
