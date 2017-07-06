@@ -17,6 +17,21 @@ namespace SqlSugar
                 return template;
             }
         }
+        public override string PageTempalteExpression
+        {
+            get
+            {
+                /*
+                 SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 0,10
+                 */
+                var template = string.Empty;
+                if (this.IsCount)
+                    template = "SELECT COUNT(1) AS `Count` FROM (SELECT {0} FROM {1} ) AS candidate {2} {3} {4} LIMIT {5},{6}";
+                else
+                    template = "SELECT * FROM (SELECT {0} FROM {1} ) AS candidate {2} {3} {4} LIMIT {5},{6}";
+                return template;
+            }
+        }
         public override string DefaultOrderByTemplate
         {
             get
@@ -55,7 +70,32 @@ namespace SqlSugar
             }
 
         }
-        
+        public override string ToSqlStringExpression()
+        {
+            sql = new StringBuilder();
+            sql.AppendFormat(SqlTemplateExpression, GetSelectValueExpression, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            if (IsCount) { return sql.ToString(); }
+            if (Skip != null && Take == null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValueExpression.Split(',')[0];
+                return string.Format(PageTempalteExpression, GetSelectValueExpression, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
+            }
+            else if (Skip == null && Take != null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValueExpression.Split(',')[0];
+                return string.Format(PageTempalteExpression, GetSelectValueExpression, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 1, Take.ObjToInt());
+            }
+            else if (Skip != null && Take != null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValueExpression.Split(',')[0];
+                return string.Format(PageTempalteExpression, GetSelectValueExpression, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() + 1 : 0, Take);
+            }
+            else
+            {
+                return sql.ToString();
+            }
+
+        }
         #endregion
 
         #region Get SQL Partial
