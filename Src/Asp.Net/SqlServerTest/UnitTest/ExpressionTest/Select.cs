@@ -22,6 +22,7 @@ namespace OrmTest.UnitTest
             for (int i = 0; i < base.Count; i++)
             {
                 single();
+                single2();
                 Multiple();
                 singleDynamic();
                 MultipleDynamic();
@@ -69,6 +70,23 @@ namespace OrmTest.UnitTest
         {
             int p = 1;
             Expression<Func<Student, object>> exp = it => new Student() { Name = "a", Id = it.Id, SchoolId = p,TestId=it.Id+11 };
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.SelectSingle);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                selectorValue,
+                pars,
+                @" @constant0 AS [Name] , [Id] AS [Id] , @constant1 AS [SchoolId] , ( [Id] + @Id2 ) AS [TestId]  ",
+                new List<SugarParameter>(){
+                            new SugarParameter("@constant0","a"),
+                            new SugarParameter("@constant1",1),
+                            new SugarParameter("@Id2",11 ) },
+                "Select.single Error");
+        }
+        private void single2(int p=1)
+        {
+            Expression<Func<Student, object>> exp = it => new Student() { Name = "a", Id = it.Id, SchoolId = p, TestId = it.Id + 11 };
             ExpressionContext expContext = new ExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.SelectSingle);
             var selectorValue = expContext.Result.GetString();
