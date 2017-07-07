@@ -87,10 +87,8 @@ namespace SqlSugar
 
         private void Select(MemberInitExpression expression, ExpressionParameter parameter, bool isSingle)
         {
-            int i = 0;
             foreach (MemberBinding binding in expression.Bindings)
             {
-                ++i;
                 if (binding.BindingType != MemberBindingType.Assignment)
                 {
                     throw new NotSupportedException();
@@ -98,7 +96,7 @@ namespace SqlSugar
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
                 var memberName = memberAssignment.Member.Name;
                 var item = memberAssignment.Expression;
-                ResolveNewExpressions(parameter, i, item, memberName);
+                ResolveNewExpressions(parameter, item, memberName);
             }
         }
     }
