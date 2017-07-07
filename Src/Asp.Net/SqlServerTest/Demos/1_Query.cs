@@ -340,6 +340,13 @@ namespace OrmTest.Demo
             var s7 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             }).Select((st, sc) => sc).ToList();
+
+            var s8 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            })
+            .OrderBy((st, sc) => st.SchoolId)
+            .Select((st, sc) => sc)
+            .Take(1).ToList();
         }
         private static void Sqlable()
         {
