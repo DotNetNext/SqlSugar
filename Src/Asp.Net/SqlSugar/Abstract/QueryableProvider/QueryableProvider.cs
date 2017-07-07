@@ -405,10 +405,9 @@ namespace SqlSugar
         }
         public virtual TResult Max<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Max<TResult>(lamResult.GetResultString());
+            return _Max<TResult>(expression);
         }
+
         public virtual TResult Min<TResult>(string minField)
         {
             this.Select(string.Format(QueryBuilder.MinTemplate, minField));
@@ -417,10 +416,9 @@ namespace SqlSugar
         }
         public virtual TResult Min<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Min<TResult>(lamResult.GetResultString());
+            return _Min<TResult>(expression);
         }
+
         public virtual TResult Sum<TResult>(string sumField)
         {
             this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
@@ -429,10 +427,9 @@ namespace SqlSugar
         }
         public virtual TResult Sum<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Sum<TResult>(lamResult.GetResultString());
+            return _Sum<TResult>(expression);
         }
+
         public virtual TResult Avg<TResult>(string avgField)
         {
             this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
@@ -441,11 +438,8 @@ namespace SqlSugar
         }
         public virtual TResult Avg<TResult>(Expression<Func<T, TResult>> expression)
         {
-            var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Avg<TResult>(lamResult.GetResultString());
+            return _Avg<TResult>(expression);
         }
-
         public virtual string ToJson()
         {
             return this.Context.RewritableMethods.SerializeObject(this.ToList());
@@ -551,6 +545,30 @@ namespace SqlSugar
             }
             GroupBy(result);
             return this;
+        }
+        protected TResult _Min<TResult>(Expression expression)
+        {
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Min<TResult>(lamResult.GetResultString());
+        }
+        protected TResult _Avg<TResult>(Expression expression)
+        {
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Avg<TResult>(lamResult.GetResultString());
+        }
+        protected TResult _Max<TResult>(Expression expression)
+        {
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Max<TResult>(lamResult.GetResultString());
+        }
+        protected TResult _Sum<TResult>(Expression expression)
+        {
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return Sum<TResult>(lamResult.GetResultString());
         }
         public ISugarQueryable<T> _PartitionBy(Expression expression)
         {
@@ -729,6 +747,25 @@ namespace SqlSugar
             return this;
         }
         #endregion
+
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Max<TResult>(expression);
+        }
+        public TResult Min<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Min<TResult>(expression);
+        }
+        public TResult Sum<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Sum<TResult>(expression);
+        }
+        public TResult Avg<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Avg<TResult>(expression);
+        }
+        #endregion
     }
     #endregion
     #region T3
@@ -838,6 +875,24 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {                                                 
+            return _Max<TResult>(expression);           
+        }                                                
+        public TResult Min<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {                                                
+            return _Min<TResult>(expression);            
+        }                                                 
+        public TResult Sum<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {                                                 
+            return _Sum<TResult>(expression);            
+        }                                                
+        public TResult Avg<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {
+            return _Avg<TResult>(expression);
+        }
+        #endregion
     }
     #endregion
     #region T4
@@ -965,6 +1020,25 @@ namespace SqlSugar
         {
             _GroupBy(expression);
             return this;
+        }
+        #endregion
+
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression)
+        {                                                     
+            return _Max<TResult>(expression);                 
+        }                                                     
+        public TResult Min<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression)
+        {                                                    
+            return _Min<TResult>(expression);                
+        }                                                     
+        public TResult Sum<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression)
+        {                                                   
+            return _Sum<TResult>(expression);                 
+        }                                                    
+        public TResult Avg<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression)
+        {
+            return _Avg<TResult>(expression);
         }
         #endregion
     }
@@ -1120,6 +1194,25 @@ namespace SqlSugar
         {
             _GroupBy(expression);
             return this;
+        }
+        #endregion
+
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2, T3, T4,T5, TResult>> expression)
+        {                                                         
+            return _Max<TResult>(expression);                    
+        }                                                       
+        public TResult Min<TResult>(Expression<Func<T, T2, T3, T4,T5, TResult>> expression)
+        {                                                       
+            return _Min<TResult>(expression);                     
+        }                                                        
+        public TResult Sum<TResult>(Expression<Func<T, T2, T3, T4,T5, TResult>> expression)
+        {                                                         
+            return _Sum<TResult>(expression);                     
+        }                                                      
+        public TResult Avg<TResult>(Expression<Func<T, T2, T3, T4,T5, TResult>> expression)
+        {
+            return _Avg<TResult>(expression);
         }
         #endregion
     }
@@ -1301,6 +1394,25 @@ namespace SqlSugar
         {
             _GroupBy(expression);
             return this;
+        }
+        #endregion
+
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5,T6, TResult>> expression)
+        {                                                             
+            return _Max<TResult>(expression);                         
+        }                                                             
+        public TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5,T6, TResult>> expression)
+        {                                                             
+            return _Min<TResult>(expression);                         
+        }                                                            
+        public TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5,T6, TResult>> expression)
+        {                                                            
+            return _Sum<TResult>(expression);                         
+        }                                                            
+        public TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5,T6, TResult>> expression)
+        {                                                            
+            return _Avg<TResult>(expression);
         }
         #endregion
     }
@@ -1510,6 +1622,25 @@ namespace SqlSugar
             return this;
         }
 
+        #endregion
+
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> expression)
+        {                                                              
+            return _Max<TResult>(expression);                            
+        }                                                                 
+        public TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> expression)
+        {                                                                
+            return _Min<TResult>(expression);                            
+        }                                                                 
+        public TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> expression)
+        {                                                               
+            return _Sum<TResult>(expression);                            
+        }                                                               
+        public TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> expression)
+        {
+            return _Avg<TResult>(expression);
+        }
         #endregion
     }
     #endregion
@@ -1744,6 +1875,25 @@ namespace SqlSugar
             return this;
         }
 
+        #endregion
+
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression)
+        {                                                                    
+            return _Max<TResult>(expression);                                
+        }                                                                    
+        public TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression)
+        {                                                                   
+            return _Min<TResult>(expression);                               
+        }                                                                    
+        public TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression)
+        {                                                                   
+            return _Sum<TResult>(expression);                              
+        }                                                                   
+        public TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression)
+        {
+            return _Avg<TResult>(expression);
+        }
         #endregion
     }
     #endregion
