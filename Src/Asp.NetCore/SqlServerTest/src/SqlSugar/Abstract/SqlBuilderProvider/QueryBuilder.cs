@@ -124,10 +124,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"WITH PageTable AS(
-                          {0}
-                  )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER({1}) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN {2} AND {3}";
+                return @"SELECT * FROM ({0}) T WHERE RowIndex BETWEEN {1} AND {2}";
             }
         }
         public virtual string DefaultOrderByTemplate
@@ -232,34 +229,27 @@ namespace SqlSugar
                 }
             }
             sql = new StringBuilder();
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
+            if (this.PartitionByValue.IsValuable())
+            {
+                this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+            }
+            var isRowNumber = Skip != null || Take != null;
+            var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos,(!isRowNumber&&this.OrderByValue.IsValuable())?GetOrderByString:null);
+            sql.Replace("{$:OrderByString:$}", isRowNumber? (this.IsCount?null: rowNumberString): null);
             if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {
-                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                if (this.PartitionByValue.IsValuable())
-                {
-                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
-                }
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, long.MaxValue);
+                return string.Format(PageTempalte, sql.ToString(), Skip.ObjToInt() + 1, long.MaxValue);
             }
             else if (Skip == null && Take != null)
             {
-                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                if (this.PartitionByValue.IsValuable())
-                {
-                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
-                }
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, 1, Take.ObjToInt());
+                return string.Format(PageTempalte, sql.ToString(), 1, Take.ObjToInt());
             }
             else if (Skip != null && Take != null)
             {
-                if (this.OrderByValue == null) this.OrderByValue = " Order By GetDate() ";
-                if (this.PartitionByValue.IsValuable())
-                {
-                    this.OrderByValue = this.PartitionByValue + this.OrderByValue;
-                }
-                return string.Format(PageTempalte, sql.ToString(), GetOrderByString, Skip.ObjToInt() + 1, Skip.ObjToInt() + Take.ObjToInt());
+                return string.Format(PageTempalte, sql.ToString(), Skip.ObjToInt() + 1, Skip.ObjToInt() + Take.ObjToInt());
             }
             else
             {
@@ -406,15 +396,7 @@ namespace SqlSugar
                 if (IsCount) return null;
                 else
                 {
-                    if (!IsSingle() && (Take != null || Skip != null))
-                    {
-                        var result = Regex.Replace(this.OrderByValue, @"\[\w+\]\.", "");
-                        return result;
-                    }
-                    else
-                    {
-                        return this.OrderByValue;
-                    }
+                    return this.OrderByValue;
                 }
             }
         }

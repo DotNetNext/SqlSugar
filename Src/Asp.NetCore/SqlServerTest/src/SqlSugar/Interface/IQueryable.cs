@@ -117,6 +117,13 @@ namespace SqlSugar
         new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression);
         #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T,T2, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T,T2, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T,T2, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T,T2, TResult>> expression);
+        #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
     {
@@ -148,6 +155,13 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
@@ -185,6 +199,13 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, object>> expression);
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
+        #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
@@ -228,6 +249,13 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
@@ -275,6 +303,13 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
+        #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7> : ISugarQueryable<T>
@@ -327,6 +362,13 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
+        #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> : ISugarQueryable<T>
@@ -384,6 +426,13 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
+        #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
         #endregion
     }
 
