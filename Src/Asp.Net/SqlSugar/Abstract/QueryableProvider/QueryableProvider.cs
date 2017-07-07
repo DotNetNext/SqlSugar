@@ -123,7 +123,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;
-            whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString+PubConst.Space));
+            whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString + PubConst.Space));
             if (whereObj != null)
                 QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
@@ -495,7 +495,10 @@ namespace SqlSugar
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
             totalNumber = this.Count();
-            return ToPageList(pageIndex, pageSize);
+            if (totalNumber == 0)
+                return new List<T>();
+            else
+                return ToPageList(pageIndex, pageSize);
         }
 
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
@@ -677,7 +680,7 @@ namespace SqlSugar
                 _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2>  Where(string whereString, object whereObj)
+        public new ISugarQueryable<T, T2> Where(string whereString, object whereObj)
         {
             Where<T>(whereString, whereObj);
             return this;
@@ -807,27 +810,27 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere,Expression<Func<T, T2, bool>> expression)
+        public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public  new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
             return this;
         }
 
-        public new ISugarQueryable<T, T2,T3> Where(string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3> Where(string whereString, object whereObj)
         {
             Where<T>(whereString, whereObj);
             return this;
         }
 
-        public new ISugarQueryable<T, T2,T3> WhereIF(bool isWhere, string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, string whereString, object whereObj)
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
@@ -890,13 +893,13 @@ namespace SqlSugar
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3,T4> Where(string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4> Where(string whereString, object whereObj)
         {
             Where<T>(whereString, whereObj);
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3,T4> WhereIF(bool isWhere, string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, string whereString, object whereObj)
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
@@ -1031,13 +1034,13 @@ namespace SqlSugar
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4,T5> Where(string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5> Where(string whereString, object whereObj)
         {
             Where<T>(whereString, whereObj);
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4,T5> WhereIF(bool isWhere, string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, string whereString, object whereObj)
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
@@ -1198,13 +1201,13 @@ namespace SqlSugar
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Where(string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(string whereString, object whereObj)
         {
             Where<T>(whereString, whereObj);
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> WhereIF(bool isWhere, string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, string whereString, object whereObj)
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
@@ -1342,7 +1345,7 @@ namespace SqlSugar
             return this;
         }
 
-        public  new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
                 _Where(expression);
@@ -1391,13 +1394,13 @@ namespace SqlSugar
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Where(string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(string whereString, object whereObj)
         {
             Where<T>(whereString, whereObj);
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereIF(bool isWhere, string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, string whereString, object whereObj)
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
@@ -1611,13 +1614,13 @@ namespace SqlSugar
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Where(string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(string whereString, object whereObj)
         {
             Where<T>(whereString, whereObj);
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> WhereIF(bool isWhere, string whereString, object whereObj)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, string whereString, object whereObj)
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);

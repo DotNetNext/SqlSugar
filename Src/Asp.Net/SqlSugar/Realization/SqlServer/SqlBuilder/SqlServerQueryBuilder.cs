@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT {0}{{$:OrderByString:$}} FROM {1}{2}{3}";
+                return "SELECT {0}{{$:OrderByString:$}} FROM {1}{2}{3}{4}";
             }
         }
     }

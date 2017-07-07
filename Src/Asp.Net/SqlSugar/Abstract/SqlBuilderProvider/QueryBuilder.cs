@@ -229,13 +229,15 @@ namespace SqlSugar
                 }
             }
             sql = new StringBuilder();
-            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " Order By GetDate() ";
+            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
             if (this.PartitionByValue.IsValuable())
             {
                 this.OrderByValue = this.PartitionByValue + this.OrderByValue;
             }
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos);
-            sql.Replace("{$:OrderByString:$}", (Skip != null || Take != null) ? string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString) : null);
+            var isRowNumber = Skip != null || Take != null;
+            var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos,(!isRowNumber&&this.OrderByValue.IsValuable())?GetOrderByString:null);
+            sql.Replace("{$:OrderByString:$}", isRowNumber? (this.IsCount?null: rowNumberString): null);
             if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {
