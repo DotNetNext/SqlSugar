@@ -226,6 +226,11 @@ namespace SqlSugar
         {
             throw new NotSupportedException("MySql IsAnyConstraint NotSupportedException");
         }
+        public override bool BackupDataBase(string databaseName, string fullFileName)
+        {
+            Check.ThrowNotSupportedException("MySql BackupDataBase NotSupported");
+            return false;
+        }
         #endregion
     }
 }
