@@ -20,7 +20,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"select Name from sqlite_master where type='table' order by name;";
+                return @"select Name from sqlite_master where type='table' and name<>'sqlite_sequence' order by name;";
             }
         }
         protected override string GetViewInfoListSql
@@ -125,7 +125,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select 1 from Information_schema.columns limit 0,1";
+                return "select Name from sqlite_master limit 0,1";
             }
         }
         #endregion
@@ -173,22 +173,22 @@ namespace SqlSugar
                     }, (cm, key) =>
                     {
                         List<DbColumnInfo> result = new List<DbColumnInfo>();
-                        using (var dr = this.Context.Ado.GetDataReader("select * from " + tableName + " limit 0,1"))
+                        using (var dataReader = this.Context.Ado.GetDataReader("select * from " + tableName + " limit 0,1"))
                         {
-                            var schemaTable = dr.GetSchemaTable();
+                            var schemaTable = dataReader.GetSchemaTable();
                             foreach (DataRow row in schemaTable.Rows)
                             {
                                 DbColumnInfo column = new DbColumnInfo()
                                 {
                                     TableName = tableName,
-                                    DataType = dr["DataTypeName"].ToString().Trim(),
-                                    IsNullable = (bool)dr["AllowDBNull"],
-                                    IsIdentity = (bool)dr["IsAutoIncrement"],
+                                    DataType = row["DataTypeName"].ToString().Trim(),
+                                    IsNullable = (bool)row["AllowDBNull"],
+                                    IsIdentity = (bool)row["IsAutoIncrement"],
                                     ColumnDescription = null,
-                                    DbColumnName = dr["ColumnName"].ToString(),
-                                    DefaultValue = dr["defultValue"].ToString(),
-                                    IsPrimarykey = (bool)dr["IsKey"],
-                                    Length = Convert.ToInt32(dr["ColumnSize"])
+                                    DbColumnName = row["ColumnName"].ToString(),
+                                    DefaultValue = row["defaultValue"].ToString(),
+                                    IsPrimarykey = (bool)row["IsKey"],
+                                    Length = Convert.ToInt32(row["ColumnSize"])
                                 };
                                 result.Add(column);
                             }

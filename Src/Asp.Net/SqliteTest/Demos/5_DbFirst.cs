@@ -12,28 +12,28 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             //Create all class
-            db.DbFirst.CreateClassFile("c:\\DemoMySql\\1");
+            db.DbFirst.CreateClassFile("c:\\DemoSqlite\\1");
 
             //Create student calsss
-            db.DbFirst.Where("Student").CreateClassFile("c:\\DemoMySql\\2");
+            db.DbFirst.Where("Student").CreateClassFile("c:\\DemoSqlite\\2");
             //Where(array)
 
             //Mapping name
             db.MappingTables.Add("ClassStudent", "Student");
             db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-            db.DbFirst.Where("Student").CreateClassFile("c:\\DemoMySql\\3");
+            db.DbFirst.Where("Student").CreateClassFile("c:\\DemoSqlite\\3");
 
             //Remove mapping
             db.MappingTables.Clear();
 
             //Create class with default value
-            db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\DemoMySql\\4", "Demo.Models");
+            db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\DemoSqlite\\4", "Demo.Models");
 
 
             //Mapping and Attribute
             db.MappingTables.Add("ClassStudent", "Student");
             db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-            db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\DemoMySql\\5");
+            db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\DemoSqlite\\5");
 
 
             //Remove mapping
@@ -66,7 +66,7 @@ namespace OrmTest.Demo
                 {
                     return old;
                 })
-            .CreateClassFile("c:\\DemoMySql\\6");
+            .CreateClassFile("c:\\DemoSqlite\\6");
         }
     }
 }
