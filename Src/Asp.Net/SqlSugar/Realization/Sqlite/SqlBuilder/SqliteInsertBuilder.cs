@@ -11,7 +11,7 @@
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) ;SELECT LAST_INSERT_ID();";
+           ({2}) ;SELECT LAST_INSERT_ROWID();";
                 }
                 else
                 {

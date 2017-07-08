@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -12,39 +13,21 @@ namespace SqlSugar
         {
             get
             {
-                string sql = @"SELECT
-                                    0 as TableId,
-                                    TABLE_NAME as TableName, 
-                                    column_name AS DbColumnName,
-                                    CASE WHEN  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1)='' THEN COLUMN_TYPE ELSE  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1) END   AS DataType,
-                                    CAST(SUBSTRING(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)+1,LOCATE(')',COLUMN_TYPE)-LOCATE('(',COLUMN_TYPE)-1) AS signed) AS Length,
-                                    column_default  AS  `DefaultValue`,
-                                    column_comment  AS  `ColumnDescription`,
-                                    CASE WHEN COLUMN_KEY = 'PRI'
-                                    THEN true ELSE false END AS `IsPrimaryKey`,
-                                    CASE WHEN EXTRA='auto_increment' THEN true ELSE false END as IsIdentity,
-                                    CASE WHEN is_nullable = 'YES'
-                                    THEN true ELSE false END AS `IsNullable`
-                                    FROM
-                                    Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY TABLE_NAME";
-                return sql;
+                throw new NotSupportedException();
             }
         }
         protected override string GetTableInfoListSql
         {
             get
             {
-                return @"select TABLE_NAME as Name,TABLE_COMMENT as Description from information_schema.tables
-                         where  TABLE_SCHEMA=(select database())  AND TABLE_TYPE='BASE TABLE'";
+                return @"select Name from sqlite_master where type='table' order by name;";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"select TABLE_NAME as Name,TABLE_COMMENT as Description from information_schema.tables
-                         where  TABLE_SCHEMA=(select database()) AND TABLE_TYPE='VIEW'
-                         ";
+                return @"select Name from sqlite_master where type='view'  order by name;";
             }
         }
         #endregion
@@ -179,13 +162,47 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            return this.Context.RewritableMethods.GetCacheInstance<List<DbColumnInfo>>().Func(cacheKey,
+                    (cm, key) =>
+                    {
+                        return cm[cacheKey];
+
+                    }, (cm, key) =>
+                    {
+                        List<DbColumnInfo> result = new List<DbColumnInfo>();
+                        using (var dr = this.Context.Ado.GetDataReader("select * from " + tableName + " limit 0,1"))
+                        {
+                            var schemaTable = dr.GetSchemaTable();
+                            foreach (DataRow row in schemaTable.Rows)
+                            {
+                                DbColumnInfo column = new DbColumnInfo()
+                                {
+                                    TableName = tableName,
+                                    DataType = dr["DataTypeName"].ToString().Trim(),
+                                    IsNullable = (bool)dr["AllowDBNull"],
+                                    IsIdentity = (bool)dr["IsAutoIncrement"],
+                                    ColumnDescription = null,
+                                    DbColumnName = dr["ColumnName"].ToString(),
+                                    DefaultValue = dr["defultValue"].ToString(),
+                                    IsPrimarykey = (bool)dr["IsKey"],
+                                    Length = Convert.ToInt32(dr["ColumnSize"])
+                                };
+                                result.Add(column);
+                            }
+                        }
+                        return result;
+                    });
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
             if (columns.IsValuable())
             {
                 foreach (var item in columns)
                 {
-                    if (item.DbColumnName.Equals("GUID",StringComparison.CurrentCultureIgnoreCase))
+                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase))
                     {
                         item.Length = 10;
                     }
@@ -193,8 +210,9 @@ namespace SqlSugar
             }
             string sql = GetCreateTableSql(tableName, columns);
             string primaryKeyInfo = null;
-            if (columns.Any(it => it.IsIdentity)) {
-                primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsIdentity).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
+            if (columns.Any(it => it.IsIdentity))
+            {
+                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsIdentity).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
 
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
@@ -209,7 +227,8 @@ namespace SqlSugar
             {
                 string columnName = item.DbColumnName;
                 string dataType = item.DataType;
-                if (dataType == "varchar"&& item.Length==0) {
+                if (dataType == "varchar" && item.Length == 0)
+                {
                     item.Length = 1;
                 }
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
@@ -230,6 +249,22 @@ namespace SqlSugar
         {
             Check.ThrowNotSupportedException("MySql BackupDataBase NotSupported");
             return false;
+        }
+        private List<T> GetListOrCache<T>(string cacheKey, string sql)
+        {
+            return this.Context.RewritableMethods.GetCacheInstance<List<T>>().Func(cacheKey,
+             (cm, key) =>
+             {
+                 return cm[cacheKey];
+
+             }, (cm, key) =>
+             {
+                 var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+                 this.Context.Ado.IsEnableLogEvent = false;
+                 var reval = this.Context.Ado.SqlQuery<T>(sql);
+                 this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
+                 return reval;
+             });
         }
         #endregion
     }
