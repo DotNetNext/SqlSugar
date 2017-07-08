@@ -1,6 +1,6 @@
 ﻿namespace SqlSugar
 {
-    public class MySqlDeleteBuilder : DeleteBuilder
+    public class SqliteDeleteBuilder : DeleteBuilder
     {
 
     }
