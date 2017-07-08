@@ -25,6 +25,6 @@
     </dependencies>
   </metadata>
   <files>
-   <file src="D:\MyGit\SqlSugar\Src\Asp.NetCore\SqlServerTest\src\SqlSugar\bin\Debug\netstandard1.6\SqlSugar.dll" target="lib\netstandard1.6"></file>
+   <file src="F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\Src\Asp.NetCore\SqlServerTest\src\SqlSugar\bin\Debug\netstandard1.6\SqlSugar.dll" target="lib\netstandard1.6"></file>
   </files>
 </package>
