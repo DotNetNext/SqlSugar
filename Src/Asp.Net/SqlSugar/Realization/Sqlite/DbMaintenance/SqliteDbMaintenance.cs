@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 
@@ -172,30 +174,14 @@ namespace SqlSugar
 
                     }, (cm, key) =>
                     {
-                        List<DbColumnInfo> result = new List<DbColumnInfo>();
-                        using (var dataReader = this.Context.Ado.GetDataReader("select * from " + tableName + " limit 0,1"))
+                        string sql = "select * from " + tableName + " limit 0,1";
+                        using (DbDataReader reader = new SQLiteCommand(sql).ExecuteReader(System.Data.CommandBehavior.SchemaOnly))
                         {
-                            var schemaTable = dataReader.GetSchemaTable();
-                            foreach (DataRow row in schemaTable.Rows)
-                            {
-                                DbColumnInfo column = new DbColumnInfo()
-                                {
-                                    TableName = tableName,
-                                    DataType = row["DataTypeName"].ToString().Trim(),
-                                    IsNullable = (bool)row["AllowDBNull"],
-                                    IsIdentity = (bool)row["IsAutoIncrement"],
-                                    ColumnDescription = null,
-                                    DbColumnName = row["ColumnName"].ToString(),
-                                    DefaultValue = row["defaultValue"].ToString(),
-                                    IsPrimarykey = (bool)row["IsKey"],
-                                    Length = Convert.ToInt32(row["ColumnSize"])
-                                };
-                                result.Add(column);
-                            }
+                            return AdoCore.GetColumnInfosByTableName(tableName, reader);
                         }
-                        return result;
                     });
         }
+
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
             if (columns.IsValuable())
