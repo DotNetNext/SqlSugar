@@ -1,8 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
-using SqlSugar;
+﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,29 +31,6 @@ namespace System.Data.SQLite
                 result.Add(column);
             }
             return result;
-        }
-    }
-    public class SQLiteConnection : SqliteConnection
-    {
-        public SQLiteConnection(string connectionString) : base(connectionString)
-        {
-
-        }
-    }
-
-    public class SQLiteCommand : SqliteCommand
-    {
-        public SQLiteCommand(string sql, SQLiteConnection connection) : base(sql, connection)
-        {
-
-        }
-    }
-
-    public class SQLiteParameter : SqliteParameter
-    {
-        public SQLiteParameter() { }
-        public SQLiteParameter(string name, string parameter) :base(name,parameter){
-
         }
     }
 }

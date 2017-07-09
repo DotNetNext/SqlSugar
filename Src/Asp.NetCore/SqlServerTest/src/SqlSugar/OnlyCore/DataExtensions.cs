@@ -658,15 +658,15 @@ namespace SqlSugar
     /// </summary>
     public class SQLiteDataAdapter : IDataAdapter
     {
-        private SQLiteCommand command;
+        private SqliteCommand command;
         private string sql;
-        private SQLiteConnection _sqlConnection;
+        private SqliteConnection _sqlConnection;
 
         /// <summary>
         /// SqlDataAdapter
         /// </summary>
         /// <param name="command"></param>
-        public SQLiteDataAdapter(SQLiteCommand command)
+        public SQLiteDataAdapter(SqliteCommand command)
         {
             this.command = command;
         }
@@ -681,7 +681,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="_sqlConnection"></param>
-        public SQLiteDataAdapter(string sql, SQLiteConnection _sqlConnection)
+        public SQLiteDataAdapter(string sql, SqliteConnection _sqlConnection)
         {
             this.sql = sql;
             this._sqlConnection = _sqlConnection;
@@ -690,13 +690,13 @@ namespace SqlSugar
         /// <summary>
         /// SelectCommand
         /// </summary>
-        public SQLiteCommand SelectCommand
+        public SqliteCommand SelectCommand
         {
             get
             {
                 if (this.command == null)
                 {
-                    this.command = new SQLiteCommand(this.sql, this._sqlConnection);
+                    this.command = new SqliteCommand(this.sql, this._sqlConnection);
                 }
                 return this.command;
             }

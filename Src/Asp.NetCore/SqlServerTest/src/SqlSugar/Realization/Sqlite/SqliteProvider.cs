@@ -19,7 +19,7 @@ namespace SqlSugar
                 if (base._DbConnection == null)
                 {
                     var SQLiteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                    base._DbConnection = new SQLiteConnection(SQLiteConnectionString);
+                    base._DbConnection = new SqliteConnection(SQLiteConnectionString);
                 }
                 return base._DbConnection;
             }
@@ -31,7 +31,7 @@ namespace SqlSugar
         
         public override void BeginTran(string transactionName)
         {
-            ((SQLiteConnection)this.Connection).BeginTransaction();
+            ((SqliteConnection)this.Connection).BeginTransaction();
         }
         /// <summary>
         /// Only SqlServer
@@ -40,7 +40,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
-            ((SQLiteConnection)this.Connection).BeginTransaction(iso);
+            ((SqliteConnection)this.Connection).BeginTransaction(iso);
         }
         public override IDataAdapter GetAdapter()
         {
@@ -48,7 +48,7 @@ namespace SqlSugar
         }
         public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
-            SQLiteCommand sqlCommand = new SQLiteCommand(sql, (SQLiteConnection)this.Connection);
+            SqliteCommand sqlCommand = new SqliteCommand(sql, (SqliteConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (this.Transaction != null)
@@ -58,14 +58,14 @@ namespace SqlSugar
             if (parameters.IsValuable())
             {
                 IDataParameter[] ipars = ToIDbDataParameter(parameters);
-                sqlCommand.Parameters.AddRange((SQLiteParameter[])ipars);
+                sqlCommand.Parameters.AddRange((SqliteParameter[])ipars);
             }
             CheckConnection();
             return sqlCommand;
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
         {
-            ((SQLiteDataAdapter)dataAdapter).SelectCommand = (SQLiteCommand)command;
+            ((SQLiteDataAdapter)dataAdapter).SelectCommand = (SqliteCommand)command;
         }
         /// <summary>
         /// if SQLite return SQLiteParameter[] pars
@@ -76,12 +76,12 @@ namespace SqlSugar
         public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] parameters)
         {
             if (parameters == null || parameters.Length == 0) return null;
-            SQLiteParameter[] result = new SQLiteParameter[parameters.Length];
+            SqliteParameter[] result = new SqliteParameter[parameters.Length];
             int index = 0;
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                var sqlParameter = new SQLiteParameter();
+                var sqlParameter = new SqliteParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
