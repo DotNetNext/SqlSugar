@@ -82,7 +82,7 @@ namespace SqlSugar
         {
             get
             {
-                return "TRUNCATE TABLE {0}";
+                return "DELETE FROM {0}";
             }
         }
         protected override string BackupTableSql
