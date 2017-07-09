@@ -18,10 +18,6 @@ namespace SqlSugar
                 if (base._DbConnection == null)
                 {
                     var SQLiteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                    if (!SQLiteConnectionString.ToLower().Contains("charset"))
-                    {
-                        SQLiteConnectionString=SQLiteConnectionString.Trim().TrimEnd(';') + ";charset=utf8;";
-                    }
                     base._DbConnection = new SQLiteConnection(SQLiteConnectionString);
                 }
                 return base._DbConnection;
