@@ -109,7 +109,10 @@ namespace SqlSugar
             string sql = this.CheckSystemTablePermissionsSql;
             try
             {
+                var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                this.Context.Ado.IsEnableLogEvent = false;
                 this.Context.Ado.ExecuteCommand(sql);
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 return true;
             }
             catch

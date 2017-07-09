@@ -39,14 +39,14 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ADD PRIMARY KEY({2}) /*{1}*/";
+                throw new NotSupportedException();
             }
         }
         protected override string AddColumnToTableSql
         {
             get
             {
-                return "ALTER TABLE {0} ADD {1} {2}{3} {4} {5} {6}";
+                throw new NotSupportedException();
             }
         }
         protected override string AlterColumnToTableSql
@@ -54,21 +54,21 @@ namespace SqlSugar
             get
             {
                 // return "ALTER TABLE {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
-                return "alter table {0} change  column {1} {1} {2}{3} {4} {5} {6}";
+                throw new NotSupportedException();
             }
         }
         protected override string BackupDataBaseSql
         {
             get
             {
-                return "mysqldump.exe  {0} -uroot -p > {1}  ";
+                throw new NotSupportedException();
             }
         }
         protected override string CreateTableSql
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey)";
+                return "CREATE TABLE {0}(\r\n{1} )";
             }
         }
         protected override string CreateTableColumn
@@ -89,7 +89,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT  *　INTO {1} FROM  {2} limit 0,{0}";
+                throw new NotSupportedException();
             }
         }
         protected override string DropTableSql
@@ -103,7 +103,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} DROP COLUMN {1}";
+                throw new NotSupportedException();
             }
         }
         protected override string DropConstraintSql
@@ -117,7 +117,7 @@ namespace SqlSugar
         {
             get
             {
-                return "exec sp_rename '{0}.{1}','{2}','column';";
+                throw new NotSupportedException();
             }
         }
         #endregion
@@ -137,7 +137,7 @@ namespace SqlSugar
         {
             get
             {
-                return "DEFAULT NULL";
+                return "NULL";
             }
         }
         protected override string CreateTableNotNull
@@ -158,7 +158,7 @@ namespace SqlSugar
         {
             get
             {
-                return "AUTO_INCREMENT";
+                return "AUTOINCREMENT";
             }
         }
         #endregion
@@ -175,10 +175,14 @@ namespace SqlSugar
                     }, (cm, key) =>
                     {
                         string sql = "select * from " + tableName + " limit 0,1";
+                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                        this.Context.Ado.IsEnableLogEvent = false;
                         using (DbDataReader reader = (SQLiteDataReader)this.Context.Ado.GetDataReader(sql))
                         {
+                            this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                             return AdoCore.GetColumnInfosByTableName(tableName, reader);
                         }
+                      
                     });
         }
 
