@@ -11,7 +11,7 @@ namespace OrmTest.Models
     [SugarTable("STudent")]
     public class Student
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "ID")]
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "Id")]
         public int Id { get; set; }
         public int? SchoolId { get; set; }
         public string Name { get; set; }

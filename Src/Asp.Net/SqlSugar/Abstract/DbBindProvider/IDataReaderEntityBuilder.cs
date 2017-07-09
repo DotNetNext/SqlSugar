@@ -106,7 +106,14 @@ namespace SqlSugar
                     var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName == type.Name && it.PropertyName.Equals(propertyInfo.Name));
                     if (mappInfo != null)
                     {
-                        fileName = mappInfo.DbColumnName;
+                        if (!ReaderKeys.Contains(mappInfo.DbColumnName))
+                        {
+                            fileName = ReaderKeys.Single(it => it.Equals(mappInfo.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
+                        }
+                        else
+                        {
+                            fileName = mappInfo.DbColumnName;
+                        }
                     }
                 }
                 if (Context.IgnoreColumns != null && Context.IgnoreColumns.Any(it => it.PropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
@@ -124,7 +131,7 @@ namespace SqlSugar
                     {
                         if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                         {
-                            BindField(generator, result, propertyInfo, fileName);
+                            BindField(generator, result, propertyInfo, ReaderKeys.Single(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
                     }
                 }

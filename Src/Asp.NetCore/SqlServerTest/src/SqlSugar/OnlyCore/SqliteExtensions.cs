@@ -13,20 +13,26 @@ namespace System.Data.SQLite
         public static List<DbColumnInfo> GetColumnInfosByTableName(string tableName, DbDataReader dataReader)
         {
             List<DbColumnInfo> result = new List<DbColumnInfo>();
-            var columns = dataReader.GetColumnSchema();
-            foreach (var row in columns)
+            while (dataReader.Read())
             {
+                var type = dataReader.GetValue(2).ObjToString();
+                var length = 0;
+                if (type.Contains("("))
+                {
+                    type = type.Split('(').First();
+                    length = type.Split('(').Last().TrimEnd(')').ObjToInt();
+                }
                 DbColumnInfo column = new DbColumnInfo()
                 {
                     TableName = tableName,
-                    DataType = row.DataTypeName,
-                    IsNullable = row.AllowDBNull.ObjToBool(),
-                    IsIdentity = row.IsAutoIncrement.ObjToBool(),
+                    DataType = type,
+                    IsNullable = !dataReader.GetBoolean(3),
+                    IsIdentity = dataReader.GetBoolean(3)&&dataReader.GetBoolean(5).ObjToBool() && (type.IsIn("integer", "int", "int32", "int64", "long")),
                     ColumnDescription = null,
-                    DbColumnName = row.ColumnName,
-                    DefaultValue = null,
-                    IsPrimarykey = row.IsKey.ObjToBool(),
-                    Length = row.ColumnSize.ObjToInt()
+                    DbColumnName = dataReader.GetString(1),
+                    DefaultValue =dataReader.GetValue(4).ObjToString(),
+                    IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
+                    Length = length
                 };
                 result.Add(column);
             }
