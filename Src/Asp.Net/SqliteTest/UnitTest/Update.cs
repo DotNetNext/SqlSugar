@@ -26,7 +26,7 @@ namespace OrmTest.UnitTest
 
             var t1 = db.Updateable(updateObj).ToSql();
             base.Check(@"UPDATE `STudent`  SET
-           `SchoolId`=@SchoolId,`Name`=@Name,`CreateTime`=@CreateTime  WHERE `ID`=@ID", new List<SugarParameter>() {
+           `SchoolId`=@SchoolId,`Name`=@Name,`CreateTime`=@CreateTime  WHERE `Id`=@Id", new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
                            new SugarParameter("@ID",1),
                            new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
@@ -40,7 +40,7 @@ namespace OrmTest.UnitTest
             //Only  update  Name 
             var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ToSql();
             base.Check(@"UPDATE `STudent`  SET
-           `Name`=@Name  WHERE `ID`=@ID", new List<SugarParameter>() {
+           `Name`=@Name  WHERE `Id`=@Id", new List<SugarParameter>() {
                            new SugarParameter("@ID",1),
                            new SugarParameter("@Name", "jack")
             }, t3.Key, t3.Value, "Update t3 error");
@@ -48,7 +48,7 @@ namespace OrmTest.UnitTest
             //Ignore  Name and TestId
             var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ToSql();
             base.Check(@"UPDATE `STudent`  SET
-           `SchoolId`=@SchoolId,`CreateTime`=@CreateTime  WHERE `ID`=@ID", new List<SugarParameter>() {
+           `SchoolId`=@SchoolId,`CreateTime`=@CreateTime  WHERE `Id`=@Id", new List<SugarParameter>() {
                            new SugarParameter("@CreateTime",Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@SchoolId", 0),
                            new SugarParameter("@ID",1),
@@ -57,7 +57,7 @@ namespace OrmTest.UnitTest
             //Ignore  Name and TestId
             var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ToSql();
             base.Check(@"UPDATE `STudent`  SET
-           `SchoolId`=@SchoolId,`CreateTime`=@CreateTime  WHERE `ID`=@ID", new List<SugarParameter>() {
+           `SchoolId`=@SchoolId,`CreateTime`=@CreateTime  WHERE `Id`=@Id", new List<SugarParameter>() {
                            new SugarParameter("@CreateTime",Convert.ToDateTime("2017-05-21 09:56:12.610")),
                            new SugarParameter("@SchoolId", 0),
                            new SugarParameter("@ID",1),
@@ -67,7 +67,7 @@ namespace OrmTest.UnitTest
             //Use Lock
             var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ToSql();
             base.Check(@"UPDATE `STudent`  SET
-           `SchoolId`=@SchoolId,`Name`=@Name,`CreateTime`=@CreateTime  WHERE `ID`=@ID", new List<SugarParameter>() {
+           `SchoolId`=@SchoolId,`Name`=@Name,`CreateTime`=@CreateTime  WHERE `Id`=@Id", new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
                            new SugarParameter("@ID",1),
                            new SugarParameter("@CreateTime", Convert.ToDateTime("2017-05-21 09:56:12.610")),
@@ -91,7 +91,7 @@ namespace OrmTest.UnitTest
             var t8 = db.Updateable(updateObj)
                 .ReSetValue(it=>it.Name==(it.Name+1)).ToSql();
             base.Check(@"UPDATE `STudent`  SET
-           `SchoolId`=@SchoolId, `Name` =( `Name` + @Const0 ),`CreateTime`=@CreateTime  WHERE `ID`=@ID",
+           `SchoolId`=@SchoolId, `Name` =( `Name` + @Const0 ),`CreateTime`=@CreateTime  WHERE `Id`=@Id",
             new List<SugarParameter>() {
                            new SugarParameter("@SchoolId",0),
                            new SugarParameter("@ID",1),

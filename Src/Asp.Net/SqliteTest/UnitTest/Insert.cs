@@ -27,7 +27,7 @@ namespace OrmTest.UnitTest
             base.Check(@"INSERT INTO `STudent`  
            (`SchoolId`,`Name`,`CreateTime`)
      VALUES
-           (@SchoolId,@Name,@CreateTime) ;SELECT LAST_INSERT_ID();",
+           (@SchoolId,@Name,@CreateTime) ;SELECT LAST_INSERT_ROWID();",
            new List<SugarParameter>() {
                new SugarParameter("@SchoolId",0),
                new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
@@ -45,7 +45,7 @@ namespace OrmTest.UnitTest
             base.Check(@"INSERT INTO `STudent`  
            (`Name`)
      VALUES
-           (@Name) ;SELECT LAST_INSERT_ID();", new List<SugarParameter>() {
+           (@Name) ;SELECT LAST_INSERT_ROWID();", new List<SugarParameter>() {
                            new SugarParameter("@Name","jack")
             }, t3.Key, t3.Value, "Insert t3 error");
 
@@ -55,7 +55,7 @@ namespace OrmTest.UnitTest
             base.Check(@"INSERT INTO `STudent`  
            (`SchoolId`,`CreateTime`)
      VALUES
-           (@SchoolId,@CreateTime) ;SELECT LAST_INSERT_ID();",
+           (@SchoolId,@CreateTime) ;SELECT LAST_INSERT_ROWID();",
       new List<SugarParameter>() {
                new SugarParameter("@SchoolId",0),
                new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
@@ -67,7 +67,7 @@ namespace OrmTest.UnitTest
             base.Check(@"INSERT INTO `STudent`  
            (`SchoolId`,`CreateTime`)
      VALUES
-           (@SchoolId,@CreateTime) ;SELECT LAST_INSERT_ID();",
+           (@SchoolId,@CreateTime) ;SELECT LAST_INSERT_ROWID();",
 new List<SugarParameter>() {
                new SugarParameter("@SchoolId",0),
                new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
@@ -78,7 +78,7 @@ new List<SugarParameter>() {
             base.Check(@"INSERT INTO `STudent`  
            (`SchoolId`,`Name`,`CreateTime`)
      VALUES
-           (@SchoolId,@Name,@CreateTime) ;SELECT LAST_INSERT_ID();",
+           (@SchoolId,@Name,@CreateTime) ;SELECT LAST_INSERT_ROWID();",
 new List<SugarParameter>() {
                new SugarParameter("@SchoolId",0),
                new SugarParameter("@CreateTime",Convert.ToDateTime("2010-1-1")),
@@ -91,7 +91,7 @@ new List<SugarParameter>() {
             base.Check(@"INSERT INTO `STudent`  
            (`ID`,`SchoolId`,`CreateTime`)
      VALUES
-           (@ID,@SchoolId,@CreateTime) ;SELECT LAST_INSERT_ID();",
+           (@ID,@SchoolId,@CreateTime) ;SELECT LAST_INSERT_ROWID();",
                new List<SugarParameter>() {
                new SugarParameter("@SchoolId", 0),
                new SugarParameter("@ID", 0),
