@@ -175,7 +175,11 @@ namespace SqlSugar
             #region Sqlite Logic
             if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
             {
-                if (bindPropertyType == PubConst.IntType)
+                if (bindPropertyType.IsEnum())
+                {
+                    method = isNullableType ? getConvertEnum_Null.MakeGenericMethod(bindPropertyType) : getEnum.MakeGenericMethod(bindPropertyType);
+                }
+                else if (bindPropertyType == PubConst.IntType)
                 {
                     method = isNullableType ? getConvertInt32 : getInt32;
                 }
