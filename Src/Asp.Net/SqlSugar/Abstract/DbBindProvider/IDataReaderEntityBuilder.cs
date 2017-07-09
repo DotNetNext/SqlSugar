@@ -5,6 +5,8 @@ using System.Text;
 using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     ///<summary>
@@ -159,6 +161,9 @@ namespace SqlSugar
             MethodInfo method = null;
             Type bindPropertyType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
             string dbTypeName = DataRecord.GetDataTypeName(ordinal);
+            if (Regex.IsMatch(dbTypeName, @"\(.+\)")) {
+                dbTypeName = Regex.Replace(dbTypeName,@"\(.+\)", "");
+            }
             string propertyName = bindProperty.Name;
             string validPropertyName = bind.GetPropertyTypeName(dbTypeName);
             validPropertyName = validPropertyName == "byte[]" ? "byteArray" : validPropertyName;

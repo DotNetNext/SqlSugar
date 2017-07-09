@@ -95,7 +95,7 @@ namespace OrmTest.UnitTest
                     .Where(it=>it.Id==1)
                     .WhereIF(true,it=> SqlFunc.Contains(it.Name,"a"))
                     .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize ).With(SqlWith.NoLock).ToSql();
-                base.Check(@"SELECT `ID`,`SchoolId`,`Name`,`CreateTime` FROM `STudent`   WHERE ( `ID` = @Id0 )  AND  (`Name` like concat('%',@MethodConst1,'%'))   ORDER BY `ID` DESC LIMIT 10,10", new List<SugarParameter>() {
+                base.Check(@"SELECT `ID`,`SchoolId`,`Name`,`CreateTime` FROM `STudent`   WHERE ( `ID` = @Id0 )  AND  (`Name` like '%'||@MethodConst1||'%')   ORDER BY `ID` DESC LIMIT 10,10", new List<SugarParameter>() {
                                new SugarParameter("@Id0",1),new SugarParameter("@MethodConst1","a")
                }, t8.Key, t8.Value,"single t8 Error");
 
@@ -104,7 +104,7 @@ namespace OrmTest.UnitTest
                 var t9 = db.Queryable<Student>()
                     .In(1)
                     .Select(it => new { it.Id, it.Name,x=it.Id }).ToSql();
-                base.Check("SELECT  `ID` AS `Id` , `Name` AS `Name` , `ID` AS `x`  FROM `STudent`  WHERE `ID` IN (@InPara0)  ", new List<SugarParameter>() {
+                base.Check("SELECT  `ID` AS `Id` , `Name` AS `Name` , `ID` AS `x`  FROM `STudent`  WHERE `Id` IN (@InPara0)  ", new List<SugarParameter>() {
                      new SugarParameter("@InPara0",1)   },t9.Key,t9.Value, "single t9 error");
             }
         }
