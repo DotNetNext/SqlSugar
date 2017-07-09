@@ -75,11 +75,11 @@ namespace OrmTest.UnitTest
         private void ExtendToString()
         {
             Expression<Func<Student, bool>> exp = it => it.Id.ToString() == "a";
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(`Id` AS CHAR) = @Const0 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(`Id` AS TEXT) = @Const0 )", new List<SugarParameter>() {
                  new SugarParameter("@Const0","a")
             }, "ExtendToString error");
         }
@@ -87,11 +87,11 @@ namespace OrmTest.UnitTest
         private void ConvetToString()
         {
             Expression<Func<Student, bool>> exp = it => Convert.ToString(it.Id) == "a";
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(`Id` AS CHAR) = @Const0 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(`Id` AS TEXT) = @Const0 )", new List<SugarParameter>() {
                  new SugarParameter("@Const0","a")
             }, "ConvetToString error");
         }
@@ -100,7 +100,7 @@ namespace OrmTest.UnitTest
         private void Length()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Length("aaaa") > 1;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -113,7 +113,7 @@ namespace OrmTest.UnitTest
         {
             var x2 = Guid.NewGuid();
             Expression<Func<Student, bool>> exp = it => SqlFunc.Replace("aaaa", "a", "1") == "a";
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -126,7 +126,7 @@ namespace OrmTest.UnitTest
         {
             var x2 = Guid.NewGuid();
             Expression<Func<Student, bool>> exp = it => SqlFunc.Substring("aaaa", 0, 2) == "a";
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -138,7 +138,7 @@ namespace OrmTest.UnitTest
         {
             var x2 = Guid.NewGuid();
             Expression<Func<Student, bool>> exp = it =>"aaaa".Substring(0, 2)== "a";
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -152,7 +152,7 @@ namespace OrmTest.UnitTest
         {
             var x2 = Guid.NewGuid();
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToBool("true") == true;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -165,7 +165,7 @@ namespace OrmTest.UnitTest
         {
             var x2 = Guid.NewGuid();
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToDouble("2") == 2;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -178,11 +178,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = Guid.NewGuid();
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToGuid("A94027A3-476E-478D-8228-F4054394B874") == x2;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(@MethodConst0 AS CHAR) = @Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(@MethodConst0 AS TEXT) = @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","A94027A3-476E-478D-8228-F4054394B874"),new SugarParameter("@Const1",x2)
             }, "ToGuid error");
         }
@@ -191,7 +191,7 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToDecimal("22") == 1;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -204,11 +204,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToString("2015-1-1") == "a";
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(@MethodConst0 AS CHAR) = @Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(@MethodConst0 AS TEXT) = @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","2015-1-1"),new SugarParameter("@Const1","a")
             }, "Tostring error");
         }
@@ -217,11 +217,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToDate("2015-1-1") == x2;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(@MethodConst0 AS DATETIME) = @Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(DATETIME(@MethodConst0) = @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","2015-1-1"),new SugarParameter("@Const1",x2)
             }, "ToDate error");
         }
@@ -229,11 +229,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => Convert.ToDateTime("2015-1-1") == x2;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(@MethodConst0 AS DATETIME) = @Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(DATETIME(@MethodConst0) = @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","2015-1-1"),new SugarParameter("@Const1",x2)
             }, "ExtendDate error");
         }
@@ -242,11 +242,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToInt64("3") == 1;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(@MethodConst0 AS SIGNED) = @Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(@MethodConst0 AS INTEGER) = @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","3"),new SugarParameter("@Const1",(Int64)1)
             }, "ToInt64 error");
         }
@@ -255,11 +255,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.ToInt32("3") == 1;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(@MethodConst0 AS SIGNED) = @Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(@MethodConst0 AS INTEGER) = @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","3"),new SugarParameter("@Const1",1)
             }, "ToInt32 error");
         }
@@ -268,11 +268,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.DateValue(x2, DateType.Year) == 1;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ((@MethodConst1(@MethodConst0)) = @Const2 ) ", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(STRFTIME('%Y', DATETIME(DATETIME(@MethodConst0), 'LOCALTIME')) AS INTEGER) = @Const2 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",DateType.Year),new SugarParameter("@Const2",1)
             }, "DateValue error");
         }
@@ -280,29 +280,29 @@ namespace OrmTest.UnitTest
         private void StartsWith()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.StartsWith(it.Name, "a");
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (`Name` like concat(@MethodConst0,'%')) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like @MethodConst0||'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "StartsWith error");
         }
         private void EndsWith()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.EndsWith(it.Name, "a");
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (`Name` like concat('%',@MethodConst0)) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like '%'||@MethodConst0) ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "EndsWith");
         }
         private void Between()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Between(it.Name, 1, 2);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -314,38 +314,38 @@ namespace OrmTest.UnitTest
         private void DateAddByType()
         {
             var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 11, DateType.Millisecond) == x2;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 11, DateType.Minute) == x2;
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((DATE_ADD(@MethodConst1 INTERVAL @MethodConst2 @MethodConst0)) = @Const3 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(DATETIME(DATETIME(@MethodConst0), '+11 Minutes') = @Const3 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2),
-                new SugarParameter("@MethodConst2",DateType.Millisecond)
+                new SugarParameter("@MethodConst2",DateType.Minute)
             }, "DateAddByType error");
         }
         private void DateAddDay()
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.DateAdd(x2, 1) == x2;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((DATE_ADD(@MethodConst1 INTERVAL @MethodConst0 day)) = @Const2 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(DATE(DATETIME(@MethodConst0), '+1 days') = @Const2 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",1),new SugarParameter("@Const2",x2)
-            }, "DateIsSameByType error");
+            }, "DateAddDay error");
         }
 
         private void DateIsSameByType()
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2, x2, DateType.Millisecond);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (TIMESTAMPDIFF(@MethodConst2,@MethodConst0,@MethodConst1)=0) ", new List<SugarParameter>() {
+            base.Check(value, pars, " Cast((JulianDay(@MethodConst0) - JulianDay(@MethodConst1))  *86400000 As INTEGER)", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2),
                 new SugarParameter("@MethodConst2",DateType.Millisecond)
             }, "DateIsSameByType error");
@@ -354,11 +354,11 @@ namespace OrmTest.UnitTest
         {
             var x2 = DateTime.Now;
             Expression<Func<Student, bool>> exp = it => SqlFunc.DateIsSame(x2, x2);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(TIMESTAMPDIFF(day,@MethodConst0,@MethodConst1)=0) ", new List<SugarParameter>() {
+            base.Check(value, pars, " Cast((JulianDay(@MethodConst0) - JulianDay(@MethodConst1))  *1 As INTEGER)", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2)
             }, "DateIsSameDay error");
         }
@@ -366,7 +366,7 @@ namespace OrmTest.UnitTest
         private void Equals()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Equals(it.Name, "a");
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -376,7 +376,7 @@ namespace OrmTest.UnitTest
 
 
             Expression<Func<Student, bool>> exp2 = it => SqlFunc.Equals("a", it.Name);
-            MySqlExpressionContext expContext2 = new MySqlExpressionContext();
+            SqliteExpressionContext expContext2 = new SqliteExpressionContext();
             expContext2.Resolve(exp2, ResolveExpressType.WhereSingle);
             var value2 = expContext2.Result.GetString();
             var pars2 = expContext2.Parameters;
@@ -387,7 +387,7 @@ namespace OrmTest.UnitTest
         private void Equals_2()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Equals(it.Name, it.Name);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -397,7 +397,7 @@ namespace OrmTest.UnitTest
 
 
             Expression<Func<Student, bool>> exp2 = it => SqlFunc.Equals("a", "a2");
-            MySqlExpressionContext expContext2 = new MySqlExpressionContext();
+            SqliteExpressionContext expContext2 = new SqliteExpressionContext();
             expContext2.Resolve(exp2, ResolveExpressType.WhereSingle);
             var value2 = expContext2.Result.GetString();
             var pars2 = expContext2.Parameters;
@@ -409,22 +409,22 @@ namespace OrmTest.UnitTest
         private void Contains()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Contains(it.Name, "a");
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (`Name` like concat('%',@MethodConst0,'%')) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like '%'||@MethodConst0||'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains error");
         }
         private void Contains2(string name="a")
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Contains(it.Name, name);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (`Name` like concat('%',@MethodConst0,'%')) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (`Name` like '%'||@MethodConst0||'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains2 error");
         }
@@ -432,7 +432,7 @@ namespace OrmTest.UnitTest
         private void ExtendContainsArray() {
             var array = new string[] { "1", "2" }.ToList();
             Expression<Func<Student, bool>> exp = it => array.Contains(it.Name);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -443,7 +443,7 @@ namespace OrmTest.UnitTest
         {
             string[] array = new string[] { "1", "2" };
             Expression<Func<Student, bool>> exp = it => SqlFunc.ContainsArray(array, it.Name);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -453,7 +453,7 @@ namespace OrmTest.UnitTest
         private void Trim()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.Trim("  a") == it.Name;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -465,7 +465,7 @@ namespace OrmTest.UnitTest
         private void ToUpper()
         {
             Expression<Func<Student, bool>> exp = it => "a" == SqlFunc.ToUpper(it.Id);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -476,7 +476,7 @@ namespace OrmTest.UnitTest
         private void ToLower()
         {
             Expression<Func<Student, bool>> exp = it => "a" == SqlFunc.ToLower(it.Id);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -489,7 +489,7 @@ namespace OrmTest.UnitTest
         private void StringIsNullOrEmpty()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 2 || SqlFunc.IsNullOrEmpty(it.Id); ;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -500,7 +500,7 @@ namespace OrmTest.UnitTest
         private void StringIsNullOrEmpty2()
         {
             Expression<Func<Student, bool>> exp = it => 2 == it.Id || SqlFunc.IsNullOrEmpty(true); ;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -513,7 +513,7 @@ namespace OrmTest.UnitTest
         {
             int a = 1;
             Expression<Func<Student, bool>> exp = it => 2 == it.Id || SqlFunc.IsNullOrEmpty(a); ;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -526,7 +526,7 @@ namespace OrmTest.UnitTest
         {
             WhereConst.name = "xx";
             Expression<Func<Student, bool>> exp = it => 2 == it.Id || SqlFunc.IsNullOrEmpty(WhereConst.name); ;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -539,7 +539,7 @@ namespace OrmTest.UnitTest
         {
             WhereConst.name = "xx";
             Expression<Func<Student, bool>> exp = it => !SqlFunc.IsNullOrEmpty(WhereConst.name); ;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -552,7 +552,7 @@ namespace OrmTest.UnitTest
         private void HasValue()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.HasValue(it.Name);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -565,7 +565,7 @@ namespace OrmTest.UnitTest
         private void HasNumber()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.HasNumber(it.Id);
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -579,7 +579,7 @@ namespace OrmTest.UnitTest
         private void IIF()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(it.Id == 1, 1, 2)==1;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -595,11 +595,11 @@ namespace OrmTest.UnitTest
         private void IIF2()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(SqlFunc.Contains(it.Name,"a"), 1, 2)==1;
-            MySqlExpressionContext expContext = new MySqlExpressionContext();
+            SqliteExpressionContext expContext = new SqliteExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( CASE  WHEN  (`Name` like concat('%',@MethodConst0,'%'))  THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
+            base.Check(value, pars, "(( CASE  WHEN  (`Name` like '%'||@MethodConst0||'%')  THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
             {
                      new SugarParameter("@MethodConst0","a"),
                      new SugarParameter("@MethodConst1",1),
