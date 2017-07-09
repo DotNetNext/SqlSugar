@@ -175,7 +175,7 @@ namespace SqlSugar
                     }, (cm, key) =>
                     {
                         string sql = "select * from " + tableName + " limit 0,1";
-                        using (DbDataReader reader = new SQLiteCommand(sql).ExecuteReader(System.Data.CommandBehavior.SchemaOnly))
+                        using (DbDataReader reader = (SQLiteDataReader)this.Context.Ado.GetDataReader(sql))
                         {
                             return AdoCore.GetColumnInfosByTableName(tableName, reader);
                         }
