@@ -29,7 +29,7 @@ namespace SqlSugar
                 csharpTypeName = "long";
             if (csharpTypeName == "Boolean")
                 csharpTypeName = "bool";
-            var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName,StringComparison.CurrentCultureIgnoreCase));
+            var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
             return mappings.IsValuable() ? mappings.First().Key : "varchar";
         }
         public string GetCsharpTypeName(string dbTypeName)
@@ -147,8 +147,14 @@ namespace SqlSugar
             {
                 return "other";
             }
-            else if (dbTypeName == "xml") {
+            else if (dbTypeName == "xml")
+            {
                 return "string";
+            }
+            else if (propertyTypes == null || propertyTypes.Count() == 0)
+            {
+                Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
+                return null;
             }
             else if (propertyTypes.First().Value == CSharpDataType.byteArray)
             {

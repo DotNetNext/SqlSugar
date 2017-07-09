@@ -1,50 +1,36 @@
-﻿using System;
+﻿using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 
 namespace SqlSugar
 {
-    public class MySqlDbMaintenance : DbMaintenanceProvider
+    public class SqliteDbMaintenance : DbMaintenanceProvider
     {
         #region DML
         protected override string GetColumnInfosByTableNameSql
         {
             get
             {
-                string sql = @"SELECT
-                                    0 as TableId,
-                                    TABLE_NAME as TableName, 
-                                    column_name AS DbColumnName,
-                                    CASE WHEN  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1)='' THEN COLUMN_TYPE ELSE  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1) END   AS DataType,
-                                    CAST(SUBSTRING(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)+1,LOCATE(')',COLUMN_TYPE)-LOCATE('(',COLUMN_TYPE)-1) AS signed) AS Length,
-                                    column_default  AS  `DefaultValue`,
-                                    column_comment  AS  `ColumnDescription`,
-                                    CASE WHEN COLUMN_KEY = 'PRI'
-                                    THEN true ELSE false END AS `IsPrimaryKey`,
-                                    CASE WHEN EXTRA='auto_increment' THEN true ELSE false END as IsIdentity,
-                                    CASE WHEN is_nullable = 'YES'
-                                    THEN true ELSE false END AS `IsNullable`
-                                    FROM
-                                    Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY TABLE_NAME";
-                return sql;
+                throw new NotSupportedException();
             }
         }
         protected override string GetTableInfoListSql
         {
             get
             {
-                return @"select TABLE_NAME as Name,TABLE_COMMENT as Description from information_schema.tables
-                         where  TABLE_SCHEMA=(select database())  AND TABLE_TYPE='BASE TABLE'";
+                return @"select Name from sqlite_master where type='table' and name<>'sqlite_sequence' order by name;";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"select TABLE_NAME as Name,TABLE_COMMENT as Description from information_schema.tables
-                         where  TABLE_SCHEMA=(select database()) AND TABLE_TYPE='VIEW'
-                         ";
+                return @"select Name from sqlite_master where type='view'  order by name;";
             }
         }
         #endregion
@@ -54,14 +40,14 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ADD PRIMARY KEY({2}) /*{1}*/";
+                throw new NotSupportedException();
             }
         }
         protected override string AddColumnToTableSql
         {
             get
             {
-                return "ALTER TABLE {0} ADD {1} {2}{3} {4} {5} {6}";
+                throw new NotSupportedException();
             }
         }
         protected override string AlterColumnToTableSql
@@ -69,21 +55,21 @@ namespace SqlSugar
             get
             {
                 // return "ALTER TABLE {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
-                return "alter table {0} change  column {1} {1} {2}{3} {4} {5} {6}";
+                throw new NotSupportedException();
             }
         }
         protected override string BackupDataBaseSql
         {
             get
             {
-                return "mysqldump.exe  {0} -uroot -p > {1}  ";
+                throw new NotSupportedException();
             }
         }
         protected override string CreateTableSql
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey)";
+                return "CREATE TABLE {0}(\r\n{1} )";
             }
         }
         protected override string CreateTableColumn
@@ -97,14 +83,14 @@ namespace SqlSugar
         {
             get
             {
-                return "TRUNCATE TABLE {0}";
+                return "DELETE FROM {0}";
             }
         }
         protected override string BackupTableSql
         {
             get
             {
-                return "SELECT  *　INTO {1} FROM  {2} limit 0,{0}";
+                return " CREATE TABLE {0} AS SELECT * FROM {1} limit 0,{2}";
             }
         }
         protected override string DropTableSql
@@ -118,21 +104,21 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} DROP COLUMN {1}";
+                throw new NotSupportedException();
             }
         }
         protected override string DropConstraintSql
         {
             get
             {
-                return "ALTER TABLE {0} drop primary key;";
+                throw new NotSupportedException();
             }
         }
         protected override string RenameColumnSql
         {
             get
             {
-                return "exec sp_rename '{0}.{1}','{2}','column';";
+                throw new NotSupportedException();
             }
         }
         #endregion
@@ -142,7 +128,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select 1 from Information_schema.columns limit 0,1";
+                return "select Name from sqlite_master limit 0,1";
             }
         }
         #endregion
@@ -152,7 +138,7 @@ namespace SqlSugar
         {
             get
             {
-                return "DEFAULT NULL";
+                return "NULL";
             }
         }
         protected override string CreateTableNotNull
@@ -173,31 +159,52 @@ namespace SqlSugar
         {
             get
             {
-                return "AUTO_INCREMENT";
+                return "AUTOINCREMENT";
             }
         }
         #endregion
 
         #region Methods
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            return this.Context.RewritableMethods.GetCacheInstance<List<DbColumnInfo>>().Func(cacheKey,
+                    (cm, key) =>
+                    {
+                        return cm[cacheKey];
+
+                    }, (cm, key) =>
+                    {
+                        string sql = "select * from " + tableName + " limit 0,1";
+                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                        this.Context.Ado.IsEnableLogEvent = false;
+                        using (DbDataReader reader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
+                        {
+                            this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                            return AdoCore.GetColumnInfosByTableName(tableName, reader);
+                        }
+
+                    });
+        }
+
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
             if (columns.IsValuable())
             {
                 foreach (var item in columns)
                 {
-                    if (item.DbColumnName.Equals("GUID",StringComparison.CurrentCultureIgnoreCase))
+                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        item.Length = 10;
+                        item.Length = 20;
+                    }
+                    if (item.IsIdentity && !item.IsPrimarykey)
+                    {
+                        item.IsPrimarykey = true;
+                        Check.Exception(item.DataType == "integer", "Identity only integer type");
                     }
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
-            string primaryKeyInfo = null;
-            if (columns.Any(it => it.IsIdentity)) {
-                primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsIdentity).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
-
-            }
-            sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -209,17 +216,19 @@ namespace SqlSugar
             {
                 string columnName = item.DbColumnName;
                 string dataType = item.DataType;
-                if (dataType == "varchar"&& item.Length==0) {
+                if (dataType == "varchar" && item.Length == 0)
+                {
                     item.Length = 1;
                 }
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey = null;
+                string primaryKey = item.IsPrimarykey?this.CreateTablePirmaryKey:null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
+            tableString = tableString.Replace("`", "\"");
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)
@@ -230,6 +239,22 @@ namespace SqlSugar
         {
             Check.ThrowNotSupportedException("MySql BackupDataBase NotSupported");
             return false;
+        }
+        private List<T> GetListOrCache<T>(string cacheKey, string sql)
+        {
+            return this.Context.RewritableMethods.GetCacheInstance<List<T>>().Func(cacheKey,
+             (cm, key) =>
+             {
+                 return cm[cacheKey];
+
+             }, (cm, key) =>
+             {
+                 var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+                 this.Context.Ado.IsEnableLogEvent = false;
+                 var reval = this.Context.Ado.SqlQuery<T>(sql);
+                 this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
+                 return reval;
+             });
         }
         #endregion
     }

@@ -1,8 +1,10 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Data.Sqlite;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 namespace SqlSugar
@@ -622,6 +624,134 @@ namespace SqlSugar
                 ds = new DataSet();
             }
             using (MySqlDataReader dr = command.ExecuteReader())
+            {
+                do
+                {
+                    var dt = new DataTable();
+                    var columns = dt.Columns;
+                    var rows = dt.Rows;
+                    for (int i = 0; i < dr.FieldCount; i++)
+                    {
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.ContainsKey(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    }
+
+                    while (dr.Read())
+                    {
+                        DataRow daRow = new DataRow();
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            if (!daRow.ContainsKey(columns[i].ColumnName))
+                                daRow.Add(columns[i].ColumnName, dr.GetValue(i));
+                        }
+                        dt.Rows.Add(daRow);
+                    }
+                    ds.Tables.Add(dt);
+                } while (dr.NextResult());
+            }
+        }
+    }
+
+    /// <summary>
+    /// 数据填充器
+    /// </summary>
+    public class SQLiteDataAdapter : IDataAdapter
+    {
+        private SQLiteCommand command;
+        private string sql;
+        private SQLiteConnection _sqlConnection;
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="command"></param>
+        public SQLiteDataAdapter(SQLiteCommand command)
+        {
+            this.command = command;
+        }
+
+        public SQLiteDataAdapter()
+        {
+
+        }
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="_sqlConnection"></param>
+        public SQLiteDataAdapter(string sql, SQLiteConnection _sqlConnection)
+        {
+            this.sql = sql;
+            this._sqlConnection = _sqlConnection;
+        }
+
+        /// <summary>
+        /// SelectCommand
+        /// </summary>
+        public SQLiteCommand SelectCommand
+        {
+            get
+            {
+                if (this.command == null)
+                {
+                    this.command = new SQLiteCommand(this.sql, this._sqlConnection);
+                }
+                return this.command;
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="dt"></param>
+        public void Fill(DataTable dt)
+        {
+            if (dt == null)
+            {
+                dt = new DataTable();
+            }
+            var columns = dt.Columns;
+            var rows = dt.Rows;
+            using (SqliteDataReader dr = command.ExecuteReader())
+            {
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string name = dr.GetName(i).Trim();
+                    if (!columns.ContainsKey(name))
+                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                }
+
+                while (dr.Read())
+                {
+                    DataRow daRow = new DataRow();
+                    for (int i = 0; i < columns.Count; i++)
+                    {
+                        if (!daRow.ContainsKey(columns[i].ColumnName))
+                            daRow.Add(columns[i].ColumnName, dr.GetValue(i));
+                    }
+                    dt.Rows.Add(daRow);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Fill(DataSet ds)
+        {
+            if (ds == null)
+            {
+                ds = new DataSet();
+            }
+            using (SqliteDataReader dr = command.ExecuteReader())
             {
                 do
                 {

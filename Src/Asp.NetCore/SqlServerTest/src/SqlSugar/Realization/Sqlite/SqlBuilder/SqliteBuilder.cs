@@ -4,20 +4,18 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    public class MySqlBuilder : SqlBuilderProvider
+    public class SqliteBuilder : SqlBuilderProvider
     {
+
         public override string GetTranslationTableName(string name)
         {
+            if (name.Contains("`")) return name;
             Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             var context = this.Context;
             var mappingInfo = context
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-            name = (mappingInfo == null ? name : mappingInfo.DbTableName);
-            if (name.Contains("`"))
-                return name;
-            else
-                return "`" + name + "`";
+            return "`" + (mappingInfo == null ? name : mappingInfo.DbTableName) + "`";
         }
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {
