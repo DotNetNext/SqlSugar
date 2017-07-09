@@ -9,6 +9,12 @@ namespace SqlSugar
 {
     public class PubMethod
     {
+        internal static Type GetUnderType(Type oldType)
+        {
+            Type type = Nullable.GetUnderlyingType(oldType);
+            return type==null ? oldType : type;
+        }
+
         internal static Type GetUnderType(PropertyInfo propertyInfo, ref bool isNullable)
         {
             Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
@@ -27,11 +33,11 @@ namespace SqlSugar
         internal static bool IsNullable(PropertyInfo propertyInfo)
         {
             Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
-            return unType!=null;
+            return unType != null;
         }
 
 
-        internal static T IsNullReturnNew<T>(T returnObj) where T :  new()
+        internal static T IsNullReturnNew<T>(T returnObj) where T : new()
         {
             if (returnObj.IsNullOrEmpty())
             {
@@ -40,7 +46,7 @@ namespace SqlSugar
             return returnObj;
         }
 
-        internal static T ChangeType<T>(T obj,Type type) 
+        internal static T ChangeType<T>(T obj, Type type)
         {
             return (T)Convert.ChangeType(obj, type);
         }

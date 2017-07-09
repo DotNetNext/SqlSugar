@@ -10,7 +10,7 @@ namespace SqlSugar
 
         public static Guid GetStringGuid(this IDataRecord dr, int i)
         {
-            var reval =Guid.Parse(dr.GetValue(i).ToString());
+            var reval = Guid.Parse(dr.GetValue(i).ToString());
             return reval;
         }
 
@@ -181,6 +181,36 @@ namespace SqlSugar
         public static object GetEntity(this IDataReader dr, SqlSugarClient context)
         {
             return null;
+        }
+
+        public static Nullable<T> GetSqliteTypeNull<T>(this IDataReader dr, int i) where T : struct
+        {
+            var type = PubMethod.GetUnderType(typeof(T));
+            if (type.IsIn(PubConst.IntType))
+            {
+                return (T)((object)(dr.GetInt32(i)));
+            }
+            else if (type == PubConst.DateType)
+            {
+                return (T)Convert.ChangeType(Convert.ToDateTime(dr.GetString(i)), type);
+            }
+            else
+            {
+                return (T)Convert.ChangeType((dr.GetString(i)), type);
+            }
+        }
+
+        public static T GetSqliteType<T>(this IDataReader dr, int i)
+        {
+            var type = typeof(T);
+            if (type.IsIn(PubConst.IntType))
+            {
+                return (T)((object)(dr.GetInt32(i)));
+            }
+            else
+            {
+                return (T)Convert.ChangeType((dr.GetString(i)), type);
+            }
         }
     }
 }

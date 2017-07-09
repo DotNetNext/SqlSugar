@@ -56,6 +56,8 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertEnum_Null = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Null");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
+        private static readonly MethodInfo getSqliteTypeNull = typeof(IDataRecordExtensions).GetMethod("GetSqliteTypeNull");
+        private static readonly MethodInfo getSqliteType = typeof(IDataRecordExtensions).GetMethod("GetSqliteType");
         private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarClient) });
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
@@ -101,7 +103,7 @@ namespace SqlSugar
                 string fileName = propertyInfo.Name;
                 if (mappingColumns != null)
                 {
-                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName==type.Name&&it.PropertyName.Equals(propertyInfo.Name));
+                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName == type.Name && it.PropertyName.Equals(propertyInfo.Name));
                     if (mappInfo != null)
                     {
                         fileName = mappInfo.DbColumnName;
@@ -161,13 +163,25 @@ namespace SqlSugar
             MethodInfo method = null;
             Type bindPropertyType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
             string dbTypeName = DataRecord.GetDataTypeName(ordinal);
-            if (Regex.IsMatch(dbTypeName, @"\(.+\)")) {
-                dbTypeName = Regex.Replace(dbTypeName,@"\(.+\)", "");
+            if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
+            {
+                dbTypeName = Regex.Replace(dbTypeName, @"\(.+\)", "");
             }
             string propertyName = bindProperty.Name;
             string validPropertyName = bind.GetPropertyTypeName(dbTypeName);
             validPropertyName = validPropertyName == "byte[]" ? "byteArray" : validPropertyName;
             CSharpDataType validPropertyType = (CSharpDataType)Enum.Parse(typeof(CSharpDataType), validPropertyName);
+
+            #region Sqlite Logic
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
+            {
+                method = isNullableType ? getSqliteTypeNull.MakeGenericMethod(bindPropertyType) : getSqliteType.MakeGenericMethod(bindPropertyType);
+                generator.Emit(OpCodes.Call, method);
+                return;
+            };
+            #endregion
+
+            #region Common Database Logic
             string bindProperyTypeName = bindPropertyType.Name.ToLower();
             bool isEnum = bindPropertyType.IsEnum();
             if (isEnum) { validPropertyType = CSharpDataType.@enum; }
@@ -175,7 +189,7 @@ namespace SqlSugar
             {
                 case CSharpDataType.@int:
                     CheckType(bind.IntThrow, bindProperyTypeName, validPropertyName, propertyName);
-                    if (bindProperyTypeName.IsContainsIn("int","int32","int64"))
+                    if (bindProperyTypeName.IsContainsIn("int", "int32", "int64"))
                         method = isNullableType ? getConvertInt32 : getInt32;
                     break;
                 case CSharpDataType.@bool:
@@ -185,8 +199,9 @@ namespace SqlSugar
                 case CSharpDataType.@string:
                     CheckType(bind.StringThrow, bindProperyTypeName, validPropertyName, propertyName);
                     method = getString;
-                    if (bindProperyTypeName == "guid") {
-                        method = getConvertStringGuid ;
+                    if (bindProperyTypeName == "guid")
+                    {
+                        method = getConvertStringGuid;
                     }
                     break;
                 case CSharpDataType.DateTime:
@@ -229,16 +244,18 @@ namespace SqlSugar
                     method = getValueMethod;
                     break;
             }
-            if (method == null&&bindPropertyType == PubConst.StringType) {
+            if (method == null && bindPropertyType == PubConst.StringType)
+            {
                 method = getConvertString;
             }
             if (method == null)
-                method =isNullableType? getOtherNull.MakeGenericMethod(bindPropertyType):getOther.MakeGenericMethod(bindPropertyType);
+                method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
             generator.Emit(OpCodes.Call, method);
             if (method == getValueMethod)
             {
                 generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
-            }
+            } 
+            #endregion
         }
 
         private void CheckType(List<string> invalidTypes, string bindProperyTypeName, string validPropertyType, string propertyName)
