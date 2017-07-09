@@ -175,7 +175,25 @@ namespace SqlSugar
             #region Sqlite Logic
             if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
             {
-                method = isNullableType ? getSqliteTypeNull.MakeGenericMethod(bindPropertyType) : getSqliteType.MakeGenericMethod(bindPropertyType);
+                if (bindPropertyType == PubConst.IntType)
+                {
+                    method = isNullableType ? getConvertInt32 : getInt32;
+                }
+                else if (bindPropertyType == PubConst.StringType)
+                {
+                    method = getString;
+                }
+                else if (bindPropertyType == PubConst.ByteArrayType)
+                {
+                    method = getValueMethod;
+                    generator.Emit(OpCodes.Call, method);
+                    generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
+                    return;
+                }
+                else
+                {
+                    method = isNullableType ? getSqliteTypeNull.MakeGenericMethod(bindPropertyType) : getSqliteType.MakeGenericMethod(bindPropertyType);
+                }
                 generator.Emit(OpCodes.Call, method);
                 return;
             };
@@ -254,7 +272,7 @@ namespace SqlSugar
             if (method == getValueMethod)
             {
                 generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
-            } 
+            }
             #endregion
         }
 

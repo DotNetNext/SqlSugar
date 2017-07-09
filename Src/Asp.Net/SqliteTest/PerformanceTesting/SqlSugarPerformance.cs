@@ -19,7 +19,7 @@ namespace OrmTest.PerformanceTesting
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.SqlServer,
+                DbType = DbType.Sqlite,
                 IsAutoCloseConnection = false
             });
             db.IgnoreColumns.Add("TestId", "Student");

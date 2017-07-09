@@ -21,7 +21,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ORDER BY NOW() ";
+                return "ORDER BY DATETIME('now')   ";
             }
         }
 

@@ -91,6 +91,9 @@ namespace SqlSugar
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
                 }
+                if (sqlParameter.DbType == System.Data.DbType.Guid) {
+                    sqlParameter.DbType = System.Data.DbType.String;
+                }
                 ++index;
             }
             return result;
