@@ -192,7 +192,7 @@ namespace SqlSugar
         {
             oldTableName = this.SqlBuilder.GetTranslationTableName(oldTableName);
             newTableName = this.SqlBuilder.GetTranslationTableName(newTableName);
-            string sql = string.Format(this.BackupTableSql, maxBackupDataRows,newTableName , oldTableName);
+            string sql = string.Format(this.BackupTableSql,newTableName , oldTableName, maxBackupDataRows);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }

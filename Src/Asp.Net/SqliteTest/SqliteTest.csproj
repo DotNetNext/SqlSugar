@@ -91,9 +91,7 @@
     <Compile Include="UnitTest\Update.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataBase\SqlSugar4xTest.sqlite">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="DataBase\SqlSugar4xTest.sqlite" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="OtherDll\SyntacticSugar.dll" />

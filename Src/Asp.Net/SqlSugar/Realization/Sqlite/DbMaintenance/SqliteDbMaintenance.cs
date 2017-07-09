@@ -89,7 +89,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return " CREATE TABLE {0} AS SELECT * FROM {1} limit 0,{2}";
             }
         }
         protected override string DropTableSql
@@ -110,7 +110,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} drop primary key;";
+                throw new NotSupportedException();
             }
         }
         protected override string RenameColumnSql
@@ -182,7 +182,7 @@ namespace SqlSugar
                             this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                             return AdoCore.GetColumnInfosByTableName(tableName, reader);
                         }
-                      
+
                     });
         }
 
@@ -194,18 +194,16 @@ namespace SqlSugar
                 {
                     if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        item.Length = 10;
+                        item.Length = 20;
+                    }
+                    if (item.IsIdentity && !item.IsPrimarykey)
+                    {
+                        item.IsPrimarykey = true;
+                        Check.Exception(item.DataType == "integer", "Identity only integer type");
                     }
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
-            string primaryKeyInfo = null;
-            if (columns.Any(it => it.IsIdentity))
-            {
-                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsIdentity).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
-
-            }
-            sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -223,12 +221,13 @@ namespace SqlSugar
                 }
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey = null;
+                string primaryKey = item.IsPrimarykey?this.CreateTablePirmaryKey:null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
+            tableString = tableString.Replace("`", "\"");
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)

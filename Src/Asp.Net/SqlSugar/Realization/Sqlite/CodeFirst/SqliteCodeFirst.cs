@@ -7,14 +7,33 @@ namespace SqlSugar
 {
     public class SqliteCodeFirst : CodeFirstProvider
     {
-        public override void NoExistLogic(EntityInfo entityInfo)
+        public override void ExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);
+            string backupName = tableName + DateTime.Now.ToString("yyyyMMddHHmmss");
             Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.IsValuable())
             {
                 foreach (var item in entityInfo.Columns)
+                {
+                    DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
+                    columns.Add(dbColumnInfo);
+                }
+            }
+            this.Context.DbMaintenance.BackupTable(tableName, backupName, int.MaxValue);
+            this.Context.DbMaintenance.DropTable(tableName);
+            this.Context.DbMaintenance.CreateTable(tableName,columns);
+        }
+        public override void NoExistLogic(EntityInfo entityInfo)
+        {
+            var tableName = GetTableName(entityInfo);
+            string backupName=tableName+DateTime.Now.ToString("yyyyMMddHHmmss");
+            Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
+            List<DbColumnInfo> columns = new List<DbColumnInfo>();
+            if (entityInfo.Columns.IsValuable())
+            {
+                foreach (var item in entityInfo.Columns.Where(it=>it.IsIgnore==false))
                 {
                     DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
