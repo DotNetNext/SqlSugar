@@ -173,9 +173,9 @@ namespace SqlSugar
                             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
                             if (ConstructorText.IsValuable() && item.DefaultValue.IsValuable())
                             {
-                                var isLastHasDefaultValue = columns.Skip(index + 1).Any(it=>!it.DefaultValue.IsValuable());
+                                var hasDefaultValue = columns.Skip(index + 1).Any(it=>it.DefaultValue.IsValuable());
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
-                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (isLastHasDefaultValue ? "" : this.ConstructorTemplate);
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (!hasDefaultValue ? "" : this.ConstructorTemplate);
                             }
                         }
                     }
