@@ -108,7 +108,7 @@ namespace SqlSugar
                     {
                         if (!ReaderKeys.Contains(mappInfo.DbColumnName))
                         {
-                            fileName = ReaderKeys.Single(it=>it.Equals(mappInfo.DbColumnName,StringComparison.CurrentCultureIgnoreCase));
+                            fileName = ReaderKeys.Single(it => it.Equals(mappInfo.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
                         }
                         else
                         {

@@ -162,6 +162,7 @@ namespace SqlSugar
                         foreach (var item in columns)
                         {
                             var isLast = columns.Last() == item;
+                            var index = columns.IndexOf(item);
                             string PropertyText = this.PropertyTemplate;
                             string PropertyDescriptionText = this.PropertyDescriptionTemplate;
                             string propertyName = GetPropertyName(item);
@@ -172,8 +173,9 @@ namespace SqlSugar
                             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
                             if (ConstructorText.IsValuable() && item.DefaultValue.IsValuable())
                             {
+                                var hasDefaultValue = columns.Skip(index + 1).Any(it=>it.DefaultValue.IsValuable());
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
-                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (isLast ? "" : this.ConstructorTemplate);
+                                ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (!hasDefaultValue ? "" : this.ConstructorTemplate);
                             }
                         }
                     }
@@ -289,7 +291,10 @@ namespace SqlSugar
         private string GetPropertyTypeConvert(DbColumnInfo item)
         {
             var convertString = GetProertypeDefaultValue(item);
-            if (convertString == "DateTime.Now" || convertString == null) return convertString;
+            if (convertString == "DateTime.Now" || convertString == null)
+                return convertString;
+            if (item.DataType == "bit")
+                return (convertString == "1" || convertString.Equals("true",StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
             string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";
             return result;
         }
