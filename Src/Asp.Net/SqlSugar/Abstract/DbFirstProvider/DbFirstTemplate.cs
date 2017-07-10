@@ -12,9 +12,9 @@ namespace SqlSugar
                                                "namespace {Namespace}\r\n" +
                                                "{\r\n" +
                                                "{ClassDescription}{SugarTable}\r\n" +
-                                                ClassSpace+"public class {ClassName}\r\n" +
+                                                ClassSpace+ "public partial class {ClassName}\r\n" +
                                                 ClassSpace + "{\r\n" +
-                                                PropertySpace + "public {ClassName}(){\r\n" +
+                                                PropertySpace + "public {ClassName}(){\r\n\r\n" +
                                                 "{Constructor}\r\n" +
                                                 PropertySpace + "}\r\n" +
                                                 "{PropertyName}\r\n" +
