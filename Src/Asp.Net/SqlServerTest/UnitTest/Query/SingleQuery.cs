@@ -39,24 +39,15 @@ namespace OrmTest.UnitTest
                 base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] ORDER BY [ID] ASC", null, t3.Key, null, "single t3 Error");
 
                 var t4 = db.Queryable<Student>().OrderBy(it => it.Id).Take(3).ToSql();
-                base.Check(@"WITH PageTable AS(
-                          SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  
-                  )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 1 AND 3", null, t4.Key, null, "single t4 Error");
+                base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex  FROM [STudent] ) T WHERE RowIndex BETWEEN 1 AND 3", null, t4.Key, null, "single t4 Error");
 
                 var t5 = db.Queryable<Student>().OrderBy(it => it.Id).Skip(3).ToSql();
-                base.Check(@"WITH PageTable AS(
-                          SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  
-                  )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 4 AND 9223372036854775807", null, t5.Key,null, "single t5 Error");
+                base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex  FROM [STudent] ) T WHERE RowIndex BETWEEN 4 AND 9223372036854775807", null, t5.Key,null, "single t5 Error");
 
                 int pageIndex = 2;
                 int pageSize = 10;
                 var t6 = db.Queryable<Student>().OrderBy(it => it.Id,OrderByType.Desc).Skip((pageIndex-1)*pageSize).Take(pageSize).ToSql();
-                base.Check(@"WITH PageTable AS(
-                          SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  
-                  )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 11 AND 20", null, t6.Key, null, "single t6 Error");
+                base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex  FROM [STudent] ) T WHERE RowIndex BETWEEN 11 AND 20", null, t6.Key, null, "single t6 Error");
 
 
                 int studentCount=db.Ado.GetInt("select count(1) from Student");
@@ -104,10 +95,7 @@ namespace OrmTest.UnitTest
                     .Where(it=>it.Id==1)
                     .WhereIF(true,it=> SqlFunc.Contains(it.Name,"a"))
                     .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize ).With(SqlWith.NoLock).ToSql();
-                base.Check(@"WITH PageTable AS(
-                          SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] WITH(NOLOCK)   WHERE ( [ID] = @Id0 )  AND  ([Name] like '%'+@MethodConst1+'%')  
-                  )
-                  SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex FROM PageTable ) T WHERE RowIndex BETWEEN 11 AND 20", new List<SugarParameter>() {
+                base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex  FROM [STudent] WITH(NOLOCK)   WHERE ( [ID] = @Id0 )  AND  ([Name] like '%'+@MethodConst1+'%') ) T WHERE RowIndex BETWEEN 11 AND 20", new List<SugarParameter>() {
                                new SugarParameter("@Id0",1),new SugarParameter("@MethodConst1","a")
                }, t8.Key, t8.Value,"single t8 Error");
 

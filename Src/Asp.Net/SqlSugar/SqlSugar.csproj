@@ -41,6 +41,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.102.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +71,19 @@
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
     <Compile Include="Realization\MySql\DbMaintenance\MySqlDbMaintenance.cs" />
+    <Compile Include="Realization\Sqlite\CodeFirst\SqliteCodeFirst.cs" />
+    <Compile Include="Realization\Sqlite\DbBind\SqliteDbBind.cs" />
+    <Compile Include="Realization\Sqlite\DbFirst\SqliteDbFirst.cs" />
+    <Compile Include="Realization\Sqlite\DbMaintenance\SqliteDbMaintenance.cs" />
+    <Compile Include="Realization\Sqlite\DbType.cs" />
+    <Compile Include="Realization\Sqlite\SqliteProvider.cs" />
+    <Compile Include="Realization\Sqlite\Queryable\SqliteQueryable.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteDeleteBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteExpressionContext.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteInsertBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteQueryBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteUpdateBuilder.cs" />
     <Compile Include="SimpleClient.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
     <Compile Include="Entities\ModelContext.cs" />
@@ -166,7 +183,6 @@
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\NewArrayExpessionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\NewExpressionResolve.cs" />
-    <Compile Include="ExpressionsToSql\ResolveItems\SimpleBinaryExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\TypeParameterExpressionReolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\UnaryExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpResolveAccessory.cs" />
@@ -193,10 +209,10 @@
   <ItemGroup>
     <Content Include="Lib\MySql.Data.dll" />
     <Content Include="Lib\Newtonsoft.Json.dll" />
+    <Content Include="Lib\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Realization\Oracle\" />
-    <Folder Include="Realization\Sqlite\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

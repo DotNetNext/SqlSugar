@@ -106,7 +106,8 @@ namespace SqlSugar
             }
             return null;
         }
-        protected void AppendMember(ExpressionParameter parameter, bool? isLeft, object appendValue) {
+        protected void AppendMember(ExpressionParameter parameter, bool? isLeft, object appendValue)
+        {
 
             Context.ParameterIndex++;
             if (isLeft == true)
@@ -200,7 +201,7 @@ namespace SqlSugar
         protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item)
         {
             var newContext = this.Context.GetCopyContext();
-            newContext.Resolve(item, this.Context.IsJoin?ResolveExpressType.WhereMultiple:ResolveExpressType.WhereSingle);
+            newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);
             this.Context.Index = newContext.Index;
             this.Context.ParameterIndex = newContext.ParameterIndex;
             if (newContext.Parameters.IsValuable())
@@ -215,13 +216,14 @@ namespace SqlSugar
             return methodCallExpressionArgs;
         }
 
-        protected void ResolveNewExpressions(ExpressionParameter parameter, int i, Expression item, string memberName)
+        protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string memberName)
         {
             if (item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
             {
                 this.Expression = item;
                 this.Start();
-                string parameterName = this.Context.SqlParameterKeyWord + "constant" + i;
+                string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
+                this.Context.ParameterIndex++;
                 parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
                 this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
             }
@@ -231,7 +233,7 @@ namespace SqlSugar
                 this.Start();
                 parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
             }
-            else if (item is MemberExpression || item is UnaryExpression)
+            else if (item is MemberExpression)
             {
                 if (this.Context.Result.IsLockCurrentParameter == false)
                 {
@@ -245,20 +247,68 @@ namespace SqlSugar
                     this.Context.Result.CurrentParameter = null;
                 }
             }
+            else if (item is UnaryExpression && ((UnaryExpression)item).Operand is MemberExpression)
+            {
+                if (this.Context.Result.IsLockCurrentParameter == false)
+                {
+                    var expression = ((UnaryExpression)item).Operand as MemberExpression;
+                    if (expression.Expression == null)
+                    {
+                        this.Context.Result.CurrentParameter = parameter;
+                        this.Context.Result.IsLockCurrentParameter = true;
+                        parameter.IsAppendTempDate();
+                        this.Expression = item;
+                        this.Start();
+                        parameter.IsAppendResult();
+                        this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                        this.Context.Result.CurrentParameter = null;
+                    }
+                    else if (expression.Expression is ConstantExpression)
+                    {
+                        string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
+                        this.Context.ParameterIndex++;
+                        parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                        this.Context.Parameters.Add(new SugarParameter(parameterName, ExpressionTool.GetMemberValue(expression.Member, expression)));
+                    }
+                    else 
+                    {
+                        this.Context.Result.CurrentParameter = parameter;
+                        this.Context.Result.IsLockCurrentParameter = true;
+                        parameter.IsAppendTempDate();
+                        this.Expression = item;
+                        this.Start();
+                        parameter.IsAppendResult();
+                        this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                        this.Context.Result.CurrentParameter = null;
+                    }
+                }
+            }
+            else if (item is UnaryExpression && ((UnaryExpression)item).Operand is ConstantExpression)
+            {
+                if (this.Context.Result.IsLockCurrentParameter == false)
+                {
+                    this.Expression = ((UnaryExpression)item).Operand;
+                    this.Start();
+                    string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
+                    this.Context.ParameterIndex++;
+                    parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                    this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+                }
+            }
             else if (item is BinaryExpression)
             {
                 if (this.Context.Result.IsLockCurrentParameter == false)
                 {
-                    this.Context.Result.CurrentParameter = parameter;
-                    this.Context.Result.IsLockCurrentParameter = true;
-                    parameter.IsAppendTempDate();
-                    this.Expression = item;
-                    parameter.CommonTempData = "simple";
-                    this.Start();
-                    parameter.CommonTempData = null;
-                    parameter.IsAppendResult();
-                    this.Context.Result.TrimEnd();
-                    this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                    var newContext = this.Context.GetCopyContext();
+                    var resolveExpressType = this.Context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
+                    newContext.Resolve(item, resolveExpressType);
+                    this.Context.Index = newContext.Index;
+                    this.Context.ParameterIndex = newContext.ParameterIndex;
+                    if (newContext.Parameters.IsValuable())
+                    {
+                        this.Context.Parameters.AddRange(newContext.Parameters);
+                    }
+                    this.Context.Result.Append(this.Context.GetAsString(memberName, newContext.Result.GetString()));
                     this.Context.Result.CurrentParameter = null;
                 }
             }
@@ -282,7 +332,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        var asName = this.Context.GetTranslationText(item.Type.Name + "." + property.Name );
+                        var asName = this.Context.GetTranslationText(item.Type.Name + "." + property.Name);
                         var columnName = property.Name;
                         if (Context.IsJoin)
                         {
@@ -298,7 +348,6 @@ namespace SqlSugar
             else
             {
                 Check.ThrowNotSupportedException(item.GetType().Name);
-
             }
         }
 

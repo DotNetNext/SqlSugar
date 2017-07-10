@@ -69,7 +69,18 @@ namespace SqlSugar
         public static TResult IIF<TResult>(bool Expression, TResult thenValue, TResult elseValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
         public static int ToInt32(object value) { return value.ObjToInt(); }
         public static long ToInt64(object value) { return Convert.ToInt64(value); }
+        /// <summary>
+        /// yyyy-MM-dd HH:mm:ss.fff
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static DateTime ToDate(object value) { return value.ObjToDate(); }
+        /// <summary>
+        ///HH:mm:ss 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static TimeSpan ToTime(object value) { throw new NotSupportedException("This method is not supported by the current parameter"); }
         public static string ToString(object value) { return value.ObjToString(); }
         public static decimal ToDecimal(object value) { return value.ObjToDecimal(); }
         public static Guid ToGuid(object value) { return Guid.Parse(value.ObjToString()); }

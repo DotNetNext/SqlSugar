@@ -17,7 +17,12 @@ namespace SqlSugar
             {
                 if (base._DbConnection == null)
                 {
-                    base._DbConnection = new MySqlConnection(base.Context.CurrentConnectionConfig.ConnectionString);
+                    var mySqlConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                    if (!mySqlConnectionString.ToLower().Contains("charset"))
+                    {
+                        mySqlConnectionString=mySqlConnectionString.Trim().TrimEnd(';') + ";charset=utf8;";
+                    }
+                    base._DbConnection = new MySqlConnection(mySqlConnectionString);
                 }
                 return base._DbConnection;
             }

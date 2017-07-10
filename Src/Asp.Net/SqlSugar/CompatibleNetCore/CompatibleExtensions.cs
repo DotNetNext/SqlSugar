@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -80,7 +82,31 @@ namespace SqlSugar
             return method.ReflectedType;
         }
     }
-
+    public static class AdoCore
+    {
+        public static List<DbColumnInfo> GetColumnInfosByTableName(string tableName, DbDataReader dataReader)
+        {
+            List<DbColumnInfo> result = new List<DbColumnInfo>();
+            var schemaTable = dataReader.GetSchemaTable();
+            foreach (DataRow row in schemaTable.Rows)
+            {
+                DbColumnInfo column = new DbColumnInfo()
+                {
+                    TableName = tableName,
+                    DataType = row["DataTypeName"].ToString().Trim(),
+                    IsNullable = (bool)row["AllowDBNull"],
+                    IsIdentity = (bool)row["IsAutoIncrement"],
+                    ColumnDescription = null,
+                    DbColumnName = row["ColumnName"].ToString(),
+                    DefaultValue = row["defaultValue"].ToString(),
+                    IsPrimarykey = (bool)row["IsKey"],
+                    Length = Convert.ToInt32(row["ColumnSize"])
+                };
+                result.Add(column);
+            }
+            return result;
+        }
+    }
     public static class ReflectionCore
     {
         public static Assembly Load(string name)

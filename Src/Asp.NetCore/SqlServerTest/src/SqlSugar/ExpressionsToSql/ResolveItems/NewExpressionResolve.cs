@@ -50,7 +50,7 @@ namespace SqlSugar
                 {
                     string memberName = expression.Members[i].Name;
                     ++i;
-                    ResolveNewExpressions(parameter, i, item, memberName);
+                    ResolveNewExpressions(parameter,item, memberName);
                 }
             }
         }

@@ -212,6 +212,10 @@ namespace SqlSugar
             {
                 result = Regex.Match(result, @"^\(\'(.+)\'\)$").Groups[1].Value;
             }
+            if (Regex.IsMatch(result, @"^\(\((.+)\)\)$"))
+            {
+                result = Regex.Match(result, @"^\(\((.+)\)\)$").Groups[1].Value;
+            }
             if (Regex.IsMatch(result, @"^\((.+)\)$"))
             {
                 result = Regex.Match(result, @"^\((.+)\)$").Groups[1].Value;

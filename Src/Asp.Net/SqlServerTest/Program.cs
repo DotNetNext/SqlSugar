@@ -18,6 +18,7 @@ namespace OrmTest
         static void Main(string[] args)
         {
             //    /***Unit Test***/
+            new Select(1).Init();
             new Field(1).Init();
             new Where(1).Init();
             new Method(1).Init();

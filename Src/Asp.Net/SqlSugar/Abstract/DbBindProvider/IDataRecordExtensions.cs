@@ -8,9 +8,10 @@ namespace SqlSugar
     public static partial class IDataRecordExtensions
     {
 
+        #region Common Extensions
         public static Guid GetStringGuid(this IDataRecord dr, int i)
         {
-            var reval =Guid.Parse(dr.GetValue(i).ToString());
+            var reval = Guid.Parse(dr.GetValue(i).ToString());
             return reval;
         }
 
@@ -182,5 +183,59 @@ namespace SqlSugar
         {
             return null;
         }
+
+        #endregion
+
+        #region Sqlite Extensions
+        public static Nullable<T> GetSqliteTypeNull<T>(this IDataReader dr, int i) where T : struct
+        {
+            var type = PubMethod.GetUnderType(typeof(T));
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            return SqliteTypeConvert<T>(dr, i, type);
+        }
+
+        public static T GetSqliteType<T>(this IDataReader dr, int i) where T : struct
+        {
+            var type = typeof(T);
+            return SqliteTypeConvert<T>(dr, i, type);
+        }
+
+        private static T SqliteTypeConvert<T>(IDataReader dr, int i, Type type) where T : struct
+        {
+            if (type.IsIn(PubConst.IntType))
+            {
+                return (T)((object)(dr.GetInt32(i)));
+            }
+            else if (type == PubConst.DateType)
+            {
+                return (T)Convert.ChangeType(Convert.ToDateTime(dr.GetString(i)), type);
+            }
+            else if (type == PubConst.DecType)
+            {
+                return (T)Convert.ChangeType(dr.GetDecimal(i), type);
+            }
+            else if (type == PubConst.DobType)
+            {
+                return (T)Convert.ChangeType(dr.GetDouble(i), type);
+            }
+            else if (type == PubConst.BoolType)
+            {
+                return (T)Convert.ChangeType(dr.GetBoolean(i), type);
+            }
+            else if (type == PubConst.GuidType)
+            {
+                string guidString = dr.GetString(i);
+                string changeValue = guidString.IsNullOrEmpty() ? Guid.Empty.ToString() : guidString;
+                return (T)Convert.ChangeType(Guid.Parse(changeValue), type);
+            }
+            else
+            {
+                return (T)Convert.ChangeType((dr.GetString(i)), type);
+            }
+        } 
+        #endregion
     }
 }

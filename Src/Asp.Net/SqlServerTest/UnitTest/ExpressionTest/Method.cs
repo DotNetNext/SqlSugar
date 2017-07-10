@@ -70,6 +70,7 @@ namespace OrmTest.UnitTest
                 Substring();
                 Replace();
                 Length();
+                Time();
             }
             base.End("Method Test");
         }
@@ -110,6 +111,21 @@ namespace OrmTest.UnitTest
                 new SugarParameter("@MethodConst0","aaaa"),new SugarParameter("@Const1",1)
             }, "Length error");
         }
+
+
+        private void Time()
+        {
+            TimeSpan s = TimeSpan.Parse("11:22:22");
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToTime("11:12:59")==s;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS TIME) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","11:12:59"),new SugarParameter("@Const1",s)
+            }, "Time error");
+        }
+
 
         private void Replace()
         {

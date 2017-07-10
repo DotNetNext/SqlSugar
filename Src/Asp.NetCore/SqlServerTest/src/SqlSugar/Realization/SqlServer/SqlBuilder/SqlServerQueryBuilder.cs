@@ -8,5 +8,12 @@ namespace SqlSugar
 {
     public class SqlServerQueryBuilder: QueryBuilder
     {
+        public override string SqlTemplate
+        {
+            get
+            {
+                return "SELECT {0}{{$:OrderByString:$}} FROM {1}{2}{3}{4}";
+            }
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace SqlSugar
     public class ExpressionContext : ExpResolveAccessory
     {
         #region Fields
-        private bool _IsSingle = true; 
+        private bool _IsSingle = true;
         #endregion
 
         #region properties
@@ -31,7 +31,8 @@ namespace SqlSugar
             {
                 return _IsSingle;
             }
-            set {
+            set
+            {
                 _IsSingle = value;
             }
         }
@@ -120,6 +121,10 @@ namespace SqlSugar
         public virtual string GetTranslationColumnName(string columnName)
         {
             Check.ArgumentNullException(columnName, string.Format(ErrorMessage.ObjNotExist, "column Name"));
+            if (columnName.Substring(0, 1) == this.SqlParameterKeyWord)
+            {
+                return columnName;
+            }
             if (IsTranslationText(columnName)) return columnName;
             if (columnName.Contains("."))
             {
@@ -159,17 +164,17 @@ namespace SqlSugar
         }
         public virtual string GetAsString(string asName, string fieldValue)
         {
-            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldValue), "AS", GetTranslationColumnName(asName));
+            return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldValue), "AS", GetTranslationColumnName(asName));
         }
 
         public virtual string GetEqString(string eqName, string fieldValue)
         {
-            return string.Format(" {0} {1} {2} ", GetTranslationColumnName(eqName), "=", fieldValue);
+            return string.Format(" {0} {1} {2} ", GetTranslationColumnName(eqName), "=", GetTranslationColumnName(fieldValue));
         }
 
         public virtual string GetAsString(string asName, string fieldValue, string fieldShortName)
         {
-            return string.Format(" {0} {1} {2} ", GetTranslationTableName(fieldShortName + "." + fieldValue), "AS", GetTranslationColumnName(asName));
+            return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldShortName + "." + fieldValue), "AS", GetTranslationColumnName(asName));
         }
         public virtual void Clear()
         {

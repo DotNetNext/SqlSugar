@@ -107,8 +107,8 @@ namespace SqlSugar
             foreach (var property in result.Type.GetProperties())
             {
                 EntityColumnInfo column = new EntityColumnInfo();
-                var isVirtual = property.GetGetMethod().IsVirtual;
-                if (isVirtual) continue;
+                //var isVirtual = property.GetGetMethod().IsVirtual;
+                //if (isVirtual) continue;
                 var sugarColumn = property.GetCustomAttributes(typeof(SugarColumn), true)
                 .Where(it => it is SugarColumn)
                 .Select(it => (SugarColumn)it)

@@ -241,7 +241,7 @@ namespace SqlSugar
             return string.Format(SqlTemplate, GetTableNameString, columnsString, whereString);
         }
 
-        public object FormatValue(object value)
+        public virtual object FormatValue(object value)
         {
             if (value == null)
             {

@@ -120,6 +120,7 @@ namespace SqlSugar
         {
             object reval = null;
             FieldInfo field = (FieldInfo)memberExpr.Member;
+            Check.Exception(field.IsPrivate,string.Format(" Field \"{0}\" can't be private ",field.Name));
             reval = field.GetValue(memberExpr.Member);
             if (reval != null && reval.GetType().IsClass() && reval.GetType() != ExpressionConst.StringType)
             {
@@ -136,7 +137,7 @@ namespace SqlSugar
                 }
                 if (fieInfo == null && proInfo == null)
                 {
-
+                    Check.Exception(field.IsPrivate, string.Format(" Field \"{0}\" can't be private ", field.Name));
                 }
             }
             return reval;
@@ -162,7 +163,7 @@ namespace SqlSugar
                 }
                 if (fieInfo == null && proInfo == null)
                 {
-
+                    Check.Exception(true, string.Format(" Property \"{0}\" can't be private ", pro.Name));
                 }
             }
             return reval;
