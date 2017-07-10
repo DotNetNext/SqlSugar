@@ -218,7 +218,16 @@ namespace SqlSugar
 
         protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string memberName)
         {
-            if (item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
+            if (item.NodeType == ExpressionType.Constant)
+            {
+                this.Expression = item;
+                this.Start();
+                string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
+                this.Context.ParameterIndex++;
+                parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+            }
+            else if ((item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
             {
                 this.Expression = item;
                 this.Start();
@@ -270,7 +279,7 @@ namespace SqlSugar
                         parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
                         this.Context.Parameters.Add(new SugarParameter(parameterName, ExpressionTool.GetMemberValue(expression.Member, expression)));
                     }
-                    else 
+                    else
                     {
                         this.Context.Result.CurrentParameter = parameter;
                         this.Context.Result.IsLockCurrentParameter = true;
