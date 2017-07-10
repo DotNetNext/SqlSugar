@@ -34,16 +34,7 @@ namespace SqlSugar
                     }
                     else if (isMember)
                     {
-                        var isComparisonOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue)||baseParameter.OperatorValue.IsNullOrEmpty();
-                        var memberExpression = (base.Expression as MemberExpression);
-                        if (memberExpression.Type== PubConst.BoolType&& isComparisonOperator)
-                        {
-                            Append(parameter, nodeType);
-                        }
-                        else
-                        {
-                            Result(parameter, nodeType);
-                        }
+                        MemberLogic(parameter, baseParameter, nodeType);
                     }
                     else if (isConst)
                     {
@@ -56,6 +47,33 @@ namespace SqlSugar
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void MemberLogic(ExpressionParameter parameter, ExpressionParameter baseParameter, ExpressionType nodeType)
+        {
+            var memberExpression = (base.Expression as MemberExpression);
+            var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
+            var isHasValue = isLogicOperator && memberExpression.Member.Name == "HasValue" && memberExpression.Expression != null && memberExpression.NodeType == ExpressionType.MemberAccess;
+            if (isHasValue)
+            {
+                var member = memberExpression.Expression as MemberExpression;
+                parameter.CommonTempData = CommonTempDataType.Result;
+                this.Expression = member;
+                this.Start();
+                 var result= this.Context.DbMehtods.HasValue(new MethodCallExpressionModel() { Args=new List<MethodCallExpressionArgs>() {
+                       new MethodCallExpressionArgs() { IsMember=true, MemberName= parameter.CommonTempData , MemberValue=null }
+                  } });
+                this.Context.Result.Append(result);
+                parameter.CommonTempData = null;
+            }
+            else if (memberExpression.Type == PubConst.BoolType && isLogicOperator)
+            {
+                Append(parameter, nodeType);
+            }
+            else
+            {
+                Result(parameter, nodeType);
             }
         }
 

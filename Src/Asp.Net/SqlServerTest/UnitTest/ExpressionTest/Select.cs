@@ -24,6 +24,8 @@ namespace OrmTest.UnitTest
                 single();
                 single2();
                 single3();
+                single4();
+                single5();
                 Multiple();
                 singleDynamic();
                 MultipleDynamic();
@@ -112,6 +114,32 @@ namespace OrmTest.UnitTest
             base.Check(
                 @"  @constant0 AS [Datetime1] , [Name] AS [String] ", null,selectorValue,null,
                 "Select.single3 Error");
+        }
+
+        private void single4(int p = 1)
+        {
+            Expression<Func<Student, object>> exp = it => it.CreateTime.HasValue;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                @"( [it].[CreateTime]<>'' AND [it].[CreateTime] IS NOT NULL )", null, selectorValue, null,
+                "Select.single4 Error");
+        }
+
+        private void single5(int p = 1)
+        {
+            Expression<Func<Student, object>> exp = it => it.SchoolId.HasValue;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                @"( [it].[SchoolId]<>'' AND [it].[SchoolId] IS NOT NULL )", null, selectorValue, null,
+                "Select.single4 Error");
         }
 
         private  void singleDynamic()
