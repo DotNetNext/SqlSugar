@@ -216,7 +216,7 @@ namespace SqlSugar
             return methodCallExpressionArgs;
         }
 
-        protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string memberName)
+        protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string asName)
         {
             if (item.NodeType == ExpressionType.Constant)
             {
@@ -224,8 +224,16 @@ namespace SqlSugar
                 this.Start();
                 string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
-                parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
                 this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+            }
+            else if ((item is MemberExpression) && ((MemberExpression)item).Expression == null)
+            {
+               var paramterValue= ExpressionTool.GetPropertyValue(item as MemberExpression);
+                string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
+                this.Context.ParameterIndex++;
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
+                this.Context.Parameters.Add(new SugarParameter(parameterName, paramterValue));
             }
             else if ((item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
             {
@@ -233,14 +241,14 @@ namespace SqlSugar
                 this.Start();
                 string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
-                parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
                 this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
             }
             else if (item is MethodCallExpression)
             {
                 this.Expression = item;
                 this.Start();
-                parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
             }
             else if (item is MemberExpression)
             {
@@ -252,7 +260,7 @@ namespace SqlSugar
                     this.Expression = item;
                     this.Start();
                     parameter.IsAppendResult();
-                    this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                    this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
                     this.Context.Result.CurrentParameter = null;
                 }
             }
@@ -269,14 +277,14 @@ namespace SqlSugar
                         this.Expression = item;
                         this.Start();
                         parameter.IsAppendResult();
-                        this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                        this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
                         this.Context.Result.CurrentParameter = null;
                     }
                     else if (expression.Expression is ConstantExpression)
                     {
                         string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
                         this.Context.ParameterIndex++;
-                        parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                        parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
                         this.Context.Parameters.Add(new SugarParameter(parameterName, ExpressionTool.GetMemberValue(expression.Member, expression)));
                     }
                     else
@@ -287,7 +295,7 @@ namespace SqlSugar
                         this.Expression = item;
                         this.Start();
                         parameter.IsAppendResult();
-                        this.Context.Result.Append(this.Context.GetAsString(memberName, parameter.CommonTempData.ObjToString()));
+                        this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
                         this.Context.Result.CurrentParameter = null;
                     }
                 }
@@ -300,7 +308,7 @@ namespace SqlSugar
                     this.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
                     this.Context.ParameterIndex++;
-                    parameter.Context.Result.Append(this.Context.GetAsString(memberName, parameterName));
+                    parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
                 }
             }
@@ -317,7 +325,7 @@ namespace SqlSugar
                     {
                         this.Context.Parameters.AddRange(newContext.Parameters);
                     }
-                    this.Context.Result.Append(this.Context.GetAsString(memberName, newContext.Result.GetString()));
+                    this.Context.Result.Append(this.Context.GetAsString(asName, newContext.Result.GetString()));
                     this.Context.Result.CurrentParameter = null;
                 }
             }
@@ -329,9 +337,8 @@ namespace SqlSugar
                 var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
                 foreach (var property in listProperties)
                 {
-                    if (this.Context.IgnoreComumnList != null
-                        && this.Context.IgnoreComumnList.Any(
-                            it => it.EntityName == item.Type.Name && it.PropertyName == property.Name))
+                    var hasIgnore = this.Context.IgnoreComumnList != null && this.Context.IgnoreComumnList.Any(it => it.EntityName.Equals(item.Type.Name,StringComparison.CurrentCultureIgnoreCase) && it.PropertyName.Equals(property.Name,StringComparison.CurrentCultureIgnoreCase));
+                    if (hasIgnore)
                     {
                         continue;
                     }
@@ -341,7 +348,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        var asName = this.Context.GetTranslationText(item.Type.Name + "." + property.Name);
+                        asName = this.Context.GetTranslationText(item.Type.Name + "." + property.Name);
                         var columnName = property.Name;
                         if (Context.IsJoin)
                         {

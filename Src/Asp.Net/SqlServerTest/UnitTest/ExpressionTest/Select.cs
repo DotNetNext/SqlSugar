@@ -23,6 +23,7 @@ namespace OrmTest.UnitTest
             {
                 single();
                 single2();
+                single3();
                 Multiple();
                 singleDynamic();
                 MultipleDynamic();
@@ -100,6 +101,17 @@ namespace OrmTest.UnitTest
                             new SugarParameter("@constant1",1),
                             new SugarParameter("@Id2",11 ) },
                 "Select.single Error");
+        }
+        private void single3(int p = 1)
+        {
+            Expression<Func<Student, object>> exp = it => new DataTestInfo() { Datetime1=DateTime.Now,  String=it.Name};
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.SelectSingle);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                @"  @constant0 AS [Datetime1] , [Name] AS [String] ", null,selectorValue,null,
+                "Select.single3 Error");
         }
 
         private  void singleDynamic()
