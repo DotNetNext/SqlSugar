@@ -14,11 +14,16 @@ namespace SqlSugar
             var express = base.Expression as MethodCallExpression;
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
-            if (methodName == "get_Item") {
-                string paramterName =this.Context.SqlParameterKeyWord+ExpressionConst.Const + this.Context.ParameterIndex;
+            if (methodName == "get_Item")
+            {
+                string paramterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                 this.Context.Parameters.Add(new SugarParameter(paramterName, ExpressionTool.DynamicInvoke(express)));
-                this.Context.Result.Append(string.Format(" {0} ",paramterName));
+                this.Context.Result.Append(string.Format(" {0} ", paramterName));
                 this.Context.ParameterIndex++;
+                return;
+            }
+            else if (methodName == "NewGuid") {
+                this.Context.Result.Append(this.Context.DbMehtods.GuidNew());
                 return;
             }
             var isValidNativeMethod = MethodMapping.ContainsKey(methodName)&&express.Method.DeclaringType.Namespace==("System");

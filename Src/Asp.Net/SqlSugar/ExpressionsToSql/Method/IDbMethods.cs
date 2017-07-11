@@ -49,5 +49,6 @@ namespace SqlSugar
         string MappingColumn(MethodCallExpressionModel model);
         string True();
         string False();
+        string GuidNew();
     }
 }
