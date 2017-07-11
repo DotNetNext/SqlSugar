@@ -106,6 +106,7 @@ namespace SqlSugar
             }
             return null;
         }
+
         protected void AppendMember(ExpressionParameter parameter, bool? isLeft, object appendValue)
         {
 
@@ -197,6 +198,25 @@ namespace SqlSugar
                 this.Context.Result.Append(" " + ExpressionConst.Format1 + parameter.BaseParameter.Index);
             }
         }
+        protected string AppendParameter(object paramterValue)
+        {
+            string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
+            this.Context.ParameterIndex++;;
+            this.Context.Parameters.Add(new SugarParameter(parameterName, paramterValue));
+            return parameterName;
+        }
+        protected void AppendNot(object Value)
+        {
+            var isAppend = !this.Context.Result.Contains(ExpressionConst.Format0);
+            if (isAppend)
+            {
+                this.Context.Result.Append("NOT");
+            }
+            else
+            {
+                this.Context.Result.Replace(ExpressionConst.Format0, "NOT");
+            }
+        }
 
         protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item)
         {
@@ -215,7 +235,6 @@ namespace SqlSugar
             };
             return methodCallExpressionArgs;
         }
-
         protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string asName)
         {
             if (item.NodeType == ExpressionType.Constant)
@@ -229,7 +248,7 @@ namespace SqlSugar
             }
             else if ((item is MemberExpression) && ((MemberExpression)item).Expression == null)
             {
-               var paramterValue= ExpressionTool.GetPropertyValue(item as MemberExpression);
+                var paramterValue = ExpressionTool.GetPropertyValue(item as MemberExpression);
                 string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
                 parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
@@ -337,7 +356,7 @@ namespace SqlSugar
                 var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
                 foreach (var property in listProperties)
                 {
-                    var hasIgnore = this.Context.IgnoreComumnList != null && this.Context.IgnoreComumnList.Any(it => it.EntityName.Equals(item.Type.Name,StringComparison.CurrentCultureIgnoreCase) && it.PropertyName.Equals(property.Name,StringComparison.CurrentCultureIgnoreCase));
+                    var hasIgnore = this.Context.IgnoreComumnList != null && this.Context.IgnoreComumnList.Any(it => it.EntityName.Equals(item.Type.Name, StringComparison.CurrentCultureIgnoreCase) && it.PropertyName.Equals(property.Name, StringComparison.CurrentCultureIgnoreCase));
                     if (hasIgnore)
                     {
                         continue;
@@ -364,19 +383,6 @@ namespace SqlSugar
             else
             {
                 Check.ThrowNotSupportedException(item.GetType().Name);
-            }
-        }
-
-        protected void AppendNot(object Value)
-        {
-            var isAppend = !this.Context.Result.Contains(ExpressionConst.Format0);
-            if (isAppend)
-            {
-                this.Context.Result.Append("NOT");
-            }
-            else
-            {
-                this.Context.Result.Replace(ExpressionConst.Format0, "NOT");
             }
         }
     }

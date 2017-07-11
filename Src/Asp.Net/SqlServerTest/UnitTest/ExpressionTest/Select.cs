@@ -129,8 +129,9 @@ namespace OrmTest.UnitTest
                 "Select.single4 Error");
         }
 
-        private void single5(DateTime? p = null)
+        private void single5()
         {
+            var p =(DateTime?) DateTime.Now;
             Expression<Func<Student, object>> exp = it => p.HasValue;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.IsSingle = false;
@@ -138,7 +139,9 @@ namespace OrmTest.UnitTest
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(
-                @"( [it].[SchoolId]<>'' AND [it].[SchoolId] IS NOT NULL )", null, selectorValue, null,
+                @"( @constant0<>'' AND @constant0 IS NOT NULL )", new List<SugarParameter>() {
+                    new SugarParameter("@constant0",p)
+                }, selectorValue, pars,
                 "Select.single4 Error");
         }
 
