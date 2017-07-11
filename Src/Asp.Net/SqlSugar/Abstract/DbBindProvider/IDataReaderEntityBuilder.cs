@@ -52,7 +52,7 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertGuid = typeof(IDataRecordExtensions).GetMethod("GetConvertGuid");
         private static readonly MethodInfo getConvertInt16 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt16");
         private static readonly MethodInfo getConvertInt32 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt32");
-        private static readonly MethodInfo getConvetInt64 = typeof(IDataRecordExtensions).GetMethod("GetConvetInt64");
+        private static readonly MethodInfo getConvertInt64 = typeof(IDataRecordExtensions).GetMethod("GetConvetInt64");
         private static readonly MethodInfo getConvertEnum_Null = typeof(IDataRecordExtensions).GetMethod("GetConvertEnum_Null");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
@@ -218,8 +218,10 @@ namespace SqlSugar
             {
                 case CSharpDataType.@int:
                     CheckType(bind.IntThrow, bindProperyTypeName, validPropertyName, propertyName);
-                    if (bindProperyTypeName.IsContainsIn("int", "int32", "int64"))
+                    if (bindProperyTypeName.IsContainsIn("int", "int32"))
                         method = isNullableType ? getConvertInt32 : getInt32;
+                    if (bindProperyTypeName.IsContainsIn("int64"))
+                        method = isNullableType ? getConvertInt64 : getInt64;
                     break;
                 case CSharpDataType.@bool:
                     if (bindProperyTypeName == "bool" || bindProperyTypeName == "boolean")
@@ -267,7 +269,7 @@ namespace SqlSugar
                     break;
                 case CSharpDataType.@long:
                     if (bindProperyTypeName == "int64" || bindProperyTypeName == "long")
-                        method = isNullableType ? getConvetInt64 : getInt64;
+                        method = isNullableType ? getConvertInt64 : getInt64;
                     break;
                 default:
                     method = getValueMethod;
