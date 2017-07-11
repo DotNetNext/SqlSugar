@@ -227,6 +227,7 @@ namespace SqlSugar
                 result = "DateTime.Now";
             }
             result = result.Replace("\r", "\t").Replace("\n", "\t");
+            result = result.IsIn("''","\"\"") ? string.Empty : result;
             return result;
         }
         private string GetPropertyText(DbColumnInfo item, string PropertyText)
