@@ -16,10 +16,25 @@ namespace SqlSugar
     {
         #region Fields
         private bool _IsSingle = true;
+        private IDbMethods _DbMehtods { get; set; }
         #endregion
 
         #region properties
-        public IDbMethods DbMehtods { get; set; }
+        public IDbMethods DbMehtods
+        {
+            get
+            {
+                if (_DbMehtods == null)
+                {
+                    _DbMehtods = new DefaultDbMethod();
+                }
+                return _DbMehtods;
+            }
+            set
+            {
+                _DbMehtods = value;
+            }
+        }
         public int Index { get; set; }
         public int ParameterIndex { get; set; }
         public MappingColumnList MappingColumns { get; set; }

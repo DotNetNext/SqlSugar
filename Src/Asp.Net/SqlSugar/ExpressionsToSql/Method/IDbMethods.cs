@@ -47,5 +47,7 @@ namespace SqlSugar
         string AggregateMax(MethodCallExpressionModel model);
         string AggregateCount(MethodCallExpressionModel model);
         string MappingColumn(MethodCallExpressionModel model);
+        string True();
+        string False();
     }
 }
