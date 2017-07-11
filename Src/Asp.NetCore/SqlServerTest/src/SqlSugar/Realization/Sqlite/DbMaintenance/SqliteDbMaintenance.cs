@@ -175,7 +175,7 @@ namespace SqlSugar
 
                     }, (cm, key) =>
                     {
-                        string sql = "select * from " + tableName + " limit 0,1";
+                        string sql = "PRAGMA table_info(" + tableName + ")";
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                         this.Context.Ado.IsEnableLogEvent = false;
                         using (DbDataReader reader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
