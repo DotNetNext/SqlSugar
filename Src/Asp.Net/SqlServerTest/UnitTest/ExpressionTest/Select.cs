@@ -129,9 +129,9 @@ namespace OrmTest.UnitTest
                 "Select.single4 Error");
         }
 
-        private void single5(int p = 1)
+        private void single5(DateTime? p = null)
         {
-            Expression<Func<Student, object>> exp = it => it.SchoolId.HasValue;
+            Expression<Func<Student, object>> exp = it => p.HasValue;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.IsSingle = false;
             expContext.Resolve(exp, ResolveExpressType.WhereMultiple);

@@ -59,11 +59,16 @@ namespace SqlSugar
             {
                 var member = memberExpression.Expression as MemberExpression;
                 parameter.CommonTempData = CommonTempDataType.Result;
-                this.Expression = member;
+                var isConst = member.Expression != null && member.Expression is ConstantExpression;
+                this.Expression = isConst?member.Expression:member;
                 this.Start();
-                 var result= this.Context.DbMehtods.HasValue(new MethodCallExpressionModel() { Args=new List<MethodCallExpressionArgs>() {
-                       new MethodCallExpressionArgs() { IsMember=true, MemberName= parameter.CommonTempData , MemberValue=null }
-                  } });
+                var methodParamter = isConst ? new MethodCallExpressionArgs() { IsMember=false } : new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
+                var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                      methodParamter
+                  }
+                });
                 this.Context.Result.Append(result);
                 parameter.CommonTempData = null;
             }
