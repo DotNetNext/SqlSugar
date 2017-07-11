@@ -178,6 +178,8 @@ namespace OrmTest.Demo
             var between = db.Queryable<Student>().Where(it => SqlFunc.Between(it.Id, 1, 20)).ToList();
 
             var getTodayList = db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(it.CreateTime, DateTime.Now)).ToList();
+
+            var unionAll = db.UnionAll<Student>(db.Queryable<Student>(),db.Queryable<Student>());
         }
         public static void Page()
         {
