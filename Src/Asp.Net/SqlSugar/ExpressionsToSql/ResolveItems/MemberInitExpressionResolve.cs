@@ -49,7 +49,13 @@ namespace SqlSugar
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
                 var memberName = memberAssignment.Member.Name;
                 var item = memberAssignment.Expression;
-                if (item is UnaryExpression||item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
+                if ((item is MemberExpression) && ((MemberExpression)item).Expression == null)
+                {
+                    var paramterValue = ExpressionTool.DynamicInvoke(item);
+                    string parameterName = AppendParameter(paramterValue);
+                    this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+                }
+                else if (item is UnaryExpression || item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant)
                 {
                     base.Expression = item;
                     base.Start();
@@ -80,7 +86,8 @@ namespace SqlSugar
                 }
                 else if (item is BinaryExpression)
                 {
-                    Check.ThrowNotSupportedException(item.GetType().Name);
+                    var result=GetNewExpressionValue(item);
+                    this.Context.Result.Append(base.Context.GetEqString(memberName, result));
                 }
             }
         }
