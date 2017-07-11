@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -28,7 +29,10 @@ namespace SqlSugar
         #endregion
 
         #region Common Methods
-
+        public override bool IsComplexModel(string sql)
+        {
+            return Regex.IsMatch(sql, @"AS \`\w+\.\w+\`");
+        }
         public override string ToSqlString()
         {
             sql = new StringBuilder();

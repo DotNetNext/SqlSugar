@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public abstract partial class DefaultDbMethod : IDbMethods
+    public  partial class DefaultDbMethod : IDbMethods
     {
         public virtual string IIF(MethodCallExpressionModel model)
         {
@@ -259,6 +259,16 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter1 = model.Args[1];
             return string.Format("{0}", parameter1.MemberValue);
+        }
+
+        public virtual string True()
+        {
+            return "( 1 = 1 ) ";
+        }
+
+        public virtual string False()
+        {
+            return "( 1 = 2 ) ";
         }
     }
 }

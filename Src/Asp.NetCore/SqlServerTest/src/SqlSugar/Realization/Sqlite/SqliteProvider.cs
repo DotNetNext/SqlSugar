@@ -18,8 +18,8 @@ namespace SqlSugar
             {
                 if (base._DbConnection == null)
                 {
-                    var SQLiteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                    base._DbConnection = new SqliteConnection(SQLiteConnectionString);
+                    var SqliteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                    base._DbConnection = new SqliteConnection(SqliteConnectionString);
                 }
                 return base._DbConnection;
             }

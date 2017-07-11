@@ -34,16 +34,7 @@ namespace SqlSugar
                     }
                     else if (isMember)
                     {
-                        var isComparisonOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue)||baseParameter.OperatorValue.IsNullOrEmpty();
-                        var memberExpression = (base.Expression as MemberExpression);
-                        if (memberExpression.Type== PubConst.BoolType&& isComparisonOperator)
-                        {
-                            Append(parameter, nodeType);
-                        }
-                        else
-                        {
-                            Result(parameter, nodeType);
-                        }
+                        MemberLogic(parameter, baseParameter, nodeType);
                     }
                     else if (isConst)
                     {
@@ -56,6 +47,52 @@ namespace SqlSugar
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void MemberLogic(ExpressionParameter parameter, ExpressionParameter baseParameter, ExpressionType nodeType)
+        {
+            var memberExpression = (base.Expression as MemberExpression);
+            var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
+            var isHasValue = isLogicOperator && memberExpression.Member.Name == "HasValue" && memberExpression.Expression != null && memberExpression.NodeType == ExpressionType.MemberAccess;
+            if (isHasValue)
+            {
+                var member = memberExpression.Expression as MemberExpression;
+                parameter.CommonTempData = CommonTempDataType.Result;
+                var isConst = member.Expression != null && member.Expression is ConstantExpression;
+                if (isConst)
+                {
+                    var paramterValue = ExpressionTool.DynamicInvoke(member);
+                    var paramterName= base.AppendParameter(paramterValue);
+                    var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
+                    {
+                        Args = new List<MethodCallExpressionArgs>() {
+                        new MethodCallExpressionArgs() { IsMember=false, MemberName=paramterName, MemberValue=paramterValue } }
+                    });
+                    this.Context.Result.Append(result);
+                }
+                else
+                {
+                    this.Expression = isConst ? member.Expression : member;
+                    this.Start();
+                    var methodParamter = isConst ? new MethodCallExpressionArgs() { IsMember = false } : new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
+                    var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
+                    {
+                        Args = new List<MethodCallExpressionArgs>() {
+                      methodParamter
+                  }
+                    });
+                    this.Context.Result.Append(result);
+                    parameter.CommonTempData = null;
+                }
+            }
+            else if (memberExpression.Type == PubConst.BoolType && isLogicOperator)
+            {
+                Append(parameter, nodeType);
+            }
+            else
+            {
+                Result(parameter, nodeType);
             }
         }
 

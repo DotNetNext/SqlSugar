@@ -33,12 +33,13 @@ namespace SqlSugar
                     {
                         var parentIsBinary = parameter.BaseParameter.CurrentExpression is BinaryExpression;
                         var parentIsRoot = parameter.BaseParameter.CurrentExpression is LambdaExpression;
-                        if (parentIsRoot && value != null && value.GetType() == PubConst.BoolType)
+                        var isBool = value != null && value.GetType() == PubConst.BoolType;
+                        if (parentIsRoot && isBool)
                         {
-                            this.Context.Result.Append(value.ObjToBool() ? "( 1 = 1 ) " : "( 1 = 2 ) ");
+                            this.Context.Result.Append(value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False());
                             break;
                         }
-                        if (parentIsBinary && value != null && value.GetType() == PubConst.BoolType && parameter.BaseExpression != null)
+                        if (parentIsBinary && isBool)
                         {
                             var isLogicOperator =
                                parameter.BaseExpression.NodeType == ExpressionType.And ||
@@ -47,7 +48,7 @@ namespace SqlSugar
                                parameter.BaseExpression.NodeType == ExpressionType.OrElse;
                             if (isLogicOperator)
                             {
-                                AppendMember(parameter, isLeft, (value.ObjToBool() ? "( 1 = 1 ) " : "( 1 = 2 ) "));
+                                AppendMember(parameter, isLeft, (value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False()));
                                 break;
                             }
                         }
