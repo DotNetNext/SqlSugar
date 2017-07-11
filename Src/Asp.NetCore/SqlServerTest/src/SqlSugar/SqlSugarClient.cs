@@ -224,6 +224,25 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
+        public virtual List<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        {
+            if (queryables.IsNullOrEmpty()) return new List<T>();
+            List<T> result = new List<T>();
+            foreach (var item in queryables)
+            {
+                var addItems = item.ToList();
+                if (addItems.IsValuable())
+                {
+                    result.AddRange(addItems);
+                }
+            }
+            return result;
+        }
+        public virtual List<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        {
+            if (queryables.IsNullOrEmpty()) return new List<T>();
+            return UnionAll(queryables.ToArray());
+        }
         #endregion
 
         #region Insertable
@@ -259,7 +278,7 @@ namespace SqlSugar
         {
             return this.Deleteable<T>().In(primaryKeyValue);
         }
-        public virtual IDeleteable<T> Deleteable<T>(dynamic [] primaryKeyValues) where T : class, new()
+        public virtual IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
         {
             return this.Deleteable<T>().In(primaryKeyValues);
         }
@@ -383,7 +402,8 @@ namespace SqlSugar
         {
             get
             {
-                if (_SimpleClient == null) {
+                if (_SimpleClient == null)
+                {
                     _SimpleClient = new SimpleClient(this);
                 }
                 return _SimpleClient;

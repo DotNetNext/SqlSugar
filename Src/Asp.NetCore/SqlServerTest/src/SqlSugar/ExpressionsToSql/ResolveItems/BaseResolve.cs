@@ -235,6 +235,20 @@ namespace SqlSugar
             };
             return methodCallExpressionArgs;
         }
+
+        protected string GetNewExpressionValue(Expression item)
+        {
+            var newContext = this.Context.GetCopyContext();
+            newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);
+            this.Context.Index = newContext.Index;
+            this.Context.ParameterIndex = newContext.ParameterIndex;
+            if (newContext.Parameters.IsValuable())
+            {
+                this.Context.Parameters.AddRange(newContext.Parameters);
+            }
+            return newContext.Result.GetResultString();
+        }
+
         protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string asName)
         {
             if (item.NodeType == ExpressionType.Constant)

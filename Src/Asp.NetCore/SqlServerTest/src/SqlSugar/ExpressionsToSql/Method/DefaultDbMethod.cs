@@ -270,5 +270,10 @@ namespace SqlSugar
         {
             return "( 1 = 2 ) ";
         }
+
+        public string GuidNew()
+        {
+            return "'"+Guid.NewGuid()+"' ";
+        }
     }
 }
