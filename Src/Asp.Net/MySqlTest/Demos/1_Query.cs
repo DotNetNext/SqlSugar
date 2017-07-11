@@ -328,6 +328,13 @@ namespace OrmTest.Demo
          .OrderBy(st => st.Id, OrderByType.Desc)
          .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
          .Select((st, sc) => new { Name = st.Name, SchoolId = sc.Id }).ToList();
+
+            var s7 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            })
+            .OrderBy(st => st.Id, OrderByType.Desc)
+            .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
+            .Select((st, sc) => new ViewModelStudent2 { Name = st.Name, Student=st }).ToList();
         }
         private static void Sqlable()
         {
