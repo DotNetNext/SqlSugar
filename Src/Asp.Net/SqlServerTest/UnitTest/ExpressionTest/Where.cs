@@ -21,6 +21,10 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+
+                whereSingle21();
+                whereSingle20();
+                whereSingle19();
                 whereSingle18();
                 whereSingle17();
                 whereSingle16();
@@ -307,6 +311,43 @@ namespace OrmTest.UnitTest
             {
    
             }, "whereSingle18");
+        }
+        private void whereSingle19()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value==false;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool2] = @Value0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Value0",false)
+            }, "whereSingle19");
+        }
+        private void whereSingle20()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value == it.Bool1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool2] = [Bool1] )", new List<SugarParameter>()
+            {
+                
+            }, "whereSingle19");
+        }
+
+        private void whereSingle21()
+        {
+            //Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value;
+            //SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            //expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            //var value = expContext.Result.GetString();
+            //var pars = expContext.Parameters;
+            //base.Check(value, pars, "( 1 = 2 )", new List<SugarParameter>()
+            //{
+
+            //}, "whereSingle21");
         }
     }
 
