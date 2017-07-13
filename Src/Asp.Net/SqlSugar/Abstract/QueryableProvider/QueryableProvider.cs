@@ -470,8 +470,11 @@ namespace SqlSugar
                 QueryBuilder.ExternalPageIndex = pageIndex;
                 QueryBuilder.ExternalPageSize = pageSize;
             }
-            QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            QueryBuilder.Take = pageSize;
+            else
+            {
+                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+                QueryBuilder.Take = pageSize;
+            }
             return ToDataTable();
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
@@ -493,8 +496,11 @@ namespace SqlSugar
                 QueryBuilder.ExternalPageIndex = pageIndex;
                 QueryBuilder.ExternalPageSize = pageSize;
             }
-            QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            QueryBuilder.Take = pageSize;
+            else
+            {
+                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+                QueryBuilder.Take = pageSize;
+            }
             return ToList();
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)

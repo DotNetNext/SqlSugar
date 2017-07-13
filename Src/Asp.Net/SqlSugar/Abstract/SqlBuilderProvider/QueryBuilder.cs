@@ -241,8 +241,11 @@ namespace SqlSugar
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null);
             sql.Replace("{$:OrderByString:$}", isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
             if (IsCount) { return sql.ToString(); }
-            return ToPageSql(sql.ToString(),this.Take,this.Skip);
-
+            var result= ToPageSql(sql.ToString(),this.Take,this.Skip);
+            if (ExternalPageIndex > 0) {
+                result = ToPageSql(result,(ExternalPageIndex-1)*ExternalPageSize,ExternalPageSize);
+            }
+            return result;
         }
 
         protected virtual string ToPageSql(string sql,int? take,int? skip)

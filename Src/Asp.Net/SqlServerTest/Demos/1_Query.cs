@@ -122,14 +122,17 @@ namespace OrmTest.Demo
             var list2 = db.Queryable<Student>()
              .GroupBy(it => new { it.Id, it.Name }).Having(it => SqlFunc.AggregateAvg(it.Id) > 0)
              .Select(it => new { idAvg = SqlFunc.AggregateAvg(it.Id), name = it.Name }).ToList();
+            //SQL:
+            //SELECT AVG([Id]) AS[idAvg], [Name] AS[name]  FROM[Student] GROUP BY[Name],[Id] HAVING(AVG([Id]) > 0 )
 
             // group id,name take first
             var list3 = db.Queryable<Student>()
                 .PartitionBy(it => new { it.Id, it.Name }).Take(1).ToList();
 
+            int count = 0;
 
-            //SQL:
-            //SELECT AVG([Id]) AS[idAvg], [Name] AS[name]  FROM[Student] GROUP BY[Name],[Id] HAVING(AVG([Id]) > 0 )
+            var list4 = db.Queryable<Student>()
+               .PartitionBy(it => new { it.Id, it.Name }).Take(1).ToPageList(2,3,ref count);
 
             //SqlFunc.AggregateSum(object thisValue) 
             //SqlFunc.AggregateAvg<TResult>(TResult thisValue)
