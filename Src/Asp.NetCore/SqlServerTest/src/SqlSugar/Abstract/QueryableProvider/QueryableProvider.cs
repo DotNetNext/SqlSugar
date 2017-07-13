@@ -390,8 +390,19 @@ namespace SqlSugar
 
         public virtual int Count()
         {
-            QueryBuilder.IsCount = true;
-            var sql = QueryBuilder.ToSqlString();
+
+            var sql = string.Empty;
+            if (QueryBuilder.PartitionByValue.IsValuable())
+            {
+                sql = QueryBuilder.ToSqlString();
+                sql = QueryBuilder.ToCountSql(sql);
+            }
+            else
+            {
+
+                QueryBuilder.IsCount = true;
+                sql = QueryBuilder.ToSqlString();
+            }
             var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
             RestoreMapping();
             QueryBuilder.IsCount = false;
@@ -465,8 +476,16 @@ namespace SqlSugar
         {
             if (pageIndex == 0)
                 pageIndex = 1;
-            QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            QueryBuilder.Take = pageSize;
+            if (QueryBuilder.PartitionByValue.IsValuable())
+            {
+                QueryBuilder.ExternalPageIndex = pageIndex;
+                QueryBuilder.ExternalPageSize = pageSize;
+            }
+            else
+            {
+                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+                QueryBuilder.Take = pageSize;
+            }
             return ToDataTable();
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
@@ -483,8 +502,16 @@ namespace SqlSugar
         {
             if (pageIndex == 0)
                 pageIndex = 1;
-            QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-            QueryBuilder.Take = pageSize;
+            if (QueryBuilder.PartitionByValue.IsValuable())
+            {
+                QueryBuilder.ExternalPageIndex = pageIndex;
+                QueryBuilder.ExternalPageSize = pageSize;
+            }
+            else
+            {
+                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+                QueryBuilder.Take = pageSize;
+            }
             return ToList();
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)

@@ -34,6 +34,8 @@ namespace SqlSugar
         #region Splicing basic
         public bool IsCount { get; set; }
         public int? Skip { get; set; }
+        public int ExternalPageIndex { get; set; }
+        public int ExternalPageSize { get; set; }
         public int? Take { get; set; }
         public string OrderByValue { get; set; }
         public object SelectValue { get; set; }
@@ -127,6 +129,13 @@ namespace SqlSugar
                 return @"SELECT * FROM ({0}) T WHERE RowIndex BETWEEN {1} AND {2}";
             }
         }
+        public virtual string ExternalPageTempalte
+        {
+            get
+            {
+                return @"SELECT * FROM ({0}) T WHERE RowIndex2 BETWEEN {1} AND {2}";
+            }
+        }
         public virtual string DefaultOrderByTemplate
         {
             get
@@ -214,6 +223,7 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
+            string oldOrderBy=this.OrderByValue;
             if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
@@ -236,27 +246,44 @@ namespace SqlSugar
             }
             var isRowNumber = Skip != null || Take != null;
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos,(!isRowNumber&&this.OrderByValue.IsValuable())?GetOrderByString:null);
-            sql.Replace("{$:OrderByString:$}", isRowNumber? (this.IsCount?null: rowNumberString): null);
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null);
+            sql.Replace("{$:OrderByString:$}", isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
             if (IsCount) { return sql.ToString(); }
-            if (Skip != null && Take == null)
-            {
-                return string.Format(PageTempalte, sql.ToString(), Skip.ObjToInt() + 1, long.MaxValue);
+            var result= ToPageSql(sql.ToString(),this.Take,this.Skip);
+            if (ExternalPageIndex > 0) {
+                result = string.Format("SELECT *,ROW_NUMBER() OVER(ORDER  BY  GETDATE()) AS RowIndex2 FROM ({0}) ExternalTable ", result);
+                result = ToPageSql(result, (ExternalPageIndex-1)*ExternalPageSize,ExternalPageSize,true);
             }
-            else if (Skip == null && Take != null)
+            this.OrderByValue = oldOrderBy;
+            return result;
+        }
+
+        public virtual string ToCountSql(string sql) {
+
+            return string.Format(" SELECT COUNT(1) FROM ({0}) CountTable ",sql);
+        }
+        
+        public virtual string ToPageSql(string sql,int? take,int? skip,bool isExternal=false)
+        {
+            string temp = isExternal?ExternalPageTempalte:PageTempalte;
+            if (skip != null && take == null)
             {
-                return string.Format(PageTempalte, sql.ToString(), 1, Take.ObjToInt());
+                return string.Format(temp, sql.ToString(), skip.ObjToInt() + 1, long.MaxValue);
             }
-            else if (Skip != null && Take != null)
+            else if (skip == null && take != null)
             {
-                return string.Format(PageTempalte, sql.ToString(), Skip.ObjToInt() + 1, Skip.ObjToInt() + Take.ObjToInt());
+                return string.Format(temp, sql.ToString(), 1, take.ObjToInt());
+            }
+            else if (skip != null && take != null)
+            {
+                return string.Format(temp, sql.ToString(), skip.ObjToInt() + 1, skip.ObjToInt() + take.ObjToInt());
             }
             else
             {
                 return sql.ToString();
             }
-
         }
+ 
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(

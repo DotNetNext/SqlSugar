@@ -38,6 +38,9 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("enum",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("mediumtext",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("tinytext",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("longtext",CSharpDataType.@string),
 
                     new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
