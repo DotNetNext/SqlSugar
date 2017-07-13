@@ -6,6 +6,12 @@
         {
             return this;
         }
+
+        public override ISugarQueryable<T> PartitionBy(string groupFileds)
+        {
+            this.GroupBy(groupFileds);
+            return this;
+        }
     }
     public class SqliteQueryable<T,T2> : QueryableProvider<T,T2>
     {
