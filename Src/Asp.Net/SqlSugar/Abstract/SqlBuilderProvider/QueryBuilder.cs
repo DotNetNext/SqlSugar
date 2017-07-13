@@ -129,6 +129,13 @@ namespace SqlSugar
                 return @"SELECT * FROM ({0}) T WHERE RowIndex BETWEEN {1} AND {2}";
             }
         }
+        public virtual string ExternalPageTempalte
+        {
+            get
+            {
+                return @"SELECT * FROM ({0}) T WHERE RowIndex2 BETWEEN {1} AND {2}";
+            }
+        }
         public virtual string DefaultOrderByTemplate
         {
             get
@@ -244,7 +251,8 @@ namespace SqlSugar
             if (IsCount) { return sql.ToString(); }
             var result= ToPageSql(sql.ToString(),this.Take,this.Skip);
             if (ExternalPageIndex > 0) {
-                result = ToPageSql(result,(ExternalPageIndex-1)*ExternalPageSize,ExternalPageSize);
+                result = string.Format("SELECT *,ROW_NUMBER() OVER(ORDER  BY  GETDATE()) AS RowIndex2 FROM ({0}) ExternalTable ", result);
+                result = ToPageSql(result, (ExternalPageIndex-1)*ExternalPageSize,ExternalPageSize,true);
             }
             this.OrderByValue = oldOrderBy;
             return result;
@@ -254,27 +262,28 @@ namespace SqlSugar
 
             return string.Format(" SELECT COUNT(1) FROM ({0}) CountTable ",sql);
         }
-
-        public virtual string ToPageSql(string sql,int? take,int? skip)
+        
+        public virtual string ToPageSql(string sql,int? take,int? skip,bool isExternal=false)
         {
+            string temp = isExternal?ExternalPageTempalte:PageTempalte;
             if (skip != null && take == null)
             {
-                return string.Format(PageTempalte, sql.ToString(), skip.ObjToInt() + 1, long.MaxValue);
+                return string.Format(temp, sql.ToString(), skip.ObjToInt() + 1, long.MaxValue);
             }
             else if (skip == null && take != null)
             {
-                return string.Format(PageTempalte, sql.ToString(), 1, take.ObjToInt());
+                return string.Format(temp, sql.ToString(), 1, take.ObjToInt());
             }
             else if (skip != null && take != null)
             {
-                return string.Format(PageTempalte, sql.ToString(), skip.ObjToInt() + 1, skip.ObjToInt() + take.ObjToInt());
+                return string.Format(temp, sql.ToString(), skip.ObjToInt() + 1, skip.ObjToInt() + take.ObjToInt());
             }
             else
             {
                 return sql.ToString();
             }
         }
-
+ 
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(
