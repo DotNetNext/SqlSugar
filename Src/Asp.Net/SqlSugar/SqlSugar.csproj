@@ -207,9 +207,9 @@
     <Compile Include="SqlSugarClient.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lib\MySql.Data.dll" />
-    <Content Include="Lib\Newtonsoft.Json.dll" />
-    <Content Include="Lib\System.Data.SQLite.dll" />
+    <Content Include="References\MySql.Data.dll" />
+    <Content Include="References\Newtonsoft.Json.dll" />
+    <Content Include="References\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Realization\Oracle\" />
