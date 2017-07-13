@@ -465,6 +465,11 @@ namespace SqlSugar
         {
             if (pageIndex == 0)
                 pageIndex = 1;
+            if (QueryBuilder.PartitionByValue.IsValuable())
+            {
+                QueryBuilder.ExternalPageIndex = pageIndex;
+                QueryBuilder.ExternalPageSize = pageSize;
+            }
             QueryBuilder.Skip = (pageIndex - 1) * pageSize;
             QueryBuilder.Take = pageSize;
             return ToDataTable();
@@ -483,6 +488,11 @@ namespace SqlSugar
         {
             if (pageIndex == 0)
                 pageIndex = 1;
+            if (QueryBuilder.PartitionByValue.IsValuable())
+            {
+                QueryBuilder.ExternalPageIndex = pageIndex;
+                QueryBuilder.ExternalPageSize = pageSize;
+            }
             QueryBuilder.Skip = (pageIndex - 1) * pageSize;
             QueryBuilder.Take = pageSize;
             return ToList();
