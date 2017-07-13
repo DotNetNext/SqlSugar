@@ -390,8 +390,19 @@ namespace SqlSugar
 
         public virtual int Count()
         {
-            QueryBuilder.IsCount = true;
-            var sql = QueryBuilder.ToSqlString();
+
+            var sql = string.Empty;
+            if (QueryBuilder.PartitionByValue.IsValuable())
+            {
+                sql = QueryBuilder.ToSqlString();
+                sql = QueryBuilder.ToCountSql(sql);
+            }
+            else
+            {
+
+                QueryBuilder.IsCount = true;
+                sql = QueryBuilder.ToSqlString();
+            }
             var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
             RestoreMapping();
             QueryBuilder.IsCount = false;

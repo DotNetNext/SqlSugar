@@ -216,6 +216,7 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
+            string oldOrderBy=this.OrderByValue;
             if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
@@ -245,10 +246,16 @@ namespace SqlSugar
             if (ExternalPageIndex > 0) {
                 result = ToPageSql(result,(ExternalPageIndex-1)*ExternalPageSize,ExternalPageSize);
             }
+            this.OrderByValue = oldOrderBy;
             return result;
         }
 
-        protected virtual string ToPageSql(string sql,int? take,int? skip)
+        public virtual string ToCountSql(string sql) {
+
+            return string.Format(" SELECT COUNT(1) FROM ({0}) CountTable ",sql);
+        }
+
+        public virtual string ToPageSql(string sql,int? take,int? skip)
         {
             if (skip != null && take == null)
             {
