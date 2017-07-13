@@ -48,9 +48,17 @@ namespace SqlSugar
         }
         public static bool IsLogicOperator(string operatorValue)
         {
-            return operatorValue=="&&"|| operatorValue=="||";
+            return operatorValue == "&&" || operatorValue == "||";
         }
-        public static bool IsComparisonOperator(BinaryExpression expression)
+
+        public static bool IsLogicOperator(Expression expression)
+        {
+            return expression.NodeType == ExpressionType.And ||
+                                        expression.NodeType == ExpressionType.AndAlso ||
+                                        expression.NodeType == ExpressionType.Or ||
+                                        expression.NodeType == ExpressionType.OrElse;
+        }
+        public static bool IsComparisonOperator(Expression expression)
         {
             return expression.NodeType != ExpressionType.And &&
                                         expression.NodeType != ExpressionType.AndAlso &&
@@ -120,7 +128,7 @@ namespace SqlSugar
         {
             object reval = null;
             FieldInfo field = (FieldInfo)memberExpr.Member;
-            Check.Exception(field.IsPrivate,string.Format(" Field \"{0}\" can't be private ",field.Name));
+            Check.Exception(field.IsPrivate, string.Format(" Field \"{0}\" can't be private ", field.Name));
             reval = field.GetValue(memberExpr.Member);
             if (reval != null && reval.GetType().IsClass() && reval.GetType() != ExpressionConst.StringType)
             {
@@ -141,6 +149,23 @@ namespace SqlSugar
                 }
             }
             return reval;
+        }
+
+
+        public static bool IsConstExpression(MemberExpression memberExpr)
+        {
+            var result = false;
+            while (memberExpr!=null&&memberExpr.Expression != null)
+            {
+                var isConst = memberExpr.Expression is ConstantExpression;
+                if (isConst)
+                {
+                    result = true;
+                    break;
+                }
+                memberExpr = memberExpr.Expression as MemberExpression;
+            }
+            return result;
         }
 
         public static object GetPropertyValue(MemberExpression memberExpr)
@@ -191,7 +216,7 @@ namespace SqlSugar
 
         public static bool IsEntity(Type type)
         {
-            return type.IsClass() && type!=ExpressionConst.StringType;
+            return type.IsClass() && type != ExpressionConst.StringType;
         }
 
         public static bool IsValueType(Type type)

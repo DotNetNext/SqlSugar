@@ -14,11 +14,18 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var expression = base.Expression as MemberExpression;
-            if (expression.Member.Name == "Value" && expression.Member.GetType().Name == "RuntimePropertyInfo")
+            var isValue = expression.Member.Name == "Value" && expression.Member.GetType().Name == "RuntimePropertyInfo";
+            var isBool = expression.Type == PubConst.BoolType;
+            var isValueBool = isValue && isBool && parameter.BaseExpression == null;
+            if (isValueBool)
+            {
+                isValue = false;
+            }
+            else if (isValue)
             {
                 expression = expression.Expression as MemberExpression;
             }
-            else if (expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter)
+            else if (expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool)
             {
                 var value = ExpressionTool.GetMemberValue(expression.Member, expression);
                 if (isSetTempData)
@@ -58,30 +65,33 @@ namespace SqlSugar
                     }
                     break;
                 case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
+                    var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
                     if (isSetTempData)
                     {
-                        fieldName = GetSingleName(parameter, expression, null);
+                        fieldName = GetName(parameter, expression, null,isSingle);
                         baseParameter.CommonTempData = fieldName;
                     }
                     else
                     {
-                        fieldName = GetSingleName(parameter, expression, isLeft);
+                        if (isValueBool)
+                        {
+                            fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft,isSingle);
+                        }
+                        else if (ExpressionTool.IsConstExpression(expression))
+                        {
+                            var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+                            base.AppendValue(parameter, isLeft, value);
+                            return;
+                        }
+                        else
+                        {
+                            fieldName = GetName(parameter, expression, isLeft,isSingle);
+                        }
                         if (expression.Type == PubConst.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
                         {
                             fieldName = "( " + fieldName + "=1 )";
                         }
-                        fieldName = AppendMember(parameter, isLeft, fieldName);
-                    }
-                    break;
-                case ResolveExpressType.WhereMultiple:
-                    if (isSetTempData)
-                    {
-                        fieldName = GetMultipleName(parameter, expression, null);
-                        baseParameter.CommonTempData = fieldName;
-                    }
-                    else
-                    {
-                        fieldName = GetMultipleName(parameter, expression, isLeft);
                         fieldName = AppendMember(parameter, isLeft, fieldName);
                     }
                     break;
@@ -126,6 +136,18 @@ namespace SqlSugar
             }
 
             return fieldName;
+        }
+
+        private string GetName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft, bool isSingle)
+        {
+            if (isSingle)
+            {
+                return GetSingleName(parameter, expression, IsLeft);
+            }
+            else
+            {
+                return GetMultipleName(parameter,expression,IsLeft);
+            }
         }
 
         private string GetMultipleName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)

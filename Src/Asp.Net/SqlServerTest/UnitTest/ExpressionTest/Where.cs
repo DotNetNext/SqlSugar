@@ -22,6 +22,8 @@ namespace OrmTest.UnitTest
             for (int i = 0; i < base.Count; i++)
             {
 
+                whereSingle23();
+                whereSingle22();
                 whereSingle21();
                 whereSingle20();
                 whereSingle19();
@@ -339,15 +341,42 @@ namespace OrmTest.UnitTest
 
         private void whereSingle21()
         {
-            //Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value;
-            //SqlServerExpressionContext expContext = new SqlServerExpressionContext();
-            //expContext.Resolve(exp, ResolveExpressType.WhereSingle);
-            //var value = expContext.Result.GetString();
-            //var pars = expContext.Parameters;
-            //base.Check(value, pars, "( 1 = 2 )", new List<SugarParameter>()
-            //{
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool2]=1 )", new List<SugarParameter>()
+            {
 
-            //}, "whereSingle21");
+            }, "whereSingle21");
+        }
+
+        private void whereSingle22()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => !it.Bool2.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "NOT ( [Bool2]=1 ) ", new List<SugarParameter>()
+            {
+
+            }, "whereSingle22");
+        }
+
+        private void whereSingle23()
+        {
+            decimal? val = 1;
+            Expression<Func<DataTestInfo, bool>> exp = it => it.Decimal2==val.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Decimal2] = @Const0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Const0",val)
+            }, "whereSingle23");
         }
     }
 
