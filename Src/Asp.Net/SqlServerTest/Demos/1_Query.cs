@@ -132,7 +132,7 @@ namespace OrmTest.Demo
             int count = 0;
 
             var list4 = db.Queryable<Student>()
-               .PartitionBy(it => new {  it.Name }).Take(1).ToPageList(2,3,ref count);
+               .PartitionBy(it => new {  it.Name }).Take(1).ToPageList(3,3,ref count);
 
             //SqlFunc.AggregateSum(object thisValue) 
             //SqlFunc.AggregateAvg<TResult>(TResult thisValue)

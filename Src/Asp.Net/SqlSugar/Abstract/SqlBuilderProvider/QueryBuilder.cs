@@ -223,7 +223,7 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
-            string oldOrderBy=this.OrderByValue;
+            string oldOrderBy = this.OrderByValue;
             if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
@@ -249,23 +249,25 @@ namespace SqlSugar
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null);
             sql.Replace("{$:OrderByString:$}", isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
             if (IsCount) { return sql.ToString(); }
-            var result= ToPageSql(sql.ToString(),this.Take,this.Skip);
-            if (ExternalPageIndex > 0) {
+            var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
+            if (ExternalPageIndex > 0)
+            {
                 result = string.Format("SELECT *,ROW_NUMBER() OVER(ORDER  BY  GETDATE()) AS RowIndex2 FROM ({0}) ExternalTable ", result);
-                result = ToPageSql(result, (ExternalPageIndex-1)*ExternalPageSize,ExternalPageSize,true);
+                result = ToPageSql2(result,ExternalPageIndex, ExternalPageSize, true);
             }
             this.OrderByValue = oldOrderBy;
             return result;
         }
 
-        public virtual string ToCountSql(string sql) {
-
-            return string.Format(" SELECT COUNT(1) FROM ({0}) CountTable ",sql);
-        }
-        
-        public virtual string ToPageSql(string sql,int? take,int? skip,bool isExternal=false)
+        public virtual string ToCountSql(string sql)
         {
-            string temp = isExternal?ExternalPageTempalte:PageTempalte;
+
+            return string.Format(" SELECT COUNT(1) FROM ({0}) CountTable ", sql);
+        }
+
+        public virtual string ToPageSql(string sql, int? take, int? skip, bool isExternal = false)
+        {
+            string temp = isExternal ? ExternalPageTempalte : PageTempalte;
             if (skip != null && take == null)
             {
                 return string.Format(temp, sql.ToString(), skip.ObjToInt() + 1, long.MaxValue);
@@ -283,7 +285,13 @@ namespace SqlSugar
                 return sql.ToString();
             }
         }
- 
+
+        public virtual string ToPageSql2(string sql, int? pageIndex, int? pageSize, bool isExternal = false)
+        {
+            string temp = isExternal ? ExternalPageTempalte : PageTempalte;
+            return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize+1, pageIndex * pageSize);
+        }
+
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(
