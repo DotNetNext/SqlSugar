@@ -224,6 +224,7 @@ namespace SqlSugar
         public virtual string ToSqlString()
         {
             string oldOrderBy = this.OrderByValue;
+            string externalOrderBy = oldOrderBy;
             if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
@@ -252,7 +253,10 @@ namespace SqlSugar
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
-                result = string.Format("SELECT *,ROW_NUMBER() OVER(ORDER  BY  GETDATE()) AS RowIndex2 FROM ({0}) ExternalTable ", result);
+                if (externalOrderBy.IsNullOrEmpty()) {
+                    externalOrderBy = " ORDER BY GetDate() ";
+                }
+                result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", externalOrderBy,result);
                 result = ToPageSql2(result,ExternalPageIndex, ExternalPageSize, true);
             }
             this.OrderByValue = oldOrderBy;
