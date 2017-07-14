@@ -153,6 +153,7 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             var getAll = db.Queryable<Student>().ToList();
+            var getTop2 = db.Queryable<Student>().Take(2).ToList();//TOP2
             var getLike = db.Queryable<Student>().Where(it => it.Name.Contains("a")).ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getId = db.Queryable<Student>().Select(it => it.Id).ToList();

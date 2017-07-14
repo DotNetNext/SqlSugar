@@ -48,7 +48,7 @@ namespace SqlSugar
             else if (Skip == null && Take != null)
             {
                 if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                result= string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 1, Take.ObjToInt());
+                result= string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 0, Take.ObjToInt());
             }
             else if (Skip != null && Take != null)
             {
