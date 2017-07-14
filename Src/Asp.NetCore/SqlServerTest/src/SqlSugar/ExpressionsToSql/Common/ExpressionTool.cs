@@ -70,10 +70,10 @@ namespace SqlSugar
             var memberInfos = new Stack<MemberInfo>();
             var fieldInfo = member as System.Reflection.FieldInfo;
             object reval = null;
-            // "descend" toward's the root object reference:
+            MemberExpression memberExpr = null;
             while (expression is MemberExpression)
             {
-                var memberExpr = expression as MemberExpression;
+                memberExpr = expression as MemberExpression;
                 memberInfos.Push(memberExpr.Member);
                 if (memberExpr.Expression == null)
                 {
@@ -106,18 +106,24 @@ namespace SqlSugar
                     var objProp = objReference.GetType().GetProperty(mi.Name);
                     if (objProp == null)
                     {
-
+                        objReference = DynamicInvoke(expression,memberExpr);
                     }
-                    objReference = objProp.GetValue(objReference, null);
+                    else
+                    {
+                        objReference = objProp.GetValue(objReference, null);
+                    }
                 }
                 else if (mi.MemberType == MemberTypes.Field)
                 {
                     var objField = objReference.GetType().GetField(mi.Name);
                     if (objField == null)
                     {
-
+                        objReference = DynamicInvoke(expression, memberExpr);
                     }
-                    objReference = objField.GetValue(objReference);
+                    else
+                    {
+                        objReference = objField.GetValue(objReference);
+                    }
                 }
             }
             reval = objReference;
@@ -194,12 +200,12 @@ namespace SqlSugar
             return reval;
         }
 
-        public static object DynamicInvoke(Expression expression)
+        public static object DynamicInvoke(Expression expression,MemberExpression memberExpression=null)
         {
             object value = Expression.Lambda(expression).Compile().DynamicInvoke();
-            if (value != null && value.GetType().IsClass() && value.GetType() != ExpressionConst.StringType)
+            if (value != null && value.GetType().IsClass() && value.GetType() != ExpressionConst.StringType&& memberExpression!=null)
             {
-                value = Expression.Lambda(expression).Compile().DynamicInvoke();
+                value = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
             }
 
             return value;
