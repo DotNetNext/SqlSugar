@@ -103,7 +103,7 @@ new List<SugarParameter>() {
            );
 
 
-            db.IgnoreColumns = new IgnoreComumnList();
+            db.IgnoreColumns = new IgnoreColumnList();
             db.IgnoreColumns.Add("TestId", "Student");
 
             //Insert List<T>

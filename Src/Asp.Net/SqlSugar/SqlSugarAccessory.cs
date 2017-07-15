@@ -16,7 +16,7 @@ namespace SqlSugar
         public Guid ContextID { get; set; }
         public MappingTableList MappingTables = new MappingTableList();
         public MappingColumnList MappingColumns = new MappingColumnList();
-        public IgnoreComumnList IgnoreColumns = new IgnoreComumnList();
+        public IgnoreColumnList IgnoreColumns = new IgnoreColumnList();
         #endregion
 
         #region Fields
@@ -89,7 +89,7 @@ namespace SqlSugar
             if (this.MappingColumns == null)
                 this.MappingColumns = new MappingColumnList();
             if (this.IgnoreColumns == null)
-                this.IgnoreColumns = new IgnoreComumnList();
+                this.IgnoreColumns = new IgnoreColumnList();
             if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
                 if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.IsValuable())

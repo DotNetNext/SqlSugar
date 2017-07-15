@@ -39,7 +39,7 @@ namespace SqlSugar
         public int ParameterIndex { get; set; }
         public MappingColumnList MappingColumns { get; set; }
         public MappingTableList MappingTables { get; set; }
-        public IgnoreComumnList IgnoreComumnList { get; set; }
+        public IgnoreColumnList IgnoreComumnList { get; set; }
         public bool IsSingle
         {
             get
