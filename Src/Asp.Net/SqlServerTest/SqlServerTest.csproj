@@ -66,6 +66,7 @@
     <Compile Include="PerformanceTesting\SqlSugarPerformance.cs" />
     <Compile Include="UnitTest\DataTest.cs" />
     <Compile Include="UnitTest\Delete.cs" />
+    <Compile Include="UnitTest\EnumTest.cs" />
     <Compile Include="UnitTest\UnitTestBase.cs" />
     <Compile Include="UnitTest\ExpressionTest\Field.cs" />
     <Compile Include="UnitTest\Insert.cs" />

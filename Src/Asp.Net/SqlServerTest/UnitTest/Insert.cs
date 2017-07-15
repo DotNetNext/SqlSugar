@@ -125,12 +125,6 @@ new List<SugarParameter>() {
                            new SugarParameter("@Name","张三")
             }, t11.Key, t11.Value, "Insert t11 error");
         }
-
-        public SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            return db;
-        }
     }
 
     public class MyStudent {

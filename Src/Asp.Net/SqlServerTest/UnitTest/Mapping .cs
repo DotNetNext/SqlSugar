@@ -37,7 +37,7 @@ namespace OrmTest.UnitTest
             var x2 = GetInstance();
         }
 
-        public SqlSugarClient GetInstance()
+        public new SqlSugarClient GetInstance()
         {
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() {InitKeyType=InitKeyType.Attribute, ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
             return db;

@@ -57,11 +57,5 @@ namespace OrmTest
                 new SugarParameter("@id",1)
             }, t6.Key, t6.Value, "Delte t6 error");
         }
-
-        public SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            return db;
-        }
     }
 }
