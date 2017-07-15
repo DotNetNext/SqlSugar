@@ -75,7 +75,6 @@
     <Compile Include="Realization\Sqlite\DbBind\SqliteDbBind.cs" />
     <Compile Include="Realization\Sqlite\DbFirst\SqliteDbFirst.cs" />
     <Compile Include="Realization\Sqlite\DbMaintenance\SqliteDbMaintenance.cs" />
-    <Compile Include="Realization\Sqlite\DbType.cs" />
     <Compile Include="Realization\Sqlite\SqliteProvider.cs" />
     <Compile Include="Realization\Sqlite\Queryable\SqliteQueryable.cs" />
     <Compile Include="Realization\Sqlite\SqlBuilder\SqliteBuilder.cs" />
@@ -96,7 +95,7 @@
     <Compile Include="Entities\DbResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />
     <Compile Include="Interface\IFilter.cs" />
-    <Compile Include="Realization\MySql\DbType.cs" />
+    <Compile Include="Entities\DbType.cs" />
     <Compile Include="Realization\MySql\DbBind\MySqlDbBind.cs" />
     <Compile Include="Realization\MySql\SqlBuilder\MySqlBuilder.cs" />
     <Compile Include="Realization\MySql\SqlBuilder\MySqlDeleteBuilder.cs" />
@@ -131,7 +130,6 @@
     <Compile Include="Common\RewritableMethods.cs" />
     <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerUpdateBuilder.cs" />
-    <Compile Include="Realization\SqlServer\DbType.cs" />
     <Compile Include="Realization\SqlServer\DbBind\SqlServerDbBind.cs" />
     <Compile Include="Realization\SqlServer\DbFirst\SqlServerDbFirst.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerBuilder.cs" />
