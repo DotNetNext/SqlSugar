@@ -24,9 +24,24 @@ namespace OrmTest.UnitTest
                 Q2();
                 Q3();
                 Q4();
+                q5();
             }
             base.End("Method Test");
         }
+
+        private void q5()
+        {
+            using (var db = GetInstance())
+            {
+                db.MappingTables.Add("School", "SchoolTable");
+                var join5= db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select(st => st)
+                    .GroupBy(st=> new{ st.Id,st.Name })
+                    .ToSql();
+                string sql = @"SELECT st.* FROM [STudent] st  ,[SchoolTable]  sc  WHERE ( [st].[SchoolId] = [sc].[Id] )GROUP BY [st].[ID],[st].[Name] ";
+                base.Check(sql, null, join5.Key, null, "join 5 Error");
+            }
+        }
+
         private void Q4()
         {
             using (var db = GetInstance())

@@ -40,7 +40,7 @@ namespace SqlSugar
         public override string GetNoTranslationColumnName(string name)
         {
             if (!name.Contains("`")) return name;
-            return name == null ? string.Empty : Regex.Match(name, @"\`(.*?)\`").Groups[1].Value;
+            return name == null ? string.Empty : Regex.Match(name, @".*\`(.*?)\`").Groups[1].Value;
         }
     }
 }

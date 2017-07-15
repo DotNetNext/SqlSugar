@@ -48,7 +48,7 @@ namespace SqlSugar
 
         public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
-            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray();
+            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName)).ToList();
             return this;
         }
@@ -77,7 +77,7 @@ namespace SqlSugar
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
-            var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray();
+            var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             List<string> primaryKeys = GetPrimaryKeys();
             foreach (var item in this.UpdateBuilder.DbColumnInfoList)
             {

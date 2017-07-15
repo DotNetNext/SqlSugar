@@ -28,7 +28,7 @@ namespace SqlSugar
                 case ResolveExpressType.FieldSingle:
                     break;
                 case ResolveExpressType.FieldMultiple:
-                    break;
+                case ResolveExpressType.ArrayMultiple:
                 case ResolveExpressType.ArraySingle:
                     foreach (var item in expression.Arguments)
                     {
