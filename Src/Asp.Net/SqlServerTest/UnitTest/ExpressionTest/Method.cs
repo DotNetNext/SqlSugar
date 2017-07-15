@@ -352,7 +352,38 @@ namespace OrmTest.UnitTest
             var pars = expContext.Parameters;
             base.Check(value, pars, "((DATEADD(day,@MethodConst1,@MethodConst0)) = @Const2 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",1),new SugarParameter("@Const2",x2)
-            }, "DateIsSameByType error");
+            }, "DateAddDay error");
+
+            DateAddDay2();
+            DateAddDay3();
+        }
+
+        private void DateAddDay2()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<DataTestInfo, bool>> exp = it =>it.Datetime2.Value.AddHours(10) == x2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "((DATEADD(@Const0,@MethodConst1,[Datetime2])) = @Const2 )", new List<SugarParameter>() {
+                new SugarParameter("@Const0",DateType.Hour.ToString()),new SugarParameter("@MethodConst1",10) 
+                ,new SugarParameter("@Const2",x2)
+            }, "DateAddDay2 error");
+        }
+
+        private void DateAddDay3()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => x2.AddHours(1) == x2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "((DATEADD(@Const0,@MethodConst2,@MethodConst1)) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@Const0",DateType.Hour.ToString()),new SugarParameter("@MethodConst2",1),new SugarParameter("@MethodConst1",x2)
+                ,new SugarParameter("@Const3",x2)
+            }, "DateAddDay3 error");
         }
 
         private void DateIsSameByType()

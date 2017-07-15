@@ -14,7 +14,20 @@ namespace SqlSugar
             var express = base.Expression as MethodCallExpression;
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
-            if (methodName == "get_Item")
+            var isValidNativeMethod = MethodMapping.ContainsKey(methodName) && express.Method.DeclaringType.Namespace == ("System");
+            List<MethodCallExpressionArgs> appendArgs = null;
+            if (MethodTimeMapping.ContainsKey(methodName))
+            {
+                appendArgs = new List<MethodCallExpressionArgs>();
+                var dateType = MethodTimeMapping[methodName];
+                string paramterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
+                appendArgs.Add(new MethodCallExpressionArgs() { IsMember=false, MemberName= paramterName, MemberValue=dateType });
+                this.Context.Parameters.Add(new SugarParameter(paramterName, dateType.ToString()));
+                this.Context.ParameterIndex++;
+                methodName = "DateAdd";
+                isValidNativeMethod = true;
+            }
+            else if (methodName == "get_Item")
             {
                 string paramterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                 this.Context.Parameters.Add(new SugarParameter(paramterName, ExpressionTool.DynamicInvoke(express)));
@@ -22,18 +35,19 @@ namespace SqlSugar
                 this.Context.ParameterIndex++;
                 return;
             }
-            else if (methodName == "NewGuid") {
+            else if (methodName == "NewGuid")
+            {
                 this.Context.Result.Append(this.Context.DbMehtods.GuidNew());
                 return;
             }
-            var isValidNativeMethod = MethodMapping.ContainsKey(methodName)&&express.Method.DeclaringType.Namespace==("System");
-            if (!isValidNativeMethod&&express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic")&&methodName=="Contains") {
+            if (!isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains")
+            {
                 methodName = "ContainsArray";
                 isValidNativeMethod = true;
             }
             if (isValidNativeMethod)
             {
-                NativeExtensionMethod(parameter, express, isLeft, MethodMapping[methodName]);
+                NativeExtensionMethod(parameter, express, isLeft, MethodMapping[methodName],appendArgs);
             }
             else
             {
@@ -67,7 +81,7 @@ namespace SqlSugar
             }
         }
 
-        private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft,string name)
+        private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft, string name, List<MethodCallExpressionArgs> appendArgs = null)
         {
             var method = express.Method;
             var args = express.Arguments.Cast<Expression>().ToList();
@@ -79,14 +93,14 @@ namespace SqlSugar
                 case ResolveExpressType.WhereMultiple:
                     if (express.Object != null)
                         args.Insert(0, express.Object);
-                    Where(parameter, isLeft, name, args, model);
+                    Where(parameter, isLeft, name, args, model, appendArgs);
                     break;
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
                 case ResolveExpressType.Update:
                     if (express.Object != null)
                         args.Insert(0, express.Object);
-                    Select(parameter, isLeft, name, args, model);
+                    Select(parameter, isLeft, name, args, model, appendArgs);
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
@@ -95,7 +109,7 @@ namespace SqlSugar
             }
         }
 
-        private void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model)
+        private void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             foreach (var item in args)
             {
@@ -109,9 +123,13 @@ namespace SqlSugar
                     Default(parameter, model, item);
                 }
             }
+            if (appendArgs != null)
+            {
+                model.Args.AddRange(appendArgs);
+            }
             parameter.BaseParameter.CommonTempData = GetMdthodValue(name, model);
         }
-        private void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model)
+        private void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             foreach (var item in args)
             {
@@ -124,6 +142,10 @@ namespace SqlSugar
                 {
                     Default(parameter, model, item);
                 }
+            }
+            if (appendArgs != null)
+            {
+                model.Args.AddRange(appendArgs);
             }
             var methodValue = GetMdthodValue(name, model);
             base.AppendValue(parameter, isLeft, methodValue);
@@ -243,7 +265,7 @@ namespace SqlSugar
                     return this.Context.DbMehtods.AggregateCount(model);
                 case "MappingColumn":
                     var mappingColumnResult = this.Context.DbMehtods.MappingColumn(model);
-                    var isValid= model.Args[0].IsMember&&model.Args[1].IsMember==false;
+                    var isValid = model.Args[0].IsMember && model.Args[1].IsMember == false;
                     Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
                     this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
                     return mappingColumnResult;
@@ -273,12 +295,23 @@ namespace SqlSugar
             { "Equals","Equals"},
             { "ToLower","ToLower"},
             { "ToUpper","ToUpper"},
-            { "Substring","Substring"}
+            { "Substring","Substring"},
+            { "DateAdd","DateAdd"}
+        };
+
+        private static Dictionary<string, DateType> MethodTimeMapping = new Dictionary<string, DateType>() {
+            { "AddYears",DateType.Year},
+            { "AddMonths",DateType.Month},
+            { "AddDays",DateType.Day},
+            { "AddHours",DateType.Hour},
+            { "AddMinutes",DateType.Minute},
+            { "AddSeconds",DateType.Second},
+            { "AddMilliseconds",DateType.Millisecond}
         };
 
         private void CheckMethod(MethodCallExpression expression)
         {
-            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName,string.Format(ExpressionErrorMessage.MethodError, expression.Method.Name));
+            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ExpressionErrorMessage.MethodError, expression.Method.Name));
         }
     }
 }
