@@ -48,7 +48,7 @@ namespace SqlSugar
 
         public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
-            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray();
+            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName)).ToList();
             return this;
         }
@@ -77,7 +77,7 @@ namespace SqlSugar
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
-            var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray();
+            var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             List<string> primaryKeys = GetPrimaryKeys();
             foreach (var item in this.UpdateBuilder.DbColumnInfoList)
             {
@@ -108,6 +108,7 @@ namespace SqlSugar
         {
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
             var resultArray=expResult.GetResultArray();
+            Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
             if (resultArray.IsValuable()) {
                 foreach (var item in resultArray)
                 {
@@ -252,7 +253,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -263,7 +264,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetIsIdentities(this.EntityInfo.DbTableName);
+                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {

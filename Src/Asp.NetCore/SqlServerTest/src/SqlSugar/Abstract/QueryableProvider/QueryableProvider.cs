@@ -564,7 +564,7 @@ namespace SqlSugar
             if (expression is NewExpression)
             {
                 lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
-                result = string.Join(",", lamResult.GetResultArray().Select(it => this.SqlBuilder.GetTranslationColumnName(typeof(T).Name, it)));
+                result = string.Join(",", lamResult.GetResultArray().Select(it => it));
             }
             else
             {
@@ -608,7 +608,7 @@ namespace SqlSugar
             if (expression is NewExpression)
             {
                 lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
-                result = string.Join(",", lamResult.GetResultArray().Select(it => this.SqlBuilder.GetTranslationColumnName(typeof(T).Name, it)));
+                result = string.Join(",", lamResult.GetResultArray());
             }
             else
             {
@@ -651,7 +651,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.EntityInfo.DbTableName);
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {

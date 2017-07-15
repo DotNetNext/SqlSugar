@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class IgnoreComumn
+    public class IgnoreColumn
     {
         public string EntityName { get; set; }
         public string PropertyName { get; set; }

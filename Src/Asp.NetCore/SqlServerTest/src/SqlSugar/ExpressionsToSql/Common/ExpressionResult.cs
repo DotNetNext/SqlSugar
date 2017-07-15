@@ -101,6 +101,7 @@ namespace SqlSugar
             switch (this._ResolveExpressType)
             {
                 case ResolveExpressType.ArraySingle:
+                case ResolveExpressType.ArrayMultiple:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
                 case ResolveExpressType.Update:

@@ -256,11 +256,16 @@ namespace SqlSugar
                 if (externalOrderBy.IsNullOrEmpty()) {
                     externalOrderBy = " ORDER BY GetDate() ";
                 }
-                result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", externalOrderBy,result);
+                result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy),result);
                 result = ToPageSql2(result,ExternalPageIndex, ExternalPageSize, true);
             }
             this.OrderByValue = oldOrderBy;
             return result;
+        }
+
+        public virtual string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"\[\w+\]\.", "");
         }
 
         public virtual string ToCountSql(string sql)

@@ -21,6 +21,10 @@ namespace SqlSugar
                 case ResolveExpressType.Update:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                    if (value != null && value.GetType().IsEnum())
+                    {
+                        value = Convert.ToInt64(value);
+                    }
                     parameter.BaseParameter.CommonTempData = value;
                     break;
                 case ResolveExpressType.WhereSingle:

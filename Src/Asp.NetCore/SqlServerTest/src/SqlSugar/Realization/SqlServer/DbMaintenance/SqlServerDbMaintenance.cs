@@ -60,7 +60,7 @@ namespace SqlSugar
             {
                 return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
                             FROM sysobjects s
-					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('U')";
+					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('U') AND (tbp.Name='MS_Description' OR tbp.Name is null)";
             }
         }
         protected override string GetViewInfoListSql
@@ -69,7 +69,7 @@ namespace SqlSugar
             {
                 return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
                             FROM sysobjects s
-					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('V')";
+					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('V')  AND (tbp.Name='MS_Description' OR tbp.Name is null)";
             }
         }
         #endregion

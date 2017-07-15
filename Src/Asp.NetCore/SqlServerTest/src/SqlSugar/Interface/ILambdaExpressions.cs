@@ -10,7 +10,7 @@ namespace SqlSugar
     {
         MappingColumnList MappingColumns { get; set; }
         MappingTableList MappingTables { get; set; }
-        IgnoreComumnList IgnoreComumnList { get; set; }
+        IgnoreColumnList IgnoreComumnList { get; set; }
         List<JoinQueryInfo> JoinQueryInfos { get; set; }
         bool IsSingle { get; set; }
         SqlSugarClient Context { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace SqlSugar
 {
@@ -51,6 +52,10 @@ namespace SqlSugar
                         date = Convert.ToDateTime("1900-1-1");
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
+                else if (type.IsEnum())
+                {
+                    return Convert.ToInt64(value);
                 }
                 else if (type == PubConst.BoolType)
                 {
