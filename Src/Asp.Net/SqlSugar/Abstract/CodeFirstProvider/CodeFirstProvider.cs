@@ -206,7 +206,7 @@ namespace SqlSugar
         }
         protected virtual string GetTableName(EntityInfo entityInfo)
         {
-            return this.Context.EntityProvider.GetTableName(entityInfo.DbTableName);
+            return this.Context.EntityProvider.GetTableName(entityInfo.EntityName);
         }
         protected virtual DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
