@@ -39,7 +39,7 @@ namespace OrmTest.UnitTest
                 base.Check("SELECT `ID`,`SchoolId`,`Name`,`CreateTime` FROM `STudent` ORDER BY `ID` ASC", null, t3.Key, null, "single t3 Error");
 
                 var t4 = db.Queryable<Student>().OrderBy(it => it.Id).Take(3).ToSql();
-                base.Check(@"SELECT `ID`,`SchoolId`,`Name`,`CreateTime` FROM `STudent`    ORDER BY `ID` ASC LIMIT 1,3", null, t4.Key, null, "single t4 Error");
+                base.Check(@"SELECT `ID`,`SchoolId`,`Name`,`CreateTime` FROM `STudent`    ORDER BY `ID` ASC LIMIT 0,3", null, t4.Key, null, "single t4 Error");
 
                 var t5 = db.Queryable<Student>().OrderBy(it => it.Id).Skip(3).ToSql();
                 base.Check(@"SELECT `ID`,`SchoolId`,`Name`,`CreateTime` FROM `STudent`     LIMIT 3,9223372036854775807", null, t5.Key,null, "single t5 Error");
