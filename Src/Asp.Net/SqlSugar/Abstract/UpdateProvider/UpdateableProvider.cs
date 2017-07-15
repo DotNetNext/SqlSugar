@@ -108,6 +108,7 @@ namespace SqlSugar
         {
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
             var resultArray=expResult.GetResultArray();
+            Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
             if (resultArray.IsValuable()) {
                 foreach (var item in resultArray)
                 {
