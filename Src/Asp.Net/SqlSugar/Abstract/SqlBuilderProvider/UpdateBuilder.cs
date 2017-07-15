@@ -153,19 +153,19 @@ namespace SqlSugar
             while (pageCount >= pageIndex)
             {
                 StringBuilder updateTable = new StringBuilder();
-                string setValues = string.Join(",", groupList.First().Where(it=>it.IsPrimarykey==false&&(it.IsIdentity==false||(IsOffIdentity&&it.IsIdentity))).Select(it =>
-                {
-                    if (SetValues.IsValuable())
-                    {
-                        var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
-                        if (setValue != null && setValue.Any())
-                        {
-                            return setValue.First().Value;
-                        }
-                    }
-                    var result = string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(it.DbColumnName));
-                    return result;
-                }));
+                string setValues = string.Join(",", groupList.First().Where(it => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Select(it =>
+                            {
+                                if (SetValues.IsValuable())
+                                {
+                                    var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                                    if (setValue != null && setValue.Any())
+                                    {
+                                        return setValue.First().Value;
+                                    }
+                                }
+                                var result = string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(it.DbColumnName));
+                                return result;
+                            }));
                 batchUpdateSql.AppendFormat(SqlTemplateBatch.ToString(), setValues, GetTableNameStringNoWith, TableWithString);
                 int i = 0;
                 foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
@@ -253,10 +253,15 @@ namespace SqlSugar
                 if (type == PubConst.DateType)
                 {
                     var date = value.ObjToDate();
-                    if (date < Convert.ToDateTime("1900-1-1")) {
+                    if (date < Convert.ToDateTime("1900-1-1"))
+                    {
                         date = Convert.ToDateTime("1900-1-1");
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
+                else if (type.GetTypeInfo().IsEnum())
+                {
+                    return Convert.ToInt64(value);
                 }
                 else if (type == PubConst.BoolType)
                 {

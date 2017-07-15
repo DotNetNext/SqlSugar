@@ -52,6 +52,10 @@ namespace SqlSugar
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
+                else if (type.GetTypeInfo().IsEnum())
+                {
+                    return Convert.ToInt64(value);
+                }
                 else if (type == PubConst.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
