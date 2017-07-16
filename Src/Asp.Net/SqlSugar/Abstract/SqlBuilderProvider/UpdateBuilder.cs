@@ -259,7 +259,7 @@ namespace SqlSugar
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
-                else if (type.GetTypeInfo().IsEnum())
+                else if (type.IsEnum())
                 {
                     return Convert.ToInt64(value);
                 }

@@ -21,7 +21,7 @@ namespace SqlSugar
                 case ResolveExpressType.Update:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
-                    if (value != null && value.GetType().GetTypeInfo().IsEnum())
+                    if (value != null && value.GetType().IsEnum())
                     {
                         value = Convert.ToInt64(value);
                     }

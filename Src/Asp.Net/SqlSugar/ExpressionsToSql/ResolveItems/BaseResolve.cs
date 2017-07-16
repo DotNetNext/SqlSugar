@@ -174,7 +174,7 @@ namespace SqlSugar
                 {
                     var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.Const + Context.ParameterIndex;
                     Context.ParameterIndex++;
-                    if (value != null && value.GetType().GetTypeInfo().IsEnum()) {
+                    if (value != null && value.GetType().IsEnum()) {
                         value = Convert.ToInt64(value);
                     }
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
