@@ -14,7 +14,7 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var expression = base.Expression as MemberExpression;
-            var isValue = expression.Member.Name == "Value" && expression.Member.GetType().Name == "RuntimePropertyInfo";
+            var isValue = expression.Member.Name == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
             var isBool = expression.Type == PubConst.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
             if (isValueBool)
