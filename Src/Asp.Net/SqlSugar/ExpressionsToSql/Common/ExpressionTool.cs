@@ -46,6 +46,16 @@ namespace SqlSugar
                     return null;
             }
         }
+
+        public static object GetValue(object value)
+        {
+            if (value == null) return value;
+            var type = value.GetType();
+            if (type.IsEnum()&& type != typeof(DateType)&& type!=typeof(JoinType)&&type!=typeof(OrderByType)) return Convert.ToInt64(value);
+            else
+                return value;
+        }
+
         public static bool IsLogicOperator(string operatorValue)
         {
             return operatorValue == "&&" || operatorValue == "||";
