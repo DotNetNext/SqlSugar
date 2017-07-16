@@ -67,6 +67,7 @@ namespace SqlSugar
         }
         public static object GetMemberValue(MemberInfo member, Expression expression)
         {
+            var rootExpression = expression as MemberExpression;
             var memberInfos = new Stack<MemberInfo>();
             var fieldInfo = member as System.Reflection.FieldInfo;
             object reval = null;
@@ -106,7 +107,7 @@ namespace SqlSugar
                     var objProp = objReference.GetType().GetProperty(mi.Name);
                     if (objProp == null)
                     {
-                        objReference = DynamicInvoke(expression,memberExpr);
+                        objReference = DynamicInvoke(expression, rootExpression==null?memberExpr: rootExpression);
                     }
                     else
                     {
@@ -118,7 +119,7 @@ namespace SqlSugar
                     var objField = objReference.GetType().GetField(mi.Name);
                     if (objField == null)
                     {
-                        objReference = DynamicInvoke(expression, memberExpr);
+                        objReference = DynamicInvoke(expression, rootExpression==null?memberExpr: rootExpression);
                     }
                     else
                     {
