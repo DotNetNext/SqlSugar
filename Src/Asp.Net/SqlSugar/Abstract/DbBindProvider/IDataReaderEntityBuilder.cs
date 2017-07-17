@@ -222,6 +222,10 @@ namespace SqlSugar
                         method = isNullableType ? getConvertInt32 : getInt32;
                     if (bindProperyTypeName.IsContainsIn("int64"))
                         method = isNullableType ? getConvertInt64 : getInt64;
+                    if (bindProperyTypeName.IsContainsIn("byte"))
+                        method = isNullableType ? getConvertByte : getByte;
+                    if (bindProperyTypeName.IsContainsIn("int16"))
+                        method = isNullableType ? getConvertInt16 : getInt16;
                     break;
                 case CSharpDataType.@bool:
                     if (bindProperyTypeName == "bool" || bindProperyTypeName == "boolean")
