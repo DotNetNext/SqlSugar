@@ -179,6 +179,7 @@ namespace SqlSugar
         }
         public virtual string GetAsString(string asName, string fieldValue)
         {
+            if (fieldValue.Contains(".*")) return fieldValue;
             return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldValue), "AS", GetTranslationColumnName(asName));
         }
 
@@ -189,6 +190,7 @@ namespace SqlSugar
 
         public virtual string GetAsString(string asName, string fieldValue, string fieldShortName)
         {
+            if (fieldValue.Contains(".*")) return fieldValue;
             return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldShortName + "." + fieldValue), "AS", GetTranslationColumnName(asName));
         }
         public virtual void Clear()
