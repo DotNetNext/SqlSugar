@@ -27,6 +27,7 @@ namespace OrmTest.UnitTest
                 single4();
                 single5();
                 Multiple();
+                Multiple2();
                 singleDynamic();
                 MultipleDynamic();
             }
@@ -51,8 +52,26 @@ namespace OrmTest.UnitTest
                 },
                 "Select.Multiple Error");
         }
+        private void Multiple2()
+        {
+            Expression<Func<Student, School, object>> exp = (it, school) => new ViewModelStudent3() {  SchoolName=school.Name,Id=SqlFunc.GetSelfAndAutoFill(it.Id) };
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.SelectMultiple);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                selectorValue,
+                pars,
+                @" [school].[Name] AS [SchoolName] ,it.*",
+                new List<SugarParameter>(){
+                
+                },
+                "Select.Multiple Error");
+        }
 
-        private  void MultipleDynamic()
+
+        private void MultipleDynamic()
         {
             Expression<Func<Student, School, object>> exp = (it, school) => new { Name = "a", Id = it.Id / 2, SchoolId = school.Id };
             ExpressionContext expContext = new ExpressionContext();

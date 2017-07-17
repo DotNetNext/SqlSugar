@@ -15,4 +15,8 @@ namespace OrmTest.Models
         public string Name { get; set; }
         public Student Student { get; set; }
     }
+    public class ViewModelStudent3: Student
+    {
+         public string SchoolName { get; set; }
+    }
 }

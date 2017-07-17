@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public  partial class DefaultDbMethod : IDbMethods
+    public partial class DefaultDbMethod : IDbMethods
     {
         public virtual string IIF(MethodCallExpressionModel model)
         {
@@ -273,7 +273,14 @@ namespace SqlSugar
 
         public string GuidNew()
         {
-            return "'"+Guid.NewGuid()+"' ";
+            return "'" + Guid.NewGuid() + "' ";
+        }
+
+        public string GetSelfAndAutoFill(string shortName, bool isSingle)
+        {
+            if (isSingle) return "*";
+            else
+                return string.Format("{0}.*", shortName);
         }
     }
 }

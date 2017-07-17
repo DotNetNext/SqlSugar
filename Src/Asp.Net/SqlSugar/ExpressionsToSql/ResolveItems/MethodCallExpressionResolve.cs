@@ -67,6 +67,7 @@ namespace SqlSugar
             {
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
+                    Check.Exception(name == "GetSelfAndAutoFill", "SqlFunc.GetSelfAndAutoFill can only be used in Select.");
                     Where(parameter, isLeft, name, args, model);
                     break;
                 case ResolveExpressType.SelectSingle:
@@ -111,21 +112,29 @@ namespace SqlSugar
 
         private void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
-            foreach (var item in args)
+            if (name == "GetSelfAndAutoFill")
             {
-                var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
-                if (isBinaryExpression)
-                {
-                    model.Args.Add(GetMethodCallArgs(parameter, item));
-                }
-                else
-                {
-                    Default(parameter, model, item);
-                }
+                var memberValue = (args.First() as MemberExpression).Expression.ToString();
+                model.Args.Add(new MethodCallExpressionArgs() { MemberValue= memberValue, IsMember=true, MemberName= memberValue });
             }
-            if (appendArgs != null)
+            else
             {
-                model.Args.AddRange(appendArgs);
+                foreach (var item in args)
+                {
+                    var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
+                    if (isBinaryExpression)
+                    {
+                        model.Args.Add(GetMethodCallArgs(parameter, item));
+                    }
+                    else
+                    {
+                        Default(parameter, model, item);
+                    }
+                }
+                if (appendArgs != null)
+                {
+                    model.Args.AddRange(appendArgs);
+                }
             }
             parameter.BaseParameter.CommonTempData = GetMdthodValue(name, model);
         }
@@ -269,6 +278,9 @@ namespace SqlSugar
                     Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
                     this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
                     return mappingColumnResult;
+                case "GetSelfAndAutoFill":
+                    this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
+                    return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(),this.Context.IsSingle);
                 default:
                     break;
             }

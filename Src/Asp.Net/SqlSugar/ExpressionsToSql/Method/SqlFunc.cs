@@ -101,6 +101,6 @@ namespace SqlSugar
         /// <typeparam name="TResult"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static TResult GetSelfAndAutoFill<TResult>(object value) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult GetSelfAndAutoFill<TResult>(TResult value) { throw new NotSupportedException("This method is not supported by the current parameter"); }
     }
 }
