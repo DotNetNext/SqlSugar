@@ -106,12 +106,12 @@ namespace SqlSugar
         }
         public virtual bool IsAnySystemTablePermissions()
         {
+            this.Context.Ado.CheckConnection();
             string sql = this.CheckSystemTablePermissionsSql;
             try
             {
                 var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                 this.Context.Ado.IsEnableLogEvent = false;
-                this.Context.Ado.CheckConnection();
                 this.Context.Ado.ExecuteCommand(sql);
                 this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 return true;
