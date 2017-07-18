@@ -111,6 +111,7 @@ namespace SqlSugar
             {
                 var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                 this.Context.Ado.IsEnableLogEvent = false;
+                this.Context.Ado.CheckConnection();
                 this.Context.Ado.ExecuteCommand(sql);
                 this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 return true;
