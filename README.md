@@ -55,7 +55,7 @@ var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId ==
 .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
 ```
 
-### left join  
+#### left join  
 
 ```c
 var pageIndex = 1;
