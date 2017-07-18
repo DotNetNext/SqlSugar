@@ -168,6 +168,7 @@ namespace SqlSugar
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            cacheKey = GetCacheKey(cacheKey);
             return this.Context.RewritableMethods.GetCacheInstance<List<DbColumnInfo>>().Func(cacheKey,
                     (cm, key) =>
                     {
