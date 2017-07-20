@@ -164,7 +164,7 @@ namespace OrmTest.Demo
             var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
-            var sum = db.Queryable<Student>().Sum(it => it.Id);
+            var sum = db.Queryable<Student>().Select(it => it.SchoolId).ToList();
             var sum2 = db.Queryable<Student,School>((st,sc)=>st.SchoolId==sc.Id).Sum((st,sc) => sc.Id);
             var isAny = db.Queryable<Student>().Where(it => it.Id == -1).Any();
             var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
