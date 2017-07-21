@@ -111,6 +111,7 @@ namespace SqlSugar
         }
         public virtual bool IsAnySystemTablePermissions()
         {
+            this.Context.Ado.CheckConnection();
             string sql = this.CheckSystemTablePermissionsSql;
             this.Context.Ado.CheckConnection();
             try

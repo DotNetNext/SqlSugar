@@ -490,8 +490,11 @@ namespace SqlSugar
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {
+            _RestoreMapping = false;
             totalNumber = this.Count();
-            return ToDataTablePage(pageIndex, pageSize);
+            var result = ToDataTablePage(pageIndex, pageSize);
+            _RestoreMapping = true;
+            return result;
         }
 
         public virtual List<T> ToList()
@@ -516,11 +519,15 @@ namespace SqlSugar
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
+            _RestoreMapping = false;
+            List<T> result = null;
             totalNumber = this.Count();
             if (totalNumber == 0)
-                return new List<T>();
+                result = new List<T>();
             else
-                return ToPageList(pageIndex, pageSize);
+                result = ToPageList(pageIndex, pageSize);
+            _RestoreMapping = true;
+            return result;
         }
 
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
@@ -671,7 +678,7 @@ namespace SqlSugar
         }
         protected void RestoreMapping()
         {
-            if (IsAs)
+            if (IsAs && _RestoreMapping)
             {
                 this.Context.MappingTables = OldMappingTableList == null ? new MappingTableList() : OldMappingTableList;
             }
