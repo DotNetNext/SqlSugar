@@ -135,7 +135,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        reval.Add((T)Convert.ChangeType(re.GetValue(0), type));
+                        reval.Add((T)Convert.ChangeType(re.GetValue(0),PubMethod.GetUnderType(type)));
                     }
                 }
             }
