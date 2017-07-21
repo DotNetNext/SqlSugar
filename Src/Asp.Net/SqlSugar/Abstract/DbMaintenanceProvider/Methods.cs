@@ -113,7 +113,6 @@ namespace SqlSugar
         {
             this.Context.Ado.CheckConnection();
             string sql = this.CheckSystemTablePermissionsSql;
-            this.Context.Ado.CheckConnection();
             try
             {
                 var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
