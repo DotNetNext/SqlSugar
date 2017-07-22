@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class SqliteProvider : AdoProvider
+    public partial class SqliteProvider : AdoProvider
     {
         public SqliteProvider() { }
         public override IDbConnection Connection
@@ -94,6 +94,7 @@ namespace SqlSugar
                 }
                 if (sqlParameter.DbType == System.Data.DbType.Guid) {
                     sqlParameter.DbType = System.Data.DbType.String;
+                    sqlParameter.Value = sqlParameter.Value.ObjToString();
                 }
                 ++index;
             }
