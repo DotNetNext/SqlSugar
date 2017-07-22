@@ -106,6 +106,9 @@ namespace OrmTest.UnitTest
                     .Select(it => new { it.Id, it.Name,x=it.Id }).ToSql();
                 base.Check("SELECT  [ID] AS [Id] , [Name] AS [Name] , [ID] AS [x]  FROM [STudent]  WHERE [Id] IN (@InPara0)   ", new List<SugarParameter>() {
                      new SugarParameter("@InPara0",1)   },t9.Key,t9.Value, "single t9 error");
+
+                var t10 = db.Queryable<Student>().Select(it => new StudentEnum() { Id = SqlFunc.GetSelfAndAutoFill(it.Id) }).ToSql();
+                base.Check("SELECT * FROM [STudent] ", null, t10.Key, t10.Value, "single t10 error");
             }
         }
     }
