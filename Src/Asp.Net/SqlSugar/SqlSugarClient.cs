@@ -277,6 +277,7 @@ namespace SqlSugar
             else
             {
                 var columns= ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
+                Check.Exception(columns.IsNullOrEmpty(), "Insertable.updateDynamicObject can't be null");
                 T insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(insertDynamicObject));
                 return this.Insertable(insertObject).InsertColumns(it=> columns.Any(c=>it.Equals(c,StringComparison.CurrentCultureIgnoreCase)));
             }
@@ -352,6 +353,7 @@ namespace SqlSugar
             else
             {
                 var columns = ((object)updateDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
+                Check.Exception(columns.IsNullOrEmpty(), "Updateable.updateDynamicObject can't be null");
                 T updateObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(updateDynamicObject));
                 return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
             }
