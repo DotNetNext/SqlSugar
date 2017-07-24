@@ -59,7 +59,7 @@ namespace SqlSugar
         bool Any();
  
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(string select) where TResult : class, new();
+        ISugarQueryable<TResult> Select<TResult>(string select);
         ISugarQueryable<T> Select(string select);
 
 

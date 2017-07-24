@@ -374,7 +374,7 @@ namespace SqlSugar
         {
             return _Select<TResult>(expression);
         }
-        public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue) where TResult : class, new()
+        public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue) 
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
