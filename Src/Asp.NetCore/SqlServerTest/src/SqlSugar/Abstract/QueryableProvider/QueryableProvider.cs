@@ -18,6 +18,7 @@ namespace SqlSugar
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
+        public MappingTableList QueryableMappingTableList { get; set; }
         public bool IsAs { get; set; }
         public QueryBuilder QueryBuilder
         {
@@ -45,6 +46,7 @@ namespace SqlSugar
             OldMappingTableList = this.Context.MappingTables;
             this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
+            this.QueryableMappingTableList = this.Context.MappingTables;
             return this;
         }
         public ISugarQueryable<T> AS(string tableName)
@@ -54,6 +56,7 @@ namespace SqlSugar
             OldMappingTableList = this.Context.MappingTables;
             this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
+            this.QueryableMappingTableList = this.Context.MappingTables;
             return this;
         }
         public virtual ISugarQueryable<T> With(string withString)
@@ -374,7 +377,7 @@ namespace SqlSugar
         {
             return _Select<TResult>(expression);
         }
-        public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue) where TResult : class, new()
+        public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue)
         {
             var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             reval.Context = this.Context;
@@ -390,7 +393,7 @@ namespace SqlSugar
 
         public virtual int Count()
         {
-
+            InitMapping();
             var sql = string.Empty;
             if (QueryBuilder.PartitionByValue.IsValuable())
             {
@@ -467,6 +470,7 @@ namespace SqlSugar
 
         public virtual DataTable ToDataTable()
         {
+            InitMapping();
             var sqlObj = this.ToSql();
             RestoreMapping();
             var result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
@@ -499,6 +503,7 @@ namespace SqlSugar
 
         public virtual List<T> ToList()
         {
+            InitMapping();
             return _ToList<T>();
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize)
@@ -532,6 +537,7 @@ namespace SqlSugar
 
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
+            InitMapping();
             string sql = QueryBuilder.ToSqlString();
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
@@ -676,12 +682,18 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
+
         protected void RestoreMapping()
         {
             if (IsAs && _RestoreMapping)
             {
                 this.Context.MappingTables = OldMappingTableList == null ? new MappingTableList() : OldMappingTableList;
             }
+        }
+        protected void InitMapping()
+        {
+            if (this.QueryableMappingTableList != null)
+                this.Context.MappingTables = this.QueryableMappingTableList;
         }
 
         private void SetContextModel<TResult>(List<TResult> result, Type entityType)
