@@ -124,6 +124,23 @@ new List<SugarParameter>() {
            (@Name) ;SELECT SCOPE_IDENTITY();", new List<SugarParameter>() {
                            new SugarParameter("@Name","张三")
             }, t11.Key, t11.Value, "Insert t11 error");
+
+
+            var t12 = db.Insertable<Student>(new { Name = "a" }).ToSql();
+            base.Check(@"INSERT INTO [STudent]  
+           ([Name])
+     VALUES
+           (@Name) ;SELECT SCOPE_IDENTITY();", new List<SugarParameter>() {
+                           new SugarParameter("@Name","a")
+            }, t12.Key, t12.Value, "Insert t12 error");
+
+            var t13 = db.Insertable<Student>(new Dictionary<string, object>() { {"id",0 },{ "name","2"} }).ToSql();
+            base.Check(@"INSERT INTO [STudent]  
+           ([Name])
+     VALUES
+           (@Name) ;SELECT SCOPE_IDENTITY();", new List<SugarParameter>() {
+                           new SugarParameter("@Name","2")
+            }, t13.Key, t13.Value, "Insert t13 error");
         }
     }
 

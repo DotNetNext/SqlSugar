@@ -144,6 +144,21 @@ namespace OrmTest.UnitTest
                                "Update 12 error"
             );
 
+
+
+            var t13 = db.Updateable<Student>(new { Name = "a", id=1 }).ToSql();
+            base.Check(@"UPDATE [STudent]  SET
+           [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
+                           new SugarParameter("@Name","a"),
+                           new SugarParameter("@ID",1)
+            }, t13.Key, t13.Value, "Insert t13 error");
+
+            var t14 = db.Updateable<Student>(new Dictionary<string, object>() { { "id", 0 }, { "name", "2" } }).ToSql();
+            base.Check(@"UPDATE [STudent]  SET
+           [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
+                               new SugarParameter("@Name", "2"),
+                           new SugarParameter("@ID", 0)
+            }, t14.Key, t14.Value, "Insert t14 error");
         }
 
     }
