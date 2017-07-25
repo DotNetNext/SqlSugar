@@ -11,6 +11,7 @@ namespace SqlSugar
 {
     public class RewritableMethods : IRewritableMethods
     {
+        #region DataReader
 
         /// <summary>
         ///DataReader to Dynamic
@@ -121,84 +122,6 @@ namespace SqlSugar
             return reval;
         }
 
-        /// <summary>
-        /// Serialize Object
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public string SerializeObject(object value)
-        {
-            return JsonConvert.SerializeObject(value);
-        }
-
-        /// <summary>
-        /// Serialize Object
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public T DeserializeObject<T>(string value)
-        {
-            if (value.IsValuable())
-            {
-                value = value.Replace(":{}", ":null");
-            }
-            return JsonConvert.DeserializeObject<T>(value);
-        }
-
-        /// <summary>
-        /// Copy new Object
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sourceObject"></param>
-        /// <returns></returns>
-        public T TranslateCopy<T>(T sourceObject)
-        {
-            if (sourceObject == null) return default(T);
-            else
-            {
-                var jsonString = SerializeObject(sourceObject);
-                return DeserializeObject<T>(jsonString);
-            }
-        }
-
-        public dynamic DataTableToDynamic(DataTable table)
-        {
-            List<Dictionary<string, object>> deserializeObject = new List<Dictionary<string, object>>();
-            Dictionary<string, object> childRow;
-            foreach (DataRow row in table.Rows)
-            {
-                childRow = new Dictionary<string, object>();
-                foreach (DataColumn col in table.Columns)
-                {
-                    childRow.Add(col.ColumnName, row[col]);
-                }
-                deserializeObject.Add(childRow);
-            }
-            return JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(deserializeObject));
-
-        }
-
-        public ICacheManager<T> GetCacheInstance<T>()
-        {
-            return CacheManager<T>.GetInstance();
-        }
-
-        public void RemoveCacheAll()
-        {
-            CacheManager.RemoveAllCache();
-        }
-
-        public void RemoveCacheAll<T>()
-        {
-            CacheManager<T>.GetInstance().RemoveAllCache();
-        }
-
-        public void RemoveCache<T>(string key)
-        {
-            CacheManager<T>.GetInstance().Remove(key);
-        }
-
-        #region Private Methods
         private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
@@ -222,8 +145,94 @@ namespace SqlSugar
                 }
             }
             return result;
+        } 
+        #endregion
+
+        #region Serialize
+        /// <summary>
+        /// Serialize Object
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string SerializeObject(object value)
+        {
+            return JsonConvert.SerializeObject(value);
         }
 
+        /// <summary>
+        /// Serialize Object
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public T DeserializeObject<T>(string value)
+        {
+            if (value.IsValuable())
+            {
+                value = value.Replace(":{}", ":null");
+            }
+            return JsonConvert.DeserializeObject<T>(value);
+        }
         #endregion
+
+        #region Copy Object
+        /// <summary>
+        /// Copy new Object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sourceObject"></param>
+        /// <returns></returns>
+        public T TranslateCopy<T>(T sourceObject)
+        {
+            if (sourceObject == null) return default(T);
+            else
+            {
+                var jsonString = SerializeObject(sourceObject);
+                return DeserializeObject<T>(jsonString);
+            }
+        } 
+        #endregion
+
+        #region DataTable
+        public dynamic DataTableToDynamic(DataTable table)
+        {
+            List<Dictionary<string, object>> deserializeObject = new List<Dictionary<string, object>>();
+            Dictionary<string, object> childRow;
+            foreach (DataRow row in table.Rows)
+            {
+                childRow = new Dictionary<string, object>();
+                foreach (DataColumn col in table.Columns)
+                {
+                    childRow.Add(col.ColumnName, row[col]);
+                }
+                deserializeObject.Add(childRow);
+            }
+            return JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(deserializeObject));
+
+        } 
+        #endregion
+
+        #region Cache
+        public ICacheManager<T> GetCacheInstance<T>()
+        {
+            return CacheManager<T>.GetInstance();
+        }
+
+        public void RemoveCacheAll()
+        {
+            CacheManager.RemoveAllCache();
+        }
+
+        public void RemoveCacheAll<T>()
+        {
+            CacheManager<T>.GetInstance().RemoveAllCache();
+        }
+
+        public void RemoveCache<T>(string key)
+        {
+            CacheManager<T>.GetInstance().Remove(key);
+        } 
+        #endregion
+
+ 
     }
 }

@@ -174,7 +174,8 @@ namespace SqlSugar
                 {
                     var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.Const + Context.ParameterIndex;
                     Context.ParameterIndex++;
-                    if (value != null && value.GetType().IsEnum()) {
+                    if (value != null && value.GetType().IsEnum())
+                    {
                         value = Convert.ToInt64(value);
                     }
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
@@ -204,7 +205,7 @@ namespace SqlSugar
         protected string AppendParameter(object paramterValue)
         {
             string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
-            this.Context.ParameterIndex++;;
+            this.Context.ParameterIndex++; ;
             this.Context.Parameters.Add(new SugarParameter(parameterName, paramterValue));
             return parameterName;
         }
@@ -254,7 +255,7 @@ namespace SqlSugar
 
         protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string asName)
         {
-            if (item.NodeType == ExpressionType.Constant)
+            if (item is ConstantExpression)
             {
                 this.Expression = item;
                 this.Start();
@@ -279,12 +280,6 @@ namespace SqlSugar
                 this.Context.ParameterIndex++;
                 parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
                 this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
-            }
-            else if (item is MethodCallExpression)
-            {
-                this.Expression = item;
-                this.Start();
-                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
             }
             else if (item is MemberExpression)
             {
@@ -396,6 +391,12 @@ namespace SqlSugar
                         }
                     }
                 }
+            }
+            else if (item is MethodCallExpression|| item is UnaryExpression)
+            {
+                this.Expression = item;
+                this.Start();
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
             }
             else
             {
