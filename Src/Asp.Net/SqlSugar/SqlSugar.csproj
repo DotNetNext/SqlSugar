@@ -39,6 +39,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.121.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.102.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -71,6 +75,18 @@
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
     <Compile Include="Realization\MySql\DbMaintenance\MySqlDbMaintenance.cs" />
+    <Compile Include="Realization\Oracle\CodeFirst\OracleCodeFirst.cs" />
+    <Compile Include="Realization\Oracle\DbBind\OracleDbBind.cs" />
+    <Compile Include="Realization\Oracle\DbFirst\OracleDbFirst.cs" />
+    <Compile Include="Realization\Oracle\DbMaintenance\OracleDbMaintenance.cs" />
+    <Compile Include="Realization\Oracle\OracleProvider.cs" />
+    <Compile Include="Realization\Oracle\Queryable\OracleQueryable.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleDeleteBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleExpressionContext.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleInsertBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleQueryBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleUpdateBuilder.cs" />
     <Compile Include="Realization\Sqlite\CodeFirst\SqliteCodeFirst.cs" />
     <Compile Include="Realization\Sqlite\DbBind\SqliteDbBind.cs" />
     <Compile Include="Realization\Sqlite\DbFirst\SqliteDbFirst.cs" />
@@ -207,10 +223,11 @@
   <ItemGroup>
     <Content Include="References\MySql.Data.dll" />
     <Content Include="References\Newtonsoft.Json.dll" />
+    <Content Include="References\Oracle.ManagedDataAccess.dll" />
     <Content Include="References\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Realization\Oracle\" />
+    <None Include="SqlSugar.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
