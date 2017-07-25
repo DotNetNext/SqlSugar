@@ -25,8 +25,38 @@ namespace OrmTest.UnitTest
                 Q3();
                 Q4();
                 q5();
+                q6();
+                q7();
             }
             base.End("Method Test");
+        }
+
+        private void q6()
+        {
+            using (var db = GetInstance())
+            {
+                var join6 = db.Queryable<Student, School>((st, sc) => new object[] {
+                JoinType.Left,st.SchoolId==sc.Id
+                 }).Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = SqlFunc.AggregateMin(sc.Id) }).ToSql();
+
+                string sql = @"SELECT  [st].[Name] AS [Name] , MIN([sc].[Id]) AS [SchoolId]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )  ";
+                base.Check(sql, null, join6.Key, null, "join 6 Error");
+            }
+        }
+
+        private void q7()
+        {
+            using (var db = GetInstance())
+            {
+                var join7 = db.Queryable<Student, School>((st, sc) => new object[] {
+                JoinType.Left,st.SchoolId==sc.Id
+                 }).Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = SqlFunc.AggregateMin(sc.Id*1) }).ToSql();
+
+                string sql = @"SELECT  [st].[Name] AS [Name] , MIN(( [sc].[Id] * @Id0 )) AS [SchoolId]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   ";
+                base.Check(sql, new List<SugarParameter>() {
+                    new SugarParameter("@Id0",1)
+                }, join7.Key, join7.Value, "join 7 Error");
+            }
         }
 
         private void q5()
