@@ -30,7 +30,7 @@ namespace SqlSugar
         
         public override void BeginTran(string transactionName)
         {
-            ((SQLiteConnection)this.Connection).BeginTransaction();
+            base.BeginTran();
         }
         /// <summary>
         /// Only SqlServer
@@ -39,7 +39,7 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
-            ((SQLiteConnection)this.Connection).BeginTransaction(iso);
+            base.BeginTran(iso);
         }
         public override IDataAdapter GetAdapter()
         {
