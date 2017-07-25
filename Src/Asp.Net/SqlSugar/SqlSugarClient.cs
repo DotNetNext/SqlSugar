@@ -261,6 +261,27 @@ namespace SqlSugar
         {
             return this.Insertable(new T[] { insertObj });
         }
+        public virtual IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
+        {
+            Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Insertable.columnDictionary can't be null");
+            var insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(columnDictionary));
+            var columns = columnDictionary.Select(it => it.Key).ToList();
+            return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c,StringComparison.CurrentCultureIgnoreCase))); ;
+        }
+        public virtual IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
+        {
+            if (insertDynamicObject is T)
+            {
+                return this.Insertable((T)insertDynamicObject);
+            }
+            else
+            {
+                var columns= ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
+                Check.Exception(columns.IsNullOrEmpty(), "Insertable.updateDynamicObject can't be null");
+                T insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(insertDynamicObject));
+                return this.Insertable(insertObject).InsertColumns(it=> columns.Any(c=>it.Equals(c,StringComparison.CurrentCultureIgnoreCase)));
+            }
+        }
         #endregion
 
         #region Deleteable
@@ -315,6 +336,27 @@ namespace SqlSugar
         public virtual IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return this.Updateable(new T[] { new T() });
+        }
+        public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
+        {
+            Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Updateable.columnDictionary can't be null");
+            var updateObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(columnDictionary));
+            var columns = columnDictionary.Select(it => it.Key).ToList();
+            return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+        }
+        public virtual IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
+        {
+            if (updateDynamicObject is T)
+            {
+                return this.Updateable((T)updateDynamicObject);
+            }
+            else
+            {
+                var columns = ((object)updateDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
+                Check.Exception(columns.IsNullOrEmpty(), "Updateable.updateDynamicObject can't be null");
+                T updateObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(updateDynamicObject));
+                return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+            }
         }
         #endregion
 
