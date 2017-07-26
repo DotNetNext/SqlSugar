@@ -236,7 +236,7 @@ namespace SqlSugar
                     method = getString;
                     if (bindProperyTypeName == "guid")
                     {
-                        method = getConvertStringGuid;
+                        method =isNullableType? getConvertStringGuid : getStringGuid;
                     }
                     break;
                 case CSharpDataType.DateTime:
