@@ -110,8 +110,34 @@ namespace OrmTest.UnitTest
             base.Check(value, pars, "(LEN(@MethodConst0) > @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","aaaa"),new SugarParameter("@Const1",1)
             }, "Length error");
+
+            Length2();
+            Length3();
         }
 
+        private void Length2()
+        {
+            Expression<Func<Student, bool>> exp = it => it.Name.Length > 1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(LEN([Name])> @Length1 )", new List<SugarParameter>() {
+                new SugarParameter("@Length1",1) 
+            }, "Length2 error");
+        }
+
+        private void Length3()
+        {
+            Expression<Func<Student, bool>> exp = it => it.Name.Length > "a".Length;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(LEN([Name])> @Length1 )", new List<SugarParameter>() {
+                new SugarParameter("@Length1",1)
+            }, "Length3 error");
+        }
 
         private void Time()
         {
