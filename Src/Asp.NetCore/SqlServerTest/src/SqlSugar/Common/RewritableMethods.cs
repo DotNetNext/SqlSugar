@@ -37,6 +37,24 @@ namespace SqlSugar
         }
 
         /// <summary>
+        ///DataReader to Dynamic List
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader)
+        {
+            List<ExpandoObject> result = new List<ExpandoObject>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (reader.Read())
+                {
+                    result.Add(DataReaderToExpandoObject(reader));
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         ///DataReader to DataReaderToDictionary
         /// </summary>
         /// <param name="reader"></param>
@@ -145,7 +163,7 @@ namespace SqlSugar
                 }
             }
             return result;
-        } 
+        }
         #endregion
 
         #region Serialize
@@ -189,7 +207,7 @@ namespace SqlSugar
                 var jsonString = SerializeObject(sourceObject);
                 return DeserializeObject<T>(jsonString);
             }
-        } 
+        }
         #endregion
 
         #region DataTable
@@ -208,7 +226,7 @@ namespace SqlSugar
             }
             return JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(deserializeObject));
 
-        } 
+        }
         #endregion
 
         #region Cache
@@ -230,9 +248,9 @@ namespace SqlSugar
         public void RemoveCache<T>(string key)
         {
             CacheManager<T>.GetInstance().Remove(key);
-        } 
+        }
         #endregion
 
- 
+
     }
 }

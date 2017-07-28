@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -98,9 +99,9 @@ namespace SqlSugar
         /// <summary>
         /// Lambda Query operation
         /// </summary>
-        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName)
+        public virtual ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
-            var queryable = Queryable<SugarDynamic>();
+            var queryable = Queryable<ExpandoObject>();
             queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
@@ -263,6 +264,7 @@ namespace SqlSugar
         }
         public virtual IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
+            InitMppingInfo<T>();
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Insertable.columnDictionary can't be null");
             var insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
@@ -270,6 +272,7 @@ namespace SqlSugar
         }
         public virtual IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
+            InitMppingInfo<T>();
             if (insertDynamicObject is T)
             {
                 return this.Insertable((T)insertDynamicObject);
@@ -293,26 +296,32 @@ namespace SqlSugar
         }
         public virtual IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
+            InitMppingInfo<T>();
             return this.Deleteable<T>().Where(expression);
         }
         public virtual IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
         {
+            InitMppingInfo<T>();
             return this.Deleteable<T>().In(primaryKeyValue);
         }
         public virtual IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
         {
+            InitMppingInfo<T>();
             return this.Deleteable<T>().In(primaryKeyValues);
         }
         public virtual IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
         {
+            InitMppingInfo<T>();
             return this.Deleteable<T>().In(pkValue);
         }
         public virtual IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
         {
+            InitMppingInfo<T>();
             return this.Deleteable<T>().Where(deleteObj);
         }
         public virtual IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
         {
+            InitMppingInfo<T>();
             return this.Deleteable<T>().Where(deleteObjs);
         }
         #endregion
@@ -339,6 +348,7 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
+            InitMppingInfo<T>();
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Updateable.columnDictionary can't be null");
             var updateObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
@@ -346,6 +356,7 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
         {
+            InitMppingInfo<T>();
             if (updateDynamicObject is T)
             {
                 return this.Updateable((T)updateDynamicObject);

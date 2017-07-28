@@ -31,7 +31,8 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public override void BeginTran(string transactionName)
         {
-            ((SqlConnection)this.Connection).BeginTransaction(transactionName);
+            CheckConnection();
+            base.Transaction = ((SqlConnection)this.Connection).BeginTransaction(transactionName);
         }
         /// <summary>
         /// Only SqlServer
@@ -40,7 +41,8 @@ namespace SqlSugar
         /// <param name="transactionName"></param>
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
-            ((SqlConnection)this.Connection).BeginTransaction(iso, transactionName);
+            CheckConnection();
+            base.Transaction = ((SqlConnection)this.Connection).BeginTransaction(iso, transactionName);
         }
         public override IDataAdapter GetAdapter()
         {
@@ -89,7 +91,8 @@ namespace SqlSugar
                 sqlParameter.DbType = parameter.DbType;
                 sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction == ParameterDirection.Output) {
+                if (sqlParameter.Direction == ParameterDirection.Output)
+                {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);

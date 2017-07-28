@@ -448,6 +448,11 @@ namespace SqlSugar
         {
             get
             {
+                if (this.GroupByValue == null) return null;
+                if (this.GroupByValue.Last() != ' ' )
+                {
+                    return this.GroupByValue + PubConst.Space;
+                }
                 return this.GroupByValue;
             }
         }

@@ -236,7 +236,7 @@ namespace SqlSugar
                     method = getString;
                     if (bindProperyTypeName == "guid")
                     {
-                        method = getConvertStringGuid;
+                        method =isNullableType? getConvertStringGuid : getStringGuid;
                     }
                     break;
                 case CSharpDataType.DateTime:
@@ -261,7 +261,8 @@ namespace SqlSugar
                         method = isNullableType ? getConvertStringGuid : getStringGuid;
                     break;
                 case CSharpDataType.@byte:
-                    method = isNullableType ? getConvertByte : getByte;
+                    if (bindProperyTypeName == "byte")
+                        method = isNullableType ? getConvertByte : getByte;
                     break;
                 case CSharpDataType.@enum:
                     method = isNullableType ? getConvertEnum_Null.MakeGenericMethod(bindPropertyType) : getEnum.MakeGenericMethod(bindPropertyType);

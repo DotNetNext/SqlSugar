@@ -17,7 +17,26 @@ namespace SqlSugar
             var isValue = expression.Member.Name == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
             var isBool = expression.Type == PubConst.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
-            if (isValueBool)
+            var isLength = expression.Member.Name == "Length" && (expression.Expression as MemberExpression).Type == PubConst.StringType;
+            if (isLength)
+            {
+                var oldCommonTempDate = parameter.CommonTempData;
+                parameter.CommonTempData = CommonTempDataType.Result;
+                this.Expression = expression.Expression;
+                var isConst=this.Expression is ConstantExpression;
+                this.Start();
+                var methodParamter =  new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null };
+                var result = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                      methodParamter
+                  }
+                });
+                base.AppendMember(parameter, isLeft, result);
+                parameter.CommonTempData = oldCommonTempDate;
+                return;
+            }
+            else if (isValueBool)
             {
                 isValue = false;
             }
@@ -69,14 +88,14 @@ namespace SqlSugar
                     var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
                     if (isSetTempData)
                     {
-                        fieldName = GetName(parameter, expression, null,isSingle);
+                        fieldName = GetName(parameter, expression, null, isSingle);
                         baseParameter.CommonTempData = fieldName;
                     }
                     else
                     {
                         if (isValueBool)
                         {
-                            fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft,isSingle);
+                            fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft, isSingle);
                         }
                         else if (ExpressionTool.IsConstExpression(expression))
                         {
@@ -86,7 +105,7 @@ namespace SqlSugar
                         }
                         else
                         {
-                            fieldName = GetName(parameter, expression, isLeft,isSingle);
+                            fieldName = GetName(parameter, expression, isLeft, isSingle);
                         }
                         if (expression.Type == PubConst.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
                         {
@@ -105,7 +124,7 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.ArrayMultiple:
                 case ResolveExpressType.ArraySingle:
-                    fieldName = GetName(parameter, expression, isLeft,parameter.Context.ResolveType== ResolveExpressType.ArraySingle);
+                    fieldName = GetName(parameter, expression, isLeft, parameter.Context.ResolveType == ResolveExpressType.ArraySingle);
                     base.Context.Result.Append(fieldName);
                     break;
                 default:
@@ -147,7 +166,7 @@ namespace SqlSugar
             }
             else
             {
-                return GetMultipleName(parameter,expression,IsLeft);
+                return GetMultipleName(parameter, expression, IsLeft);
             }
         }
 
