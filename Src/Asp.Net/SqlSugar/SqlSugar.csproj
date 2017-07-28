@@ -154,7 +154,6 @@
     <Compile Include="Realization\MySql\MySqlProvider.cs" />
     <Compile Include="Realization\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Realization\SqlServer\Queryable\SqlServerQueryable.cs" />
-    <Compile Include="Entities\SugarDynamic.cs" />
     <Compile Include="Entities\ConnectionConfig.cs" />
     <Compile Include="Entities\DbColumnInfo.cs" />
     <Compile Include="Entities\DbTableInfo.cs" />

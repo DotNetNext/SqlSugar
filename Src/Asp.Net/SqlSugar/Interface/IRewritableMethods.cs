@@ -11,6 +11,7 @@ namespace SqlSugar
     public interface IRewritableMethods
     {
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
+        List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
         List<T> DataReaderToDynamicList<T>(IDataReader reader);
         string SerializeObject(object value);
         T DeserializeObject<T>(string value);

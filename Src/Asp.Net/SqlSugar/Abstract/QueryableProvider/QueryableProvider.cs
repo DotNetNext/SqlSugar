@@ -8,6 +8,8 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Dynamic;
+
 namespace SqlSugar
 {
     #region T1
@@ -648,6 +650,10 @@ namespace SqlSugar
             var entityType = typeof(TResult);
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
+                if (typeof(TResult) == typeof(ExpandoObject))
+                {
+                     return this.Context.RewritableMethods.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
+                }
                 if (entityType.IsAnonymousType() || isComplexModel)
                 {
                     result = this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);

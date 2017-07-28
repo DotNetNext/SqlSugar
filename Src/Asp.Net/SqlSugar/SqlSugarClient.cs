@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -98,9 +99,9 @@ namespace SqlSugar
         /// <summary>
         /// Lambda Query operation
         /// </summary>
-        public virtual ISugarQueryable<SugarDynamic> Queryable(string tableName, string shortName)
+        public virtual ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
-            var queryable = Queryable<SugarDynamic>();
+            var queryable = Queryable<ExpandoObject>();
             queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
