@@ -109,6 +109,9 @@ namespace OrmTest.UnitTest
 
                 var t10 = db.Queryable<Student>().Select(it => new StudentEnum() { Id = SqlFunc.GetSelfAndAutoFill(it.Id) }).ToSql();
                 base.Check("SELECT * FROM [STudent] ", null, t10.Key, t10.Value, "single t10 error");
+
+                var t11= db.Queryable<Student>().GroupBy("id").OrderBy("id").Select("id").ToSql();
+                base.Check("SELECT id FROM [STudent] GROUP BY id ORDER BY id ", null, t11.Key, t11.Value, "single t11 error");
             }
         }
     }
