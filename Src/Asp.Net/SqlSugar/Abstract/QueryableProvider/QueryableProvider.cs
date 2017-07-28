@@ -88,12 +88,14 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> AddParameters(SugarParameter[] parameters)
         {
-            QueryBuilder.Parameters.AddRange(parameters);
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
             return this;
         }
         public virtual ISugarQueryable<T> AddParameters(SugarParameter parameter)
         {
-            QueryBuilder.Parameters.Add(parameter);
+            if (parameter != null)
+                QueryBuilder.Parameters.Add(parameter);
             return this;
         }
 
