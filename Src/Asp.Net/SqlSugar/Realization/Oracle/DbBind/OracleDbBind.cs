@@ -13,34 +13,42 @@ namespace SqlSugar
                 return new List<KeyValuePair<string, CSharpDataType>>()
                 {
                   new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@int),
+                  new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
+                  new KeyValuePair<string, CSharpDataType>("interval year to  month",CSharpDataType.@int),
+                  new KeyValuePair<string, CSharpDataType>("interval day to  second",CSharpDataType.@int),
+
+                  new KeyValuePair<string, CSharpDataType>("number_int",CSharpDataType.@int),
+                  new KeyValuePair<string, CSharpDataType>("number_float",CSharpDataType.@float),
+                  new KeyValuePair<string, CSharpDataType>("number_short",CSharpDataType.@short),
+                  new KeyValuePair<string, CSharpDataType>("number_byte",CSharpDataType.@byte),
+                  new KeyValuePair<string, CSharpDataType>("number_double",CSharpDataType.@double),
+                  new KeyValuePair<string, CSharpDataType>("number_long",CSharpDataType.@long),
+                  new KeyValuePair<string, CSharpDataType>("number_bool",CSharpDataType.@bool),
+
                   new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
-                  new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
-                  new KeyValuePair<string, CSharpDataType>("sql_variant",CSharpDataType.@string),
-                  new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("varchar2",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("nvarchar2",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
-                  new KeyValuePair<string, CSharpDataType>("ntext",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("nchar",CSharpDataType.@string),
-                  new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
-                  new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
-                  new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),
-                  new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
-                  new KeyValuePair<string, CSharpDataType>("smalldatetime",CSharpDataType.DateTime),
-                  new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
-                  new KeyValuePair<string, CSharpDataType>("datetime2",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("long",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("nclob",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("rowid",CSharpDataType.@string),              
+
                   new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.DateTime),
-                  new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
-                  new KeyValuePair<string, CSharpDataType>("single",CSharpDataType.@decimal),
-                  new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
-                  new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
-                  new KeyValuePair<string, CSharpDataType>("smallmoney",CSharpDataType.@decimal),
-                  new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@double),
-                  new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@float),
-                  new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
-                  new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@byte),
-                  new KeyValuePair<string, CSharpDataType>("uniqueidentifier",CSharpDataType.Guid),
-                  new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
-                  new KeyValuePair<string, CSharpDataType>("image",CSharpDataType.byteArray),
-                  new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray)};
+                  new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("timestamp with local time zone",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
+
+                  new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@decimal),
+
+                  new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("long raw",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("raw",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("bfile",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray) };
+
             }
         }
     }
