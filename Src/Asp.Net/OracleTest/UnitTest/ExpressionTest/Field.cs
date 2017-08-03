@@ -45,7 +45,7 @@ namespace OrmTest.UnitTest
 
         public ExpressionContext GetContext()
         {
-            return new SqlServerExpressionContext();//可以更换
+            return new OracleExpressionContext();//可以更换
         }
     }
 }

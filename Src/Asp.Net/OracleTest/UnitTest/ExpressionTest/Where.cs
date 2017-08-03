@@ -55,7 +55,7 @@ namespace OrmTest.UnitTest
         private void WhereMultiple1()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 1;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new  OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -68,7 +68,7 @@ namespace OrmTest.UnitTest
             string name = "a";
             WhereConst.name = "a1";
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != name || it.Id == 1) || it.Name == WhereConst.name;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -82,7 +82,7 @@ namespace OrmTest.UnitTest
         private void whereSingle1()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 1;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -93,7 +93,7 @@ namespace OrmTest.UnitTest
         private void whereSingle2()
         {
             Expression<Func<Student, bool>> exp = it => 1 > it.Id;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -104,7 +104,7 @@ namespace OrmTest.UnitTest
         private void whereSingle3()
         {
             Expression<Func<Student, bool>> exp = it => it.Id > 1 || it.Name == "a";
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -116,7 +116,7 @@ namespace OrmTest.UnitTest
         private void whereSingle4()
         {
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != "a") || it.Name == "a1";
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -131,7 +131,7 @@ namespace OrmTest.UnitTest
             string name = "a";
             WhereConst.name = "a1";
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != name) || it.Name == WhereConst.name;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -146,7 +146,7 @@ namespace OrmTest.UnitTest
             string name = "a";
             WhereConst.name = "a1";
             Expression<Func<Student, bool>> exp = it => (it.Id > 1 && it.Name != name||it.Id==1) || it.Name == WhereConst.name;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -160,7 +160,7 @@ namespace OrmTest.UnitTest
         private void whereSingle7(Student st)
         {
             Expression<Func<Student, bool>> exp = it => it.Id > st.Id;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -172,7 +172,7 @@ namespace OrmTest.UnitTest
         private void whereSingle8(Student st)
         {
             Expression<Func<Student, bool>> exp = it => it.Name == null;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -184,7 +184,7 @@ namespace OrmTest.UnitTest
         private void whereSingle9(Student st)
         {
             Expression<Func<Student, bool>> exp = it => it.Name == st.Name;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -198,7 +198,7 @@ namespace OrmTest.UnitTest
         private void whereSingle10()
         {
             Expression<Func<Student, bool>> exp = it => true;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -212,7 +212,7 @@ namespace OrmTest.UnitTest
         private void whereSingle11()
         {
             Expression<Func<Student, bool>> exp = it => !true;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -225,7 +225,7 @@ namespace OrmTest.UnitTest
         private void whereSingle12()
         {
             Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool1==true;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -238,7 +238,7 @@ namespace OrmTest.UnitTest
         private void whereSingle13()
         {
             Expression<Func<Student, bool>> exp = it => it.Name!=null;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -251,7 +251,7 @@ namespace OrmTest.UnitTest
         private void whereSingle14()
         {
             Expression<Func<Student, bool>> exp = it =>true&& it.Name != null;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -264,7 +264,7 @@ namespace OrmTest.UnitTest
         private void whereSingle15()
         {
             Expression<Func<DataTestInfo, bool>> exp = it =>it.Money2 == 1;
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -279,7 +279,7 @@ namespace OrmTest.UnitTest
             Dictionary<string, string> dic = new Dictionary<string, string>();
             dic.Add("key", "x1");
             Expression<Func<DataTestInfo, bool>> exp = it => it.String == dic["key"];
-            ExpressionContext expContext = new ExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -292,7 +292,7 @@ namespace OrmTest.UnitTest
         private void whereSingle17()
         {
             Expression<Func<DataTestInfo, bool>> exp = it =>true&&it.String.Contains("a");
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -305,7 +305,7 @@ namespace OrmTest.UnitTest
         private void whereSingle18()
         {
             Expression<Func<DataTestInfo2, bool>> exp = it => !it.Bool1;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -317,7 +317,7 @@ namespace OrmTest.UnitTest
         private void whereSingle19()
         {
             Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value==false;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -329,7 +329,7 @@ namespace OrmTest.UnitTest
         private void whereSingle20()
         {
             Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value == it.Bool1;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -342,7 +342,7 @@ namespace OrmTest.UnitTest
         private void whereSingle21()
         {
             Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -355,7 +355,7 @@ namespace OrmTest.UnitTest
         private void whereSingle22()
         {
             Expression<Func<DataTestInfo2, bool>> exp = it => !it.Bool2.Value;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
@@ -369,7 +369,7 @@ namespace OrmTest.UnitTest
         {
             decimal? val = 1;
             Expression<Func<DataTestInfo, bool>> exp = it => it.Decimal2==val.Value;
-            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            OracleExpressionContext expContext = new OracleExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
