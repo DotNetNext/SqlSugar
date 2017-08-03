@@ -17,6 +17,8 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
+            throw new Exception(" to be continued ,It will take another week.");
+
             //    /***Unit Test***/
             new Select(1).Init();
             new Field(1).Init();
