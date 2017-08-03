@@ -17,10 +17,10 @@ namespace SqlSugar
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
-            if (name.Contains("["))
+            if (name.Contains("\""))
                 return name;
             else
-                return "[" + name + "]";
+                return "\"" + name + "\"";
         }
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {
@@ -32,20 +32,20 @@ namespace SqlSugar
                  .FirstOrDefault(it =>
                  it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase) &&
                  it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? "[" + propertyName + "]" : "[" + mappingInfo.DbColumnName + "]");
+            return (mappingInfo == null ? "\"" + propertyName + "\"" : "\"" + mappingInfo.DbColumnName + "\"");
         }
 
         public override string GetTranslationColumnName(string propertyName)
         {
-            if (propertyName.Contains("[")) return propertyName;
+            if (propertyName.Contains("\"")) return propertyName;
             else
-                return "[" + propertyName + "]";
+                return "\"" + propertyName + "\"";
         }
 
         public override string GetNoTranslationColumnName(string name)
         {
-            if (!name.Contains("[")) return name;
-            return name == null ? string.Empty : Regex.Match(name, @".*\[(.*?)\]").Groups[1].Value;
+            if (!name.Contains("\"")) return name;
+            return name == null ? string.Empty : Regex.Match(name, @".*""(.*?)""").Groups[1].Value;
         }
     }
 }
