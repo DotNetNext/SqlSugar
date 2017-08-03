@@ -59,7 +59,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [it].[Id] > @Id0 )", new List<SugarParameter>() {
+            base.Check(value, pars, "( \"it\".\"Id\" > @Id0 )", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1)
             }, "WhereMultiple1");
         }
@@ -72,7 +72,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (((( [it].[Id] > @Id0 ) AND ( [it].[Name] <> @Name1 )) OR ( [it].[Id] = @Id2 )) OR ( [it].[Name] = @Name3 ))", new List<SugarParameter>() {
+            base.Check(value, pars, " (((( \"it\".\"Id\" > @Id0 ) AND ( \"it\".\"Name\" <> @Name1 )) OR ( \"it\".\"Id\" = @Id2 )) OR ( \"it\".\"Name\" = @Name3 ))", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1),
                 new SugarParameter("@Name1","a"),
                 new SugarParameter("@Id2",1),
@@ -86,7 +86,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Id] > @Id0 )", new List<SugarParameter>() {
+            base.Check(value, pars, "( \"Id\" > @Id0 )", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1)
             }, "whereSingle1");
         }
@@ -97,7 +97,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( @Id0 > [Id] )", new List<SugarParameter>() {
+            base.Check(value, pars, "( @Id0 > \"Id\" )", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1)
             }, "whereSingle2");
         }
@@ -108,7 +108,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (( [Id] > @Id0 ) OR ( [Name] = @Name1 ))", new List<SugarParameter>() {
+            base.Check(value, pars, " (( \"Id\" > @Id0 ) OR ( \"Name\" = @Name1 ))", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1),
                 new SugarParameter("@Name1","a")
             }, "whereSingle3");
@@ -120,7 +120,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ((( [Id] > @Id0 ) AND ( [Name] <> @Name1 )) OR ( [Name] = @Name2 ))  ", new List<SugarParameter>() {
+            base.Check(value, pars, " ((( \"Id\" > @Id0 ) AND ( \"Name\" <> @Name1 )) OR ( \"Name\" = @Name2 ))  ", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1),
                 new SugarParameter("@Name1","a"),
                 new SugarParameter("@Name2","a1")
@@ -135,7 +135,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ((( [Id] > @Id0 ) AND ( [Name] <> @Name1 )) OR ( [Name] = @Name2 ))  ", new List<SugarParameter>() {
+            base.Check(value, pars, " ((( \"Id\" > @Id0 ) AND ( \"Name\" <> @Name1 )) OR ( \"Name\" = @Name2 ))  ", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1),
                 new SugarParameter("@Name1","a"),
                 new SugarParameter("@Name2","a1")
@@ -150,7 +150,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (((( [Id] > @Id0 ) AND ( [Name] <> @Name1 )) OR ( [Id] = @Id2 )) OR ( [Name] = @Name3 ))", new List<SugarParameter>() {
+            base.Check(value, pars, " (((( \"Id\" > @Id0 ) AND ( \"Name\" <> @Name1 )) OR ( \"Id\" = @Id2 )) OR ( \"Name\" = @Name3 ))", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1),
                 new SugarParameter("@Name1","a"),
                 new SugarParameter("@Id2",1),
@@ -164,7 +164,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Id] > @Id0 )", new List<SugarParameter>() {
+            base.Check(value, pars, "( \"Id\" > @Id0 )", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1)
             }, "whereSingle7");
         }
@@ -176,7 +176,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Name] IS NULL )", new List<SugarParameter>() {
+            base.Check(value, pars, "( \"Name\" IS NULL )", new List<SugarParameter>() {
 
             }, "whereSingle8");
         }
@@ -188,7 +188,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Name] = @Name0 )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Name\" = @Name0 )", new List<SugarParameter>()
             {
                 new SugarParameter("@Name0",null)
             }, "whereSingle9");
@@ -229,7 +229,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Bool1] = @Bool10 )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Bool1\" = @Bool10 )", new List<SugarParameter>()
             {
                 new SugarParameter("@Bool10",true)
             }, "whereSingle12");
@@ -242,7 +242,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Name] IS NOT NULL )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Name\" IS NOT NULL )", new List<SugarParameter>()
             {
  
             }, "whereSingle13");
@@ -255,7 +255,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( 1 = 1 ) AND( [Name] IS NOT NULL ))", new List<SugarParameter>()
+            base.Check(value, pars, "(( 1 = 1 ) AND( \"Name\" IS NOT NULL ))", new List<SugarParameter>()
             {
 
             }, "whereSingle14");
@@ -268,7 +268,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Money2] = @Const0 )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Money2\" = @Const0 )", new List<SugarParameter>()
             {
                 new SugarParameter("@Const0",1)
             }, "whereSingle15");
@@ -283,7 +283,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [String] = @Const0 )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"String\" = @Const0 )", new List<SugarParameter>()
             {
                 new SugarParameter("@Const0",dic["key"])
             }, "whereSingle16");
@@ -296,7 +296,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(( 1 = 1 ) AND ([String] like '%'+@MethodConst1+'%') )", new List<SugarParameter>()
+            base.Check(value, pars, "(( 1 = 1 ) AND (\"String\" like '%'+@MethodConst1+'%') )", new List<SugarParameter>()
             {
                 new SugarParameter("@MethodConst1","a")
             }, "whereSingle17");
@@ -309,7 +309,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "NOT ( [Bool1]=1 )  ", new List<SugarParameter>()
+            base.Check(value, pars, "NOT ( \"Bool1\"=1 )  ", new List<SugarParameter>()
             {
    
             }, "whereSingle18");
@@ -321,7 +321,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Bool2] = @Value0 )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Bool2\" = @Value0 )", new List<SugarParameter>()
             {
                 new SugarParameter("@Value0",false)
             }, "whereSingle19");
@@ -333,7 +333,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Bool2] = [Bool1] )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Bool2\" = \"Bool1\" )", new List<SugarParameter>()
             {
                 
             }, "whereSingle19");
@@ -346,7 +346,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Bool2]=1 )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Bool2\"=1 )", new List<SugarParameter>()
             {
 
             }, "whereSingle21");
@@ -359,7 +359,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "NOT ( [Bool2]=1 ) ", new List<SugarParameter>()
+            base.Check(value, pars, "NOT ( \"Bool2\"=1 ) ", new List<SugarParameter>()
             {
 
             }, "whereSingle22");
@@ -373,7 +373,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "( [Decimal2] = @Const0 )", new List<SugarParameter>()
+            base.Check(value, pars, "( \"Decimal2\" = @Const0 )", new List<SugarParameter>()
             {
                 new SugarParameter("@Const0",val)
             }, "whereSingle23");
