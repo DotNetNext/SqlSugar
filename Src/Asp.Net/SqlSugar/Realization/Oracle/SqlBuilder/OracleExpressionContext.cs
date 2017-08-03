@@ -15,6 +15,7 @@ namespace SqlSugar
         public OracleExpressionContext()
         {
             base.DbMehtods = new OracleMethod();
+            base.Result.IsUpper = true;
         }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
         {
