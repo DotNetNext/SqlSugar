@@ -38,7 +38,7 @@ namespace SqlSugar
         }
         public int InsertReturnIdentity<T>(T insertObj) where T : class, new()
         {
-            return this.Context.Insertable(insertObj).ExecuteReutrnIdentity();
+            return this.Context.Insertable(insertObj).ExecuteReturnIdentity();
         }
         public bool InsertRange<T>(T[] insertObjs) where T : class, new()
         {

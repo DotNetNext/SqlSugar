@@ -21,20 +21,22 @@ namespace OrmTest.Demo
             var t2 = db.Insertable(insertObj).ExecuteCommand();
 
             //Insert reutrn Identity Value
-            var t3 = db.Insertable(insertObj).ExecuteReutrnIdentity();
+            var t3 = db.Insertable(insertObj).ExecuteReturnIdentity();
 
+            //Insert reutrn Identity Value
+            var t31 = db.Insertable(insertObj).ExecuteReturnEntity();
 
             //Only  insert  Name and SchoolId
-            var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.SchoolId }).ExecuteReutrnIdentity();
-            var t4_1 = db.Insertable(insertObj).InsertColumns(it => it=="Name"||it== "SchoolId").ExecuteReutrnIdentity();
+            var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.SchoolId }).ExecuteReturnIdentity();
+            var t4_1 = db.Insertable(insertObj).InsertColumns(it => it=="Name"||it== "SchoolId").ExecuteReturnIdentity();
 
 
             //Ignore TestId
-            var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReutrnIdentity();
+            var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReturnIdentity();
 
 
             //Ignore   TestId
-            var t6 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReutrnIdentity();
+            var t6 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReturnIdentity();
 
 
             //Use Lock

@@ -10,7 +10,8 @@ namespace SqlSugar
     public interface IInsertable<T>
     {
         int ExecuteCommand();
-        int ExecuteReutrnIdentity();
+        int ExecuteReturnIdentity();
+        T ExecuteReturnEntity();
         IInsertable<T> AS(string tableName);
         IInsertable<T> With(string lockString);
         IInsertable<T> InsertColumns(Expression<Func<T, object>> columns);

@@ -100,7 +100,11 @@ namespace SqlSugar
                 return mappingInfo == null ? dbColumnName : mappingInfo.DbColumnName;
             }
         }
-
+        public PropertyInfo GetProperty<T>(string dbColumnName)
+        {
+            var propertyName = GetPropertyName<T>(dbColumnName);
+            return typeof(T).GetProperties().First(it => it.Name == propertyName);
+        }
         #region Primary key
         private static void SetColumns(EntityInfo result)
         {
