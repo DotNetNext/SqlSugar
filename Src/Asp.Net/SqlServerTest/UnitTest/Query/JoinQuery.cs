@@ -39,7 +39,7 @@ namespace OrmTest.UnitTest
                 JoinType.Left,st.SchoolId==sc.Id
                  }).Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = SqlFunc.AggregateMin(sc.Id) }).ToSql();
 
-                string sql = @"SELECT  [st].[Name] AS [Name] , MIN([sc].[Id]) AS [SchoolId]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )  ";
+                string sql = @"SELECT  [st].[Name] AS [Name] , MIN([sc].[Id]) AS [SchoolId]  FROM [STudent] st Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )  ";
                 base.Check(sql, null, join6.Key, null, "join 6 Error");
             }
         }
@@ -52,7 +52,7 @@ namespace OrmTest.UnitTest
                 JoinType.Left,st.SchoolId==sc.Id
                  }).Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = SqlFunc.AggregateMin(sc.Id*1) }).ToSql();
 
-                string sql = @"SELECT  [st].[Name] AS [Name] , MIN(( [sc].[Id] * @Id0 )) AS [SchoolId]  FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   ";
+                string sql = @"SELECT  [st].[Name] AS [Name] , MIN(( [sc].[Id] * @Id0 )) AS [SchoolId]  FROM [STudent] st Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )   ";
                 base.Check(sql, new List<SugarParameter>() {
                     new SugarParameter("@Id0",1)
                 }, join7.Key, join7.Value, "join 7 Error");
@@ -93,7 +93,7 @@ namespace OrmTest.UnitTest
                             .Where("st.id>@id")
                             .AddParameters(new { id = 1 })
                             .Select("st.*").ToSql();
-                string sql = @"SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id ";
+                string sql = @"SELECT st.* FROM [Student] st Left JOIN [School] sh ON sh.id=st.schoolid   WHERE st.id>@id ";
                 base.Check(sql,new List<SugarParameter>() {new SugarParameter("@id",1)}, join3.Key, join3.Value, "join 3 Error");
             }
         }
@@ -105,7 +105,7 @@ namespace OrmTest.UnitTest
                 var join1 = db.Queryable<Student, School>((st, sc) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id
                 }).Where(st => st.Id > 0).Select<Student>("*").ToSql();
-                base.Check(@"SELECT * FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
+                base.Check(@"SELECT * FROM [STudent] st Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
                     new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
                     }, join1.Key, join1.Value, "join 1 Error");
@@ -118,7 +118,7 @@ namespace OrmTest.UnitTest
                 var join2 = db.Queryable<Student, School>((st, sc) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id
                 }).Where(st => st.Id > 2).Select<Student>("*").ToSql();
-                base.Check(@"SELECT * FROM [STudent] st Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
+                base.Check(@"SELECT * FROM [STudent] st Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )   WHERE ( [st].[ID] > @Id0 ) ",
     new List<SugarParameter>() {
                         new SugarParameter("@Id0",2)
     }, join2.Key, join2.Value, "join 2 Error");

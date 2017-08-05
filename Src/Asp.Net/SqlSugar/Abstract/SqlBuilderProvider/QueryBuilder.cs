@@ -306,7 +306,7 @@ namespace SqlSugar
             return string.Format(
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + PubConst.Space,
-                joinInfo.TableName + PubConst.Space,
+                Builder.GetTranslationTableName(joinInfo.TableName) + PubConst.Space,
                 joinInfo.ShortName + PubConst.Space + joinInfo.TableWithString,
                 joinInfo.JoinWhere);
         }
