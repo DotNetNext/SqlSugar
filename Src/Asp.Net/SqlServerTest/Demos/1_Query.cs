@@ -234,6 +234,13 @@ namespace OrmTest.Demo
             })
             .WhereIF(false, (st, sc) => sc.Id == 1)
             .WhereIF(false, (st, sc) => st.Id == 1).ToList();
+
+
+            var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            })
+            .Select((st, sc) => new { id=st.Id,school=sc }).ToList();
+
         }
         public static void Join()
         {
