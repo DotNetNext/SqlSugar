@@ -38,7 +38,7 @@ namespace OrmTest.UnitTest
                 Varbinary2 = null,
                 String = "string"
             };
-            var id = db.Insertable<DataTestInfo>(insertObject).ExecuteReutrnIdentity();
+            var id = db.Insertable<DataTestInfo>(insertObject).ExecuteReturnIdentity();
             var data = db.Queryable<DataTestInfo>().InSingle(id);
             if (
                 insertObject.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") != data.Datetime1.ToString("yyyy-MM-dd HH:mm:ss") ||

@@ -28,7 +28,7 @@ namespace OrmTest.UnitTest
                 SchoolId = shoolValue
             };
             var x2 = db.Queryable<StudentEnum>().AS("student").Where(it => enums.Contains(it.SchoolId)).ToSql();
-            var id= db.Insertable(x).AS("student").ExecuteReutrnIdentity();
+            var id= db.Insertable(x).AS("student").ExecuteReturnIdentity();
             var data = db.Queryable<StudentEnum>().AS("student").InSingle(id);
             shoolValue = SchoolEnum.UniversityOfOxford;
            var sql= db.Updateable<StudentEnum>().AS("student").UpdateColumns(it=>new StudentEnum() { Name="a" , SchoolId= shoolValue }).Where(it=>it.Id==id).ToSql();
