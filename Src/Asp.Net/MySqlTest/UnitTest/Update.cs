@@ -124,6 +124,8 @@ namespace OrmTest.UnitTest
                                t10.Value,
                                "Update 10 error"
             );
+
+            var t11 = db.Updateable<Student>().WhereColumns(it => new { it.Name }).ToSql();
         }
 
         public SqlSugarClient GetInstance()
