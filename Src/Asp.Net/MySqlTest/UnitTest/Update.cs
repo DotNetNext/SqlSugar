@@ -125,7 +125,14 @@ namespace OrmTest.UnitTest
                                "Update 10 error"
             );
 
-            var t11 = db.Updateable<Student>().WhereColumns(it => new { it.Name }).ToSql();
+            var t11 = db.Updateable<Student>(new Student() { Name="1", CreateTime=DateTime.Now.Date,SchoolId=1 }).WhereColumns(it => new { it.Name }).ToSql();
+            base.Check(@"UPDATE `STudent`  SET
+           `SchoolId`=@SchoolId,`CreateTime`=@CreateTime  WHERE `Name`=@Name", new List<SugarParameter>() {
+                         new SugarParameter("@CreateTime",DateTime.Now.Date),
+                           new SugarParameter("@Name","1"),
+                           new SugarParameter("@SchoolId",1),
+                           new SugarParameter("@ID",0)
+            }, t11.Key , t11.Value , "Update 11 error");
         }
 
         public SqlSugarClient GetInstance()
