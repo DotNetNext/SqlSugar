@@ -22,7 +22,7 @@ namespace OrmTest.Demo
 
             var sql2 = db.Queryable<Student, School>((f, s) => new object[] { JoinType.Left, f.SchoolId == s.Id }).ToSql();
             //SELECT[f].[ID],[f].[SchoolId],[f].[Name],[f].[CreateTime]
-            //FROM[STudent] f Left JOIN School s ON([f].[SchoolId] = [s].[Id])   WHERE f.isDelete=0 
+            //FROM[STudent] f Left JOIN [School] s ON([f].[SchoolId] = [s].[Id])   WHERE f.isDelete=0 
 
 
             //Specify name filter 

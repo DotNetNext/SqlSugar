@@ -189,7 +189,7 @@ namespace OrmTest.Demo
             .Where((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
 
             //SELECT [st].[Id],[st].[SchoolId],[st].[Name],[st].[CreateTime] FROM [Student] st 
-            //Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   
+            //Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )   
             //WHERE ( [sc].[Id] = @Id0 )  AND ( [st].[Id] = @Id1 )  AND (( [st].[Id] = @Id2 ) AND ( [sc].[Id] = @Id3 ))
 
 
@@ -315,7 +315,7 @@ namespace OrmTest.Demo
                           .Where("st.id>@id")
                           .AddParameters(new { id = 1 })
                           .Select("st.*").ToList();
-            //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
+            //SELECT st.* FROM [Student] st Left JOIN [School] sh ON sh.id=st.schoolid   WHERE st.id>@id 
         }
         private static void Enum()
         {
