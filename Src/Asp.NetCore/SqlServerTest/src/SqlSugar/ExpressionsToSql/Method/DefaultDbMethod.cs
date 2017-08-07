@@ -67,7 +67,14 @@ namespace SqlSugar
             {
                 foreach (var item in inValueIEnumerable)
                 {
-                    inValues.Add(item);
+                    if (item != null && item.GetType().IsEnum())
+                    {
+                        inValues.Add(Convert.ToInt64(item));
+                    }
+                    else
+                    {
+                        inValues.Add(item);
+                    }
                 }
             }
             var value = model.Args[1].MemberName;

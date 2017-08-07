@@ -21,6 +21,7 @@ namespace SqlSugar
         public bool IsSingle { get { return this.UpdateObjs.Length == 1; } }
         public List<MappingColumn> MappingColumnList { get; set; }
         private List<string> IgnoreColumnNameList { get; set; }
+        private List<string> WhereColumnList { get; set; }
         private bool IsOffIdentity { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
@@ -75,6 +76,17 @@ namespace SqlSugar
             return new KeyValuePair<string, List<SugarParameter>>(sql, UpdateBuilder.Parameters);
         }
 
+        public IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns)
+        {
+            var whereColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
+            if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
+            foreach (var item in whereColumns)
+            {
+              this.WhereColumnList.Add(this.Context.EntityProvider.GetDbColumnName<T>(item));
+            }
+            return this;
+        }
+
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
             var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
@@ -91,7 +103,8 @@ namespace SqlSugar
             return this;
         }
 
-        public IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod) {
+        public IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod)
+        {
             List<string> primaryKeys = GetPrimaryKeys();
             foreach (var item in this.UpdateBuilder.DbColumnInfoList)
             {
@@ -101,22 +114,23 @@ namespace SqlSugar
                     item.IsPrimarykey = true;
                 }
             }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumMethod(it.PropertyName) || it.IsPrimarykey ||it.IsIdentity).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumMethod(it.PropertyName) || it.IsPrimarykey || it.IsIdentity).ToList();
             return this;
         }
         public IUpdateable<T> UpdateColumns(Expression<Func<T, T>> columns)
         {
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
-            var resultArray=expResult.GetResultArray();
+            var resultArray = expResult.GetResultArray();
             Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
-            if (resultArray.IsValuable()) {
+            if (resultArray.IsValuable())
+            {
                 foreach (var item in resultArray)
                 {
                     string key = SqlBuilder.GetNoTranslationColumnName(item);
                     UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), item));
                 }
             }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v=> SqlBuilder.GetNoTranslationColumnName(v.Key) ==it.DbColumnName) || it.IsPrimarykey == true).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key) == it.DbColumnName) || it.IsPrimarykey == true).ToList();
             return this;
         }
 
@@ -164,7 +178,7 @@ namespace SqlSugar
                         Value = column.PropertyInfo.GetValue(item, null),
                         DbColumnName = GetDbColumnName(column.PropertyName),
                         PropertyName = column.PropertyName,
-                        PropertyType=PubMethod.GetUnderType(column.PropertyInfo),
+                        PropertyType = PubMethod.GetUnderType(column.PropertyInfo),
                         TableId = i
                     };
                     if (columnInfo.PropertyType.IsEnum())
@@ -195,7 +209,7 @@ namespace SqlSugar
                 foreach (var item in this.UpdateBuilder.DbColumnInfoList)
                 {
                     if (this.UpdateBuilder.Parameters == null) this.UpdateBuilder.Parameters = new List<SugarParameter>();
-                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value,item.PropertyType));
+                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType));
                 }
             }
 
@@ -225,8 +239,9 @@ namespace SqlSugar
                     }
                 });
             }
-            if (this.UpdateBuilder.Parameters.IsValuable()&&this.UpdateBuilder.SetValues.IsValuable()) {
-                this.UpdateBuilder.Parameters.RemoveAll(it => this.UpdateBuilder.SetValues.Any(v =>(SqlBuilder.SqlParameterKeyWord+SqlBuilder.GetNoTranslationColumnName(v.Key)) == it.ParameterName));
+            if (this.UpdateBuilder.Parameters.IsValuable() && this.UpdateBuilder.SetValues.IsValuable())
+            {
+                this.UpdateBuilder.Parameters.RemoveAll(it => this.UpdateBuilder.SetValues.Any(v => (SqlBuilder.SqlParameterKeyWord + SqlBuilder.GetNoTranslationColumnName(v.Key)) == it.ParameterName));
             }
         }
         private string GetDbColumnName(string entityName)
@@ -251,6 +266,9 @@ namespace SqlSugar
         }
         private List<string> GetPrimaryKeys()
         {
+            if (this.WhereColumnList.IsValuable()) {
+                return this.WhereColumnList;
+            }
             if (this.Context.IsSystemTablesConfig)
             {
                 return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));

@@ -188,7 +188,8 @@ namespace SqlSugar
             {
                 value = value.Replace(":{}", ":null");
             }
-            return JsonConvert.DeserializeObject<T>(value);
+            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            return JsonConvert.DeserializeObject<T>(value,jSetting);
         }
         #endregion
 

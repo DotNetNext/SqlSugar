@@ -8,6 +8,7 @@ namespace SqlSugar
     public class ExpressionResult
     {
         public bool IsLockCurrentParameter { get; set; }
+        public bool IsUpper { get; set; }
         private ExpressionParameter _CurrentParameter;
         public ExpressionParameter CurrentParameter
         {
@@ -55,22 +56,32 @@ namespace SqlSugar
         public string GetString()
         {
             if (_Result == null) return null;
-            return _Result.ToString().TrimEnd(',');
+            if (IsUpper)
+                return _Result.ToString().ToUpper().TrimEnd(',');
+            else
+                return _Result.ToString().TrimEnd(',');
         }
         #region functions
         public string[] GetResultArray()
         {
             if (this._Result == null) return null;
-            return this.Result.ToString().TrimEnd(',').Split(',');
+            if (IsUpper)
+                return this.Result.ToString().ToUpper().TrimEnd(',').Split(',');
+            else
+                return this.Result.ToString().TrimEnd(',').Split(',');
         }
 
         public string GetResultString()
         {
             if (this._Result == null) return null;
-            if (this._ResolveExpressType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle)) {
+            if (this._ResolveExpressType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle))
+            {
                 return this.Result.ToString().TrimEnd(',');
             }
-            return this.Result.ToString();
+            if (IsUpper)
+                return this.Result.ToString().ToUpper();
+            else
+                return this.Result.ToString();
         }
 
         public void TrimEnd()

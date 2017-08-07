@@ -154,6 +154,15 @@ namespace SqlSugar
             get; set;
         }
 
+        ///// <summary>
+        ///// 如果类库是.NET 4.5请删除该属性
+        ///// If the SqlSugar library is.NET 4.5, delete the property
+        ///// </summary>
+        //public override DataRowVersion SourceVersion
+        //{
+        //    get; set;
+        //}
+
         public override void ResetDbType()
         {
             this.DbType = System.Data.DbType.String;

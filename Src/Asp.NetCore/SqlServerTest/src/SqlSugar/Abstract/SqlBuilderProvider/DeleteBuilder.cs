@@ -28,6 +28,8 @@ namespace SqlSugar
             }
             set { _WhereInfos = value; }
         }
+        public virtual List<object> BigDataInValues { get; set; }
+        public virtual string BigDataFiled { get;  set; }
         #endregion
 
         #region Sql Template
@@ -115,7 +117,29 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
-            return string.Format(SqlTemplate, GetTableNameString, GetWhereString);
+            if (this.BigDataInValues.IsNullOrEmpty())
+            {
+                return string.Format(SqlTemplate, GetTableNameString, GetWhereString);
+            }
+            else//big data
+            {
+                var whereString = GetWhereString;
+                var sql = string.Format(SqlTemplate, GetTableNameString, whereString);
+                sql += whereString.IsNullOrEmpty() ? " WHERE " : " AND ";
+                StringBuilder batchDeleteSql = new StringBuilder();
+                int pageSize = 1000;
+                int pageIndex = 1;
+                int totalRecord = this.BigDataInValues.Count;
+                int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                while (pageCount >= pageIndex)
+                {
+                    var inValues = this.BigDataInValues.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    batchDeleteSql.Append(sql+string.Format(WhereInTemplate,BigDataFiled,inValues.ToArray().ToJoinSqlInVals()));
+                    batchDeleteSql.Append(";");
+                    pageIndex++;
+                }
+                return batchDeleteSql.ToString();
+            }
         }
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {

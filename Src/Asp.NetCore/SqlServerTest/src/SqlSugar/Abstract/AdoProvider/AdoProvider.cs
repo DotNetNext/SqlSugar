@@ -302,7 +302,7 @@ namespace SqlSugar
         }
         public virtual Double GetDouble(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToDouble(GetScalar(sql, parameters));
+            return GetScalar(sql, parameters).ObjToMoney();
         }
         public virtual Double GetDouble(string sql, List<SugarParameter> parameters)
         {
@@ -321,7 +321,7 @@ namespace SqlSugar
         }
         public virtual decimal GetDecimal(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToDecimal(GetScalar(sql, parameters));
+            return  GetScalar(sql, parameters).ObjToDecimal();
         }
         public virtual decimal GetDecimal(string sql, List<SugarParameter> parameters)
         {
@@ -340,7 +340,7 @@ namespace SqlSugar
         }
         public virtual DateTime GetDateTime(string sql, params SugarParameter[] parameters)
         {
-            return Convert.ToDateTime(GetScalar(sql, parameters));
+            return  GetScalar(sql, parameters).ObjToDate();
         }
         public virtual DateTime GetDateTime(string sql, List<SugarParameter> parameters)
         {

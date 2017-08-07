@@ -58,12 +58,22 @@ namespace SqlSugar
                 foreach (var deleteObj in deleteObjs)
                 {
                     var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
-                    var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName,StringComparison.CurrentCultureIgnoreCase));
+                    var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName, StringComparison.CurrentCultureIgnoreCase));
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     primaryKeyValues.Add(value);
                 }
-                var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
-                Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
+                if (primaryKeyValues.Count < 10000)
+                {
+                    var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
+                    Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
+                }
+                else
+                {
+                    if (DeleteBuilder.BigDataInValues == null)
+                        DeleteBuilder.BigDataInValues = new List<object>();
+                    DeleteBuilder.BigDataInValues.AddRange(primaryKeyValues);
+                    DeleteBuilder.BigDataFiled = primaryField;
+                }
             }
             else
             {
@@ -159,7 +169,17 @@ namespace SqlSugar
             string primaryField = null;
             primaryField = GetPrimaryKeys().FirstOrDefault();
             Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
-            Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryField), primaryKeyValues.ToJoinSqlInVals()));
+            if (primaryKeyValues.Length < 10000)
+            {
+                Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryField), primaryKeyValues.ToJoinSqlInVals()));
+            }
+            else
+            {
+                if (DeleteBuilder.BigDataInValues == null)
+                    DeleteBuilder.BigDataInValues = new List<object>();
+                DeleteBuilder.BigDataInValues.AddRange(primaryKeyValues.Select(it=>(object)it));
+                DeleteBuilder.BigDataFiled = primaryField;
+            }
             return this;
         }
 

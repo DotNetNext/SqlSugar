@@ -45,13 +45,24 @@ namespace SqlSugar
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, InsertBuilder.Parameters);
         }
-        public int ExecuteReutrnIdentity()
+        public int ExecuteReturnIdentity()
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             return Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+        }
+        public T ExecuteReturnEntity()
+        {
+            var result = InsertObjs.First();
+            var identityKeys=GetIdentityKeys();
+            if (identityKeys.Count == 0) return result;
+            var idValue = ExecuteReturnIdentity();
+            Check.Exception(identityKeys.Count > 1, "ExecuteReutrnEntity does not support multiple identity keys");
+            var identityKey = identityKeys.First();
+            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result,idValue,null);
+            return result;
         }
         #endregion
 
@@ -79,7 +90,7 @@ namespace SqlSugar
 
         public IInsertable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
-            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it=>this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
+            var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Contains(it.PropertyName)).ToList();
             return this;
         }
