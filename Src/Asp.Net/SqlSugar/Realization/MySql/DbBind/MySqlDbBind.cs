@@ -66,6 +66,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("geometry",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("multilinestring",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("polygon",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("mediumblob",CSharpDataType.byteArray),
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.Guid),
                 };
