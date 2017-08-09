@@ -398,6 +398,7 @@ namespace SqlSugar
         public virtual int Count()
         {
             InitMapping();
+            QueryBuilder.IsCount = true;
             var sql = string.Empty;
             sql = QueryBuilder.ToSqlString();
             sql = QueryBuilder.ToCountSql(sql);
