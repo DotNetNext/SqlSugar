@@ -247,9 +247,12 @@ namespace SqlSugar
             }
             var isRowNumber = Skip != null || Take != null;
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null);
+            string groupByValue = GetGroupByString + HavingInfos;
+            string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
+            if (this.IsCount) { orderByValue = null;  }
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
             sql.Replace("{$:OrderByString:$}", isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
-            if (IsCount) { return sql.ToString(); }
+            if (this.IsCount) { return sql.ToString(); }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
@@ -333,7 +336,6 @@ namespace SqlSugar
         {
             get
             {
-                if (this.IsCount) return "COUNT(1) AS [Count] ";
                 string reval = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {
