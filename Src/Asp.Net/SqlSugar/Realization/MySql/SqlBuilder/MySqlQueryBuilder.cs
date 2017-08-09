@@ -70,7 +70,6 @@ namespace SqlSugar
         {
             get
             {
-                if (this.IsCount) return "COUNT(1) AS `Count` ";
                 string reval = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {
