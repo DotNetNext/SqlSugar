@@ -35,6 +35,8 @@ namespace OrmTest.Demo
             var sql4 = db.Queryable<Student>().Filter(key,true).ToSql();
             //SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  WHERE  id>@id  
 
+            var sql5 = db.Ado.GetInt("select {0}");
+            //select 1
         }
 
         public static SqlSugarClient GetInstance1()
@@ -65,6 +67,16 @@ namespace OrmTest.Demo
                 },
                 IsJoinQuery = false
             });
+
+            //Processing prior to execution of SQL
+            db.Ado.ProcessingEventStartingSQL = (sql, par) =>
+            {
+                if (sql.Contains("{0}"))
+                {
+                    sql = string.Format(sql, "1");
+                }
+                return new KeyValuePair<string, SugarParameter[]>(sql,par);
+            };
             return db;
         }
     }
