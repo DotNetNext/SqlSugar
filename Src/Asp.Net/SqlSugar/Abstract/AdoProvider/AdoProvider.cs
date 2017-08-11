@@ -50,6 +50,7 @@ namespace SqlSugar
         public virtual bool IsClearParameters { get; set; }
         public virtual Action<string, string> LogEventStarting { get; set; }
         public virtual Action<string, string> LogEventCompleted { get; set; }
+        public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
         #endregion
 
         #region Connection
@@ -208,6 +209,8 @@ namespace SqlSugar
         #region Core
         public virtual int ExecuteCommand(string sql, params SugarParameter[] parameters)
         {
+            if (this.ProcessingEventStartingSQL != null)
+                ExecuteProcessingSQL(ref sql, parameters);
             ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             int count = sqlCommand.ExecuteNonQuery();
@@ -219,10 +222,12 @@ namespace SqlSugar
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
         {
+            if (this.ProcessingEventStartingSQL != null)
+                ExecuteProcessingSQL(ref sql, parameters);
             ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             var isAutoClose = this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
-            IDataReader sqlDataReader =  sqlCommand.ExecuteReader(isAutoClose?CommandBehavior.CloseConnection:CommandBehavior.Default);
+            IDataReader sqlDataReader = sqlCommand.ExecuteReader(isAutoClose ? CommandBehavior.CloseConnection : CommandBehavior.Default);
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecuteAfter(sql, parameters);
@@ -230,6 +235,8 @@ namespace SqlSugar
         }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
         {
+            if (this.ProcessingEventStartingSQL != null)
+                ExecuteProcessingSQL(ref sql, parameters);
             ExecuteBefore(sql, parameters);
             IDataAdapter dataAdapter = this.GetAdapter();
             IDbCommand sqlCommand = GetCommand(sql, parameters);
@@ -244,6 +251,8 @@ namespace SqlSugar
         }
         public virtual object GetScalar(string sql, params SugarParameter[] parameters)
         {
+            if (this.ProcessingEventStartingSQL != null)
+                ExecuteProcessingSQL(ref sql, parameters);
             ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             object scalar = sqlCommand.ExecuteScalar();
@@ -321,7 +330,7 @@ namespace SqlSugar
         }
         public virtual decimal GetDecimal(string sql, params SugarParameter[] parameters)
         {
-            return  GetScalar(sql, parameters).ObjToDecimal();
+            return GetScalar(sql, parameters).ObjToDecimal();
         }
         public virtual decimal GetDecimal(string sql, List<SugarParameter> parameters)
         {
@@ -340,7 +349,7 @@ namespace SqlSugar
         }
         public virtual DateTime GetDateTime(string sql, params SugarParameter[] parameters)
         {
-            return  GetScalar(sql, parameters).ObjToDate();
+            return GetScalar(sql, parameters).ObjToDate();
         }
         public virtual DateTime GetDateTime(string sql, List<SugarParameter> parameters)
         {
@@ -496,6 +505,12 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
+        private void ExecuteProcessingSQL(ref string sql, SugarParameter[] parameters)
+        {
+            var result = this.ProcessingEventStartingSQL(sql, parameters);
+            sql = result.Key;
+            parameters = result.Value;
+        }
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
             if (this.IsEnableLogEvent)
