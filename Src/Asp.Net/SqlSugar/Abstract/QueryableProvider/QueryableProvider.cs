@@ -2220,4 +2220,304 @@ namespace SqlSugar
         #endregion
     }
     #endregion
+    #region T10
+    public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>
+    {
+        #region Where
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, bool>> expression)
+        {
+            _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, bool>> expression)
+        {
+            if (isWhere)
+                _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(string whereString, object whereObj)
+        {
+            Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, string whereString, object whereObj)
+        {
+            if (!isWhere) return this;
+            this.Where<T>(whereString, whereObj);
+            return this;
+        }
+        #endregion
+
+        #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression)
+        {
+            return _Select<TResult>(expression);
+        }
+        #endregion
+
+        #region OrderBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            _OrderBy(expression, type);
+            return this;
+        }
+        #endregion
+
+        #region GroupBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> GroupBy(Expression<Func<T, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, object>> expression)
+        {
+            _GroupBy(expression);
+            return this;
+        }
+        #endregion
+
+        #region Aggr
+        public TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression)
+        {
+            return _Max<TResult>(expression);
+        }
+        public TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression)
+        {
+            return _Min<TResult>(expression);
+        }
+        public TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression)
+        {
+            return _Sum<TResult>(expression);
+        }
+        public TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression)
+        {
+            return _Avg<TResult>(expression);
+        }
+        #endregion
+    }
+    #endregion
 }
