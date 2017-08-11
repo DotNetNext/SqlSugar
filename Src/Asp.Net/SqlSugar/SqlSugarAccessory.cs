@@ -66,6 +66,30 @@ namespace SqlSugar
             InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
             InitMppingInfo<T8>();
         }
+
+        #region 9-12
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
+            InitMppingInfo<T9>();
+        }
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8,T9,T10>()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7,T8,T9>();
+            InitMppingInfo<T10>();
+        }
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>();
+            InitMppingInfo<T11>();
+        }
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12>()
+        {
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>();
+            InitMppingInfo<T12>();
+        }
+        #endregion
+
         protected void InitMppingInfo<T>()
         {
             InitMppingInfo(typeof(T));
