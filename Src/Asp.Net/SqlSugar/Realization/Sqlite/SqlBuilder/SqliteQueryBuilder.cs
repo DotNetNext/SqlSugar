@@ -35,6 +35,7 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
+            base.AppendFilter();
             string result = null;
             string oldOrderBy = this.OrderByValue;
             sql = new StringBuilder();

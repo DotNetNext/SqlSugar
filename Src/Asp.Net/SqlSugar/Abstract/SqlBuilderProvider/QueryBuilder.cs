@@ -225,6 +225,37 @@ namespace SqlSugar
         {
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
+            AppendFilter();
+            sql = new StringBuilder();
+            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
+            if (this.PartitionByValue.IsValuable())
+            {
+                this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+            }
+            var isRowNumber = Skip != null || Take != null;
+            var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
+            string groupByValue = GetGroupByString + HavingInfos;
+            string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
+            if (this.IsCount) { orderByValue = null; }
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
+            sql.Replace("{$:OrderByString:$}", isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
+            if (this.IsCount) { return sql.ToString(); }
+            var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
+            if (ExternalPageIndex > 0)
+            {
+                if (externalOrderBy.IsNullOrEmpty())
+                {
+                    externalOrderBy = " ORDER BY GetDate() ";
+                }
+                result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy), result);
+                result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
+            }
+            this.OrderByValue = oldOrderBy;
+            return result;
+        }
+
+        public virtual void AppendFilter()
+        {
             if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
@@ -239,31 +270,6 @@ namespace SqlSugar
                     }
                 }
             }
-            sql = new StringBuilder();
-            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
-            if (this.PartitionByValue.IsValuable())
-            {
-                this.OrderByValue = this.PartitionByValue + this.OrderByValue;
-            }
-            var isRowNumber = Skip != null || Take != null;
-            var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
-            string groupByValue = GetGroupByString + HavingInfos;
-            string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
-            if (this.IsCount) { orderByValue = null;  }
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
-            sql.Replace("{$:OrderByString:$}", isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
-            if (this.IsCount) { return sql.ToString(); }
-            var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
-            if (ExternalPageIndex > 0)
-            {
-                if (externalOrderBy.IsNullOrEmpty()) {
-                    externalOrderBy = " ORDER BY GetDate() ";
-                }
-                result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy),result);
-                result = ToPageSql2(result,ExternalPageIndex, ExternalPageSize, true);
-            }
-            this.OrderByValue = oldOrderBy;
-            return result;
         }
 
         public virtual string GetExternalOrderBy(string externalOrderBy)
