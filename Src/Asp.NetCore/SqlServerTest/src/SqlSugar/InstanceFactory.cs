@@ -89,6 +89,38 @@ namespace SqlSugar
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8>>(className);
             return result;
         }
+
+        #region 9-12
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>(ConnectionConfig currentConnectionConfig)
+        {
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8,T9, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>>(className);
+            return result;
+        }
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>(ConnectionConfig currentConnectionConfig)
+        {
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>>(className);
+            return result;
+        }
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>(ConnectionConfig currentConnectionConfig)
+        {
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>>(className);
+            return result;
+        }
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(ConnectionConfig currentConnectionConfig)
+        {
+            string className = "Queryable";
+            className = GetClassName(currentConnectionConfig.DbType, className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>>(className);
+            return result;
+        }
+        #endregion
+
         #endregion
 
         public static QueryBuilder GetQueryBuilder(ConnectionConfig currentConnectionConfig)
@@ -206,6 +238,26 @@ namespace SqlSugar
         {
             return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
         }
+
+        #region 9-12
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8,T9, Restult>(string className)
+        {
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8),typeof(T9));
+        }
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, Restult>(string className)
+        {
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9),typeof(T10));
+        }
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, Restult>(string className)
+        {
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10),typeof(T11));
+        }
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, Restult>(string className)
+        {
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11),typeof(T12));
+        }
+        #endregion
+
         private static Restult CreateInstance<Restult>(string className, params Type[] types)
         {
             var cacheKey = className + string.Join(",", types.Select(it => it.FullName));

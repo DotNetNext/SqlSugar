@@ -24,6 +24,7 @@ namespace SqlSugar
         bool IsEnableLogEvent { get; set; }
         Action<string, string> LogEventStarting { get; set; }
         Action<string, string> LogEventCompleted { get; set; }
+        Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
         IDbBind DbBind { get; }
