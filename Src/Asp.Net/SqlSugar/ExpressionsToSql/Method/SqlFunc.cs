@@ -61,12 +61,12 @@ namespace SqlSugar
         {
             return ((DateTime)date1).ToString("yyyy-MM-dd") == ((DateTime)date2).ToString("yyyy-MM-dd");
         }
-        public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static DateTime DateAdd(DateTime date, int addValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static int DateValue(DateTime date, DateType dataType) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static bool Between(object value, object start, object end) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static TResult IIF<TResult>(bool Expression, TResult thenValue, TResult elseValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static DateTime DateAdd(DateTime date, int addValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int DateValue(DateTime date, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static bool Between(object value, object start, object end) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult IIF<TResult>(bool Expression, TResult thenValue, TResult elseValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int ToInt32(object value) { return value.ObjToInt(); }
         public static long ToInt64(object value) { return Convert.ToInt64(value); }
         /// <summary>
@@ -80,7 +80,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static TimeSpan ToTime(object value) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TimeSpan ToTime(object value) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string ToString(object value) { return value.ObjToString(); }
         public static decimal ToDecimal(object value) { return value.ObjToDecimal(); }
         public static Guid ToGuid(object value) { return Guid.Parse(value.ObjToString()); }
@@ -89,18 +89,18 @@ namespace SqlSugar
         public static string Substring(object value, int index, int length) { return value.ObjToString().Substring(index, length); }
         public static string Replace(object value, string oldChar, string newChar) { return value.ObjToString().Replace(oldChar, newChar); }
         public static int Length(object value) { return value.ObjToString().Length; }
-        public static TResult AggregateSum<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static TResult AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("This method is not supported by the current parameter"); }
-        public static TResult MappingColumn<TResult>(TResult oldColumnName,string newColumnName) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult AggregateSum<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult MappingColumn<TResult>(TResult oldColumnName,string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         /// <summary>
         ///Example: new NewT(){name=SqlFunc.GetSelfAndAutoFill(it)}  Generated SQL   it.*
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static TResult GetSelfAndAutoFill<TResult>(TResult value) { throw new NotSupportedException("This method is not supported by the current parameter"); }
+        public static TResult GetSelfAndAutoFill<TResult>(TResult value) { throw new NotSupportedException("Can only be used in expressions"); }
     }
 }
