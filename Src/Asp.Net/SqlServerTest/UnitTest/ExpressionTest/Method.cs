@@ -363,9 +363,9 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((DATEADD(@MethodConst2,@MethodConst1,@MethodConst0)) = @Const3 )", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2),
-                new SugarParameter("@MethodConst2",DateType.Millisecond)
+            base.Check(value, pars, "((DATEADD(Millisecond,@MethodConst1,@MethodConst0)) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2)
+         
             }, "DateAddByType error");
         }
         private void DateAddDay()
@@ -392,8 +392,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((DATEADD(@Const0,@MethodConst1,[Datetime2])) = @Const2 )", new List<SugarParameter>() {
-                new SugarParameter("@Const0",DateType.Hour.ToString()),new SugarParameter("@MethodConst1",10) 
+            base.Check(value, pars, "((DATEADD(Hour,@MethodConst1,[Datetime2])) = @Const2 )", new List<SugarParameter>() {
+                 new SugarParameter("@MethodConst1",10) 
                 ,new SugarParameter("@Const2",x2)
             }, "DateAddDay2 error");
         }
@@ -406,8 +406,9 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((DATEADD(@Const0,@MethodConst2,@MethodConst1)) = @Const3 )", new List<SugarParameter>() {
-                new SugarParameter("@Const0",DateType.Hour.ToString()),new SugarParameter("@MethodConst2",1),new SugarParameter("@MethodConst1",x2)
+            base.Check(value, pars, "((DATEADD(Hour,@MethodConst2,@MethodConst1)) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst2",1),
+                new SugarParameter("@MethodConst1",x2)
                 ,new SugarParameter("@Const3",x2)
             }, "DateAddDay3 error");
         }
@@ -420,9 +421,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (DATEDIFF(@MethodConst2,@MethodConst0,@MethodConst1)=0) ", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2),
-                new SugarParameter("@MethodConst2",DateType.Millisecond)
+            base.Check(value, pars, " (DATEDIFF(Millisecond,@MethodConst0,@MethodConst1)=0) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2)
             }, "DateIsSameByType error");
         }
         private void DateIsSameByDay()

@@ -88,7 +88,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (TIMESTAMPDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+            return string.Format(" (TIMESTAMPDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
         public override string DateAddByType(MethodCallExpressionModel model)
@@ -96,7 +96,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (DATE_ADD({1} INTERVAL {2} {0})) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+            return string.Format(" (DATE_ADD({1} INTERVAL {2} {0})) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
         public override string DateAddDay(MethodCallExpressionModel model)

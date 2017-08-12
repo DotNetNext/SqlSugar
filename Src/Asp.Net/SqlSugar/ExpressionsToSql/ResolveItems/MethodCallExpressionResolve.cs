@@ -215,21 +215,29 @@ namespace SqlSugar
                 case "Contains":
                     return this.Context.DbMehtods.Contains(model);
                 case "ContainsArray":
-                    var result = this.Context.DbMehtods.ContainsArray(model);
+                    var caResult = this.Context.DbMehtods.ContainsArray(model);
                     this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
-                    return result;
+                    return caResult;
                 case "Equals":
                     return this.Context.DbMehtods.Equals(model);
                 case "DateIsSame":
                     if (model.Args.Count == 2)
                         return this.Context.DbMehtods.DateIsSameDay(model);
                     else
-                        return this.Context.DbMehtods.DateIsSameByType(model);
+                    {
+                        var dsResult=this.Context.DbMehtods.DateIsSameByType(model);
+                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[2].MemberName.ObjToString());
+                        return dsResult;
+                    }
                 case "DateAdd":
                     if (model.Args.Count == 2)
                         return this.Context.DbMehtods.DateAddDay(model);
                     else
-                        return this.Context.DbMehtods.DateAddByType(model);
+                    {
+                        var daResult=this.Context.DbMehtods.DateAddByType(model);
+                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[2].MemberName.ObjToString());
+                        return daResult;
+                    }
                 case "DateValue":
                     return this.Context.DbMehtods.DateValue(model);
                 case "Between":
