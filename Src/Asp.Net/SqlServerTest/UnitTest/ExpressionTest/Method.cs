@@ -316,8 +316,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ((@MethodConst1(@MethodConst0)) = @Const2 ) ", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",DateType.Year),new SugarParameter("@Const2",1)
+            base.Check(value, pars, " (DateName(Year,@MethodConst0) = @Const2 ) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@Const2",1)
             }, "DateValue error");
         }
 

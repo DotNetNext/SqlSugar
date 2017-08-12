@@ -239,7 +239,9 @@ namespace SqlSugar
                         return daResult;
                     }
                 case "DateValue":
-                    return this.Context.DbMehtods.DateValue(model);
+                    var dvResult= this.Context.DbMehtods.DateValue(model);
+                    this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
+                    return dvResult;
                 case "Between":
                     return this.Context.DbMehtods.Between(model);
                 case "StartsWith":

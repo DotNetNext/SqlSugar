@@ -153,7 +153,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" DateName({0},{1}) ", parameter2.MemberName, parameter.MemberName);
+            return string.Format(" DateName({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
         }
 
         public virtual string ToInt32(MethodCallExpressionModel model)
