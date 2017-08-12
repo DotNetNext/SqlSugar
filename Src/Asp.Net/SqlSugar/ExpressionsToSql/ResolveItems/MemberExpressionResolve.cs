@@ -18,18 +18,37 @@ namespace SqlSugar
             var isBool = expression.Type == PubConst.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
             var isLength = expression.Member.Name == "Length" && (expression.Expression as MemberExpression).Type == PubConst.StringType;
+            var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == PubConst.DateType;
             if (isLength)
             {
                 var oldCommonTempDate = parameter.CommonTempData;
                 parameter.CommonTempData = CommonTempDataType.Result;
                 this.Expression = expression.Expression;
-                var isConst=this.Expression is ConstantExpression;
+                var isConst = this.Expression is ConstantExpression;
                 this.Start();
-                var methodParamter =  new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null };
+                var methodParamter = new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null };
                 var result = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
                 {
                     Args = new List<MethodCallExpressionArgs>() {
                       methodParamter
+                  }
+                });
+                base.AppendMember(parameter, isLeft, result);
+                parameter.CommonTempData = oldCommonTempDate;
+                return;
+            }
+            else if (isDateValue) {
+                var name = expression.Member.Name;
+                var oldCommonTempDate = parameter.CommonTempData;
+                parameter.CommonTempData = CommonTempDataType.Result;
+                this.Expression = expression.Expression;
+                var isConst = this.Expression is ConstantExpression;
+                this.Start();
+                var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                     new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null },
+                     new MethodCallExpressionArgs() { IsMember = true, MemberName = name, MemberValue = name }
                   }
                 });
                 base.AppendMember(parameter, isLeft, result);

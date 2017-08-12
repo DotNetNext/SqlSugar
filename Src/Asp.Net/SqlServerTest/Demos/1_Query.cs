@@ -182,6 +182,8 @@ namespace OrmTest.Demo
             var getTodayList = db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(it.CreateTime, DateTime.Now)).ToList();
 
             var joinSql = db.Queryable("student", "s").OrderBy("id").Select("id,name").ToPageList(1, 2);
+
+            var getDay1List = db.Queryable<Student>().Where(it=>it.CreateTime.Value.Hour==1).ToList();
         }
         public static void Page()
         {
