@@ -79,16 +79,23 @@ namespace OrmTest.UnitTest
                    new List<SugarParameter>() {
                         new SugarParameter("@Id0",0)
                     }, t3.Key, t3.Value, "select t3 Error");
+
+
+                db.Ado.IsEnableLogEvent = true;
+                db.Ado.LogEventStarting = (sql, pars) =>
+                {
+                    base.Check(" SELECT COUNT(1) FROM (SELECT [st].[ID] FROM [STudent] st Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )  Left JOIN [School] sc2 ON ( [sc2].[Id] = [sc].[Id] )  GROUP BY [st].[ID] ) CountTable ",
+                  null, sql, null, "select t4 Error");
+                };
+
+                var t4 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
+                          JoinType.Left,st.SchoolId==sc.Id,
+                          JoinType.Left,sc2.Id==sc.Id
+                }).GroupBy(st => st.Id).Select(st=>st.Id).Count();
                 #endregion
 
 
             }
-        }
-
-        public SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
-            return db;
         }
     }
 }

@@ -19,10 +19,5 @@ namespace OrmTest.UnitTest
                 var x = db.Queryable<Student>().ToList(); 
             }
         }
-        public SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            return db;
-        }
     }
 }

@@ -21,6 +21,16 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+
+                whereSingle23();
+                whereSingle22();
+                whereSingle21();
+                whereSingle20();
+                whereSingle19();
+                whereSingle18();
+                whereSingle17();
+                whereSingle16();
+                whereSingle15();
                 whereSingle1();
                 whereSingle2();
                 whereSingle3();
@@ -35,6 +45,7 @@ namespace OrmTest.UnitTest
                 whereSingle12();
                 whereSingle13();
                 whereSingle14();
+                whereSingle15();
                 WhereMultiple1();
                 WhereMultiple2();
           
@@ -248,6 +259,124 @@ namespace OrmTest.UnitTest
             {
 
             }, "whereSingle14");
+        }
+
+        private void whereSingle15()
+        {
+            Expression<Func<DataTestInfo, bool>> exp = it =>it.Money2 == 1;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Money2] = @Const0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Const0",1)
+            }, "whereSingle15");
+        }
+
+        private void whereSingle16()
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("key", "x1");
+            Expression<Func<DataTestInfo, bool>> exp = it => it.String == dic["key"];
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [String] = @Const0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Const0",dic["key"])
+            }, "whereSingle16");
+        }
+
+        private void whereSingle17()
+        {
+            Expression<Func<DataTestInfo, bool>> exp = it =>true&&it.String.Contains("a");
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( 1 = 1 ) AND ([String] like '%'+@MethodConst1+'%') )", new List<SugarParameter>()
+            {
+                new SugarParameter("@MethodConst1","a")
+            }, "whereSingle17");
+        }
+
+        private void whereSingle18()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => !it.Bool1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "NOT ( [Bool1]=1 )  ", new List<SugarParameter>()
+            {
+   
+            }, "whereSingle18");
+        }
+        private void whereSingle19()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value==false;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool2] = @Value0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Value0",false)
+            }, "whereSingle19");
+        }
+        private void whereSingle20()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value == it.Bool1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool2] = [Bool1] )", new List<SugarParameter>()
+            {
+                
+            }, "whereSingle19");
+        }
+
+        private void whereSingle21()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool2.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool2]=1 )", new List<SugarParameter>()
+            {
+
+            }, "whereSingle21");
+        }
+
+        private void whereSingle22()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => !it.Bool2.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "NOT ( [Bool2]=1 ) ", new List<SugarParameter>()
+            {
+
+            }, "whereSingle22");
+        }
+
+        private void whereSingle23()
+        {
+            decimal? val = 1;
+            Expression<Func<DataTestInfo, bool>> exp = it => it.Decimal2==val.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Decimal2] = @Const0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Const0",val)
+            }, "whereSingle23");
         }
     }
 

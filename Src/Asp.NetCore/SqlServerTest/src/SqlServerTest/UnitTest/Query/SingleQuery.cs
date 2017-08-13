@@ -35,29 +35,28 @@ namespace OrmTest.UnitTest
                 var t2 = db.Queryable<Student>().With(SqlWith.NoLock).ToSql();
                 base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] WITH(NOLOCK)", null, t2.Key, null, "single t2 Error");
 
-                var t3 = db.Queryable<Student>().OrderBy(it => it.Id).ToSql();
+                var t3 = db.Queryable<Student>().OrderBy(it=>it.Id).ToSql();
                 base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] ORDER BY [ID] ASC", null, t3.Key, null, "single t3 Error");
 
                 var t4 = db.Queryable<Student>().OrderBy(it => it.Id).Take(3).ToSql();
                 base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex  FROM [STudent] ) T WHERE RowIndex BETWEEN 1 AND 3", null, t4.Key, null, "single t4 Error");
 
                 var t5 = db.Queryable<Student>().OrderBy(it => it.Id).Skip(3).ToSql();
-                base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex  FROM [STudent] ) T WHERE RowIndex BETWEEN 4 AND 9223372036854775807", null, t5.Key, null, "single t5 Error");
+                base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] ASC) AS RowIndex  FROM [STudent] ) T WHERE RowIndex BETWEEN 4 AND 9223372036854775807", null, t5.Key,null, "single t5 Error");
 
                 int pageIndex = 2;
                 int pageSize = 10;
-                var t6 = db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToSql();
+                var t6 = db.Queryable<Student>().OrderBy(it => it.Id,OrderByType.Desc).Skip((pageIndex-1)*pageSize).Take(pageSize).ToSql();
                 base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex  FROM [STudent] ) T WHERE RowIndex BETWEEN 11 AND 20", null, t6.Key, null, "single t6 Error");
 
 
-                int studentCount = db.Ado.GetInt("select count(1) from Student");
-                var countIsSuccess = db.Queryable<Student>().Count() == studentCount;
-                if (!countIsSuccess)
-                {
+                int studentCount=db.Ado.GetInt("select count(1) from Student");
+                var countIsSuccess=db.Queryable<Student>().Count()== studentCount;
+                if (!countIsSuccess) {
                     throw new Exception(" single countIsSuccess Error");
                 }
 
-                var t7 = db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToPageList(pageIndex, pageSize, ref studentCount);
+                var t7 = db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToPageList(pageIndex,pageSize,ref studentCount);
                 countIsSuccess = studentCount == db.Queryable<Student>().OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize * pageIndex).Count();
                 if (!countIsSuccess)
                 {
@@ -65,7 +64,7 @@ namespace OrmTest.UnitTest
                 }
 
                 int studentMin = db.Ado.GetInt("select min(id)  from Student");
-                var minIsSuccess = db.Queryable<Student>().Min(it => it.Id) == studentMin;
+                var minIsSuccess = db.Queryable<Student>().Min(it=>it.Id) == studentMin;
                 if (!minIsSuccess)
                 {
                     throw new Exception("single minIsSuccess Error");
@@ -93,28 +92,31 @@ namespace OrmTest.UnitTest
                 }
 
                 var t8 = db.Queryable<Student>()
-                    .Where(it => it.Id == 1)
-                    .WhereIF(true, it => SqlFunc.Contains(it.Name, "a"))
-                    .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize).With(SqlWith.NoLock).ToSql();
+                    .Where(it=>it.Id==1)
+                    .WhereIF(true,it=> SqlFunc.Contains(it.Name,"a"))
+                    .OrderBy(it => it.Id, OrderByType.Desc).Skip((pageIndex - 1) * pageSize).Take(pageSize ).With(SqlWith.NoLock).ToSql();
                 base.Check(@"SELECT * FROM (SELECT [ID],[SchoolId],[Name],[CreateTime],ROW_NUMBER() OVER(ORDER BY [ID] DESC) AS RowIndex  FROM [STudent] WITH(NOLOCK)   WHERE ( [ID] = @Id0 )  AND  ([Name] like '%'+@MethodConst1+'%') ) T WHERE RowIndex BETWEEN 11 AND 20", new List<SugarParameter>() {
                                new SugarParameter("@Id0",1),new SugarParameter("@MethodConst1","a")
-               }, t8.Key, t8.Value, "single t8 Error");
+               }, t8.Key, t8.Value,"single t8 Error");
 
 
 
                 var t9 = db.Queryable<Student>()
                     .In(1)
-                    .Select(it => new { it.Id, it.Name, x = it.Id }).ToSql();
+                    .Select(it => new { it.Id, it.Name,x=it.Id }).ToSql();
                 base.Check("SELECT  [ID] AS [Id] , [Name] AS [Name] , [ID] AS [x]  FROM [STudent]  WHERE [Id] IN (@InPara0)   ", new List<SugarParameter>() {
-                     new SugarParameter("@InPara0",1)   }, t9.Key, t9.Value, "single t9 error");
+                     new SugarParameter("@InPara0",1)   },t9.Key,t9.Value, "single t9 error");
+
+                var t10 = db.Queryable<Student>().Select(it => new StudentEnum() { Id = SqlFunc.GetSelfAndAutoFill(it.Id) }).ToSql();
+                base.Check("SELECT * FROM [STudent] ", null, t10.Key, t10.Value, "single t10 error");
+
+                var t11= db.Queryable<Student>().GroupBy("id").OrderBy("id").Select("id").ToSql();
+                base.Check("SELECT id FROM [STudent] GROUP BY id ORDER BY id ", null, t11.Key, t11.Value, "single t11 error");
+
+
+                var t12 = db.Queryable<Student>().Where(it=>it.Id!=null).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE ( [ID] IS NOT NULL )", null, t12.Key, t12.Value, "single t12 error");
             }
-        }
-
-
-        public SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
-            return db;
         }
     }
 }

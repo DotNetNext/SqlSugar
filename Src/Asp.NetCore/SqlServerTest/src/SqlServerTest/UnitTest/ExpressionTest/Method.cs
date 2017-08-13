@@ -30,8 +30,12 @@ namespace OrmTest.UnitTest
                 ExtendDate();
 
                 //SqlFun methods
+                MappingColumn();
                 IIF();
                 IIF2();
+                IIF3();
+                IIF4();
+                IIF5();
                 #region StringIsNullOrEmpty
                 HasValue();
                 HasNumber();
@@ -46,6 +50,7 @@ namespace OrmTest.UnitTest
                 Trim();
                 Contains();
                 Contains2();
+                Contains3();
                 ContainsArray();
                 StartsWith();
                 EndsWith();
@@ -68,6 +73,7 @@ namespace OrmTest.UnitTest
                 Substring();
                 Replace();
                 Length();
+                Time();
             }
             base.End("Method Test");
         }
@@ -107,7 +113,48 @@ namespace OrmTest.UnitTest
             base.Check(value, pars, "(LEN(@MethodConst0) > @Const1 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","aaaa"),new SugarParameter("@Const1",1)
             }, "Length error");
+
+            Length2();
+            Length3();
         }
+
+        private void Length2()
+        {
+            Expression<Func<Student, bool>> exp = it => it.Name.Length > 1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(LEN([Name])> @Length1 )", new List<SugarParameter>() {
+                new SugarParameter("@Length1",1) 
+            }, "Length2 error");
+        }
+
+        private void Length3()
+        {
+            Expression<Func<Student, bool>> exp = it => it.Name.Length > "a".Length;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(LEN([Name])> @Length1 )", new List<SugarParameter>() {
+                new SugarParameter("@Length1",1)
+            }, "Length3 error");
+        }
+
+        private void Time()
+        {
+            TimeSpan s = TimeSpan.Parse("11:22:22");
+            Expression<Func<Student, bool>> exp = it => SqlFunc.ToTime("11:12:59")==s;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(CAST(@MethodConst0 AS TIME) = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","11:12:59"),new SugarParameter("@Const1",s)
+            }, "Time error");
+        }
+
 
         private void Replace()
         {
@@ -272,8 +319,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ((@MethodConst1(@MethodConst0)) = @Const2 ) ", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",DateType.Year),new SugarParameter("@Const2",1)
+            base.Check(value, pars, " (DateName(Year,@MethodConst0) = @Const2 ) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@Const2",1)
             }, "DateValue error");
         }
 
@@ -319,9 +366,9 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((DATEADD(@MethodConst2,@MethodConst1,@MethodConst0)) = @Const3 )", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2),
-                new SugarParameter("@MethodConst2",DateType.Millisecond)
+            base.Check(value, pars, "((DATEADD(Millisecond,@MethodConst1,@MethodConst0)) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2)
+         
             }, "DateAddByType error");
         }
         private void DateAddDay()
@@ -334,7 +381,39 @@ namespace OrmTest.UnitTest
             var pars = expContext.Parameters;
             base.Check(value, pars, "((DATEADD(day,@MethodConst1,@MethodConst0)) = @Const2 )", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",1),new SugarParameter("@Const2",x2)
-            }, "DateIsSameByType error");
+            }, "DateAddDay error");
+
+            DateAddDay2();
+            DateAddDay3();
+        }
+
+        private void DateAddDay2()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<DataTestInfo, bool>> exp = it =>it.Datetime2.Value.AddHours(10) == x2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "((DATEADD(Hour,@MethodConst1,[Datetime2])) = @Const2 )", new List<SugarParameter>() {
+                 new SugarParameter("@MethodConst1",10) 
+                ,new SugarParameter("@Const2",x2)
+            }, "DateAddDay2 error");
+        }
+
+        private void DateAddDay3()
+        {
+            var x2 = DateTime.Now;
+            Expression<Func<Student, bool>> exp = it => x2.AddHours(1) == x2;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "((DATEADD(Hour,@MethodConst2,@MethodConst1)) = @Const3 )", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst2",1),
+                new SugarParameter("@MethodConst1",x2)
+                ,new SugarParameter("@Const3",x2)
+            }, "DateAddDay3 error");
         }
 
         private void DateIsSameByType()
@@ -345,9 +424,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (DATEDIFF(@MethodConst2,@MethodConst0,@MethodConst1)=0) ", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2),
-                new SugarParameter("@MethodConst2",DateType.Millisecond)
+            base.Check(value, pars, " (DATEDIFF(Millisecond,@MethodConst0,@MethodConst1)=0) ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2)
             }, "DateIsSameByType error");
         }
         private void DateIsSameByDay()
@@ -427,6 +505,18 @@ namespace OrmTest.UnitTest
             base.Check(value, pars, " ([Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0","a")
             }, "Contains2 error");
+        }
+        private void Contains3(string name = "a")
+        {
+            Expression<Func<Student, bool>> exp = it => !SqlFunc.Contains(it.Name, name)&&it.Id==1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(NOT ([Name] like '%'+@MethodConst0+'%')  AND( [Id] = @Id1 ))", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","a"),
+                 new SugarParameter("@Id1",1)
+            }, "Contains3 error");
         }
 
         private void ExtendContainsArray() {
@@ -575,7 +665,17 @@ namespace OrmTest.UnitTest
 
             }, "HasNumber error");
         }
-
+        private void MappingColumn() {
+            Expression<Func<Student, bool>> exp = it => SqlFunc.MappingColumn(it.Id,"Name") == 1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(Name = @Const1 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Const1",1)
+            }, "MappingColumn error");
+        }
         private void IIF()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(it.Id == 1, 1, 2)==1;
@@ -606,6 +706,48 @@ namespace OrmTest.UnitTest
                      new SugarParameter("@MethodConst2",2),
                                      new SugarParameter("@Const3",1)
             }, "IIF2 error");
+        }
+
+        private void IIF3()
+        {
+            Expression<Func<Student, bool>> exp = it => SqlFunc.IIF(SqlFunc.Contains(it.Name, "a"), true, false) == true;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( CASE  WHEN  ([Name] like '%'+@MethodConst0+'%')  THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@MethodConst0","a"),
+                     new SugarParameter("@MethodConst1",true),
+                     new SugarParameter("@MethodConst2",false),
+                                     new SugarParameter("@Const3",true)
+            }, "IIF3 error");
+        }
+
+        private void IIF4()
+        {
+            Expression<Func<DataTestInfo2, bool>> exp = it => SqlFunc.IIF(true, it.Bool1, it.Bool2) == true;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( CASE  WHEN ( 1 = 1 )  THEN [Bool1]  ELSE [Bool2] END ) = @Const0 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Const0",true)
+            }, "IIF4 error");
+        }
+
+        private void IIF5()
+        {
+            Expression<Func<DataTestInfo, bool>> exp = it => SqlFunc.IIF(true,Convert.ToBoolean(it.Datetime1), SqlFunc.ToBool(it.Datetime1)) == false;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( CASE  WHEN ( 1 = 1 )  THEN  CAST([Datetime1] AS BIT)  ELSE  CAST([Datetime1] AS BIT) END ) = @Const0 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Const0",false)
+            }, "IIF5 error");
         }
     }
 }

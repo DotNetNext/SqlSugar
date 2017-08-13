@@ -51,12 +51,11 @@ namespace OrmTest.UnitTest
             base.Check(@"DELETE FROM [STudent] WHERE ( [ID] = @Id0 ) ", new List<SugarParameter>() {
                 new SugarParameter("@Id0",1)
             }, t5.Key, t5.Value, "Delte t5 error");
-        }
 
-        public SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            return db;
+            var t6 = db.Deleteable<Student>().Where("id=@id",new { id=1}).ToSql();
+            base.Check(@"DELETE FROM [STudent] WHERE id=@id", new List<SugarParameter>() {
+                new SugarParameter("@id",1)
+            }, t6.Key, t6.Value, "Delte t6 error");
         }
     }
 }

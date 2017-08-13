@@ -124,12 +124,42 @@ namespace OrmTest.UnitTest
                                t10.Value,
                                "Update 10 error"
             );
+            var t11 = db.Updateable<DataTestInfo>().UpdateColumns(it => new DataTestInfo() {  Datetime1=DateTime.MaxValue }).Where(it => it.Int1 == 11).ToSql();
+            base.Check(@"UPDATE [DataTestInfo]  SET
+            [Datetime1] = @constant0   WHERE ( [Int1] = @Int11 )", new List<SugarParameter>() {
+                           new SugarParameter("@Int11",11),
+                           new SugarParameter("@constant0",DateTime.MaxValue) },
+                               t11.Key,
+                               t11.Value,
+                               "Update 11 error" 
+            );
+
+            var t12 = db.Updateable<DataTestInfo>().UpdateColumns(it => new DataTestInfo() {   Int2 = it.Int2+1 }).Where(it => it.Int1 == 11).ToSql();
+            base.Check(@"UPDATE [DataTestInfo]  SET
+            [Int2] = ( [Int2] + @Const0 )   WHERE ( [Int1] = @Int11 )", new List<SugarParameter>() {
+                           new SugarParameter("@Int11",11),
+                           new SugarParameter("@Const0",1) },
+                               t12.Key,
+                               t12.Value,
+                               "Update 12 error"
+            );
+
+
+
+            var t13 = db.Updateable<Student>(new { Name = "a", id=1 }).ToSql();
+            base.Check(@"UPDATE [STudent]  SET
+           [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
+                           new SugarParameter("@Name","a"),
+                           new SugarParameter("@ID",1)
+            }, t13.Key, t13.Value, "Insert t13 error");
+
+            var t14 = db.Updateable<Student>(new Dictionary<string, object>() { { "id", 0 }, { "name", "2" } }).ToSql();
+            base.Check(@"UPDATE [STudent]  SET
+           [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
+                               new SugarParameter("@Name", "2"),
+                           new SugarParameter("@ID", 0)
+            }, t14.Key, t14.Value, "Insert t14 error");
         }
 
-        public SqlSugarClient GetInstance()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            return db;
-        }
     }
 }
