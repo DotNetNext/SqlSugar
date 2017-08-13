@@ -273,7 +273,7 @@ namespace OrmTest.UnitTest
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "(CAST(STRFTIME('%Y', DATETIME(DATETIME(@MethodConst0), 'LOCALTIME')) AS INTEGER) = @Const2 )", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",DateType.Year),new SugarParameter("@Const2",1)
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@Const2",1)
             }, "DateValue error");
         }
 
@@ -320,8 +320,7 @@ namespace OrmTest.UnitTest
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, "(DATETIME(DATETIME(@MethodConst0), '+11 Minutes') = @Const3 )", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2),
-                new SugarParameter("@MethodConst2",DateType.Minute)
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",11),new SugarParameter("@Const3",x2)
             }, "DateAddByType error");
         }
         private void DateAddDay()
@@ -346,8 +345,7 @@ namespace OrmTest.UnitTest
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(value, pars, " Cast((JulianDay(@MethodConst0) - JulianDay(@MethodConst1))  *86400000 As INTEGER)", new List<SugarParameter>() {
-                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2),
-                new SugarParameter("@MethodConst2",DateType.Millisecond)
+                new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2)
             }, "DateIsSameByType error");
         }
         private void DateIsSameByDay()

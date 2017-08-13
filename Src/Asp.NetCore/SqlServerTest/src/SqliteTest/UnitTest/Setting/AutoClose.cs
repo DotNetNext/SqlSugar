@@ -20,7 +20,6 @@ namespace OrmTest.UnitTest
             for (int i = 0; i < this.Count; i++)
             {
                 var db = GetInstance();
-                db.MappingColumns = null;
                 var x = db.Queryable<Student>().ToList();
             }
         }
