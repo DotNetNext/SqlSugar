@@ -112,6 +112,10 @@ namespace OrmTest.UnitTest
 
                 var t11= db.Queryable<Student>().GroupBy("id").OrderBy("id").Select("id").ToSql();
                 base.Check("SELECT id FROM [STudent] GROUP BY id ORDER BY id ", null, t11.Key, t11.Value, "single t11 error");
+
+
+                var t12 = db.Queryable<Student>().Where(it=>it.Id!=null).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE ( [ID] IS NOT NULL )", null, t12.Key, t12.Value, "single t12 error");
             }
         }
     }

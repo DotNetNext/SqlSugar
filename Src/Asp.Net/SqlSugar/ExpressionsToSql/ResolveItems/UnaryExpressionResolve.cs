@@ -24,7 +24,13 @@ namespace SqlSugar
                     base.Expression = expression.Operand;
                     var isMember = expression.Operand is MemberExpression;
                     var isConst = expression.Operand is ConstantExpression;
-                    if (baseParameter.CurrentExpression is NewArrayExpression)
+                    var offsetIsNull = (parameter.OppsiteExpression is ConstantExpression)
+                                        &&(parameter.OppsiteExpression as ConstantExpression).Value==null
+                                        &&ExpressionTool.IsComparisonOperator(expression.Operand);
+                    if (isMember && offsetIsNull) {
+                        Append(parameter, nodeType);
+                    }
+                    else if (baseParameter.CurrentExpression is NewArrayExpression)
                     {
                         Result(parameter, nodeType);
                     }

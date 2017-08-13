@@ -170,6 +170,33 @@ namespace SqlSugar
                         this.Context.Result.Append(appendValue);
                     }
                 }
+                else if ((oppoSiteExpression is UnaryExpression && (oppoSiteExpression as UnaryExpression).Operand is MemberExpression)) {
+                    string appendValue = Context.SqlParameterKeyWord
+                      + ((MemberExpression)(oppoSiteExpression as UnaryExpression).Operand).Member.Name
+                      + Context.ParameterIndex;
+                    if (value.ObjToString() != "NULL" && !parameter.ValueIsNull)
+                    {
+                        this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                    }
+                    else
+                    {
+                        appendValue = value.ObjToString();
+                    }
+                    Context.ParameterIndex++;
+                    appendValue = string.Format(" {0} ", appendValue);
+                    if (isLeft == true)
+                    {
+                        appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                    }
+                    if (this.Context.Result.Contains(ExpressionConst.Format0))
+                    {
+                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue);
+                    }
+                    else
+                    {
+                        this.Context.Result.Append(appendValue);
+                    }
+                }
                 else
                 {
                     var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.Const + Context.ParameterIndex;

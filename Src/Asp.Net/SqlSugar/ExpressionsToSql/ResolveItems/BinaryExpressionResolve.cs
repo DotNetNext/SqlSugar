@@ -44,6 +44,7 @@ namespace SqlSugar
             if (lsbs && parameter.ValueIsNull)
             {
                 base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, isEqual ? "IS" : "IS NOT");
+                base.Context.Result.Replace(ExpressionConst.Format1 + (parameter.Index+1), isEqual ? "IS" : "IS NOT");
             }
             else
             {
