@@ -35,6 +35,7 @@ namespace OrmTest.UnitTest
                 IIF2();
                 IIF3();
                 IIF4();
+                IIF5();
                 #region StringIsNullOrEmpty
                 HasValue();
                 HasNumber();
@@ -734,6 +735,19 @@ namespace OrmTest.UnitTest
             {
                      new SugarParameter("@Const0",true)
             }, "IIF4 error");
+        }
+
+        private void IIF5()
+        {
+            Expression<Func<DataTestInfo, bool>> exp = it => SqlFunc.IIF(true,Convert.ToBoolean(it.Datetime1), SqlFunc.ToBool(it.Datetime1)) == false;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( CASE  WHEN ( 1 = 1 )  THEN  CAST([Datetime1] AS BIT)  ELSE  CAST([Datetime1] AS BIT) END ) = @Const0 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Const0",false)
+            }, "IIF5 error");
         }
     }
 }

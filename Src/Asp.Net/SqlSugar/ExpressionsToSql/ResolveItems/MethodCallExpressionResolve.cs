@@ -151,15 +151,16 @@ namespace SqlSugar
             var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == PubConst.BoolType;
             var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == PubConst.BoolType;
             var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == PubConst.BoolType;
+            var isIFFBoolMethod = isIIF && (item is MethodCallExpression) && (item as MethodCallExpression).Type == PubConst.BoolType;
             var isFirst = item == args.First();
-            if (isFirst&& isIIF && isConst)
+            if (isFirst && isIIF && isConst)
             {
                 var value = (item as ConstantExpression).Value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False();
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
                 {
-                    IsMember =true,
+                    IsMember = true,
                     MemberName = value,
-                    MemberValue= value
+                    MemberValue = value
                 };
                 model.Args.Add(methodCallExpressionArgs);
             }
@@ -176,6 +177,9 @@ namespace SqlSugar
             {
                 AppendModelByIIFBinary(parameter, model, item);
 
+            }
+            else if (isIFFBoolMethod && !isFirst) {
+                AppendModelByIIFMethod(parameter, model, item);
             }
             else if (isBinaryExpression)
             {
@@ -222,37 +226,19 @@ namespace SqlSugar
         }
         private void AppendModelByIIFBinary(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
-            parameter.CommonTempData = CommonTempDataType.Result;
-            base.Expression = item;
-            base.Start();
-            var methodCallExpressionArgs = new MethodCallExpressionArgs()
+            Check.Exception(true, "The SqlFunc.IIF(arg1,arg2,arg3) , {0} argument  do not support ", item.ToString());
+        }
+        private void AppendModelByIIFMethod(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
+        {
+            var methodExpression = item as MethodCallExpression;
+            if (methodExpression.Method.Name.IsIn("ToBool", "ToBoolean","IIF"))
             {
-                IsMember = parameter.ChildExpression is MemberExpression,
-                MemberName = parameter.CommonTempData
-            };
-            if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now")
-            {
-                methodCallExpressionArgs.IsMember = false;
+                model.Args.Add(base.GetMethodCallArgs(parameter, item));
             }
-            var value = methodCallExpressionArgs.MemberName;
-            if (methodCallExpressionArgs.IsMember)
+            else
             {
-                var childExpression = parameter.ChildExpression as MemberExpression;
-                if (childExpression.Expression != null && childExpression.Expression is ConstantExpression)
-                {
-                    methodCallExpressionArgs.IsMember = false;
-                }
+                Check.Exception(true, "The SqlFunc.IIF(arg1,arg2,arg3) , {0} argument  do not support ", item.ToString());
             }
-            if (methodCallExpressionArgs.IsMember == false)
-            {
-                var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
-                this.Context.ParameterIndex++;
-                methodCallExpressionArgs.MemberName = parameterName;
-                methodCallExpressionArgs.MemberValue = value;
-                this.Context.Parameters.Add(new SugarParameter(parameterName, value));
-            }
-            model.Args.Add(methodCallExpressionArgs);
-            parameter.ChildExpression = null;
         }
         private void AppendModel(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
