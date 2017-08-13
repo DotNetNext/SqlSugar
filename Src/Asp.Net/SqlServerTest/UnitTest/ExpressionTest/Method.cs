@@ -725,18 +725,15 @@ namespace OrmTest.UnitTest
 
         private void IIF4()
         {
-            //Expression<Func<DataTestInfo2, bool>> exp = it => SqlFunc.IIF(true, it.Bool1, it.Bool2) == true;
-            //SqlServerExpressionContext expContext = new SqlServerExpressionContext();
-            //expContext.Resolve(exp, ResolveExpressType.WhereSingle);
-            //var value = expContext.Result.GetString();
-            //var pars = expContext.Parameters;
-            //base.Check(value, pars, "(( CASE  WHEN  ([Name] like '%'+@MethodConst0+'%')  THEN @MethodConst1  ELSE @MethodConst2 END ) = @Const3 )", new List<SugarParameter>()
-            //{
-            //         new SugarParameter("@MethodConst0","a"),
-            //         new SugarParameter("@MethodConst1",true),
-            //         new SugarParameter("@MethodConst2",false),
-            //                         new SugarParameter("@Const3",true)
-            //}, "IIF4 error");
+            Expression<Func<DataTestInfo2, bool>> exp = it => SqlFunc.IIF(true, it.Bool1, it.Bool2) == true;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( CASE  WHEN ( 1 = 1 )  THEN [Bool1]  ELSE [Bool2] END ) = @Const0 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Const0",true)
+            }, "IIF4 error");
         }
     }
 }

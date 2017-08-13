@@ -146,19 +146,33 @@ namespace SqlSugar
         private void AppendItem(ExpressionParameter parameter, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, Expression item)
         {
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
-            var isIFFBoolMember = name == "IIF" && (args.Last() is MemberExpression) && (args.Last() as MemberExpression).Type == PubConst.BoolType;
-            var isIFFUnary = name == "IIF" && (args.Last() is UnaryExpression) && (args.Last() as UnaryExpression).Operand.Type == PubConst.BoolType;
-            var isIFFBoolBinary = name == "IIF" && (args.Last() is BinaryExpression) && (args.Last() as BinaryExpression).Type == PubConst.BoolType;
-            if (isIFFUnary && item != args.First())
+            var isConst = item is ConstantExpression;
+            var isIIF= name == "IIF";
+            var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == PubConst.BoolType;
+            var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == PubConst.BoolType;
+            var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == PubConst.BoolType;
+            var isFirst = item == args.First();
+            if (isFirst&& isIIF && isConst)
+            {
+                var value = (item as ConstantExpression).Value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False();
+                var methodCallExpressionArgs = new MethodCallExpressionArgs()
+                {
+                    IsMember =true,
+                    MemberName = value,
+                    MemberValue= value
+                };
+                model.Args.Add(methodCallExpressionArgs);
+            }
+            else if (isIFFUnary && !isFirst)
             {
                 AppendModelByIIFMember(parameter, model, (item as UnaryExpression).Operand);
             }
-            else if (isIFFBoolMember && item != args.First())
+            else if (isIFFBoolMember && !isFirst)
             {
                 AppendModelByIIFMember(parameter, model, item);
 
             }
-            else if (isIFFBoolBinary && item != args.First())
+            else if (isIFFBoolBinary && !isFirst)
             {
                 AppendModelByIIFBinary(parameter, model, item);
 
