@@ -23,6 +23,7 @@ namespace OrmTest.UnitTest
             {
                 FieldSingle();
                 FieldMultiple();
+                FieldMultiple2();
             }
             base.End("Filed Test");
         }
@@ -43,6 +44,14 @@ namespace OrmTest.UnitTest
             Check(selectorValue, null, expContext.GetTranslationColumnName("it.Name"), null, "FieldMultiple error");
         }
 
+        private void FieldMultiple2()
+        {
+            Expression<Func<Student, object>> exp = it =>SqlFunc.AggregateAvg(it.Id);
+            ExpressionContext expContext = GetContext();
+            expContext.Resolve(exp, ResolveExpressType.FieldMultiple);
+            var selectorValue = expContext.Result.GetString();
+            Check(selectorValue, null, "AVG([it].[Id])", null, "FieldMultiple error");
+        }
         public ExpressionContext GetContext()
         {
             return new SqlServerExpressionContext();//可以更换

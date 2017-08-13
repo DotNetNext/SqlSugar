@@ -77,6 +77,8 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
+                    Field(parameter, isLeft, name, args, model);
+                    break;
                 default:
                     break;
             }
@@ -109,6 +111,17 @@ namespace SqlSugar
             }
         }
 
+        private void Field(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
+        {
+            if (this.Context.ResolveType == ResolveExpressType.FieldSingle)
+            {
+                this.Context.ResolveType = ResolveExpressType.WhereSingle;
+            }
+            else {
+                this.Context.ResolveType = ResolveExpressType.WhereMultiple;
+            }
+            Where(parameter, isLeft, name, args, model);
+        }
         private void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             if (name == "GetSelfAndAutoFill")
