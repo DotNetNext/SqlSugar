@@ -258,6 +258,20 @@ namespace SqlSugar
             }
             return In(expression, inValues.ToArray());
         }
+
+        public virtual ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression) {
+            var sqlObj=childQueryExpression.ToSql();
+            if (sqlObj.Value.IsValuable()) {
+                this.QueryBuilder.Parameters.AddRange(sqlObj.Value);
+            }
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            var whereSql = string.Format(this.QueryBuilder.InTemplate, fieldName, sqlObj.Key);
+            this.QueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(this.QueryBuilder.WhereInfos.IsNullOrEmpty(),whereSql));
+            return this;
+        }
+
         public virtual ISugarQueryable<T> OrderBy(string orderFileds)
         {
             var orderByValue = QueryBuilder.OrderByValue;
