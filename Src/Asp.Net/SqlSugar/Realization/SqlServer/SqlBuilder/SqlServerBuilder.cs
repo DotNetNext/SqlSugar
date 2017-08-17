@@ -12,15 +12,16 @@ namespace SqlSugar
         public override string GetTranslationTableName(string name)
         {
             Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
+            if (name.IsContainsIn("(", ")", "["))
+            {
+                return name;
+            }
             var context = this.Context;
             var mappingInfo = context
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
-            if (name.Contains("["))
-                return name;
-            else
-                return "[" + name + "]";
+            return "[" + name + "]";
         }
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {

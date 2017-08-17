@@ -9,8 +9,11 @@ namespace SqlSugar
 
         public override string GetTranslationTableName(string name)
         {
-            if (name.Contains("`")) return name;
             Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
+            if (name.IsContainsIn("`", "(", ")"))
+            {
+                return name;
+            }
             var context = this.Context;
             var mappingInfo = context
                 .MappingTables
