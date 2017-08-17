@@ -186,6 +186,8 @@ namespace OrmTest.Demo
             var getDay1List = db.Queryable<Student>().Where(it=>it.CreateTime.Value.Hour==1).ToList();
             var getDateAdd = db.Queryable<Student>().Where(it => it.CreateTime.Value.AddDays(1)==DateTime.Now).ToList();
             var getDateIsSame= db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(DateTime.Now,DateTime.Now,DateType.Hour)).ToList();
+
+            var getSqlList = db.Queryable<Student>().AS("(select * from student) t").ToList();
         }
         public static void Page()
         {
