@@ -384,7 +384,9 @@ namespace SqlSugar
         public virtual bool Any(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
-            return Any();
+            var result= Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
         public virtual bool Any()
         {
