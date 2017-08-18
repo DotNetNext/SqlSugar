@@ -16,16 +16,21 @@ namespace SqlSugar
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.WhereSingle:
+                    Check.ThrowNotSupportedException(expression.ToString());
                     break;
                 case ResolveExpressType.WhereMultiple:
+                    Check.ThrowNotSupportedException(expression.ToString());
                     break;
                 case ResolveExpressType.SelectSingle:
+                    Check.Exception(expression.Type == PubConst.DateType, "ThrowNotSupportedException {0} ",expression.ToString());
                     Select(expression, parameter, true);
                     break;
                 case ResolveExpressType.SelectMultiple:
+                    Check.Exception(expression.Type == PubConst.DateType, "ThrowNotSupportedException {0} ", expression.ToString());
                     Select(expression, parameter, false);
                     break;
                 case ResolveExpressType.FieldSingle:
+                    Check.ThrowNotSupportedException(expression.ToString());
                     break;
                 case ResolveExpressType.FieldMultiple:
                 case ResolveExpressType.ArrayMultiple:
@@ -50,7 +55,7 @@ namespace SqlSugar
                 {
                     string memberName = expression.Members[i].Name;
                     ++i;
-                    ResolveNewExpressions(parameter,item, memberName);
+                    ResolveNewExpressions(parameter, item, memberName);
                 }
             }
         }
