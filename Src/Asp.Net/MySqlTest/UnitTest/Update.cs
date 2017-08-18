@@ -116,10 +116,10 @@ namespace OrmTest.UnitTest
             string name = "x";
             var t10 = db.Updateable<Student>().UpdateColumns(it => new Student() { Name =name, SchoolId=updateObj.SchoolId }).Where(it=>it.Id==11).ToSql();
             base.Check(@"UPDATE `STudent`  SET
-            `SchoolId` = @Const0 , `Name` = @const3   WHERE ( `ID` = @Id1 )", new List<SugarParameter>() {
-                           new SugarParameter("@const3","x"),
-                           new SugarParameter("@Const0",18),
-                           new SugarParameter("@Id1",11)},
+            `SchoolId` = @Const1 , `Name` = @Const0   WHERE ( `ID` = @Id2 )", new List<SugarParameter>() {
+                           new SugarParameter("@Const1",18),
+                           new SugarParameter("@Const0","x"),
+                           new SugarParameter("@Id2",11)},
                                t10.Key,
                                t10.Value,
                                "Update 10 error"

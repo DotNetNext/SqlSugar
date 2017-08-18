@@ -59,9 +59,10 @@ namespace SqlSugar
                 {
                     base.Expression = item;
                     base.Start();
-                    string parameterName = this.Context.SqlParameterKeyWord + "const" + this.ContentIndex;
+                    string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const+ this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+                    this.Context.ParameterIndex++;
                 }
                 else if (item is MethodCallExpression)
                 {
@@ -79,7 +80,6 @@ namespace SqlSugar
                         base.Expression = item;
                         base.Start();
                         parameter.IsAppendResult();
-                        string parameterName = this.Context.SqlParameterKeyWord + "const" + +this.ContentIndex; ;
                         parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
                         base.Context.Result.CurrentParameter = null;
                     }
