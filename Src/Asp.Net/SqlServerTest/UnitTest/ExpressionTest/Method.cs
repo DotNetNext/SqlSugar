@@ -650,8 +650,20 @@ namespace OrmTest.UnitTest
             {
 
             }, "HasValue error");
+            HasValue2(1);
         }
-
+        private void HasValue2(int p = 1)
+        {
+            Expression<Func<Student, bool>> exp = it => it.CreateTime.HasValue;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                @"( [it].[CreateTime]<>'' AND [it].[CreateTime] IS NOT NULL )", null, selectorValue, null,
+                "Select.HasValue2 Error");
+        }
         private void HasNumber()
         {
             Expression<Func<Student, bool>> exp = it => SqlFunc.HasNumber(it.Id);
