@@ -239,6 +239,9 @@ namespace SqlSugar
                 string columnName = this.SqlBuilder.GetTranslationTableName(item.DbColumnName);
                 string dataType = item.DataType;
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+                if (item.Length>4000|| item.Length==-1) {
+                    dataSize = string.Format("({0})","max");
+                }
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
