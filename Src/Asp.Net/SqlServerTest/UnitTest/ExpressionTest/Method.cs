@@ -760,6 +760,24 @@ namespace OrmTest.UnitTest
             {
                      new SugarParameter("@Const0",false)
             }, "IIF5 error");
+            IIF6();
+        }
+
+        private void IIF6()
+        {
+            var dt = DateTime.Now.Date;
+            Expression <Func<DataTestInfo, bool>> exp = it => SqlFunc.IIF(dt == it.Datetime1,it.Datetime1, it.Datetime1) == dt;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.MappingColumns = new MappingColumnList();
+            expContext.MappingColumns.Add("Datetime1", "Datetime2", "DataTestInfo");
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(( CASE  WHEN ( @Datetime10 = [Datetime2] ) THEN [Datetime2]  ELSE [Datetime2] END ) = @Const1 )", new List<SugarParameter>()
+            {
+                     new SugarParameter("@Datetime10",dt),
+                     new SugarParameter("@Const1",dt)
+            }, "IIF6 error");
         }
     }
 }
