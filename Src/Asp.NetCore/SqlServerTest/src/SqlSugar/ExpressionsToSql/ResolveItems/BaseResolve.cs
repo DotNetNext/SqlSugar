@@ -252,6 +252,9 @@ namespace SqlSugar
         protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item)
         {
             var newContext = this.Context.GetCopyContext();
+            newContext.MappingColumns = this.Context.MappingColumns;
+            newContext.MappingTables = this.Context.MappingTables;
+            newContext.IgnoreComumnList = this.Context.IgnoreComumnList;
             newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);
             this.Context.Index = newContext.Index;
             this.Context.ParameterIndex = newContext.ParameterIndex;

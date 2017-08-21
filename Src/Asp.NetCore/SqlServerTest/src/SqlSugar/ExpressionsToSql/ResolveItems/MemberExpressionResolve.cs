@@ -19,6 +19,8 @@ namespace SqlSugar
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
             var isLength = expression.Member.Name == "Length" && (expression.Expression as MemberExpression).Type == PubConst.StringType;
             var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == PubConst.DateType;
+            var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
+            var isHasValue = isLogicOperator && expression.Member.Name == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             if (isLength)
             {
                 var oldCommonTempDate = parameter.CommonTempData;
@@ -37,7 +39,23 @@ namespace SqlSugar
                 parameter.CommonTempData = oldCommonTempDate;
                 return;
             }
-            else if (isDateValue) {
+            else if (isHasValue) {
+                parameter.CommonTempData = CommonTempDataType.Result;
+                this.Expression = expression.Expression;
+                this.Start();
+                var methodParamter =new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
+                var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                    methodParamter
+                  }
+                });
+                this.Context.Result.Append(result);
+                parameter.CommonTempData = null;
+                return;
+            }
+            else if (isDateValue)
+            {
                 var name = expression.Member.Name;
                 var oldCommonTempDate = parameter.CommonTempData;
                 parameter.CommonTempData = CommonTempDataType.Result;

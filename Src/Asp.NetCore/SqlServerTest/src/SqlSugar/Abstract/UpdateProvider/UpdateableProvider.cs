@@ -56,6 +56,7 @@ namespace SqlSugar
 
         public IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression)
         {
+            Check.Exception(!IsSingle, "Batch operation not supported ReSetValue");
             var expResult = UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
             var resultString = Regex.Match(expResult.GetResultString(), @"\((.+)\)").Groups[1].Value;
             LambdaExpression lambda = setValueExpression as LambdaExpression;
