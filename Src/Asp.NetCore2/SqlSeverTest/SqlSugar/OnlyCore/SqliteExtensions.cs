@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.SQLite;
+using System.Data.Sqlite;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace System.Data.SQLite
+namespace System.Data.Sqlite
 {
     public static class AdoCore
     {

@@ -120,7 +120,11 @@ namespace SqlSugar
                                     {
                                         addValue = DateTime.MinValue;
                                     }
-                                    else if (item.PropertyType == PubConst.StringType) {
+                                    else if (item.PropertyType == PubConst.StringType)
+                                    {
+                                        addValue = null;
+                                    }
+                                    else {
                                         addValue = null;
                                     }
                                 }

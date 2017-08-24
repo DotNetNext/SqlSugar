@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.SQLite;
+using System.Data.Sqlite;
 using System.Linq;
 using System.Text;
 
@@ -178,7 +179,7 @@ namespace SqlSugar
                         string sql = "select * from " + tableName + " limit 0,1";
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                         this.Context.Ado.IsEnableLogEvent = false;
-                        using (DbDataReader reader = (SQLiteDataReader)this.Context.Ado.GetDataReader(sql))
+                        using (DbDataReader reader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
                         {
                             this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                             return AdoCore.GetColumnInfosByTableName(tableName, reader);

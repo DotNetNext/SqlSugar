@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Data.SQLite;
+using System.Data.Sqlite;
 using System.Linq;
 using System.Threading.Tasks;
 namespace SqlSugar
@@ -656,7 +656,7 @@ namespace SqlSugar
     /// <summary>
     /// 数据填充器
     /// </summary>
-    public class SQLiteDataAdapter : IDataAdapter
+    public class SqliteDataAdapter : IDataAdapter
     {
         private SqliteCommand command;
         private string sql;
@@ -666,12 +666,12 @@ namespace SqlSugar
         /// SqlDataAdapter
         /// </summary>
         /// <param name="command"></param>
-        public SQLiteDataAdapter(SqliteCommand command)
+        public SqliteDataAdapter(SqliteCommand command)
         {
             this.command = command;
         }
 
-        public SQLiteDataAdapter()
+        public SqliteDataAdapter()
         {
 
         }
@@ -681,7 +681,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="_sqlConnection"></param>
-        public SQLiteDataAdapter(string sql, SqliteConnection _sqlConnection)
+        public SqliteDataAdapter(string sql, SqliteConnection _sqlConnection)
         {
             this.sql = sql;
             this._sqlConnection = _sqlConnection;
