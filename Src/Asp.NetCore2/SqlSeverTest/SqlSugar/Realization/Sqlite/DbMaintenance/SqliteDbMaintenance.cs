@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.Sqlite;
 using System.Linq;
 using System.Text;
 
@@ -176,13 +175,36 @@ namespace SqlSugar
 
                     }, (cm, key) =>
                     {
-                        string sql = "select * from " + tableName + " limit 0,1";
+                        string sql = "PRAGMA table_info(" + tableName + ")";
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                         this.Context.Ado.IsEnableLogEvent = false;
-                        using (DbDataReader reader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
+                        using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
                         {
-                            this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
-                            return AdoCore.GetColumnInfosByTableName(tableName, reader);
+                            List<DbColumnInfo> result = new List<DbColumnInfo>();
+                            while (dataReader.Read())
+                            {
+                                var type = dataReader.GetValue(2).ObjToString();
+                                var length = 0;
+                                if (type.Contains("("))
+                                {
+                                    type = type.Split('(').First();
+                                    length = type.Split('(').Last().TrimEnd(')').ObjToInt();
+                                }
+                                DbColumnInfo column = new DbColumnInfo()
+                                {
+                                    TableName = tableName,
+                                    DataType = type,
+                                    IsNullable = !dataReader.GetBoolean(3),
+                                    IsIdentity = dataReader.GetBoolean(3) && dataReader.GetBoolean(5).ObjToBool() && (type.IsIn("integer", "int", "int32", "int64", "long")),
+                                    ColumnDescription = null,
+                                    DbColumnName = dataReader.GetString(1),
+                                    DefaultValue = dataReader.GetValue(4).ObjToString(),
+                                    IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
+                                    Length = length
+                                };
+                                result.Add(column);
+                            }
+                            return result;
                         }
 
                     });
