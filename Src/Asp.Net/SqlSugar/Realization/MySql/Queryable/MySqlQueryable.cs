@@ -41,4 +41,20 @@
     {
 
     }
+    public class MySqlQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> : QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8,T9>
+    {
+
+    }
+    public class MySqlQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> : QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>
+    {
+
+    }
+    public class MySqlQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8 ,T9, T10, T11>
+    {
+
+    }
+    public class MySqlQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
+    {
+
+    }
 }
