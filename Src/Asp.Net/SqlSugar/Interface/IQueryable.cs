@@ -62,7 +62,7 @@ namespace SqlSugar
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(string select);
         ISugarQueryable<T> Select(string select);
-        ISugarQueryable<T> SelectMergeAsTable();
+        ISugarQueryable<T> MergeTable();
 
         int Count();
         TResult Max<TResult>(string maxField);
@@ -125,6 +125,12 @@ namespace SqlSugar
         TResult Sum<TResult>(Expression<Func<T,T2, TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T,T2, TResult>> expression);
         #endregion
+
+        #region In
+        new ISugarQueryable<T,T2> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T,T2> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T,T2> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
     {
@@ -163,6 +169,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
@@ -207,6 +219,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
@@ -257,6 +275,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
@@ -311,6 +335,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7> : ISugarQueryable<T>
@@ -370,6 +400,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> : ISugarQueryable<T>
@@ -434,6 +470,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
 
@@ -505,6 +547,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> : ISugarQueryable<T>
@@ -579,6 +627,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11> : ISugarQueryable<T>
@@ -658,6 +712,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11,T12> : ISugarQueryable<T>
@@ -742,6 +802,12 @@ namespace SqlSugar
         TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
         TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
         TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
     }
     #endregion

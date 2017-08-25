@@ -28,7 +28,7 @@ namespace OrmTest.Demo
               JoinType.Left,st.SchoolId==sc.Id
             })
             .Select((st,sc)=>new { id=st.Id,name=sc.Name})
-            .SelectMergeAsTable().Where(XXX=>XXX.id==1).OrderBy("name asc").ToList();// Prefix, is, not, necessary, and take the columns in select
+            .MergeTable().Where(XXX=>XXX.id==1).OrderBy("name asc").ToList();// Prefix, is, not, necessary, and take the columns in select
 
         }
 
