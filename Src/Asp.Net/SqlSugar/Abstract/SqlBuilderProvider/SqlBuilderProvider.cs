@@ -69,10 +69,25 @@ namespace SqlSugar
         public virtual string GetNoTranslationColumnName(string name)
         {
             if (!name.Contains(SqlTranslationLeft)) return name;
-            return name == null ? string.Empty : Regex.Match(name, @".*"+"\\"+SqlTranslationLeft+"(.*?)"+"\\"+SqlTranslationRight+"").Groups[1].Value;
+            return name == null ? string.Empty : Regex.Match(name, @".*" + "\\" + SqlTranslationLeft + "(.*?)" + "\\" + SqlTranslationRight + "").Groups[1].Value;
         }
-        public virtual string GetPackTable(string sql, string shortName) {
+        public virtual string GetPackTable(string sql, string shortName)
+        {
             return string.Format(" ({0}) {1} ", sql, shortName);
+        }
+        public virtual void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
+        {
+            if (appendSql.IsValuable() && parameters.IsValuable())
+            {
+                foreach (var parameter in parameters.OrderByDescending(it=>it.ParameterName.Length))
+                {
+                    //Compatible with.NET CORE parameters case
+                    var name = parameter.ParameterName;
+                    string newName = name + addIndex;
+                    appendSql = appendSql.Replace(name, newName);
+                    parameter.ParameterName = newName;
+                }
+            }
         }
         #endregion
 
