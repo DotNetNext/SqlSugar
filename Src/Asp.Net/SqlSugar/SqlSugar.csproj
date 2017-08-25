@@ -71,7 +71,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
-    <Compile Include="CompatibleNetCore\CompatibleExtensions.cs" />
+    <Compile Include="Common\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
     <Compile Include="Realization\MySql\DbMaintenance\MySqlDbMaintenance.cs" />
