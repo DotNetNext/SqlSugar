@@ -43,7 +43,7 @@ namespace OrmTest
             OrmTest.Demo.JoinSql.Init();
             OrmTest.Demo.Filter.Init();
             OrmTest.Demo.ComplexModel.Init();
-            OrmTest.Demo.CodeFirst.Init();
+            OrmTest.Demo.CodeFirst.Init();;
         }
     }
 }

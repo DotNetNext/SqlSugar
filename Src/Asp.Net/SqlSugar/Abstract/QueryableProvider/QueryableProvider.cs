@@ -410,6 +410,14 @@ namespace SqlSugar
             QueryBuilder.SelectValue = selectValue;
             return this;
         }
+        public virtual ISugarQueryable<T> SelectMergeAsTable()
+        {
+            Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "SelectMergeAsTable need to use Select(it=>new{}) Method .");
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, "SelectMergeAsTable  Queryable cannot Take Skip OrderBy PageToList  ");
+            var sql = QueryBuilder.ToSqlString();
+            var tableName = (string.Format("({0}) MergeAsTable ", sql));
+            return this.Context.Queryable<ExpandoObject>().AS(tableName).Select<T>("*");
+        }
 
         public virtual int Count()
         {

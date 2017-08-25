@@ -62,7 +62,7 @@ namespace SqlSugar
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(string select);
         ISugarQueryable<T> Select(string select);
-
+        ISugarQueryable<T> SelectMergeAsTable();
 
         int Count();
         TResult Max<TResult>(string maxField);

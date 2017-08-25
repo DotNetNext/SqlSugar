@@ -1,5 +1,6 @@
 ﻿using OrmTest.Demo;
 using OrmTest.Models;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,19 @@ namespace OrmTest.Demo
         {
             Where();
             OrderBy();
+            SelectMerge();
+        }
+
+        private static void SelectMerge()
+        {
+            var db = GetInstance();
+            //page join
+            var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            })
+            .Select((st,sc)=>new { id=st.Id,name=sc.Name})
+            .SelectMergeAsTable().Where(XXX=>XXX.id==1).OrderBy("name asc").ToList();// Prefix, is, not, necessary, and take the columns in select
+
         }
 
         private static void Where()
