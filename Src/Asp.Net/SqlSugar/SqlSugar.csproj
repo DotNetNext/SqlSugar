@@ -162,14 +162,14 @@
     <Compile Include="ExpressionsToSql\Common\CommonTempDataType.cs" />
     <Compile Include="ExpressionsToSql\Common\DateType.cs" />
     <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
-    <Compile Include="ExpressionsToSql\Method\DefaultDbMethod.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\DefaultDbMethod.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerExpressionContext.cs" />
-    <Compile Include="ExpressionsToSql\Method\SqlFunc.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\SqlFunc.cs" />
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
     <Compile Include="ExpressionsToSql\Common\ErrorMessage.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResultAcceptType.cs" />
-    <Compile Include="ExpressionsToSql\Method\IDbMethods.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\IDbMethods.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberConstExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberInitExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberNewExpressionResolve.cs" />
