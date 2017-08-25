@@ -18,6 +18,5 @@ namespace SqlSugar
         public const string Const = "Const";
         public readonly static Type MemberExpressionType = typeof(MemberExpression);
         public readonly static Type ConstantExpressionType = typeof(ConstantExpression);
-        public readonly static Type StringType = typeof(string);
     }
 }
