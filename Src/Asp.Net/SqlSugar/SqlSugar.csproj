@@ -71,7 +71,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
-    <Compile Include="Common\ReflectionExtensions.cs" />
+    <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
     <Compile Include="Realization\MySql\DbMaintenance\MySqlDbMaintenance.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="Entities\SqlFilter.cs" />
     <Compile Include="Enum\DbObjectType.cs" />
     <Compile Include="Enum\ProperyType.cs" />
-    <Compile Include="Common\FileHelper.cs" />
+    <Compile Include="Utilities\FileHelper.cs" />
     <Compile Include="Interface\ICacheManager.cs" />
     <Compile Include="Entities\DbResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />
@@ -134,16 +134,16 @@
     <Compile Include="Abstract\SqlBuilderProvider\UpdateBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider.cs" />
-    <Compile Include="Common\CacheManager.cs" />
-    <Compile Include="Common\Check.cs" />
-    <Compile Include="Common\DbExtensions.cs" />
-    <Compile Include="Common\ErrorMessage.cs" />
-    <Compile Include="Common\IsWhatExtensions.cs" />
-    <Compile Include="Common\PubConst.cs" />
-    <Compile Include="Common\PubConvert.cs" />
-    <Compile Include="Common\PubMethod.cs" />
-    <Compile Include="Common\SqlException.cs" />
-    <Compile Include="Common\RewritableMethods.cs" />
+    <Compile Include="Utilities\CacheManager.cs" />
+    <Compile Include="Utilities\Check.cs" />
+    <Compile Include="Utilities\DbExtensions.cs" />
+    <Compile Include="Utilities\ErrorMessage.cs" />
+    <Compile Include="Utilities\IsWhatExtensions.cs" />
+    <Compile Include="Utilities\PubConst.cs" />
+    <Compile Include="Utilities\PubConvert.cs" />
+    <Compile Include="Utilities\PubMethod.cs" />
+    <Compile Include="Utilities\SqlException.cs" />
+    <Compile Include="Infrastructure\RewritableMethods.cs" />
     <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerUpdateBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbBind\SqlServerDbBind.cs" />
@@ -216,7 +216,7 @@
     <Compile Include="Interface\IRewritableMethods.cs" />
     <Compile Include="Interface\IUpdateable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlSugarAccessory.cs" />
+    <Compile Include="Infrastructure\SqlSugarAccessory.cs" />
     <Compile Include="SqlSugarClient.cs" />
   </ItemGroup>
   <ItemGroup>
