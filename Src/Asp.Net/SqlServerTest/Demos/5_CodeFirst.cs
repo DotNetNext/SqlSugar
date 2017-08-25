@@ -22,8 +22,10 @@ namespace OrmTest.Demo
         public DateTime? DateTime { get; set; }
         [SugarColumn(IsNullable = true,OldColumnName = "Dob")]
         public double? Dob2 { get; set; }
-        [SugarColumn(Length =110)]
+        [SugarColumn(Length =11000)]
         public string A1 { get; set; }
+        [SugarColumn(Length = 18,DecimalDigits=2)]
+        public decimal Dec { get; set; }
     }
     public class CodeTable2 {
         public int Id { get; set; }

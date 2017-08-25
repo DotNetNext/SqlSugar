@@ -19,5 +19,6 @@ namespace SqlSugar
         public bool IsIdentity { get; set; }
         public bool IsPrimarykey { get; set; }
         public object Value { get; set; }
+        public int DecimalDigits { get; set; }
     }
 }
