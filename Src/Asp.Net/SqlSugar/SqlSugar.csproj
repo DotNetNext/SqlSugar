@@ -167,7 +167,7 @@
     <Compile Include="ExpressionsToSql\Method\SqlFunc.cs" />
     <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
-    <Compile Include="ExpressionsToSql\Common\ExpressionErrorMessage.cs" />
+    <Compile Include="ExpressionsToSql\Common\ErrorMessage.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionResultAcceptType.cs" />
     <Compile Include="ExpressionsToSql\Method\IDbMethods.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MemberConstExpressionResolve.cs" />

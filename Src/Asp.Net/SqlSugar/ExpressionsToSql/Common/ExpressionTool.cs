@@ -42,7 +42,7 @@ namespace SqlSugar
                 case ExpressionType.MultiplyChecked:
                     return "*";
                 default:
-                    Check.ThrowNotSupportedException(string.Format(ExpressionErrorMessage.OperatorError, expressiontype.ToString()));
+                    Check.ThrowNotSupportedException(string.Format(ErrorMessage.OperatorError, expressiontype.ToString()));
                     return null;
             }
         }
