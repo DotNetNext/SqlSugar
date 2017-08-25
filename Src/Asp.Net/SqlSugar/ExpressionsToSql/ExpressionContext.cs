@@ -96,6 +96,8 @@ namespace SqlSugar
                 return "@";
             }
         }
+        public virtual string SqlTranslationLeft { get { return "["; } }
+        public virtual string SqlTranslationRight { get { return "]"; } }
         #endregion
 
         #region public functions
@@ -118,7 +120,7 @@ namespace SqlSugar
                 else
                 {
                     var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                    return "[" + (mappingInfo == null ? entityName : mappingInfo.EntityName) + "]";
+                    return SqlTranslationLeft+ (mappingInfo == null ? entityName : mappingInfo.EntityName) + SqlTranslationRight;
                 }
             }
             else
@@ -164,11 +166,11 @@ namespace SqlSugar
         }
         public virtual bool IsTranslationText(string name)
         {
-            return name.Contains("[") && name.Contains("]");
+            return name.Contains(SqlTranslationLeft) && name.Contains(SqlTranslationRight);
         }
         public virtual string GetTranslationText(string name)
         {
-            return "[" + name + "]";
+            return SqlTranslationLeft + name + SqlTranslationRight;
         }
         public virtual void Resolve(Expression expression, ResolveExpressType resolveType)
         {
