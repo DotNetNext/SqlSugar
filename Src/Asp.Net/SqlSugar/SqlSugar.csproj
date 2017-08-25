@@ -201,7 +201,7 @@
     <Compile Include="ExpressionsToSql\Common\ExpResolveAccessory.cs" />
     <Compile Include="ExpressionsToSql\ExpressionContext.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionTool.cs" />
-    <Compile Include="InstanceFactory.cs" />
+    <Compile Include="Infrastructure\InstanceFactory.cs" />
     <Compile Include="Interface\ICodeFirst.cs" />
     <Compile Include="Interface\IAdo.cs" />
     <Compile Include="Interface\IDbBind.cs" />
