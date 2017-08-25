@@ -223,7 +223,8 @@ namespace SqlSugar
                 IsNullable = item.IsNullable,
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
-                Length = item.Length
+                Length = item.Length,
+                DecimalDigits=item.DecimalDigits
             };
             if (!string.IsNullOrEmpty(item.DataType))
             {

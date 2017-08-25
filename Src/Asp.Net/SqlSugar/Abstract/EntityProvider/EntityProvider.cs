@@ -137,6 +137,7 @@ namespace SqlSugar
                         column.Length = sugarColumn.Length;
                         column.OldDbColumnName = sugarColumn.OldColumnName;
                         column.DataType = sugarColumn.ColumnDataType;
+                        column.DecimalDigits = sugarColumn.DecimalDigits;
                     }
                     else
                     {

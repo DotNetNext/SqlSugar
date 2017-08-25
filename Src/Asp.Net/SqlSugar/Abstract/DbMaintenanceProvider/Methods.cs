@@ -248,25 +248,6 @@ namespace SqlSugar
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
-
-        protected virtual  string GetSize(DbColumnInfo item)
-        {
-            string dataSize = null;
-            var isMax = item.Length > 4000 || item.Length == -1;
-            if (isMax) {
-                dataSize = item.Length > 0 ? string.Format("({0})", "max") : null;
-            }
-            else if (item.Length > 0 && item.DecimalDigits == 0)
-            {
-                dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
-            }
-            else if (item.Length > 0 && item.DecimalDigits > 0)
-            {
-                dataSize = item.Length > 0 ? string.Format("({0},{1})", item.Length, item.DecimalDigits) : null;
-            }
-            return dataSize;
-        }
-
         protected virtual string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
         {
             string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
@@ -294,6 +275,24 @@ namespace SqlSugar
         protected virtual string GetCacheKey(string cacheKey)
         {
             return this.Context.CurrentConnectionConfig.DbType + "." + this.Context.Ado.Connection.Database + "." + cacheKey;
+        }
+        protected virtual string GetSize(DbColumnInfo item)
+        {
+            string dataSize = null;
+            var isMax = item.Length > 4000 || item.Length == -1;
+            if (isMax)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0})", "max") : null;
+            }
+            else if (item.Length > 0 && item.DecimalDigits == 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+            }
+            else if (item.Length > 0 && item.DecimalDigits > 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0},{1})", item.Length, item.DecimalDigits) : null;
+            }
+            return dataSize;
         }
         #endregion
     }
