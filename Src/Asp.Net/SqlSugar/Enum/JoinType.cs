@@ -11,5 +11,4 @@ namespace SqlSugar
         Left = 1,
         Right = 2
     }
-
 }
