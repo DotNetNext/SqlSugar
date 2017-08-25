@@ -23,7 +23,7 @@ namespace SqlSugar
         {
             get
             {
-                _WhereInfos = PubMethod.IsNullReturnNew(_WhereInfos);
+                _WhereInfos = UtilMethods.IsNullReturnNew(_WhereInfos);
                 return _WhereInfos;
             }
             set { _WhereInfos = value; }

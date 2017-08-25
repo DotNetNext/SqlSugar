@@ -115,7 +115,7 @@ namespace SqlSugar
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
-                                                               && ((ec.Length != dc.Length && !PubMethod.GetUnderType(ec.PropertyInfo).IsEnum() && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(UtilConstants.StringType)) ||
+                                                               && ((ec.Length != dc.Length && !UtilMethods.GetUnderType(ec.PropertyInfo).IsEnum() && UtilMethods.GetUnderType(ec.PropertyInfo).IsIn(UtilConstants.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
@@ -212,7 +212,7 @@ namespace SqlSugar
         }
         protected virtual DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
-            var propertyType = PubMethod.GetUnderType(item.PropertyInfo);
+            var propertyType = UtilMethods.GetUnderType(item.PropertyInfo);
             var result = new DbColumnInfo()
             {
                 TableId = entityInfo.Columns.IndexOf(item),
@@ -246,7 +246,7 @@ namespace SqlSugar
             {
                 return ec.DataType != dc.DataType;
             }
-            var propertyType = PubMethod.GetUnderType(ec.PropertyInfo);
+            var propertyType = UtilMethods.GetUnderType(ec.PropertyInfo);
             var properyTypeName = string.Empty;
             if (propertyType.IsEnum())
             {

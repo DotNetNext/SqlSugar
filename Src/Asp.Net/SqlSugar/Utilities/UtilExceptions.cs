@@ -5,18 +5,18 @@ using System.Text;
 using Newtonsoft.Json;
 namespace SqlSugar
 {
-    public class SqlSugarException : Exception
+    public class UtilExceptions : Exception
     {
-        public SqlSugarException(string message)
+        public UtilExceptions(string message)
             : base(message){}
 
-        public SqlSugarException(SqlSugarClient context,string message, string sql)
+        public UtilExceptions(SqlSugarClient context,string message, string sql)
             : base(GetMessage(context, message, sql)) {}
 
-        public SqlSugarException(SqlSugarClient context, string message, string sql, object pars)
+        public UtilExceptions(SqlSugarClient context, string message, string sql, object pars)
             : base(GetMessage(context,message, sql, pars)){}
 
-        public SqlSugarException(SqlSugarClient context, string message, object pars)
+        public UtilExceptions(SqlSugarClient context, string message, object pars)
             : base(GetMessage(context,message, pars)){}
 
         private static string GetMessage(SqlSugarClient context, string message, object pars)

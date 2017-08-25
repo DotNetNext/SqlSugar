@@ -41,7 +41,7 @@ namespace SqlSugar
         {
             get
             {
-                _Sql = PubMethod.IsNullReturnNew(_Sql);
+                _Sql = UtilMethods.IsNullReturnNew(_Sql);
                 return _Sql;
             }
             set
@@ -60,7 +60,7 @@ namespace SqlSugar
         {
             get
             {
-                _Parameters = PubMethod.IsNullReturnNew(_Parameters);
+                _Parameters = UtilMethods.IsNullReturnNew(_Parameters);
                 return _Parameters;
             }
             set

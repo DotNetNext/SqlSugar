@@ -168,7 +168,7 @@ namespace SqlSugar
             IDbBind bind = Context.Ado.DbBind;
             bool isNullableType = false;
             MethodInfo method = null;
-            Type bindPropertyType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
+            Type bindPropertyType = UtilMethods.GetUnderType(bindProperty, ref isNullableType);
             string dbTypeName = DataRecord.GetDataTypeName(ordinal);
             if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
             {
@@ -299,7 +299,7 @@ namespace SqlSugar
             var isAny = invalidTypes.Contains(bindProperyTypeName);
             if (isAny)
             {
-                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", propertyName, validPropertyType, bindProperyTypeName));
+                throw new UtilExceptions(string.Format("{0} can't  convert {1} to {2}", propertyName, validPropertyType, bindProperyTypeName));
             }
         }
         #endregion

@@ -179,7 +179,7 @@ namespace SqlSugar
                         Value = column.PropertyInfo.GetValue(item, null),
                         DbColumnName = GetDbColumnName(column.PropertyName),
                         PropertyName = column.PropertyName,
-                        PropertyType = PubMethod.GetUnderType(column.PropertyInfo),
+                        PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                         TableId = i
                     };
                     if (columnInfo.PropertyType.IsEnum())

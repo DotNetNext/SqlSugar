@@ -189,7 +189,7 @@ namespace SqlSugar
         #region Sqlite Extensions
         public static Nullable<T> GetSqliteTypeNull<T>(this IDataReader dr, int i) where T : struct
         {
-            var type = PubMethod.GetUnderType(typeof(T));
+            var type = UtilMethods.GetUnderType(typeof(T));
             if (dr.IsDBNull(i))
             {
                 return null;

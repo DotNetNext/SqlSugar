@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 namespace SqlSugar
 {
-    public class PubMethod
+    public class UtilMethods
     {
         internal static Type GetUnderType(Type oldType)
         {
@@ -35,7 +35,6 @@ namespace SqlSugar
             Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
             return unType != null;
         }
-
 
         internal static T IsNullReturnNew<T>(T returnObj) where T : new()
         {

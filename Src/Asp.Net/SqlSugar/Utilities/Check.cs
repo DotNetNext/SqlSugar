@@ -9,31 +9,31 @@ namespace SqlSugar
         public static void ThrowNotSupportedException(string message)
         {
             message = message.IsNullOrEmpty() ? new NotSupportedException().Message : message;
-            throw new SqlSugarException("SqlSugarException.NotSupportedException：" + message);
+            throw new UtilExceptions("SqlSugarException.NotSupportedException：" + message);
         }
 
         public static void ConnectionConfig(ConnectionConfig config)
         {
             if (config == null || config.ConnectionString.IsNullOrEmpty() || config.DbType.IsNullOrEmpty())
             {
-                throw new SqlSugarException("SqlSugarException.ArgumentNullException：" + ErrorMessage.ConnectionConfigIsNull);
+                throw new UtilExceptions("SqlSugarException.ArgumentNullException：" + ErrorMessage.ConnectionConfigIsNull);
             }
         }
         public static void ArgumentNullException(object checkObj, string message)
         {
             if (checkObj == null)
-                throw new SqlSugarException("SqlSugarException.ArgumentNullException：" + message);
+                throw new UtilExceptions("SqlSugarException.ArgumentNullException：" + message);
         }
         public static void ArgumentNullException(object [] checkObj, string message)
         {
             if (checkObj == null|| checkObj.Length==0)
-                throw new SqlSugarException("SqlSugarException.ArgumentNullException：" + message);
+                throw new UtilExceptions("SqlSugarException.ArgumentNullException：" + message);
         }
 
         public static void Exception(bool isException, string message, params string[] args)
         {
             if (isException)
-                throw new SqlSugarException(string.Format(message, args));
+                throw new UtilExceptions(string.Format(message, args));
         }
 
     }

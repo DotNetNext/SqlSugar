@@ -140,9 +140,9 @@
     <Compile Include="Utilities\ErrorMessage.cs" />
     <Compile Include="Utilities\IsWhatExtensions.cs" />
     <Compile Include="Utilities\UtilConstants.cs" />
-    <Compile Include="Utilities\UtilsConvert.cs" />
-    <Compile Include="Utilities\PubMethod.cs" />
-    <Compile Include="Utilities\SqlException.cs" />
+    <Compile Include="Utilities\UtilConvert.cs" />
+    <Compile Include="Utilities\UtilMethods.cs" />
+    <Compile Include="Utilities\UtilExceptions.cs" />
     <Compile Include="Infrastructure\RewritableMethods.cs" />
     <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerUpdateBuilder.cs" />

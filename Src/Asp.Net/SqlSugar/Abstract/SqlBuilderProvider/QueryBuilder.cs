@@ -53,7 +53,7 @@ namespace SqlSugar
         {
             get
             {
-                _EasyJoinInfos = PubMethod.IsNullReturnNew(_EasyJoinInfos);
+                _EasyJoinInfos = UtilMethods.IsNullReturnNew(_EasyJoinInfos);
                 return _EasyJoinInfos;
             }
             set { _EasyJoinInfos = value; }
@@ -62,7 +62,7 @@ namespace SqlSugar
         {
             get
             {
-                _JoinQueryInfos = PubMethod.IsNullReturnNew(_JoinQueryInfos);
+                _JoinQueryInfos = UtilMethods.IsNullReturnNew(_JoinQueryInfos);
                 return _JoinQueryInfos;
             }
             set { _JoinQueryInfos = value; }
@@ -72,7 +72,7 @@ namespace SqlSugar
         {
             get
             {
-                _WhereInfos = PubMethod.IsNullReturnNew(_WhereInfos);
+                _WhereInfos = UtilMethods.IsNullReturnNew(_WhereInfos);
                 return _WhereInfos;
             }
             set { _WhereInfos = value; }

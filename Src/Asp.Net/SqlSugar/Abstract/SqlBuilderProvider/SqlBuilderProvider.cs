@@ -20,7 +20,7 @@ namespace SqlSugar
         {
             get
             {
-                base._SqlQueryBuilder = PubMethod.IsNullReturnNew(base._SqlQueryBuilder);
+                base._SqlQueryBuilder = UtilMethods.IsNullReturnNew(base._SqlQueryBuilder);
                 return base._SqlQueryBuilder;
             }
             set { base._SqlQueryBuilder = value; }
