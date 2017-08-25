@@ -19,11 +19,13 @@ namespace SqlSugar
                 throw new UtilExceptions("SqlSugarException.ArgumentNullException：" + ErrorMessage.ConnectionConfigIsNull);
             }
         }
+
         public static void ArgumentNullException(object checkObj, string message)
         {
             if (checkObj == null)
                 throw new UtilExceptions("SqlSugarException.ArgumentNullException：" + message);
         }
+
         public static void ArgumentNullException(object [] checkObj, string message)
         {
             if (checkObj == null|| checkObj.Length==0)
@@ -35,6 +37,5 @@ namespace SqlSugar
             if (isException)
                 throw new UtilExceptions(string.Format(message, args));
         }
-
     }
 }

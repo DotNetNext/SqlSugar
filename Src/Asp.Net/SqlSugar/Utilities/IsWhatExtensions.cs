@@ -7,7 +7,6 @@ namespace SqlSugar
 {
     internal static class IsWhatExtensions
     {
-
         public static bool IsInRange(this int thisValue, int begin, int end)
         {
             return thisValue >= begin && thisValue <= end;
