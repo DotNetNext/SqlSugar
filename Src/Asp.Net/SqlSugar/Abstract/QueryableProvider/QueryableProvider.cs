@@ -408,7 +408,7 @@ namespace SqlSugar
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Select(it=>new{}) Method .");
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             var sql = QueryBuilder.ToSqlString();
-            var tableName = (string.Format("({0}) MergeTable ", sql));
+            var tableName =this.SqlBuilder.GetPackTable (sql, "MergeTable");
             return this.Context.Queryable<ExpandoObject>().AS(tableName).Select<T>("*");
         }
 

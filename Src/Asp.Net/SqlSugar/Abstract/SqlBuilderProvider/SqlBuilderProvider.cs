@@ -71,6 +71,9 @@ namespace SqlSugar
             if (!name.Contains(SqlTranslationLeft)) return name;
             return name == null ? string.Empty : Regex.Match(name, @".*"+"\\"+SqlTranslationLeft+"(.*?)"+"\\"+SqlTranslationRight+"").Groups[1].Value;
         }
+        public virtual string GetPackTable(string sql, string shortName) {
+            return string.Format(" ({0}) {1} ", sql, shortName);
+        }
         #endregion
 
         #region Common SqlTemplate
