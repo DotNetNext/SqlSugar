@@ -45,32 +45,32 @@ namespace SqlSugar
             {
                 while (re.Read())
                 {
-                    if (PubConst.DicOO == type)
+                    if (UtilConstants.DicOO == type)
                     {
                         var kv = new KeyValuePair<object, object>(dataReader.GetValue(0), re.GetValue(1));
                         reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<object, object>)));
                     }
-                    else if (PubConst.DicIS == type)
+                    else if (UtilConstants.DicIS == type)
                     {
                         var kv = new KeyValuePair<int, string>(dataReader.GetValue(0).ObjToInt(), re.GetValue(1).ObjToString());
                         reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<int, string>)));
                     }
-                    else if (PubConst.Dicii == type)
+                    else if (UtilConstants.Dicii == type)
                     {
                         var kv = new KeyValuePair<int, int>(dataReader.GetValue(0).ObjToInt(), re.GetValue(1).ObjToInt());
                         reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<int, int>)));
                     }
-                    else if (PubConst.DicSi == type)
+                    else if (UtilConstants.DicSi == type)
                     {
                         var kv = new KeyValuePair<string, int>(dataReader.GetValue(0).ObjToString(), re.GetValue(1).ObjToInt());
                         reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, int>)));
                     }
-                    else if (PubConst.DicSo == type)
+                    else if (UtilConstants.DicSo == type)
                     {
                         var kv = new KeyValuePair<string, object>(dataReader.GetValue(0).ObjToString(), re.GetValue(1));
                         reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, object>)));
                     }
-                    else if (PubConst.DicSS == type)
+                    else if (UtilConstants.DicSS == type)
                     {
                         var kv = new KeyValuePair<string, string>(dataReader.GetValue(0).ObjToString(), dataReader.GetValue(1).ObjToString());
                         reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, string>)));
@@ -98,21 +98,21 @@ namespace SqlSugar
                     {
                         array[i] = Convert.ChangeType(re.GetValue(i), childType);
                     }
-                    if (childType == PubConst.StringType)
+                    if (childType == UtilConstants.StringType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToString()).ToArray(), type));
-                    else if (childType == PubConst.ObjType)
+                    else if (childType == UtilConstants.ObjType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? null : (object)it).ToArray(), type));
-                    else if (childType == PubConst.BoolType)
+                    else if (childType == UtilConstants.BoolType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToBool()).ToArray(), type));
-                    else if (childType == PubConst.ByteType)
+                    else if (childType == UtilConstants.ByteType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? 0 : (byte)it).ToArray(), type));
-                    else if (childType == PubConst.DecType)
+                    else if (childType == UtilConstants.DecType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToDecimal()).ToArray(), type));
-                    else if (childType == PubConst.GuidType)
+                    else if (childType == UtilConstants.GuidType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? Guid.Empty : (Guid)it).ToArray(), type));
-                    else if (childType == PubConst.DateType)
+                    else if (childType == UtilConstants.DateType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? DateTime.MinValue : (DateTime)it).ToArray(), type));
-                    else if (childType == PubConst.IntType)
+                    else if (childType == UtilConstants.IntType)
                         reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToInt()).ToArray(), type));
                     else
                         Check.Exception(true, ErrorMessage.NotSupportedArray);

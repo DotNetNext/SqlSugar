@@ -277,7 +277,7 @@ namespace SqlSugar
             var index = 1;
             foreach (var item in entityTypeArray)
             {
-                result.Add(PubConst.Space +lambdaParameters[index].Name, item.Name);
+                result.Add(UtilConstants.Space +lambdaParameters[index].Name, item.Name);
                 ++index;
             }
             return result;

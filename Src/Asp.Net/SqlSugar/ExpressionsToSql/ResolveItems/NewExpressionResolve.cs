@@ -22,11 +22,11 @@ namespace SqlSugar
                     Check.ThrowNotSupportedException(expression.ToString());
                     break;
                 case ResolveExpressType.SelectSingle:
-                    Check.Exception(expression.Type == PubConst.DateType, "ThrowNotSupportedException {0} ",expression.ToString());
+                    Check.Exception(expression.Type == UtilConstants.DateType, "ThrowNotSupportedException {0} ",expression.ToString());
                     Select(expression, parameter, true);
                     break;
                 case ResolveExpressType.SelectMultiple:
-                    Check.Exception(expression.Type == PubConst.DateType, "ThrowNotSupportedException {0} ", expression.ToString());
+                    Check.Exception(expression.Type == UtilConstants.DateType, "ThrowNotSupportedException {0} ", expression.ToString());
                     Select(expression, parameter, false);
                     break;
                 case ResolveExpressType.FieldSingle:

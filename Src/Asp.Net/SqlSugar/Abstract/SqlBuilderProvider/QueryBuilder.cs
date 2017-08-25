@@ -314,9 +314,9 @@ namespace SqlSugar
         {
             return string.Format(
                 this.JoinTemplate,
-                joinInfo.JoinType.ToString() + PubConst.Space,
-                Builder.GetTranslationTableName(joinInfo.TableName) + PubConst.Space,
-                joinInfo.ShortName + PubConst.Space + joinInfo.TableWithString,
+                joinInfo.JoinType.ToString() + UtilConstants.Space,
+                Builder.GetTranslationTableName(joinInfo.TableName) + UtilConstants.Space,
+                joinInfo.ShortName + UtilConstants.Space + joinInfo.TableWithString,
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
@@ -392,7 +392,7 @@ namespace SqlSugar
                 if (this.WhereInfos == null) return null;
                 else
                 {
-                    return string.Join(PubConst.Space, this.WhereInfos);
+                    return string.Join(UtilConstants.Space, this.WhereInfos);
                 }
             }
         }
@@ -403,7 +403,7 @@ namespace SqlSugar
                 if (this.JoinQueryInfos.IsNullOrEmpty()) return null;
                 else
                 {
-                    return string.Join(PubConst.Space, this.JoinQueryInfos.Select(it => this.ToJoinString(it)));
+                    return string.Join(UtilConstants.Space, this.JoinQueryInfos.Select(it => this.ToJoinString(it)));
                 }
             }
         }
@@ -412,18 +412,18 @@ namespace SqlSugar
             get
             {
                 var result = Builder.GetTranslationTableName(EntityName);
-                result += PubConst.Space;
+                result += UtilConstants.Space;
                 if (this.TableWithString.IsValuable())
                 {
-                    result += TableWithString + PubConst.Space;
+                    result += TableWithString + UtilConstants.Space;
                 }
                 if (this.TableShortName.IsValuable())
                 {
-                    result += (TableShortName + PubConst.Space);
+                    result += (TableShortName + UtilConstants.Space);
                 }
                 if (!this.IsSingle())
                 {
-                    result += GetJoinValueString + PubConst.Space;
+                    result += GetJoinValueString + UtilConstants.Space;
                 }
                 if (this.EasyJoinInfos.IsValuable())
                 {
@@ -459,7 +459,7 @@ namespace SqlSugar
                 if (this.GroupByValue == null) return null;
                 if (this.GroupByValue.Last() != ' ' )
                 {
-                    return this.GroupByValue + PubConst.Space;
+                    return this.GroupByValue + UtilConstants.Space;
                 }
                 return this.GroupByValue;
             }

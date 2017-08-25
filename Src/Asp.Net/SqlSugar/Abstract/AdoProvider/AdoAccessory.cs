@@ -22,7 +22,7 @@ namespace SqlSugar
             if (parameters != null)
             {
                 var entityType = parameters.GetType();
-                var isDictionary = entityType.IsIn(PubConst.DicArraySO, PubConst.DicArraySS);
+                var isDictionary = entityType.IsIn(UtilConstants.DicArraySO, UtilConstants.DicArraySS);
                 if (isDictionary)
                 {
                     DictionaryToParameters(parameters, sqlParameterKeyWord, result, entityType);
@@ -69,7 +69,7 @@ namespace SqlSugar
         }
         protected void DictionaryToParameters(object parameters, string sqlParameterKeyWord, List<SugarParameter> listParams, Type entityType)
         {
-            if (entityType == PubConst.DicArraySO)
+            if (entityType == UtilConstants.DicArraySO)
             {
                 var dictionaryParameters = (Dictionary<string, object>)parameters;
                 var sugarParameters = dictionaryParameters.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));

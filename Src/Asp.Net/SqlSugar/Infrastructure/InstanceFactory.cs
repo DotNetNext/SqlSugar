@@ -8,7 +8,7 @@ namespace SqlSugar
 {
     public class InstanceFactory
     {
-        static Assembly assembly = Assembly.Load(PubConst.AssemblyName);
+        static Assembly assembly = Assembly.Load(UtilConstants.AssemblyName);
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 
         #region Queryable
@@ -202,7 +202,7 @@ namespace SqlSugar
 
         private static string GetClassName(string type, string name)
         {
-            return PubConst.AssemblyName + "." + type + name;
+            return UtilConstants.AssemblyName + "." + type + name;
         }
 
         #region CreateInstance

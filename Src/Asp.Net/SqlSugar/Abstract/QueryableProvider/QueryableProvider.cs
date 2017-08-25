@@ -131,7 +131,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;
-            whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString + PubConst.Space));
+            whereValue.Add(SqlBuilder.AppendWhereOrAnd(whereValue.Count == 0, whereString + UtilConstants.Space));
             if (whereObj != null)
                 QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(whereObj));
             return this;
@@ -577,7 +577,7 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            OrderBy(lamResult.GetResultString() + PubConst.Space + type.ToString().ToUpper());
+            OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
             return this;
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
@@ -729,7 +729,7 @@ namespace SqlSugar
         {
             if (result.IsValuable())
             {
-                if (entityType.GetTypeInfo().BaseType.IsValuable() && entityType.GetTypeInfo().BaseType == PubConst.ModelType)
+                if (entityType.GetTypeInfo().BaseType.IsValuable() && entityType.GetTypeInfo().BaseType == UtilConstants.ModelType)
                 {
                     foreach (var item in result)
                     {

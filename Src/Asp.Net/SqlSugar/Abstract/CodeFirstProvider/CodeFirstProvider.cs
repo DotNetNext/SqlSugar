@@ -115,7 +115,7 @@ namespace SqlSugar
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
-                                                               && ((ec.Length != dc.Length && !PubMethod.GetUnderType(ec.PropertyInfo).IsEnum() && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
+                                                               && ((ec.Length != dc.Length && !PubMethod.GetUnderType(ec.PropertyInfo).IsEnum() && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(UtilConstants.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
@@ -231,7 +231,7 @@ namespace SqlSugar
             }
             else if (propertyType.IsEnum())
             {
-                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? PubConst.LongType.Name : PubConst.IntType.Name);
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
             }
             else
             {
@@ -250,7 +250,7 @@ namespace SqlSugar
             var properyTypeName = string.Empty;
             if (propertyType.IsEnum())
             {
-                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(ec.Length > 9 ? PubConst.LongType.Name : PubConst.IntType.Name);
+                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(ec.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
             }
             else
             {

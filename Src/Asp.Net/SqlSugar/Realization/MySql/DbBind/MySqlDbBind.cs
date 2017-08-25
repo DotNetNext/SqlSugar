@@ -8,7 +8,7 @@ namespace SqlSugar
     {
         public override string GetDbTypeName(string csharpTypeName)
         {
-            if (csharpTypeName == PubConst.ByteArrayType.Name)
+            if (csharpTypeName == UtilConstants.ByteArrayType.Name)
             {
                 return "blob";
             }

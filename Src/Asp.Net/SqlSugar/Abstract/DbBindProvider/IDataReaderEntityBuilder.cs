@@ -123,7 +123,7 @@ namespace SqlSugar
                 }
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != PubConst.ByteArrayType)
+                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType)
                     {
                         BindClass(generator, result, propertyInfo);
                     }
@@ -186,15 +186,15 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getConvertEnum_Null.MakeGenericMethod(bindPropertyType) : getEnum.MakeGenericMethod(bindPropertyType);
                 }
-                else if (bindPropertyType == PubConst.IntType)
+                else if (bindPropertyType == UtilConstants.IntType)
                 {
                     method = isNullableType ? getConvertInt32 : getInt32;
                 }
-                else if (bindPropertyType == PubConst.StringType)
+                else if (bindPropertyType == UtilConstants.StringType)
                 {
                     method = getString;
                 }
-                else if (bindPropertyType == PubConst.ByteArrayType)
+                else if (bindPropertyType == UtilConstants.ByteArrayType)
                 {
                     method = getValueMethod;
                     generator.Emit(OpCodes.Call, method);
@@ -280,7 +280,7 @@ namespace SqlSugar
                     method = getValueMethod;
                     break;
             }
-            if (method == null && bindPropertyType == PubConst.StringType)
+            if (method == null && bindPropertyType == UtilConstants.StringType)
             {
                 method = getConvertString;
             }

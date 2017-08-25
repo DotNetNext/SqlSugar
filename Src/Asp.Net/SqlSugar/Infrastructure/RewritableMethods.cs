@@ -108,19 +108,19 @@ namespace SqlSugar
                                 var addValue = readerValues[name];
                                 if (addValue == DBNull.Value)
                                 {
-                                    if (item.PropertyType.IsIn(PubConst.IntType, PubConst.DecType, PubConst.DobType, PubConst.ByteType))
+                                    if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
                                     {
                                         addValue = 0;
                                     }
-                                    else if (item.PropertyType == PubConst.GuidType)
+                                    else if (item.PropertyType == UtilConstants.GuidType)
                                     {
                                         addValue = Guid.Empty;
                                     }
-                                    else if (item.PropertyType == PubConst.DateType)
+                                    else if (item.PropertyType == UtilConstants.DateType)
                                     {
                                         addValue = DateTime.MinValue;
                                     }
-                                    else if (item.PropertyType == PubConst.StringType)
+                                    else if (item.PropertyType == UtilConstants.StringType)
                                     {
                                         addValue = null;
                                     }
@@ -131,7 +131,7 @@ namespace SqlSugar
                                 }
                                 else
                                 {
-                                    if (item.PropertyType == PubConst.IntType)
+                                    if (item.PropertyType == UtilConstants.IntType)
                                     {
                                         addValue = Convert.ToInt32(addValue);
                                     }

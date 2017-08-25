@@ -84,14 +84,14 @@ namespace SqlSugar
                     var isFirst = deleteObjs.IndexOf(deleteObj) == 0;
                     if (isFirst)
                     {
-                        orString.Append(DeleteBuilder.WhereInOrTemplate + PubConst.Space);
+                        orString.Append(DeleteBuilder.WhereInOrTemplate + UtilConstants.Space);
                     }
                     int i = 0;
                     StringBuilder andString = new StringBuilder();
                     foreach (var primaryField in primaryFields)
                     {
                         if (i == 0)
-                            andString.Append(DeleteBuilder.WhereInAndTemplate + PubConst.Space);
+                            andString.Append(DeleteBuilder.WhereInAndTemplate + UtilConstants.Space);
                         var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);

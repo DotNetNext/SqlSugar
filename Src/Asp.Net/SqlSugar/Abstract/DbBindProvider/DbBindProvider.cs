@@ -17,7 +17,7 @@ namespace SqlSugar
         #region Public methods
         public virtual string GetDbTypeName(string csharpTypeName)
         {
-            if (csharpTypeName == PubConst.ByteArrayType.Name)
+            if (csharpTypeName == UtilConstants.ByteArrayType.Name)
             {
                 return "varbinary";
             }
@@ -173,7 +173,7 @@ namespace SqlSugar
                 {
                     return GetKeyValueList<T>(type, dataReader);
                 }
-                else if (type.IsValueType() || type == PubConst.StringType)
+                else if (type.IsValueType() || type == UtilConstants.StringType)
                 {
                     return GetValueTypeList<T>(type, dataReader);
                 }

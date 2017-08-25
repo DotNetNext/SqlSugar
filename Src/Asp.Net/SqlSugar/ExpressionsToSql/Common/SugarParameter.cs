@@ -27,47 +27,47 @@ namespace SqlSugar
 
         private void SettingDataType(Type type)
         {
-            if (type == PubConst.ByteArrayType)
+            if (type == UtilConstants.ByteArrayType)
             {
                 this.DbType = System.Data.DbType.Binary;
             }
-            else if (type == PubConst.GuidType)
+            else if (type == UtilConstants.GuidType)
             {
                 this.DbType = System.Data.DbType.Guid;
             }
-            else if (type == PubConst.IntType)
+            else if (type == UtilConstants.IntType)
             {
                 this.DbType = System.Data.DbType.Int32;
             }
-            else if (type == PubConst.ShortType)
+            else if (type == UtilConstants.ShortType)
             {
                 this.DbType = System.Data.DbType.Int16;
             }
-            else if (type == PubConst.LongType)
+            else if (type == UtilConstants.LongType)
             {
                 this.DbType = System.Data.DbType.Int64;
             }
-            else if (type == PubConst.DateType)
+            else if (type == UtilConstants.DateType)
             {
                 this.DbType = System.Data.DbType.DateTime;
             }
-            else if (type == PubConst.DobType)
+            else if (type == UtilConstants.DobType)
             {
                 this.DbType = System.Data.DbType.Double;
             }
-            else if (type == PubConst.DecType)
+            else if (type == UtilConstants.DecType)
             {
                 this.DbType = System.Data.DbType.Decimal;
             }
-            else if (type == PubConst.ByteType)
+            else if (type == UtilConstants.ByteType)
             {
                 this.DbType = System.Data.DbType.Byte;
             }
-            else if (type == PubConst.FloatType)
+            else if (type == UtilConstants.FloatType)
             {
                 this.DbType = System.Data.DbType.Single;
             }
-            else if (type == PubConst.BoolType)
+            else if (type == UtilConstants.BoolType)
             {
                 this.DbType = System.Data.DbType.Boolean;
             }
@@ -109,7 +109,7 @@ namespace SqlSugar
             {
                 if (_Size == 0 && Value != null)
                 {
-                    var isByteArray = Value.GetType() == PubConst.ByteArrayType;
+                    var isByteArray = Value.GetType() == UtilConstants.ByteArrayType;
                     if (isByteArray)
                         _Size = -1;
                     else

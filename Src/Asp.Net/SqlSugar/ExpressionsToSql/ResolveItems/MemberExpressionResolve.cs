@@ -15,10 +15,10 @@ namespace SqlSugar
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var expression = base.Expression as MemberExpression;
             var isValue = expression.Member.Name == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
-            var isBool = expression.Type == PubConst.BoolType;
+            var isBool = expression.Type == UtilConstants.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
-            var isLength = expression.Member.Name == "Length" && (expression.Expression as MemberExpression).Type == PubConst.StringType;
-            var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == PubConst.DateType;
+            var isLength = expression.Member.Name == "Length" && (expression.Expression as MemberExpression).Type == UtilConstants.StringType;
+            var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == UtilConstants.DateType;
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
             var isHasValue = isLogicOperator && expression.Member.Name == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             if (isLength)
@@ -144,7 +144,7 @@ namespace SqlSugar
                         {
                             fieldName = GetName(parameter, expression, isLeft, isSingle);
                         }
-                        if (expression.Type == PubConst.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+                        if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
                         {
                             fieldName = "( " + fieldName + "=1 )";
                         }

@@ -154,7 +154,7 @@ namespace SqlSugar
                     }
                     classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
                     classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
-                    classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + PubConst.AssemblyName + ";\r\n") : this.UsingTemplate);
+                    classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + UtilConstants.AssemblyName + ";\r\n") : this.UsingTemplate);
                     classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
                     classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
                     if (columns.IsValuable())
