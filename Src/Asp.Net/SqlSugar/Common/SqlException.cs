@@ -30,7 +30,6 @@ namespace SqlSugar
             return reval;
 
         }
-
         private static string GetMessage(SqlSugarClient context, string message, string sql, object pars)
         {
             if (pars == null)
@@ -43,16 +42,14 @@ namespace SqlSugar
                 return reval;
             }
         }
-
         private static string GetMessage(string message, string sql)
         {
             var reval = GetLineMessage("message         ", message) + GetLineMessage("ORM Sql", sql);
             return reval;
         }
-
         private static string GetLineMessage(string key, string value)
         {
-            return string.Format("{0} ： 【{1}】\r\n", key, value);
+            return string.Format("{0} ： '{1}' \r\n", key, value);
         }
     }
 }
