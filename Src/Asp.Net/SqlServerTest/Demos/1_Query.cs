@@ -315,6 +315,12 @@ namespace OrmTest.Demo
             .ToList();
             //SELECT st.* FROM [STudent] st  ,[School]  sc  WHERE ( [st].[SchoolId] = [sc].[Id] )  AND [st].[Name] 
             //IN (SELECT [Name] FROM [School] sc2  WHERE id=st.schoolid ) ORDER BY [st].[ID] ASC
+
+            var list11 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id)
+     .In(st => st.Name, db.Queryable<School>("sc2").Where(it=>it.Id==1).Where("id=st.schoolid").Select(it => it.Name))
+     .OrderBy(st => st.Id)
+     .Select(st => st)
+     .ToList();
         }
         public static void Funs()
         {

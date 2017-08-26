@@ -678,15 +678,18 @@ namespace SqlSugar
         }
         protected void _InQueryable(Expression<Func<T, object>> expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
+            string sql = sqlObj.Key;
             if (sqlObj.Value.IsValuable())
             {
+                this.SqlBuilder.RepairReplicationParameters(ref sql,sqlObj.Value.ToArray(),100);
                 this.QueryBuilder.Parameters.AddRange(sqlObj.Value);
             }
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
-            var whereSql = string.Format(this.QueryBuilder.InTemplate, fieldName, sqlObj.Key);
+            var whereSql = string.Format(this.QueryBuilder.InTemplate, fieldName, sql);
             this.QueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(this.QueryBuilder.WhereInfos.IsNullOrEmpty(), whereSql));
+            base._InQueryableIndex += 100;
         }
 
         protected List<string> GetPrimaryKeys()
