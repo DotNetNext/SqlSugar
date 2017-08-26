@@ -258,7 +258,7 @@ namespace SqlSugar
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "guid")
-                        method = isNullableType ? getConvertStringGuid : getStringGuid;
+                        method = isNullableType ? getConvertGuid : getStringGuid;
                     break;
                 case CSharpDataType.@byte:
                     if (bindProperyTypeName == "byte")
