@@ -27,10 +27,6 @@ namespace SqlSugar
 
         public static bool? GetConvertBoolean(this IDataRecord dr, int i)
         {
-            if (dr.IsDBNull(i))
-            {
-                return null;
-            }
             var reval = dr.GetBoolean(i);
             return reval;
         }
