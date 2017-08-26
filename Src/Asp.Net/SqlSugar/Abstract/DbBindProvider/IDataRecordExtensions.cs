@@ -53,11 +53,11 @@ namespace SqlSugar
 
         public static DateTime? GetConvertDateTime(this IDataRecord dr, int i)
         {
-            if (dr.IsDBNull(i))
-            {
-                return null;
-            }
             var reval = dr.GetDateTime(i);
+            if (reval == DateTime.MinValue)
+            {
+                return null; ;
+            }
             return reval;
         }
 
