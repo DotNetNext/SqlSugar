@@ -54,5 +54,25 @@ namespace SqlSugar
         {
             return (T)Convert.ChangeType(obj, typeof(T));
         }
+
+        internal static void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
+        {
+            if (appendSql.IsValuable() && parameters.IsValuable())
+            {
+                foreach (var parameter in parameters.OrderByDescending(it => it.ParameterName.Length))
+                {
+                    //Compatible with.NET CORE parameters case
+                    var name = parameter.ParameterName;
+                    string newName = name + addIndex;
+                    appendSql = appendSql.Replace(name, newName);
+                    parameter.ParameterName = newName;
+                }
+            }
+        }
+
+        internal static string GetPackTable(string sql, string shortName)
+        {
+            return string.Format(" ({0}) {1} ", sql, shortName);
+        }
     }
 }

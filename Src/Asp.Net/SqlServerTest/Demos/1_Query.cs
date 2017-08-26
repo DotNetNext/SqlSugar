@@ -188,6 +188,11 @@ namespace OrmTest.Demo
             var getDateIsSame= db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(DateTime.Now,DateTime.Now,DateType.Hour)).ToList();
 
             var getSqlList = db.Queryable<Student>().AS("(select * from student) t").ToList();
+
+
+            var getUnionAllList = db.UnionAll(db.Queryable<Student>().Where(it => it.Id == 1), db.Queryable<Student>().Where(it => it.Id == 2)).ToList();
+
+            var getUnionAllList2 = db.UnionAll(db.Queryable<Student>(), db.Queryable<Student>()).ToList();
         }
         public static void Page()
         {
