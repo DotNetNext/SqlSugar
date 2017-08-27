@@ -23,7 +23,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"select Name from Sqlite_master where type='table' and name<>'Sqlite_sequence' order by name;";
+                return @"select Name from Sqlite_master where type='table' and name<>'Sqlite_sequence' and name<>'sqlite_sequence' order by name;";
             }
         }
         protected override string GetViewInfoListSql

@@ -40,10 +40,10 @@ namespace OrmTest.Demo
             sdb.DeleteById<Student>(1);
             sdb.Insert(new Student() { Name = "xx" });
             sdb.Update<Student>(it => new Student { Name = "newvalue" }, it => it.Id == 1);//only update name where id=1
-            sdb.Update(new Student() { Name="newavalue" ,Id=1});//update all where id=1
+            sdb.Update(new Student() { Name = "newavalue", Id = 1 });//update all where id=1
 
             //SimpleClient Get SqlSugarClient
-            var student3=sdb.FullClient.Queryable<Student>().InSingle(1);
+            var student3 = sdb.FullClient.Queryable<Student>().InSingle(1);
 
         }
 
@@ -79,12 +79,12 @@ namespace OrmTest.Demo
         private static void Tran()
         {
             var db = GetInstance();
-            var x=db.Insertable(new Student() { CreateTime = DateTime.Now, Name = "tran" }).ExecuteCommand();
+            var x = db.Insertable(new Student() { CreateTime = DateTime.Now, Name = "tran" }).ExecuteCommand();
             var count1 = db.Queryable<Student>().Count();
             //1. no result 
             var result = db.Ado.UseTran(() =>
                {
-          
+
                    var beginCount = db.Queryable<Student>().ToList();
                    db.Ado.ExecuteCommand("delete from student");
                    var endCount = db.Queryable<Student>().Count();
@@ -152,6 +152,13 @@ namespace OrmTest.Demo
         public static void Easy()
         {
             var db = GetInstance();
+
+            //foreach (var item in db.DbMaintenance.GetTableInfoList())
+            //{
+            //    if (item.Name.Length > 15)
+            //        db.DbMaintenance.DropTable(item.Name);
+            //}
+
             var getAll = db.Queryable<Student>().ToList();
             var getLike = db.Queryable<Student>().Where(it => it.Name.Contains("a")).ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
@@ -259,19 +266,19 @@ namespace OrmTest.Demo
 
 
             //The simple use of Join 2 table
-            var list5 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st,sc)=>new {st.Name,st.Id,schoolName=sc.Name}).ToList();
+            var list5 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st, sc) => new { st.Name, st.Id, schoolName = sc.Name }).ToList();
 
             //join 3 table
-            var list6 = db.Queryable<Student, School,School>((st, sc,sc2) => st.SchoolId == sc.Id&&sc.Id==sc2.Id)
-                .Select((st, sc,sc2) => new { st.Name, st.Id, schoolName = sc.Name,schoolName2=sc2.Name }).ToList();
+            var list6 = db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
+                .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToList();
 
             //join 3 table page
-            var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
-            .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
+            var list7 = db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
+            .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1, 2);
 
             //join 3 table page 
             var list8 = db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
-            .OrderBy(st=>st.Id)
+            .OrderBy(st => st.Id)
             .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1, 2);
         }
         public static void Funs()
