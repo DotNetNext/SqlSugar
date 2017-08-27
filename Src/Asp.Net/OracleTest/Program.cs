@@ -20,7 +20,7 @@ namespace OrmTest
            // throw new Exception(" to be continued ,It will take another week.");
 
             //    /***Unit Test***/
-            //new Select(1).Init();
+            new Select(1).Init();
             //new Field(1).Init();
             //new Where(1).Init();
             //new Method(1).Init();
