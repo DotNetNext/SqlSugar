@@ -16,6 +16,13 @@ namespace SqlSugar
         {
             base.DbMehtods = new MySqlMethod();
         }
+        public override string SqlParameterKeyWord
+        {
+            get
+            {
+                return ":";
+            }
+        }
         public override string SqlTranslationLeft { get { return "\""; } }
         public override string SqlTranslationRight { get { return "\""; } }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)

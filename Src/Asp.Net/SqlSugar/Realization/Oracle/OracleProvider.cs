@@ -11,6 +11,13 @@ namespace SqlSugar
     public class OracleProvider : AdoProvider
     {
         public OracleProvider() { }
+        public override string SqlParameterKeyWord
+        {
+            get
+            {
+                return ":";
+            }
+        }
         public override IDbConnection Connection
         {
             get

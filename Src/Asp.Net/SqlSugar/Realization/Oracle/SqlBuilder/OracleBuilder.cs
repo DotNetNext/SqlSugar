@@ -9,6 +9,13 @@ namespace SqlSugar
 {
     public class OracleBuilder : SqlBuilderProvider
     {
+        public override string SqlParameterKeyWord
+        {
+            get
+            {
+                return ":";
+            }
+        }
         public override string SqlTranslationLeft { get { return "\""; } }
         public override string SqlTranslationRight { get { return "\""; } }
         public override string GetTranslationTableName(string name)
