@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -12,46 +14,7 @@ namespace SqlSugar
         {
             get
             {
-                string sql = @"SELECT Sysobjects.name AS TableName,
-                           syscolumns.Id AS TableId,
-                           syscolumns.name AS DbColumnName,
-                           systypes.name AS DataType,
-                           syscolumns.length AS [Length],
-                           sys.extended_properties.[value] AS [ColumnDescription],
-                           syscomments.text AS DefaultValue,
-                           syscolumns.isnullable AS IsNullable,
-	                       columnproperty(syscolumns.id,syscolumns.name,'IsIdentity')as IsIdentity,
-                           (CASE
-                                WHEN EXISTS
-                                       ( 
-                                             	select 1
-												from sysindexes i
-												join sysindexkeys k on i.id = k.id and i.indid = k.indid
-												join sysobjects o on i.id = o.id
-												join syscolumns c on i.id=c.id and k.colid = c.colid
-												where o.xtype = 'U' 
-												and exists(select 1 from sysobjects where xtype = 'PK' and name = i.name) 
-												and o.name=sysobjects.name and c.name=syscolumns.name
-                                       ) THEN 1
-                                ELSE 0
-                            END) AS IsPrimaryKey
-                    FROM syscolumns
-                    INNER JOIN systypes ON syscolumns.xtype = systypes.xtype
-                    LEFT JOIN sysobjects ON syscolumns.id = sysobjects.id
-                    LEFT OUTER JOIN sys.extended_properties ON (sys.extended_properties.minor_id = syscolumns.colid
-                                                                AND sys.extended_properties.major_id = syscolumns.id)
-                    LEFT OUTER JOIN syscomments ON syscolumns.cdefault = syscomments.id
-                    WHERE syscolumns.id IN
-                        (SELECT id
-                         FROM sysobjects
-                         WHERE xtype IN('u',
-                                        'v') )
-                      AND (systypes.name <> 'sysname')
-                      AND sysobjects.name='{0}'
-                      AND systypes.name<>'geometry'
-                      AND systypes.name<>'geography'
-                    ORDER BY syscolumns.colid";
-                return sql;
+                return null;
             }
         }
         protected override string GetTableInfoListSql
@@ -199,6 +162,70 @@ namespace SqlSugar
             {
                 return "IDENTITY(1,1)";
             }
+        }
+        #endregion
+
+        #region Methods
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            cacheKey = GetCacheKey(cacheKey);
+            return this.Context.RewritableMethods.GetCacheInstance<List<DbColumnInfo>>().Func(cacheKey,
+                    (cm, key) =>
+                    {
+                        return cm[cacheKey];
+
+                    }, (cm, key) =>
+                    {
+                        string sql = "select * from " + tableName + " WHERE 1=2 ";
+                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                        this.Context.Ado.IsEnableLogEvent = false;
+                        using (DbDataReader reader = (DbDataReader)this.Context.Ado.GetDataReader(sql))
+                        {
+                            this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                            List<DbColumnInfo> result = new List<DbColumnInfo>();
+                            var schemaTable = reader.GetSchemaTable();
+                            foreach (DataRow row in schemaTable.Rows)
+                            {
+                                DbColumnInfo column = new DbColumnInfo()
+                                {
+                                    TableName = tableName,
+                                    DataType = row["DataType"].ToString().Replace("System.", "").Trim(),
+                                    IsNullable = (bool)row["AllowDBNull"],
+                                    //IsIdentity = (bool)row["IsAutoIncrement"],
+                                    ColumnDescription = null,
+                                    DbColumnName = row["ColumnName"].ToString(),
+                                    //DefaultValue = row["defaultValue"].ToString(),
+                                    IsPrimarykey = GetPrimaryKeyByTableNames(tableName).Any(it=>it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
+                                    Length = row["ColumnSize"].ObjToInt(),
+                                    Scale = row["numericscale"].ObjToInt()
+                                };
+                                result.Add(column);
+                            }
+                            return result;
+                        }
+
+                    });
+        }
+        private List<string> GetPrimaryKeyByTableNames(string tableName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            cacheKey = GetCacheKey(cacheKey);
+            return this.Context.RewritableMethods.GetCacheInstance<List<string>>().Func(cacheKey,
+                    (cm, key) =>
+                    {
+                        return cm[cacheKey];
+
+                    }, (cm, key) =>
+                    {
+                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                        string sql = @" select cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
+                            where cu.constraint_name = au.constraint_name
+                            and au.constraint_type = 'P' and au.table_name = '" +tableName.ToUpper()+ @"'";
+                        var pks = this.Context.Ado.SqlQuery<string>(sql);
+                        this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                        return pks;
+                    });
         }
         #endregion
     }
