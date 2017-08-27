@@ -236,7 +236,7 @@ namespace SqlSugar
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
-            if (this.IsCount) { orderByValue = null; }
+            if (this.IsCount) { orderByValue = null; this.OrderByValue = oldOrderBy; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
             sql.Replace(UtilConstants.OrderReplace, isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
             if (this.IsCount) { return sql.ToString(); }
