@@ -8,6 +8,6 @@ namespace OrmTest
 {
     public class Config
     {
-        public static string ConnectionString = @"DataSource=D:\MyGit\SqlSugar\Src\Asp.NetCore2\SqlSeverTest\SqliteTest\DataBase\SqlSugar4xTest.sqlite";
+        public static string ConnectionString = @"DataSource=F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\Src\Asp.NetCore2\SqlSeverTest\SqliteTest\DataBase\SqlSugar4xTest.sqlite";
     }
 }

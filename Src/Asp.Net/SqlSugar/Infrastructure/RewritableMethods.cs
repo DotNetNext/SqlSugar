@@ -26,7 +26,10 @@ namespace SqlSugar
             {
                 try
                 {
-                    dic.Add(reader.GetName(i), reader.GetValue(i));
+                    var addItem = reader.GetValue(i);
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    dic.Add(reader.GetName(i), addItem);
                 }
                 catch
                 {
@@ -66,7 +69,10 @@ namespace SqlSugar
             {
                 try
                 {
-                    result.Add(reader.GetName(i), reader.GetValue(i));
+                    var addItem = reader.GetValue(i);
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    result.Add(reader.GetName(i), addItem);
                 }
                 catch
                 {
@@ -166,7 +172,10 @@ namespace SqlSugar
                     var key = typeName + "." + name;
                     if (readerValues.ContainsKey(key))
                     {
-                        result.Add(name, readerValues[key]);
+                        var addItem = readerValues[key];
+                        if (addItem == DBNull.Value)
+                            addItem = null;
+                        result.Add(name, addItem);
                     }
                 }
             }
@@ -192,12 +201,8 @@ namespace SqlSugar
         /// <returns></returns>
         public T DeserializeObject<T>(string value)
         {
-            if (value.IsValuable())
-            {
-                value = value.Replace(":{}", ":null");
-            }
             var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-            return JsonConvert.DeserializeObject<T>(value,jSetting);
+            return JsonConvert.DeserializeObject<T>(value, jSetting);
         }
         #endregion
 
@@ -229,7 +234,10 @@ namespace SqlSugar
                 childRow = new Dictionary<string, object>();
                 foreach (DataColumn col in table.Columns)
                 {
-                    childRow.Add(col.ColumnName, row[col]);
+                    var addItem = row[col];
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    childRow.Add(col.ColumnName, addItem);
                 }
                 deserializeObject.Add(childRow);
             }
