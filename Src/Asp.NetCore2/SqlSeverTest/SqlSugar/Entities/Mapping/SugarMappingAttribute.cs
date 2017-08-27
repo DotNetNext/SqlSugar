@@ -86,6 +86,12 @@ namespace SqlSugar
             get { return _ColumnDataType; }
             set { _ColumnDataType = value; }
         }
+
+        private int  _DecimalDigits;
+        public int  DecimalDigits {
+            get { return _DecimalDigits; }
+            set { _DecimalDigits = value; }
+        }
     }
 
 }

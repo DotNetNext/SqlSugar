@@ -33,7 +33,7 @@ namespace SqlSugar
                     {
                         var parentIsBinary = parameter.BaseParameter.CurrentExpression is BinaryExpression;
                         var parentIsRoot = parameter.BaseParameter.CurrentExpression is LambdaExpression;
-                        var isBool = value != null && value.GetType() == PubConst.BoolType;
+                        var isBool = value != null && value.GetType() == UtilConstants.BoolType;
                         if (parentIsRoot && isBool)
                         {
                             this.Context.Result.Append(value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False());

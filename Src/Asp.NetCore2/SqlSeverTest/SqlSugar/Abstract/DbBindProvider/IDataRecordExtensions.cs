@@ -27,10 +27,6 @@ namespace SqlSugar
 
         public static bool? GetConvertBoolean(this IDataRecord dr, int i)
         {
-            if (dr.IsDBNull(i))
-            {
-                return null;
-            }
             var reval = dr.GetBoolean(i);
             return reval;
         }
@@ -57,11 +53,11 @@ namespace SqlSugar
 
         public static DateTime? GetConvertDateTime(this IDataRecord dr, int i)
         {
-            if (dr.IsDBNull(i))
-            {
-                return null;
-            }
             var reval = dr.GetDateTime(i);
+            if (reval == DateTime.MinValue)
+            {
+                return null; ;
+            }
             return reval;
         }
 
@@ -189,7 +185,7 @@ namespace SqlSugar
         #region Sqlite Extensions
         public static Nullable<T> GetSqliteTypeNull<T>(this IDataReader dr, int i) where T : struct
         {
-            var type = PubMethod.GetUnderType(typeof(T));
+            var type = UtilMethods.GetUnderType(typeof(T));
             if (dr.IsDBNull(i))
             {
                 return null;
@@ -205,27 +201,27 @@ namespace SqlSugar
 
         private static T SqliteTypeConvert<T>(IDataReader dr, int i, Type type) where T : struct
         {
-            if (type.IsIn(PubConst.IntType))
+            if (type.IsIn(UtilConstants.IntType))
             {
                 return (T)((object)(dr.GetInt32(i)));
             }
-            else if (type == PubConst.DateType)
+            else if (type == UtilConstants.DateType)
             {
                 return (T)Convert.ChangeType(Convert.ToDateTime(dr.GetString(i)), type);
             }
-            else if (type == PubConst.DecType)
+            else if (type == UtilConstants.DecType)
             {
                 return (T)Convert.ChangeType(dr.GetDecimal(i), type);
             }
-            else if (type == PubConst.DobType)
+            else if (type == UtilConstants.DobType)
             {
                 return (T)Convert.ChangeType(dr.GetDouble(i), type);
             }
-            else if (type == PubConst.BoolType)
+            else if (type == UtilConstants.BoolType)
             {
                 return (T)Convert.ChangeType(dr.GetBoolean(i), type);
             }
-            else if (type == PubConst.GuidType)
+            else if (type == UtilConstants.GuidType)
             {
                 string guidString = dr.GetString(i);
                 string changeValue = guidString.IsNullOrEmpty() ? Guid.Empty.ToString() : guidString;

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.Sqlite;
 using System.Linq;
 using System.Text;
 
@@ -22,14 +23,14 @@ namespace SqlSugar
         {
             get
             {
-                return @"select Name from sqlite_master where type='table' and name<>'sqlite_sequence' order by name;";
+                return @"select Name from Sqlite_master where type='table' and name<>'Sqlite_sequence' order by name;";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"select Name from sqlite_master where type='view'  order by name;";
+                return @"select Name from Sqlite_master where type='view'  order by name;";
             }
         }
         #endregion
@@ -127,7 +128,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select Name from sqlite_master limit 0,1";
+                return "select Name from Sqlite_master limit 0,1";
             }
         }
         #endregion
@@ -175,32 +176,27 @@ namespace SqlSugar
 
                     }, (cm, key) =>
                     {
-                        string sql = "PRAGMA table_info(" + tableName + ")";
+                        string sql = "select * from " + tableName + " limit 0,1";
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                         this.Context.Ado.IsEnableLogEvent = false;
-                        using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
+                        using (DbDataReader reader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
                         {
+                            this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                             List<DbColumnInfo> result = new List<DbColumnInfo>();
-                            while (dataReader.Read())
+                            var schemaTable = reader.GetSchemaTable();
+                            foreach (DataRow row in schemaTable.Rows)
                             {
-                                var type = dataReader.GetValue(2).ObjToString();
-                                var length = 0;
-                                if (type.Contains("("))
-                                {
-                                    type = type.Split('(').First();
-                                    length = type.Split('(').Last().TrimEnd(')').ObjToInt();
-                                }
                                 DbColumnInfo column = new DbColumnInfo()
                                 {
                                     TableName = tableName,
-                                    DataType = type,
-                                    IsNullable = !dataReader.GetBoolean(3),
-                                    IsIdentity = dataReader.GetBoolean(3) && dataReader.GetBoolean(5).ObjToBool() && (type.IsIn("integer", "int", "int32", "int64", "long")),
+                                    DataType = row["DataTypeName"].ToString().Trim(),
+                                    IsNullable = (bool)row["AllowDBNull"],
+                                    IsIdentity = (bool)row["IsAutoIncrement"],
                                     ColumnDescription = null,
-                                    DbColumnName = dataReader.GetString(1),
-                                    DefaultValue = dataReader.GetValue(4).ObjToString(),
-                                    IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
-                                    Length = length
+                                    DbColumnName = row["ColumnName"].ToString(),
+                                    DefaultValue = row["defaultValue"].ToString(),
+                                    IsPrimarykey = (bool)row["IsKey"],
+                                    Length = Convert.ToInt32(row["ColumnSize"])
                                 };
                                 result.Add(column);
                             }

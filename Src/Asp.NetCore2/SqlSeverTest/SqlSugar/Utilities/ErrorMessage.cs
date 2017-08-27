@@ -58,7 +58,6 @@ namespace SqlSugar
             }
         }
 
-
         public static string NotSupportedArray
         {
             get

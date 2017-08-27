@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 namespace SqlSugar
 {
-    internal static class PubConst
+    internal static class UtilConstants
     {
-        internal const string AssemblyName = "SqlSugar";
+
         internal const string Space = " ";
+        internal const string AssemblyName = "SqlSugar";
+        internal const string OrderReplace = "{$:OrderByString:$}";
+
         internal static Type StringType = typeof(string);
         internal static Type ShortType = typeof(short);
         internal static Type IntType = typeof(int);

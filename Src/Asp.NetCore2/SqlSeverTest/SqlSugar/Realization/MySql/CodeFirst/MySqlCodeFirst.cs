@@ -26,7 +26,7 @@ namespace SqlSugar
         {
             var result = new DbColumnInfo()
             {
-                DataType = this.Context.Ado.DbBind.GetDbTypeName(PubMethod.GetUnderType(item.PropertyInfo).Name),
+                DataType = this.Context.Ado.DbBind.GetDbTypeName(UtilMethods.GetUnderType(item.PropertyInfo).Name),
                 TableId = entityInfo.Columns.IndexOf(item),
                 DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
                 IsPrimarykey = item.IsPrimarykey,

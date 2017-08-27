@@ -161,10 +161,10 @@ namespace SqlSugar
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
             var isIIF= name == "IIF";
-            var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == PubConst.BoolType;
-            var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == PubConst.BoolType;
-            var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == PubConst.BoolType;
-            var isIFFBoolMethod = isIIF && (item is MethodCallExpression) && (item as MethodCallExpression).Type == PubConst.BoolType;
+            var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == UtilConstants.BoolType;
+            var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == UtilConstants.BoolType;
+            var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == UtilConstants.BoolType;
+            var isIFFBoolMethod = isIIF && (item is MethodCallExpression) && (item as MethodCallExpression).Type == UtilConstants.BoolType;
             var isFirst = item == args.First();
             if (isFirst && isIIF && isConst)
             {
@@ -427,7 +427,7 @@ namespace SqlSugar
 
         private void CheckMethod(MethodCallExpression expression)
         {
-            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ExpressionErrorMessage.MethodError, expression.Method.Name));
+            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ErrorMessage.MethodError, expression.Method.Name));
         }
     }
 }

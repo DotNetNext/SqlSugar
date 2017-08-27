@@ -16,21 +16,17 @@ namespace SqlSugar
         protected IDbMaintenance _DbMaintenance;
         protected IDbConnection _DbConnection;
 
-        protected virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo,string sqlParameterKeyWord)
+        protected virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo, string sqlParameterKeyWord)
         {
             List<SugarParameter> result = new List<SugarParameter>();
             if (parameters != null)
             {
                 var entityType = parameters.GetType();
-                var isDictionary = entityType.IsIn(PubConst.DicArraySO, PubConst.DicArraySS);
+                var isDictionary = entityType.IsIn(UtilConstants.DicArraySO, UtilConstants.DicArraySS);
                 if (isDictionary)
-                {
                     DictionaryToParameters(parameters, sqlParameterKeyWord, result, entityType);
-                }
                 else
-                {
                     ProperyToParameter(parameters, propertyInfo, sqlParameterKeyWord, result, entityType);
-                }
             }
             return result.ToArray();
         }
@@ -38,20 +34,15 @@ namespace SqlSugar
         {
             PropertyInfo[] properties = null;
             if (propertyInfo != null)
-            {
                 properties = propertyInfo;
-            }
             else
-            {
                 properties = entityType.GetProperties();
-            }
+
             foreach (PropertyInfo properyty in properties)
             {
                 var value = properyty.GetValue(parameters, null);
                 if (properyty.PropertyType.IsEnum())
-                {
                     value = Convert.ToInt64(value);
-                }
                 if (value == null || value.Equals(DateTime.MinValue)) value = DBNull.Value;
                 if (properyty.Name.ToLower().Contains("hierarchyid"))
                 {
@@ -69,7 +60,7 @@ namespace SqlSugar
         }
         protected void DictionaryToParameters(object parameters, string sqlParameterKeyWord, List<SugarParameter> listParams, Type entityType)
         {
-            if (entityType == PubConst.DicArraySO)
+            if (entityType == UtilConstants.DicArraySO)
             {
                 var dictionaryParameters = (Dictionary<string, object>)parameters;
                 var sugarParameters = dictionaryParameters.Select(it => new SugarParameter(sqlParameterKeyWord + it.Key, it.Value));

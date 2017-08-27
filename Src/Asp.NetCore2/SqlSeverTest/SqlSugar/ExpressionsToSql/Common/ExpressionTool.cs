@@ -42,7 +42,7 @@ namespace SqlSugar
                 case ExpressionType.MultiplyChecked:
                     return "*";
                 default:
-                    Check.ThrowNotSupportedException(string.Format(ExpressionErrorMessage.OperatorError, expressiontype.ToString()));
+                    Check.ThrowNotSupportedException(string.Format(ErrorMessage.OperatorError, expressiontype.ToString()));
                     return null;
             }
         }
@@ -147,7 +147,7 @@ namespace SqlSugar
             FieldInfo field = (FieldInfo)memberExpr.Member;
             Check.Exception(field.IsPrivate, string.Format(" Field \"{0}\" can't be private ", field.Name));
             reval = field.GetValue(memberExpr.Member);
-            if (reval != null && reval.GetType().IsClass() && reval.GetType() != ExpressionConst.StringType)
+            if (reval != null && reval.GetType().IsClass() && reval.GetType() != UtilConstants.StringType)
             {
                 var fieldName = memberExpr.Member.Name;
                 var proInfo = reval.GetType().GetProperty(fieldName);
@@ -190,7 +190,7 @@ namespace SqlSugar
             object reval = null;
             PropertyInfo pro = (PropertyInfo)memberExpr.Member;
             reval = pro.GetValue(memberExpr.Member, null);
-            if (reval != null && reval.GetType().IsClass() && reval.GetType() != ExpressionConst.StringType)
+            if (reval != null && reval.GetType().IsClass() && reval.GetType() != UtilConstants.StringType)
             {
                 var fieldName = memberExpr.Member.Name;
                 var proInfo = reval.GetType().GetProperty(fieldName);
@@ -214,7 +214,7 @@ namespace SqlSugar
         public static object DynamicInvoke(Expression expression,MemberExpression memberExpression=null)
         {
             object value = Expression.Lambda(expression).Compile().DynamicInvoke();
-            if (value != null && value.GetType().IsClass() && value.GetType() != ExpressionConst.StringType&& memberExpression!=null)
+            if (value != null && value.GetType().IsClass() && value.GetType() != UtilConstants.StringType&& memberExpression!=null)
             {
                 value = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
             }
@@ -233,7 +233,7 @@ namespace SqlSugar
 
         public static bool IsEntity(Type type)
         {
-            return type.IsClass() && type != ExpressionConst.StringType;
+            return type.IsClass() && type != UtilConstants.StringType;
         }
 
         public static bool IsValueType(Type type)

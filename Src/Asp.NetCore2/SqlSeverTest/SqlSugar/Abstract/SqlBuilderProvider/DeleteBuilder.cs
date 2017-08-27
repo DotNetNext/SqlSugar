@@ -23,7 +23,7 @@ namespace SqlSugar
         {
             get
             {
-                _WhereInfos = PubMethod.IsNullReturnNew(_WhereInfos);
+                _WhereInfos = UtilMethods.IsNullReturnNew(_WhereInfos);
                 return _WhereInfos;
             }
             set { _WhereInfos = value; }
@@ -83,10 +83,10 @@ namespace SqlSugar
             get
             {
                 var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
-                result += PubConst.Space;
+                result += UtilConstants.Space;
                 if (this.TableWithString.IsValuable())
                 {
-                    result += TableWithString + PubConst.Space;
+                    result += TableWithString + UtilConstants.Space;
                 }
                 return result;
             }
@@ -102,7 +102,7 @@ namespace SqlSugar
                 {
                     var isFirst = i == 0;
                     whereString += isFirst ? "WHERE " : "AND ";
-                    whereString += (item + PubConst.Space);
+                    whereString += (item + UtilConstants.Space);
                     ++i;
                 }
                 return whereString;

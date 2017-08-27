@@ -48,7 +48,7 @@ namespace SqlSugar
         }
         public virtual void InitTables(string entitiesNamespace)
         {
-            var types = ReflectionCore.Load(entitiesNamespace).GetTypes();
+            var types = Assembly.Load(entitiesNamespace).GetTypes();
             InitTables(types);
         }
         public virtual void InitTables(params string[] entitiesNamespaces)
@@ -115,7 +115,7 @@ namespace SqlSugar
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
-                                                               && ((ec.Length != dc.Length && !PubMethod.GetUnderType(ec.PropertyInfo).IsEnum() && PubMethod.GetUnderType(ec.PropertyInfo).IsIn(PubConst.StringType)) ||
+                                                               && ((ec.Length != dc.Length && !UtilMethods.GetUnderType(ec.PropertyInfo).IsEnum() && UtilMethods.GetUnderType(ec.PropertyInfo).IsIn(UtilConstants.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
@@ -212,7 +212,7 @@ namespace SqlSugar
         }
         protected virtual DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
-            var propertyType = PubMethod.GetUnderType(item.PropertyInfo);
+            var propertyType = UtilMethods.GetUnderType(item.PropertyInfo);
             var result = new DbColumnInfo()
             {
                 TableId = entityInfo.Columns.IndexOf(item),
@@ -223,7 +223,8 @@ namespace SqlSugar
                 IsNullable = item.IsNullable,
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
-                Length = item.Length
+                Length = item.Length,
+                DecimalDigits=item.DecimalDigits
             };
             if (!string.IsNullOrEmpty(item.DataType))
             {
@@ -231,7 +232,7 @@ namespace SqlSugar
             }
             else if (propertyType.IsEnum())
             {
-                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? PubConst.LongType.Name : PubConst.IntType.Name);
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
             }
             else
             {
@@ -246,11 +247,11 @@ namespace SqlSugar
             {
                 return ec.DataType != dc.DataType;
             }
-            var propertyType = PubMethod.GetUnderType(ec.PropertyInfo);
+            var propertyType = UtilMethods.GetUnderType(ec.PropertyInfo);
             var properyTypeName = string.Empty;
             if (propertyType.IsEnum())
             {
-                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(ec.Length > 9 ? PubConst.LongType.Name : PubConst.IntType.Name);
+                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(ec.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
             }
             else
             {

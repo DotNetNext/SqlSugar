@@ -23,5 +23,6 @@ namespace SqlSugar
         public string DbTableName { get; set; }
         public bool IsIgnore { get;  set; }
         public string DataType { get; set; }
+        public int DecimalDigits { get; set; }
     }
 }

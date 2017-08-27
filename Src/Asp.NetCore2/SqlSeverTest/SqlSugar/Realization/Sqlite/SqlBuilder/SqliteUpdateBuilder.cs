@@ -20,7 +20,7 @@ namespace SqlSugar
             else
             {
                 var type = value.GetType();
-                if (type == PubConst.DateType)
+                if (type == UtilConstants.DateType)
                 {
                     var date = value.ObjToDate();
                     if (date < Convert.ToDateTime("1900-1-1"))
@@ -33,11 +33,11 @@ namespace SqlSugar
                 {
                     return Convert.ToInt64(value);
                 }
-                else if (type == PubConst.BoolType)
+                else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
                 }
-                else if (type == PubConst.StringType || type == PubConst.ObjType)
+                else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     return "'" + value.ToString().ToSqlFilter() + "'";
                 }

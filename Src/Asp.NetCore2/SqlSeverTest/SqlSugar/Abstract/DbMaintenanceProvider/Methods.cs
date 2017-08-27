@@ -238,10 +238,7 @@ namespace SqlSugar
             {
                 string columnName = this.SqlBuilder.GetTranslationTableName(item.DbColumnName);
                 string dataType = item.DataType;
-                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
-                if (item.Length>4000|| item.Length==-1) {
-                    dataSize = string.Format("({0})","max");
-                }
+                string dataSize = GetSize(item);
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
@@ -256,7 +253,7 @@ namespace SqlSugar
             string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataType = columnInfo.DataType;
-            string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
+            string dataSize = GetSize(columnInfo);
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
             string primaryKey = null;
             string identity = null;
@@ -268,7 +265,7 @@ namespace SqlSugar
             string columnName = this.SqlBuilder.GetTranslationTableName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataType = columnInfo.DataType;
-            string dataSize = columnInfo.Length > 0 ? string.Format("({0})", columnInfo.Length) : null;
+            string dataSize = GetSize(columnInfo);
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
             string primaryKey = null;
             string identity = null;
@@ -277,7 +274,25 @@ namespace SqlSugar
         }
         protected virtual string GetCacheKey(string cacheKey)
         {
-            return this.Context.CurrentConnectionConfig.DbType + "." + this.Context.Ado.Connection.Database +"."+ cacheKey;
+            return this.Context.CurrentConnectionConfig.DbType + "." + this.Context.Ado.Connection.Database + "." + cacheKey;
+        }
+        protected virtual string GetSize(DbColumnInfo item)
+        {
+            string dataSize = null;
+            var isMax = item.Length > 4000 || item.Length == -1;
+            if (isMax)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0})", "max") : null;
+            }
+            else if (item.Length > 0 && item.DecimalDigits == 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+            }
+            else if (item.Length > 0 && item.DecimalDigits > 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0},{1})", item.Length, item.DecimalDigits) : null;
+            }
+            return dataSize;
         }
         #endregion
     }

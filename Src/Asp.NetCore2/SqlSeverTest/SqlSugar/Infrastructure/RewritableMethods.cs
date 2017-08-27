@@ -26,7 +26,10 @@ namespace SqlSugar
             {
                 try
                 {
-                    dic.Add(reader.GetName(i), reader.GetValue(i));
+                    var addItem = reader.GetValue(i);
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    dic.Add(reader.GetName(i), addItem);
                 }
                 catch
                 {
@@ -66,7 +69,10 @@ namespace SqlSugar
             {
                 try
                 {
-                    result.Add(reader.GetName(i), reader.GetValue(i));
+                    var addItem = reader.GetValue(i);
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    result.Add(reader.GetName(i), addItem);
                 }
                 catch
                 {
@@ -108,29 +114,30 @@ namespace SqlSugar
                                 var addValue = readerValues[name];
                                 if (addValue == DBNull.Value)
                                 {
-                                    if (item.PropertyType.IsIn(PubConst.IntType, PubConst.DecType, PubConst.DobType, PubConst.ByteType))
+                                    if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
                                     {
                                         addValue = 0;
                                     }
-                                    else if (item.PropertyType == PubConst.GuidType)
+                                    else if (item.PropertyType == UtilConstants.GuidType)
                                     {
                                         addValue = Guid.Empty;
                                     }
-                                    else if (item.PropertyType == PubConst.DateType)
+                                    else if (item.PropertyType == UtilConstants.DateType)
                                     {
                                         addValue = DateTime.MinValue;
                                     }
-                                    else if (item.PropertyType == PubConst.StringType)
+                                    else if (item.PropertyType == UtilConstants.StringType)
                                     {
                                         addValue = null;
                                     }
-                                    else {
+                                    else
+                                    {
                                         addValue = null;
                                     }
                                 }
                                 else
                                 {
-                                    if (item.PropertyType == PubConst.IntType)
+                                    if (item.PropertyType == UtilConstants.IntType)
                                     {
                                         addValue = Convert.ToInt32(addValue);
                                     }
@@ -165,10 +172,10 @@ namespace SqlSugar
                     var key = typeName + "." + name;
                     if (readerValues.ContainsKey(key))
                     {
-                        var addValue = readerValues[key];
-                        if (addValue == DBNull.Value)
-                            addValue = null;
-                        result.Add(name,addValue );
+                        var addItem = readerValues[key];
+                        if (addItem == DBNull.Value)
+                            addItem = null;
+                        result.Add(name, addItem);
                     }
                 }
             }
@@ -194,10 +201,6 @@ namespace SqlSugar
         /// <returns></returns>
         public T DeserializeObject<T>(string value)
         {
-            if (value.IsValuable())
-            {
-                value = value.Replace(":{}", ":null");
-            }
             var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             return JsonConvert.DeserializeObject<T>(value,jSetting);
         }
@@ -231,10 +234,10 @@ namespace SqlSugar
                 childRow = new Dictionary<string, object>();
                 foreach (DataColumn col in table.Columns)
                 {
-                    var addValue = row[col];
-                    if (addValue == DBNull.Value)
-                        addValue = null;
-                    childRow.Add(col.ColumnName, addValue);
+                    var addItem = row[col];
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    childRow.Add(col.ColumnName, addItem);
                 }
                 deserializeObject.Add(childRow);
             }

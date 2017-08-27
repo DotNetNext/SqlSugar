@@ -96,6 +96,8 @@ namespace SqlSugar
                 return "@";
             }
         }
+        public virtual string SqlTranslationLeft { get { return "["; } }
+        public virtual string SqlTranslationRight { get { return "]"; } }
         #endregion
 
         #region public functions
@@ -103,34 +105,30 @@ namespace SqlSugar
         {
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             if (IsTranslationText(entityName)) return entityName;
-            if (isMapping && this.MappingTables.IsValuable())
+            isMapping = isMapping && this.MappingTables.IsValuable();
+            var isComplex = entityName.Contains(".");
+            if (isMapping && isComplex)
             {
-                if (entityName.Contains("."))
+                var columnInfo = entityName.Split('.');
+                var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
+                if (mappingInfo != null)
                 {
-                    var columnInfo = entityName.Split('.');
-                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
-                    if (mappingInfo != null)
-                    {
-                        columnInfo[columnInfo.Length - 1] = mappingInfo.EntityName;
-                    }
-                    return string.Join(".", columnInfo.Select(it => GetTranslationText(it)));
+                    columnInfo[columnInfo.Length - 1] = mappingInfo.EntityName;
                 }
-                else
-                {
-                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                    return "[" + (mappingInfo == null ? entityName : mappingInfo.EntityName) + "]";
-                }
+                return string.Join(".", columnInfo.Select(it => GetTranslationText(it)));
+            }
+            else if (isMapping)
+            {
+                var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
+                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.EntityName) + SqlTranslationRight;
+            }
+            else if (isComplex)
+            {
+                return string.Join(".", entityName.Split('.').Select(it => GetTranslationText(it)));
             }
             else
             {
-                if (entityName.Contains("."))
-                {
-                    return string.Join(".", entityName.Split('.').Select(it => GetTranslationText(it)));
-                }
-                else
-                {
-                    return GetTranslationText(entityName);
-                }
+                return GetTranslationText(entityName);
             }
         }
         public virtual string GetTranslationColumnName(string columnName)
@@ -164,11 +162,11 @@ namespace SqlSugar
         }
         public virtual bool IsTranslationText(string name)
         {
-            return name.Contains("[") && name.Contains("]");
+            return name.Contains(SqlTranslationLeft) && name.Contains(SqlTranslationRight);
         }
         public virtual string GetTranslationText(string name)
         {
-            return "[" + name + "]";
+            return SqlTranslationLeft + name + SqlTranslationRight;
         }
         public virtual void Resolve(Expression expression, ResolveExpressType resolveType)
         {
@@ -179,7 +177,7 @@ namespace SqlSugar
         }
         public virtual string GetAsString(string asName, string fieldValue)
         {
-            if (fieldValue.Contains(".*")|| fieldValue=="*") return fieldValue;
+            if (fieldValue.Contains(".*") || fieldValue == "*") return fieldValue;
             return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldValue), "AS", GetTranslationColumnName(asName));
         }
 

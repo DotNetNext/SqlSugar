@@ -92,7 +92,7 @@ namespace SqlSugar
                     parameter.CommonTempData = null;
                 }
             }
-            else if (memberExpression.Type == PubConst.BoolType && isLogicOperator)
+            else if (memberExpression.Type == UtilConstants.BoolType && isLogicOperator)
             {
                 Append(parameter, nodeType);
             }

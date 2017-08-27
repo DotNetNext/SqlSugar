@@ -18,13 +18,5 @@ namespace SqlSugar
         public const string Const = "Const";
         public readonly static Type MemberExpressionType = typeof(MemberExpression);
         public readonly static Type ConstantExpressionType = typeof(ConstantExpression);
-        public readonly static Type StringType = typeof(string);
-
-        internal static string GetThrowMessage(string enMessage, string cnMessage, params string[] args)
-        {
-            List<string> formatArgs = new List<string>() { enMessage, cnMessage };
-            formatArgs.AddRange(args);
-            return string.Format("\r\n English Message : {0}\r\n Chinese Message : {1}", formatArgs.ToArray());
-        }
     }
 }

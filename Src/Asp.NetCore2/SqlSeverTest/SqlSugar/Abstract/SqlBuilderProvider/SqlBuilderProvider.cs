@@ -20,7 +20,7 @@ namespace SqlSugar
         {
             get
             {
-                base._SqlQueryBuilder = PubMethod.IsNullReturnNew(base._SqlQueryBuilder);
+                base._SqlQueryBuilder = UtilMethods.IsNullReturnNew(base._SqlQueryBuilder);
                 return base._SqlQueryBuilder;
             }
             set { base._SqlQueryBuilder = value; }
@@ -69,7 +69,15 @@ namespace SqlSugar
         public virtual string GetNoTranslationColumnName(string name)
         {
             if (!name.Contains(SqlTranslationLeft)) return name;
-            return name == null ? string.Empty : Regex.Match(name, @".*"+"\\"+SqlTranslationLeft+"(.*?)"+"\\"+SqlTranslationRight+"").Groups[1].Value;
+            return name == null ? string.Empty : Regex.Match(name, @".*" + "\\" + SqlTranslationLeft + "(.*?)" + "\\" + SqlTranslationRight + "").Groups[1].Value;
+        }
+        public virtual string GetPackTable(string sql, string shortName)
+        {
+            return UtilMethods.GetPackTable(sql,shortName);
+        }
+        public virtual void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
+        {
+            UtilMethods.RepairReplicationParameters(ref appendSql,parameters,addIndex);
         }
         #endregion
 

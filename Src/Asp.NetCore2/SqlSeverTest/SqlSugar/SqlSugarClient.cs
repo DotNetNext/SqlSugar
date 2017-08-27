@@ -31,6 +31,10 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
+            if (config.DbType == DbType.Oracle)
+            {
+                throw new Exception("Oracle developed 60%,to be continued ");
+            }
         }
         #endregion
 
@@ -261,37 +265,37 @@ namespace SqlSugar
         }
 
         #region 9-12
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8,T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, bool>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T8,T9>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8),typeof(T9) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>(base.CurrentConnectionConfig);
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(base.CurrentConnectionConfig);
             base.CreateEasyQueryJoin(joinExpression, types, queryable);
             queryable.Where(joinExpression);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, bool>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9,T10>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) ,typeof(T10)};
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>(base.CurrentConnectionConfig);
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(base.CurrentConnectionConfig);
             base.CreateEasyQueryJoin(joinExpression, types, queryable);
             queryable.Where(joinExpression);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, bool>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10,T11>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10),typeof(T11) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>(base.CurrentConnectionConfig);
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10, T11>();
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(base.CurrentConnectionConfig);
             base.CreateEasyQueryJoin(joinExpression, types, queryable);
             queryable.Where(joinExpression);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new()
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new()
         {
             InitMppingInfo<T, T2, T3, T4, T5, T6, T8, T9, T10, T11, T12>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11),typeof(T12) };
+            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(base.CurrentConnectionConfig);
             base.CreateEasyQueryJoin(joinExpression, types, queryable);
             queryable.Where(joinExpression);
@@ -299,23 +303,31 @@ namespace SqlSugar
         }
         #endregion
 
-        public virtual List<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
-            if (queryables.IsNullOrEmpty()) return new List<T>();
-            List<T> result = new List<T>();
+            Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
+            int i = 1;
+            List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
             foreach (var item in queryables)
             {
-                var addItems = item.ToList();
-                if (addItems.IsValuable())
-                {
-                    result.AddRange(addItems);
-                }
+                var sqlObj = item.ToSql();
+                string sql = sqlObj.Key;
+                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i);
+                if (sqlObj.Value.IsValuable())
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
+                else
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
+                i++;
             }
-            return result;
+            var allSql = string.Join("UNION ALL \r\n", allItems.Select(it => it.Key));
+            var allParameters = allItems.SelectMany(it => it.Value).ToArray();
+            var resulut = this.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
+            resulut.AddParameters(allParameters);
+            return resulut.Select<T>("*");
         }
-        public virtual List<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
-            if (queryables.IsNullOrEmpty()) return new List<T>();
+            Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             return UnionAll(queryables.ToArray());
         }
         #endregion
@@ -342,7 +354,7 @@ namespace SqlSugar
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Insertable.columnDictionary can't be null");
             var insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
-            return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c,StringComparison.CurrentCultureIgnoreCase))); ;
+            return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
         }
         public virtual IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
@@ -353,10 +365,10 @@ namespace SqlSugar
             }
             else
             {
-                var columns= ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
+                var columns = ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
                 Check.Exception(columns.IsNullOrEmpty(), "Insertable.updateDynamicObject can't be null");
                 T insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(insertDynamicObject));
-                return this.Insertable(insertObject).InsertColumns(it=> columns.Any(c=>it.Equals(c,StringComparison.CurrentCultureIgnoreCase)));
+                return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase)));
             }
         }
         #endregion

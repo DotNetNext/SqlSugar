@@ -5,3 +5,6 @@
         void Fill(DataSet ds);
     }
 }
+namespace System.Data.Sqlite {
+
+}

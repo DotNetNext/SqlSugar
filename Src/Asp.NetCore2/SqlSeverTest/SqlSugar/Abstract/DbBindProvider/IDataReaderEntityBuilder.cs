@@ -123,7 +123,7 @@ namespace SqlSugar
                 }
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != PubConst.ByteArrayType)
+                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType)
                     {
                         BindClass(generator, result, propertyInfo);
                     }
@@ -168,7 +168,7 @@ namespace SqlSugar
             IDbBind bind = Context.Ado.DbBind;
             bool isNullableType = false;
             MethodInfo method = null;
-            Type bindPropertyType = PubMethod.GetUnderType(bindProperty, ref isNullableType);
+            Type bindPropertyType = UtilMethods.GetUnderType(bindProperty, ref isNullableType);
             string dbTypeName = DataRecord.GetDataTypeName(ordinal);
             if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
             {
@@ -186,15 +186,15 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getConvertEnum_Null.MakeGenericMethod(bindPropertyType) : getEnum.MakeGenericMethod(bindPropertyType);
                 }
-                else if (bindPropertyType == PubConst.IntType)
+                else if (bindPropertyType == UtilConstants.IntType)
                 {
                     method = isNullableType ? getConvertInt32 : getInt32;
                 }
-                else if (bindPropertyType == PubConst.StringType)
+                else if (bindPropertyType == UtilConstants.StringType)
                 {
                     method = getString;
                 }
-                else if (bindPropertyType == PubConst.ByteArrayType)
+                else if (bindPropertyType == UtilConstants.ByteArrayType)
                 {
                     method = getValueMethod;
                     generator.Emit(OpCodes.Call, method);
@@ -254,11 +254,13 @@ namespace SqlSugar
                     CheckType(bind.DoubleThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "double")
                         method = isNullableType ? getConvertDouble : getDouble;
+                    if(bindProperyTypeName=="single")
+                        method = isNullableType ? getConvertFloat : getFloat;
                     break;
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "guid")
-                        method = isNullableType ? getConvertStringGuid : getStringGuid;
+                        method = isNullableType ? getConvertGuid : getStringGuid;
                     break;
                 case CSharpDataType.@byte:
                     if (bindProperyTypeName == "byte")
@@ -280,7 +282,7 @@ namespace SqlSugar
                     method = getValueMethod;
                     break;
             }
-            if (method == null && bindPropertyType == PubConst.StringType)
+            if (method == null && bindPropertyType == UtilConstants.StringType)
             {
                 method = getConvertString;
             }
@@ -299,7 +301,7 @@ namespace SqlSugar
             var isAny = invalidTypes.Contains(bindProperyTypeName);
             if (isAny)
             {
-                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", propertyName, validPropertyType, bindProperyTypeName));
+                throw new UtilExceptions(string.Format("{0} can't  convert {1} to {2}", propertyName, validPropertyType, bindProperyTypeName));
             }
         }
         #endregion
