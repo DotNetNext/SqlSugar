@@ -115,6 +115,7 @@ namespace SqlSugar
 
         public IDeleteable<T> Where(T deleteObj)
         {
+            Check.Exception(GetPrimaryKeys().IsNullOrEmpty(), "Where(entity) Primary key required");
             Where(new List<T>() { deleteObj });
             return this;
         }
