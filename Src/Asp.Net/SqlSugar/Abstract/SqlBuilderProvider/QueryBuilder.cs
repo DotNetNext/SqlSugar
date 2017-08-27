@@ -140,7 +140,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ORDER BY GETDATE() ";
+                return "ORDER BY "+this.Builder.SqlDateNow+" ";
             }
         }
         public virtual string OrderByTemplate
