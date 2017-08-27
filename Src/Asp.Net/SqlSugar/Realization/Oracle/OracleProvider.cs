@@ -84,16 +84,19 @@ namespace SqlSugar
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new OracleParameter();
                 sqlParameter.ParameterName = parameter.ParameterName.ToLower();
-                if (sqlParameter.ParameterName[0] == '@') {
+                if (sqlParameter.ParameterName[0] == '@')
+                {
                     sqlParameter.ParameterName = ':' + sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
                 }
                 //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
-                sqlParameter.Direction = parameter.Direction;
+                if (parameter.Direction != 0)
+                    sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction == ParameterDirection.Output) {
+                if (sqlParameter.Direction == ParameterDirection.Output)
+                {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);

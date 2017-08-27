@@ -14,52 +14,22 @@ namespace SqlSugar
         public SqlSugarClient Context { get; set; }
         public OracleExpressionContext()
         {
-            base.DbMehtods = new OracleMethod();
-            base.Result.IsUpper = true;
+            base.DbMehtods = new MySqlMethod();
         }
+        public override string SqlTranslationLeft { get { return "\""; } }
+        public override string SqlTranslationRight { get { return "\""; } }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
         {
-            Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
-            if (IsTranslationText(entityName)) return entityName;
-            if (isMapping && this.MappingTables.IsValuable())
-            {
-                if (entityName.Contains("."))
-                {
-                    var columnInfo = entityName.Split('.');
-                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
-                    if (mappingInfo != null)
-                    {
-                        columnInfo[columnInfo.Length - 1] = mappingInfo.EntityName;
-                    }
-                    return string.Join(".", columnInfo.Select(it => GetTranslationText(it)));
-                }
-                else
-                {
-                    var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                    return "\"" + (mappingInfo == null ? entityName : mappingInfo.EntityName) + "\"";
-                }
-            }
-            else
-            {
-                if (entityName.Contains("."))
-                {
-                    return string.Join(".", entityName.Split('.').Select(it => GetTranslationText(it)));
-                }
-                else
-                {
-                    return GetTranslationText(entityName);
-                }
-            }
+            return base.GetTranslationTableName(entityName, isMapping).ToUpper();
         }
-        public override bool IsTranslationText(string name)
+        public override string GetTranslationColumnName(string columnName)
         {
-            return name.Contains("\"") && name.Contains("\"");
+            return base.GetTranslationColumnName(columnName).ToUpper();
         }
-        public override string GetTranslationText(string name)
+        public override string GetDbColumnName(string entityName, string propertyName)
         {
-            return "\"" + name + "\"";
+            return base.GetDbColumnName(entityName,propertyName).ToUpper();
         }
-
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {

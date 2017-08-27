@@ -143,7 +143,15 @@ namespace SqlSugar
         {
             dbTypeName = dbTypeName.ToLower();
             var propertyTypes = MappingTypes.Where(it => it.Key == dbTypeName);
-            if (propertyTypes == null)
+            if (dbTypeName == "int32")
+            {
+                return "int";
+            }
+            else if (dbTypeName == "int64")
+            {
+                return "long";
+            }
+            else if (propertyTypes == null)
             {
                 return "other";
             }

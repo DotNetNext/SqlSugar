@@ -8,6 +8,6 @@ namespace OrmTest
 {
     public class Config
     {
-        public static string ConnectionString = "server=.;uid=sa;pwd=sasa;database=SqlSugar4XTest";
+        public static string ConnectionString = "Data Source=localhost/orcl;User ID=system;Password=JHL52771jhl;";
     }
 }
