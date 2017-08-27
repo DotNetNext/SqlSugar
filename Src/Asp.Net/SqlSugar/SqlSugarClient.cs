@@ -31,6 +31,10 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
+            if (config.DbType == DbType.Oracle)
+            {
+                throw new Exception("Oracle developed 60%,to be continued ");
+            }
         }
         #endregion
 
@@ -303,7 +307,7 @@ namespace SqlSugar
         {
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             int i = 1;
-            List<KeyValuePair<string, List<SugarParameter>>> allItems =new  List<KeyValuePair<string, List<SugarParameter>>>();
+            List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
             foreach (var item in queryables)
             {
                 var sqlObj = item.ToSql();
@@ -315,7 +319,7 @@ namespace SqlSugar
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
                 i++;
             }
-            var allSql = string.Join("UNION ALL \r\n", allItems.Select(it=>it.Key));
+            var allSql = string.Join("UNION ALL \r\n", allItems.Select(it => it.Key));
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
             var resulut = this.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
             resulut.AddParameters(allParameters);
