@@ -42,6 +42,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("nvarchar2",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("nchar",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("num",CSharpDataType.@string),
 
                     new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@byte),
