@@ -113,11 +113,11 @@ namespace SqlSugar
             Context.ParameterIndex++;
             if (isLeft == true)
             {
-                appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                appendValue += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
             }
-            if (this.Context.Result.Contains(ExpressionConst.Format0))
+            if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
             {
-                this.Context.Result.Replace(ExpressionConst.Format0, appendValue.ObjToString());
+                this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue.ObjToString());
             }
             else
             {
@@ -132,9 +132,9 @@ namespace SqlSugar
                 if (parameter.CurrentExpression is MethodCallExpression)
                 {
                     var appendValue = value;
-                    if (this.Context.Result.Contains(ExpressionConst.Format0))
+                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
                     {
-                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue.ObjToString());
+                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue.ObjToString());
                     }
                     else
                     {
@@ -159,11 +159,11 @@ namespace SqlSugar
                     appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
                     {
-                        appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                        appendValue += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
                     }
-                    if (this.Context.Result.Contains(ExpressionConst.Format0))
+                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
                     {
-                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue);
+                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue);
                     }
                     else
                     {
@@ -186,11 +186,11 @@ namespace SqlSugar
                     appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
                     {
-                        appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                        appendValue += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
                     }
-                    if (this.Context.Result.Contains(ExpressionConst.Format0))
+                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
                     {
-                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue);
+                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue);
                     }
                     else
                     {
@@ -209,11 +209,11 @@ namespace SqlSugar
                     appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
                     {
-                        appendValue += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                        appendValue += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
                     }
-                    if (this.Context.Result.Contains(ExpressionConst.Format0))
+                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
                     {
-                        this.Context.Result.Replace(ExpressionConst.Format0, appendValue);
+                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue);
                     }
                     else
                     {
@@ -226,7 +226,7 @@ namespace SqlSugar
         {
             if (isLeft == true)
             {
-                this.Context.Result.Append(" " + ExpressionConst.Format1 + parameter.BaseParameter.Index);
+                this.Context.Result.Append(" " + ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index);
             }
         }
         protected string AppendParameter(object paramterValue)
@@ -238,14 +238,14 @@ namespace SqlSugar
         }
         protected void AppendNot(object Value)
         {
-            var isAppend = !this.Context.Result.Contains(ExpressionConst.Format0);
+            var isAppend = !this.Context.Result.Contains(ExpressionConst.FormatSymbol);
             if (isAppend)
             {
                 this.Context.Result.Append("NOT");
             }
             else
             {
-                this.Context.Result.Replace(ExpressionConst.Format0, "NOT");
+                this.Context.Result.Replace(ExpressionConst.FormatSymbol, "NOT");
             }
         }
 

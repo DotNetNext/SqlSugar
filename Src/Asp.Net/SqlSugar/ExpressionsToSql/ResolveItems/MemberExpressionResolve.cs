@@ -176,11 +176,11 @@ namespace SqlSugar
                 fieldName = string.Format(" {0} ", fieldName);
                 if (isLeft == true)
                 {
-                    fieldName += ExpressionConst.Format1 + parameter.BaseParameter.Index;
+                    fieldName += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
                 }
-                if (base.Context.Result.Contains(ExpressionConst.Format0))
+                if (base.Context.Result.Contains(ExpressionConst.FormatSymbol))
                 {
-                    base.Context.Result.Replace(ExpressionConst.Format0, fieldName);
+                    base.Context.Result.Replace(ExpressionConst.FormatSymbol, fieldName);
                 }
                 else
                 {
