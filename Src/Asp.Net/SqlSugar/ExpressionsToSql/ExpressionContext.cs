@@ -128,16 +128,16 @@ namespace SqlSugar
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             if (IsTranslationText(entityName)) return entityName;
             isMapping = isMapping && this.MappingTables.IsValuable();
-            var isComplex = entityName.Contains(ExpressionConst.Dot);
+            var isComplex = entityName.Contains(UtilConstants.Dot);
             if (isMapping && isComplex)
             {
-                var columnInfo = entityName.Split(ExpressionConst.DotChar);
+                var columnInfo = entityName.Split(UtilConstants.DotChar);
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
                 if (mappingInfo != null)
                 {
                     columnInfo[columnInfo.Length - 1] = mappingInfo.EntityName;
                 }
-                return string.Join(ExpressionConst.Dot, columnInfo.Select(it => GetTranslationText(it)));
+                return string.Join(UtilConstants.Dot, columnInfo.Select(it => GetTranslationText(it)));
             }
             else if (isMapping)
             {
@@ -146,7 +146,7 @@ namespace SqlSugar
             }
             else if (isComplex)
             {
-                return string.Join(ExpressionConst.Dot, entityName.Split(ExpressionConst.DotChar).Select(it => GetTranslationText(it)));
+                return string.Join(UtilConstants.Dot, entityName.Split(UtilConstants.DotChar).Select(it => GetTranslationText(it)));
             }
             else
             {
@@ -161,9 +161,9 @@ namespace SqlSugar
                 return columnName;
             }
             if (IsTranslationText(columnName)) return columnName;
-            if (columnName.Contains(ExpressionConst.Dot))
+            if (columnName.Contains(UtilConstants.Dot))
             {
-                return string.Join(ExpressionConst.Dot, columnName.Split(ExpressionConst.DotChar).Select(it => GetTranslationText(it)));
+                return string.Join(UtilConstants.Dot, columnName.Split(UtilConstants.DotChar).Select(it => GetTranslationText(it)));
             }
             else
             {
