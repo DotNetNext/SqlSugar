@@ -155,15 +155,15 @@ namespace SqlSugar
         }
         public virtual string GetTranslationColumnName(string columnName)
         {
-            Check.ArgumentNullException(columnName, string.Format(ErrorMessage.ObjNotExist, "column Name"));
+            Check.ArgumentNullException(columnName, string.Format(ErrorMessage.ObjNotExist, "Column Name"));
             if (columnName.Substring(0, 1) == this.SqlParameterKeyWord)
             {
                 return columnName;
             }
             if (IsTranslationText(columnName)) return columnName;
-            if (columnName.Contains("."))
+            if (columnName.Contains(ExpressionConst.Dot))
             {
-                return string.Join(".", columnName.Split('.').Select(it => GetTranslationText(it)));
+                return string.Join(ExpressionConst.Dot, columnName.Split(ExpressionConst.DotChar).Select(it => GetTranslationText(it)));
             }
             else
             {
