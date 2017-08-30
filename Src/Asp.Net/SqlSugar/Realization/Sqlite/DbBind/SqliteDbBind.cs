@@ -76,6 +76,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
 
                     new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("raw",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("oleobject",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
