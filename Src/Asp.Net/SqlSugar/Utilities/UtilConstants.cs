@@ -9,7 +9,7 @@ namespace SqlSugar
 
         internal const string Space = " ";
         internal const string AssemblyName = "SqlSugar";
-        internal const string OrderReplace = "{$:OrderByString:$}";
+        internal const string OrderReplace = "{662E689B-17A1-4D06-9D27-F29EAB8BC3D6}";
 
         internal static Type StringType = typeof(string);
         internal static Type ShortType = typeof(short);
