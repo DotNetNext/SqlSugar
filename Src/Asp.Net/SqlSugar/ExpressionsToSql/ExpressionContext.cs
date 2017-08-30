@@ -19,7 +19,7 @@ namespace SqlSugar
         private IDbMethods _DbMehtods { get; set; }
         #endregion
 
-        #region properties
+        #region Properties
         public IDbMethods DbMehtods
         {
             get
@@ -100,7 +100,29 @@ namespace SqlSugar
         public virtual string SqlTranslationRight { get { return "]"; } }
         #endregion
 
-        #region public functions
+        #region Core methods 
+        public void Resolve(Expression expression, ResolveExpressType resolveType)
+        {
+            this.ResolveType = resolveType;
+            this.Expression = expression;
+            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { CurrentExpression = this.Expression, Context = this });
+            resolve.Start();
+        }
+        public void Clear()
+        {
+            base._Result = null;
+            base._Parameters = new List<SugarParameter>();
+        }
+        public ExpressionContext GetCopyContext()
+        {
+            ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
+            copyContext.Index = this.Index;
+            copyContext.ParameterIndex = this.ParameterIndex;
+            return copyContext;
+        }
+        #endregion
+
+        #region Override methods
         public virtual string GetTranslationTableName(string entityName, bool isMapping = true)
         {
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
@@ -168,13 +190,6 @@ namespace SqlSugar
         {
             return SqlTranslationLeft + name + SqlTranslationRight;
         }
-        public virtual void Resolve(Expression expression, ResolveExpressType resolveType)
-        {
-            this.ResolveType = resolveType;
-            this.Expression = expression;
-            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { CurrentExpression = this.Expression, Context = this });
-            resolve.Start();
-        }
         public virtual string GetAsString(string asName, string fieldValue)
         {
             if (fieldValue.Contains(".*") || fieldValue == "*") return fieldValue;
@@ -190,18 +205,6 @@ namespace SqlSugar
         {
             if (fieldValue.Contains(".*") || fieldValue == "*") return fieldValue;
             return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldShortName + "." + fieldValue), "AS", GetTranslationColumnName(asName));
-        }
-        public virtual void Clear()
-        {
-            base._Result = null;
-            base._Parameters = new List<SugarParameter>();
-        }
-        public ExpressionContext GetCopyContext()
-        {
-            ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
-            copyContext.Index = this.Index;
-            copyContext.ParameterIndex = this.ParameterIndex;
-            return copyContext;
         }
         #endregion
     }
