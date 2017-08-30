@@ -16,6 +16,8 @@ namespace SqlSugar
         public const string SqlFuncFullName = "SqlSugar.SqlFunc"; 
         public const string MethodConst = "MethodConst";
         public const string Const = "Const";
+        public const string Dot = ".";
+        public const char DotChar = '.';
         public readonly static Type MemberExpressionType = typeof(MemberExpression);
         public readonly static Type ConstantExpressionType = typeof(ConstantExpression);
     }

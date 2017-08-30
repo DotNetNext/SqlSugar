@@ -106,16 +106,16 @@ namespace SqlSugar
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             if (IsTranslationText(entityName)) return entityName;
             isMapping = isMapping && this.MappingTables.IsValuable();
-            var isComplex = entityName.Contains(".");
+            var isComplex = entityName.Contains(ExpressionConst.Dot);
             if (isMapping && isComplex)
             {
-                var columnInfo = entityName.Split('.');
+                var columnInfo = entityName.Split(ExpressionConst.DotChar);
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
                 if (mappingInfo != null)
                 {
                     columnInfo[columnInfo.Length - 1] = mappingInfo.EntityName;
                 }
-                return string.Join(".", columnInfo.Select(it => GetTranslationText(it)));
+                return string.Join(ExpressionConst.Dot, columnInfo.Select(it => GetTranslationText(it)));
             }
             else if (isMapping)
             {
@@ -124,7 +124,7 @@ namespace SqlSugar
             }
             else if (isComplex)
             {
-                return string.Join(".", entityName.Split('.').Select(it => GetTranslationText(it)));
+                return string.Join(ExpressionConst.Dot, entityName.Split(ExpressionConst.DotChar).Select(it => GetTranslationText(it)));
             }
             else
             {
