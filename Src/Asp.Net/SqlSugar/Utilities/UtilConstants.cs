@@ -10,7 +10,7 @@ namespace SqlSugar
         public const char DotChar = '.';
         internal const string Space = " ";
         internal const string AssemblyName = "SqlSugar";
-        internal const string OrderReplace = "{662E689B-17A1-4D06-9D27-F29EAB8BC3D6}";
+        internal const string ReplaceKey = "{662E689B-17A1-4D06-9D27-F29EAB8BC3D6}";
 
         internal static Type IntType = typeof(int);
         internal static Type LongType = typeof(long);

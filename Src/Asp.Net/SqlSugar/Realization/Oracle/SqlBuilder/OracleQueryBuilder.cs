@@ -17,7 +17,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT {0}{"+UtilConstants.OrderReplace+"} FROM {1}{2}{3}{4}";
+                return "SELECT {0}{"+UtilConstants.ReplaceKey+"} FROM {1}{2}{3}{4}";
             }
         }
         public override string ToSqlString()
@@ -37,7 +37,7 @@ namespace SqlSugar
             string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
             if (this.IsCount) { orderByValue = null; this.OrderByValue = oldOrderBy; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
-            sql.Replace(UtilConstants.OrderReplace, isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
+            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
             if (this.IsCount) { return sql.ToString(); }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
