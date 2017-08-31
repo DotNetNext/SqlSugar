@@ -306,13 +306,14 @@ public int TestId { get; set; }
 
  ##  6. Use Tran
   ```c
-
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
- 
-//output
-var p11 = new SugarParameter("@p1", "1");
-var p22 = new SugarParameter("@p2", null, true);//isOutput=true
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
+var result = db.Ado.UseTran(() =>
+{
+          
+    var beginCount = db.Queryable<Student>().ToList();
+    db.Ado.ExecuteCommand("delete student");
+    var endCount = db.Queryable<Student>().Count();
+    throw new Exception("error haha");
+})
    ```
  ##  7. Use Store Procedure
 ```c
