@@ -75,6 +75,16 @@ namespace OrmTest.Demo
                 outPutValue = p2.Value;
                 return dbResult;
             });
+
+
+            //3
+           var dt=db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { p1 = 1, p2 = 2 });
+
+
+            var p11 = new SugarParameter("@p1", "1");
+            var p22 = new SugarParameter("@p2", null, true);//isOutput=true
+            //4
+            var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
         }
         private static void Tran()
         {

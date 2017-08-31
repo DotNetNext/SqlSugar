@@ -211,6 +211,12 @@ namespace SqlSugar
             this.IsClearParameters = true;
             return result;
         }
+        public IAdo UseStoredProcedure()
+        {
+            this.CommandType = CommandType.StoredProcedure;
+            this.IsClearParameters = false;
+            return this;
+        }
         #endregion
 
         #region Core
