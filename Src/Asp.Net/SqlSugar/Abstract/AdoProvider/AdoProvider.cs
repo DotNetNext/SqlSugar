@@ -158,8 +158,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                result.Exception = ex;
-                result.Messaage = ex.Message;
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
                 this.RollbackTran();
             }
@@ -178,8 +178,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                result.Exception = ex;
-                result.Messaage = ex.Message;
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
                 this.RollbackTran();
             }

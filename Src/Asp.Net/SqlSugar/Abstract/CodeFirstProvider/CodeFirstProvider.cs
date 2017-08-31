@@ -34,7 +34,7 @@ namespace SqlSugar
             {
                 Execute(entityType);
             });
-            Check.Exception(!executeResult.IsSuccess, executeResult.Messaage);
+            Check.Exception(!executeResult.IsSuccess, executeResult.ErrorMessage);
         }
         public virtual void InitTables(Type[] entityTypes)
         {
