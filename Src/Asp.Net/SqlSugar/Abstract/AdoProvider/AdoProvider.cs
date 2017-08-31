@@ -90,7 +90,14 @@ namespace SqlSugar
         {
             if (this.Connection.State != ConnectionState.Open)
             {
-                this.Connection.Open();
+                try
+                {
+                    this.Connection.Open();
+                }
+                catch (Exception ex)
+                {
+                    Check.Exception(true,ErrorMessage.ConnnectionOpen, ex.Message);
+                }
             }
         }
 
