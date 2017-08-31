@@ -18,7 +18,7 @@ namespace SqlSugar
         {
             get
             {
-                return ErrorMessage.GetThrowMessage("Expression format error, correct format: it=>it.fieldName","表达示格式错误，正确格式： it=>it.fieldName");
+                return ErrorMessage.GetThrowMessage("Expression format error, correct format: it=>it.fieldName","表达式格式错误，正确格式： it=>it.fieldName");
             }
         }
 
