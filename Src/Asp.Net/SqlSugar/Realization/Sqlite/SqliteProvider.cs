@@ -17,8 +17,15 @@ namespace SqlSugar
             {
                 if (base._DbConnection == null)
                 {
-                    var SQLiteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                    base._DbConnection = new SQLiteConnection(SQLiteConnectionString);
+                    try
+                    {
+                        var SQLiteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                        base._DbConnection = new SQLiteConnection(SQLiteConnectionString);
+                    }
+                    catch (Exception ex)
+                    {
+                        Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                    }
                 }
                 return base._DbConnection;
             }

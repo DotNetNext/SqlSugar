@@ -34,7 +34,7 @@ namespace SqlSugar
         {
             get
             {
-                return ErrorMessage.GetThrowMessage("Connection open error . {0}", " 连接字符串出错了，实在找不到原因请先Google错误.{0}.");
+                return ErrorMessage.GetThrowMessage("Connection open error . {0}", " 连接字符串出错了，实在找不到原因请先Google错误{0}.");
             }
         }
     }

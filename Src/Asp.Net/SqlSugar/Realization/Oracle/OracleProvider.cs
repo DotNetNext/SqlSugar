@@ -22,9 +22,17 @@ namespace SqlSugar
         {
             get
             {
-                if (base._DbConnection == null)
+                try
                 {
-                    base._DbConnection = new OracleConnection(base.Context.CurrentConnectionConfig.ConnectionString);
+                    if (base._DbConnection == null)
+                    {
+                        base._DbConnection = new OracleConnection(base.Context.CurrentConnectionConfig.ConnectionString);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
                 }
                 return base._DbConnection;
             }
