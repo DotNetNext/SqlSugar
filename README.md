@@ -307,32 +307,12 @@ public int TestId { get; set; }
  ##  6. Use Tran
   ```c
 
-//1. no result 
-var result = db.UseTran(() =>
-{
-  db.Ado.ExecuteCommand("delete student");
-});
-
-
-//2 has result 
-var result2 = db.UseTran<List<Student>>(() =>
-{
-  return db.Queryable<Student>().ToList();
-});
-
-
-//3 use try
-try
-{
-  db.Ado.BeginTran();
-  xxxx
-  db.Ado.CommitTran();
-}
-catch (Exception)
-{
-  db.Ado.RollbackTran();
-  throw;
-}
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
+ 
+//支持output
+var p11 = new SugarParameter("@p1", "1");
+var p22 = new SugarParameter("@p2", null, true);//isOutput=true
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
    ```
  ##  7. Use Store Procedure
 ```c
