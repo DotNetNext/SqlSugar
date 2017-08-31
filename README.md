@@ -309,38 +309,20 @@ public int TestId { get; set; }
 
 var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
  
-//支持output
+//output
 var p11 = new SugarParameter("@p1", "1");
 var p22 = new SugarParameter("@p2", null, true);//isOutput=true
 var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
    ```
  ##  7. Use Store Procedure
 ```c
-   //1. no result 
-  db.Ado.UseStoredProcedure(() =>
-  {
-      string spName = "sp_help";
-      var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-  });
-
-  //2. has result 
-  var result= db.Ado.UseStoredProcedure<dynamic>(() =>
-  {
-      string spName = "sp_help";
-      return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-  });
-  
-  //3. has output 
-  object outPutValue;
-  var outputResult = db.Ado.UseStoredProcedure<dynamic>(() =>
-  {
-      string spName = "sp_school";
-      var p1 = new SugarParameter("@p1", "1");
-      var p2= new SugarParameter("@p2", null,true);//isOutput=true
-      var dbResult= db.Ado.SqlQueryDynamic(spName,new SugarParameter[] {p1,p2 });
-      outPutValue = p2.Value;
-      return dbResult;
-  });
+ 
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
+ 
+//output
+var p11 = new SugarParameter("@p1", "1");
+var p22 = new SugarParameter("@p2", null, true);//isOutput=true
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
 ```
 
 ## 8. DbFirst
