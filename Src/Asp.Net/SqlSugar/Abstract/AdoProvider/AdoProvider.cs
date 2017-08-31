@@ -214,7 +214,6 @@ namespace SqlSugar
         public IAdo UseStoredProcedure()
         {
             this.CommandType = CommandType.StoredProcedure;
-            this.IsClearParameters = false;
             return this;
         }
         #endregion
