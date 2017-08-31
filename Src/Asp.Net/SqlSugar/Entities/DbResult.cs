@@ -8,8 +8,8 @@ namespace SqlSugar
     public class DbResult<T>
     {
         public bool IsSuccess { get; set; }
-        public Exception Exception { get; set; }
-        public string Messaage { get; set; }
+        public Exception ErrorException { get; set; }
+        public string ErrorMessaage { get; set; }
         public T Data { get; set; }
     }
 }
