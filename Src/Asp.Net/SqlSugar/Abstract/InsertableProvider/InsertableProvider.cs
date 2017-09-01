@@ -53,16 +53,35 @@ namespace SqlSugar
             RestoreMapping();
             return Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
         }
+        public long ExecuteReturnBigIdentity()
+        {
+            InsertBuilder.IsReturnIdentity = true;
+            PreToSql();
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            return Convert.ToInt64( Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+        }
         public T ExecuteReturnEntity()
         {
             var result = InsertObjs.First();
-            var identityKeys=GetIdentityKeys();
-            if (identityKeys.Count == 0) return result;
-            var idValue = ExecuteReturnIdentity();
+            var identityKeys = GetIdentityKeys();
+            if (identityKeys.Count == 0) { this.ExecuteCommand(); return result; }
+            var idValue = ExecuteReturnBigIdentity();
             Check.Exception(identityKeys.Count > 1, "ExecuteReutrnEntity does not support multiple identity keys");
             var identityKey = identityKeys.First();
-            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result,idValue,null);
+            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result, idValue, null);
             return result;
+        }
+        public bool ExecuteCommandIdentityIntoEntity()
+        {
+            var result = InsertObjs.First();
+            var identityKeys = GetIdentityKeys();
+            if (identityKeys.Count == 0) { return this.ExecuteCommand() > 0; }
+            var idValue = ExecuteReturnBigIdentity();
+            Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
+            var identityKey = identityKeys.First();
+            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result, idValue, null);
+            return idValue>0;
         }
         #endregion
 
