@@ -63,14 +63,8 @@ namespace SqlSugar
         }
         public T ExecuteReturnEntity()
         {
-            var result = InsertObjs.First();
-            var identityKeys = GetIdentityKeys();
-            if (identityKeys.Count == 0) { this.ExecuteCommand(); return result; }
-            var idValue = ExecuteReturnBigIdentity();
-            Check.Exception(identityKeys.Count > 1, "ExecuteReutrnEntity does not support multiple identity keys");
-            var identityKey = identityKeys.First();
-            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result, idValue, null);
-            return result;
+            ExecuteCommandIdentityIntoEntity();
+            return InsertObjs.First();
         }
         public bool ExecuteCommandIdentityIntoEntity()
         {
@@ -80,7 +74,12 @@ namespace SqlSugar
             var idValue = ExecuteReturnBigIdentity();
             Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
             var identityKey = identityKeys.First();
-            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result, idValue, null);
+            object setValue= 0;
+            if (idValue > int.MaxValue)
+                setValue = idValue;
+            else
+                setValue = Convert.ToInt32(idValue);
+            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result,setValue, null);
             return idValue>0;
         }
         #endregion
