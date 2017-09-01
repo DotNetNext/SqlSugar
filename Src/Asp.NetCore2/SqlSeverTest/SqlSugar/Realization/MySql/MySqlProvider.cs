@@ -28,7 +28,7 @@ namespace SqlSugar
                     }
                     catch (Exception ex)
                     {
-                        Check.Exception(true, "MySql.Data.dll Nuget更新到 6.10.3-rc 版本的(Core 2.0只支持当前版本), 在检查连接字符串是否正确，{0}", ex.Message);
+                        Check.Exception(true, "MySql.Data.dll Nuget更新到 6.10.3-rc 版本的(Core 2.0只支持当前版本), 再检查连接字符串是否正确，{0}", ex.Message);
                     }
                 }
                 return base._DbConnection;
@@ -48,7 +48,7 @@ namespace SqlSugar
                 }
                 catch (Exception ex)
                 {
-                    Check.Exception(true, "MySql.Data.dll Nuget更新到 6.10.3-rc 版本的(Core 2.0只支持当前版本), 在检查连接字符串是否正确，{0}", ex.Message);
+                    Check.Exception(true, "MySql.Data.dll Nuget更新到 6.10.3-rc 版本的(Core 2.0只支持当前版本), 再检查连接字符串是否正确，{0}", ex.Message);
                 }
             }
         }
