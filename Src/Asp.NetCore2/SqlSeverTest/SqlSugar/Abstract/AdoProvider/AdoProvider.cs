@@ -90,7 +90,14 @@ namespace SqlSugar
         {
             if (this.Connection.State != ConnectionState.Open)
             {
-                this.Connection.Open();
+                try
+                {
+                    this.Connection.Open();
+                }
+                catch (Exception ex)
+                {
+                    Check.Exception(true,ErrorMessage.ConnnectionOpen, ex.Message);
+                }
             }
         }
 
@@ -151,8 +158,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                result.Exception = ex;
-                result.Messaage = ex.Message;
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
                 this.RollbackTran();
             }
@@ -171,8 +178,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                result.Exception = ex;
-                result.Messaage = ex.Message;
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
                 this.RollbackTran();
             }
@@ -203,6 +210,11 @@ namespace SqlSugar
             this.CommandType = oldCommandType;
             this.IsClearParameters = true;
             return result;
+        }
+        public IAdo UseStoredProcedure()
+        {
+            this.CommandType = CommandType.StoredProcedure;
+            return this;
         }
         #endregion
 

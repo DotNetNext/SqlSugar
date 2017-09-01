@@ -30,6 +30,7 @@ namespace SqlSugar
             PreToSql();
             string sql = UpdateBuilder.ToSqlString();
             RestoreMapping();
+            Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
         }
         public IUpdateable<T> AS(string tableName)

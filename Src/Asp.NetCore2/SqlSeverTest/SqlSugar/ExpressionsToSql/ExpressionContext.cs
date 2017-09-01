@@ -19,7 +19,7 @@ namespace SqlSugar
         private IDbMethods _DbMehtods { get; set; }
         #endregion
 
-        #region properties
+        #region Properties
         public IDbMethods DbMehtods
         {
             get
@@ -100,22 +100,44 @@ namespace SqlSugar
         public virtual string SqlTranslationRight { get { return "]"; } }
         #endregion
 
-        #region public functions
+        #region Core methods 
+        public void Resolve(Expression expression, ResolveExpressType resolveType)
+        {
+            this.ResolveType = resolveType;
+            this.Expression = expression;
+            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { CurrentExpression = this.Expression, Context = this });
+            resolve.Start();
+        }
+        public void Clear()
+        {
+            base._Result = null;
+            base._Parameters = new List<SugarParameter>();
+        }
+        public ExpressionContext GetCopyContext()
+        {
+            ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
+            copyContext.Index = this.Index;
+            copyContext.ParameterIndex = this.ParameterIndex;
+            return copyContext;
+        }
+        #endregion
+
+        #region Override methods
         public virtual string GetTranslationTableName(string entityName, bool isMapping = true)
         {
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             if (IsTranslationText(entityName)) return entityName;
             isMapping = isMapping && this.MappingTables.IsValuable();
-            var isComplex = entityName.Contains(".");
+            var isComplex = entityName.Contains(UtilConstants.Dot);
             if (isMapping && isComplex)
             {
-                var columnInfo = entityName.Split('.');
+                var columnInfo = entityName.Split(UtilConstants.DotChar);
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(columnInfo.Last(), StringComparison.CurrentCultureIgnoreCase));
                 if (mappingInfo != null)
                 {
                     columnInfo[columnInfo.Length - 1] = mappingInfo.EntityName;
                 }
-                return string.Join(".", columnInfo.Select(it => GetTranslationText(it)));
+                return string.Join(UtilConstants.Dot, columnInfo.Select(it => GetTranslationText(it)));
             }
             else if (isMapping)
             {
@@ -124,7 +146,7 @@ namespace SqlSugar
             }
             else if (isComplex)
             {
-                return string.Join(".", entityName.Split('.').Select(it => GetTranslationText(it)));
+                return string.Join(UtilConstants.Dot, entityName.Split(UtilConstants.DotChar).Select(it => GetTranslationText(it)));
             }
             else
             {
@@ -133,15 +155,15 @@ namespace SqlSugar
         }
         public virtual string GetTranslationColumnName(string columnName)
         {
-            Check.ArgumentNullException(columnName, string.Format(ErrorMessage.ObjNotExist, "column Name"));
+            Check.ArgumentNullException(columnName, string.Format(ErrorMessage.ObjNotExist, "Column Name"));
             if (columnName.Substring(0, 1) == this.SqlParameterKeyWord)
             {
                 return columnName;
             }
             if (IsTranslationText(columnName)) return columnName;
-            if (columnName.Contains("."))
+            if (columnName.Contains(UtilConstants.Dot))
             {
-                return string.Join(".", columnName.Split('.').Select(it => GetTranslationText(it)));
+                return string.Join(UtilConstants.Dot, columnName.Split(UtilConstants.DotChar).Select(it => GetTranslationText(it)));
             }
             else
             {
@@ -168,13 +190,6 @@ namespace SqlSugar
         {
             return SqlTranslationLeft + name + SqlTranslationRight;
         }
-        public virtual void Resolve(Expression expression, ResolveExpressType resolveType)
-        {
-            this.ResolveType = resolveType;
-            this.Expression = expression;
-            BaseResolve resolve = new BaseResolve(new ExpressionParameter() { CurrentExpression = this.Expression, Context = this });
-            resolve.Start();
-        }
         public virtual string GetAsString(string asName, string fieldValue)
         {
             if (fieldValue.Contains(".*") || fieldValue == "*") return fieldValue;
@@ -190,18 +205,6 @@ namespace SqlSugar
         {
             if (fieldValue.Contains(".*") || fieldValue == "*") return fieldValue;
             return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldShortName + "." + fieldValue), "AS", GetTranslationColumnName(asName));
-        }
-        public virtual void Clear()
-        {
-            base._Result = null;
-            base._Parameters = new List<SugarParameter>();
-        }
-        public ExpressionContext GetCopyContext()
-        {
-            ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
-            copyContext.Index = this.Index;
-            copyContext.ParameterIndex = this.ParameterIndex;
-            return copyContext;
         }
         #endregion
     }

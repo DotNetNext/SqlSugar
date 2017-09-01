@@ -16,10 +16,17 @@ namespace SqlSugar
         {
             get
             {
-                if (base._DbConnection == null)
+                try
                 {
-                    var SqliteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                    base._DbConnection = new SqliteConnection(SqliteConnectionString);
+                    if (base._DbConnection == null)
+                    {
+                        var SqliteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                        base._DbConnection = new SqliteConnection(SqliteConnectionString);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
                 }
                 return base._DbConnection;
             }

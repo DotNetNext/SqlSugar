@@ -202,7 +202,7 @@ namespace SqlSugar
         public T DeserializeObject<T>(string value)
         {
             var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-            return JsonConvert.DeserializeObject<T>(value,jSetting);
+            return JsonConvert.DeserializeObject<T>(value, jSetting);
         }
         #endregion
 

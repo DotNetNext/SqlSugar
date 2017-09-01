@@ -41,11 +41,18 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("nvarchar2",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("ntext",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("blob_text",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("nchar",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("num",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("currency",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("datetext",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("word",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("graphic",CSharpDataType.@string),
 
                     new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@byte),
-                    new KeyValuePair<string, CSharpDataType>("UNSIGNEDINTEGER8",CSharpDataType.@byte),
+                    new KeyValuePair<string, CSharpDataType>("unsignedinteger8",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("int16",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
@@ -58,7 +65,10 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("double",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@float),
                     new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
+                    new KeyValuePair<string, CSharpDataType>("dec",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
+                    new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
+                    new KeyValuePair<string, CSharpDataType>("smallmoney",CSharpDataType.@decimal),
 
                     new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
@@ -66,9 +76,12 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
 
                     new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("raw",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("oleobject",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("photo",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("picture",CSharpDataType.byteArray),
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("guid",CSharpDataType.Guid)

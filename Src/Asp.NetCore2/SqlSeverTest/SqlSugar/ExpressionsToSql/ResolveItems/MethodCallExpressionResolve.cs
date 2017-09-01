@@ -351,6 +351,7 @@ namespace SqlSugar
                 case "ToTime":
                     return this.Context.DbMehtods.ToTime(model);
                 case "ToString":
+                    Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
                     return this.Context.DbMehtods.ToString(model);
                 case "ToDecimal":
                     return this.Context.DbMehtods.ToDecimal(model);

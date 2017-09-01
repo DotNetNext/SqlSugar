@@ -22,15 +22,15 @@ namespace SqlSugar
             var lsrb = !leftIsBinary && rightBinary;
             var lbrb = rightBinary && leftIsBinary;
             var lsbs = !leftIsBinary && !rightBinary;
-            var isAppend = !base.Context.Result.Contains(ExpressionConst.Format0);
+            var isAppend = !base.Context.Result.Contains(ExpressionConst.FormatSymbol);
             if (isAppend)
             {
-                base.Context.Result.Append(ExpressionConst.Format3);
-                base.Context.Result.Append(ExpressionConst.Format0);
+                base.Context.Result.Append(ExpressionConst.LeftParenthesis);
+                base.Context.Result.Append(ExpressionConst.FormatSymbol);
             }
             else
             {
-                base.Context.Result.Replace(ExpressionConst.Format0, ExpressionConst.Format3 + ExpressionConst.Format0);
+                base.Context.Result.Replace(ExpressionConst.FormatSymbol, ExpressionConst.LeftParenthesis + ExpressionConst.FormatSymbol);
             }
             parameter.LeftExpression = leftExpression;
             parameter.RightExpression = rightExpression;
@@ -43,18 +43,18 @@ namespace SqlSugar
             base.IsLeft = null;
             if (lsbs && parameter.ValueIsNull)
             {
-                base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, isEqual ? "IS" : "IS NOT");
-                base.Context.Result.Replace(ExpressionConst.Format1 + (parameter.Index+1), isEqual ? "IS" : "IS NOT");
+                base.Context.Result.Replace(ExpressionConst.ExpressionReplace + parameter.Index, isEqual ? "IS" : "IS NOT");
+                base.Context.Result.Replace(ExpressionConst.ExpressionReplace + (parameter.Index+1), isEqual ? "IS" : "IS NOT");
             }
             else
             {
-                base.Context.Result.Replace(ExpressionConst.Format1 + parameter.Index, operatorValue);
-                base.Context.Result.Replace(ExpressionConst.Format1 + (parameter.Index + 1), operatorValue);
+                base.Context.Result.Replace(ExpressionConst.ExpressionReplace + parameter.Index, operatorValue);
+                base.Context.Result.Replace(ExpressionConst.ExpressionReplace + (parameter.Index + 1), operatorValue);
             }
-            base.Context.Result.Append(ExpressionConst.Format4);
+            base.Context.Result.Append(ExpressionConst.RightParenthesis);
             if (parameter.BaseExpression is BinaryExpression && parameter.IsLeft == true)
             {
-                base.Context.Result.Append(" " + ExpressionConst.Format1 + parameter.BaseParameter.Index + " ");
+                base.Context.Result.Append(" " + ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index + " ");
             }
         }
     }

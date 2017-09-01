@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT {0}{"+UtilConstants.OrderReplace+"} FROM {1}{2}{3}{4}";
+                return "SELECT {0}{"+UtilConstants.ReplaceKey+"} FROM {1}{2}{3}{4}";
             }
         }
     }
