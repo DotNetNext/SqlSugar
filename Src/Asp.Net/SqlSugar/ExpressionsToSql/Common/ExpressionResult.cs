@@ -52,6 +52,12 @@ namespace SqlSugar
                 _Result = value;
             }
         }
+        public bool LastCharIsSpace{
+            get {
+                if (_Result == null|| _Result.Length==0) return true;
+                return _Result.ToString().Last() == UtilConstants.SpaceChar;
+            }
+        }
         #endregion
         public string GetString()
         {

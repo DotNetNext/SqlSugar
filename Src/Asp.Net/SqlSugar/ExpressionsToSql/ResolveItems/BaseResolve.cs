@@ -239,9 +239,10 @@ namespace SqlSugar
         protected void AppendNot(object Value)
         {
             var isAppend = !this.Context.Result.Contains(ExpressionConst.FormatSymbol);
+            var lastCharIsSpace = this.Context.Result.LastCharIsSpace;
             if (isAppend)
             {
-                this.Context.Result.Append("NOT");
+                this.Context.Result.Append(lastCharIsSpace?"NOT":" NOT");
             }
             else
             {
