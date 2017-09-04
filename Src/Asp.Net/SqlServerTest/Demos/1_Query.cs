@@ -170,7 +170,7 @@ namespace OrmTest.Demo
             var getNew = db.Queryable<Student>().Where(it => it.Id == 1).Select(it => new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id), it.Name, it.SchoolId }).ToList();
             var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
-            var getSingleOrDefault = db.Queryable<Student>().Single();
+            var getSingleOrDefault = db.Queryable<Student>().Where(it=>it.Id==1).Single();
             var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
@@ -380,7 +380,7 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             db.IgnoreColumns.Add("TestId", "Student");
-            var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
+            var s1 = db.Queryable<Student>().Where(it=>it.Id== 136915).Single();
             var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
             var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
             var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();

@@ -333,15 +333,19 @@ namespace SqlSugar
                 QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
             }
             QueryBuilder.Skip = 0;
-            QueryBuilder.Take = 1;
+            QueryBuilder.Take = 2;
             var reval = this.ToList();
-            if (reval.IsValuable())
+            if (reval == null || reval.Count == 0)
             {
-                return reval.SingleOrDefault();
+                return default(T);
+            }
+            else if (reval.Count == 2) {
+                Check.Exception(true, ".Single()  result must not exceed one . You can use.First()");
+                return default(T);
             }
             else
             {
-                return default(T);
+                return reval.SingleOrDefault();
             }
         }
         public virtual T Single(Expression<Func<T, bool>> expression)
