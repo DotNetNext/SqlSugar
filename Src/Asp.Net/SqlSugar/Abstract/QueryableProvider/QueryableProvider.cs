@@ -865,10 +865,7 @@ namespace SqlSugar
                         var contextProperty = item.GetType().GetProperty("Context");
                         ConnectionConfig config = new ConnectionConfig();
                         config = this.Context.CurrentConnectionConfig;
-                        var newClient = new SqlSugarClient(config);
-                        newClient.MappingColumns = this.Context.MappingColumns;
-                        newClient.MappingTables = this.Context.MappingTables;
-                        newClient.IgnoreColumns = this.Context.IgnoreColumns;
+                        SqlSugarClient newClient = this.Context.CopyContext(config);
                         contextProperty.SetValue(item, newClient, null);
                     }
                 }

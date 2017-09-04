@@ -565,6 +565,14 @@ namespace SqlSugar
                 this.Ado.Dispose();
             }
         }
+        internal SqlSugarClient CopyContext(ConnectionConfig config)
+        {
+            var newClient = new SqlSugarClient(config);
+            newClient.MappingColumns = this.Context.MappingColumns;
+            newClient.MappingTables = this.Context.MappingTables;
+            newClient.IgnoreColumns = this.Context.IgnoreColumns;
+            return newClient;
+        }
         #endregion
     }
 }
