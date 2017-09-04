@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
+using System.Threading.Tasks;
 
 namespace SqlSugar
 {
@@ -560,6 +561,127 @@ namespace SqlSugar
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
         }
 
+        #region Async methods
+        public Task<T> SingleAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> SingleAsync(Expression<Func<T, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> FirstAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> FirstAsync(Expression<Func<T, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AnyAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> CountAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> MaxAsync<TResult>(string maxField)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> MinAsync<TResult>(string minField)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> SumAsync<TResult>(string sumField)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> AvgAsync<TResult>(string avgField)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<T>> ToListAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> ToJsonAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize, ref int totalNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DataTable> ToDataTableAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, ref int totalNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
 
         #region Private Methods
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
