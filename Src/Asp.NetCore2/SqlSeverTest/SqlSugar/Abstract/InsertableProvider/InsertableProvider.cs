@@ -89,6 +89,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteCommand();
             });
+            result.Start();
             return result;
         }
         public Task<int> ExecuteReturnIdentityAsync()
@@ -98,6 +99,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteReturnIdentity();
             });
+            result.Start();
             return result;
         }
         public Task<T> ExecuteReturnEntityAsync()
@@ -107,6 +109,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteReturnEntity();
             });
+            result.Start();
             return result;
         }
         public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
@@ -116,6 +119,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteCommandIdentityIntoEntity();
             });
+            result.Start();
             return result;
         }
         public Task<long> ExecuteReturnBigIdentityAsync()
@@ -125,6 +129,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteReturnBigIdentity();
             });
+            result.Start();
             return result;
         }
         #endregion

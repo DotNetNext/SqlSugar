@@ -40,6 +40,7 @@ namespace SqlSugar
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
                 return asyncUpdateable.ExecuteCommand();
             });
+            result.Start();
             return result;
         }
         public IUpdateable<T> AS(string tableName)

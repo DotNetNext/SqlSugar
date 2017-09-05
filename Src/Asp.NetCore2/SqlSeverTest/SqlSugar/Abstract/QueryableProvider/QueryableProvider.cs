@@ -580,6 +580,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Single();
             });
+            result.Start();
             return result;
         }
 
@@ -590,6 +591,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Single(expression);
             });
+            result.Start();
             return result;
         }
 
@@ -600,6 +602,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.First();
             });
+            result.Start();
             return result;
         }
 
@@ -610,6 +613,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.First(expression);
             });
+            result.Start();
             return result;
         }
 
@@ -620,6 +624,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Any(expression);
             });
+            result.Start();
             return result;
         }
 
@@ -630,6 +635,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Any();
             });
+            result.Start();
             return result;
         }
 
@@ -640,6 +646,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Count();
             });
+            result.Start();
             return result;
         }
 
@@ -650,6 +657,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Max<TResult>(maxField);
             });
+            result.Start();
             return result;
         }
 
@@ -660,6 +668,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Max<TResult>(expression);
             });
+            result.Start();
             return result;
         }
 
@@ -670,6 +679,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Min<TResult>(minField);
             });
+            result.Start();
             return result;
         }
 
@@ -680,6 +690,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Min<TResult>(expression);
             });
+            result.Start();
             return result;
         }
 
@@ -690,6 +701,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Sum<TResult>(sumField);
             });
+            result.Start();
             return result;
         }
 
@@ -700,6 +712,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Sum<TResult>(expression);
             });
+            result.Start();
             return result;
         }
 
@@ -710,6 +723,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Avg<TResult>(avgField);
             });
+            result.Start();
             return result;
         }
 
@@ -720,6 +734,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Avg<TResult>(expression);
             });
+            result.Start();
             return result;
         }
 
@@ -730,6 +745,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToList();
             });
+            result.Start();
             return result;
         }
 
@@ -740,6 +756,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToJson();
             });
+            result.Start();
             return result;
         }
 
@@ -750,6 +767,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToJsonPage(pageIndex,pageSize);
             });
+            result.Start();
             return result;
         }
 
@@ -762,6 +780,7 @@ namespace SqlSugar
                 var list= asyncQueryable.ToJsonPage(pageIndex, pageSize,ref totalNumberAsync);
                 return new KeyValuePair<string, int>(list, totalNumberAsync);
             });
+            result.Start();
             return result;
         }
 
@@ -772,6 +791,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToDataTable();
             });
+            result.Start();
             return result;
         }
 
@@ -782,6 +802,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToDataTablePage(pageIndex, pageSize);
             });
+            result.Start();
             return result;
         }
 
@@ -794,6 +815,7 @@ namespace SqlSugar
                 var list = asyncQueryable.ToDataTablePage(pageIndex, pageSize, ref totalNumberAsync);
                 return new KeyValuePair<DataTable, int>(list, totalNumberAsync);
             });
+            result.Start();
             return result;
         }
 
@@ -804,6 +826,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToPageList(pageIndex, pageSize);
             });
+            result.Start();
             return result;
         }
 
@@ -816,6 +839,7 @@ namespace SqlSugar
                 var list = asyncQueryable.ToPageList(pageIndex, pageSize, ref totalNumberAsync);
                 return new KeyValuePair<List<T>, int>(list, totalNumberAsync);
             });
+            result.Start();
             return result;
         }
         #endregion

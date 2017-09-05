@@ -37,6 +37,7 @@ namespace SqlSugar
                 IDeleteable<T> asyncDeleteable = CopyDeleteable();
                 return asyncDeleteable.ExecuteCommand();
             });
+            result.Start();
             return result;
         }
         public IDeleteable<T> AS(string tableName)
