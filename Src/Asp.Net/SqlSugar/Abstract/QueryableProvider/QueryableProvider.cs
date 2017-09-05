@@ -1010,7 +1010,8 @@ namespace SqlSugar
         }
         private ISugarQueryable<T> CopyQueryable()
         {
-            var asyncContext = this.Context.CopyContext(this.Context.CurrentConnectionConfig);
+            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
             asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
             asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
             asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
