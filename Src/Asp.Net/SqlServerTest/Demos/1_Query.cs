@@ -26,6 +26,15 @@ namespace OrmTest.Demo
             StoredProcedure();
             Enum();
             Simple();
+            Async();
+        }
+
+        private static void Async()
+        {
+            var db = GetInstance();
+            var list= db.Queryable<Student>().Where(it => it.Id == 1).SingleAsync();
+            list.Start();
+            list.Wait();
         }
 
         private static void Simple()

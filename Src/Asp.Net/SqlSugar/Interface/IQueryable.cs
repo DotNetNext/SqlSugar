@@ -13,6 +13,7 @@ namespace SqlSugar
     {
         SqlSugarClient Context { get; set; }
         ISqlBuilder SqlBuilder { get; set; }
+        QueryBuilder QueryBuilder { get; set; }
 
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
@@ -99,7 +100,7 @@ namespace SqlSugar
         string ToJsonPage(int pageIndex, int pageSize);
         Task<string> ToJsonPageAsync(int pageIndex, int pageSize);
         string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber);
-        Task<string> ToJsonPageAsync(int pageIndex, int pageSize, ref int totalNumber);
+        Task<KeyValuePair<string,int>> ToJsonPageAsync(int pageIndex, int pageSize, int totalNumber);
         KeyValuePair<string, List<SugarParameter>> ToSql();
 
 
@@ -108,12 +109,12 @@ namespace SqlSugar
         DataTable ToDataTablePage(int pageIndex, int pageSize);
         Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize);
         DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber);
-        Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, ref int totalNumber);
+        Task<KeyValuePair<DataTable,int>> ToDataTablePageAsync(int pageIndex, int pageSize, int totalNumber);
 
         List<T> ToPageList(int pageIndex, int pageSize);
         Task<List<T>> ToPageListAsync(int pageIndex, int pageSize);
         List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);
-        Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber);
+        Task<KeyValuePair<List<T>,int>> ToPageListAsync(int pageIndex, int pageSize, int totalNumber);
         void Clear();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
