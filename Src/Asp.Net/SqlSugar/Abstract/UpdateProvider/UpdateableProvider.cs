@@ -37,8 +37,8 @@ namespace SqlSugar
         {
             Task<int> result = new Task<int>(() =>
             {
-                IUpdateable<T> asyncInsertable = CopyUpdateable();
-                return asyncInsertable.ExecuteCommand();
+                IUpdateable<T> asyncUpdateable = CopyUpdateable();
+                return asyncUpdateable.ExecuteCommand();
             });
             return result;
         }
@@ -318,17 +318,17 @@ namespace SqlSugar
             asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
 
             var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
-            var asyncInsertableBuilder = asyncUpdateable.UpdateBuilder;
-            asyncInsertableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
-            asyncInsertableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
-            asyncInsertableBuilder.Parameters = this.UpdateBuilder.Parameters;
-            asyncInsertableBuilder.sql = this.UpdateBuilder.sql;
-            asyncInsertableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
-            asyncInsertableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
-            asyncInsertableBuilder.TableName = this.UpdateBuilder.TableName;
-            asyncInsertableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
-            asyncInsertableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
-            asyncInsertableBuilder.SetValues = this.UpdateBuilder.SetValues;
+            var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;
+            asyncUpdateableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
+            asyncUpdateableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
+            asyncUpdateableBuilder.Parameters = this.UpdateBuilder.Parameters;
+            asyncUpdateableBuilder.sql = this.UpdateBuilder.sql;
+            asyncUpdateableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
+            asyncUpdateableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
+            asyncUpdateableBuilder.TableName = this.UpdateBuilder.TableName;
+            asyncUpdateableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
+            asyncUpdateableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
+            asyncUpdateableBuilder.SetValues = this.UpdateBuilder.SetValues;
             return asyncUpdateable;
         }
     }

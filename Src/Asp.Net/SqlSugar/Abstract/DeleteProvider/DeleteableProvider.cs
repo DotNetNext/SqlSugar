@@ -30,6 +30,15 @@ namespace SqlSugar
             RestoreMapping();
             return Db.ExecuteCommand(sql, paramters);
         }
+        public Task<int> ExecuteCommandAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IDeleteable<T> asyncDeleteable = CopyDeleteable();
+                return asyncDeleteable.ExecuteCommand();
+            });
+            return result;
+        }
         public IDeleteable<T> AS(string tableName)
         {
             var entityName = typeof(T).Name;
@@ -206,7 +215,6 @@ namespace SqlSugar
             return new KeyValuePair<string, List<SugarParameter>>(sql, paramters);
         }
 
-
         private List<string> GetPrimaryKeys()
         {
             if (this.Context.IsSystemTablesConfig)
@@ -218,6 +226,7 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
             }
         }
+
         private List<string> GetIdentityKeys()
         {
             if (this.Context.IsSystemTablesConfig)
@@ -229,12 +238,32 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
+
         private void RestoreMapping()
         {
             if (IsAs)
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+
+        private IDeleteable<T> CopyDeleteable() {
+            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
+            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
+            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
+
+            var asyncDeleteable = asyncContext.Deleteable<T>();
+            var asyncDeleteBuilder = asyncDeleteable.DeleteBuilder;
+            asyncDeleteBuilder.BigDataFiled = this.DeleteBuilder.BigDataFiled;
+            asyncDeleteBuilder.BigDataInValues = this.DeleteBuilder.BigDataInValues;
+            asyncDeleteBuilder.Parameters = this.DeleteBuilder.Parameters;
+            asyncDeleteBuilder.sql = this.DeleteBuilder.sql;
+            asyncDeleteBuilder.WhereInfos = this.DeleteBuilder.WhereInfos;
+            asyncDeleteBuilder.TableWithString = this.DeleteBuilder.TableWithString;
+            return asyncDeleteable;
         }
     }
 }

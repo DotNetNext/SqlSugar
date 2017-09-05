@@ -28,6 +28,10 @@ namespace OrmTest.Demo
 
             //by expression   id>1 and id==1
             var t5 = db.Deleteable<Student>().Where(it => it.Id > 1).Where(it => it.Id == 1).ExecuteCommand();
+
+            var t6 = db.Deleteable<Student>().AS("student").Where(it => it.Id > 1).Where(it => it.Id == 1).ExecuteCommandAsync();
+            t6.Start();
+            t6.Wait();
         }
     }
 }
