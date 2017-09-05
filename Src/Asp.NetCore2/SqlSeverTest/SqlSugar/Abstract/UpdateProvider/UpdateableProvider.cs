@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class UpdateableProvider<T> : IUpdateable<T>
+    public class UpdateableProvider<T> : IUpdateable<T> where T : class, new()
     {
         public SqlSugarClient Context { get; internal set; }
         public EntityInfo EntityInfo { get; internal set; }
         public ISqlBuilder SqlBuilder { get; internal set; }
-        public UpdateBuilder UpdateBuilder { get; internal set; }
+        public UpdateBuilder UpdateBuilder { get; set; }
         public IAdo Ado { get { return Context.Ado; } }
         public T[] UpdateObjs { get; set; }
         public bool IsMappingTable { get { return this.Context.MappingTables != null && this.Context.MappingTables.Any(); } }
@@ -32,6 +32,15 @@ namespace SqlSugar
             RestoreMapping();
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+        }
+        public Task<int> ExecuteCommandAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IUpdateable<T> asyncUpdateable = CopyUpdateable();
+                return asyncUpdateable.ExecuteCommand();
+            });
+            return result;
         }
         public IUpdateable<T> AS(string tableName)
         {
@@ -84,7 +93,7 @@ namespace SqlSugar
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
             {
-              this.WhereColumnList.Add(this.Context.EntityProvider.GetDbColumnName<T>(item));
+                this.WhereColumnList.Add(this.Context.EntityProvider.GetDbColumnName<T>(item));
             }
             return this;
         }
@@ -268,7 +277,8 @@ namespace SqlSugar
         }
         private List<string> GetPrimaryKeys()
         {
-            if (this.WhereColumnList.IsValuable()) {
+            if (this.WhereColumnList.IsValuable())
+            {
                 return this.WhereColumnList;
             }
             if (this.Context.IsSystemTablesConfig)
@@ -297,6 +307,29 @@ namespace SqlSugar
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+        private IUpdateable<T> CopyUpdateable()
+        {
+            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
+            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
+            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
+
+            var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
+            var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;
+            asyncUpdateableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
+            asyncUpdateableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
+            asyncUpdateableBuilder.Parameters = this.UpdateBuilder.Parameters;
+            asyncUpdateableBuilder.sql = this.UpdateBuilder.sql;
+            asyncUpdateableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
+            asyncUpdateableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
+            asyncUpdateableBuilder.TableName = this.UpdateBuilder.TableName;
+            asyncUpdateableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
+            asyncUpdateableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
+            asyncUpdateableBuilder.SetValues = this.UpdateBuilder.SetValues;
+            return asyncUpdateable;
         }
     }
 }

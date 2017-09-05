@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IUpdateable<T>
+    public interface IUpdateable<T> where T : class, new()
     {
+        UpdateBuilder UpdateBuilder { get; set; }
         int ExecuteCommand();
+        Task<int> ExecuteCommandAsync();
         IUpdateable<T> AS(string tableName);
         IUpdateable<T> With(string lockString);
         IUpdateable<T> Where(bool isNoUpdateNull,bool IsOffIdentity = false);

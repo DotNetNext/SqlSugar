@@ -5,12 +5,15 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
+
 namespace SqlSugar
 {
     public partial interface ISugarQueryable<T>
     {
         SqlSugarClient Context { get; set; }
         ISqlBuilder SqlBuilder { get; set; }
+        QueryBuilder QueryBuilder { get; set; }
 
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
@@ -51,45 +54,67 @@ namespace SqlSugar
         ISugarQueryable<T> Take(int num);
 
         T Single();
+        Task<T> SingleAsync();
         T Single(Expression<Func<T, bool>> expression);
+        Task<T> SingleAsync(Expression<Func<T, bool>> expression);
 
         T First();
+        Task<T> FirstAsync();
         T First(Expression<Func<T, bool>> expression);
+        Task<T>  FirstAsync(Expression<Func<T, bool>> expression);
 
         bool Any(Expression<Func<T, bool>> expression);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
         bool Any();
- 
+        Task<bool> AnyAsync();
+
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(string select);
         ISugarQueryable<T> Select(string select);
         ISugarQueryable<T> MergeTable();
 
         int Count();
+        Task<int> CountAsync();
         TResult Max<TResult>(string maxField);
+        Task<TResult> MaxAsync<TResult>(string maxField);
         TResult Max<TResult>(Expression<Func<T, TResult>> expression);
+        Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression);
         TResult Min<TResult>(string minField);
+        Task<TResult> MinAsync<TResult>(string minField);
         TResult Min<TResult>(Expression<Func<T, TResult>> expression);
+        Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression);
         TResult Sum<TResult>(string sumField);
+        Task<TResult> SumAsync<TResult>(string sumField);
         TResult Sum<TResult>(Expression<Func<T, TResult>> expression);
+        Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression);
         TResult Avg<TResult>(string avgField);
+        Task<TResult> AvgAsync<TResult>(string avgField);
         TResult Avg<TResult>(Expression<Func<T, TResult>> expression);
+        Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression);
 
         List<T> ToList();
+        Task<List<T>> ToListAsync();
 
         string ToJson();
+        Task<string> ToJsonAsync();
         string ToJsonPage(int pageIndex, int pageSize);
+        Task<string> ToJsonPageAsync(int pageIndex, int pageSize);
         string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber);
-
+        Task<KeyValuePair<string,int>> ToJsonPageAsync(int pageIndex, int pageSize, int totalNumber);
         KeyValuePair<string, List<SugarParameter>> ToSql();
 
 
         DataTable ToDataTable();
+        Task<DataTable> ToDataTableAsync();
         DataTable ToDataTablePage(int pageIndex, int pageSize);
+        Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize);
         DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber);
+        Task<KeyValuePair<DataTable,int>> ToDataTablePageAsync(int pageIndex, int pageSize, int totalNumber);
 
         List<T> ToPageList(int pageIndex, int pageSize);
+        Task<List<T>> ToPageListAsync(int pageIndex, int pageSize);
         List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);
-
+        Task<KeyValuePair<List<T>,int>> ToPageListAsync(int pageIndex, int pageSize, int totalNumber);
         void Clear();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>

@@ -10,7 +10,7 @@ namespace SqlSugar
         /// <summary>
         ///DbType.SqlServer Or Other
         /// </summary>
-        public string DbType { get; set; }
+        public DbType DbType { get; set; }
         /// <summary>
         ///Database Connection string
         /// </summary>

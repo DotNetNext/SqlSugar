@@ -21,7 +21,7 @@ namespace SqlSugar
             else
             {
                 string className = "Queryable";
-                className = GetClassName(currentConnectionConfig.DbType, className);
+                className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
                 ISugarQueryable<T> result = CreateInstance<T, ISugarQueryable<T>>(className);
                 return result;
             }
@@ -35,7 +35,7 @@ namespace SqlSugar
             else
             {
                 string className = "Queryable";
-                className = GetClassName(currentConnectionConfig.DbType, className);
+                className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
                 ISugarQueryable<T, T2> result = CreateInstance<T, T2, ISugarQueryable<T, T2>>(className);
                 return result;
             }
@@ -49,7 +49,7 @@ namespace SqlSugar
             else
             {
                 string className = "Queryable";
-                className = GetClassName(currentConnectionConfig.DbType, className);
+                className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
                 ISugarQueryable<T, T2, T3> result = CreateInstance<T, T2, T3, ISugarQueryable<T, T2, T3>>(className);
                 return result;
             }
@@ -57,35 +57,35 @@ namespace SqlSugar
         public static ISugarQueryable<T, T2, T3, T4> GetQueryable<T, T2, T3, T4>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4> result = CreateInstance<T, T2, T3, T4, ISugarQueryable<T, T2, T3, T4>>(className);
             return result;
         }
         public static ISugarQueryable<T, T2, T3, T4, T5> GetQueryable<T, T2, T3, T4, T5>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5> result = CreateInstance<T, T2, T3, T4, T5, ISugarQueryable<T, T2, T3, T4, T5>>(className);
             return result;
         }
         public static ISugarQueryable<T, T2, T3, T4, T5, T6> GetQueryable<T, T2, T3, T4, T5, T6>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5, T6> result = CreateInstance<T, T2, T3, T4, T5, T6, ISugarQueryable<T, T2, T3, T4, T5, T6>>(className);
             return result;
         }
         public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GetQueryable<T, T2, T3, T4, T5, T6, T7>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>>(className);
             return result;
         }
         public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8>>(className);
             return result;
         }
@@ -94,28 +94,28 @@ namespace SqlSugar
         public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8,T9, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>>(className);
             return result;
         }
         public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>>(className);
             return result;
         }
         public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>>(className);
             return result;
         }
         public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
-            className = GetClassName(currentConnectionConfig.DbType, className);
+            className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
             ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>>(className);
             return result;
         }
@@ -131,23 +131,23 @@ namespace SqlSugar
             }
             else
             {
-                QueryBuilder result = CreateInstance<QueryBuilder>(GetClassName(currentConnectionConfig.DbType, "QueryBuilder"));
+                QueryBuilder result = CreateInstance<QueryBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "QueryBuilder"));
                 return result;
             }
         }
         public static InsertBuilder GetInsertBuilder(ConnectionConfig currentConnectionConfig)
         {
-            InsertBuilder result = CreateInstance<InsertBuilder>(GetClassName(currentConnectionConfig.DbType, "InsertBuilder"));
+            InsertBuilder result = CreateInstance<InsertBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "InsertBuilder"));
             return result;
         }
         public static UpdateBuilder GetUpdateBuilder(ConnectionConfig currentConnectionConfig)
         {
-            UpdateBuilder result = CreateInstance<UpdateBuilder>(GetClassName(currentConnectionConfig.DbType, "UpdateBuilder"));
+            UpdateBuilder result = CreateInstance<UpdateBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "UpdateBuilder"));
             return result;
         }
         public static DeleteBuilder GetDeleteBuilder(ConnectionConfig currentConnectionConfig)
         {
-            DeleteBuilder result = CreateInstance<DeleteBuilder>(GetClassName(currentConnectionConfig.DbType, "DeleteBuilder"));
+            DeleteBuilder result = CreateInstance<DeleteBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "DeleteBuilder"));
             return result;
         }
 
@@ -159,44 +159,44 @@ namespace SqlSugar
             }
             else
             {
-                ILambdaExpressions result = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType, "ExpressionContext"));
+                ILambdaExpressions result = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType.ToString(), "ExpressionContext"));
                 return result;
             }
         }
 
         public static ISqlBuilder GetSqlbuilder(ConnectionConfig currentConnectionConfig)
         {
-            ISqlBuilder result = CreateInstance<ISqlBuilder>(GetClassName(currentConnectionConfig.DbType, "Builder"));
+            ISqlBuilder result = CreateInstance<ISqlBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "Builder"));
             return result;
         }
 
         public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
         {
-            IDbBind result = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType, "DbBind"));
+            IDbBind result = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbBind"));
             return result;
         }
 
         public static IDbMaintenance GetDbMaintenance(ConnectionConfig currentConnectionConfig)
         {
-            IDbMaintenance result = CreateInstance<IDbMaintenance>(GetClassName(currentConnectionConfig.DbType, "DbMaintenance"));
+            IDbMaintenance result = CreateInstance<IDbMaintenance>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbMaintenance"));
             return result;
         }
 
         public static IDbFirst GetDbFirst(ConnectionConfig currentConnectionConfig)
         {
-            IDbFirst result = CreateInstance<IDbFirst>(GetClassName(currentConnectionConfig.DbType, "DbFirst"));
+            IDbFirst result = CreateInstance<IDbFirst>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbFirst"));
             return result;
         }
 
         public static ICodeFirst GetCodeFirst(ConnectionConfig currentConnectionConfig)
         {
-            ICodeFirst result = CreateInstance<ICodeFirst>(GetClassName(currentConnectionConfig.DbType, "CodeFirst"));
+            ICodeFirst result = CreateInstance<ICodeFirst>(GetClassName(currentConnectionConfig.DbType.ToString(), "CodeFirst"));
             return result;
         }
 
         public static IAdo GetAdo(ConnectionConfig currentConnectionConfig)
         {
-            IAdo result = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType, "Provider"));
+            IAdo result = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType.ToString(), "Provider"));
             return result;
         }
 
