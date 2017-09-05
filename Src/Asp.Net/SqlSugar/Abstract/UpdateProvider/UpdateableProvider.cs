@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class UpdateableProvider<T> : IUpdateable<T>
+    public class UpdateableProvider<T> : IUpdateable<T> where T : class, new()
     {
         public SqlSugarClient Context { get; internal set; }
         public EntityInfo EntityInfo { get; internal set; }
         public ISqlBuilder SqlBuilder { get; internal set; }
-        public UpdateBuilder UpdateBuilder { get;  set; }
+        public UpdateBuilder UpdateBuilder { get; set; }
         public IAdo Ado { get { return Context.Ado; } }
         public T[] UpdateObjs { get; set; }
         public bool IsMappingTable { get { return this.Context.MappingTables != null && this.Context.MappingTables.Any(); } }
@@ -33,8 +33,14 @@ namespace SqlSugar
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
         }
-        public Task<int> ExecuteCommandAsync() {
-            return null;
+        public Task<int> ExecuteCommandAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IUpdateable<T> asyncInsertable = CopyUpdateable();
+                return asyncInsertable.ExecuteCommand();
+            });
+            return result;
         }
         public IUpdateable<T> AS(string tableName)
         {
@@ -87,7 +93,7 @@ namespace SqlSugar
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
             {
-              this.WhereColumnList.Add(this.Context.EntityProvider.GetDbColumnName<T>(item));
+                this.WhereColumnList.Add(this.Context.EntityProvider.GetDbColumnName<T>(item));
             }
             return this;
         }
@@ -271,7 +277,8 @@ namespace SqlSugar
         }
         private List<string> GetPrimaryKeys()
         {
-            if (this.WhereColumnList.IsValuable()) {
+            if (this.WhereColumnList.IsValuable())
+            {
                 return this.WhereColumnList;
             }
             if (this.Context.IsSystemTablesConfig)
@@ -310,8 +317,19 @@ namespace SqlSugar
             asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
             asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
 
-          
-            return null;
+            var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
+            var asyncInsertableBuilder = asyncUpdateable.UpdateBuilder;
+            asyncInsertableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
+            asyncInsertableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
+            asyncInsertableBuilder.Parameters = this.UpdateBuilder.Parameters;
+            asyncInsertableBuilder.sql = this.UpdateBuilder.sql;
+            asyncInsertableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
+            asyncInsertableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
+            asyncInsertableBuilder.TableName = this.UpdateBuilder.TableName;
+            asyncInsertableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
+            asyncInsertableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
+            asyncInsertableBuilder.SetValues = this.UpdateBuilder.SetValues;
+            return asyncUpdateable;
         }
     }
 }

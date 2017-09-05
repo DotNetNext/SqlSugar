@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IUpdateable<T>
+    public interface IUpdateable<T> where T : class, new()
     {
         UpdateBuilder UpdateBuilder { get; set; }
         int ExecuteCommand();

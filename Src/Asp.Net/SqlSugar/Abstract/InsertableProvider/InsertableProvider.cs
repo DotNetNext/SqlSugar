@@ -91,7 +91,6 @@ namespace SqlSugar
             });
             return result;
         }
-
         public Task<int> ExecuteReturnIdentityAsync()
         {
             Task<int> result = new Task<int>(() =>
@@ -101,7 +100,6 @@ namespace SqlSugar
             });
             return result;
         }
-
         public Task<T> ExecuteReturnEntityAsync()
         {
             Task<T> result = new Task<T>(() =>
@@ -111,7 +109,6 @@ namespace SqlSugar
             });
             return result;
         }
-
         public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
         {
             Task<bool> result = new Task<bool>(() =>
@@ -121,7 +118,6 @@ namespace SqlSugar
             });
             return result;
         }
-
         public Task<long> ExecuteReturnBigIdentityAsync()
         {
             Task<long> result = new Task<long>(() =>
