@@ -82,6 +82,55 @@ namespace SqlSugar
             this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result,setValue, null);
             return idValue>0;
         }
+        public Task<int> ExecuteCommandAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteCommand();
+            });
+            return result;
+        }
+
+        public Task<int> ExecuteReturnIdentityAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteReturnIdentity();
+            });
+            return result;
+        }
+
+        public Task<T> ExecuteReturnEntityAsync()
+        {
+            Task<T> result = new Task<T>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteReturnEntity();
+            });
+            return result;
+        }
+
+        public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
+        {
+            Task<bool> result = new Task<bool>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteCommandIdentityIntoEntity();
+            });
+            return result;
+        }
+
+        public Task<long> ExecuteReturnBigIdentityAsync()
+        {
+            Task<long> result = new Task<long>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteReturnBigIdentity();
+            });
+            return result;
+        }
         #endregion
 
         #region Setting
@@ -275,56 +324,6 @@ namespace SqlSugar
             asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
             asyncInsertableBuilder.TableWithString = this.InsertBuilder.TableWithString;
             return asyncInsertable;
-        }
-
-        public Task<int> ExecuteCommandAsync()
-        {
-            Task<int> result = new Task<int>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteCommand();
-            });
-            return result;
-        }
-
-        public Task<int> ExecuteReturnIdentityAsync()
-        {
-            Task<int> result = new Task<int>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnIdentity();
-            });
-            return result;
-        }
-
-        public Task<T> ExecuteReturnEntityAsync()
-        {
-            Task<T> result = new Task<T>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnEntity();
-            });
-            return result;
-        }
-
-        public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
-        {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteCommandIdentityIntoEntity();
-            });
-            return result;
-        }
-
-        public Task<long> ExecuteReturnBigIdentityAsync()
-        {
-            Task<long> result = new Task<long>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnBigIdentity();
-            });
-            return result;
         }
         #endregion
     }

@@ -13,7 +13,7 @@ namespace SqlSugar
         public SqlSugarClient Context { get; internal set; }
         public EntityInfo EntityInfo { get; internal set; }
         public ISqlBuilder SqlBuilder { get; internal set; }
-        public UpdateBuilder UpdateBuilder { get; internal set; }
+        public UpdateBuilder UpdateBuilder { get;  set; }
         public IAdo Ado { get { return Context.Ado; } }
         public T[] UpdateObjs { get; set; }
         public bool IsMappingTable { get { return this.Context.MappingTables != null && this.Context.MappingTables.Any(); } }
@@ -32,6 +32,9 @@ namespace SqlSugar
             RestoreMapping();
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+        }
+        public Task<int> ExecuteCommandAsync() {
+            return null;
         }
         public IUpdateable<T> AS(string tableName)
         {
@@ -297,6 +300,18 @@ namespace SqlSugar
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+        private IUpdateable<T> CopyUpdateable()
+        {
+            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
+            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
+            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
+
+          
+            return null;
         }
     }
 }
