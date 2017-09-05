@@ -160,7 +160,7 @@ namespace OrmTest.Demo
             var getNew = db.Queryable<Student>().Where(it => it.Id == 1).Select(it => new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id), it.Name, it.SchoolId }).ToList();
             var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
-            var getSingleOrDefault = db.Queryable<Student>().Single();
+            var getSingleOrDefault = db.Queryable<Student>().Where(it => it.Id == 2).Single();
             var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
