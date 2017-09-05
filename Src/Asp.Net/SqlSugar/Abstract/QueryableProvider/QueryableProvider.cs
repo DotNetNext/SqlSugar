@@ -336,9 +336,16 @@ namespace SqlSugar
             {
                 QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
             }
-            QueryBuilder.Skip = 0;
-            QueryBuilder.Take = 2;
+            var oldSkip = QueryBuilder.Skip;
+            var oldTake = QueryBuilder.Take;
+            var oldOrderBy = QueryBuilder.OrderByValue;
+            QueryBuilder.Skip = null;
+            QueryBuilder.Take = null;
+            QueryBuilder.OrderByValue = null;
             var reval = this.ToList();
+            QueryBuilder.Skip = oldSkip;
+            QueryBuilder.Take = oldTake;
+            QueryBuilder.OrderByValue = oldOrderBy;
             if (reval == null || reval.Count == 0)
             {
                 return default(T);
@@ -1004,6 +1011,11 @@ namespace SqlSugar
         private ISugarQueryable<T> CopyQueryable()
         {
             var asyncContext = this.Context.CopyContext(this.Context.CurrentConnectionConfig);
+            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
+            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
+            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
+
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty);
             var asyncQueryableBuilder = asyncQueryable.QueryBuilder;
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;

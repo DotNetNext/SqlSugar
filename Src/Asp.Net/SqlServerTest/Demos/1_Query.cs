@@ -35,6 +35,18 @@ namespace OrmTest.Demo
             var list= db.Queryable<Student>().Where(it => it.Id == 1).SingleAsync();
             list.Start();
             list.Wait();
+
+            var list2 = db.Queryable<Student>().SingleAsync(it => it.Id == 1);
+            list2.Start();
+            list2.Wait();
+
+            var list3= db.Queryable<Student>().Where(it => it.Id == 1).ToListAsync();
+            list3.Start();
+            list3.Wait();
+
+            var list4= db.Queryable<Student>().Where(it => it.Id == 1).ToPageListAsync(1,2);
+            list4.Start();
+            list4.Wait();
         }
 
         private static void Simple()
