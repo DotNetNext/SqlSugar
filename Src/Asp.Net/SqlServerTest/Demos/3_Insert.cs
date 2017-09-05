@@ -58,7 +58,6 @@ namespace OrmTest.Demo
 
 
             var t12 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReturnIdentityAsync();
-            t12.Start();
             t12.Wait();
         }
     }
