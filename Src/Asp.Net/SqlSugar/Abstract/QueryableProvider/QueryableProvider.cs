@@ -1029,6 +1029,8 @@ namespace SqlSugar
             asyncQueryableBuilder.EntityType = this.QueryBuilder.EntityType;
             asyncQueryableBuilder.EntityName = this.QueryBuilder.EntityName;
             asyncQueryableBuilder.Parameters = this.QueryBuilder.Parameters;
+            asyncQueryableBuilder.TableShortName = this.QueryBuilder.TableShortName;
+            asyncQueryableBuilder.TableWithString = this.QueryBuilder.TableWithString;
             return asyncQueryable;
         }
         #endregion
