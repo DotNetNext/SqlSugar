@@ -16,16 +16,7 @@ namespace SqlSugar
     /// </summary>
     public partial class SqlSugarClient : SqlSugarAccessory, IDisposable
     {
-        #region Properties
-        public bool IsSystemTablesConfig
-        {
-            get
-            {
-                return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable;
-            }
-        }
-        #endregion
-
+ 
         #region Constructor
         public SqlSugarClient(ConnectionConfig config)
         {
@@ -508,10 +499,7 @@ namespace SqlSugar
                 }
                 return _EntityProvider;
             }
-            set
-            {
-                base._EntityProvider = value;
-            }
+            set { base._EntityProvider = value; }
         }
         #endregion
 
@@ -527,10 +515,7 @@ namespace SqlSugar
                 }
                 return _QueryFilterProvider;
             }
-            set
-            {
-                base._QueryFilterProvider = value;
-            }
+            set { base._QueryFilterProvider = value; }
         }
         #endregion
 
@@ -540,9 +525,7 @@ namespace SqlSugar
             get
             {
                 if (_SimpleClient == null)
-                {
                     _SimpleClient = new SimpleClient(this);
-                }
                 return _SimpleClient;
             }
         }

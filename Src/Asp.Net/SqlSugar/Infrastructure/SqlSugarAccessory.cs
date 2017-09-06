@@ -13,6 +13,7 @@ namespace SqlSugar
         public SqlSugarClient Context { get; set; }
         public ConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get; set; }
+        public bool IsSystemTablesConfig { get { return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable; } }
         public Guid ContextID { get; set; }
         public MappingTableList MappingTables = new MappingTableList();
         public MappingColumnList MappingColumns = new MappingColumnList();
