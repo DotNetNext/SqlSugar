@@ -16,7 +16,7 @@ namespace SqlSugar
         string SerializeObject(object value);
         T DeserializeObject<T>(string value);
         T TranslateCopy<T>(T sourceObject);
-        SqlSugarClient CopyCurrentContext(SqlSugarClient context, bool isCopyEvents = false);
+        SqlSugarClient CopyContext(SqlSugarClient context, bool isCopyEvents = false);
         dynamic DataTableToDynamic(DataTable table);
         ICacheManager<T> GetCacheInstance<T>();
         void RemoveCacheAll();

@@ -222,7 +222,7 @@ namespace SqlSugar
                 return DeserializeObject<T>(jsonString);
             }
         }
-        public SqlSugarClient CopyCurrentContext(SqlSugarClient context,bool isCopyEvents=false)
+        public SqlSugarClient CopyContext(SqlSugarClient context,bool isCopyEvents=false)
         {
             var newClient = new SqlSugarClient(this.TranslateCopy(context.CurrentConnectionConfig));
             newClient.MappingColumns = this.TranslateCopy(context.MappingColumns);

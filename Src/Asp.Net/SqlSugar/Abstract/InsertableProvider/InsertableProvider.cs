@@ -307,7 +307,7 @@ namespace SqlSugar
         }
         private IInsertable<T> CopyInsertable()
         {
-            var asyncContext = this.Context.Utilities.CopyCurrentContext(this.Context,true);
+            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
             var asyncInsertable = asyncContext.Insertable<T>(this.InsertObjs);
