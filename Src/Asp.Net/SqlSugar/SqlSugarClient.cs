@@ -50,7 +50,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Rewritable Methods
+        #region Util Methods
         [Obsolete("Use SqlSugarClient.Utilities")]
         public virtual IRewritableMethods RewritableMethods
         {
@@ -545,14 +545,6 @@ namespace SqlSugar
             {
                 this.Ado.Dispose();
             }
-        }
-        internal SqlSugarClient CopyContext(ConnectionConfig config)
-        {
-            var newClient = new SqlSugarClient(config);
-            newClient.MappingColumns = this.Context.MappingColumns;
-            newClient.MappingTables = this.Context.MappingTables;
-            newClient.IgnoreColumns = this.Context.IgnoreColumns;
-            return newClient;
         }
         #endregion
     }

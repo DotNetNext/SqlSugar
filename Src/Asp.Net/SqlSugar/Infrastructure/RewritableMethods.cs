@@ -222,6 +222,20 @@ namespace SqlSugar
                 return DeserializeObject<T>(jsonString);
             }
         }
+        public SqlSugarClient CopyCurrentContext(SqlSugarClient context,bool isCopyEvents=false)
+        {
+            var newClient = new SqlSugarClient(this.TranslateCopy(context.CurrentConnectionConfig));
+            newClient.MappingColumns = this.TranslateCopy(context.MappingColumns);
+            newClient.MappingTables = this.TranslateCopy(context.MappingTables);
+            newClient.IgnoreColumns = this.TranslateCopy(context.IgnoreColumns);
+            if (isCopyEvents) {
+                newClient.Ado.IsEnableLogEvent = context.Ado.IsEnableLogEvent;
+                newClient.Ado.LogEventStarting = context.Ado.LogEventStarting;
+                newClient.Ado.LogEventCompleted = context.Ado.LogEventCompleted;
+                newClient.Ado.ProcessingEventStartingSQL = context.Ado.ProcessingEventStartingSQL;
+            }
+            return newClient;
+        }
         #endregion
 
         #region DataTable

@@ -311,12 +311,8 @@ namespace SqlSugar
         }
         private IUpdateable<T> CopyUpdateable()
         {
-            var asyncContext = this.Context.CopyContext(this.Context.Utilities.TranslateCopy(this.Context.CurrentConnectionConfig));
+            var asyncContext = this.Context.Utilities.CopyCurrentContext(this.Context,true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
-            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
-            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
-            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
 
             var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
             var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;

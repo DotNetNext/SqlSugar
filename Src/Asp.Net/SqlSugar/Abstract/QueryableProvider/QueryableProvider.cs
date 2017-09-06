@@ -1024,9 +1024,7 @@ namespace SqlSugar
                     foreach (var item in result)
                     {
                         var contextProperty = item.GetType().GetProperty("Context");
-                        ConnectionConfig config = new ConnectionConfig();
-                        config = this.Context.CurrentConnectionConfig;
-                        SqlSugarClient newClient = this.Context.CopyContext(config);
+                        SqlSugarClient newClient = this.Context.Utilities.CopyCurrentContext(this.Context);
                         contextProperty.SetValue(item, newClient, null);
                     }
                 }
@@ -1034,12 +1032,8 @@ namespace SqlSugar
         }
         private ISugarQueryable<T> CopyQueryable()
         {
-            var asyncContext = this.Context.CopyContext(this.Context.Utilities.TranslateCopy(this.Context.CurrentConnectionConfig));
+            var asyncContext = this.Context.Utilities.CopyCurrentContext(this.Context,true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
-            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
-            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
-            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
 
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty);
             var asyncQueryableBuilder = asyncQueryable.QueryBuilder;
