@@ -50,7 +50,7 @@ namespace SqlSugar
             var entityName = typeof(T2).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             this.QueryableMappingTableList = this.Context.MappingTables;
             return this;
@@ -60,7 +60,7 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             this.QueryableMappingTableList = this.Context.MappingTables;
             return this;
@@ -486,15 +486,15 @@ namespace SqlSugar
         }
         public virtual string ToJson()
         {
-            return this.Context.RewritableMethods.SerializeObject(this.ToList());
+            return this.Context.Utilities.SerializeObject(this.ToList());
         }
         public virtual string ToJsonPage(int pageIndex, int pageSize)
         {
-            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize));
+            return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize));
         }
         public virtual string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
-            return this.Context.RewritableMethods.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber));
+            return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber));
         }
 
         public virtual DataTable ToDataTable()
@@ -948,11 +948,11 @@ namespace SqlSugar
             {
                 if (typeof(TResult) == typeof(ExpandoObject))
                 {
-                    return this.Context.RewritableMethods.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
+                    return this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
                 }
                 if (entityType.IsAnonymousType() || isComplexModel)
                 {
-                    result = this.Context.RewritableMethods.DataReaderToDynamicList<TResult>(dataReader);
+                    result = this.Context.Utilities.DataReaderToDynamicList<TResult>(dataReader);
                 }
                 else
                 {
@@ -1034,7 +1034,7 @@ namespace SqlSugar
         }
         private ISugarQueryable<T> CopyQueryable()
         {
-            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            var asyncContext = this.Context.CopyContext(this.Context.Utilities.TranslateCopy(this.Context.CurrentConnectionConfig));
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
             asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
             asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;

@@ -45,7 +45,7 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
@@ -249,7 +249,7 @@ namespace SqlSugar
         }
 
         private IDeleteable<T> CopyDeleteable() {
-            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            var asyncContext = this.Context.CopyContext(this.Context.Utilities.TranslateCopy(this.Context.CurrentConnectionConfig));
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
             asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
             asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;

@@ -23,7 +23,7 @@ namespace SqlSugar
         public virtual void InitTables(Type entityType)
         {
 
-            this.Context.RewritableMethods.RemoveCacheAll();
+            this.Context.Utilities.RemoveCacheAll();
             this.Context.InitMppingInfo(entityType);
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {

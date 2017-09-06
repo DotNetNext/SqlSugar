@@ -421,17 +421,17 @@ namespace SqlSugar
         public virtual dynamic SqlQueryDynamic(string sql, object parameters = null)
         {
             var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.RewritableMethods.DataTableToDynamic(dt);
+            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
         }
         public virtual dynamic SqlQueryDynamic(string sql, params SugarParameter[] parameters)
         {
             var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.RewritableMethods.DataTableToDynamic(dt);
+            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
         }
         public dynamic SqlQueryDynamic(string sql, List<SugarParameter> parameters)
         {
             var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.RewritableMethods.DataTableToDynamic(dt);
+            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
         }
         public virtual DataTable GetDataTable(string sql, params SugarParameter[] parameters)
         {
@@ -536,7 +536,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        action(sql, this.Context.RewritableMethods.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql, this.Context.Utilities.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
                     }
                 }
             }
@@ -564,7 +564,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        action(sql, this.Context.RewritableMethods.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql, this.Context.Utilities.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
                     }
                 }
             }
