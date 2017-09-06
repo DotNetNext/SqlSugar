@@ -19,12 +19,12 @@ namespace SqlSugar
         {
             get
             {
-                return this.Context.EntityProvider.GetEntityInfo<T>();
+                return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
         public int ExecuteCommand()
         {
-            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
@@ -57,7 +57,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            string tableName = this.Context.EntityProvider.GetTableName<T>();
+            string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             var primaryFields = this.GetPrimaryKeys();
             var isSinglePrimaryKey = primaryFields.Count == 1;
             Check.ArgumentNullException(primaryFields, string.Format("Table {0} with no primarykey", tableName));
@@ -67,7 +67,7 @@ namespace SqlSugar
                 var primaryField = primaryFields.Single();
                 foreach (var deleteObj in deleteObjs)
                 {
-                    var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
+                    var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                     var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName, StringComparison.CurrentCultureIgnoreCase));
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     primaryKeyValues.Add(value);
@@ -102,7 +102,7 @@ namespace SqlSugar
                     {
                         if (i == 0)
                             andString.Append(DeleteBuilder.WhereInAndTemplate + UtilConstants.Space);
-                        var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
+                        var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                         andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
@@ -176,7 +176,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            string tableName = this.Context.EntityProvider.GetTableName<T>();
+            string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             string primaryField = null;
             primaryField = GetPrimaryKeys().FirstOrDefault();
             Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
@@ -209,7 +209,7 @@ namespace SqlSugar
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
             RestoreMapping();
@@ -220,7 +220,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -232,7 +232,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {

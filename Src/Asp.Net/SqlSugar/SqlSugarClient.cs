@@ -488,13 +488,19 @@ namespace SqlSugar
         #endregion
 
         #region Entity Methods
-        public virtual EntityProvider EntityProvider
+        [Obsolete("Use SqlSugarClient.EntityMaintenance")]
+        public virtual EntityMaintenance EntityProvider
+        {
+            get { return this.EntityMaintenance; }
+            set { this.EntityMaintenance = value; }
+        }
+        public virtual EntityMaintenance EntityMaintenance
         {
             get
             {
                 if (base._EntityProvider == null)
                 {
-                    base._EntityProvider = new EntityProvider();
+                    base._EntityProvider = new EntityMaintenance();
                     base._EntityProvider.Context = this;
                 }
                 return _EntityProvider;

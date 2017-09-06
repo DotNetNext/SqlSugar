@@ -79,7 +79,7 @@ namespace SqlSugar
                 setValue = idValue;
             else
                 setValue = Convert.ToInt32(idValue);
-            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result,setValue, null);
+            this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result,setValue, null);
             return idValue>0;
         }
         public Task<int> ExecuteCommandAsync()
@@ -280,7 +280,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -291,7 +291,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {

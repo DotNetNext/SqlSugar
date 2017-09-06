@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class EntityProvider
+    public class EntityMaintenance
     {
         public SqlSugarClient Context { get; set; }
 

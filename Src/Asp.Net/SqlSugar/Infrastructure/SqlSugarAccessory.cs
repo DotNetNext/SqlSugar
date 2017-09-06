@@ -22,7 +22,7 @@ namespace SqlSugar
 
         #region Fields
         protected ISqlBuilder _SqlBuilder;
-        protected EntityProvider _EntityProvider;
+        protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
         protected IRewritableMethods _RewritableMethods;
@@ -106,7 +106,7 @@ namespace SqlSugar
               },
               (cm, key) =>
               {
-                  var reval = this.Context.EntityProvider.GetEntityInfo(type);
+                  var reval = this.Context.EntityMaintenance.GetEntityInfo(type);
                   return reval;
               });
             InitMppingInfo(entityInfo);
@@ -169,7 +169,7 @@ namespace SqlSugar
             var reval = new InsertableProvider<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
-            reval.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             reval.SqlBuilder = sqlBuilder;
             reval.InsertObjs = insertObjs;
             sqlBuilder.InsertBuilder = reval.InsertBuilder = InstanceFactory.GetInsertBuilder(this.CurrentConnectionConfig);
@@ -196,7 +196,7 @@ namespace SqlSugar
             var reval = new UpdateableProvider<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
-            reval.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             reval.SqlBuilder = sqlBuilder;
             reval.UpdateObjs = UpdateObjs;
             sqlBuilder.UpdateBuilder = reval.UpdateBuilder = InstanceFactory.GetUpdateBuilder(this.CurrentConnectionConfig);

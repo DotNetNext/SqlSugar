@@ -138,7 +138,7 @@ namespace SqlSugar
                 {
                     var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
                     if (this.Context.IgnoreColumns.IsValuable()) {
-                        var entityName = this.Context.EntityProvider.GetEntityName(tableInfo.Name);
+                        var entityName = this.Context.EntityMaintenance.GetEntityName(tableInfo.Name);
                         columns = columns.Where(c =>
                                                  !this.Context.IgnoreColumns.Any(ig => ig.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase)&&c.DbColumnName==ig.PropertyName)
                                                 ).ToList();

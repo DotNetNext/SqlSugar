@@ -67,7 +67,7 @@
     <Compile Include="Abstract\DbMaintenanceProvider\Methods.cs" />
     <Compile Include="Abstract\DbMaintenanceProvider\Properties.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
-    <Compile Include="Abstract\EntityProvider\EntityProvider.cs" />
+    <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />

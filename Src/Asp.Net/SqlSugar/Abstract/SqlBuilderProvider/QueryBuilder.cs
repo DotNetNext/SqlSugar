@@ -375,7 +375,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
+                reval = string.Join(",", this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
             }
             else
             {
@@ -468,7 +468,7 @@ namespace SqlSugar
 
         private string GetTableName(string entityName)
         {
-            var result = this.Context.EntityProvider.GetTableName(entityName);
+            var result = this.Context.EntityMaintenance.GetTableName(entityName);
             return this.Builder.GetTranslationTableName(result);
         }
     }
