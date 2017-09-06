@@ -535,16 +535,12 @@ namespace SqlSugar
         public virtual void Close()
         {
             if (this.Ado != null)
-            {
                 this.Ado.Close();
-            }
         }
         public virtual void Dispose()
         {
             if (this.Ado != null)
-            {
                 this.Ado.Dispose();
-            }
         }
         #endregion
     }
