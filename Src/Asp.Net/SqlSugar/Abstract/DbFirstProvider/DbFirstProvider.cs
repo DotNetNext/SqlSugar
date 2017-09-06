@@ -137,6 +137,12 @@ namespace SqlSugar
                 foreach (var tableInfo in this.TableInfoList)
                 {
                     var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
+                    if (this.Context.IgnoreColumns.IsValuable()) {
+                        var entityName = this.Context.EntityProvider.GetEntityName(tableInfo.Name);
+                        columns = columns.Where(c =>
+                                                 !this.Context.IgnoreColumns.Any(ig => ig.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase)&&c.DbColumnName==ig.PropertyName)
+                                                ).ToList();
+                    }
                     string className = tableInfo.Name;
                     string classText = this.ClassTemplate;
                     string ConstructorText = IsDefaultValue ? this.ConstructorTemplate : null;
