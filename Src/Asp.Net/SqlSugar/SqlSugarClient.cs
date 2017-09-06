@@ -60,7 +60,7 @@ namespace SqlSugar
         #endregion
 
         #region Rewritable Methods
-        [Obsolete("db.IRewritableMethods is Obsolete,Use db.Utilities")]
+        [Obsolete("Use SqlSugarClient.Utilities")]
         public virtual IRewritableMethods RewritableMethods
         {
             get { return this.Utilities; }
