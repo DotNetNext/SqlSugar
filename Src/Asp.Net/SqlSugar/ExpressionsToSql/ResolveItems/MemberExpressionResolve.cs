@@ -14,14 +14,16 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var expression = base.Expression as MemberExpression;
+            var childExpression = expression.Expression as MemberExpression;
+            var childIsMember = childExpression != null;
             var isValue = expression.Member.Name == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
             var isBool = expression.Type == UtilConstants.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
-            var isLength = expression.Member.Name == "Length" && (expression.Expression as MemberExpression).Type == UtilConstants.StringType;
+            var isLength = expression.Member.Name == "Length" &&childIsMember&&childExpression.Type == UtilConstants.StringType;
             var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == UtilConstants.DateType;
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
             var isHasValue = isLogicOperator && expression.Member.Name == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
-            var isDateTimeNowDate = expression.Member.Name == "Date" && (expression.Expression as MemberExpression) != null && (expression.Expression as MemberExpression).Member.Name == "Now";
+            var isDateTimeNowDate = expression.Member.Name == "Date" &&childIsMember&&childExpression.Member.Name == "Now";
             if (isLength)
             {
                 var oldCommonTempDate = parameter.CommonTempData;
