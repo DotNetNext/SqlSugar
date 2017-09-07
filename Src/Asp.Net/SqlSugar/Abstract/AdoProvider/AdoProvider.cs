@@ -32,7 +32,8 @@ namespace SqlSugar
         public IDbTransaction Transaction { get; set; }
         public virtual SqlSugarClient Context { get; set; }
         internal CommandType OldCommandType { get; set; }
-        internal bool OldClearParameters{ get; set; }
+        internal bool OldClearParameters { get; set; }
+        public IDataParameterCollection DataReaderParameters { get; set; }
         public virtual IDbBind DbBind
         {
             get
@@ -98,7 +99,7 @@ namespace SqlSugar
                 }
                 catch (Exception ex)
                 {
-                    Check.Exception(true,ErrorMessage.ConnnectionOpen, ex.Message);
+                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
                 }
             }
         }
@@ -218,6 +219,7 @@ namespace SqlSugar
             this.OldCommandType = this.CommandType;
             this.OldClearParameters = this.IsClearParameters;
             this.CommandType = CommandType.StoredProcedure;
+            this.IsClearParameters = false;
             return this;
         }
         #endregion
@@ -238,12 +240,15 @@ namespace SqlSugar
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
         {
+            var isSp = this.CommandType == CommandType.StoredProcedure;
             if (this.ProcessingEventStartingSQL != null)
                 ExecuteProcessingSQL(ref sql, parameters);
             ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
             var isAutoClose = this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
             IDataReader sqlDataReader = sqlCommand.ExecuteReader(isAutoClose ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+            if (isSp)
+                DataReaderParameters = sqlCommand.Parameters;
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecuteAfter(sql, parameters);
@@ -389,12 +394,25 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parameters != null && parameters.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parameters);
+            List<T> result = null;
             using (var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
-                var reval = this.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
+                result = this.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
                 builder.SqlQueryBuilder.Clear();
-                return reval;
             }
+            if (this.Context.Ado.DataReaderParameters != null)
+            {
+                foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
+                {
+                    var parameter = parameters.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
+                    if (parameter != null)
+                    {
+                        parameter.Value = item.Value;
+                    }
+                }
+                this.Context.Ado.DataReaderParameters = null;
+            }
+            return result;
         }
         public virtual List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters)
         {
@@ -572,7 +590,8 @@ namespace SqlSugar
                     }
                 }
             }
-            if (this.OldCommandType != 0) {
+            if (this.OldCommandType != 0)
+            {
                 this.CommandType = this.OldCommandType;
                 this.IsClearParameters = this.OldClearParameters;
                 this.OldCommandType = 0;

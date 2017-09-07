@@ -101,7 +101,7 @@ namespace OrmTest.Demo
             var p11 = new SugarParameter("@p1", "1");
             var p22 = new SugarParameter("@p2", null, true);//isOutput=true
             //4
-            var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
+            var dt2 = db.Ado.UseStoredProcedure().SqlQuery<School>("sp_school",p11,p22);
         }
         private static void Tran()
         {
@@ -175,6 +175,7 @@ namespace OrmTest.Demo
             var t2 = db.Ado.GetInt("select 1");
             var t3 = db.Ado.GetDataTable("select 1 as id");
             db.Ado.CommitTran();
+            var t11 = db.Ado.SqlQuery<Student>("select * from student");
             //more
             //db.Ado.GetXXX...
         }
