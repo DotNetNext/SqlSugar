@@ -160,9 +160,6 @@ namespace SqlSugar
             {
                 return columnName;
             }
-            if (columnName.Contains(UtilConstants.Space)) {
-                return columnName;
-            }
             if (IsTranslationText(columnName)) return columnName;
             if (columnName.Contains(UtilConstants.Dot))
             {
@@ -187,7 +184,8 @@ namespace SqlSugar
         }
         public virtual bool IsTranslationText(string name)
         {
-            return name.Contains(SqlTranslationLeft) && name.Contains(SqlTranslationRight);
+            var result = name.IsContainsIn(SqlTranslationLeft, SqlTranslationRight, UtilConstants.Space, ExpressionConst.LeftParenthesis, ExpressionConst.RightParenthesis);
+            return result;
         }
         public virtual string GetTranslationText(string name)
         {
