@@ -21,6 +21,7 @@ namespace SqlSugar
             var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == UtilConstants.DateType;
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
             var isHasValue = isLogicOperator && expression.Member.Name == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
+            var isDateTimeNowDate = expression.Member.Name == "Date" && (expression.Expression as MemberExpression) != null && (expression.Expression as MemberExpression).Member.Name == "Now";
             if (isLength)
             {
                 var oldCommonTempDate = parameter.CommonTempData;
@@ -39,11 +40,12 @@ namespace SqlSugar
                 parameter.CommonTempData = oldCommonTempDate;
                 return;
             }
-            else if (isHasValue) {
+            else if (isHasValue)
+            {
                 parameter.CommonTempData = CommonTempDataType.Result;
                 this.Expression = expression.Expression;
                 this.Start();
-                var methodParamter =new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
+                var methodParamter = new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
                 var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
                 {
                     Args = new List<MethodCallExpressionArgs>() {
@@ -80,6 +82,11 @@ namespace SqlSugar
             else if (isValue)
             {
                 expression = expression.Expression as MemberExpression;
+            }
+            else if (isDateTimeNowDate)
+            {
+                AppendValue(parameter, isLeft, DateTime.Now.Date);
+                return;
             }
             else if (expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool)
             {
