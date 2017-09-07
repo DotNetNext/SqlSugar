@@ -31,6 +31,8 @@ namespace SqlSugar
         public virtual string SqlParameterKeyWord { get { return "@"; } }
         public IDbTransaction Transaction { get; set; }
         public virtual SqlSugarClient Context { get; set; }
+        internal CommandType OldCommandType { get; set; }
+        internal bool OldClearParameters{ get; set; }
         public virtual IDbBind DbBind
         {
             get
@@ -213,6 +215,8 @@ namespace SqlSugar
         }
         public IAdo UseStoredProcedure()
         {
+            this.OldCommandType = this.CommandType;
+            this.OldClearParameters = this.IsClearParameters;
             this.CommandType = CommandType.StoredProcedure;
             return this;
         }
@@ -567,6 +571,12 @@ namespace SqlSugar
                         action(sql, this.Context.Utilities.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
                     }
                 }
+            }
+            if (this.OldCommandType != 0) {
+                this.CommandType = this.OldCommandType;
+                this.IsClearParameters = this.OldClearParameters;
+                this.OldCommandType = 0;
+                this.OldClearParameters = false;
             }
         }
         public virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo = null)
