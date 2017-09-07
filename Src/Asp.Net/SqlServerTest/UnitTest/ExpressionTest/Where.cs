@@ -21,6 +21,7 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                whereSingle25();
                 whereSingle24();
                 whereSingle23();
                 whereSingle22();
@@ -381,6 +382,19 @@ namespace OrmTest.UnitTest
         private void whereSingle24()
         {
             Expression<Func<DataTestInfo, bool>> exp = it => it.Datetime1 > DateTime.Now.Date;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Datetime1] > @Datetime10 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Datetime10",DateTime.Now.Date)
+            }, "whereSingle24");
+        }
+        private void whereSingle25()
+        {
+            var p = DateTime.Now;
+            Expression<Func<DataTestInfo, bool>> exp = it => it.Datetime1.Date > p.Date;
             SqlServerExpressionContext expContext = new SqlServerExpressionContext();
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
