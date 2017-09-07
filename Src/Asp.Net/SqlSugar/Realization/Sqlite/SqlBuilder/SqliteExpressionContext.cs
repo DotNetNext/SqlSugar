@@ -194,7 +194,7 @@ namespace SqlSugar
 
         public override string MergeString(params string[] strings)
         {
-            return  string.Join("||", strings) ;
+            return  string.Join("||", strings).Replace("+","");
         }
     }
 }

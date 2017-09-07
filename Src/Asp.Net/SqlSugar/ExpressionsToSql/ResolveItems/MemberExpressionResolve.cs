@@ -107,12 +107,12 @@ namespace SqlSugar
                              new MethodCallExpressionArgs() {   MemberName=DateType.Year, MemberValue=DateType.Year}
                          }
                     };
-                    AppendMember(parameter, isLeft,this.Context.DbMehtods.MergeString(
+                    AppendMember(parameter, isLeft, GetToDate(this.Context.DbMehtods.MergeString(
                         this.GetDateValue(parameter.CommonTempData, DateType.Year), 
                         "+'-'+",
                         this.GetDateValue(parameter.CommonTempData, DateType.Month),
                         "+'-'+",
-                        this.GetDateValue(parameter.CommonTempData, DateType.Day)));
+                        this.GetDateValue(parameter.CommonTempData, DateType.Day))));
                 }
                 parameter.CommonTempData = oldCommonTempDate;
                 return;
@@ -275,6 +275,16 @@ namespace SqlSugar
                          }
             };
             return this.Context.DbMehtods.DateValue(pars);
+        }
+        private string GetToDate(string value)
+        {
+            var pars = new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                             new MethodCallExpressionArgs() { MemberName=value, MemberValue=value },
+                         }
+            };
+            return this.Context.DbMehtods.ToDate(pars);
         }
     }
 }
