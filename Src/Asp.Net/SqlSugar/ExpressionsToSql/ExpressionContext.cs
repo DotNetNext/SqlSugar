@@ -160,6 +160,9 @@ namespace SqlSugar
             {
                 return columnName;
             }
+            if (columnName.Contains(UtilConstants.Space)) {
+                return columnName;
+            }
             if (IsTranslationText(columnName)) return columnName;
             if (columnName.Contains(UtilConstants.Dot))
             {
