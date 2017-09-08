@@ -363,7 +363,9 @@ namespace SqlSugar
         public virtual T Single(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
-            return Single();
+            var result=Single();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
         public virtual T First()
@@ -387,7 +389,9 @@ namespace SqlSugar
         public virtual T First(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
-            return First();
+            var result= First();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
         public virtual bool Any(Expression<Func<T, bool>> expression)
