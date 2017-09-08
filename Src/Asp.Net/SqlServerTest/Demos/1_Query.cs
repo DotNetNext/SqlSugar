@@ -296,7 +296,7 @@ namespace OrmTest.Demo
               JoinType.Left,st.SchoolId==sc.Id,
               JoinType.Left,st.SchoolId==st2.Id
             })
-            .Where((st, sc, st2) => st2.Id == 1 || sc.Id == 1 || st.Id == 1).ToList();
+            .Where((st, sc, st2) => st2.Id == 1 || sc.Id == 1 || st.Id == 1).With(SqlWith.NoLock).ToList();
 
             //join return List<ViewModelStudent>
             var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
