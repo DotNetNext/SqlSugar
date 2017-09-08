@@ -413,13 +413,13 @@ namespace SqlSugar
             {
                 var result = Builder.GetTranslationTableName(EntityName);
                 result += UtilConstants.Space;
-                if (this.TableWithString.IsValuable())
-                {
-                    result += TableWithString + UtilConstants.Space;
-                }
                 if (this.TableShortName.IsValuable())
                 {
                     result += (TableShortName + UtilConstants.Space);
+                }
+                if (this.TableWithString.IsValuable())
+                {
+                    result += TableWithString + UtilConstants.Space;
                 }
                 if (!this.IsSingle())
                 {
