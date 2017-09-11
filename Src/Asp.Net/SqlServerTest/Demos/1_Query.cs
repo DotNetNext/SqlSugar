@@ -223,6 +223,8 @@ namespace OrmTest.Demo
             var getUnionAllList = db.UnionAll(db.Queryable<Student>().Where(it => it.Id == 1), db.Queryable<Student>().Where(it => it.Id == 2)).ToList();
 
             var getUnionAllList2 = db.UnionAll(db.Queryable<Student>(), db.Queryable<Student>()).ToList();
+
+            var test1 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st, sc) =>SqlFunc.ToInt64(sc.Id)).ToList();
         }
         public static void Page()
         {

@@ -140,7 +140,14 @@ namespace SqlSugar
                     model.Args.AddRange(appendArgs);
                 }
             }
-            parameter.BaseParameter.CommonTempData = GetMdthodValue(name, model);
+            if (parameter.BaseParameter.BaseParameter.BaseParameter==null)
+            {
+                this.Context.Result.Append(GetMdthodValue(name, model));
+            }
+            else
+            {
+                parameter.BaseParameter.CommonTempData = GetMdthodValue(name, model);
+            }
         }
         private void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
