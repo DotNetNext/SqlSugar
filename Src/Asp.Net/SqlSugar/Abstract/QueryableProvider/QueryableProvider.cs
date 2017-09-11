@@ -1411,6 +1411,63 @@ namespace SqlSugar
             return this;
         }
         #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2,T3> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> With(string withString)
+        {
+            base.With(withString);
+            return this;
+        }
+        #endregion
     }
     #endregion
     #region T4
@@ -1581,6 +1638,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3,T4> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -1780,6 +1894,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4,T5> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -2005,6 +2176,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -2257,6 +2485,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -2535,6 +2820,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -2836,6 +3178,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -3161,6 +3560,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -3511,6 +3967,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion
@@ -3886,6 +4399,63 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(object parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion

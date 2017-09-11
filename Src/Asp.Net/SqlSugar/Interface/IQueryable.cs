@@ -215,6 +215,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2,T3> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2,T3> AS(string tableName);
+        new ISugarQueryable<T, T2,T3> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2,T3> AddParameters(object parameters);
+        new ISugarQueryable<T, T2,T3> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2,T3> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2,T3> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2,T3> With(string withString);
+        #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
     {
@@ -264,6 +275,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
         new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3,T4> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3,T4> AS(string tableName);
+        new ISugarQueryable<T, T2, T3,T4> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3,T4> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3,T4> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3,T4> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3,T4> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3,T4> With(string withString);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
@@ -320,6 +342,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
         new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4,T5> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4,T5> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4,T5> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4,T5> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4,T5> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4,T5> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4,T5> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4,T5> With(string withString);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
@@ -380,6 +413,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
         new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> With(string withString);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7> : ISugarQueryable<T>
@@ -445,6 +489,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> With(string withString);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> : ISugarQueryable<T>
@@ -515,6 +570,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> With(string withString);
         #endregion
     }
 
@@ -593,6 +659,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> With(string withString);
+        #endregion                                       
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> : ISugarQueryable<T>
     {
@@ -673,6 +750,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> With(string withString);
+        #endregion                                       
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11> : ISugarQueryable<T>
     {
@@ -758,6 +846,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> With(string withString);
+        #endregion                                       
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11,T12> : ISugarQueryable<T>
     {
@@ -848,6 +947,17 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> With(string withString);
+        #endregion                                                     ,T12
     }
     #endregion
 }
