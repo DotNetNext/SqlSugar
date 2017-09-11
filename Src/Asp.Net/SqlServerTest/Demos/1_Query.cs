@@ -282,6 +282,17 @@ namespace OrmTest.Demo
             })
             .Select((st, sc) => new { id=st.Id,school=sc }).ToList();
 
+
+            var list5 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).AS<Student>("STUDENT").AS<School>("SCHOOL")
+.Select((st, sc) => new { id = st.Id, school = sc }).ToList();
+
+
+            var list6 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).With(SqlWith.NoLock).AS<Student>("STUDENT").AS<School>("SCHOOL")
+.Select((st, sc) => new { id = st.Id, school = sc }).ToList();
         }
         public static void Join()
         {

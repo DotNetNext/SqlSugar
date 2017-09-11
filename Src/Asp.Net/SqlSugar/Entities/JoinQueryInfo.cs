@@ -12,6 +12,5 @@ namespace SqlSugar
         public string ShortName { get; set; }
         public int JoinIndex { get; set; }
         public string JoinWhere { get; set; }
-        public string TableWithString { get; set; }
     }
 }

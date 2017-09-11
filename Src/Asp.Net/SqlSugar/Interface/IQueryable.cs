@@ -168,6 +168,7 @@ namespace SqlSugar
         new ISugarQueryable<T,T2> AddParameters(SugarParameter[] parameters);
         new ISugarQueryable<T, T2> AddParameters(List<SugarParameter> parameters);
         new ISugarQueryable<T,T2> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T,T2> With(string withString);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>

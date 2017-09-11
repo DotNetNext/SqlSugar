@@ -108,7 +108,6 @@ namespace SqlSugar
                 });
             return this;
         }
-
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
             this._Where(expression);
@@ -1217,26 +1216,31 @@ namespace SqlSugar
             _As(tableName, entityName);
             return this;
         }
-        public new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false) {
+        public new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false)
+        {
             _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
-        public new ISugarQueryable<T, T2> AddParameters(object parameters) {
+        public new ISugarQueryable<T, T2> AddParameters(object parameters)
+        {
             if (parameters != null)
                 QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
             return this;
         }
-        public new ISugarQueryable<T, T2> AddParameters(SugarParameter[] parameters) {
+        public new ISugarQueryable<T, T2> AddParameters(SugarParameter[] parameters)
+        {
             if (parameters != null)
                 QueryBuilder.Parameters.AddRange(parameters);
             return this;
         }
-        public new ISugarQueryable<T, T2> AddParameters(List<SugarParameter> parameters) {
+        public new ISugarQueryable<T, T2> AddParameters(List<SugarParameter> parameters)
+        {
             if (parameters != null)
                 QueryBuilder.Parameters.AddRange(parameters);
             return this;
         }
-        public new ISugarQueryable<T, T2> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left) {
+        public new ISugarQueryable<T, T2> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
+        {
             QueryBuilder.JoinIndex = +1;
             QueryBuilder.JoinQueryInfos
                 .Add(new JoinQueryInfo()
@@ -1247,6 +1251,11 @@ namespace SqlSugar
                     JoinType = type,
                     JoinWhere = joinWhere
                 });
+            return this;
+        }
+        public new ISugarQueryable<T,T2> With(string withString)
+        {
+            base.With(withString);
             return this;
         }
         #endregion

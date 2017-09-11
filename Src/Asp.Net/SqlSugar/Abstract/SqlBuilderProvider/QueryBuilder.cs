@@ -316,7 +316,7 @@ namespace SqlSugar
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
                 Builder.GetTranslationTableName(joinInfo.TableName) + UtilConstants.Space,
-                joinInfo.ShortName + UtilConstants.Space + joinInfo.TableWithString,
+                joinInfo.ShortName + UtilConstants.Space + TableWithString,
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
