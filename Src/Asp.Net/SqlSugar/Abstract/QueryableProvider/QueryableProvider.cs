@@ -29,7 +29,8 @@ namespace SqlSugar
             {
                 return this.SqlBuilder.QueryBuilder;
             }
-            set {
+            set
+            {
                 this.SqlBuilder.QueryBuilder = value;
             }
         }
@@ -48,22 +49,12 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> AS<T2>(string tableName)
         {
             var entityName = typeof(T2).Name;
-            IsAs = true;
-            OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
-            this.Context.MappingTables.Add(entityName, tableName);
-            this.QueryableMappingTableList = this.Context.MappingTables;
-            return this;
+            return _As(tableName, entityName);
         }
         public ISugarQueryable<T> AS(string tableName)
         {
             var entityName = typeof(T).Name;
-            IsAs = true;
-            OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
-            this.Context.MappingTables.Add(entityName, tableName);
-            this.QueryableMappingTableList = this.Context.MappingTables;
-            return this;
+            return _As(tableName, entityName);
         }
         public virtual ISugarQueryable<T> With(string withString)
         {
@@ -73,16 +64,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
-            QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
-            if (this.Context.QueryFilter.GeFilterList.IsValuable() && FilterName.IsValuable())
-            {
-                var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName && it.IsJoinQuery == !QueryBuilder.IsSingle());
-                foreach (var item in list)
-                {
-                    var filterResult = item.FilterValue(this.Context);
-                    Where(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(), filterResult.Sql), filterResult.Parameters);
-                }
-            }
+            _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
 
@@ -93,6 +75,12 @@ namespace SqlSugar
             return this;
         }
         public virtual ISugarQueryable<T> AddParameters(SugarParameter[] parameters)
+        {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public virtual ISugarQueryable<T> AddParameters(List<SugarParameter> parameters)
         {
             if (parameters != null)
                 QueryBuilder.Parameters.AddRange(parameters);
@@ -363,7 +351,7 @@ namespace SqlSugar
         public virtual T Single(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
-            var result=Single();
+            var result = Single();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
@@ -389,7 +377,7 @@ namespace SqlSugar
         public virtual T First(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
-            var result= First();
+            var result = First();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
@@ -785,19 +773,19 @@ namespace SqlSugar
             Task<string> result = new Task<string>(() =>
             {
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.ToJsonPage(pageIndex,pageSize);
+                return asyncQueryable.ToJsonPage(pageIndex, pageSize);
             });
             result.Start();
             return result;
         }
 
-        public Task<KeyValuePair<string,int>> ToJsonPageAsync(int pageIndex, int pageSize, int totalNumber)
+        public Task<KeyValuePair<string, int>> ToJsonPageAsync(int pageIndex, int pageSize, int totalNumber)
         {
             Task<KeyValuePair<string, int>> result = new Task<KeyValuePair<string, int>>(() =>
             {
                 int totalNumberAsync = 0;
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                var list= asyncQueryable.ToJsonPage(pageIndex, pageSize,ref totalNumberAsync);
+                var list = asyncQueryable.ToJsonPage(pageIndex, pageSize, ref totalNumberAsync);
                 return new KeyValuePair<string, int>(list, totalNumberAsync);
             });
             result.Start();
@@ -826,7 +814,7 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<KeyValuePair<DataTable, int>> ToDataTablePageAsync(int pageIndex, int pageSize,int totalNumber)
+        public Task<KeyValuePair<DataTable, int>> ToDataTablePageAsync(int pageIndex, int pageSize, int totalNumber)
         {
             Task<KeyValuePair<DataTable, int>> result = new Task<KeyValuePair<DataTable, int>>(() =>
             {
@@ -930,6 +918,28 @@ namespace SqlSugar
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Sum<TResult>(lamResult.GetResultString());
+        }
+        protected ISugarQueryable<T> _As(string tableName, string entityName)
+        {
+            IsAs = true;
+            OldMappingTableList = this.Context.MappingTables;
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables.Add(entityName, tableName);
+            this.QueryableMappingTableList = this.Context.MappingTables;
+            return this;
+        }
+        protected void _Filter(string FilterName, bool isDisabledGobalFilter)
+        {
+            QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
+            if (this.Context.QueryFilter.GeFilterList.IsValuable() && FilterName.IsValuable())
+            {
+                var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName && it.IsJoinQuery == !QueryBuilder.IsSingle());
+                foreach (var item in list)
+                {
+                    var filterResult = item.FilterValue(this.Context);
+                    Where(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(), filterResult.Sql), filterResult.Parameters);
+                }
+            }
         }
         public ISugarQueryable<T> _PartitionBy(Expression expression)
         {
@@ -1052,7 +1062,7 @@ namespace SqlSugar
         }
         private ISugarQueryable<T> CopyQueryable()
         {
-            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
+            var asyncContext = this.Context.Utilities.CopyContext(this.Context, true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty);
@@ -1190,6 +1200,53 @@ namespace SqlSugar
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
+            return this;
+        }
+        #endregion
+
+        #region Other
+        public new ISugarQueryable<T, T2> AS<AsT>(string tableName)
+        {
+            var entityName = typeof(AsT).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2> AS(string tableName)
+        {
+            var entityName = typeof(T).Name;
+            _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false) {
+            _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+        public new ISugarQueryable<T, T2> AddParameters(object parameters) {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            return this;
+        }
+        public new ISugarQueryable<T, T2> AddParameters(SugarParameter[] parameters) {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2> AddParameters(List<SugarParameter> parameters) {
+            if (parameters != null)
+                QueryBuilder.Parameters.AddRange(parameters);
+            return this;
+        }
+        public new ISugarQueryable<T, T2> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left) {
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere
+                });
             return this;
         }
         #endregion
