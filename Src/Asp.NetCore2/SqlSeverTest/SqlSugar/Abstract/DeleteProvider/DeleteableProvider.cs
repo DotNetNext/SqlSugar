@@ -19,12 +19,12 @@ namespace SqlSugar
         {
             get
             {
-                return this.Context.EntityProvider.GetEntityInfo<T>();
+                return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
         public int ExecuteCommand()
         {
-            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
@@ -45,7 +45,7 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
@@ -57,7 +57,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            string tableName = this.Context.EntityProvider.GetTableName<T>();
+            string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             var primaryFields = this.GetPrimaryKeys();
             var isSinglePrimaryKey = primaryFields.Count == 1;
             Check.ArgumentNullException(primaryFields, string.Format("Table {0} with no primarykey", tableName));
@@ -67,7 +67,7 @@ namespace SqlSugar
                 var primaryField = primaryFields.Single();
                 foreach (var deleteObj in deleteObjs)
                 {
-                    var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
+                    var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                     var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName, StringComparison.CurrentCultureIgnoreCase));
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     primaryKeyValues.Add(value);
@@ -102,7 +102,7 @@ namespace SqlSugar
                     {
                         if (i == 0)
                             andString.Append(DeleteBuilder.WhereInAndTemplate + UtilConstants.Space);
-                        var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
+                        var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                         andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
@@ -176,7 +176,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            string tableName = this.Context.EntityProvider.GetTableName<T>();
+            string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             string primaryField = null;
             primaryField = GetPrimaryKeys().FirstOrDefault();
             Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
@@ -209,7 +209,7 @@ namespace SqlSugar
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
             RestoreMapping();
@@ -220,7 +220,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -232,7 +232,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -249,12 +249,8 @@ namespace SqlSugar
         }
 
         private IDeleteable<T> CopyDeleteable() {
-            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
-            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
-            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
-            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
 
             var asyncDeleteable = asyncContext.Deleteable<T>();
             var asyncDeleteBuilder = asyncDeleteable.DeleteBuilder;

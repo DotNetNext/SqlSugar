@@ -316,7 +316,7 @@ namespace SqlSugar
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
                 Builder.GetTranslationTableName(joinInfo.TableName) + UtilConstants.Space,
-                joinInfo.ShortName + UtilConstants.Space + joinInfo.TableWithString,
+                joinInfo.ShortName + UtilConstants.Space + TableWithString,
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
@@ -375,7 +375,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
+                reval = string.Join(",", this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
             }
             else
             {
@@ -413,13 +413,13 @@ namespace SqlSugar
             {
                 var result = Builder.GetTranslationTableName(EntityName);
                 result += UtilConstants.Space;
-                if (this.TableWithString.IsValuable())
-                {
-                    result += TableWithString + UtilConstants.Space;
-                }
                 if (this.TableShortName.IsValuable())
                 {
                     result += (TableShortName + UtilConstants.Space);
+                }
+                if (this.TableWithString.IsValuable())
+                {
+                    result += TableWithString + UtilConstants.Space;
                 }
                 if (!this.IsSingle())
                 {
@@ -468,7 +468,7 @@ namespace SqlSugar
 
         private string GetTableName(string entityName)
         {
-            var result = this.Context.EntityProvider.GetTableName(entityName);
+            var result = this.Context.EntityMaintenance.GetTableName(entityName);
             return this.Builder.GetTranslationTableName(result);
         }
     }

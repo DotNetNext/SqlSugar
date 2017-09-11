@@ -48,7 +48,7 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
@@ -94,7 +94,7 @@ namespace SqlSugar
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
             {
-                this.WhereColumnList.Add(this.Context.EntityProvider.GetDbColumnName<T>(item));
+                this.WhereColumnList.Add(this.Context.EntityMaintenance.GetDbColumnName<T>(item));
             }
             return this;
         }
@@ -284,7 +284,7 @@ namespace SqlSugar
             }
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -295,7 +295,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -311,12 +311,8 @@ namespace SqlSugar
         }
         private IUpdateable<T> CopyUpdateable()
         {
-            var asyncContext = this.Context.CopyContext(this.Context.RewritableMethods.TranslateCopy(this.Context.CurrentConnectionConfig));
+            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.Ado.IsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
-            asyncContext.Ado.LogEventStarting = this.Context.Ado.LogEventStarting;
-            asyncContext.Ado.LogEventCompleted = this.Context.Ado.LogEventCompleted;
-            asyncContext.Ado.ProcessingEventStartingSQL = this.Context.Ado.ProcessingEventStartingSQL;
 
             var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
             var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;

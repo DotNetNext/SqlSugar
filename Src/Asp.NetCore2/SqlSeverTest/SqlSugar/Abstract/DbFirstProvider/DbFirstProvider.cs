@@ -39,13 +39,13 @@ namespace SqlSugar
 
         public void Init()
         {
-            this.Context.RewritableMethods.RemoveCacheAll();
+            this.Context.Utilities.RemoveCacheAll();
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {
                 Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
             }
-            this.TableInfoList = this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
-            var viewList = this.Context.RewritableMethods.TranslateCopy(this.Context.DbMaintenance.GetViewInfoList());
+            this.TableInfoList = this.Context.Utilities.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
+            var viewList = this.Context.Utilities.TranslateCopy(this.Context.DbMaintenance.GetViewInfoList());
             if (viewList.IsValuable())
             {
                 this.TableInfoList.AddRange(viewList);
@@ -137,6 +137,12 @@ namespace SqlSugar
                 foreach (var tableInfo in this.TableInfoList)
                 {
                     var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
+                    if (this.Context.IgnoreColumns.IsValuable()) {
+                        var entityName = this.Context.EntityMaintenance.GetEntityName(tableInfo.Name);
+                        columns = columns.Where(c =>
+                                                 !this.Context.IgnoreColumns.Any(ig => ig.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase)&&c.DbColumnName==ig.PropertyName)
+                                                ).ToList();
+                    }
                     string className = tableInfo.Name;
                     string classText = this.ClassTemplate;
                     string ConstructorText = IsDefaultValue ? this.ConstructorTemplate : null;

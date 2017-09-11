@@ -10,7 +10,7 @@ namespace SqlSugar
         protected List<T> GetEntityList<T>(SqlSugarClient context, IDataReader dataReader, string fields)
         {
             Type type = typeof(T);
-            var cacheManager = context.RewritableMethods.GetCacheInstance<IDataReaderEntityBuilder<T>>();
+            var cacheManager = context.Utilities.GetCacheInstance<IDataReaderEntityBuilder<T>>();
             string key = "DataReaderToList." + fields + context.CurrentConnectionConfig.DbType + type.FullName;
             IDataReaderEntityBuilder<T> entytyList = null;
             if (cacheManager.ContainsKey(key))
