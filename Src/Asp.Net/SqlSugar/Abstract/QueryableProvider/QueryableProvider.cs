@@ -444,6 +444,13 @@ namespace SqlSugar
             QueryBuilder.IsCount = false;
             return reval;
         }
+        public virtual int Count(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            var result = Count();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
 
         public virtual TResult Max<TResult>(string maxField)
         {
@@ -653,7 +660,16 @@ namespace SqlSugar
             result.Start();
             return result;
         }
-
+        public Task<int> CountAsync(Expression<Func<T, bool>> expression)
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                ISugarQueryable<T> asyncQueryable = CopyQueryable();
+                return asyncQueryable.Count(expression);
+            });
+            result.Start();
+            return result;
+        }
         public Task<TResult> MaxAsync<TResult>(string maxField)
         {
             Task<TResult> result = new Task<TResult>(() =>

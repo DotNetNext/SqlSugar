@@ -75,6 +75,8 @@ namespace SqlSugar
 
         int Count();
         Task<int> CountAsync();
+        int Count(Expression<Func<T, bool>> expression);
+        Task<int> CountAsync(Expression<Func<T, bool>> expression);
         TResult Max<TResult>(string maxField);
         Task<TResult> MaxAsync<TResult>(string maxField);
         TResult Max<TResult>(Expression<Func<T, TResult>> expression);
