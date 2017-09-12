@@ -191,6 +191,7 @@ namespace SqlSugar
         /// <returns></returns>
         public string SerializeObject(object value)
         {
+            DependencyManagement.TryJsonNet();
             return JsonConvert.SerializeObject(value);
         }
 
@@ -201,6 +202,7 @@ namespace SqlSugar
         /// <returns></returns>
         public T DeserializeObject<T>(string value)
         {
+            DependencyManagement.TryJsonNet();
             var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             return JsonConvert.DeserializeObject<T>(value, jSetting);
         }
