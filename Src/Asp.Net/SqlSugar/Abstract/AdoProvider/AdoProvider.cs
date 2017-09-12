@@ -235,7 +235,7 @@ namespace SqlSugar
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecuteAfter(sql, parameters);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
+            if (this.IsClose()) this.Close();
             return count;
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
@@ -245,8 +245,7 @@ namespace SqlSugar
                 ExecuteProcessingSQL(ref sql, parameters);
             ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
-            var isAutoClose = this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
-            IDataReader sqlDataReader = sqlCommand.ExecuteReader(isAutoClose ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+            IDataReader sqlDataReader = sqlCommand.ExecuteReader(this.IsClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
             if (isSp)
                 DataReaderParameters = sqlCommand.Parameters;
             if (this.IsClearParameters)
@@ -267,7 +266,7 @@ namespace SqlSugar
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecuteAfter(sql, parameters);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
+            if (this.IsClose()) this.Close();
             return ds;
         }
         public virtual object GetScalar(string sql, params SugarParameter[] parameters)
@@ -281,7 +280,7 @@ namespace SqlSugar
             if (this.IsClearParameters)
                 sqlCommand.Parameters.Clear();
             ExecuteAfter(sql, parameters);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
+            if (this.IsClose()) this.Close();
             return scalar;
         }
         #endregion
@@ -602,6 +601,10 @@ namespace SqlSugar
         {
             if (parameters == null) return null;
             return base.GetParameters(parameters, propertyInfo, this.SqlParameterKeyWord);
+        }
+        private bool IsClose()
+        {
+            return this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
         }
         #endregion
     }
