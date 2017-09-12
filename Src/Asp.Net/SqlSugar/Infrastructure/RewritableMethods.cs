@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 namespace SqlSugar
 {
     public class RewritableMethods : IRewritableMethods
@@ -192,8 +191,10 @@ namespace SqlSugar
         public string SerializeObject(object value)
         {
             DependencyManagement.TryJsonNet();
-            return JsonConvert.SerializeObject(value);
+            return JsonHelper.SerializeObject(value);
         }
+
+   
 
         /// <summary>
         /// Serialize Object
@@ -203,8 +204,7 @@ namespace SqlSugar
         public T DeserializeObject<T>(string value)
         {
             DependencyManagement.TryJsonNet();
-            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-            return JsonConvert.DeserializeObject<T>(value, jSetting);
+            return JsonHelper.DeserializeObject<T>(value);
         }
         #endregion
 
@@ -257,7 +257,7 @@ namespace SqlSugar
                 }
                 deserializeObject.Add(childRow);
             }
-            return JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(deserializeObject));
+            return this.DeserializeObject<dynamic>(this.SerializeObject(deserializeObject));
 
         }
         #endregion

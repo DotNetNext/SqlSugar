@@ -22,6 +22,7 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
+            Check.ArgumentNullException(config, "config is null");
             switch (config.DbType)
             {
                 case DbType.MySql:
@@ -33,9 +34,9 @@ namespace SqlSugar
                     DependencyManagement.TrySqlite();
                     break;
                 case DbType.Oracle:
-                    throw new Exception("Oracle developed 60%,to be continued ");
+                    throw new Exception("Oracle developed 60%,to be continued");
                 default:
-                    break;
+                    throw new Exception("ConnectionConfig.DbType is null");
             }
         }
         #endregion

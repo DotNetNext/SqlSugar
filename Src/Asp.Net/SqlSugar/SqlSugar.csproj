@@ -73,6 +73,7 @@
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Enum\DbType.cs" />
     <Compile Include="Infrastructure\DependencyManagement.cs" />
+    <Compile Include="Utilities\JsonHelper.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
