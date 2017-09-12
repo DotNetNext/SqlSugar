@@ -225,6 +225,7 @@ namespace SqlSugar
         {
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
+            var isCount = this.IsCount;
             AppendFilter();
             sql = new StringBuilder();
             if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
@@ -236,10 +237,10 @@ namespace SqlSugar
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
-            if (this.IsCount) { orderByValue = null; }
+            if (isCount) { orderByValue = null; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
-            if (this.IsCount) { this.OrderByValue = oldOrderBy; return sql.ToString();  }
+            if (isCount) { this.OrderByValue = oldOrderBy; return sql.ToString();  }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
