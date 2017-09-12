@@ -161,7 +161,7 @@ namespace OrmTest.Demo
             int count = 0;
 
             var list4 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id)
-               .PartitionBy(st => new { st.Name }).Take(1).OrderBy(st => st.Id,OrderByType.Desc).Select(st => st).ToPageList(1, 1000, ref count);
+               .PartitionBy(st => new { st.Name }).Take(2).OrderBy(st => st.Id,OrderByType.Desc).Select(st => st).ToPageList(1, 1000, ref count);
 
             //SqlFunc.AggregateSum(object thisValue) 
             //SqlFunc.AggregateAvg<TResult>(TResult thisValue)
