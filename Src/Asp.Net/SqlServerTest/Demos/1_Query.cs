@@ -155,6 +155,8 @@ namespace OrmTest.Demo
             // group id,name take first
             var list3 = db.Queryable<Student>()
                 .PartitionBy(it => new { it.Id, it.Name }).Take(1).ToList();
+            var list31 = db.Queryable<Student>()
+                .PartitionBy(it => new { it.Id, it.Name }).Take(1).Count();
 
             int count = 0;
 
