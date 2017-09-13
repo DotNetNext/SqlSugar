@@ -23,8 +23,8 @@ namespace SqlSugar
                 catch
                 {
                     var message = ErrorMessage.GetThrowMessage(
-                        " Some functions are used in newtonsoft ,Nuget references Newtonsoft.Json 9.0.0.1 + .",
-                        " 部分功能用到Newtonsoft.Json.dll，需要在Nuget上安装 Newtonsoft.Json 9.0.0.1及以上版本，如果有版本兼容问题请先删除原有引用");
+                        " SqlSugar Some functions are used in newtonsoft ,Nuget references Newtonsoft.Json 9.0.0.1 + .",
+                        " SqlSugar 部分功能用到Newtonsoft.Json.dll，需要在Nuget上安装 Newtonsoft.Json 9.0.0.1及以上版本，如果有版本兼容问题请先删除原有引用");
                     throw new Exception(message);
                 }
             }
@@ -35,8 +35,8 @@ namespace SqlSugar
             {
                 try
                 {
-                    Assembly asmb = Assembly.LoadFrom("MySql.Data.dll");
-                    asmb = CheckAssembly(asmb);
+                    MySqlProvider db = new MySqlProvider();
+                    var conn = db.GetAdapter();
                     IsTryMySqlData = true;
                 }
                 catch 
@@ -55,26 +55,18 @@ namespace SqlSugar
             {
                 try
                 {
-                    Assembly asmb = Assembly.LoadFrom("System.Data.SQLite.dll");
-                    asmb = CheckAssembly(asmb);
+                    SqliteProvider db = new SqliteProvider();
+                    var conn= db.GetAdapter();
                     IsTrySqlite = true;
                 }
-                catch (Exception ex)
+                catch(Exception ex) 
                 {
                     var message = ErrorMessage.GetThrowMessage(
-                     "You need to refer to System.Data.SQLite.dll",
+                     "You need to refer to System.Data.SQLite.dll."+ex.Message,
                     "你需要引用System.Data.SQLite.dll,如果有版本兼容问题请先删除原有引用");
                     throw new Exception(message);
                 }
             }
         }
-
-        private static Assembly CheckAssembly(Assembly asmb)
-        {
-            if (asmb == null) throw new Exception("");
-            asmb = null;
-            return asmb;
-        }
-
     }
 }
