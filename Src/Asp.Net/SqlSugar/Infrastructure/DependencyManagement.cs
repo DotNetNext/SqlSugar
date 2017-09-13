@@ -17,8 +17,7 @@ namespace SqlSugar
             {
                 try
                 {
-                    Assembly asmb = Assembly.LoadFrom("Newtonsoft.Json.dll");
-                    asmb = CheckAssembly(asmb);
+                    JsonHelper.SerializeObject(new { });
                     IsTryJsonNet = true;
                 }
                 catch

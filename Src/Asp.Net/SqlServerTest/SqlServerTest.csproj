@@ -65,6 +65,12 @@
     <Compile Include="Models\ViewModelStudent.cs" />
     <Compile Include="PerformanceTesting\PerformanceBase.cs" />
     <Compile Include="PerformanceTesting\SqlSugarPerformance.cs" />
+    <Compile Include="T4\SugarTemplate1.cs" />
+    <Compile Include="T4\SugarTemplate2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SugarTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="UnitTest\DataTest.cs" />
     <Compile Include="UnitTest\Delete.cs" />
     <Compile Include="UnitTest\EnumTest.cs" />
@@ -97,6 +103,13 @@
   <ItemGroup>
     <Content Include="DataBase\script.sql" />
     <Content Include="OtherDll\SyntacticSugar.dll" />
+    <Content Include="T4\SugarTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SugarTemplate2.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
