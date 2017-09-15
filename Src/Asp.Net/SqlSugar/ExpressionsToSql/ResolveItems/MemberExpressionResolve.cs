@@ -27,36 +27,25 @@ namespace SqlSugar
             var isDateDate = expression.Member.Name == "Date" && expression.Expression.Type == UtilConstants.DateType;
             if (isLength)
             {
-                ResolveLength(parameter, isLeft, expression);
-                return;
+                ResolveLength(parameter, isLeft, expression);return;
             }
             else if (isHasValue)
             {
-                ResolveHasValue(parameter, expression);
-                return;
+                ResolveHasValue(parameter, expression);return;
             }
             else if (isDateValue)
             {
-                ResolveDateValue(parameter, isLeft, expression);
-                return;
+                ResolveDateValue(parameter, isLeft, expression);return;
             }
-            else if (isValueBool)
-            {
-                isValue = false;
-            }
-            else if (isValue)
-            {
-                expression = expression.Expression as MemberExpression;
-            }
+            else if (isValueBool){isValue = false;}
+            else if (isValue){expression = expression.Expression as MemberExpression;}
             else if (isDateDate)
             {
-                ResolveDateDate(parameter, isLeft, expression);
-                return;
+                ResolveDateDate(parameter, isLeft, expression);return;
             }
             else if (isDateTimeNowDate)
             {
-                AppendValue(parameter, isLeft, DateTime.Now.Date);
-                return;
+                AppendValue(parameter, isLeft, DateTime.Now.Date);  return;
             }
             else if (expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool)
             {
