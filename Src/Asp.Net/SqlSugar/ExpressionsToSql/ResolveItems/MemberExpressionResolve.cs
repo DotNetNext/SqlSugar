@@ -50,15 +50,7 @@ namespace SqlSugar
             }
             else if (isMemberValue)
             {
-                var value = ExpressionTool.GetMemberValue(expression.Member, expression);
-                if (isSetTempData)
-                {
-                    baseParameter.CommonTempData = value;
-                }
-                else
-                {
-                    AppendValue(parameter, isLeft, value);
-                }
+                ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
                 return;
             }
             string fieldName = string.Empty;
@@ -133,6 +125,19 @@ namespace SqlSugar
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, MemberExpression expression)
+        {
+            var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+            if (isSetTempData)
+            {
+                baseParameter.CommonTempData = value;
+            }
+            else
+            {
+                AppendValue(parameter, isLeft, value);
             }
         }
 
