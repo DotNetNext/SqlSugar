@@ -11,12 +11,14 @@ namespace SqlSugar
         public MemberExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var baseParameter = parameter.BaseParameter;
-            var isLeft = parameter.IsLeft;
-            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var expression = base.Expression as MemberExpression;
             var memberName = expression.Member.Name;
             var childExpression = expression.Expression as MemberExpression;
             var childIsMember = childExpression != null;
+            string fieldName = string.Empty;
+
+            var isLeft = parameter.IsLeft;
+            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var isValue = memberName == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
             var isBool = expression.Type == UtilConstants.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
@@ -26,6 +28,7 @@ namespace SqlSugar
             var isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
+
             if (isLength)
             {
                 ResolveLength(parameter, isLeft, expression);return;
@@ -49,31 +52,22 @@ namespace SqlSugar
                 ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
                 return;
             }
-            string fieldName = string.Empty;
             baseParameter.ChildExpression = expression;
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.SelectSingle:
                     fieldName = GetSingleName(parameter, expression, isLeft);
                     if (isSetTempData)
-                    {
                         baseParameter.CommonTempData = fieldName;
-                    }
                     else
-                    {
                         base.Context.Result.Append(fieldName);
-                    }
                     break;
                 case ResolveExpressType.SelectMultiple:
                     fieldName = GetMultipleName(parameter, expression, isLeft);
                     if (isSetTempData)
-                    {
                         baseParameter.CommonTempData = fieldName;
-                    }
                     else
-                    {
                         base.Context.Result.Append(fieldName);
-                    }
                     break;
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
