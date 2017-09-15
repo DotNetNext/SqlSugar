@@ -27,55 +27,17 @@ namespace SqlSugar
             var isDateDate = expression.Member.Name == "Date" && expression.Expression.Type == UtilConstants.DateType;
             if (isLength)
             {
-                var oldCommonTempDate = parameter.CommonTempData;
-                parameter.CommonTempData = CommonTempDataType.Result;
-                this.Expression = expression.Expression;
-                var isConst = this.Expression is ConstantExpression;
-                this.Start();
-                var methodParamter = new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null };
-                var result = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
-                {
-                    Args = new List<MethodCallExpressionArgs>() {
-                      methodParamter
-                  }
-                });
-                base.AppendMember(parameter, isLeft, result);
-                parameter.CommonTempData = oldCommonTempDate;
+                ResolveLength(parameter, isLeft, expression);
                 return;
             }
             else if (isHasValue)
             {
-                parameter.CommonTempData = CommonTempDataType.Result;
-                this.Expression = expression.Expression;
-                this.Start();
-                var methodParamter = new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
-                var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
-                {
-                    Args = new List<MethodCallExpressionArgs>() {
-                    methodParamter
-                  }
-                });
-                this.Context.Result.Append(result);
-                parameter.CommonTempData = null;
+                ResolveHasValue(parameter, expression);
                 return;
             }
             else if (isDateValue)
             {
-                var name = expression.Member.Name;
-                var oldCommonTempDate = parameter.CommonTempData;
-                parameter.CommonTempData = CommonTempDataType.Result;
-                this.Expression = expression.Expression;
-                var isConst = this.Expression is ConstantExpression;
-                this.Start();
-                var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
-                {
-                    Args = new List<MethodCallExpressionArgs>() {
-                     new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null },
-                     new MethodCallExpressionArgs() { IsMember = true, MemberName = name, MemberValue = name }
-                  }
-                });
-                base.AppendMember(parameter, isLeft, result);
-                parameter.CommonTempData = oldCommonTempDate;
+                ResolveDateValue(parameter, isLeft, expression);
                 return;
             }
             else if (isValueBool)
@@ -88,33 +50,7 @@ namespace SqlSugar
             }
             else if (isDateDate)
             {
-                var name = expression.Member.Name;
-                var oldCommonTempDate = parameter.CommonTempData;
-                parameter.CommonTempData = CommonTempDataType.Result;
-                this.Expression = expression.Expression;
-                this.Start();
-                var isConst = parameter.CommonTempData.GetType() == UtilConstants.DateType;
-                if (isConst)
-                {
-                    AppendValue(parameter, isLeft, parameter.CommonTempData.ObjToDate().Date);
-                }
-                else
-                {
-                    var GetYear = new MethodCallExpressionModel()
-                    {
-                        Args = new List<MethodCallExpressionArgs>() {
-                             new MethodCallExpressionArgs() {  IsMember=true, MemberName=parameter.CommonTempData, MemberValue=parameter.CommonTempData },
-                             new MethodCallExpressionArgs() {   MemberName=DateType.Year, MemberValue=DateType.Year}
-                         }
-                    };
-                    AppendMember(parameter, isLeft, GetToDate(this.Context.DbMehtods.MergeString(
-                        this.GetDateValue(parameter.CommonTempData, DateType.Year), 
-                        "+'-'+",
-                        this.GetDateValue(parameter.CommonTempData, DateType.Month),
-                        "+'-'+",
-                        this.GetDateValue(parameter.CommonTempData, DateType.Day))));
-                }
-                parameter.CommonTempData = oldCommonTempDate;
+                ResolveDateDate(parameter, isLeft, expression);
                 return;
             }
             else if (isDateTimeNowDate)
@@ -210,6 +146,90 @@ namespace SqlSugar
             }
         }
 
+        private void ResolveDateDate(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
+        {
+            var name = expression.Member.Name;
+            var oldCommonTempDate = parameter.CommonTempData;
+            parameter.CommonTempData = CommonTempDataType.Result;
+            this.Expression = expression.Expression;
+            this.Start();
+            var isConst = parameter.CommonTempData.GetType() == UtilConstants.DateType;
+            if (isConst)
+            {
+                AppendValue(parameter, isLeft, parameter.CommonTempData.ObjToDate().Date);
+            }
+            else
+            {
+                var GetYear = new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                             new MethodCallExpressionArgs() {  IsMember=true, MemberName=parameter.CommonTempData, MemberValue=parameter.CommonTempData },
+                             new MethodCallExpressionArgs() {   MemberName=DateType.Year, MemberValue=DateType.Year}
+                         }
+                };
+                AppendMember(parameter, isLeft, GetToDate(this.Context.DbMehtods.MergeString(
+                    this.GetDateValue(parameter.CommonTempData, DateType.Year),
+                    "+'-'+",
+                    this.GetDateValue(parameter.CommonTempData, DateType.Month),
+                    "+'-'+",
+                    this.GetDateValue(parameter.CommonTempData, DateType.Day))));
+            }
+            parameter.CommonTempData = oldCommonTempDate;
+        }
+
+        private void ResolveDateValue(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
+        {
+            var name = expression.Member.Name;
+            var oldCommonTempDate = parameter.CommonTempData;
+            parameter.CommonTempData = CommonTempDataType.Result;
+            this.Expression = expression.Expression;
+            var isConst = this.Expression is ConstantExpression;
+            this.Start();
+            var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                     new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null },
+                     new MethodCallExpressionArgs() { IsMember = true, MemberName = name, MemberValue = name }
+                  }
+            });
+            base.AppendMember(parameter, isLeft, result);
+            parameter.CommonTempData = oldCommonTempDate;
+        }
+
+        private void ResolveHasValue(ExpressionParameter parameter, MemberExpression expression)
+        {
+            parameter.CommonTempData = CommonTempDataType.Result;
+            this.Expression = expression.Expression;
+            this.Start();
+            var methodParamter = new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
+            var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                    methodParamter
+                  }
+            });
+            this.Context.Result.Append(result);
+            parameter.CommonTempData = null;
+        }
+
+        private void ResolveLength(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
+        {
+            var oldCommonTempDate = parameter.CommonTempData;
+            parameter.CommonTempData = CommonTempDataType.Result;
+            this.Expression = expression.Expression;
+            var isConst = this.Expression is ConstantExpression;
+            this.Start();
+            var methodParamter = new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null };
+            var result = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                      methodParamter
+                  }
+            });
+            base.AppendMember(parameter, isLeft, result);
+            parameter.CommonTempData = oldCommonTempDate;
+        }
+
         private string AppendMember(ExpressionParameter parameter, bool? isLeft, string fieldName)
         {
             if (parameter.BaseExpression is BinaryExpression || (parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Append)))
@@ -276,6 +296,7 @@ namespace SqlSugar
             };
             return this.Context.DbMehtods.DateValue(pars);
         }
+
         private string GetToDate(string value)
         {
             var pars = new MethodCallExpressionModel()
