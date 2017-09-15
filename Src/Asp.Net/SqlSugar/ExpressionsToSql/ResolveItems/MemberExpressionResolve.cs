@@ -31,21 +31,21 @@ namespace SqlSugar
 
             if (isLength)
             {
-                ResolveLength(parameter, isLeft, expression);return;
+                ResolveLength(parameter, isLeft, expression); return;
             }
             else if (isHasValue)
             {
-                ResolveHasValue(parameter, expression);return;
+                ResolveHasValue(parameter, expression); return;
             }
             else if (isDateValue)
             {
-                ResolveDateValue(parameter, isLeft, expression);return;
+                ResolveDateValue(parameter, isLeft, expression); return;
             }
-            else if (isValueBool){isValue = false;}
-            else if (isValue){expression = expression.Expression as MemberExpression;}
+            else if (isValueBool) { isValue = false; }
+            else if (isValue) { expression = expression.Expression as MemberExpression; }
             else if (isDateDate)
             {
-                ResolveDateDate(parameter, isLeft, expression);return;
+                ResolveDateDate(parameter, isLeft, expression); return;
             }
             else if (isMemberValue)
             {
@@ -76,29 +76,27 @@ namespace SqlSugar
                     {
                         fieldName = GetName(parameter, expression, null, isSingle);
                         baseParameter.CommonTempData = fieldName;
+                        break;
+                    }
+                    if (isValueBool)
+                    {
+                        fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft, isSingle);
+                    }
+                    else if (ExpressionTool.IsConstExpression(expression))
+                    {
+                        var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+                        base.AppendValue(parameter, isLeft, value);
+                        return;
                     }
                     else
                     {
-                        if (isValueBool)
-                        {
-                            fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft, isSingle);
-                        }
-                        else if (ExpressionTool.IsConstExpression(expression))
-                        {
-                            var value = ExpressionTool.GetMemberValue(expression.Member, expression);
-                            base.AppendValue(parameter, isLeft, value);
-                            return;
-                        }
-                        else
-                        {
-                            fieldName = GetName(parameter, expression, isLeft, isSingle);
-                        }
-                        if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
-                        {
-                            fieldName = "( " + fieldName + "=1 )";
-                        }
-                        fieldName = AppendMember(parameter, isLeft, fieldName);
+                        fieldName = GetName(parameter, expression, isLeft, isSingle);
                     }
+                    if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+                    {
+                        fieldName = "( " + fieldName + "=1 )";
+                    }
+                    fieldName = AppendMember(parameter, isLeft, fieldName);
                     break;
                 case ResolveExpressType.FieldSingle:
                     fieldName = GetSingleName(parameter, expression, isLeft);
@@ -294,7 +292,7 @@ namespace SqlSugar
                          }
             };
             return this.Context.DbMehtods.ToDate(pars);
-        } 
+        }
         #endregion
     }
 }
