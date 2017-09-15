@@ -299,5 +299,10 @@ namespace SqlSugar
         {
             return "( " + fieldName + "=1 )";
         }
+
+        public virtual string Null()
+        {
+            return "NULL";
+        }
     }
 }
