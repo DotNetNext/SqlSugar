@@ -46,15 +46,17 @@ namespace SqlSugar
             {
                 ResolveValueBool(parameter, baseParameter, expression, out fieldName, isLeft, isSingle); return;
             }
-            else if (isValue) { expression = expression.Expression as MemberExpression; }
+            else if (isValue)
+            {
+                ResolveValue(parameter, baseParameter, expression, fieldName, isLeft, isSetTempData, isSingle); return;
+            }
             else if (isDateDate)
             {
                 ResolveDateDate(parameter, isLeft, expression); return;
             }
             else if (isMemberValue)
             {
-                ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
-                return;
+                ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression); return;
             }
             baseParameter.ChildExpression = expression;
             switch (parameter.Context.ResolveType)
@@ -116,10 +118,18 @@ namespace SqlSugar
                 fieldName = "( " + fieldName + "=1 )";
             }
             AppendMember(parameter, isLeft, fieldName);
-        } 
+        }
         #endregion
 
         #region Resolve special member
+        private MemberExpression ResolveValue(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, string fieldName, bool? isLeft, bool isSetTempData, bool isSingle)
+        {
+            expression = expression.Expression as MemberExpression;
+            baseParameter.ChildExpression = expression;
+            ResolveWhereLogic(parameter, baseParameter, expression, fieldName, isLeft, isSetTempData, isSingle);
+            return expression;
+        }
+
         private void ResolveValueBool(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, out string fieldName, bool? isLeft, bool isSingle)
         {
             fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft, isSingle);
