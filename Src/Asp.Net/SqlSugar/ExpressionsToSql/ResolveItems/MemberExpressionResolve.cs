@@ -25,6 +25,7 @@ namespace SqlSugar
             var isHasValue = isLogicOperator && expression.Member.Name == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             var isDateTimeNowDate = expression.Member.Name == "Date" && childIsMember && childExpression.Member.Name == "Now";
             var isDateDate = expression.Member.Name == "Date" && expression.Expression.Type == UtilConstants.DateType;
+            var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
             if (isLength)
             {
                 ResolveLength(parameter, isLeft, expression);return;
@@ -47,7 +48,7 @@ namespace SqlSugar
             {
                 AppendValue(parameter, isLeft, DateTime.Now.Date);  return;
             }
-            else if (expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool)
+            else if (isMemberValue)
             {
                 var value = ExpressionTool.GetMemberValue(expression.Member, expression);
                 if (isSetTempData)
