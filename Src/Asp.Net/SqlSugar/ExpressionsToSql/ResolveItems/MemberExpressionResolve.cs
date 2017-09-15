@@ -23,7 +23,6 @@ namespace SqlSugar
             var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == UtilConstants.DateType;
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
             var isHasValue = isLogicOperator && expression.Member.Name == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
-            var isDateTimeNowDate = expression.Member.Name == "Date" && childIsMember && childExpression.Member.Name == "Now";
             var isDateDate = expression.Member.Name == "Date" && expression.Expression.Type == UtilConstants.DateType;
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
             if (isLength)
@@ -43,10 +42,6 @@ namespace SqlSugar
             else if (isDateDate)
             {
                 ResolveDateDate(parameter, isLeft, expression);return;
-            }
-            else if (isDateTimeNowDate)
-            {
-                AppendValue(parameter, isLeft, DateTime.Now.Date);  return;
             }
             else if (isMemberValue)
             {
