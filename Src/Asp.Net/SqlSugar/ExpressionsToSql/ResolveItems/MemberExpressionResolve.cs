@@ -42,7 +42,7 @@ namespace SqlSugar
             }
             else if (isValueBool)
             {
-                ResolveValueBool(parameter, baseParameter, expression,isLeft, isSingle);
+                ResolveValueBool(parameter, baseParameter, expression, isLeft, isSingle);
             }
             else if (isValue)
             {
@@ -105,22 +105,32 @@ namespace SqlSugar
             string fieldName = string.Empty;
             if (isSetTempData)
             {
-                fieldName = GetName(parameter, expression, null, isSingle);
-                baseParameter.CommonTempData = fieldName;
-                return;
+                if (ExpressionTool.IsConstExpression(expression))
+                {
+                    var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+                    base.AppendValue(parameter, isLeft, value);
+                }
+                else
+                {
+                    fieldName = GetName(parameter, expression, null, isSingle);
+                    baseParameter.CommonTempData = fieldName;
+                }
             }
-            if (ExpressionTool.IsConstExpression(expression))
+            else
             {
-                var value = ExpressionTool.GetMemberValue(expression.Member, expression);
-                base.AppendValue(parameter, isLeft, value);
-                return;
+                if (ExpressionTool.IsConstExpression(expression))
+                {
+                    var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+                    base.AppendValue(parameter, isLeft, value);
+                    return;
+                }
+                fieldName = GetName(parameter, expression, isLeft, isSingle);
+                if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+                {
+                    fieldName = "( " + fieldName + "=1 )";
+                }
+                AppendMember(parameter, isLeft, fieldName);
             }
-            fieldName = GetName(parameter, expression, isLeft, isSingle);
-            if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
-            {
-                fieldName = "( " + fieldName + "=1 )";
-            }
-            AppendMember(parameter, isLeft, fieldName);
         }
         #endregion
 

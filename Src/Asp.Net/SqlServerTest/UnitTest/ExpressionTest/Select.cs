@@ -26,6 +26,7 @@ namespace OrmTest.UnitTest
                 single3();
                 single4();
                 single5();
+                single6();
                 Multiple();
                 Multiple2();
                 singleDynamic();
@@ -161,7 +162,22 @@ namespace OrmTest.UnitTest
                 @"( @constant0<>'' AND @constant0 IS NOT NULL )", new List<SugarParameter>() {
                     new SugarParameter("@constant0",p)
                 }, selectorValue, pars,
-                "Select.single4 Error");
+                "Select.single5 Error");
+        }
+        private void single6()
+        {
+            var p = (DateTime?)DateTime.Now;
+            Expression<Func<Student, object>> exp = it => p.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.FieldSingle);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                @" @Const0 ", new List<SugarParameter>() {
+                    new SugarParameter("@Const0",p)
+                }, selectorValue, pars,
+                "Select.single6 Error");
         }
 
         private  void singleDynamic()
