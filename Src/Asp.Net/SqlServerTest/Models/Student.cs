@@ -19,4 +19,15 @@ namespace OrmTest.Models
         [SugarColumn(IsIgnore=true)]
         public int TestId { get; set; }
     }
+
+    public class StudentTest
+    {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "ID")]
+        public int Id { get; set; }
+        public int? SchoolId { get; set; }
+        public string Name { get; set; }
+        public DateTime? CreateTime { get; set; }
+        [SugarColumn(IsIgnore = true)]
+        public int TestId { get; set; }
+    }
 }
