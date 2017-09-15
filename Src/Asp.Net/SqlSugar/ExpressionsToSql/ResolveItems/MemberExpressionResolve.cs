@@ -96,7 +96,7 @@ namespace SqlSugar
                     {
                         fieldName = "( " + fieldName + "=1 )";
                     }
-                    fieldName = AppendMember(parameter, isLeft, fieldName);
+                    AppendMember(parameter, isLeft, fieldName);
                     break;
                 case ResolveExpressType.FieldSingle:
                     fieldName = GetSingleName(parameter, expression, isLeft);
