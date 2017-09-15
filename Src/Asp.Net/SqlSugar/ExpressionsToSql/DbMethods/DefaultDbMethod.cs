@@ -294,5 +294,10 @@ namespace SqlSugar
         {
             return string.Join("", strings);
         }
+
+        public virtual string EqualTrue(string fieldName)
+        {
+            return "( " + fieldName + "=1 )";
+        }
     }
 }

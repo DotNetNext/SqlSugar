@@ -127,7 +127,7 @@ namespace SqlSugar
                 fieldName = GetName(parameter, expression, isLeft, isSingle);
                 if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
                 {
-                    fieldName = "( " + fieldName + "=1 )";
+                    fieldName = this.Context.DbMehtods.EqualTrue(fieldName);
                 }
                 AppendMember(parameter, isLeft, fieldName);
             }
@@ -148,7 +148,7 @@ namespace SqlSugar
             string fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft, isSingle);
             if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
             {
-                fieldName = "( " + fieldName + "=1 )";
+                fieldName = this.Context.DbMehtods.EqualTrue(fieldName);
             }
             AppendMember(parameter, isLeft, fieldName);
         }
