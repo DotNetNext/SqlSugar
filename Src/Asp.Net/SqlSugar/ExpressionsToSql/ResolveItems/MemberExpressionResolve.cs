@@ -14,16 +14,17 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             var expression = base.Expression as MemberExpression;
+            var memberName = expression.Member.Name;
             var childExpression = expression.Expression as MemberExpression;
             var childIsMember = childExpression != null;
-            var isValue = expression.Member.Name == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
+            var isValue = memberName == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
             var isBool = expression.Type == UtilConstants.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
-            var isLength = expression.Member.Name == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
-            var isDateValue = expression.Member.Name.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == UtilConstants.DateType;
+            var isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
+            var isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == UtilConstants.DateType;
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
-            var isHasValue = isLogicOperator && expression.Member.Name == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
-            var isDateDate = expression.Member.Name == "Date" && expression.Expression.Type == UtilConstants.DateType;
+            var isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
+            var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
             if (isLength)
             {
