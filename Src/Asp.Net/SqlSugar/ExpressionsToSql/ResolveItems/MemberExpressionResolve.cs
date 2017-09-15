@@ -84,12 +84,9 @@ namespace SqlSugar
                     {
                         var value = ExpressionTool.GetMemberValue(expression.Member, expression);
                         base.AppendValue(parameter, isLeft, value);
-                        return;
+                        break;
                     }
-                    else
-                    {
-                        fieldName = GetName(parameter, expression, isLeft, isSingle);
-                    }
+                    fieldName = GetName(parameter, expression, isLeft, isSingle);
                     if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
                     {
                         fieldName = "( " + fieldName + "=1 )";
