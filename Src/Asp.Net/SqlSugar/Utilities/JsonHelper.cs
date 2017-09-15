@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class JsonHelper  
+    internal class JsonHelper  
     {
         public static string SerializeObject(object value)
         {
