@@ -191,5 +191,10 @@ namespace SqlSugar
             }
             return string.Format(" Cast((JulianDay({0}) - JulianDay({1}))  *{2} As INTEGER)", parameter, parameter2, time);
         }
+
+        public override string MergeString(params string[] strings)
+        {
+            return  string.Join("||", strings).Replace("+","");
+        }
     }
 }

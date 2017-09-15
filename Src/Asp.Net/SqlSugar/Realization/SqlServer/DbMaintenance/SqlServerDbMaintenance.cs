@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             get
             {
-                string sql = @"SELECT Sysobjects.name AS TableName,
+                string sql = @"SELECT sysobjects.name AS TableName,
                            syscolumns.Id AS TableId,
                            syscolumns.name AS DbColumnName,
                            systypes.name AS DataType,
@@ -60,7 +60,7 @@ namespace SqlSugar
             {
                 return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
                             FROM sysobjects s
-					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('U') AND (tbp.Name='MS_Description' OR tbp.Name is null)";
+					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0 AND (tbp.Name='MS_Description' OR tbp.Name is null)  WHERE s.xtype IN('U') ";
             }
         }
         protected override string GetViewInfoListSql
@@ -69,7 +69,7 @@ namespace SqlSugar
             {
                 return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
                             FROM sysobjects s
-					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  WHERE s.xtype IN('V')  AND (tbp.Name='MS_Description' OR tbp.Name is null)";
+					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  AND (tbp.Name='MS_Description' OR tbp.Name is null) WHERE s.xtype IN('V')  ";
             }
         }
         #endregion

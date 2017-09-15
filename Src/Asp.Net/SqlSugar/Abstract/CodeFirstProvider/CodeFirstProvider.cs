@@ -23,7 +23,7 @@ namespace SqlSugar
         public virtual void InitTables(Type entityType)
         {
 
-            this.Context.RewritableMethods.RemoveCacheAll();
+            this.Context.Utilities.RemoveCacheAll();
             this.Context.InitMppingInfo(entityType);
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {
@@ -66,7 +66,7 @@ namespace SqlSugar
         #region Core Logic
         protected virtual void Execute(Type entityType)
         {
-            var entityInfo = this.Context.EntityProvider.GetEntityInfo(entityType);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType);
             var tableName = GetTableName(entityInfo);
             var isAny = this.Context.DbMaintenance.IsAnyTable(tableName);
             if (isAny)
@@ -208,7 +208,7 @@ namespace SqlSugar
         }
         protected virtual string GetTableName(EntityInfo entityInfo)
         {
-            return this.Context.EntityProvider.GetTableName(entityInfo.EntityName);
+            return this.Context.EntityMaintenance.GetTableName(entityInfo.EntityName);
         }
         protected virtual DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {

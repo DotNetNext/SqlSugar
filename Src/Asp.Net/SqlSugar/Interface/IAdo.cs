@@ -20,6 +20,7 @@ namespace SqlSugar
         void ExecuteBefore(string sql, SugarParameter[] pars);
         void ExecuteAfter(string sql, SugarParameter[] pars);
 
+        IDataParameterCollection DataReaderParameters { get; set; }
         CommandType CommandType { get; set; }
         bool IsEnableLogEvent { get; set; }
         Action<string, string> LogEventStarting { get; set; }

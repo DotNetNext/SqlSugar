@@ -67,10 +67,13 @@
     <Compile Include="Abstract\DbMaintenanceProvider\Methods.cs" />
     <Compile Include="Abstract\DbMaintenanceProvider\Properties.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
-    <Compile Include="Abstract\EntityProvider\EntityProvider.cs" />
+    <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Enum\DbType.cs" />
+    <Compile Include="Infrastructure\DependencyManagement.cs" />
+    <Compile Include="Utilities\JsonHelper.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
@@ -111,7 +114,6 @@
     <Compile Include="Entities\DbResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />
     <Compile Include="Interface\IFilter.cs" />
-    <Compile Include="Entities\DbType.cs" />
     <Compile Include="Realization\MySql\DbBind\MySqlDbBind.cs" />
     <Compile Include="Realization\MySql\SqlBuilder\MySqlBuilder.cs" />
     <Compile Include="Realization\MySql\SqlBuilder\MySqlDeleteBuilder.cs" />

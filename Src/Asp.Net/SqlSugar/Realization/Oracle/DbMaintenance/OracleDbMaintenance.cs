@@ -170,7 +170,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.RewritableMethods.GetCacheInstance<List<DbColumnInfo>>().Func(cacheKey,
+            return this.Context.Utilities.GetCacheInstance<List<DbColumnInfo>>().Func(cacheKey,
                     (cm, key) =>
                     {
                         return cm[cacheKey];
@@ -211,7 +211,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.RewritableMethods.GetCacheInstance<List<string>>().Func(cacheKey,
+            return this.Context.Utilities.GetCacheInstance<List<string>>().Func(cacheKey,
                     (cm, key) =>
                     {
                         return cm[cacheKey];

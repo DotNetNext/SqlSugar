@@ -16,24 +16,27 @@ namespace SqlSugar
     /// </summary>
     public partial class SqlSugarClient : SqlSugarAccessory, IDisposable
     {
-        #region Properties
-        public bool IsSystemTablesConfig
-        {
-            get
-            {
-                return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable;
-            }
-        }
-        #endregion
 
         #region Constructor
         public SqlSugarClient(ConnectionConfig config)
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
-            if (config.DbType == DbType.Oracle)
+            Check.ArgumentNullException(config, "config is null");
+            switch (config.DbType)
             {
-                throw new Exception("Oracle developed 60%,to be continued ");
+                case DbType.MySql:
+                    DependencyManagement.TryMySqlData();
+                    break;
+                case DbType.SqlServer:
+                    break;
+                case DbType.Sqlite:
+                    DependencyManagement.TrySqlite();
+                    break;
+                case DbType.Oracle:
+                    throw new Exception("Oracle developed 60%,to be continued");
+                default:
+                    throw new Exception("ConnectionConfig.DbType is null");
             }
         }
         #endregion
@@ -59,24 +62,22 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Rewritable Methods
-        /// <summary>
-        /// Rewritable Methods
-        /// </summary>
+        #region Util Methods
+        [Obsolete("Use SqlSugarClient.Utilities")]
         public virtual IRewritableMethods RewritableMethods
+        {
+            get { return this.Utilities; }
+            set { this.Utilities = value; }
+        }
+        public virtual IRewritableMethods Utilities
         {
             get
             {
                 if (base._RewritableMethods == null)
-                {
                     base._RewritableMethods = new RewritableMethods();
-                }
                 return _RewritableMethods;
             }
-            set
-            {
-                base._RewritableMethods = value;
-            }
+            set { base._RewritableMethods = value; }
         }
         #endregion
 
@@ -152,7 +153,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6,T7>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(base.CurrentConnectionConfig);
             base.CreateQueryJoin(joinExpression, types, queryable);
@@ -160,7 +161,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6,T7, T8>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(base.CurrentConnectionConfig);
             base.CreateQueryJoin(joinExpression, types, queryable);
@@ -169,7 +170,7 @@ namespace SqlSugar
         #region  9-12
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6,T7, T8, T9>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(base.CurrentConnectionConfig);
             base.CreateQueryJoin(joinExpression, types, queryable);
@@ -177,7 +178,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object[]>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7,T8, T9, T10>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(base.CurrentConnectionConfig);
             base.CreateQueryJoin(joinExpression, types, queryable);
@@ -185,7 +186,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object[]>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6,T7, T8, T9, T10, T11>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(base.CurrentConnectionConfig);
             base.CreateQueryJoin(joinExpression, types, queryable);
@@ -193,7 +194,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object[]>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6,T7, T8, T9, T10, T11, T12>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12) };
             var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(base.CurrentConnectionConfig);
             base.CreateQueryJoin(joinExpression, types, queryable);
@@ -352,7 +353,7 @@ namespace SqlSugar
         {
             InitMppingInfo<T>();
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Insertable.columnDictionary can't be null");
-            var insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(columnDictionary));
+            var insertObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
             return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
         }
@@ -367,7 +368,7 @@ namespace SqlSugar
             {
                 var columns = ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
                 Check.Exception(columns.IsNullOrEmpty(), "Insertable.updateDynamicObject can't be null");
-                T insertObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(insertDynamicObject));
+                T insertObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(insertDynamicObject));
                 return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase)));
             }
         }
@@ -436,7 +437,7 @@ namespace SqlSugar
         {
             InitMppingInfo<T>();
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Updateable.columnDictionary can't be null");
-            var updateObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(columnDictionary));
+            var updateObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
             return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
         }
@@ -451,7 +452,7 @@ namespace SqlSugar
             {
                 var columns = ((object)updateDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
                 Check.Exception(columns.IsNullOrEmpty(), "Updateable.updateDynamicObject can't be null");
-                T updateObject = this.RewritableMethods.DeserializeObject<T>(this.RewritableMethods.SerializeObject(updateDynamicObject));
+                T updateObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(updateDynamicObject));
                 return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
             }
         }
@@ -499,21 +500,24 @@ namespace SqlSugar
         #endregion
 
         #region Entity Methods
-        public virtual EntityProvider EntityProvider
+        [Obsolete("Use SqlSugarClient.EntityMaintenance")]
+        public virtual EntityMaintenance EntityProvider
+        {
+            get { return this.EntityMaintenance; }
+            set { this.EntityMaintenance = value; }
+        }
+        public virtual EntityMaintenance EntityMaintenance
         {
             get
             {
                 if (base._EntityProvider == null)
                 {
-                    base._EntityProvider = new EntityProvider();
+                    base._EntityProvider = new EntityMaintenance();
                     base._EntityProvider.Context = this;
                 }
                 return _EntityProvider;
             }
-            set
-            {
-                base._EntityProvider = value;
-            }
+            set { base._EntityProvider = value; }
         }
         #endregion
 
@@ -529,10 +533,7 @@ namespace SqlSugar
                 }
                 return _QueryFilterProvider;
             }
-            set
-            {
-                base._QueryFilterProvider = value;
-            }
+            set { base._QueryFilterProvider = value; }
         }
         #endregion
 
@@ -542,9 +543,7 @@ namespace SqlSugar
             get
             {
                 if (_SimpleClient == null)
-                {
                     _SimpleClient = new SimpleClient(this);
-                }
                 return _SimpleClient;
             }
         }
@@ -554,16 +553,12 @@ namespace SqlSugar
         public virtual void Close()
         {
             if (this.Ado != null)
-            {
                 this.Ado.Close();
-            }
         }
         public virtual void Dispose()
         {
             if (this.Ado != null)
-            {
                 this.Ado.Dispose();
-            }
         }
         #endregion
     }

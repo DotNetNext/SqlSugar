@@ -26,6 +26,23 @@ namespace OrmTest.Demo
             StoredProcedure();
             Enum();
             Simple();
+            Async();
+        }
+
+        private static void Async()
+        {
+            var db = GetInstance();
+            var list= db.Queryable<Student>().Where(it => it.Id == 1).SingleAsync();
+            list.Wait();
+
+            var list2 = db.Queryable<Student>().SingleAsync(it => it.Id == 1);
+            list2.Wait();
+
+            var list3= db.Queryable<Student>().Where(it => it.Id == 1).ToListAsync();
+            list3.Wait();
+
+            var list4= db.Queryable<Student>().Where(it => it.Id == 1).ToPageListAsync(1,2);
+            list4.Wait();
         }
 
         private static void Simple()
@@ -84,7 +101,7 @@ namespace OrmTest.Demo
             var p11 = new SugarParameter("@p1", "1");
             var p22 = new SugarParameter("@p2", null, true);//isOutput=true
             //4
-            var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
+            var dt2 = db.Ado.UseStoredProcedure().SqlQuery<School>("sp_school",p11,p22);
         }
         private static void Tran()
         {
@@ -138,11 +155,13 @@ namespace OrmTest.Demo
             // group id,name take first
             var list3 = db.Queryable<Student>()
                 .PartitionBy(it => new { it.Id, it.Name }).Take(1).ToList();
+            var list31 = db.Queryable<Student>()
+                .PartitionBy(it => new { it.Id, it.Name }).Take(1).Count();
 
             int count = 0;
 
             var list4 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id)
-               .PartitionBy(st => new { st.Name }).Take(1).OrderBy(st => st.Id,OrderByType.Desc).Select(st => st).ToPageList(1, 1000, ref count);
+               .PartitionBy(st => new { st.Name }).Take(2).OrderBy(st => st.Id,OrderByType.Desc).Select(st => st).ToPageList(1, 1000, ref count);
 
             //SqlFunc.AggregateSum(object thisValue) 
             //SqlFunc.AggregateAvg<TResult>(TResult thisValue)
@@ -158,6 +177,7 @@ namespace OrmTest.Demo
             var t2 = db.Ado.GetInt("select 1");
             var t3 = db.Ado.GetDataTable("select 1 as id");
             db.Ado.CommitTran();
+            var t11 = db.Ado.SqlQuery<Student>("select * from student");
             //more
             //db.Ado.GetXXX...
         }
@@ -170,7 +190,7 @@ namespace OrmTest.Demo
             var getNew = db.Queryable<Student>().Where(it => it.Id == 1).Select(it => new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id), it.Name, it.SchoolId }).ToList();
             var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
-            var getSingleOrDefault = db.Queryable<Student>().Single();
+            var getSingleOrDefault = db.Queryable<Student>().Where(it=>it.Id==1).Single();
             var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
@@ -178,6 +198,8 @@ namespace OrmTest.Demo
             var sum2 = db.Queryable<Student,School>((st,sc)=>st.SchoolId==sc.Id).Sum((st,sc) => sc.Id);
             var isAny = db.Queryable<Student>().Where(it => it.Id == -1).Any();
             var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
+            var count = db.Queryable<Student>().Count(it => it.Id >0);
+            var date = db.Queryable<Student>().Where(it => it.CreateTime.Value.Date == DateTime.Now.Date).ToList();
             var getListByRename = db.Queryable<School>().AS("Student").ToList();
             var in1 = db.Queryable<Student>().In(it => it.Id, new int[] { 1, 2, 3 }).ToList();
             var in2 = db.Queryable<Student>().In(new int[] { 1, 2, 3 }).ToList();
@@ -203,6 +225,8 @@ namespace OrmTest.Demo
             var getUnionAllList = db.UnionAll(db.Queryable<Student>().Where(it => it.Id == 1), db.Queryable<Student>().Where(it => it.Id == 2)).ToList();
 
             var getUnionAllList2 = db.UnionAll(db.Queryable<Student>(), db.Queryable<Student>()).ToList();
+
+            var test1 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st, sc) =>SqlFunc.ToInt64(sc.Id)).ToList();
         }
         public static void Page()
         {
@@ -262,6 +286,17 @@ namespace OrmTest.Demo
             })
             .Select((st, sc) => new { id=st.Id,school=sc }).ToList();
 
+
+            var list5 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).AS<Student>("STUDENT").AS<School>("SCHOOL")
+.Select((st, sc) => new { id = st.Id, school = sc }).ToList();
+
+
+            var list6 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).With(SqlWith.NoLock).AS<Student>("STUDENT").AS<School>("SCHOOL")
+.Select((st, sc) => new { id = st.Id, school = sc }).ToList();
         }
         public static void Join()
         {
@@ -277,7 +312,7 @@ namespace OrmTest.Demo
               JoinType.Left,st.SchoolId==sc.Id,
               JoinType.Left,st.SchoolId==st2.Id
             })
-            .Where((st, sc, st2) => st2.Id == 1 || sc.Id == 1 || st.Id == 1).ToList();
+            .Where((st, sc, st2) => st2.Id == 1 || sc.Id == 1 || st.Id == 1).With(SqlWith.NoLock).ToList();
 
             //join return List<ViewModelStudent>
             var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
@@ -380,7 +415,7 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             db.IgnoreColumns.Add("TestId", "Student");
-            var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
+            var s1 = db.Queryable<Student>().Where(it=>it.Id== 136915).Single();
             var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
             var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
             var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();

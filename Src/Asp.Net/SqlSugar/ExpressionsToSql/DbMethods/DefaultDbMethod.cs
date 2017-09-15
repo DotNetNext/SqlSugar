@@ -289,5 +289,20 @@ namespace SqlSugar
             else
                 return string.Format("{0}.*", shortName);
         }
+
+        public virtual string MergeString(params string[] strings)
+        {
+            return string.Join("", strings);
+        }
+
+        public virtual string EqualTrue(string fieldName)
+        {
+            return "( " + fieldName + "=1 )";
+        }
+
+        public virtual string Null()
+        {
+            return "NULL";
+        }
     }
 }

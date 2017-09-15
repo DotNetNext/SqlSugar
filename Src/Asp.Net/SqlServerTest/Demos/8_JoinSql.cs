@@ -44,14 +44,14 @@ namespace OrmTest.Demo
             var db = GetInstance();
             //propertyName is valid
             string propertyName = "Id";
-            string dbColumnName = db.EntityProvider.GetDbColumnName<Student>(propertyName);
+            string dbColumnName = db.EntityMaintenance.GetDbColumnName<Student>(propertyName);
             var list = db.Queryable<Student>().OrderBy(dbColumnName).ToList();
 
             //propertyName is invalid
             try
             {
                 propertyName = "Id'";
-                dbColumnName = db.EntityProvider.GetDbColumnName<Student>(propertyName);
+                dbColumnName = db.EntityMaintenance.GetDbColumnName<Student>(propertyName);
                 var list2 = db.Queryable<Student>().OrderBy(dbColumnName).ToList();
             }
             catch (Exception ex)

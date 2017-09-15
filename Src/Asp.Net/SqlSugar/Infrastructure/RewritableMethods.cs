@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 namespace SqlSugar
 {
     public class RewritableMethods : IRewritableMethods
@@ -191,8 +190,11 @@ namespace SqlSugar
         /// <returns></returns>
         public string SerializeObject(object value)
         {
-            return JsonConvert.SerializeObject(value);
+            DependencyManagement.TryJsonNet();
+            return JsonHelper.SerializeObject(value);
         }
+
+   
 
         /// <summary>
         /// Serialize Object
@@ -201,8 +203,8 @@ namespace SqlSugar
         /// <returns></returns>
         public T DeserializeObject<T>(string value)
         {
-            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-            return JsonConvert.DeserializeObject<T>(value, jSetting);
+            DependencyManagement.TryJsonNet();
+            return JsonHelper.DeserializeObject<T>(value);
         }
         #endregion
 
@@ -221,6 +223,20 @@ namespace SqlSugar
                 var jsonString = SerializeObject(sourceObject);
                 return DeserializeObject<T>(jsonString);
             }
+        }
+        public SqlSugarClient CopyContext(SqlSugarClient context,bool isCopyEvents=false)
+        {
+            var newClient = new SqlSugarClient(this.TranslateCopy(context.CurrentConnectionConfig));
+            newClient.MappingColumns = this.TranslateCopy(context.MappingColumns);
+            newClient.MappingTables = this.TranslateCopy(context.MappingTables);
+            newClient.IgnoreColumns = this.TranslateCopy(context.IgnoreColumns);
+            if (isCopyEvents) {
+                newClient.Ado.IsEnableLogEvent = context.Ado.IsEnableLogEvent;
+                newClient.Ado.LogEventStarting = context.Ado.LogEventStarting;
+                newClient.Ado.LogEventCompleted = context.Ado.LogEventCompleted;
+                newClient.Ado.ProcessingEventStartingSQL = context.Ado.ProcessingEventStartingSQL;
+            }
+            return newClient;
         }
         #endregion
 
@@ -241,7 +257,7 @@ namespace SqlSugar
                 }
                 deserializeObject.Add(childRow);
             }
-            return JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(deserializeObject));
+            return this.DeserializeObject<dynamic>(this.SerializeObject(deserializeObject));
 
         }
         #endregion

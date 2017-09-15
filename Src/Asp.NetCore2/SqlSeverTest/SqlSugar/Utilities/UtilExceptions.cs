@@ -24,7 +24,7 @@ namespace SqlSugar
             var parsStr = string.Empty; ;
             if (pars != null)
             {
-                parsStr = context.RewritableMethods.SerializeObject(pars);
+                parsStr = context.Utilities.SerializeObject(pars);
             }
             var reval = GetLineMessage("message", message) + GetLineMessage("function", parsStr);
             return reval;

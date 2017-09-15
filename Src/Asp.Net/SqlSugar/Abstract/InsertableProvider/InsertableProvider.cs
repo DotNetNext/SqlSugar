@@ -79,8 +79,58 @@ namespace SqlSugar
                 setValue = idValue;
             else
                 setValue = Convert.ToInt32(idValue);
-            this.Context.EntityProvider.GetProperty<T>(identityKey).SetValue(result,setValue, null);
+            this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result,setValue, null);
             return idValue>0;
+        }
+        public Task<int> ExecuteCommandAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteCommand();
+            });
+            result.Start();
+            return result;
+        }
+        public Task<int> ExecuteReturnIdentityAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteReturnIdentity();
+            });
+            result.Start();
+            return result;
+        }
+        public Task<T> ExecuteReturnEntityAsync()
+        {
+            Task<T> result = new Task<T>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteReturnEntity();
+            });
+            result.Start();
+            return result;
+        }
+        public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
+        {
+            Task<bool> result = new Task<bool>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteCommandIdentityIntoEntity();
+            });
+            result.Start();
+            return result;
+        }
+        public Task<long> ExecuteReturnBigIdentityAsync()
+        {
+            Task<long> result = new Task<long>(() =>
+            {
+                IInsertable<T> asyncInsertable = CopyInsertable();
+                return asyncInsertable.ExecuteReturnBigIdentity();
+            });
+            result.Start();
+            return result;
         }
         #endregion
 
@@ -90,7 +140,7 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
@@ -230,7 +280,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -241,7 +291,7 @@ namespace SqlSugar
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
@@ -254,6 +304,23 @@ namespace SqlSugar
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+        private IInsertable<T> CopyInsertable()
+        {
+            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
+            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+
+            var asyncInsertable = asyncContext.Insertable<T>(this.InsertObjs);
+            var asyncInsertableBuilder = asyncInsertable.InsertBuilder;
+            asyncInsertableBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList;
+            asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
+            asyncInsertableBuilder.Parameters = this.InsertBuilder.Parameters;
+            asyncInsertableBuilder.sql = this.InsertBuilder.sql;
+            asyncInsertableBuilder.IsNoInsertNull = this.InsertBuilder.IsNoInsertNull;
+            asyncInsertableBuilder.IsReturnIdentity = this.InsertBuilder.IsReturnIdentity;
+            asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
+            asyncInsertableBuilder.TableWithString = this.InsertBuilder.TableWithString;
+            return asyncInsertable;
         }
         #endregion
     }

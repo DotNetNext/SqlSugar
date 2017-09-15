@@ -119,6 +119,9 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format(" LENGTH({0})", parameter.MemberName);
         }
-
+        public override string MergeString(params string[] strings)
+        {
+            return " concat("+string.Join(",", strings).Replace("+", "") + ") ";
+        }
     }
 }

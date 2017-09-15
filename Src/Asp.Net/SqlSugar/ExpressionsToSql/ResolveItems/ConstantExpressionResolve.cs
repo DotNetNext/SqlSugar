@@ -55,7 +55,7 @@ namespace SqlSugar
                         if (value == null && parentIsBinary)
                         {
                             parameter.BaseParameter.ValueIsNull = true;
-                            value = "NULL";
+                            value = this.Context.DbMehtods.Null();
                         }
                         AppendValue(parameter, isLeft, value);
                     }

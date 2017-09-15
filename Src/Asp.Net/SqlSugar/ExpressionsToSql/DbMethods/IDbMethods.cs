@@ -51,5 +51,8 @@ namespace SqlSugar
         string True();
         string False();
         string GuidNew();
+        string MergeString(params string[] strings);
+        string EqualTrue(string value);
+        string Null();
     }
 }

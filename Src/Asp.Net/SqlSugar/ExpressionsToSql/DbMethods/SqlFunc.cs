@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class SqlFunc
+    public partial class SqlFunc
     {
         public static bool HasNumber(object thisValue)
         {

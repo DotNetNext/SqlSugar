@@ -19,23 +19,33 @@ namespace SqlSugar
         {
             get
             {
-                return this.Context.EntityProvider.GetEntityInfo<T>();
+                return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
         public int ExecuteCommand()
         {
-            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
             return Db.ExecuteCommand(sql, paramters);
+        }
+        public Task<int> ExecuteCommandAsync()
+        {
+            Task<int> result = new Task<int>(() =>
+            {
+                IDeleteable<T> asyncDeleteable = CopyDeleteable();
+                return asyncDeleteable.ExecuteCommand();
+            });
+            result.Start();
+            return result;
         }
         public IDeleteable<T> AS(string tableName)
         {
             var entityName = typeof(T).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.RewritableMethods.TranslateCopy(this.Context.MappingTables);
+            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
@@ -47,7 +57,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            string tableName = this.Context.EntityProvider.GetTableName<T>();
+            string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             var primaryFields = this.GetPrimaryKeys();
             var isSinglePrimaryKey = primaryFields.Count == 1;
             Check.ArgumentNullException(primaryFields, string.Format("Table {0} with no primarykey", tableName));
@@ -57,7 +67,7 @@ namespace SqlSugar
                 var primaryField = primaryFields.Single();
                 foreach (var deleteObj in deleteObjs)
                 {
-                    var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
+                    var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                     var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName, StringComparison.CurrentCultureIgnoreCase));
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     primaryKeyValues.Add(value);
@@ -92,7 +102,7 @@ namespace SqlSugar
                     {
                         if (i == 0)
                             andString.Append(DeleteBuilder.WhereInAndTemplate + UtilConstants.Space);
-                        var entityPropertyName = this.Context.EntityProvider.GetPropertyName<T>(primaryField);
+                        var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                         andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
@@ -166,7 +176,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            string tableName = this.Context.EntityProvider.GetTableName<T>();
+            string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             string primaryField = null;
             primaryField = GetPrimaryKeys().FirstOrDefault();
             Check.ArgumentNullException(primaryField, "Table " + tableName + " with no primarykey");
@@ -199,42 +209,58 @@ namespace SqlSugar
 
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            DeleteBuilder.EntityInfo = this.Context.EntityProvider.GetEntityInfo<T>();
+            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToList();
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, paramters);
         }
 
-
         private List<string> GetPrimaryKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
                 return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
             }
         }
+
         private List<string> GetIdentityKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {
-                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityProvider.GetTableName(this.EntityInfo.EntityName));
+                return this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
             else
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
+
         private void RestoreMapping()
         {
             if (IsAs)
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+
+        private IDeleteable<T> CopyDeleteable() {
+            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
+            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+
+            var asyncDeleteable = asyncContext.Deleteable<T>();
+            var asyncDeleteBuilder = asyncDeleteable.DeleteBuilder;
+            asyncDeleteBuilder.BigDataFiled = this.DeleteBuilder.BigDataFiled;
+            asyncDeleteBuilder.BigDataInValues = this.DeleteBuilder.BigDataInValues;
+            asyncDeleteBuilder.Parameters = this.DeleteBuilder.Parameters;
+            asyncDeleteBuilder.sql = this.DeleteBuilder.sql;
+            asyncDeleteBuilder.WhereInfos = this.DeleteBuilder.WhereInfos;
+            asyncDeleteBuilder.TableWithString = this.DeleteBuilder.TableWithString;
+            return asyncDeleteable;
         }
     }
 }

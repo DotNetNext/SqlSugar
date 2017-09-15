@@ -225,6 +225,7 @@ namespace SqlSugar
         {
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
+            var isIgnoreOrderBy = this.IsCount&&this.PartitionByValue.IsNullOrEmpty();
             AppendFilter();
             sql = new StringBuilder();
             if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
@@ -236,10 +237,10 @@ namespace SqlSugar
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
-            if (this.IsCount) { orderByValue = null; }
+            if (isIgnoreOrderBy) { orderByValue = null; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
-            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
-            if (this.IsCount) { this.OrderByValue = oldOrderBy; return sql.ToString();  }
+            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
+            if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString();  }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
@@ -316,7 +317,7 @@ namespace SqlSugar
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
                 Builder.GetTranslationTableName(joinInfo.TableName) + UtilConstants.Space,
-                joinInfo.ShortName + UtilConstants.Space + joinInfo.TableWithString,
+                joinInfo.ShortName + UtilConstants.Space + TableWithString,
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
@@ -375,7 +376,7 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityProvider.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
+                reval = string.Join(",", this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
             }
             else
             {
@@ -413,13 +414,13 @@ namespace SqlSugar
             {
                 var result = Builder.GetTranslationTableName(EntityName);
                 result += UtilConstants.Space;
-                if (this.TableWithString.IsValuable())
-                {
-                    result += TableWithString + UtilConstants.Space;
-                }
                 if (this.TableShortName.IsValuable())
                 {
                     result += (TableShortName + UtilConstants.Space);
+                }
+                if (this.TableWithString.IsValuable())
+                {
+                    result += TableWithString + UtilConstants.Space;
                 }
                 if (!this.IsSingle())
                 {
@@ -445,7 +446,7 @@ namespace SqlSugar
             get
             {
                 if (this.OrderByValue == null) return null;
-                if (IsCount) return null;
+                if (IsCount&&this.PartitionByValue.IsNullOrEmpty()) return null;
                 else
                 {
                     return this.OrderByValue;
@@ -468,7 +469,7 @@ namespace SqlSugar
 
         private string GetTableName(string entityName)
         {
-            var result = this.Context.EntityProvider.GetTableName(entityName);
+            var result = this.Context.EntityMaintenance.GetTableName(entityName);
             return this.Builder.GetTranslationTableName(result);
         }
     }

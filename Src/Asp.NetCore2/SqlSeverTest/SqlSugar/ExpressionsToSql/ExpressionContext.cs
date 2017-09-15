@@ -184,7 +184,8 @@ namespace SqlSugar
         }
         public virtual bool IsTranslationText(string name)
         {
-            return name.Contains(SqlTranslationLeft) && name.Contains(SqlTranslationRight);
+            var result = name.IsContainsIn(SqlTranslationLeft, SqlTranslationRight, UtilConstants.Space, ExpressionConst.LeftParenthesis, ExpressionConst.RightParenthesis);
+            return result;
         }
         public virtual string GetTranslationText(string name)
         {

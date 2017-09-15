@@ -9,7 +9,9 @@ namespace SqlSugar
 {
     public interface IDeleteable<T> where T : class, new()
     {
+        DeleteBuilder DeleteBuilder { get; set; }
         int ExecuteCommand();
+        Task<int> ExecuteCommandAsync();
         IDeleteable<T> AS(string tableName);
         IDeleteable<T> With(string lockString);
         IDeleteable<T> Where(T deleteObj);

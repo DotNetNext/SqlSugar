@@ -54,7 +54,7 @@ namespace SqlSugar
             }
             else if (expression is ConditionalExpression)
             {
-                Check.ThrowNotSupportedException("ConditionalExpression");
+                return new ConditionalExpressionResolve(parameter);
             }
             else if (expression is MethodCallExpression)
             {
