@@ -102,5 +102,11 @@ namespace SqlSugar
         /// <param name="value"></param>
         /// <returns></returns>
         public static TResult GetSelfAndAutoFill<TResult>(TResult value) { throw new NotSupportedException("Can only be used in expressions"); }
+        /// <summary>
+        /// Subquery
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Subqueryable<T> Subqueryable<T>() where T:class,new(){ throw new NotSupportedException("Can only be used in expressions");}
     }
 }
