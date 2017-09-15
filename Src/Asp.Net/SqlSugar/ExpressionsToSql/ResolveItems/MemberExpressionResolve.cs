@@ -28,7 +28,7 @@ namespace SqlSugar
             var isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
-
+            var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
             if (isLength)
             {
                 ResolveLength(parameter, isLeft, expression); return;
@@ -41,7 +41,10 @@ namespace SqlSugar
             {
                 ResolveDateValue(parameter, isLeft, expression); return;
             }
-            else if (isValueBool) { isValue = false; }
+            else if (isValueBool)
+            {
+                ResolveValueBool(parameter, baseParameter, expression, out fieldName, isLeft, isSingle); return;
+            }
             else if (isValue) { expression = expression.Expression as MemberExpression; }
             else if (isDateDate)
             {
@@ -71,18 +74,13 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
-                    var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
                     if (isSetTempData)
                     {
                         fieldName = GetName(parameter, expression, null, isSingle);
                         baseParameter.CommonTempData = fieldName;
                         break;
                     }
-                    if (isValueBool)
-                    {
-                        fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft, isSingle);
-                    }
-                    else if (ExpressionTool.IsConstExpression(expression))
+                    if (ExpressionTool.IsConstExpression(expression))
                     {
                         var value = ExpressionTool.GetMemberValue(expression.Member, expression);
                         base.AppendValue(parameter, isLeft, value);
@@ -116,7 +114,18 @@ namespace SqlSugar
             }
         }
 
+
         #region Resolve special member
+        private void ResolveValueBool(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, out string fieldName, bool? isLeft, bool isSingle)
+        {
+            fieldName = GetName(parameter, expression.Expression as MemberExpression, isLeft, isSingle);
+            if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+            {
+                fieldName = "( " + fieldName + "=1 )";
+            }
+            AppendMember(parameter, isLeft, fieldName);
+        }
+
         private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, MemberExpression expression)
         {
             var value = ExpressionTool.GetMemberValue(expression.Member, expression);
