@@ -128,6 +128,7 @@ namespace SqlSugar
             }
         }
 
+        #region Resolve special member
         private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, MemberExpression expression)
         {
             var value = ExpressionTool.GetMemberValue(expression.Member, expression);
@@ -224,7 +225,9 @@ namespace SqlSugar
             base.AppendMember(parameter, isLeft, result);
             parameter.CommonTempData = oldCommonTempDate;
         }
+        #endregion
 
+        #region Helper
         private string AppendMember(ExpressionParameter parameter, bool? isLeft, string fieldName)
         {
             if (parameter.BaseExpression is BinaryExpression || (parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Append)))
@@ -301,6 +304,7 @@ namespace SqlSugar
                          }
             };
             return this.Context.DbMehtods.ToDate(pars);
-        }
+        } 
+        #endregion
     }
 }
