@@ -29,6 +29,7 @@ namespace SqlSugar
             var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
             var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
+
             if (isLength)
             {
                 ResolveLength(parameter, isLeft, expression); return;
@@ -74,24 +75,7 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
-                    if (isSetTempData)
-                    {
-                        fieldName = GetName(parameter, expression, null, isSingle);
-                        baseParameter.CommonTempData = fieldName;
-                        break;
-                    }
-                    if (ExpressionTool.IsConstExpression(expression))
-                    {
-                        var value = ExpressionTool.GetMemberValue(expression.Member, expression);
-                        base.AppendValue(parameter, isLeft, value);
-                        break;
-                    }
-                    fieldName = GetName(parameter, expression, isLeft, isSingle);
-                    if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
-                    {
-                        fieldName = "( " + fieldName + "=1 )";
-                    }
-                    AppendMember(parameter, isLeft, fieldName);
+                    ResolveWhereLogic(parameter, baseParameter, expression, fieldName, isLeft, isSetTempData, isSingle);
                     break;
                 case ResolveExpressType.FieldSingle:
                     fieldName = GetSingleName(parameter, expression, isLeft);
@@ -111,6 +95,29 @@ namespace SqlSugar
             }
         }
 
+        #region Resolve Where
+        private void ResolveWhereLogic(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, string fieldName, bool? isLeft, bool isSetTempData, bool isSingle)
+        {
+            if (isSetTempData)
+            {
+                fieldName = GetName(parameter, expression, null, isSingle);
+                baseParameter.CommonTempData = fieldName;
+                return;
+            }
+            if (ExpressionTool.IsConstExpression(expression))
+            {
+                var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+                base.AppendValue(parameter, isLeft, value);
+                return;
+            }
+            fieldName = GetName(parameter, expression, isLeft, isSingle);
+            if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+            {
+                fieldName = "( " + fieldName + "=1 )";
+            }
+            AppendMember(parameter, isLeft, fieldName);
+        } 
+        #endregion
 
         #region Resolve special member
         private void ResolveValueBool(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, out string fieldName, bool? isLeft, bool isSingle)
