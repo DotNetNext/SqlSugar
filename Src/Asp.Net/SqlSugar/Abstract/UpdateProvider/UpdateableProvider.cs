@@ -28,9 +28,9 @@ namespace SqlSugar
         public int ExecuteCommand()
         {
             PreToSql();
+            Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             string sql = UpdateBuilder.ToSqlString();
             RestoreMapping();
-            Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
         }
         public Task<int> ExecuteCommandAsync()
