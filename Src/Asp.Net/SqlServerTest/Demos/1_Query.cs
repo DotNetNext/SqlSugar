@@ -184,6 +184,9 @@ namespace OrmTest.Demo
         public static void Easy()
         {
             var db = GetInstance();
+            var getAll2 = db.Queryable<Student>()
+                .Where(it => it.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id))
+                .ToList();
             var getAll = db.Queryable<Student>().ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getId = db.Queryable<Student>().Select(it => it.Id).ToList();

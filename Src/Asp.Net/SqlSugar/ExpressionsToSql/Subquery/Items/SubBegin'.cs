@@ -16,6 +16,11 @@ namespace SqlSugar
             }
         }
 
+        public Expression Expression
+        {
+            get; set;
+        }
+
         public int Sort
         {
             get

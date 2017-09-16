@@ -6,11 +6,16 @@ using System.Text;
 
 namespace SqlSugar.ExpressionsToSql.Subquery
 {
-    public class SubWhere : ISubOperation
+    public class SubWhere: ISubOperation
     {
         public string Name
         {
             get { return "Where"; }
+        }
+
+        public Expression Expression
+        {
+            get; set;
         }
 
         public int Sort
@@ -21,14 +26,10 @@ namespace SqlSugar.ExpressionsToSql.Subquery
             }
         }
 
-        public string GetValue(ExpressionContext context, Expression expression = null)
+        public string GetValue(ExpressionContext context, Expression expression)
         {
-            var newContext = context.GetCopyContext();
-            newContext.ParameterIndex = context.ParameterIndex;
-            newContext.Resolve(expression, ResolveExpressType.WhereMultiple);
-            context.Parameters.AddRange(newContext.Parameters);
-            context.ParameterIndex = newContext.ParameterIndex;
-            return newContext.Result.GetResultString();
+            var exp = expression as MethodCallExpression;
+            return "WHERE "+SubTool.GetMethodValue(context, exp.Arguments[0], ResolveExpressType.WhereMultiple);
         }
     }
 }

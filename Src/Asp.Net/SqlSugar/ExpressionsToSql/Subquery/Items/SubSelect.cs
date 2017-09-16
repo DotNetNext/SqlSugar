@@ -16,6 +16,12 @@ namespace SqlSugar
             }
         }
 
+        public Expression Expression
+        {
+            get; set;
+        }
+
+
         public int Sort
         {
             get
@@ -26,12 +32,8 @@ namespace SqlSugar
 
         public string GetValue(ExpressionContext context, Expression expression = null)
         {
-           var newContext=context.GetCopyContext();
-            newContext.ParameterIndex = context.ParameterIndex;
-            newContext.Resolve(expression, ResolveExpressType.SelectMultiple);
-            context.Parameters.AddRange(newContext.Parameters);
-            context.ParameterIndex = newContext.ParameterIndex;
-            return newContext.Result.GetResultString();
+            var exp = expression as MethodCallExpression;
+            return SubTool.GetMethodValue(context, exp.Arguments[0],ResolveExpressType.FieldSingle);
         }
     }
 }

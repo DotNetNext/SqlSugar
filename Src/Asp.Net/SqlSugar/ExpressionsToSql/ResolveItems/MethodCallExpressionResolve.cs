@@ -40,6 +40,13 @@ namespace SqlSugar
                 this.Context.Result.Append(this.Context.DbMehtods.GuidNew());
                 return;
             }
+            else if (IsSubMethod(express, methodName))
+            {
+                SubResolve subResolve = new SubResolve(express, this.Context);
+                var appendSql = subResolve.GetSql();
+                base.AppendValue(parameter, isLeft, appendSql);
+                return;
+            }
             if (!isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains")
             {
                 methodName = "ContainsArray";
@@ -117,7 +124,8 @@ namespace SqlSugar
             {
                 this.Context.ResolveType = ResolveExpressType.WhereSingle;
             }
-            else {
+            else
+            {
                 this.Context.ResolveType = ResolveExpressType.WhereMultiple;
             }
             Where(parameter, isLeft, name, args, model);
@@ -140,7 +148,7 @@ namespace SqlSugar
                     model.Args.AddRange(appendArgs);
                 }
             }
-            if (parameter.BaseParameter.BaseParameter.BaseParameter==null)
+            if (parameter.BaseParameter.BaseParameter.BaseParameter == null)
             {
                 this.Context.Result.Append(GetMdthodValue(name, model));
             }
@@ -167,7 +175,7 @@ namespace SqlSugar
         {
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
-            var isIIF= name == "IIF";
+            var isIIF = name == "IIF";
             var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == UtilConstants.BoolType;
             var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == UtilConstants.BoolType;
             var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == UtilConstants.BoolType;
@@ -198,7 +206,8 @@ namespace SqlSugar
                 AppendModelByIIFBinary(parameter, model, item);
 
             }
-            else if (isIFFBoolMethod && !isFirst) {
+            else if (isIFFBoolMethod && !isFirst)
+            {
                 AppendModelByIIFMethod(parameter, model, item);
             }
             else if (isBinaryExpression)
@@ -251,7 +260,7 @@ namespace SqlSugar
         private void AppendModelByIIFMethod(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
             var methodExpression = item as MethodCallExpression;
-            if (methodExpression.Method.Name.IsIn("ToBool", "ToBoolean","IIF"))
+            if (methodExpression.Method.Name.IsIn("ToBool", "ToBoolean", "IIF"))
             {
                 model.Args.Add(base.GetMethodCallArgs(parameter, item));
             }
@@ -433,6 +442,11 @@ namespace SqlSugar
             { "AddMilliseconds",DateType.Millisecond}
         };
 
+
+        private static bool IsSubMethod(MethodCallExpression express, string methodName)
+        {
+            return SubTool.SubItems.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
+        }
         private void CheckMethod(MethodCallExpression expression)
         {
             Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ErrorMessage.MethodError, expression.Method.Name));

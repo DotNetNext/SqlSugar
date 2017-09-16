@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubAny : ISubOperation
     {
+        public Expression Expression
+        {
+            get;set;
+        }
+
         public string Name
         {
             get

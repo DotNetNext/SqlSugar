@@ -12,8 +12,13 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "Subqueryable";
             }
+        }
+
+        public Expression Expression
+        {
+            get; set;
         }
 
         public int Sort
@@ -23,9 +28,12 @@ namespace SqlSugar
                 return 300;
             }
         }
-        public string GetValue(ExpressionContext context, Expression expression = null)
+        public string GetValue(ExpressionContext context, Expression expression)
         {
-            return context.GetTranslationTableName(expression.Type.Name, true);
+            var exp = expression as MethodCallExpression;
+            var resType = exp.Method.ReturnType;
+            var name = resType.GetGenericArguments().First().Name;
+            return "FROM "+context.GetTranslationTableName(name, true);
         }
     }
 }

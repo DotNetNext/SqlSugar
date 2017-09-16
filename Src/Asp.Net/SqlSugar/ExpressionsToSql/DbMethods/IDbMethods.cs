@@ -24,6 +24,7 @@ namespace SqlSugar
         string DateIsSameDay(MethodCallExpressionModel model);
         string DateIsSameByType(MethodCallExpressionModel model);
         string DateAddByType(MethodCallExpressionModel model);
+
         string DateValue(MethodCallExpressionModel model);
         string DateAddDay(MethodCallExpressionModel model);
         string Between(MethodCallExpressionModel model);
@@ -53,6 +54,7 @@ namespace SqlSugar
         string GuidNew();
         string MergeString(params string[] strings);
         string EqualTrue(string value);
+        string Pack(string sql);
         string Null();
     }
 }

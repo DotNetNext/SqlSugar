@@ -11,5 +11,6 @@ namespace SqlSugar
         string Name { get; }
         string GetValue(ExpressionContext context, Expression expression);
         int Sort { get; }
+        Expression Expression { get; set; }
     }
 }
