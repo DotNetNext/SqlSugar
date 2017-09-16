@@ -26,11 +26,19 @@ namespace SqlSugar
             return default(string);
         }
 
+        public TResult Max<TResult>(Func<T, TResult> expression) where TResult : struct
+        {
+            return default(TResult);
+        }
+
+        public TResult Min<TResult>(Func<T, TResult> expression) where TResult : struct
+        {
+            return default(TResult);
+        }
         public string Max(Func<T, string> expression)
         {
             return default(string);
         }
-
         public string Min(Func<T, string> expression)
         {
             return default(string);
