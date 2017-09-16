@@ -58,6 +58,12 @@ namespace OrmTest.Demo
                      name = it.Name,
                      id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
                     }).ToList();
+
+            var getAll5 = db.Queryable<Student>().Select(it =>
+                      new Student {
+                          Name = it.Name,
+                          Id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
+                      }).ToList();
         }
 
         private static void Async()
