@@ -33,9 +33,12 @@ namespace OrmTest.Demo
         private static void Subqueryable()
         {
             var db = GetInstance();
-            var getAll1 = db.Queryable<Student>()
-                      .Where(it => it.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id))
-                      .ToList();
+
+            var getAll7 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Any()).ToList();
+
+            var getAll8= db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).NotAny()).ToList();
+
+            var getAll1 = db.Queryable<Student>().Where(it => it.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)).ToList();
 
             var getAll2 = db.Queryable<Student, School>((st, sc) => new object[] {
                 JoinType.Left,st.Id==sc.Id
@@ -46,24 +49,28 @@ namespace OrmTest.Demo
             var getAll3 = db.Queryable<Student, School>((st, sc) => new object[] {
                 JoinType.Left,st.Id==sc.Id
             })
-           .Select(st=>
-                    new {
-                           name=st.Name,
-                           id = SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id)
+           .Select(st =>
+                    new
+                    {
+                        name = st.Name,
+                        id = SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id)
                     })
           .ToList();
 
             var getAll4 = db.Queryable<Student>().Select(it =>
-                   new {
-                     name = it.Name,
-                     id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
-                    }).ToList();
+                   new
+                   {
+                       name = it.Name,
+                       id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
+                   }).ToList();
 
             var getAll5 = db.Queryable<Student>().Select(it =>
-                      new Student {
+                      new Student
+                      {
                           Name = it.Name,
                           Id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
                       }).ToList();
+
         }
 
         private static void Async()

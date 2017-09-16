@@ -31,6 +31,11 @@ namespace SqlSugar
             return default(bool);
         }
 
+        public bool NotAny()
+        {
+            return default(bool);
+        }
+
         public bool Count()
         {
             return default(bool);

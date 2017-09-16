@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubAny : ISubOperation
+    public class SubSelectDefault : ISubOperation
     {
         public Expression Expression
         {
@@ -15,9 +15,8 @@ namespace SqlSugar
 
         public string Name
         {
-            get
-            {
-                return "Any";
+            get {
+                return "SelectDefault";
             }
         }
 
@@ -25,13 +24,13 @@ namespace SqlSugar
         {
             get
             {
-                return 0;
+                return 250;
             }
         }
 
         public string GetValue(ExpressionContext context, Expression expression)
         {
-            return "EXISTS";
+            return "*";
         }
     }
 }

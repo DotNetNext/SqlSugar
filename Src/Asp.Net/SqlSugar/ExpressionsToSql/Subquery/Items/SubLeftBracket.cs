@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubAny : ISubOperation
+    public class SubLeftBracket : ISubOperation
     {
         public Expression Expression
         {
@@ -17,7 +17,7 @@ namespace SqlSugar
         {
             get
             {
-                return "Any";
+                return "LeftBracket";
             }
         }
 
@@ -25,13 +25,13 @@ namespace SqlSugar
         {
             get
             {
-                return 0;
+                return 50;
             }
         }
 
         public string GetValue(ExpressionContext context, Expression expression)
         {
-            return "EXISTS";
+            return "(";
         }
     }
 }

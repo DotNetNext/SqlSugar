@@ -6,18 +6,18 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubAny : ISubOperation
+    public class SubNotAny : ISubOperation
     {
         public Expression Expression
         {
-            get;set;
+            get; set;
         }
 
         public string Name
         {
             get
             {
-                return "Any";
+                return "NotAny";
             }
         }
 
@@ -31,7 +31,7 @@ namespace SqlSugar
 
         public string GetValue(ExpressionContext context, Expression expression)
         {
-            return "EXISTS";
+            return "NOT EXISTS";
         }
     }
 }

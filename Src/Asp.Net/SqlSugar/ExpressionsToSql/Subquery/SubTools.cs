@@ -14,6 +14,7 @@ namespace SqlSugar
            new SubSelect(),
            new SubWhere(),
            new SubAny(),
+           new SubNotAny(),
            new SubBegin(),
            new SubFromTable()
         };

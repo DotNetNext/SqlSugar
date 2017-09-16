@@ -47,9 +47,14 @@ namespace SqlSugar
                  var item = SubTools.SubItems.First(s => s.Name == methodName);
                  item.Expression = exp;
                  return item;
-             })
-            .OrderBy(it => it.Sort).ToList();
+             }).ToList();
             isubList.Insert(0, new SubBegin());
+            if (isubList.Any(it => it is SubAny||it is SubNotAny)) {
+                isubList.Add(new SubLeftBracket());
+                isubList.Add(new SubRightBracket());
+                isubList.Add(new SubSelectDefault());
+            }
+            isubList= isubList.OrderBy(it => it.Sort).ToList();
             List<string> result = isubList.Select(it =>
             {
                 return it.GetValue(this.context, it.Expression);
