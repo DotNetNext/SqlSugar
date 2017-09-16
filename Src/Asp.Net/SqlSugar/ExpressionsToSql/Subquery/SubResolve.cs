@@ -51,7 +51,7 @@ namespace SqlSugar
                  {
                      hasWhere = true;
                  }
-                 else
+                 else if(item  is SubWhere)
                  {
                      item = SubTools.SubItems.First(s => s is SubAnd);
                  }

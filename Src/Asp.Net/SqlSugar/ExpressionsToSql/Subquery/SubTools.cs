@@ -1,5 +1,4 @@
-﻿using SqlSugar.ExpressionsToSql.Subquery;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,6 +12,7 @@ namespace SqlSugar
         {
            new SubSelect(),
            new SubWhere(),
+           new SubAnd(),
            new SubAny(),
            new SubNotAny(),
            new SubBegin(),
