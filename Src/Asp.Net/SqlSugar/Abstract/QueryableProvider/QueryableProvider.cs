@@ -1078,6 +1078,7 @@ namespace SqlSugar
             asyncQueryableBuilder.Parameters = this.QueryBuilder.Parameters;
             asyncQueryableBuilder.TableShortName = this.QueryBuilder.TableShortName;
             asyncQueryableBuilder.TableWithString = this.QueryBuilder.TableWithString;
+            asyncQueryableBuilder.GroupByValue = this.QueryBuilder.GroupByValue;
             return asyncQueryable;
         }
         #endregion
