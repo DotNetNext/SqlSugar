@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubTool
+    public class SubTools
     {
         public static List<ISubOperation> SubItems = new List<ISubOperation>()
         {

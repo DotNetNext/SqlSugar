@@ -80,7 +80,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Subquerable.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWhere.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubResolve.cs" />
-    <Compile Include="ExpressionsToSql\Subquery\SubTool.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
     <Compile Include="Infrastructure\DependencyManagement.cs" />
     <Compile Include="Utilities\JsonHelper.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />

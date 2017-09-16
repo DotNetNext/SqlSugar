@@ -29,7 +29,7 @@ namespace SqlSugar.ExpressionsToSql.Subquery
         public string GetValue(ExpressionContext context, Expression expression)
         {
             var exp = expression as MethodCallExpression;
-            return "WHERE "+SubTool.GetMethodValue(context, exp.Arguments[0], ResolveExpressType.WhereMultiple);
+            return "WHERE "+SubTools.GetMethodValue(context, exp.Arguments[0], ResolveExpressType.WhereMultiple);
         }
     }
 }

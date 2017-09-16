@@ -445,7 +445,7 @@ namespace SqlSugar
 
         private static bool IsSubMethod(MethodCallExpression express, string methodName)
         {
-            return SubTool.SubItems.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
+            return SubTools.SubItems.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
         }
         private void CheckMethod(MethodCallExpression expression)
         {

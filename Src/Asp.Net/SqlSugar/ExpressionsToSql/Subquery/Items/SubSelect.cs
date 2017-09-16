@@ -33,7 +33,7 @@ namespace SqlSugar
         public string GetValue(ExpressionContext context, Expression expression = null)
         {
             var exp = expression as MethodCallExpression;
-            return SubTool.GetMethodValue(context, exp.Arguments[0],ResolveExpressType.FieldSingle);
+            return SubTools.GetMethodValue(context, exp.Arguments[0],ResolveExpressType.FieldSingle);
         }
     }
 }

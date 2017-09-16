@@ -36,7 +36,7 @@ namespace SqlSugar
             var isubList = this.allMethods.Select(exp =>
              {
                  var methodName = exp.Method.Name;
-                 var item = SubTool.SubItems.First(s => s.Name == methodName);
+                 var item = SubTools.SubItems.First(s => s.Name == methodName);
                  item.Expression = exp;
                  return item;
              })
