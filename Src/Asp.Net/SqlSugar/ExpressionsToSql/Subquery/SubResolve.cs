@@ -10,11 +10,15 @@ namespace SqlSugar
     {
         List<MethodCallExpression> allMethods = new List<MethodCallExpression>();
         private ExpressionContext context = null;
-        public SubResolve(MethodCallExpression expression, ExpressionContext context)
+        public SubResolve(MethodCallExpression expression, ExpressionContext context,Expression oppsiteExpression)
         {
             this.context = context;
             var currentExpression = expression;
             allMethods.Add(currentExpression);
+            if (context.IsSingle) {
+                var childExpression = (oppsiteExpression as MemberExpression).Expression;
+                this.context.SingleTableNameSubqueryShortName = (childExpression as ParameterExpression).Name;
+            }
             while (currentExpression != null)
             {
                 var addItem = currentExpression.Object as MethodCallExpression;

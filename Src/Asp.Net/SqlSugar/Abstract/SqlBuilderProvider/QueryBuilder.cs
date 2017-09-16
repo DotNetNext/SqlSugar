@@ -219,6 +219,11 @@ namespace SqlSugar
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
+            var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.IsValuable();
+            if (isSingleTableHasSubquery) {
+                Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name");
+                this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
+            }
             return reval;
         }
         public virtual string ToSqlString()

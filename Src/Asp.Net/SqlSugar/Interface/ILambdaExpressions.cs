@@ -21,6 +21,8 @@ namespace SqlSugar
         List<SugarParameter> Parameters { get; set; }
         ExpressionResult Result { get; set; }
         string SqlParameterKeyWord { get; }
+        string SingleTableNameSubqueryShortName { get; set; }
+
         string GetAsString(string fieldName, string fieldValue);
         void Resolve(Expression expression, ResolveExpressType resolveType);
         void Clear();

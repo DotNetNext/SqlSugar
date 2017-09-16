@@ -42,7 +42,8 @@ namespace SqlSugar
             }
             else if (IsSubMethod(express, methodName))
             {
-                SubResolve subResolve = new SubResolve(express, this.Context);
+                Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
+                SubResolve subResolve = new SubResolve(express, this.Context,parameter.OppsiteExpression);
                 var appendSql = subResolve.GetSql();
                 base.AppendValue(parameter, isLeft, appendSql);
                 return;
