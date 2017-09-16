@@ -75,7 +75,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\ISubAction.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubFromTable.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAny.cs" />
-    <Compile Include="ExpressionsToSql\Subquery\Items\SubBegin%27.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubBegin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelect.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Subquerable.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWhere.cs" />
