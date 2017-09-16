@@ -10,7 +10,8 @@ namespace SqlSugar
     {
         List<MethodCallExpression> allMethods = new List<MethodCallExpression>();
         private ExpressionContext context = null;
-        public SubResolve(MethodCallExpression expression, ExpressionContext context,Expression oppsiteExpression)
+        private bool hasWhere;
+        public SubResolve(MethodCallExpression expression, ExpressionContext context, Expression oppsiteExpression)
         {
             this.context = context;
             var currentExpression = expression;
@@ -20,7 +21,8 @@ namespace SqlSugar
                 var childExpression = (oppsiteExpression as MemberExpression).Expression;
                 this.context.SingleTableNameSubqueryShortName = (childExpression as ParameterExpression).Name;
             }
-            else if (context.IsSingle) {
+            else if (context.IsSingle)
+            {
                 this.context.SingleTableNameSubqueryShortName = (context.Expression as LambdaExpression).Parameters.First().Name;
             }
             while (currentExpression != null)
@@ -45,16 +47,25 @@ namespace SqlSugar
              {
                  var methodName = exp.Method.Name;
                  var item = SubTools.SubItems.First(s => s.Name == methodName);
+                 if (item is SubWhere && hasWhere == false)
+                 {
+                     hasWhere = true;
+                 }
+                 else
+                 {
+                     item = SubTools.SubItems.First(s => s is SubAnd);
+                 }
                  item.Expression = exp;
                  return item;
              }).ToList();
             isubList.Insert(0, new SubBegin());
-            if (isubList.Any(it => it is SubAny||it is SubNotAny)) {
+            if (isubList.Any(it => it is SubAny || it is SubNotAny))
+            {
                 isubList.Add(new SubLeftBracket());
                 isubList.Add(new SubRightBracket());
                 isubList.Add(new SubSelectDefault());
             }
-            isubList= isubList.OrderBy(it => it.Sort).ToList();
+            isubList = isubList.OrderBy(it => it.Sort).ToList();
             List<string> result = isubList.Select(it =>
             {
                 return it.GetValue(this.context, it.Expression);

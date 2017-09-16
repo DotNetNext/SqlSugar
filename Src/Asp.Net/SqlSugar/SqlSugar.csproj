@@ -73,6 +73,7 @@
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Enum\DbType.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\ISubAction.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAnd.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubLeftBracket.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubFromTable.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAny.cs" />

@@ -6,11 +6,11 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubWhere: ISubOperation
+    public class SubAnd:ISubOperation
     {
         public string Name
         {
-            get { return "Where"; }
+            get { return "And"; }
         }
 
         public Expression Expression
@@ -22,17 +22,17 @@ namespace SqlSugar
         {
             get
             {
-                return 400;
+                return 401;
             }
         }
 
         public string GetValue(ExpressionContext context, Expression expression)
         {
             var exp = expression as MethodCallExpression;
-            var argExp= exp.Arguments[0];
-            var result= "WHERE "+SubTools.GetMethodValue(context, argExp, ResolveExpressType.WhereMultiple);
-            var selfParameterName =context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name)+UtilConstants.Dot;
-            result = result.Replace(selfParameterName,string.Empty);
+            var argExp = exp.Arguments[0];
+            var result = "AND " + SubTools.GetMethodValue(context, argExp, ResolveExpressType.WhereMultiple);
+            var selfParameterName = context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
+            result = result.Replace(selfParameterName, string.Empty);
             return result;
         }
     }
