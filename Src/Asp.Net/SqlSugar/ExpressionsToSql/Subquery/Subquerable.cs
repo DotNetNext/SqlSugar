@@ -36,9 +36,9 @@ namespace SqlSugar
             return default(bool);
         }
 
-        public bool Count()
+        public int Count()
         {
-            return default(bool);
+            return default(int);
         }
     }
 }

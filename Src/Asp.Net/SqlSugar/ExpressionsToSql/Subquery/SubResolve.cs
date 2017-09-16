@@ -22,7 +22,7 @@ namespace SqlSugar
             this.context = context;
             var currentExpression = expression;
             allMethods.Add(currentExpression);
-            if (context.IsSingle && oppsiteExpression != null)
+            if (context.IsSingle && oppsiteExpression != null&& oppsiteExpression is MemberExpression)
             {
                 var childExpression = (oppsiteExpression as MemberExpression).Expression;
                 this.context.SingleTableNameSubqueryShortName = (childExpression as ParameterExpression).Name;

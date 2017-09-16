@@ -19,7 +19,8 @@ namespace SqlSugar
                                                     new SubAny(){ Context=Context },
                                                     new SubNotAny(){ Context=Context },
                                                     new SubBegin(){ Context=Context },
-                                                    new SubFromTable(){ Context=Context }
+                                                    new SubFromTable(){ Context=Context },
+                                                    new SubCount(){ Context=Context }
                                                 };
         }
 
