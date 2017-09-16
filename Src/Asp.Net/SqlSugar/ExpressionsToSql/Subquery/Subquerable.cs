@@ -26,6 +26,16 @@ namespace SqlSugar
             return default(string);
         }
 
+        public string Max(Func<T, string> expression)
+        {
+            return default(string);
+        }
+
+        public string Min(Func<T, string> expression)
+        {
+            return default(string);
+        }
+
         public bool Any()
         {
             return default(bool);
