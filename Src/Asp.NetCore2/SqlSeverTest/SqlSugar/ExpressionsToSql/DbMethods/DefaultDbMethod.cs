@@ -294,5 +294,20 @@ namespace SqlSugar
         {
             return string.Join("", strings);
         }
+
+        public virtual string Pack(string sql)
+        {
+            return "(" + sql + ")";
+        }
+
+        public virtual string EqualTrue(string fieldName)
+        {
+            return "( " + fieldName + "=1 )";
+        }
+
+        public virtual string Null()
+        {
+            return "NULL";
+        }
     }
 }

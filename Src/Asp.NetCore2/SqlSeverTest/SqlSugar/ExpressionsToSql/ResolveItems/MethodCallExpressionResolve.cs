@@ -40,7 +40,22 @@ namespace SqlSugar
                 this.Context.Result.Append(this.Context.DbMehtods.GuidNew());
                 return;
             }
-            if (!isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains")
+            else if (IsSubMethod(express, methodName))
+            {
+                //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
+                SubResolve subResolve = new SubResolve(express, this.Context, parameter.OppsiteExpression);
+                var appendSql = subResolve.GetSql();
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple,ResolveExpressType.SelectSingle))
+                {
+                    parameter.BaseParameter.CommonTempData = appendSql;
+                }
+                else
+                {
+                    base.AppendValue(parameter, isLeft, appendSql);
+                }
+                return;
+            }
+            if (IsContainsArray(express, methodName, isValidNativeMethod))
             {
                 methodName = "ContainsArray";
                 isValidNativeMethod = true;
@@ -117,7 +132,8 @@ namespace SqlSugar
             {
                 this.Context.ResolveType = ResolveExpressType.WhereSingle;
             }
-            else {
+            else
+            {
                 this.Context.ResolveType = ResolveExpressType.WhereMultiple;
             }
             Where(parameter, isLeft, name, args, model);
@@ -140,7 +156,7 @@ namespace SqlSugar
                     model.Args.AddRange(appendArgs);
                 }
             }
-            if (parameter.BaseParameter.BaseParameter.BaseParameter==null)
+            if (parameter.BaseParameter.BaseParameter.BaseParameter == null)
             {
                 this.Context.Result.Append(GetMdthodValue(name, model));
             }
@@ -167,7 +183,7 @@ namespace SqlSugar
         {
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
-            var isIIF= name == "IIF";
+            var isIIF = name == "IIF";
             var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == UtilConstants.BoolType;
             var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == UtilConstants.BoolType;
             var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == UtilConstants.BoolType;
@@ -198,7 +214,8 @@ namespace SqlSugar
                 AppendModelByIIFBinary(parameter, model, item);
 
             }
-            else if (isIFFBoolMethod && !isFirst) {
+            else if (isIFFBoolMethod && !isFirst)
+            {
                 AppendModelByIIFMethod(parameter, model, item);
             }
             else if (isBinaryExpression)
@@ -251,7 +268,7 @@ namespace SqlSugar
         private void AppendModelByIIFMethod(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
             var methodExpression = item as MethodCallExpression;
-            if (methodExpression.Method.Name.IsIn("ToBool", "ToBoolean","IIF"))
+            if (methodExpression.Method.Name.IsIn("ToBool", "ToBoolean", "IIF"))
             {
                 model.Args.Add(base.GetMethodCallArgs(parameter, item));
             }
@@ -433,6 +450,15 @@ namespace SqlSugar
             { "AddMilliseconds",DateType.Millisecond}
         };
 
+        private  bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
+        {
+            return !isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains";
+        }
+
+        private  bool IsSubMethod(MethodCallExpression express, string methodName)
+        {
+            return SubTools.SubItemsConst.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
+        }
         private void CheckMethod(MethodCallExpression expression)
         {
             Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ErrorMessage.MethodError, expression.Method.Name));

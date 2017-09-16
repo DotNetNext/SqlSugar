@@ -281,7 +281,7 @@ namespace SqlSugar
             var result = (Restult)Activator.CreateInstance(type, true);
             return result;
         }
-        private static T CreateInstance<T>(string className)
+        public static T CreateInstance<T>(string className)
         {
             Type type;
             if (typeCache.ContainsKey(className))

@@ -16,15 +16,27 @@ namespace SqlSugar
     /// </summary>
     public partial class SqlSugarClient : SqlSugarAccessory, IDisposable
     {
- 
+
         #region Constructor
         public SqlSugarClient(ConnectionConfig config)
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
-            if (config.DbType == DbType.Oracle)
+            Check.ArgumentNullException(config, "config is null");
+            switch (config.DbType)
             {
-                throw new Exception("Oracle developed 60%,to be continued ");
+                case DbType.MySql:
+                    DependencyManagement.TryMySqlData();
+                    break;
+                case DbType.SqlServer:
+                    break;
+                case DbType.Sqlite:
+                    DependencyManagement.TrySqlite();
+                    break;
+                case DbType.Oracle:
+                    throw new Exception("Oracle developed 60%,to be continued");
+                default:
+                    throw new Exception("ConnectionConfig.DbType is null");
             }
         }
         #endregion

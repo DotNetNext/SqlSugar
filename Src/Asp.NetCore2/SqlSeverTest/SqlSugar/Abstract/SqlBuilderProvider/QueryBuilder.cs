@@ -219,12 +219,18 @@ namespace SqlSugar
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
+            var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.IsValuable();
+            if (isSingleTableHasSubquery) {
+                Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name");
+                this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
+            }
             return reval;
         }
         public virtual string ToSqlString()
         {
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
+            var isIgnoreOrderBy = this.IsCount&&this.PartitionByValue.IsNullOrEmpty();
             AppendFilter();
             sql = new StringBuilder();
             if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
@@ -236,10 +242,10 @@ namespace SqlSugar
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
-            if (this.IsCount) { orderByValue = null; }
+            if (isIgnoreOrderBy) { orderByValue = null; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
-            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
-            if (this.IsCount) { this.OrderByValue = oldOrderBy; return sql.ToString();  }
+            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
+            if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString();  }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
@@ -445,7 +451,7 @@ namespace SqlSugar
             get
             {
                 if (this.OrderByValue == null) return null;
-                if (IsCount) return null;
+                if (IsCount&&this.PartitionByValue.IsNullOrEmpty()) return null;
                 else
                 {
                     return this.OrderByValue;

@@ -9,6 +9,7 @@ namespace SqlSugar
         public const string Dot = ".";
         public const char DotChar = '.';
         internal const string Space = " ";
+        internal const char SpaceChar =' ';
         internal const string AssemblyName = "SqlSugar";
         internal const string ReplaceKey = "{662E689B-17A1-4D06-9D27-F29EAB8BC3D6}";
 

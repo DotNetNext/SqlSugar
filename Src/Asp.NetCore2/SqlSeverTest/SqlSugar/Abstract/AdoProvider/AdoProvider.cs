@@ -227,16 +227,26 @@ namespace SqlSugar
         #region Core
         public virtual int ExecuteCommand(string sql, params SugarParameter[] parameters)
         {
-            if (this.ProcessingEventStartingSQL != null)
-                ExecuteProcessingSQL(ref sql, parameters);
-            ExecuteBefore(sql, parameters);
-            IDbCommand sqlCommand = GetCommand(sql, parameters);
-            int count = sqlCommand.ExecuteNonQuery();
-            if (this.IsClearParameters)
-                sqlCommand.Parameters.Clear();
-            ExecuteAfter(sql, parameters);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
-            return count;
+            try
+            {
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                IDbCommand sqlCommand = GetCommand(sql, parameters);
+                int count = sqlCommand.ExecuteNonQuery();
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                return count;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (this.IsClose()) this.Close();
+            }
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
         {
@@ -245,8 +255,7 @@ namespace SqlSugar
                 ExecuteProcessingSQL(ref sql, parameters);
             ExecuteBefore(sql, parameters);
             IDbCommand sqlCommand = GetCommand(sql, parameters);
-            var isAutoClose = this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
-            IDataReader sqlDataReader = sqlCommand.ExecuteReader(isAutoClose ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+            IDataReader sqlDataReader = sqlCommand.ExecuteReader(this.IsClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
             if (isSp)
                 DataReaderParameters = sqlCommand.Parameters;
             if (this.IsClearParameters)
@@ -256,33 +265,53 @@ namespace SqlSugar
         }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
         {
-            if (this.ProcessingEventStartingSQL != null)
-                ExecuteProcessingSQL(ref sql, parameters);
-            ExecuteBefore(sql, parameters);
-            IDataAdapter dataAdapter = this.GetAdapter();
-            IDbCommand sqlCommand = GetCommand(sql, parameters);
-            this.SetCommandToAdapter(dataAdapter, sqlCommand);
-            DataSet ds = new DataSet();
-            dataAdapter.Fill(ds);
-            if (this.IsClearParameters)
-                sqlCommand.Parameters.Clear();
-            ExecuteAfter(sql, parameters);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
-            return ds;
+            try
+            {
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                IDataAdapter dataAdapter = this.GetAdapter();
+                IDbCommand sqlCommand = GetCommand(sql, parameters);
+                this.SetCommandToAdapter(dataAdapter, sqlCommand);
+                DataSet ds = new DataSet();
+                dataAdapter.Fill(ds);
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                return ds;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (this.IsClose()) this.Close();
+            }
         }
         public virtual object GetScalar(string sql, params SugarParameter[] parameters)
         {
-            if (this.ProcessingEventStartingSQL != null)
-                ExecuteProcessingSQL(ref sql, parameters);
-            ExecuteBefore(sql, parameters);
-            IDbCommand sqlCommand = GetCommand(sql, parameters);
-            object scalar = sqlCommand.ExecuteScalar();
-            scalar = (scalar == null ? 0 : scalar);
-            if (this.IsClearParameters)
-                sqlCommand.Parameters.Clear();
-            ExecuteAfter(sql, parameters);
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null) this.Close();
-            return scalar;
+            try
+            {
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                IDbCommand sqlCommand = GetCommand(sql, parameters);
+                object scalar = sqlCommand.ExecuteScalar();
+                scalar = (scalar == null ? 0 : scalar);
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                return scalar;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (this.IsClose()) this.Close();
+            }
         }
         #endregion
 
@@ -602,6 +631,10 @@ namespace SqlSugar
         {
             if (parameters == null) return null;
             return base.GetParameters(parameters, propertyInfo, this.SqlParameterKeyWord);
+        }
+        private bool IsClose()
+        {
+            return this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
         }
         #endregion
     }
