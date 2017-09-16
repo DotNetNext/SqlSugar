@@ -23,6 +23,8 @@ namespace SqlSugar
                                                 };
         }
 
+        public static List<ISubOperation> SubItemsConst = SubItems(null);
+
         public static string GetMethodValue(ExpressionContext context, Expression item, ResolveExpressType type)
         {
             var newContext = context.GetCopyContext();
