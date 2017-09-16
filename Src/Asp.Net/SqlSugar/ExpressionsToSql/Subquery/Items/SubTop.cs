@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubAny : ISubOperation
+    public class SubTop : ISubOperation
     {
         public ExpressionContext Context
         {
@@ -22,7 +22,7 @@ namespace SqlSugar
         {
             get
             {
-                return "Any";
+                return "Top";
             }
         }
 
@@ -30,13 +30,27 @@ namespace SqlSugar
         {
             get
             {
-                return 0;
+                if (this.Context is SqlServerExpressionContext)
+                {
+                    return  150;
+                }
+                else
+                {
+                    return 450;
+                }
             }
         }
 
+
         public string GetValue(Expression expression)
         {
-            return "EXISTS";
+            if (this.Context is SqlServerExpressionContext)
+            {
+                return "TOP 1";
+            }
+            else {
+                return "limit 0,1";
+            }
         }
     }
 }

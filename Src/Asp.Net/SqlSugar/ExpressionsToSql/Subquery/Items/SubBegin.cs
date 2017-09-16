@@ -29,7 +29,12 @@ namespace SqlSugar
             }
         }
 
-        public string GetValue(ExpressionContext context, Expression expression)
+        public ExpressionContext Context
+        {
+            get;set;
+        }
+
+        public string GetValue(Expression expression)
         {
             return "SELECT";
         }

@@ -8,24 +8,28 @@ namespace SqlSugar
 {
     public class SubTools
     {
-        public static List<ISubOperation> SubItems = new List<ISubOperation>()
+        public static List<ISubOperation> SubItems(ExpressionContext Context)
         {
-           new SubSelect(),
-           new SubWhere(),
-           new SubAnd(),
-           new SubAny(),
-           new SubNotAny(),
-           new SubBegin(),
-           new SubFromTable()
-        };
 
-        public static string GetMethodValue(ExpressionContext context,Expression item,ResolveExpressType type)
+                return new List<ISubOperation>()
+                                                {
+                                                    new SubSelect() { Context=Context },
+                                                    new SubWhere(){ Context=Context },
+                                                    new SubAnd(){ Context=Context },
+                                                    new SubAny(){ Context=Context },
+                                                    new SubNotAny(){ Context=Context },
+                                                    new SubBegin(){ Context=Context },
+                                                    new SubFromTable(){ Context=Context }
+                                                };
+        }
+
+        public static string GetMethodValue(ExpressionContext context, Expression item, ResolveExpressType type)
         {
             var newContext = context.GetCopyContext();
             newContext.MappingColumns = context.MappingColumns;
             newContext.MappingTables = context.MappingTables;
             newContext.IgnoreComumnList = context.IgnoreComumnList;
-            newContext.Resolve(item,type);
+            newContext.Resolve(item, type);
             context.Index = newContext.Index;
             context.ParameterIndex = newContext.ParameterIndex;
             return newContext.Result.GetResultString();

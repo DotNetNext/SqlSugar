@@ -28,12 +28,18 @@ namespace SqlSugar
                 return 300;
             }
         }
-        public string GetValue(ExpressionContext context, Expression expression)
+
+        public ExpressionContext Context
+        {
+            get;set;
+        }
+
+        public string GetValue(Expression expression)
         {
             var exp = expression as MethodCallExpression;
             var resType = exp.Method.ReturnType;
             var name = resType.GetGenericArguments().First().Name;
-            return "FROM "+context.GetTranslationTableName(name, true);
+            return "FROM "+this.Context.GetTranslationTableName(name, true);
         }
     }
 }

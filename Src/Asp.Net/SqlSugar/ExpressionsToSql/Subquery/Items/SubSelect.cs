@@ -30,10 +30,15 @@ namespace SqlSugar
             }
         }
 
-        public string GetValue(ExpressionContext context, Expression expression = null)
+        public ExpressionContext Context
+        {
+            get;set;
+        }
+
+        public string GetValue(Expression expression = null)
         {
             var exp = expression as MethodCallExpression;
-            return SubTools.GetMethodValue(context, exp.Arguments[0],ResolveExpressType.FieldSingle);
+            return SubTools.GetMethodValue(this.Context, exp.Arguments[0],ResolveExpressType.FieldSingle);
         }
     }
 }

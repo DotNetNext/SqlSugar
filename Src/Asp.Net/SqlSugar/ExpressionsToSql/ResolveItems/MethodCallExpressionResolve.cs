@@ -450,14 +450,14 @@ namespace SqlSugar
             { "AddMilliseconds",DateType.Millisecond}
         };
 
-        private static bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
+        private  bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
         {
             return !isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains";
         }
 
-        private static bool IsSubMethod(MethodCallExpression express, string methodName)
+        private  bool IsSubMethod(MethodCallExpression express, string methodName)
         {
-            return SubTools.SubItems.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
+            return SubTools.SubItems(this.Context).Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
         }
         private void CheckMethod(MethodCallExpression expression)
         {

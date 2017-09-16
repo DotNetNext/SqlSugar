@@ -8,9 +8,11 @@ namespace SqlSugar
 {
     public interface ISubOperation
     {
+        ExpressionContext Context { get; set; }
         string Name { get; }
-        string GetValue(ExpressionContext context, Expression expression);
+        string GetValue(Expression expression);
         int Sort { get; }
         Expression Expression { get; set; }
+
     }
 }

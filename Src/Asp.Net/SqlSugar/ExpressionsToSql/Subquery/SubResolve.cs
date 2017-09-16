@@ -52,19 +52,25 @@ namespace SqlSugar
             var isubList = this.allMethods.Select(exp =>
              {
                  var methodName = exp.Method.Name;
-                 var item = SubTools.SubItems.First(s => s.Name == methodName);
+                 var items = SubTools.SubItems(this.context);
+                 var item = items.First(s => s.Name == methodName);
                  if (item is SubWhere && hasWhere == false)
                  {
                      hasWhere = true;
                  }
-                 else if(item  is SubWhere)
+                 else if (item is SubWhere)
                  {
-                     item = SubTools.SubItems.First(s => s is SubAnd);
+                     item = items.First(s => s is SubAnd);
                  }
+                 item.Context = this.context;
                  item.Expression = exp;
                  return item;
              }).ToList();
             isubList.Insert(0, new SubBegin());
+            if (isubList.Any(it => it is SubSelect))
+            {
+                isubList.Add(new SubTop() { Context=this.context });
+            }
             if (isubList.Any(it => it is SubAny || it is SubNotAny))
             {
                 isubList.Add(new SubLeftBracket());
@@ -74,7 +80,7 @@ namespace SqlSugar
             isubList = isubList.OrderBy(it => it.Sort).ToList();
             List<string> result = isubList.Select(it =>
             {
-                return it.GetValue(this.context, it.Expression);
+                return it.GetValue(it.Expression);
             }).ToList();
             return result;
         }

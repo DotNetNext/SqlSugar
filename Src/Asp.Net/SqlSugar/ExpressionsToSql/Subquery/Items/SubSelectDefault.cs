@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubSelectDefault : ISubOperation
     {
+        public ExpressionContext Context
+        {
+            get;set;
+        }
+
         public Expression Expression
         {
             get;set;
@@ -28,7 +33,7 @@ namespace SqlSugar
             }
         }
 
-        public string GetValue(ExpressionContext context, Expression expression)
+        public string GetValue(Expression expression)
         {
             return "*";
         }

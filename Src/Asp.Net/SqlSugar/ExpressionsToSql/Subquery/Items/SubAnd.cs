@@ -26,12 +26,17 @@ namespace SqlSugar
             }
         }
 
-        public string GetValue(ExpressionContext context, Expression expression)
+        public ExpressionContext Context
+        {
+            get;set;
+        }
+
+        public string GetValue(Expression expression)
         {
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
-            var result = "AND " + SubTools.GetMethodValue(context, argExp, ResolveExpressType.WhereMultiple);
-            var selfParameterName = context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
+            var result = "AND " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.WhereMultiple);
+            var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, string.Empty);
             return result;
         }
