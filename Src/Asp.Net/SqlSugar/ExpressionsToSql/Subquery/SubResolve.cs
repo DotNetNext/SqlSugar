@@ -6,6 +6,12 @@ using System.Text;
 
 namespace SqlSugar
 {
+    ///<summary>
+    /// ** description：Get subquery sql
+    /// ** author：sunkaixuan
+    /// ** date：2017/9/17
+    /// ** email:610262374@qq.com
+    /// </summary>
     public class SubResolve
     {
         List<MethodCallExpression> allMethods = new List<MethodCallExpression>();
