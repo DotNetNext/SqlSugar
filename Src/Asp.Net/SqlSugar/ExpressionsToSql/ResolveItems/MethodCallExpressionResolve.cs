@@ -42,13 +42,20 @@ namespace SqlSugar
             }
             else if (IsSubMethod(express, methodName))
             {
-                Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
-                SubResolve subResolve = new SubResolve(express, this.Context,parameter.OppsiteExpression);
+                //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
+                SubResolve subResolve = new SubResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = subResolve.GetSql();
-                base.AppendValue(parameter, isLeft, appendSql);
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple,ResolveExpressType.SelectSingle))
+                {
+                    parameter.BaseParameter.CommonTempData = appendSql;
+                }
+                else
+                {
+                    base.AppendValue(parameter, isLeft, appendSql);
+                }
                 return;
             }
-            if (!isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains")
+            if (IsContainsArray(express, methodName, isValidNativeMethod))
             {
                 methodName = "ContainsArray";
                 isValidNativeMethod = true;
@@ -443,6 +450,10 @@ namespace SqlSugar
             { "AddMilliseconds",DateType.Millisecond}
         };
 
+        private static bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
+        {
+            return !isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains";
+        }
 
         private static bool IsSubMethod(MethodCallExpression express, string methodName)
         {
