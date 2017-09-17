@@ -106,8 +106,7 @@ JoinType.Left,st.SchoolId==sc.Id
 ### subquery
 ```c
 var getAll = db.Queryable<Student, School>((st, sc) => new object[] {
-                 JoinType.Left,st.Id==sc.Id
-                })
+                                                                      JoinType.Left,st.Id==sc.Id})
 .Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
 .ToList();
       
