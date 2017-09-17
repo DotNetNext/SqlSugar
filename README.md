@@ -1,4 +1,7 @@
 # SqlSugar 4.X  API
+
+In addition to EF, the most powerful ORM
+
 ## Contactinfomation  
 Email:610262374@qq.com 
 QQ Group:225982985
@@ -101,6 +104,19 @@ JoinType.Left,st.SchoolId==sc.Id
 .OrderBy(st=>st.Id,OrderByType.Desc)
 .OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
 .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
+```
+
+### subquery
+```c
+var getAll = db.Queryable<Student, School>((st, sc) => new object[] {
+ JoinType.Left,st.Id==sc.Id})
+.Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
+.ToList();
+      
+//sql
+SELECT `st`.`ID`,`st`.`SchoolId`,`st`.`Name`,`st`.`CreateTime` 
+     FROM `STudent` st Left JOIN `School` sc ON ( `st`.`ID` = `sc`.`Id` )  
+      WHERE ( `st`.`ID` =(SELECT `Id` FROM `School` WHERE ( `Id` = `st`.`ID` ) limit 0,1))
 ```
 
 ### 1.5 SqlFunctions
