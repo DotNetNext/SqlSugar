@@ -1,4 +1,7 @@
 # SqlSugar 4.X  API
+
+In addition to EF, the most powerful ORM
+
 ## Contactinfomation  
 Email:610262374@qq.com 
 QQ Group:225982985
