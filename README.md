@@ -103,6 +103,20 @@ JoinType.Left,st.SchoolId==sc.Id
 .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 ```
 
+### subquery
+```c
+var getAll = db.Queryable<Student, School>((st, sc) => new object[] {
+                 JoinType.Left,st.Id==sc.Id
+                })
+.Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
+.ToList();
+      
+//sql
+SELECT `st`.`ID`,`st`.`SchoolId`,`st`.`Name`,`st`.`CreateTime` 
+     FROM `STudent` st Left JOIN `School` sc ON ( `st`.`ID` = `sc`.`Id` )  
+      WHERE ( `st`.`ID` =(SELECT `Id` FROM `School` WHERE ( `Id` = `st`.`ID` ) limit 0,1))
+```
+
 ### 1.5 SqlFunctions
 ```c
 var t1 = db.Queryable<Student>().Where(it => SqlFunc.ToLower(it.Name) == SqlFunc.ToLower("JACK")).ToList();
