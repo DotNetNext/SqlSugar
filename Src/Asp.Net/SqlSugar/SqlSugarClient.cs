@@ -487,7 +487,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region DbMaintenance
+        #region Db Maintenance
         public virtual IDbMaintenance DbMaintenance
         {
             get
@@ -503,7 +503,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Entity Methods
+        #region Entity Maintenance
         [Obsolete("Use SqlSugarClient.EntityMaintenance")]
         public virtual EntityMaintenance EntityProvider
         {
