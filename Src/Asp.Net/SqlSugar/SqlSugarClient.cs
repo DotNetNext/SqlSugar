@@ -62,6 +62,10 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Aop Log Methods
+        public virtual AopProvider Aop { get { return new AopProvider(this.Context); } }
+        #endregion
+
         #region Util Methods
         [Obsolete("Use SqlSugarClient.Utilities")]
         public virtual IRewritableMethods RewritableMethods
