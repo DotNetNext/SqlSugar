@@ -599,7 +599,7 @@ namespace SqlSugar
                 {
                     if (parameters == null || parameters.Length == 0)
                     {
-                        action(sql, null);
+                        action(sql, new SugarParameter[] { });
                     }
                     else
                     {
@@ -627,7 +627,7 @@ namespace SqlSugar
                 {
                     if (parameters == null || parameters.Length == 0)
                     {
-                        action(sql, null);
+                        action(sql, new SugarParameter[] { });
                     }
                     else
                     {

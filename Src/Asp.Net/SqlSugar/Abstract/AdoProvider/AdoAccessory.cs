@@ -26,7 +26,10 @@ namespace SqlSugar
                 if (isDictionary)
                     DictionaryToParameters(parameters, sqlParameterKeyWord, result, entityType);
                 else
+                {
+                    Check.Exception(!entityType.IsAnonymousType(), "The parameter format is wrong. \nUse new{{xx=xx, xx2=xx2}}  or \nDictionary<string, object> or \nSugarParameter [] "); 
                     ProperyToParameter(parameters, propertyInfo, sqlParameterKeyWord, result, entityType);
+                }
             }
             return result.ToArray();
         }

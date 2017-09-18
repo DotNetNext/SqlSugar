@@ -188,8 +188,8 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             db.Ado.BeginTran();
-            var t1 = db.Ado.SqlQuery<string>("select 'a'");
-            var t2 = db.Ado.GetInt("select 1");
+            var t1 = db.Ado.SqlQuery<string>("select 'a'",new { id = 1 });
+            var t2 = db.Ado.GetInt("select 1",new Dictionary<string, object>() { { "id",1} });
             var t3 = db.Ado.GetDataTable("select 1 as id");
             db.Ado.CommitTran();
             //more
