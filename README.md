@@ -409,5 +409,26 @@ db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //c
 db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
 ```
 
+## 9. AOP LOG
+```
+db.Aop.OnLogExecuted = (sql, pars) => //SQL执行完事件
+{
+ 
+};
+db.Aop.OnLogExecuting = (sql, pars) => //SQL执行前事件
+{
+ 
+};
+db.Aop.OnError = (exp) =>//执行SQL 错误事件
+{
+                 
+};
+db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL执行前 可以修改SQL
+{
+    return new KeyValuePair<string, SugarParameter[]>(sql,pars);
+};
+
+```
+
 More
 http://www.codeisbug.com/Doc/8

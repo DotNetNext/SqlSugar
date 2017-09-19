@@ -310,6 +310,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             int i = 1;
             List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
@@ -324,7 +325,7 @@ namespace SqlSugar
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
                 i++;
             }
-            var allSql = string.Join("UNION ALL \r\n", allItems.Select(it => it.Key));
+            var allSql = sqlBuilder.GetUnionAllSql(allItems.Select(it => it.Key).ToList());
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
             var resulut = this.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
             resulut.AddParameters(allParameters);
@@ -334,6 +335,14 @@ namespace SqlSugar
         {
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             return UnionAll(queryables.ToArray());
+        }
+        #endregion
+
+        #region SqlQueryable
+        public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
+        {
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            return this.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName()));
         }
         #endregion
 

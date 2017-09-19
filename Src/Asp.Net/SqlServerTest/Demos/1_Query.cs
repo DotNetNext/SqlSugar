@@ -28,6 +28,13 @@ namespace OrmTest.Demo
             Simple();
             Async();
             Subqueryable();
+            SqlQueryable();
+        }
+
+        private static void SqlQueryable()
+        {
+            var db = GetInstance();
+            var list = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
         }
 
         private static void Subqueryable()
