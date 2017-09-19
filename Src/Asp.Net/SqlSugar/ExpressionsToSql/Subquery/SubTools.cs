@@ -11,7 +11,7 @@ namespace SqlSugar
         public static List<ISubOperation> SubItems(ExpressionContext Context)
         {
 
-                return new List<ISubOperation>()
+            return new List<ISubOperation>()
                                                 {
                                                     new SubSelect() { Context=Context },
                                                     new SubWhere(){ Context=Context },
@@ -37,6 +37,8 @@ namespace SqlSugar
             newContext.Resolve(item, type);
             context.Index = newContext.Index;
             context.ParameterIndex = newContext.ParameterIndex;
+            if (newContext.Parameters.IsValuable())
+                context.Parameters.AddRange(newContext.Parameters);
             return newContext.Result.GetResultString();
         }
     }
