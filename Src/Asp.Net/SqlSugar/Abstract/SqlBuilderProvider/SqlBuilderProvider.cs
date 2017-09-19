@@ -75,6 +75,9 @@ namespace SqlSugar
         {
             return UtilMethods.GetPackTable(sql,shortName);
         }
+        public virtual string GetDefaultShortName() {
+            return "t";
+        }
         public virtual void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
         {
             UtilMethods.RepairReplicationParameters(ref appendSql,parameters,addIndex);

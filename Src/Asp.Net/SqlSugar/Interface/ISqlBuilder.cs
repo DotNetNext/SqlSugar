@@ -27,6 +27,7 @@ namespace SqlSugar
         string GetTranslationColumnName(string propertyName);
         string GetNoTranslationColumnName(string name);
         string GetPackTable(string sql,string shortName);
+        string GetDefaultShortName();
         void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex);
     }
 }

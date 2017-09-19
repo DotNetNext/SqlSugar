@@ -337,6 +337,14 @@ namespace SqlSugar
         }
         #endregion
 
+        #region SqlQueryable
+        public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
+        {
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            return this.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName()));
+        }
+        #endregion
+
         #region Insertable
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
