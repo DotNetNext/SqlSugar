@@ -177,7 +177,7 @@ namespace SqlSugar
                             PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                             PropertyText = PropertyDescriptionText + PropertyText;
                             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
-                            if (ConstructorText.IsValuable() && item.DefaultValue.IsValuable())
+                            if (ConstructorText.IsValuable() && item.DefaultValue!=null)
                             {
                                 var hasDefaultValue = columns.Skip(index + 1).Any(it=>it.DefaultValue.IsValuable());
                                 ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
