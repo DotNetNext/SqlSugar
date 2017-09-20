@@ -178,6 +178,15 @@ namespace OrmTest.Demo
             var between = db.Queryable<Student>().Where(it => SqlFunc.Between(it.Id, 1, 20)).ToList();
 
             var getTodayList = db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(it.CreateTime, DateTime.Now)).ToList();
+
+            int p = 0;
+            var getSubQuery = db.Queryable<Student>().Select(it =>
+             new Student
+             {
+                 Name = it.Name,
+                 Id = SqlFunc.Subqueryable<School>().Where(s=>s.Id==1&&s.Id==p).Where(s => s.Id == it.Id).OrderBy(s=>s.Id).Select(s => s.Id)
+             }).ToPageListAsync(1,2);
+            getSubQuery.Wait();
         }
         public static void Page()
         {
