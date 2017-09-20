@@ -73,11 +73,19 @@ namespace SqlSugar
         }
         public virtual string GetPackTable(string sql, string shortName)
         {
-            return UtilMethods.GetPackTable(sql,shortName);
+            return UtilMethods.GetPackTable(sql, shortName);
+        }
+        public virtual string GetDefaultShortName()
+        {
+            return "t";
+        }
+        public virtual string GetUnionAllSql(List<string> sqlList)
+        {
+            return string.Join("UNION ALL \r\n", sqlList);
         }
         public virtual void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
         {
-            UtilMethods.RepairReplicationParameters(ref appendSql,parameters,addIndex);
+            UtilMethods.RepairReplicationParameters(ref appendSql, parameters, addIndex);
         }
         #endregion
 

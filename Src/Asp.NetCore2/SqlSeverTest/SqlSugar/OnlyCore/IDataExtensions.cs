@@ -25,7 +25,7 @@ namespace SqlSugar
             }
             if (this.IsEnableLogEvent)
             {
-                Action<string, string> action = LogEventStarting;
+                Action<string, SugarParameter[]> action = LogEventStarting;
                 if (action != null)
                 {
                     if (parameters == null || parameters.Length == 0)
@@ -34,7 +34,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        action(sql, this.Context.RewritableMethods.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql,parameters);
                     }
                 }
             }

@@ -1255,7 +1255,7 @@ namespace SqlSugar
                 });
             return this;
         }
-        public new ISugarQueryable<T, T2> With(string withString)
+        public new ISugarQueryable<T,T2> With(string withString)
         {
             base.With(withString);
             return this;
@@ -1415,7 +1415,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2,T3> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -1645,7 +1645,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3,T4> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -1901,7 +1901,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4,T5> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -2183,7 +2183,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -2492,7 +2492,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -2827,7 +2827,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -3185,7 +3185,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -3234,7 +3234,7 @@ namespace SqlSugar
                 });
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> With(string withString)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> With(string withString)
         {
             base.With(withString);
             return this;
@@ -3567,7 +3567,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -3974,7 +3974,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);
@@ -4406,7 +4406,7 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AS<AsT>(string tableName)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AS<AsT>(string tableName)
         {
             var entityName = typeof(AsT).Name;
             _As(tableName, entityName);

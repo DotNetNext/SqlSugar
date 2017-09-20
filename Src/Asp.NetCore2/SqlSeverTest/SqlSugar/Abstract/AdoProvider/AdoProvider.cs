@@ -51,9 +51,10 @@ namespace SqlSugar
         public virtual CommandType CommandType { get; set; }
         public virtual bool IsEnableLogEvent { get; set; }
         public virtual bool IsClearParameters { get; set; }
-        public virtual Action<string, string> LogEventStarting { get; set; }
-        public virtual Action<string, string> LogEventCompleted { get; set; }
+        public virtual Action<string, SugarParameter[]> LogEventStarting { get; set; }
+        public virtual Action<string, SugarParameter[]> LogEventCompleted { get; set; }
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
+        public virtual Action<Exception> ErrorEvent { get; set; }
         #endregion
 
         #region Connection
@@ -241,6 +242,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                if (ErrorEvent != null)
+                    ErrorEvent(ex);
                 throw ex;
             }
             finally
@@ -250,18 +253,27 @@ namespace SqlSugar
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
         {
-            var isSp = this.CommandType == CommandType.StoredProcedure;
-            if (this.ProcessingEventStartingSQL != null)
-                ExecuteProcessingSQL(ref sql, parameters);
-            ExecuteBefore(sql, parameters);
-            IDbCommand sqlCommand = GetCommand(sql, parameters);
-            IDataReader sqlDataReader = sqlCommand.ExecuteReader(this.IsClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
-            if (isSp)
-                DataReaderParameters = sqlCommand.Parameters;
-            if (this.IsClearParameters)
-                sqlCommand.Parameters.Clear();
-            ExecuteAfter(sql, parameters);
-            return sqlDataReader;
+            try
+            {
+                var isSp = this.CommandType == CommandType.StoredProcedure;
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                IDbCommand sqlCommand = GetCommand(sql, parameters);
+                IDataReader sqlDataReader = sqlCommand.ExecuteReader(this.IsClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+                if (isSp)
+                    DataReaderParameters = sqlCommand.Parameters;
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                return sqlDataReader;
+            }
+            catch (Exception ex)
+            {
+                if (ErrorEvent != null)
+                    ErrorEvent(ex);
+                throw ex;
+            }
         }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
         {
@@ -282,6 +294,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                if (ErrorEvent != null)
+                    ErrorEvent(ex);
                 throw ex;
             }
             finally
@@ -306,6 +320,8 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                if (ErrorEvent != null)
+                    ErrorEvent(ex);
                 throw ex;
             }
             finally
@@ -578,16 +594,16 @@ namespace SqlSugar
         {
             if (this.IsEnableLogEvent)
             {
-                Action<string, string> action = LogEventStarting;
+                Action<string, SugarParameter[]> action = LogEventStarting;
                 if (action != null)
                 {
                     if (parameters == null || parameters.Length == 0)
                     {
-                        action(sql, null);
+                        action(sql, new SugarParameter[] { });
                     }
                     else
                     {
-                        action(sql, this.Context.Utilities.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql, parameters);
                     }
                 }
             }
@@ -606,16 +622,16 @@ namespace SqlSugar
             }
             if (this.IsEnableLogEvent)
             {
-                Action<string, string> action = LogEventCompleted;
+                Action<string, SugarParameter[]> action = LogEventCompleted;
                 if (action != null)
                 {
                     if (parameters == null || parameters.Length == 0)
                     {
-                        action(sql, null);
+                        action(sql, new SugarParameter[] { });
                     }
                     else
                     {
-                        action(sql, this.Context.Utilities.SerializeObject(parameters.Select(it => new { key = it.ParameterName, value = it.Value.ObjToString() })));
+                        action(sql, parameters);
                     }
                 }
             }

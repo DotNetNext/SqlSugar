@@ -21,7 +21,7 @@ namespace SqlSugar
             var isBool = expression.Type == UtilConstants.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
             var isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
-            var isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (expression.Expression as MemberExpression).Type == UtilConstants.DateType;
+            var isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) &&(childIsMember&&childExpression.Type == UtilConstants.DateType);
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
             var isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;

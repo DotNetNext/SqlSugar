@@ -23,9 +23,10 @@ namespace SqlSugar
         IDataParameterCollection DataReaderParameters { get; set; }
         CommandType CommandType { get; set; }
         bool IsEnableLogEvent { get; set; }
-        Action<string, string> LogEventStarting { get; set; }
-        Action<string, string> LogEventCompleted { get; set; }
+        Action<string, SugarParameter []> LogEventStarting { get; set; }
+        Action<string, SugarParameter []> LogEventCompleted { get; set; }
         Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
+        Action<Exception> ErrorEvent { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
         IDbBind DbBind { get; }

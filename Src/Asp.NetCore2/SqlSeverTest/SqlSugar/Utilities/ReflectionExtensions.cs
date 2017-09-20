@@ -8,10 +8,8 @@ using System.Text;
 
 namespace SqlSugar
 {
-    /// <summary>
-    /// In order to be compatible with .NET CORE, make sure that the two versions are consistent in syntax
-    /// </summary>
-    public static class CompatibleExtensions
+
+    public static class ReflectionExtensions
     {
         public static Type GetTypeInfo(this Type typeInfo)
         {
