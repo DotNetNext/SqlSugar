@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 namespace SqlSugar
 {
-    internal static class IsWhatExtensions
+    internal static class ValidateExtensions
     {
         public static bool IsInRange(this int thisValue, int begin, int end)
         {
