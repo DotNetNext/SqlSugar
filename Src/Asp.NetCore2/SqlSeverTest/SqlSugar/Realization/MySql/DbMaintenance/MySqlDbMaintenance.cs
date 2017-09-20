@@ -187,7 +187,7 @@ namespace SqlSugar
                 {
                     if (item.DbColumnName.Equals("GUID",StringComparison.CurrentCultureIgnoreCase))
                     {
-                        item.Length = 10;
+                        item.Length = 36;
                     }
                 }
             }
