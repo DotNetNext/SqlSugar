@@ -82,6 +82,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubBegin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubMin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubMax.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubOrderBy.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubRightBracket.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelect.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectDefault.cs" />
