@@ -22,7 +22,9 @@ namespace SqlSugar
                                                     new SubFromTable(){ Context=Context },
                                                     new SubCount(){ Context=Context },
                                                     new SubMax(){ Context=Context },
-                                                    new SubMin(){ Context=Context }
+                                                    new SubMin(){ Context=Context },
+                                                    new SubOrderBy(){ Context=Context },
+                                                    new SubOrderByDesc(){ Context=Context }
                                                 };
         }
 

@@ -16,7 +16,14 @@ namespace SqlSugar
         {
             return this;
         }
-
+        public Subqueryable<T> OrderBy(Func<T, object> expression)
+        {
+            return this;
+        }
+        public Subqueryable<T> OrderByDesc(Func<T, object> expression)
+        {
+            return this;
+        }
         public TResult Select<TResult>(Func<T, TResult> expression) where TResult :struct
         {
             return default(TResult);
