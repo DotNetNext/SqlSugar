@@ -185,7 +185,7 @@ namespace SqlSugar
             {
                 foreach (var item in columns)
                 {
-                    if (item.DbColumnName.Equals("GUID",StringComparison.CurrentCultureIgnoreCase))
+                    if (item.DbColumnName.Equals("GUID",StringComparison.CurrentCultureIgnoreCase)&& item.Length==0)
                     {
                         item.Length = 36;
                     }
