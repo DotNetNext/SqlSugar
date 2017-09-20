@@ -22,6 +22,7 @@ namespace SqlSugar
         @other,
         @byteArray,
         @float,
-        @time
+        @time,
+        @DateTimeOffset
     }
 }
