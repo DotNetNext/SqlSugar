@@ -166,14 +166,28 @@ namespace SqlSugar
 
         public static ISqlBuilder GetSqlbuilder(ConnectionConfig currentConnectionConfig)
         {
-            ISqlBuilder result = CreateInstance<ISqlBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "Builder"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerBuilder();
+            }
+            else
+            {
+                ISqlBuilder result = CreateInstance<ISqlBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "Builder"));
+                return result;
+            }
         }
 
         public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
         {
-            IDbBind result = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbBind"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerDbBind();
+            }
+            else
+            {
+                IDbBind result = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbBind"));
+                return result;
+            }
         }
 
         public static IDbMaintenance GetDbMaintenance(ConnectionConfig currentConnectionConfig)
