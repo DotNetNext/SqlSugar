@@ -22,6 +22,8 @@ namespace SqlSugar
         ExpressionResult Result { get; set; }
         string SqlParameterKeyWord { get; }
         string SingleTableNameSubqueryShortName { get; set; }
+         Action<Type> InitMappingInfo { get; set; }
+         Action RefreshMapping { get; set; }
 
         string GetAsString(string fieldName, string fieldValue);
         void Resolve(Expression expression, ResolveExpressType resolveType);

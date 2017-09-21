@@ -38,7 +38,13 @@ namespace SqlSugar
         {
             var exp = expression as MethodCallExpression;
             var resType = exp.Method.ReturnType;
-            var name = resType.GetGenericArguments().First().Name;
+            var entityType = resType.GetGenericArguments().First();
+            var name = entityType.Name;
+            if (this.Context.InitMappingInfo != null)
+            {
+                this.Context.InitMappingInfo(entityType);
+                this.Context.RefreshMapping();
+            }
             return "FROM "+this.Context.GetTranslationTableName(name, true);
         }
     }
