@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PerformanceTest.Items;
+using PerformanceTest.TestItems;
 
 namespace PerformanceTest
 {
@@ -16,7 +16,7 @@ namespace PerformanceTest
         static void Main(string[] args)
         {
             new TestGetAll().Init();
-       
+            new TestGetById().Init();
             Console.ReadKey();
         }
     }

@@ -7,7 +7,7 @@ using Dapper;
 using SqlSugar;
 using Dapper.Contrib.Extensions;
 
-namespace PerformanceTest.Items
+namespace PerformanceTest.TestItems
 {
     public class TestGetAll  
     {
