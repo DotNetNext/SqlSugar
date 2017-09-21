@@ -40,7 +40,7 @@ namespace PerformanceTest.TestItems
 
             PerHelper.Execute(eachCount, "SqlSugar", () =>
             {
-                using (SqlSugarClient conn = new SqlSugarClient(new ConnectionConfig() { InitKeyType = InitKeyType.SystemTable, ConnectionString = Config.connectionString, DbType = DbType.SqlServer }))
+                using (SqlSugarClient conn = Config.GetSugarConn())
                 {
                     var list2 = conn.Queryable<Test>().InSingle(1);
                 }
