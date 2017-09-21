@@ -59,7 +59,7 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlConnection conn = new SqlConnection(Config.connectionString))
                 {
-                    var list = conn.Get<Test>(1);
+                     var list = conn.Get<Test>(1);
                 }
             });
         }
