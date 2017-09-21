@@ -17,7 +17,7 @@ namespace PerformanceTest.TestItems
             Console.WriteLine("测试一次读取1条数据的速度");
             var eachCount = 1000;
 
-            var begin = DateTime.Now;
+            var beginDate = DateTime.Now;
             for (int i = 0; i < 20; i++)
             {
                 switch (type)
@@ -33,7 +33,7 @@ namespace PerformanceTest.TestItems
                 }
             }
 
-            Console.Write("总计："+(DateTime.Now-begin).TotalMilliseconds/1000.0);
+            Console.Write("总计："+(DateTime.Now-beginDate).TotalMilliseconds/1000.0);
         }
 
         private static void SqlSugar(int eachCount)

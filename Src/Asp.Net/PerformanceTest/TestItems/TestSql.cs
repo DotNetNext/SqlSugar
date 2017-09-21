@@ -16,6 +16,7 @@ namespace PerformanceTest.TestItems
             Console.WriteLine("测试SQL查询的速度");
             var eachCount = 3000;
 
+            var beginDate = DateTime.Now;
             for (int i = 0; i < 10; i++)
             {
                 switch (type)
@@ -28,7 +29,7 @@ namespace PerformanceTest.TestItems
                         break;
                 }
             }
-
+            Console.Write("总计：" + (DateTime.Now - beginDate).TotalMilliseconds / 1000.0);
         }
 
         private static void SqlSugar(int eachCount)
