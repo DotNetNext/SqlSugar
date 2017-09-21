@@ -99,6 +99,8 @@ namespace SqlSugar
         }
         public virtual string SqlTranslationLeft { get { return "["; } }
         public virtual string SqlTranslationRight { get { return "]"; } }
+        public virtual Action<Type> InitMappingInfo { get; set; }
+        public virtual Action RefreshMapping { get; set; }
         #endregion
 
         #region Core methods 
@@ -143,7 +145,7 @@ namespace SqlSugar
             else if (isMapping)
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.EntityName) + SqlTranslationRight;
+                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName) + SqlTranslationRight;
             }
             else if (isComplex)
             {
