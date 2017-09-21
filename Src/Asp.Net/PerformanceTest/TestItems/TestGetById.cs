@@ -1,5 +1,4 @@
 ﻿using Dapper.Contrib.Extensions;
-using PerformanceTest.Items;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -43,7 +42,7 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlSugarClient conn = new SqlSugarClient(new ConnectionConfig() { InitKeyType = InitKeyType.SystemTable, ConnectionString = Config.connectionString, DbType = DbType.SqlServer }))
                 {
-                    var list2 = conn.Queryable<Test>().ToList();
+                    var list2 = conn.Queryable<Test>().InSingle(1);
                 }
             });
         }
@@ -57,7 +56,7 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlConnection conn = new SqlConnection(Config.connectionString))
                 {
-                    var list = conn.GetAll<Test>();
+                    var list = conn.Get<Test>(1);
                 }
             });
         }

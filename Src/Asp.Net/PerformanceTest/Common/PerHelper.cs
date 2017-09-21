@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SqlSugar;
 
-namespace PerformanceTest.Items
+namespace PerformanceTest
 {
     /// <summary>
     /// 性能测试类,用于循环执行代码并统计时间
