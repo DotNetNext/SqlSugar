@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Common\PerHelper.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="TestItems\TestGetById.cs" />
     <Compile Include="TestItems\TestGetAll.cs" />
     <Compile Include="Models\TestEntity.cs" />
     <Compile Include="Program.cs" />
