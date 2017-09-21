@@ -11,25 +11,26 @@ namespace PerformanceTest.TestItems
 {
     public class TestGetAll  
     {
-        public void Init()
+        public void Init(OrmType type)
         {
             Console.WriteLine("测试一次读取100万条数据的速度");
             var eachCount = 1;
 
-            Console.WriteLine("开启预热");
-            Dapper(1);
-            SqlSugar(1);
-            Console.WriteLine("预热完毕");
-
             for (int i = 0; i < 10; i++)
             {
-                //dapper
-               Dapper(eachCount);
-
-                //sqlSugar
-              SqlSugar(eachCount); 
+                switch (type)
+                {
+                    case OrmType.SqlSugar:
+                        SqlSugar(eachCount);
+                        break;
+                    case OrmType.Dapper:
+                        Dapper(eachCount);
+                        break;
+                    default:
+                        break;
+                }
+    
             }
- 
         }
 
         private static void SqlSugar(int eachCount)

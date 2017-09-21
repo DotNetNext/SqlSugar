@@ -21,11 +21,9 @@ namespace PerformanceTest.TestItems
                 switch (type)
                 {
                     case OrmType.SqlSugar:
-                        //sqlSugar
                         SqlSugar(eachCount);
                         break;
                     case OrmType.Dapper:
-                        //dapper
                         Dapper(eachCount);
                         break;
                 }
