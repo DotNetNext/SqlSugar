@@ -55,10 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Items\PerHelper.cs" />
-    <Compile Include="Items\PubConst.cs" />
-    <Compile Include="Items\SelectBigData.cs" />
-    <Compile Include="Items\WarmUp.cs" />
+    <Compile Include="Common\PerHelper.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="TestItems\TestGetAll.cs" />
     <Compile Include="Models\TestEntity.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

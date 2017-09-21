@@ -15,9 +15,7 @@ namespace PerformanceTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            WarmUp wu = new WarmUp();//预热处理
- 
-            new SelectBigData().Init();
+            new TestGetAll().Init();
        
             Console.ReadKey();
         }

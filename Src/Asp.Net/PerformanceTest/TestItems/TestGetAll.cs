@@ -9,7 +9,7 @@ using Dapper.Contrib.Extensions;
 
 namespace PerformanceTest.Items
 {
-    public class SelectBigData  
+    public class TestGetAll  
     {
         /// <summary>
         /// 测试一次读取100万条数据的速度
@@ -17,12 +17,16 @@ namespace PerformanceTest.Items
         public void Init()
         {
             Console.WriteLine("测试一次读取100万条数据的速度");
-            var eachCount = 1000;
+            var eachCount = 1;
+
+            Console.WriteLine("开启预热");
+            Dapper(1);
+            SqlSugar(1);
+            Console.WriteLine("预热完毕");
 
             /*******************车轮战是性能评估最准确的一种方式***********************/
             for (int i = 0; i < 10; i++)
             {
-
                 //dapper
                Dapper(eachCount);
 
@@ -39,10 +43,9 @@ namespace PerformanceTest.Items
 
             PerHelper.Execute(eachCount, "SqlSugar", () =>
             {
-                using (SqlSugarClient conn = new SqlSugarClient(new ConnectionConfig() { InitKeyType=InitKeyType.SystemTable, ConnectionString= PubConst.connectionString, DbType=DbType.SqlServer }))
+                using (SqlSugarClient conn = new SqlSugarClient(new ConnectionConfig() { InitKeyType=InitKeyType.SystemTable, ConnectionString= Config.connectionString, DbType=DbType.SqlServer }))
                 {
-                 //  var list = conn.Ado.SqlQuery<Test>("select * from test where id=1");
-                   var list2 = conn.Queryable<Test>().InSingle(1);
+                   var list2 = conn.Queryable<Test>().ToList();
                 }
             });
         }
@@ -55,9 +58,9 @@ namespace PerformanceTest.Items
             //正试比拼
             PerHelper.Execute(eachCount, "Dapper", () =>
             {
-                using (SqlConnection conn = new SqlConnection(PubConst.connectionString))
+                using (SqlConnection conn = new SqlConnection(Config.connectionString))
                 {
-                  var list = conn.Get<Test>(1);
+                  var list = conn.GetAll<Test>();
                 }
             });
         }

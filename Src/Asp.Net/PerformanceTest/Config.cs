@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PerformanceTest.Items
 {
-    public class PubConst
+    public class Config
     {
        public static  string connectionString = "server=.;uid=sa;pwd=sasa;database=SqlSugarTest";
     }
