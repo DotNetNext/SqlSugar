@@ -15,8 +15,8 @@ namespace PerformanceTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            //new TestGetAll().Init(OrmType.SqlSugar);
-            // new TestGetById().Init(OrmType.SqlSugar);
+            //new TestGetAll().Init(OrmType.Dapper);
+            //new TestGetById().Init(OrmType.EF);
             new TestSql().Init(OrmType.SqlSugar);
             Console.ReadKey();
         }

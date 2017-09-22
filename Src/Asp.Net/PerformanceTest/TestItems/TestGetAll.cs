@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using Dapper;
 using SqlSugar;
 using Dapper.Contrib.Extensions;
+using System.Data.Entity;
 
 namespace PerformanceTest.TestItems
 {
@@ -13,6 +14,7 @@ namespace PerformanceTest.TestItems
     {
         public void Init(OrmType type)
         {
+            Database.SetInitializer<EFContext>(null);
             Console.WriteLine("测试一次读取100万条数据的速度");
             var eachCount = 1;
 
@@ -26,6 +28,9 @@ namespace PerformanceTest.TestItems
                         break;
                     case OrmType.Dapper:
                         Dapper(eachCount);
+                        break;
+                    case OrmType.EF:
+                        EF(eachCount);
                         break;
                     default:
                         break;
@@ -60,6 +65,20 @@ namespace PerformanceTest.TestItems
                 using (SqlConnection conn = new SqlConnection(Config.connectionString))
                 {
                   var list = conn.GetAll<Test>();
+                }
+            });
+        }
+
+        private static void EF(int eachCount)
+        {
+            GC.Collect();//回收资源
+            System.Threading.Thread.Sleep(1);//休息1秒
+
+            PerHelper.Execute(eachCount, "EF", () =>
+            {
+                using (EFContext conn = new EFContext(Config.connectionString))
+                {
+                    var list = conn.TestList.AsNoTracking().ToList();
                 }
             });
         }

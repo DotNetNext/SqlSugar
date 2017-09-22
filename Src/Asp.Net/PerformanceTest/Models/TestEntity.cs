@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace PerformanceTest
 {
     [Dapper.Contrib.Extensions.Table("Test")]
@@ -22,5 +23,17 @@ namespace PerformanceTest
         public DateTime? F_DateTime { get; set; }
         public Guid? F_Guid { get; set; }
         public string F_String { get; set; }
+    }
+
+    public class EFContext : DbContext
+    {
+        public EFContext(string connectionString) : base(connectionString) {
+
+        }
+        public DbSet<Test> TestList { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Test>().ToTable("Test");
+        }
     }
 }
