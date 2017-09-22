@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PerformanceTest.TestItems
 {
-    public class TestSql
+    public class TestGetSql
     {
         public void Init(OrmType type)
         {

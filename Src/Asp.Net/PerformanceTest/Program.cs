@@ -15,18 +15,18 @@ namespace PerformanceTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            var type = DemoType.GetAll;
-            var ormType = OrmType.Dapper;
+            var type = DemoType.GetSql;
+            var ormType = OrmType.SqlSugar;
             switch (type)
             {
                 case DemoType.GetAll:
                     new TestGetAll().Init(ormType);
                     break;
                 case DemoType.GetById:
-                    new TestGetAll().Init(ormType);
+                    new TestGetById().Init(ormType);
                     break;
-                case DemoType.TestSql:
-                    new TestGetAll().Init(ormType);
+                case DemoType.GetSql:
+                    new TestGetSql().Init(ormType);
                     break;
                 default:
                     break;
@@ -37,7 +37,7 @@ namespace PerformanceTest
         {
             GetAll,
             GetById,
-            TestSql
+            GetSql
         }
     }
 }
