@@ -46,7 +46,7 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlSugarClient conn = Config.GetSugarConn())
                 {
-                    var list2 = conn.Ado.SqlQuery<Test>("select top 10 * from Test"); ;
+                    var list2 = conn.Ado.SqlQuery<Test>("select top 20 * from Test"); ;
                 }
             });
         }
@@ -60,7 +60,7 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlConnection conn = new SqlConnection(Config.connectionString))
                 {
-                    var list = conn.Query<Test>("select top 10 * from Test");
+                    var list = conn.Query<Test>("select top 20 * from Test");
                 }
             });
         }
@@ -74,7 +74,7 @@ namespace PerformanceTest.TestItems
             {
                 using (EFContext conn = new EFContext(Config.connectionString))
                 {
-                    var list = conn.Database.SqlQuery<Test>("select top 10 * from Test").ToList();
+                    var list = conn.Database.SqlQuery<Test>("select top 20 * from Test").ToList();
                 }
             });
         }
