@@ -38,6 +38,12 @@ namespace SqlSugar
         public string GetValue(Expression expression = null)
         {
             var exp = expression as MethodCallExpression;
+            var entityType = (exp.Arguments[0] as LambdaExpression).Parameters[0].Type;
+            if (this.Context.InitMappingInfo != null)
+            {
+                this.Context.InitMappingInfo(entityType);
+                this.Context.RefreshMapping();
+            }
             return SubTools.GetMethodValue(this.Context, exp.Arguments[0],ResolveExpressType.FieldSingle);
         }
     }
