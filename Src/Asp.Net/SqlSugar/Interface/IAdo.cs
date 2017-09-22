@@ -63,7 +63,7 @@ namespace SqlSugar
         DateTime GetDateTime(string sql, object parameters);
         DateTime GetDateTime(string sql, params SugarParameter[] parameters);
         DateTime GetDateTime(string sql, List<SugarParameter> parameters);
-        List<T> SqlQuery<T>(string sql, object whereObj = null);
+        List<T> SqlQuery<T>(string sql, object parameters = null);
         List<T> SqlQuery<T>(string sql, params SugarParameter[] parameters);
         List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters);
         T SqlQuerySingle<T>(string sql, object whereObj = null);
