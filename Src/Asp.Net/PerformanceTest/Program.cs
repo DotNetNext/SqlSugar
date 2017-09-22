@@ -15,10 +15,29 @@ namespace PerformanceTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            //new TestGetAll().Init(OrmType.Dapper);
-            //new TestGetById().Init(OrmType.EF);
-            new TestSql().Init(OrmType.SqlSugar);
+            var type = DemoType.GetAll;
+            var ormType = OrmType.Dapper;
+            switch (type)
+            {
+                case DemoType.GetAll:
+                    new TestGetAll().Init(ormType);
+                    break;
+                case DemoType.GetById:
+                    new TestGetAll().Init(ormType);
+                    break;
+                case DemoType.TestSql:
+                    new TestGetAll().Init(ormType);
+                    break;
+                default:
+                    break;
+            }
             Console.ReadKey();
+        }
+        enum DemoType
+        {
+            GetAll,
+            GetById,
+            TestSql
         }
     }
 }
