@@ -44,7 +44,6 @@ namespace SqlSugar
 
         ISugarQueryable<T> OrderBy(string orderFileds);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-
         ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T> GroupBy(string groupFileds);
 
