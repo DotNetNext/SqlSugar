@@ -14,7 +14,7 @@ namespace SqlSugar
         public SqlSugarClient Context { get; set; }
         public OracleExpressionContext()
         {
-            base.DbMehtods = new MySqlMethod();
+            base.DbMehtods = new OracleMethod();
         }
         public override string SqlParameterKeyWord
         {
@@ -40,6 +40,39 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string ToString(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS VARCHAR2(4000))", parameter.MemberName);
+        }
 
+        public override string ToDate(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS DATE)", parameter.MemberName);
+        }
+        public override string Contains(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} like '%'||{1}||'%') ", parameter.MemberName, parameter2.MemberName);
+        }
+        public override string StartsWith(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} like {1}||'%') ", parameter.MemberName, parameter2.MemberName);
+        }
+        public override string EndsWith(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format("  ({0} like '%'||{1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+        public override string Trim(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" trim({0}) ", parameter.MemberName);
+        }
     }
 }
