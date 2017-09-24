@@ -45,14 +45,39 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (DATEADD({2},{1},{0})) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
+            var type = (DateType)Enum.Parse(typeof(DateType), parameter3.MemberValue.ObjToString(), false);
+            double time = 1;
+            switch (type)
+            {
+                case DateType.Year:
+                    time = 1 * 365;
+                    break;
+                case DateType.Month:
+                    time = 1 *30;
+                    break;
+                case DateType.Day:
+                    break;
+                case DateType.Hour:
+                    time = 1 / 24.0;
+                    break;
+                case DateType.Second:
+                    time = 1 / 24.0/60.0/60.0;
+                    break;
+                case DateType.Minute:
+                    time = 1 / 24.0/60.0;
+                    break;
+                case DateType.Millisecond:
+                    time = 1 / 24.0 / 60.0 / 60.0/1000;
+                    break;
+            }
+            return string.Format("({0}+{1}) ", parameter.MemberName, time);
         }
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" (DATEADD(day,{1},{0})) ", parameter.MemberName, parameter2.MemberName);
+            return string.Format("({0}+1) ", parameter.MemberName);
         }
 
         public override string ToString(MethodCallExpressionModel model)
