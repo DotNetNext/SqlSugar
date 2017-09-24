@@ -363,8 +363,10 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((\"DATETIME2\"+0.0416666666666667) = :Const2 )", new List<SugarParameter>() {
-                new SugarParameter(":Const2",x2) 
+            base.Check(value, pars, "((:MethodConst0+1.15740740740741E-08) = :Const3 )", new List<SugarParameter>() {
+                new SugarParameter(":Const2",x2) ,
+                     new SugarParameter(":MethodConst0",x2),
+                          new SugarParameter(":MethodConst1",11)
             }, "DateAddByType error");
         }
         private void DateAddDay()
