@@ -420,9 +420,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " (DATEDIFF(:MethodConst2,:MethodConst0,:MethodConst1)=0) ", new List<SugarParameter>() {
-                new SugarParameter(":MethodConst0",x2),new SugarParameter(":MethodConst1",x2),
-                new SugarParameter(":MethodConst2",DateType.Millisecond)
+            base.Check(value, pars, " ROUND(TO_NUMBER(:MethodConst0 - :MethodConst1) * 86400000) ", new List<SugarParameter>() {
+                new SugarParameter(":MethodConst0",x2),new SugarParameter(":MethodConst1",x2)
             }, "DateIsSameByType error");
         }
         private void DateIsSameByDay()
@@ -433,7 +432,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(DATEDIFF(day,:MethodConst0,:MethodConst1)=0) ", new List<SugarParameter>() {
+            base.Check(value, pars, " ROUND(TO_NUMBER(:MethodConst0 - :MethodConst1)) ", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0",x2),new SugarParameter(":MethodConst1",x2)
             }, "DateIsSameDay error");
         }
