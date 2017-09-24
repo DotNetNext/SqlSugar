@@ -63,7 +63,7 @@ namespace OrmTest.UnitTest
             base.Check(
                 selectorValue,
                 pars,
-                @" ""SCHOOL"".""NAME"" AS ""SCHOOLNAME"" ,IT.*",
+                @" ""SCHOOL"".""NAME"" AS ""SCHOOLNAME"" ,it.*",
                 new List<SugarParameter>()
                 {
 
@@ -159,7 +159,7 @@ namespace OrmTest.UnitTest
             var selectorValue = expContext.Result.GetString();
             var pars = expContext.Parameters;
             base.Check(
-                @"( :CONSTANT0<>'' AND :CONSTANT0 IS NOT NULL )", new List<SugarParameter>() {
+                @"( :constant0<>'' AND :constant0 IS NOT NULL )", new List<SugarParameter>() {
                     new SugarParameter(":constant0",p)
                 }, selectorValue, pars,
                 "Select.single4 Error");
