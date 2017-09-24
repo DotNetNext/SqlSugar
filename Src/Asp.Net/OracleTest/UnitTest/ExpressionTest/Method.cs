@@ -265,7 +265,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(:MethodConst0 AS DATETIME) = :Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(to_date(:MethodConst0,'yyyy-mm-dd hh24:mi:ss') = :Const1 )", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0","2015-1-1"),new SugarParameter(":Const1",x2)
             }, "ToDate error");
         }
@@ -277,7 +277,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(:MethodConst0 AS DATE) = :Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(to_date(:MethodConst0,'yyyy-mm-dd hh24:mi:ss') = :Const1 )", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0","2015-1-1"),new SugarParameter(":Const1",x2)
             }, "ExtendDate error");
         }
