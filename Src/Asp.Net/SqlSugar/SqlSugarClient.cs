@@ -34,7 +34,7 @@ namespace SqlSugar
                     DependencyManagement.TrySqlite();
                     break;
                 case DbType.Oracle:
-                    break;
+                    throw new Exception("Oracle developed 75%,to be continued");
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }
