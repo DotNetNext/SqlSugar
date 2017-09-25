@@ -17,7 +17,7 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            throw new Exception("Oracle developed 75%,to be continued");
+            //throw new Exception("Oracle developed 75%,to be continued");
 
             //    /***Unit Test***/
             new Select(1).Init();

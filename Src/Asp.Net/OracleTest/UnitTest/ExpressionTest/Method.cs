@@ -363,8 +363,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((:MethodConst0+1.15740740740741E-08) = :Const3 )", new List<SugarParameter>() {
-                new SugarParameter(":Const2",x2) ,
+            base.Check(value, pars, "((:MethodConst0+(1.15740740740741E-08*:MethodConst1)) = :Const3 )", new List<SugarParameter>() {
+                new SugarParameter(":Const3",x2) ,
                      new SugarParameter(":MethodConst0",x2),
                           new SugarParameter(":MethodConst1",11)
             }, "DateAddByType error");
@@ -377,41 +377,13 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "((:MethodConst0+1) = :Const2 )", new List<SugarParameter>() {
+            base.Check(value, pars, "((:MethodConst0+(1*:MethodConst1)) = :Const2 )", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0",x2),new SugarParameter(":MethodConst1",1),new SugarParameter(":Const2",x2)
             }, "DateAddDay error");
 
-            DateAddDay2();
-            DateAddDay3();
         }
 
-        private void DateAddDay2()
-        {
-            var x2 = DateTime.Now;
-            Expression<Func<DataTestInfo, bool>> exp = it =>it.Datetime2.Value.AddHours(10) == x2;
-            OracleExpressionContext expContext = new OracleExpressionContext();
-            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
-            var value = expContext.Result.GetString();
-            var pars = expContext.Parameters;
-            base.Check(value, pars, "((\"DATETIME2\"+0.0416666666666667) = :Const2 )", new List<SugarParameter>() {
-                new SugarParameter(":Const2",x2),
-                new SugarParameter(":MethodConst1",10)
-            }, "DateAddDay2 error");
-        }
-
-        private void DateAddDay3()
-        {
-            var x2 = DateTime.Now;
-            Expression<Func<Student, bool>> exp = it => x2.AddHours(1) == x2;
-            OracleExpressionContext expContext = new OracleExpressionContext();
-            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
-            var value = expContext.Result.GetString();
-            var pars = expContext.Parameters;
-            base.Check(value, pars, "((:MethodConst1+0.0416666666666667) = :Const3 )", new List<SugarParameter>() {
-                new SugarParameter(":MethodConst1",x2),new SugarParameter(":MethodConst2",1),new SugarParameter(":Const3",x2)
-            }, "DateAddDay3 error");
-        }
-
+      
         private void DateIsSameByType()
         {
             var x2 = DateTime.Now;
@@ -420,7 +392,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ROUND(TO_NUMBER(:MethodConst0 - :MethodConst1) * 86400000) ", new List<SugarParameter>() {
+            base.Check(value, pars, "  (ROUND(TO_NUMBER(:MethodConst0 - :MethodConst1) * 86400000) = 0)  ", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0",x2),new SugarParameter(":MethodConst1",x2)
             }, "DateIsSameByType error");
         }
@@ -432,7 +404,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ROUND(TO_NUMBER(:MethodConst0 - :MethodConst1)) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (ROUND(TO_NUMBER(:MethodConst0 - :MethodConst1))=0) ", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0",x2),new SugarParameter(":MethodConst1",x2)
             }, "DateIsSameDay error");
         }

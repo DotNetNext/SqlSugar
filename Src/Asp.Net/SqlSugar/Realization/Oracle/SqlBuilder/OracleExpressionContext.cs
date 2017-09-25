@@ -70,14 +70,14 @@ namespace SqlSugar
                     time = 1 / 24.0 / 60.0 / 60.0/1000;
                     break;
             }
-            return string.Format("({0}+{1}) ", parameter.MemberName, time);
+            return string.Format("({0}+({1}*{2})) ", parameter.MemberName, time,parameter2.MemberName);
         }
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format("({0}+1) ", parameter.MemberName);
+            return string.Format("({0}+(1*{1})) ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string ToString(MethodCallExpressionModel model)
@@ -118,7 +118,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0].MemberName;
             var parameter2 = model.Args[1].MemberName;
-            return string.Format(" ROUND(TO_NUMBER({0} - {1})) ", parameter, parameter2);
+            return string.Format(" (ROUND(TO_NUMBER({0} - {1}))=0) ", parameter, parameter2);
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
@@ -150,7 +150,7 @@ namespace SqlSugar
                     time = time * 24 * 60 * 60 * 1000;
                     break;
             }
-            return string.Format(" ROUND(TO_NUMBER({0} - {1}) * {2}) ", parameter, parameter2, time);
+            return string.Format(" (ROUND(TO_NUMBER({0} - {1}) * {2}) = 0) ", parameter, parameter2, time);
         }
     }
 }
