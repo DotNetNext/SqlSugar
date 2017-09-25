@@ -65,6 +65,7 @@ namespace SqlSugar
         public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             OracleCommand sqlCommand = new OracleCommand(sql, (OracleConnection)this.Connection);
+            sqlCommand.BindByName = true;
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (this.Transaction != null)
