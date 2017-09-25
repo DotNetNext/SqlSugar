@@ -6,23 +6,6 @@ namespace SqlSugar
 {
     internal static partial class ErrorMessage
     {
-        internal static string FilterError
-        {
-            get
-            {
-                return GetThrowMessage("The query parameter does not allow the existence of special combination, for example: %+number+anyword+% Or 0x+anyword+0",
-                                       "参数不能允许存在特殊组合，例如 :% + 数字 + 任意字符 + % 或者 0x + 任意字符 + 0");
-            }
-        }
-
-        internal static string EntityNamespaceError
-        {
-            get
-            {
-                return GetThrowMessage("ConnectionConfig.EntityNamespace cannot be null.",
-                                       "ConnectionConfig.EntityNamespace 不能为null。");
-            }
-        }
 
         internal static string ConnectionConfigIsNull
         {
