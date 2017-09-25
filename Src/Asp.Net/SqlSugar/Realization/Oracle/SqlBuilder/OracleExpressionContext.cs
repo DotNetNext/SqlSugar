@@ -176,5 +176,10 @@ namespace SqlSugar
             }
             return string.Format(" (ROUND(TO_NUMBER({0} - {1}) * {2}) = 0) ", parameter, parameter2, time);
         }
+        public override string Length(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" LENGTH({0}) ", parameter.MemberName);
+        }
     }
 }

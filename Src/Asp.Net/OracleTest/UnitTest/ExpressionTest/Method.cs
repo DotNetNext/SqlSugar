@@ -107,7 +107,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(LEN(:MethodConst0) > :Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(LENGTH(:MethodConst0) > :Const1 )", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0","aaaa"),new SugarParameter(":Const1",1)
             }, "Length error");
 
@@ -122,7 +122,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(LEN(\"Name\")> :Length1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(LENGTH(\"NAME\") > :Length1 )", new List<SugarParameter>() {
                 new SugarParameter(":Length1",1) 
             }, "Length2 error");
         }
@@ -134,7 +134,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(LEN(\"Name\")> :Length1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(LENGTH(\"NAME\") > :Length1 )", new List<SugarParameter>() {
                 new SugarParameter(":Length1",1)
             }, "Length3 error");
         }
@@ -252,7 +252,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(CAST(:MethodConst0 AS NVARCHAR(MAX)) = :Const1 )", new List<SugarParameter>() {
+            base.Check(value, pars, "(CAST(:MethodConst0 AS VARCHAR2(4000)) = :Const1 )", new List<SugarParameter>() {
                 new SugarParameter(":MethodConst0","2015-1-1"),new SugarParameter(":Const1","a")
             }, "Tostring error");
         }
@@ -316,8 +316,8 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " ((:MethodConst1(:MethodConst0)) = :Const2 ) ", new List<SugarParameter>() {
-                new SugarParameter(":MethodConst0",x2),new SugarParameter(":MethodConst1",DateType.Year),new SugarParameter(":Const2",1)
+            base.Check(value, pars, " ((CAST(TO_CHAR(:MethodConst0,'yyyy') AS NUMBER) = :Const2 )", new List<SugarParameter>() {
+                new SugarParameter(":MethodConst0",x2),new SugarParameter(":Const2",1)
             }, "DateValue error");
         }
 
