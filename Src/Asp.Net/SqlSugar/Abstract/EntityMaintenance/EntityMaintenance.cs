@@ -138,6 +138,7 @@ namespace SqlSugar
                         column.OldDbColumnName = sugarColumn.OldColumnName;
                         column.DataType = sugarColumn.ColumnDataType;
                         column.DecimalDigits = sugarColumn.DecimalDigits;
+                        column.OracleSequenceName = sugarColumn.OracleSequenceName;
                     }
                     else
                     {

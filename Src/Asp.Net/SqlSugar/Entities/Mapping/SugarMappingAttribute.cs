@@ -92,6 +92,12 @@ namespace SqlSugar
             get { return _DecimalDigits; }
             set { _DecimalDigits = value; }
         }
+
+        private string _OracleSequenceName;
+        public string OracleSequenceName {
+            get { return _OracleSequenceName; }
+            set { _OracleSequenceName = value; }
+        }
     }
 
 }
