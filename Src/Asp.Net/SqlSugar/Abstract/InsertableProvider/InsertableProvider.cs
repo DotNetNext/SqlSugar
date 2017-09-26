@@ -186,8 +186,8 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Private Methods
-        private void PreToSql()
+        #region Protected Methods
+        protected void PreToSql()
         {
             #region Identities
             if (!IsOffIdentity)
@@ -255,7 +255,7 @@ namespace SqlSugar
                 ++i;
             }
         }
-        private string GetDbColumnName(string entityName)
+        protected string GetDbColumnName(string entityName)
         {
             if (!IsMappingColumns)
             {
@@ -276,7 +276,7 @@ namespace SqlSugar
             }
         }
 
-        private List<string> GetPrimaryKeys()
+        protected virtual List<string> GetPrimaryKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {
@@ -298,14 +298,14 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
-        private void RestoreMapping()
+        protected void RestoreMapping()
         {
             if (IsAs)
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
-        private IInsertable<T> CopyInsertable()
+        protected IInsertable<T> CopyInsertable()
         {
             var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
