@@ -93,6 +93,9 @@
     <Compile Include="ExpressionsToSql\Subquery\SubResolve.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
     <Compile Include="Infrastructure\DependencyManagement.cs" />
+    <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
+    <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
+    <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
     <Compile Include="Utilities\JsonHelper.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
