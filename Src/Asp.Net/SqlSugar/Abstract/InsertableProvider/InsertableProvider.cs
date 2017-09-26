@@ -287,7 +287,7 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
             }
         }
-        private List<string> GetIdentityKeys()
+        protected virtual List<string> GetIdentityKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {

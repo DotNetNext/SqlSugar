@@ -228,7 +228,7 @@ namespace SqlSugar
             }
         }
 
-        private List<string> GetIdentityKeys()
+        protected virtual List<string> GetIdentityKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {
