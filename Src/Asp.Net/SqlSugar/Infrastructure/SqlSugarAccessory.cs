@@ -166,7 +166,7 @@ namespace SqlSugar
         }
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
-            var reval = new InsertableProvider<T>();
+            var reval = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -181,7 +181,7 @@ namespace SqlSugar
         }
         protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
         {
-            var reval = new DeleteableProvider<T>();
+            var reval = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.SqlBuilder = sqlBuilder;
@@ -193,7 +193,7 @@ namespace SqlSugar
         }
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
         {
-            var reval = new UpdateableProvider<T>();
+            var reval = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();

@@ -177,6 +177,41 @@ namespace SqlSugar
             }
         }
 
+        public static UpdateableProvider<T> GetUpdateableProvider<T>(ConnectionConfig currentConnectionConfig) where T : class, new()
+        {
+            if (currentConnectionConfig.DbType == DbType.Oracle)
+            {
+                return new OracleUpdateable<T>();
+            }
+            else {
+                return new UpdateableProvider<T>();
+            }
+        }
+
+        public static DeleteableProvider<T> GetDeleteableProvider<T>(ConnectionConfig currentConnectionConfig) where T : class, new()
+        {
+            if (currentConnectionConfig.DbType == DbType.Oracle)
+            {
+                return new OracleDeleteable<T>();
+            }
+            else
+            {
+                return new DeleteableProvider<T>();
+            }
+        }
+
+        public static InsertableProvider<T> GetInsertableProvider<T>(ConnectionConfig currentConnectionConfig) where T : class, new()
+        {
+            if (currentConnectionConfig.DbType == DbType.Oracle)
+            {
+                return new OracleInsertable<T>();
+            }
+            else
+            {
+                return new InsertableProvider<T>();
+            }
+        }
+
         public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.DbType == DbType.SqlServer)
