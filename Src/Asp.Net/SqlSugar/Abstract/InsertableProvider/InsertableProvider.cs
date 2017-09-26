@@ -28,7 +28,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
 
         #region Core
-        public int ExecuteCommand()
+        public virtual int ExecuteCommand()
         {
             InsertBuilder.IsReturnIdentity = false;
             PreToSql();
@@ -37,7 +37,7 @@ namespace SqlSugar
             return Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
         }
 
-        public KeyValuePair<string, List<SugarParameter>> ToSql()
+        public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
@@ -45,7 +45,7 @@ namespace SqlSugar
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, InsertBuilder.Parameters);
         }
-        public int ExecuteReturnIdentity()
+        public virtual int ExecuteReturnIdentity()
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
@@ -53,7 +53,7 @@ namespace SqlSugar
             RestoreMapping();
             return Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
         }
-        public long ExecuteReturnBigIdentity()
+        public virtual long ExecuteReturnBigIdentity()
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
