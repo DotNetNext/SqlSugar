@@ -24,9 +24,10 @@ namespace SqlSugar
         {
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
+            var isIgnoreOrderBy = this.IsCount && this.PartitionByValue.IsNullOrEmpty();
             AppendFilter();
             sql = new StringBuilder();
-            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY "+this.Builder.SqlDateNow+" ";
+            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY "+ this.Builder.SqlDateNow + " ";
             if (this.PartitionByValue.IsValuable())
             {
                 this.OrderByValue = this.PartitionByValue + this.OrderByValue;
@@ -35,16 +36,16 @@ namespace SqlSugar
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
-            if (this.IsCount) { orderByValue = null; this.OrderByValue = oldOrderBy; }
+            if (isIgnoreOrderBy) { orderByValue = null; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
-            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (this.IsCount ? null : rowNumberString) : null);
-            if (this.IsCount) { return sql.ToString(); }
+            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
+            if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
                 if (externalOrderBy.IsNullOrEmpty())
                 {
-                    externalOrderBy = " ORDER BY "+this.Builder.SqlDateNow+" ";
+                    externalOrderBy = " ORDER BY "+ this.Builder.SqlDateNow + " ";
                 }
                 result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy), result);
                 result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
