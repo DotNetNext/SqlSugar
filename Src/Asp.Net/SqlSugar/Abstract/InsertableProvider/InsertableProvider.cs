@@ -187,7 +187,7 @@ namespace SqlSugar
         #endregion
 
         #region Protected Methods
-        protected void PreToSql()
+        protected virtual void PreToSql()
         {
             #region Identities
             if (!IsOffIdentity)
