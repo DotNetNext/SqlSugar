@@ -34,7 +34,7 @@ namespace SqlSugar
                 string columnParametersString = string.Join(UtilConstants.Dot, this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
                 if (identities.IsValuable()) {
                     columnsString = columnsString.TrimEnd(UtilConstants.DotChar) + UtilConstants.Dot + string.Join(UtilConstants.Dot, identities.Select(it=> Builder.GetTranslationColumnName(it.DbColumnName)));
-                    columnParametersString = columnParametersString.TrimEnd(UtilConstants.DotChar) + UtilConstants.Dot + string.Join(UtilConstants.Dot, identities.Select(it => Builder.GetTranslationColumnName(it.OracleSequenceName)));
+                    columnParametersString = columnParametersString.TrimEnd(UtilConstants.DotChar) + UtilConstants.Dot + string.Join(UtilConstants.Dot, identities.Select(it =>it.OracleSequenceName));
                 }
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
