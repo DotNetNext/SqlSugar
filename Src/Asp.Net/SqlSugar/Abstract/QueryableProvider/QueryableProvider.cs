@@ -22,6 +22,8 @@ namespace SqlSugar
         public ISqlBuilder SqlBuilder { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public MappingTableList QueryableMappingTableList { get; set; }
+        public bool IsCache { get; set; }
+        public int CacheTime { get; set; }
         public bool IsAs { get; set; }
         public QueryBuilder QueryBuilder
         {
@@ -584,7 +586,12 @@ namespace SqlSugar
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
         }
-
+        public  ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
         #region Async methods
         public Task<T> SingleAsync()
         {
@@ -1298,6 +1305,12 @@ namespace SqlSugar
             base.With(withString);
             return this;
         }
+        public new ISugarQueryable<T, T2> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
         #endregion
     }
     #endregion
@@ -1505,6 +1518,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -1735,6 +1754,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -1991,6 +2016,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -2273,6 +2304,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -2582,6 +2619,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -2917,6 +2960,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -3275,6 +3324,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -3657,6 +3712,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -4064,6 +4125,12 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
@@ -4496,6 +4563,11 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> With(string withString)
         {
             base.With(withString);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCache(int cacheDurationInSeconds=int.MaxValue) {
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
             return this;
         }
         #endregion
