@@ -64,6 +64,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("double",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@float),
+                    new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.Single),
                     new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("dec",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
