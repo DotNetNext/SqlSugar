@@ -170,7 +170,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance().GetOrCreate(cacheKey,
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
                     () =>
                     {
                         string sql = "select * from " + tableName + " WHERE 1=2 ";
@@ -207,7 +207,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance().GetOrCreate(cacheKey,
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
                     () =>
                     {
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;

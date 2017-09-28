@@ -8,18 +8,6 @@ namespace SqlSugar
 {
     public class ReflectionInoCache : ICacheService
     {
-        private static ReflectionInoCache _instance = null;
-        private static readonly object _instanceLock = new object();
-        public static ReflectionInoCache GetInstance()
-        {
-            if (_instance == null)
-                lock (_instanceLock)
-                    if (_instance == null)
-                    {
-                        _instance = new ReflectionInoCache();
-                    }
-            return _instance;
-        }
         public void Add<V>(string key, V value)
         {
             ReflectionInoCache<V>.GetInstance().Add(key,value);

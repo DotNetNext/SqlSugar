@@ -11,7 +11,7 @@ namespace SqlSugar
         {
             Type type = typeof(T);
             string key = "DataReaderToList." + fields + context.CurrentConnectionConfig.DbType + type.FullName;
-            IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetCacheInstance().GetOrCreate(key, () =>
+            IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(key, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(context, dataReader).CreateBuilder(type);
                 return cacheResult;

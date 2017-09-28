@@ -356,13 +356,13 @@ namespace SqlSugar
         #endregion
 
         #region Services
-        public static ICacheService GetCacheInstance()
+        public static ICacheService GetReflectionInoCacheInstance()
         {
-            return  ReflectionInoCache.GetInstance();
+            return  DefaultServices.ReflectionInoCache;
         }
         public static ISerializeService GetSerializeInstance()
         {
-            return SerializeService.GetInstance();
+            return DefaultServices.Serialize;
         }
         #endregion
     }

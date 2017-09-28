@@ -168,7 +168,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance().GetOrCreate(cacheKey,
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
                     () =>
                     {
                         string sql = "select * from " + tableName + " limit 0,1";
@@ -256,7 +256,7 @@ namespace SqlSugar
         }
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
-            return this.Context.Utilities.GetCacheInstance().GetOrCreate(cacheKey,
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
              () =>
              {
                  var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
