@@ -94,7 +94,7 @@
     <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
     <Compile Include="Infrastructure\DependencyManagement.cs" />
     <Compile Include="IntegrationInterface\ISerializeService.cs" />
-    <Compile Include="IntegrationServices\DefaultServices.cs" />
+    <Compile Include="Entities\DefaultServices.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
     <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />

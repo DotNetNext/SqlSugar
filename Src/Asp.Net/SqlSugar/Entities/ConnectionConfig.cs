@@ -29,11 +29,55 @@ namespace SqlSugar
         public ConfigureExternalServices ConfigureExternalServices = _DefaultServices;
         private static ConfigureExternalServices _DefaultServices = new ConfigureExternalServices();
     }
-    
+
     public class ConfigureExternalServices
     {
-        public ISerializeService SerializeService =DefaultServices.Serialize;
-        public ICacheService ReflectionInoCache = DefaultServices.ReflectionInoCache;
-        public ICacheService DataInfoCache { get; set; }
+        public ISerializeService SerializeService
+        {
+            get
+            {
+                if (DefaultServices.Serialize == null)
+                    DefaultServices.Serialize = new SerializeService();
+                return DefaultServices.Serialize;
+            }
+            set
+            {
+                lock (DefaultServices.Serialize)
+                {
+                    DefaultServices.Serialize = value;
+                }
+            }
+        }
+        public ICacheService ReflectionInoCache
+        {
+            get
+            {
+                if (DefaultServices.ReflectionInoCache == null)
+                    DefaultServices.ReflectionInoCache = new ReflectionInoCache();
+                return DefaultServices.ReflectionInoCache;
+            }
+            set
+            {
+                lock (DefaultServices.ReflectionInoCache)
+                {
+                    DefaultServices.ReflectionInoCache = value;
+                }
+            }
+        }
+        public ICacheService DataInfoCache
+        {
+            get
+            {
+                Check.ArgumentNullException(DefaultServices.DataInoCache, "The data cache needs to be set ConnectionConfig.ConfigureExternalServices.DataInfoCache");
+                return DefaultServices.DataInoCache;
+            }
+            set
+            {
+                lock (DefaultServices.DataInoCache)
+                {
+                    DefaultServices.DataInoCache = value;
+                }
+            }
+        }
     }
 }
