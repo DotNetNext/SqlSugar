@@ -54,7 +54,7 @@ namespace SqlSugar
 
         public void Add(string key, V value, int cacheDurationInSeconds)
         {
-            Add(key, value);
+            Check.ThrowNotSupportedException("ReflectionInoCache.Add(string key, V value, int cacheDurationInSeconds)");
         }
 
         public void Remove(string key)
