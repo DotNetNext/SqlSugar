@@ -122,6 +122,7 @@ namespace SqlSugar
         List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);
         Task<KeyValuePair<List<T>,int>> ToPageListAsync(int pageIndex, int pageSize, int totalNumber);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         void Clear();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
@@ -178,6 +179,7 @@ namespace SqlSugar
         new ISugarQueryable<T,T2> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T,T2> With(string withString);
         new ISugarQueryable<T,T2> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T,T2> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
@@ -235,6 +237,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2,T3> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2,T3> With(string withString);
         new ISugarQueryable<T, T2,T3> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
@@ -297,6 +300,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3,T4> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3,T4> With(string withString);
         new ISugarQueryable<T, T2, T3,T4> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
@@ -365,6 +369,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4,T5> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4,T5> With(string withString);
         new ISugarQueryable<T, T2, T3, T4,T5> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
@@ -437,6 +442,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5,T6> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4, T5,T6> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5,T6> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7> : ISugarQueryable<T>
@@ -514,6 +520,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> : ISugarQueryable<T>
@@ -596,6 +603,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
 
@@ -685,6 +693,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion                                       
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> : ISugarQueryable<T>
@@ -777,6 +786,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
         #endregion                                       
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11> : ISugarQueryable<T>
@@ -874,6 +884,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion                                       
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11,T12> : ISugarQueryable<T>
@@ -976,6 +987,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11,T12> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion                                               
     }
     #endregion

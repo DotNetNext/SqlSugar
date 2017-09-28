@@ -592,6 +592,15 @@ namespace SqlSugar
             this.CacheTime = cacheDurationInSeconds;
             return this;
         }
+        public  ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
+            return this;
+        }
         #region Async methods
         public Task<T> SingleAsync()
         {
@@ -1311,6 +1320,15 @@ namespace SqlSugar
             this.CacheTime = cacheDurationInSeconds;
             return this;
         }
+        public new ISugarQueryable<T, T2> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
+            return this;
+        }
         #endregion
     }
     #endregion
@@ -1524,6 +1542,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -1760,6 +1787,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -2022,6 +2058,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -2310,6 +2355,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -2625,6 +2679,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -2966,6 +3029,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -3330,6 +3402,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -3718,6 +3799,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -4131,6 +4221,15 @@ namespace SqlSugar
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
@@ -4568,6 +4667,15 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCache(int cacheDurationInSeconds=int.MaxValue) {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (IsCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
             return this;
         }
         #endregion
