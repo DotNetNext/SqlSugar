@@ -26,11 +26,11 @@ namespace SqlSugar
         /// <summary>
         /// 
         /// </summary>
-        public ConfigureServices ConfigureExternalServices { get; set; }
+        public ConfigureExternalServices ConfigureExternalServices { get; set; }
     }
 
-    public class ConfigureServices
+    public class ConfigureExternalServices
     {
-        public ISerializeManager SerializeManager { get; set; }
+        public ISerializeService SerializeService { get; set; }
     }
 }

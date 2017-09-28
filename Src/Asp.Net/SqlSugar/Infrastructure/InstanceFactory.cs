@@ -360,7 +360,7 @@ namespace SqlSugar
         {
             return  ReflectionInoCache<V>.GetInstance();
         }
-        public static ISerializeManager GetSerializeInstance()
+        public static ISerializeService GetSerializeInstance()
         {
             return SerializeService.GetInstance();
         }
