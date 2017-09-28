@@ -53,7 +53,6 @@ namespace SqlSugar
                 if (_Ado == null)
                 {
                     var reval = InstanceFactory.GetAdo(base.CurrentConnectionConfig);
-                    Check.ConnectionConfig(base.CurrentConnectionConfig);
                     _Ado = reval;
                     reval.Context = this;
                     return reval;

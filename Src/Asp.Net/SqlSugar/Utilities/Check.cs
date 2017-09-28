@@ -12,14 +12,6 @@ namespace SqlSugar
             throw new UtilExceptions("SqlSugarException.NotSupportedException：" + message);
         }
 
-        public static void ConnectionConfig(ConnectionConfig config)
-        {
-            if (config == null || config.ConnectionString.IsNullOrEmpty() || config.DbType.IsNullOrEmpty())
-            {
-                throw new UtilExceptions("SqlSugarException.ArgumentNullException：" + ErrorMessage.ConnectionConfigIsNull);
-            }
-        }
-
         public static void ArgumentNullException(object checkObj, string message)
         {
             if (checkObj == null)

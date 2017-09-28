@@ -6,15 +6,6 @@ namespace SqlSugar
 {
     internal static partial class ErrorMessage
     {
-
-        internal static string ConnectionConfigIsNull
-        {
-            get
-            {
-                return GetThrowMessage("CurrentConnectionConfig and CurrentConnectionConfig attributes can't be null",
-                                       "CurrentConnectionConfig和它的属性不能为null。");
-            }
-        }
         internal static string ObjNotExist
         {
             get
