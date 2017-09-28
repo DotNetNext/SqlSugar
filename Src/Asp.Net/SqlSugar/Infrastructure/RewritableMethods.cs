@@ -265,7 +265,7 @@ namespace SqlSugar
         #region Cache
         public ICacheManager<T> GetCacheInstance<T>()
         {
-            return CacheManager<T>.GetInstance();
+            return RefractionInoCache<T>.GetInstance();
         }
 
         public void RemoveCacheAll()
@@ -275,12 +275,12 @@ namespace SqlSugar
 
         public void RemoveCacheAll<T>()
         {
-            CacheManager<T>.GetInstance().RemoveAllCache();
+            RefractionInoCache<T>.GetInstance().RemoveAllCache();
         }
 
         public void RemoveCache<T>(string key)
         {
-            CacheManager<T>.GetInstance().Remove(key);
+            RefractionInoCache<T>.GetInstance().Remove(key);
         }
         #endregion
 
