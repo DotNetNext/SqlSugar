@@ -169,7 +169,7 @@
     <Compile Include="Utilities\UtilConvert.cs" />
     <Compile Include="Utilities\UtilMethods.cs" />
     <Compile Include="Utilities\UtilExceptions.cs" />
-    <Compile Include="Infrastructure\RewritableMethods.cs" />
+    <Compile Include="Infrastructure\ContextMethods.cs" />
     <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerUpdateBuilder.cs" />
     <Compile Include="Realization\SqlServer\DbBind\SqlServerDbBind.cs" />

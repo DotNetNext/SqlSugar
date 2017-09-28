@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class RewritableMethods : IRewritableMethods
+    public class ContextMethods : IRewritableMethods
     {
         #region DataReader
 
