@@ -271,17 +271,17 @@ namespace SqlSugar
 
         public void RemoveCacheAll()
         {
-            CacheHelper.RemoveAllCache();
+            ReflectionInoHelper.RemoveAllCache();
         }
 
         public void RemoveCacheAll<T>()
         {
-            ReflectionInoCacheHelper<T>.GetInstance().RemoveAllCache();
+            ReflectionInoCore<T>.GetInstance().RemoveAllCache();
         }
 
         public void RemoveCache<T>(string key)
         {
-            ReflectionInoCacheHelper<T>.GetInstance().Remove(key);
+            ReflectionInoCore<T>.GetInstance().Remove(key);
         }
         #endregion
 

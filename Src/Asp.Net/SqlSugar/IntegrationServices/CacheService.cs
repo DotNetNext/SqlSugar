@@ -10,44 +10,44 @@ namespace SqlSugar
     {
         public void Add<V>(string key, V value)
         {
-            ReflectionInoCacheHelper<V>.GetInstance().Add(key,value);
+            ReflectionInoCore<V>.GetInstance().Add(key,value);
         }
         public void Add<V>(string key, V value, int cacheDurationInSeconds)
         {
-            ReflectionInoCacheHelper<V>.GetInstance().Add(key, value,cacheDurationInSeconds);
+            ReflectionInoCore<V>.GetInstance().Add(key, value,cacheDurationInSeconds);
         }
 
         public bool ContainsKey<V>(string key)
         {
-           return ReflectionInoCacheHelper<V>.GetInstance().ContainsKey(key);
+           return ReflectionInoCore<V>.GetInstance().ContainsKey(key);
         }
 
         public V Get<V>(string key)
         {
-            return ReflectionInoCacheHelper<V>.GetInstance().Get(key);
+            return ReflectionInoCore<V>.GetInstance().Get(key);
         }
 
         public IEnumerable<string> GetAllKey<V>()
         {
-            return ReflectionInoCacheHelper<V>.GetInstance().GetAllKey();
+            return ReflectionInoCore<V>.GetInstance().GetAllKey();
         }
 
         public V GetOrCreate<V>(string cacheKey, Func<V> create)
         {
-            return ReflectionInoCacheHelper<V>.GetInstance().GetOrCreate(cacheKey, create);
+            return ReflectionInoCore<V>.GetInstance().GetOrCreate(cacheKey, create);
         }
 
         public void Remove<V>(string key)
         {
-            ReflectionInoCacheHelper<V>.GetInstance().Remove(key);
+            ReflectionInoCore<V>.GetInstance().Remove(key);
         }
     }
-    public class ReflectionInoCacheHelper<V>  
+    public class ReflectionInoCore<V>  
     {
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();
-        private static ReflectionInoCacheHelper<V> _instance = null;
+        private static ReflectionInoCore<V> _instance = null;
         private static readonly object _instanceLock = new object();
-        private ReflectionInoCacheHelper() { }
+        private ReflectionInoCore() { }
 
         public V this[string key]
         {
@@ -70,15 +70,15 @@ namespace SqlSugar
                 return default(V);
         }
 
-        public static ReflectionInoCacheHelper<V> GetInstance()
+        public static ReflectionInoCore<V> GetInstance()
         {
             if (_instance == null)
                 lock (_instanceLock)
                     if (_instance == null)
                     {
-                        _instance = new ReflectionInoCacheHelper<V>();
-                        Action addItem =()=> { ReflectionInoCacheHelper<V>.GetInstance().RemoveAllCache(); };
-                        CacheHelper.AddRemoveFunc(addItem);
+                        _instance = new ReflectionInoCore<V>();
+                        Action addItem =()=> { ReflectionInoCore<V>.GetInstance().RemoveAllCache(); };
+                        ReflectionInoHelper.AddRemoveFunc(addItem);
                     }
             return _instance;
         }
@@ -123,7 +123,7 @@ namespace SqlSugar
             }
         }
     }
-    internal static class CacheHelper
+    internal static class ReflectionInoHelper
     {
         private static List<Action> removeActions = new List<Action>();
         internal static void AddRemoveFunc(Action removeAction)
