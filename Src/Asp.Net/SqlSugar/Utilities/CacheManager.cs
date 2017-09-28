@@ -76,15 +76,7 @@ namespace SqlSugar
             return this.InstanceCache.Keys;
         }
 
-        public void Action(string cacheKey, Action<ICacheManager<V>, string> successAction, Func<ICacheManager<V>, string, V> errorAction)
-        {
-            if (this.ContainsKey(cacheKey)) successAction(this, cacheKey);
-            else
-            {
-                this.Add(cacheKey, errorAction(this, cacheKey));
-            }
-        }
-        public V Func(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction)
+        public V GetOrCreate(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction)
         {
             var cm = CacheManager<V>.GetInstance();
             if (cm.ContainsKey(cacheKey)) return successAction(cm, cacheKey);

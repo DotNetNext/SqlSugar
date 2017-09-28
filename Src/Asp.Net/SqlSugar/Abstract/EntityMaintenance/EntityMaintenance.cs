@@ -18,7 +18,7 @@ namespace SqlSugar
         public EntityInfo GetEntityInfo(Type type)
         {
             string cacheKey = "GetEntityInfo" + type.FullName;
-            return this.Context.Utilities.GetCacheInstance<EntityInfo>().Func(cacheKey,
+            return this.Context.Utilities.GetCacheInstance<EntityInfo>().GetOrCreate(cacheKey,
             (cm, key) =>
             {
                 return cm[cacheKey];

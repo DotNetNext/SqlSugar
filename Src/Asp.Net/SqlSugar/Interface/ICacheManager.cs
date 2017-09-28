@@ -12,7 +12,6 @@ namespace SqlSugar
         V Get(string key);
         IEnumerable<string> GetAllKey();
         void Remove(string key);
-        V Func(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction);
-        void Action(string cacheKey, Action<ICacheManager<V>, string> successAction, Func<ICacheManager<V>, string, V> errorAction);
+        V GetOrCreate(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction);
     }
 }

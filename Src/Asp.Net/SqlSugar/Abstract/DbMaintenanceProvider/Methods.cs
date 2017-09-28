@@ -41,7 +41,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance<List<string>>().Func(cacheKey,
+            return this.Context.Utilities.GetCacheInstance<List<string>>().GetOrCreate(cacheKey,
                     (cm, key) =>
                     {
                         return cm[cacheKey];
@@ -56,7 +56,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaries" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance<List<string>>().Func(cacheKey,
+            return this.Context.Utilities.GetCacheInstance<List<string>>().GetOrCreate(cacheKey,
             (cm, key) =>
             {
                 return cm[cacheKey];
@@ -216,7 +216,7 @@ namespace SqlSugar
         #region Private
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
-            return this.Context.Utilities.GetCacheInstance<List<T>>().Func(cacheKey,
+            return this.Context.Utilities.GetCacheInstance<List<T>>().GetOrCreate(cacheKey,
              (cm, key) =>
              {
                  return cm[cacheKey];
