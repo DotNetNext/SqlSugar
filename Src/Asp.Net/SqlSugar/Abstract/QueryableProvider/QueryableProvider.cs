@@ -433,7 +433,11 @@ namespace SqlSugar
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             var sql = QueryBuilder.ToSqlString();
             var tableName = this.SqlBuilder.GetPackTable(sql, "MergeTable");
-            return this.Context.Queryable<ExpandoObject>().AS(tableName).Select<T>("*");
+            var mergeQueryable = this.Context.Queryable<ExpandoObject>();
+            mergeQueryable.QueryBuilder.Parameters = QueryBuilder.Parameters;
+            mergeQueryable.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex+1;
+            mergeQueryable.QueryBuilder.JoinIndex = QueryBuilder.JoinIndex+1;
+            return mergeQueryable.AS(tableName).Select<T>("*");
         }
 
         public virtual int Count()
