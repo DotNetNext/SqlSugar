@@ -191,7 +191,7 @@ namespace SqlSugar
         public string SerializeObject(object value)
         {
             DependencyManagement.TryJsonNet();
-            return JsonHelper.SerializeObject(value);
+            return InstanceFactory.GetSerializeInstance<string>().SerializeObject(value);
         }
 
    
@@ -204,7 +204,7 @@ namespace SqlSugar
         public T DeserializeObject<T>(string value)
         {
             DependencyManagement.TryJsonNet();
-            return JsonHelper.DeserializeObject<T>(value);
+            return InstanceFactory.GetSerializeInstance<T>().DeserializeObject(value);
         }
         #endregion
 
