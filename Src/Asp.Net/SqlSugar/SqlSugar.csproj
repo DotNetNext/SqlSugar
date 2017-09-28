@@ -97,7 +97,7 @@
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
     <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
-    <Compile Include="DefaultServices\SerializeService.cs" />
+    <Compile Include="IntegrationServices\SerializeService.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
@@ -160,7 +160,7 @@
     <Compile Include="Abstract\SqlBuilderProvider\UpdateBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider.cs" />
-    <Compile Include="DefaultServices\CacheService.cs" />
+    <Compile Include="IntegrationServices\CacheService.cs" />
     <Compile Include="Utilities\Check.cs" />
     <Compile Include="Utilities\DbExtensions.cs" />
     <Compile Include="Utilities\ErrorMessage.cs" />
