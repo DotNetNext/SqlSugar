@@ -6,12 +6,12 @@ using System.Collections;
 using System.Linq.Expressions;
 namespace SqlSugar
 {
-    public class RefractionInoCache<V> : ICacheManager<V>
+    public class ReflectionInoCache<V> : ICacheManager<V>
     {
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();
-        private static RefractionInoCache<V> _instance = null;
+        private static ReflectionInoCache<V> _instance = null;
         private static readonly object _instanceLock = new object();
-        private RefractionInoCache() { }
+        private ReflectionInoCache() { }
 
         public V this[string key]
         {
@@ -34,14 +34,14 @@ namespace SqlSugar
                 return default(V);
         }
 
-        public static RefractionInoCache<V> GetInstance()
+        public static ReflectionInoCache<V> GetInstance()
         {
             if (_instance == null)
                 lock (_instanceLock)
                     if (_instance == null)
                     {
-                        _instance = new RefractionInoCache<V>();
-                        Action addItem =()=> { RefractionInoCache<V>.GetInstance().RemoveAllCache(); };
+                        _instance = new ReflectionInoCache<V>();
+                        Action addItem =()=> { ReflectionInoCache<V>.GetInstance().RemoveAllCache(); };
                         CacheManager.Add(addItem);
                     }
             return _instance;
@@ -78,7 +78,7 @@ namespace SqlSugar
 
         public V GetOrCreate(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction)
         {
-            var cm = RefractionInoCache<V>.GetInstance();
+            var cm = ReflectionInoCache<V>.GetInstance();
             if (cm.ContainsKey(cacheKey)) return successAction(cm, cacheKey);
             else
             {
