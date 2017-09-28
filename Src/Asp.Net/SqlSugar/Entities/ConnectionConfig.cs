@@ -26,11 +26,13 @@ namespace SqlSugar
         /// <summary>
         /// Configure External Services replace default services,For example, Redis storage
         /// </summary>
-        public ConfigureExternalServices ConfigureExternalServices { get; set; }
+        public ConfigureExternalServices ConfigureExternalServices = _DefaultServices;
+        private static ConfigureExternalServices _DefaultServices = new ConfigureExternalServices();
     }
-
+    
     public class ConfigureExternalServices
     {
-        public ISerializeService SerializeService { get; set; }
+        public ISerializeService SerializeService =DefaultServices.Serialize;
+        public ICacheService ReflectionInoCache = DefaultServices.ReflectionInoCache;
     }
 }
