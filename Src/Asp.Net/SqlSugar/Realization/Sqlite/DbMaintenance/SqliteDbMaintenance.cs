@@ -168,12 +168,8 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance<List<DbColumnInfo>>().GetOrCreate(cacheKey,
-                    (cm, key) =>
-                    {
-                        return cm[cacheKey];
-
-                    }, (cm, key) =>
+            return this.Context.Utilities.GetCacheInstance().GetOrCreate(cacheKey,
+                    () =>
                     {
                         string sql = "select * from " + tableName + " limit 0,1";
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
@@ -260,12 +256,8 @@ namespace SqlSugar
         }
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
-            return this.Context.Utilities.GetCacheInstance<List<T>>().GetOrCreate(cacheKey,
-             (cm, key) =>
-             {
-                 return cm[cacheKey];
-
-             }, (cm, key) =>
+            return this.Context.Utilities.GetCacheInstance().GetOrCreate(cacheKey,
+             () =>
              {
                  var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
                  this.Context.Ado.IsEnableLogEvent = false;

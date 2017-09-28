@@ -3,15 +3,14 @@ using System.Collections.Generic;
 
 namespace SqlSugar
 {
-    public interface ICacheService<V>
+    public interface ICacheService
     {
-        V this[string key] { get; }
-        void Add(string key, V value);
-        void Add(string key, V value, int cacheDurationInSeconds);
-        bool ContainsKey(string key);
-        V Get(string key);
-        IEnumerable<string> GetAllKey();
-        void Remove(string key);
-        V GetOrCreate(string cacheKey, Func<ICacheService<V>, string, V> successAction, Func<ICacheService<V>, string, V> errorAction);
+        void Add<V>(string key, V value);
+        void Add<V>(string key, V value, int cacheDurationInSeconds);
+        bool ContainsKey<V>(string key);
+        V Get<V>(string key);
+        IEnumerable<string> GetAllKey<V>();
+        void Remove<V>(string key);
+        V GetOrCreate<V>(string cacheKey, Func<V> create);
     }
 }

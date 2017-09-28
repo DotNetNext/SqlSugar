@@ -263,9 +263,9 @@ namespace SqlSugar
         #endregion
 
         #region Cache
-        public ICacheService<T> GetCacheInstance<T>()
+        public ICacheService GetCacheInstance()
         {
-            return ReflectionInoCache<T>.GetInstance();
+            return ReflectionInoCache.GetInstance();
         }
 
         public void RemoveCacheAll()

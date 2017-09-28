@@ -356,9 +356,9 @@ namespace SqlSugar
         #endregion
 
         #region Services
-        public static ICacheService<V> GetCacheInstance<V>()
+        public static ICacheService GetCacheInstance()
         {
-            return  ReflectionInoCache<V>.GetInstance();
+            return  ReflectionInoCache.GetInstance();
         }
         public static ISerializeService GetSerializeInstance()
         {

@@ -6,7 +6,55 @@ using System.Collections;
 using System.Linq.Expressions;
 namespace SqlSugar
 {
-    public class ReflectionInoCache<V> : ICacheService<V>
+    public class ReflectionInoCache : ICacheService
+    {
+        private static ReflectionInoCache _instance = null;
+        private static readonly object _instanceLock = new object();
+        public static ReflectionInoCache GetInstance()
+        {
+            if (_instance == null)
+                lock (_instanceLock)
+                    if (_instance == null)
+                    {
+                        _instance = new ReflectionInoCache();
+                    }
+            return _instance;
+        }
+        public void Add<V>(string key, V value)
+        {
+            ReflectionInoCache<V>.GetInstance().Add(key,value);
+        }
+        public void Add<V>(string key, V value, int cacheDurationInSeconds)
+        {
+            ReflectionInoCache<V>.GetInstance().Add(key, value,cacheDurationInSeconds);
+        }
+
+        public bool ContainsKey<V>(string key)
+        {
+           return ReflectionInoCache<V>.GetInstance().ContainsKey(key);
+        }
+
+        public V Get<V>(string key)
+        {
+            return ReflectionInoCache<V>.GetInstance().Get(key);
+        }
+
+        public IEnumerable<string> GetAllKey<V>()
+        {
+            return ReflectionInoCache<V>.GetInstance().GetAllKey();
+        }
+
+        public V GetOrCreate<V>(string cacheKey, Func<V> create)
+        {
+            return ReflectionInoCache<V>.GetInstance().GetOrCreate(cacheKey, create);
+        }
+
+        public void Remove<V>(string key)
+        {
+            ReflectionInoCache<V>.GetInstance().Remove(key);
+        }
+    }
+    public class ReflectionInoCache<V>  
     {
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();
         private static ReflectionInoCache<V> _instance = null;
@@ -76,14 +124,13 @@ namespace SqlSugar
             return this.InstanceCache.Keys;
         }
 
-        public V GetOrCreate(string cacheKey, Func<ICacheService<V>, string, V> successAction, Func<ICacheService<V>, string, V> errorAction)
+        public V GetOrCreate(string cacheKey, Func<V> create)
         {
-            var cm = ReflectionInoCache<V>.GetInstance();
-            if (cm.ContainsKey(cacheKey)) return successAction(cm, cacheKey);
+            if (this.ContainsKey(cacheKey)) return Get(cacheKey);
             else
             {
-                var reval = errorAction(cm, cacheKey);
-                cm.Add(cacheKey, reval);
+                var reval = create();
+                this.Add(cacheKey, reval);
                 return reval;
             }
         }

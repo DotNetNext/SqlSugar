@@ -18,12 +18,8 @@ namespace SqlSugar
         public EntityInfo GetEntityInfo(Type type)
         {
             string cacheKey = "GetEntityInfo" + type.FullName;
-            return this.Context.Utilities.GetCacheInstance<EntityInfo>().GetOrCreate(cacheKey,
-            (cm, key) =>
-            {
-                return cm[cacheKey];
-
-            }, (cm, key) =>
+            return this.Context.Utilities.GetCacheInstance().GetOrCreate(cacheKey,
+            () =>
             {
                 EntityInfo result = new EntityInfo();
                 var sugarAttributeInfo = type.GetTypeInfo().GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
