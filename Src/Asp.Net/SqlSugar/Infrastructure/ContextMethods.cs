@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class ContextMethods : IRewritableMethods
+    public class ContextMethods : IContextMethods
     {
         #region DataReader
 
@@ -263,7 +263,7 @@ namespace SqlSugar
         #endregion
 
         #region Cache
-        public ICacheManager<T> GetCacheInstance<T>()
+        public ICacheService<T> GetCacheInstance<T>()
         {
             return ReflectionInoCache<T>.GetInstance();
         }

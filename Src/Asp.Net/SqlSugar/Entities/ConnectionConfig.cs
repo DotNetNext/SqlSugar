@@ -23,5 +23,14 @@ namespace SqlSugar
         /// Default SystemTable,If you do not have system table permissions, use attribute
         /// </summary>
         public InitKeyType InitKeyType = InitKeyType.SystemTable;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ConfigureServices ConfigureExternalServices { get; set; }
+    }
+
+    public class ConfigureServices
+    {
+        public ISerializeManager SerializeManager { get; set; }
     }
 }

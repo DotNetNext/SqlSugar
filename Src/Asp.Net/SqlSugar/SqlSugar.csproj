@@ -93,11 +93,11 @@
     <Compile Include="ExpressionsToSql\Subquery\SubResolve.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
     <Compile Include="Infrastructure\DependencyManagement.cs" />
-    <Compile Include="Interface\ISerializeManager.cs" />
+    <Compile Include="Interface\ISerializeService.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
     <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
-    <Compile Include="Utilities\SerializeManager.cs" />
+    <Compile Include="Services\SerializeService.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
     <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
@@ -134,7 +134,7 @@
     <Compile Include="Enum\DbObjectType.cs" />
     <Compile Include="Enum\ProperyType.cs" />
     <Compile Include="Utilities\FileHelper.cs" />
-    <Compile Include="Interface\ICacheManager.cs" />
+    <Compile Include="Interface\ICacheService.cs" />
     <Compile Include="Entities\DbResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />
     <Compile Include="Interface\IFilter.cs" />
@@ -160,7 +160,7 @@
     <Compile Include="Abstract\SqlBuilderProvider\UpdateBuilder.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider.cs" />
-    <Compile Include="Utilities\CacheManager.cs" />
+    <Compile Include="Services\CacheService.cs" />
     <Compile Include="Utilities\Check.cs" />
     <Compile Include="Utilities\DbExtensions.cs" />
     <Compile Include="Utilities\ErrorMessage.cs" />
@@ -239,7 +239,7 @@
     <Compile Include="Interface\IQueryable.cs" />
     <Compile Include="Interface\IDMLBuilder.cs" />
     <Compile Include="Interface\ISqlBuilder.cs" />
-    <Compile Include="Interface\IRewritableMethods.cs" />
+    <Compile Include="Interface\IContextMethods.cs" />
     <Compile Include="Interface\IUpdateable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infrastructure\SqlSugarAccessory.cs" />

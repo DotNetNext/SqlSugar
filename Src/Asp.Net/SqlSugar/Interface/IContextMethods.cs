@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IRewritableMethods
+    public interface IContextMethods
     {
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
         List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
@@ -18,7 +18,7 @@ namespace SqlSugar
         T TranslateCopy<T>(T sourceObject);
         SqlSugarClient CopyContext(SqlSugarClient context, bool isCopyEvents = false);
         dynamic DataTableToDynamic(DataTable table);
-        ICacheManager<T> GetCacheInstance<T>();
+        ICacheService<T> GetCacheInstance<T>();
         void RemoveCacheAll();
         void RemoveCacheAll<T>();
         void RemoveCache<T>(string key);

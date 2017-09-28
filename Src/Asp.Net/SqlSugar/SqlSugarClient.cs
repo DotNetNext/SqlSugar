@@ -68,12 +68,12 @@ namespace SqlSugar
 
         #region Util Methods
         [Obsolete("Use SqlSugarClient.Utilities")]
-        public virtual IRewritableMethods RewritableMethods
+        public virtual IContextMethods RewritableMethods
         {
             get { return this.Utilities; }
             set { this.Utilities = value; }
         }
-        public virtual IRewritableMethods Utilities
+        public virtual IContextMethods Utilities
         {
             get
             {

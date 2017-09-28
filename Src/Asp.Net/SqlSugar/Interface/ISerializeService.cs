@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public interface ISerializeManager
+    public interface ISerializeService
     {
         string SerializeObject(object value);
          T DeserializeObject<T>(string value);

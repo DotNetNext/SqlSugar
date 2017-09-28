@@ -6,7 +6,7 @@ using System.Collections;
 using System.Linq.Expressions;
 namespace SqlSugar
 {
-    public class ReflectionInoCache<V> : ICacheManager<V>
+    public class ReflectionInoCache<V> : ICacheService<V>
     {
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();
         private static ReflectionInoCache<V> _instance = null;
@@ -76,7 +76,7 @@ namespace SqlSugar
             return this.InstanceCache.Keys;
         }
 
-        public V GetOrCreate(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction)
+        public V GetOrCreate(string cacheKey, Func<ICacheService<V>, string, V> successAction, Func<ICacheService<V>, string, V> errorAction)
         {
             var cm = ReflectionInoCache<V>.GetInstance();
             if (cm.ContainsKey(cacheKey)) return successAction(cm, cacheKey);

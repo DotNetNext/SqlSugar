@@ -25,7 +25,7 @@ namespace SqlSugar
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
-        protected IRewritableMethods _RewritableMethods;
+        protected IContextMethods _RewritableMethods;
         protected IDbMaintenance _DbMaintenance;
         protected QueryFilterProvider _QueryFilterProvider;
         protected SimpleClient _SimpleClient;
