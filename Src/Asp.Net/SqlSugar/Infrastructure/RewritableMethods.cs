@@ -270,7 +270,7 @@ namespace SqlSugar
 
         public void RemoveCacheAll()
         {
-            CacheManager.RemoveAllCache();
+            CacheHelper.RemoveAllCache();
         }
 
         public void RemoveCacheAll<T>()

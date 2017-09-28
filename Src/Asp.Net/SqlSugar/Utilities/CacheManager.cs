@@ -42,7 +42,7 @@ namespace SqlSugar
                     {
                         _instance = new ReflectionInoCache<V>();
                         Action addItem =()=> { ReflectionInoCache<V>.GetInstance().RemoveAllCache(); };
-                        CacheManager.Add(addItem);
+                        CacheHelper.AddRemoveFunc(addItem);
                     }
             return _instance;
         }
@@ -88,10 +88,10 @@ namespace SqlSugar
             }
         }
     }
-    public static class CacheManager
+    internal static class CacheHelper
     {
         private static List<Action> removeActions = new List<Action>();
-        internal static void Add(Action removeAction)
+        internal static void AddRemoveFunc(Action removeAction)
         {
             removeActions.Add(removeAction);
         }
