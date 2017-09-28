@@ -32,52 +32,45 @@ namespace SqlSugar
 
     public class ConfigureExternalServices
     {
+
+        private ISerializeService _SerializeService;
+        private ICacheService _ReflectionInoCache;
+        private ICacheService _DataInfoCache;
+
         public ISerializeService SerializeService
         {
             get
             {
-                if (DefaultServices.Serialize == null)
-                    DefaultServices.Serialize = new SerializeService();
-                return DefaultServices.Serialize;
+                if (_SerializeService == null)
+                    return DefaultServices.Serialize;
+                else
+                    return _SerializeService;
             }
-            set
-            {
-                lock (DefaultServices.Serialize)
-                {
-                    DefaultServices.Serialize = value;
-                }
-            }
+            set{ _SerializeService = value;}
         }
+
         public ICacheService ReflectionInoCache
         {
             get
             {
-                if (DefaultServices.ReflectionInoCache == null)
-                    DefaultServices.ReflectionInoCache = new ReflectionInoCache();
-                return DefaultServices.ReflectionInoCache;
+                if (_ReflectionInoCache == null)
+                    return DefaultServices.ReflectionInoCache;
+                else
+                    return _ReflectionInoCache;
             }
-            set
-            {
-                lock (DefaultServices.ReflectionInoCache)
-                {
-                    DefaultServices.ReflectionInoCache = value;
-                }
-            }
+            set{_ReflectionInoCache = value;}
         }
+
         public ICacheService DataInfoCache
         {
             get
             {
-                Check.ArgumentNullException(DefaultServices.DataInoCache, "The data cache needs to be set ConnectionConfig.ConfigureExternalServices.DataInfoCache");
-                return DefaultServices.DataInoCache;
+                if (_DataInfoCache == null)
+                    return DefaultServices.DataInoCache;
+                else
+                    return _DataInfoCache;
             }
-            set
-            {
-                lock (DefaultServices.DataInoCache)
-                {
-                    DefaultServices.DataInoCache = value;
-                }
-            }
+            set { _DataInfoCache = value; }
         }
     }
 }

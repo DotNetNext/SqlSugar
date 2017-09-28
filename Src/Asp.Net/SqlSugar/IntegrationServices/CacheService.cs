@@ -6,48 +6,48 @@ using System.Collections;
 using System.Linq.Expressions;
 namespace SqlSugar
 {
-    public class ReflectionInoCache : ICacheService
+    public class ReflectionInoCacheService : ICacheService
     {
         public void Add<V>(string key, V value)
         {
-            ReflectionInoCache<V>.GetInstance().Add(key,value);
+            ReflectionInoCacheHelper<V>.GetInstance().Add(key,value);
         }
         public void Add<V>(string key, V value, int cacheDurationInSeconds)
         {
-            ReflectionInoCache<V>.GetInstance().Add(key, value,cacheDurationInSeconds);
+            ReflectionInoCacheHelper<V>.GetInstance().Add(key, value,cacheDurationInSeconds);
         }
 
         public bool ContainsKey<V>(string key)
         {
-           return ReflectionInoCache<V>.GetInstance().ContainsKey(key);
+           return ReflectionInoCacheHelper<V>.GetInstance().ContainsKey(key);
         }
 
         public V Get<V>(string key)
         {
-            return ReflectionInoCache<V>.GetInstance().Get(key);
+            return ReflectionInoCacheHelper<V>.GetInstance().Get(key);
         }
 
         public IEnumerable<string> GetAllKey<V>()
         {
-            return ReflectionInoCache<V>.GetInstance().GetAllKey();
+            return ReflectionInoCacheHelper<V>.GetInstance().GetAllKey();
         }
 
         public V GetOrCreate<V>(string cacheKey, Func<V> create)
         {
-            return ReflectionInoCache<V>.GetInstance().GetOrCreate(cacheKey, create);
+            return ReflectionInoCacheHelper<V>.GetInstance().GetOrCreate(cacheKey, create);
         }
 
         public void Remove<V>(string key)
         {
-            ReflectionInoCache<V>.GetInstance().Remove(key);
+            ReflectionInoCacheHelper<V>.GetInstance().Remove(key);
         }
     }
-    public class ReflectionInoCache<V>  
+    public class ReflectionInoCacheHelper<V>  
     {
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();
-        private static ReflectionInoCache<V> _instance = null;
+        private static ReflectionInoCacheHelper<V> _instance = null;
         private static readonly object _instanceLock = new object();
-        private ReflectionInoCache() { }
+        private ReflectionInoCacheHelper() { }
 
         public V this[string key]
         {
@@ -70,14 +70,14 @@ namespace SqlSugar
                 return default(V);
         }
 
-        public static ReflectionInoCache<V> GetInstance()
+        public static ReflectionInoCacheHelper<V> GetInstance()
         {
             if (_instance == null)
                 lock (_instanceLock)
                     if (_instance == null)
                     {
-                        _instance = new ReflectionInoCache<V>();
-                        Action addItem =()=> { ReflectionInoCache<V>.GetInstance().RemoveAllCache(); };
+                        _instance = new ReflectionInoCacheHelper<V>();
+                        Action addItem =()=> { ReflectionInoCacheHelper<V>.GetInstance().RemoveAllCache(); };
                         CacheHelper.AddRemoveFunc(addItem);
                     }
             return _instance;

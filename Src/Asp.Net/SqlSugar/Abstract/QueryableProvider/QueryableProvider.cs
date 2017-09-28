@@ -1088,7 +1088,7 @@ namespace SqlSugar
                     foreach (var item in result)
                     {
                         var contextProperty = item.GetType().GetProperty("Context");
-                        SqlSugarClient newClient = this.Context.Utilities.CopyContext(this.Context);
+                        SqlSugarClient newClient = this.Context.Utilities.CopyContext();
                         contextProperty.SetValue(item, newClient, null);
                     }
                 }
@@ -1096,7 +1096,7 @@ namespace SqlSugar
         }
         private ISugarQueryable<T> CopyQueryable()
         {
-            var asyncContext = this.Context.Utilities.CopyContext(this.Context, true);
+            var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty);

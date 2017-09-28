@@ -311,7 +311,7 @@ namespace SqlSugar
         }
         private IUpdateable<T> CopyUpdateable()
         {
-            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
+            var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
             var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);

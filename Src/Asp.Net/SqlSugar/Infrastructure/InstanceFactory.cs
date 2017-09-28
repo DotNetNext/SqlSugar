@@ -354,16 +354,5 @@ namespace SqlSugar
             return result;
         }
         #endregion
-
-        #region Services
-        public static ICacheService GetReflectionInoCacheInstance()
-        {
-            return  DefaultServices.ReflectionInoCache;
-        }
-        public static ISerializeService GetSerializeInstance()
-        {
-            return DefaultServices.Serialize;
-        }
-        #endregion
     }
 }

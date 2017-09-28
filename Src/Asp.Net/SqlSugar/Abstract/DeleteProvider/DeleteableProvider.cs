@@ -249,7 +249,7 @@ namespace SqlSugar
         }
 
         private IDeleteable<T> CopyDeleteable() {
-            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
+            var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
             var asyncDeleteable = asyncContext.Deleteable<T>();

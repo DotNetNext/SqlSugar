@@ -78,7 +78,9 @@ namespace SqlSugar
             get
             {
                 if (base._RewritableMethods == null)
+                {
                     base._RewritableMethods = new ContextMethods();
+                }
                 return _RewritableMethods;
             }
             set { base._RewritableMethods = value; }

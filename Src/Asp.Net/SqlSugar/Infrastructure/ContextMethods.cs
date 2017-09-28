@@ -10,6 +10,7 @@ namespace SqlSugar
 {
     public class ContextMethods : IContextMethods
     {
+        public SqlSugarClient Context { get; set; }
         #region DataReader
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace SqlSugar
         public string SerializeObject(object value)
         {
             DependencyManagement.TryJsonNet();
-            return InstanceFactory.GetSerializeInstance().SerializeObject(value);
+            return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SerializeObject(value);
         }
 
    
@@ -204,7 +205,7 @@ namespace SqlSugar
         public T DeserializeObject<T>(string value)
         {
             DependencyManagement.TryJsonNet();
-            return InstanceFactory.GetSerializeInstance().DeserializeObject<T>(value);
+            return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.DeserializeObject<T>(value);
         }
         #endregion
 
@@ -224,17 +225,17 @@ namespace SqlSugar
                 return DeserializeObject<T>(jsonString);
             }
         }
-        public SqlSugarClient CopyContext(SqlSugarClient context,bool isCopyEvents=false)
+        public SqlSugarClient CopyContext(bool isCopyEvents=false)
         {
-            var newClient = new SqlSugarClient(this.TranslateCopy(context.CurrentConnectionConfig));
-            newClient.MappingColumns = this.TranslateCopy(context.MappingColumns);
-            newClient.MappingTables = this.TranslateCopy(context.MappingTables);
-            newClient.IgnoreColumns = this.TranslateCopy(context.IgnoreColumns);
+            var newClient = new SqlSugarClient(this.TranslateCopy(Context.CurrentConnectionConfig));
+            newClient.MappingColumns = this.TranslateCopy(Context.MappingColumns);
+            newClient.MappingTables = this.TranslateCopy(Context.MappingTables);
+            newClient.IgnoreColumns = this.TranslateCopy(Context.IgnoreColumns);
             if (isCopyEvents) {
-                newClient.Ado.IsEnableLogEvent = context.Ado.IsEnableLogEvent;
-                newClient.Ado.LogEventStarting = context.Ado.LogEventStarting;
-                newClient.Ado.LogEventCompleted = context.Ado.LogEventCompleted;
-                newClient.Ado.ProcessingEventStartingSQL = context.Ado.ProcessingEventStartingSQL;
+                newClient.Ado.IsEnableLogEvent = Context.Ado.IsEnableLogEvent;
+                newClient.Ado.LogEventStarting = Context.Ado.LogEventStarting;
+                newClient.Ado.LogEventCompleted = Context.Ado.LogEventCompleted;
+                newClient.Ado.ProcessingEventStartingSQL = Context.Ado.ProcessingEventStartingSQL;
             }
             return newClient;
         }
@@ -265,7 +266,7 @@ namespace SqlSugar
         #region Cache
         public ICacheService GetReflectionInoCacheInstance()
         {
-            return InstanceFactory.GetReflectionInoCacheInstance();
+            return Context.CurrentConnectionConfig.ConfigureExternalServices.ReflectionInoCache;
         }
 
         public void RemoveCacheAll()
@@ -275,12 +276,12 @@ namespace SqlSugar
 
         public void RemoveCacheAll<T>()
         {
-            ReflectionInoCache<T>.GetInstance().RemoveAllCache();
+            ReflectionInoCacheHelper<T>.GetInstance().RemoveAllCache();
         }
 
         public void RemoveCache<T>(string key)
         {
-            ReflectionInoCache<T>.GetInstance().Remove(key);
+            ReflectionInoCacheHelper<T>.GetInstance().Remove(key);
         }
         #endregion
 
