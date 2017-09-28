@@ -24,7 +24,7 @@ namespace SqlSugar
         /// </summary>
         public InitKeyType InitKeyType = InitKeyType.SystemTable;
         /// <summary>
-        /// Configure External Services,For example, Redis storage
+        /// Configure External Services replace default services,For example, Redis storage
         /// </summary>
         public ConfigureExternalServices ConfigureExternalServices { get; set; }
     }
