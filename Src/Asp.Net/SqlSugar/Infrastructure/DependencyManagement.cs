@@ -17,7 +17,7 @@ namespace SqlSugar
             {
                 try
                 {
-                    InstanceFactory.GetSerializeInstance<string>().SerializeObject(new { });
+                    InstanceFactory.GetSerializeInstance().SerializeObject(new { });
                     IsTryJsonNet = true;
                 }
                 catch

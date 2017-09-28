@@ -5,9 +5,9 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public interface ISerializeManager<T>
+    public interface ISerializeManager
     {
         string SerializeObject(object value);
-         T DeserializeObject(string value);
+         T DeserializeObject<T>(string value);
     }
 }
