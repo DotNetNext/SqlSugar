@@ -34,5 +34,6 @@ namespace SqlSugar
     {
         public ISerializeService SerializeService =DefaultServices.Serialize;
         public ICacheService ReflectionInoCache = DefaultServices.ReflectionInoCache;
+        public ICacheService DataInfoCache { get; set; }
     }
 }
