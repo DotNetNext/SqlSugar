@@ -605,6 +605,21 @@ namespace SqlSugar
             }
             return this;
         }
+        public string ToClassString(string className)
+        {
+            List<DbColumnInfo> columns = new List<DbColumnInfo>();
+            var properties = typeof(T).GetProperties();
+            foreach (var item in properties)
+            {
+                columns.Add(new DbColumnInfo()
+                {
+                     DbColumnName=item.Name,
+                     DataType=UtilMethods.GetUnderType(item.PropertyType).Name
+                });
+            }
+            var result = ((this.Context.DbFirst) as DbFirstProvider).GetClassString(columns, ref className);
+            return result;
+        }
         #region Async methods
         public Task<T> SingleAsync()
         {
@@ -1009,7 +1024,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCache;
-                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder,()=> { return GetData<TResult>(sqlObj); },CacheTime, this.Context);
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context);
             }
             else
             {

@@ -123,6 +123,7 @@ namespace SqlSugar
         Task<KeyValuePair<List<T>,int>> ToPageListAsync(int pageIndex, int pageSize, int totalNumber);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        string ToClassString();
         void Clear();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>

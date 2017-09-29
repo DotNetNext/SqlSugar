@@ -206,7 +206,45 @@ namespace SqlSugar
             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, null);
             return classText;
         }
-
+        internal string GetClassString(List<DbColumnInfo> columns, ref string className)
+        {
+            string classText = this.ClassTemplate;
+            string ConstructorText = IsDefaultValue ? this.ConstructorTemplate : null;
+            classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
+            classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
+            classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + UtilConstants.AssemblyName + ";\r\n") : this.UsingTemplate);
+            classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription,"\r\n"));
+            classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, className) : null);
+            if (columns.IsValuable())
+            {
+                foreach (var item in columns)
+                {
+                    var isLast = columns.Last() == item;
+                    var index = columns.IndexOf(item);
+                    string PropertyText = this.PropertyTemplate;
+                    string PropertyDescriptionText = this.PropertyDescriptionTemplate;
+                    string propertyName = GetPropertyName(item);
+                    string propertyTypeName =item.DataType;
+                    PropertyText = GetPropertyText(item, PropertyText);
+                    PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
+                    PropertyText = PropertyDescriptionText + PropertyText;
+                    classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
+                    if (ConstructorText.IsValuable() && item.DefaultValue != null)
+                    {
+                        var hasDefaultValue = columns.Skip(index + 1).Any(it => it.DefaultValue.IsValuable());
+                        ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
+                        ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (!hasDefaultValue ? "" : this.ConstructorTemplate);
+                    }
+                }
+            }
+            if (!columns.Any(it => it.DefaultValue != null))
+            {
+                ConstructorText = null;
+            }
+            classText = classText.Replace(DbFirstTemplate.KeyConstructor, ConstructorText);
+            classText = classText.Replace(DbFirstTemplate.KeyPropertyName, null);
+            return classText;
+        }
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
         {
             Check.ArgumentNullException(directoryPath, "directoryPath can't null");
