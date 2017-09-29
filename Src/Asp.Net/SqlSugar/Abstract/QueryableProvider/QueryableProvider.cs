@@ -435,8 +435,8 @@ namespace SqlSugar
             var tableName = this.SqlBuilder.GetPackTable(sql, "MergeTable");
             var mergeQueryable = this.Context.Queryable<ExpandoObject>();
             mergeQueryable.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            mergeQueryable.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex+1;
-            mergeQueryable.QueryBuilder.JoinIndex = QueryBuilder.JoinIndex+1;
+            mergeQueryable.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex + 1;
+            mergeQueryable.QueryBuilder.JoinIndex = QueryBuilder.JoinIndex + 1;
             return mergeQueryable.AS(tableName).Select<T>("*");
         }
 
@@ -590,13 +590,13 @@ namespace SqlSugar
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
         }
-        public  ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        public ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
         {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
             return this;
         }
-        public  ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        public ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
         {
             if (IsCache)
             {
@@ -1014,24 +1014,21 @@ namespace SqlSugar
             return result;
         }
 
-        protected  List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj, bool isComplexModel, Type entityType)
+        protected List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj, bool isComplexModel, Type entityType)
         {
             List<TResult> result;
-            using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
+            var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
+            if (typeof(TResult) == typeof(ExpandoObject))
             {
-                if (typeof(TResult) == typeof(ExpandoObject))
-                {
-                    result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
-
-                }
-                else if (entityType.IsAnonymousType() || isComplexModel)
-                {
-                    result = this.Context.Utilities.DataReaderToDynamicList<TResult>(dataReader);
-                }
-                else
-                {
-                    result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
-                }
+                result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
+            }
+            else if (entityType.IsAnonymousType() || isComplexModel)
+            {
+                result = this.Context.Utilities.DataReaderToDynamicList<TResult>(dataReader);
+            }
+            else
+            {
+                result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
             }
             return result;
         }
@@ -1203,7 +1200,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
-                _OrderBy(expression,type);
+                _OrderBy(expression, type);
             return this;
         }
         public ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
@@ -4677,12 +4674,13 @@ namespace SqlSugar
             base.With(withString);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCache(int cacheDurationInSeconds=int.MaxValue) {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
         {
             if (IsCache)
             {
