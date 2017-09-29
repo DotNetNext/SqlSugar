@@ -614,7 +614,8 @@ namespace SqlSugar
                 columns.Add(new DbColumnInfo()
                 {
                      DbColumnName=item.Name,
-                     DataType=UtilMethods.GetUnderType(item.PropertyType).Name
+                     PropertyName= UtilMethods.GetUnderType(item.PropertyType).Name,
+                     PropertyType=UtilMethods.GetUnderType(item.PropertyType)
                 });
             }
             var result = ((this.Context.DbFirst) as DbFirstProvider).GetClassString(columns, ref className);

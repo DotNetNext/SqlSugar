@@ -224,7 +224,7 @@ namespace SqlSugar
                     string PropertyText = this.PropertyTemplate;
                     string PropertyDescriptionText = this.PropertyDescriptionTemplate;
                     string propertyName = GetPropertyName(item);
-                    string propertyTypeName =item.DataType;
+                    string propertyTypeName =item.PropertyName;
                     PropertyText = GetPropertyText(item, PropertyText);
                     PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                     PropertyText = PropertyDescriptionText + PropertyText;
@@ -336,10 +336,17 @@ namespace SqlSugar
         }
         private string GetPropertyTypeName(DbColumnInfo item)
         {
-            string result = this.Context.Ado.DbBind.GetPropertyTypeName(item.DataType);
+            string result =item.PropertyType!=null?item.PropertyType.Name:this.Context.Ado.DbBind.GetPropertyTypeName(item.DataType);
             if (result != "string" && result != "byte[]" && result != "object" && item.IsNullable)
             {
                 result += "?";
+            }
+            if (result == "Int32") {
+                result = "int";
+            }
+            if (result == "String")
+            {
+                result = "string";
             }
             return result;
         }
