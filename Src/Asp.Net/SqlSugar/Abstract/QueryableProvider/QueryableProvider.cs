@@ -1012,9 +1012,9 @@ namespace SqlSugar
             {
                 if (typeof(TResult) == typeof(ExpandoObject))
                 {
-                    return this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
-                }
-                if (entityType.IsAnonymousType() || isComplexModel)
+                    result= this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
+
+                }else if (entityType.IsAnonymousType() || isComplexModel)
                 {
                     result = this.Context.Utilities.DataReaderToDynamicList<TResult>(dataReader);
                 }
