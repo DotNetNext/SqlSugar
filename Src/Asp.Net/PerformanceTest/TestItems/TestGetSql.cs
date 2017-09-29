@@ -16,7 +16,7 @@ namespace PerformanceTest.TestItems
         {
             Database.SetInitializer<EFContext>(null);
             Console.WriteLine("测试SQL查询的速度");
-            var eachCount = 3000;
+            var eachCount = 500;
 
             var beginDate = DateTime.Now;
             for (int i = 0; i < 10; i++)
