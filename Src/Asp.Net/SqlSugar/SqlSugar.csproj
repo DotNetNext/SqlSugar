@@ -72,6 +72,10 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="CacheScheme\CacheEngines.cs" />
+    <Compile Include="CacheScheme\CacheKeyBuider.cs" />
+    <Compile Include="CacheScheme\CacheSchemeMain.cs" />
+    <Compile Include="Entities\CacheKey.cs" />
     <Compile Include="Enum\DbType.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\ISubOperation.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAnd.cs" />
@@ -252,6 +256,7 @@
     <Content Include="References\Oracle.ManagedDataAccess.dll" />
     <Content Include="References\System.Data.SQLite.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

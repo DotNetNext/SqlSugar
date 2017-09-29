@@ -1006,17 +1006,23 @@ namespace SqlSugar
         {
             List<TResult> result = null;
             var sqlObj = this.ToSql();
-            var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
-            var entityType = typeof(TResult);
-            result = GetData<TResult>(sqlObj, isComplexModel, entityType);
-            RestoreMapping();
-            SetContextModel(result, entityType);
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCache;
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.Context, this.QueryBuilder,()=> { return GetData<TResult>(sqlObj); });
+            }
+            else
+            {
+                result = GetData<TResult>(sqlObj);
+            }
             return result;
         }
 
-        protected List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj, bool isComplexModel, Type entityType)
+        protected List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             List<TResult> result;
+            var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
+            var entityType = typeof(TResult);
             var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
             if (typeof(TResult) == typeof(ExpandoObject))
             {
@@ -1030,6 +1036,8 @@ namespace SqlSugar
             {
                 result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
             }
+            RestoreMapping();
+            SetContextModel(result, entityType);
             return result;
         }
 
