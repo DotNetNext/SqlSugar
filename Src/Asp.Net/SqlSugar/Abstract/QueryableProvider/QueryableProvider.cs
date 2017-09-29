@@ -1009,7 +1009,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCache;
-                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.Context, this.QueryBuilder,()=> { return GetData<TResult>(sqlObj); });
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder,()=> { return GetData<TResult>(sqlObj); },CacheTime, this.Context);
             }
             else
             {
