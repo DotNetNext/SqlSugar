@@ -1033,7 +1033,6 @@ namespace SqlSugar
                     result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
                 }
             }
-
             return result;
         }
 
