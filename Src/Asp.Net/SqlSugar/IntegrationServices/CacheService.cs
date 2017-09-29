@@ -32,7 +32,7 @@ namespace SqlSugar
             return ReflectionInoCore<V>.GetInstance().GetAllKey();
         }
 
-        public V GetOrCreate<V>(string cacheKey, Func<V> create)
+        public V GetOrCreate<V>(string cacheKey, Func<V> create,int cacheDurationInSeconds=int.MaxValue)
         {
             return ReflectionInoCore<V>.GetInstance().GetOrCreate(cacheKey, create);
         }

@@ -7,8 +7,7 @@ namespace SqlSugar
 {
     public class CacheKey
     {
-        public new string ToString() {
-            return "";
-        }
+        public string[] Tables { get; set; }
+        public List<string> IdentificationList { get; set; }
     }
 }
