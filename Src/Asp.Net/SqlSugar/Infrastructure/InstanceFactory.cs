@@ -246,8 +246,15 @@ namespace SqlSugar
 
         public static IAdo GetAdo(ConnectionConfig currentConnectionConfig)
         {
-            IAdo result = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType.ToString(), "Provider"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerProvider();
+            }
+            else
+            {
+                IAdo result = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType.ToString(), "Provider"));
+                return result;
+            }
         }
 
         private static string GetClassName(string type, string name)

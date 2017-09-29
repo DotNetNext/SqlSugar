@@ -44,10 +44,8 @@ namespace PerformanceTest.TestItems
 
             PerHelper.Execute(eachCount, "SqlSugar", () =>
             {
-                using (SqlSugarClient conn = Config.GetSugarConn())
-                {
+                    SqlSugarClient conn = Config.GetSugarConn();
                     var list2 = conn.Ado.SqlQuery<Test>("select top 20 * from Test"); ;
-                }
             });
         }
 

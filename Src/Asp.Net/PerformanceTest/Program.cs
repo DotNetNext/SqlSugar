@@ -16,7 +16,7 @@ namespace PerformanceTest
         static void Main(string[] args)
         {
             var type = DemoType.GetSql;
-            var ormType = OrmType.SqlSugar;
+            var ormType = OrmType.Dapper;
             switch (type)
             {
                 case DemoType.GetAll:
