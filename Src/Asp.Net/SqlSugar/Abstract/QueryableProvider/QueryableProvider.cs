@@ -1008,13 +1008,23 @@ namespace SqlSugar
             var sqlObj = this.ToSql();
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
+            result = GetData<TResult>(sqlObj, isComplexModel, entityType);
+            RestoreMapping();
+            SetContextModel(result, entityType);
+            return result;
+        }
+
+        protected  List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj, bool isComplexModel, Type entityType)
+        {
+            List<TResult> result;
             using (var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray()))
             {
                 if (typeof(TResult) == typeof(ExpandoObject))
                 {
-                    result= this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
+                    result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
 
-                }else if (entityType.IsAnonymousType() || isComplexModel)
+                }
+                else if (entityType.IsAnonymousType() || isComplexModel)
                 {
                     result = this.Context.Utilities.DataReaderToDynamicList<TResult>(dataReader);
                 }
@@ -1023,10 +1033,10 @@ namespace SqlSugar
                     result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
                 }
             }
-            RestoreMapping();
-            SetContextModel(result, entityType);
+
             return result;
         }
+
         protected void _InQueryable(Expression<Func<T, object>> expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             string sql = sqlObj.Key;
