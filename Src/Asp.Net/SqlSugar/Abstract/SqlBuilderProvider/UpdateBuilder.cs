@@ -210,7 +210,7 @@ namespace SqlSugar
             {
                 if (SetValues.IsValuable())
                 {
-                    var setValue = SetValues.Where(sv => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
+                    var setValue = SetValues.Where(sv => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName)|| sv.Key==Builder.GetTranslationColumnName(it.PropertyName));
                     if (setValue != null && setValue.Any())
                     {
                         return setValue.First().Value;
