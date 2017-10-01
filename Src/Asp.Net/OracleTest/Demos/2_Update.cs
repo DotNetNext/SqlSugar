@@ -38,7 +38,7 @@ namespace OrmTest.Demo
             var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
 
             //update List<T>
-            var t7 = db.Updateable(updateObjs).ExecuteCommand();
+            //var t7 = db.Updateable(updateObjs).ExecuteCommand();
 
             //Re Set Value
             var t8 = db.Updateable(updateObj)
