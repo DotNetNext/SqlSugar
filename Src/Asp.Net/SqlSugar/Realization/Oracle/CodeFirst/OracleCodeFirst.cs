@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         public OracleCodeFirst()
         {
-            throw new Exception("该功能还未测试");
+            throw new Exception("Oracle该功能还未测试");
         }
     }
 }
