@@ -23,7 +23,7 @@ namespace OrmTest.Demo
             Group();
             Sqlable();
             Tran();
-            StoredProcedure();
+            //StoredProcedure();
             Enum();
             Simple();
         }
@@ -50,28 +50,14 @@ namespace OrmTest.Demo
         private static void StoredProcedure()
         {
             var db = GetInstance();
-            //1. no result 
-            db.Ado.UseStoredProcedure(() =>
-            {
-                string spName = "sp_help";
-                var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-            });
-
-            //2. has result 
-            var result = db.Ado.UseStoredProcedure<dynamic>(() =>
-             {
-                 string spName = "sp_help";
-                 return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-             });
-
-            //2. has output 
+ 
             object outPutValue;
             var outputResult = db.Ado.UseStoredProcedure<dynamic>(() =>
             {
-                string spName = "sp_school";
-                var p1 = new SugarParameter("@p1", "1");
-                var p2 = new SugarParameter("@p2", null, true);//isOutput=true
-                var dbResult = db.Ado.SqlQueryDynamic(spName, new SugarParameter[] { p1, p2 });
+                string spName = "SpGetSchool";
+                var p1 = new SugarParameter("@id_in", "1");
+                var p2 = new SugarParameter("@name_out", null, true);//isOutput=true
+                var dbResult = db.Ado.ExecuteCommand(spName, new SugarParameter[] { p1, p2 });
                 outPutValue = p2.Value;
                 return dbResult;
             });
@@ -160,7 +146,7 @@ namespace OrmTest.Demo
             var getNew = db.Queryable<Student>().Where(it => it.Id == 1).Select(it => new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id), it.Name, it.SchoolId }).ToList();
             var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
             var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
-            var getSingleOrDefault = db.Queryable<Student>().Single();
+            var getSingleOrDefault = db.Queryable<Student>().Where(it=>it.Id==1).Single();
             var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();

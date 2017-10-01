@@ -104,6 +104,10 @@ namespace SqlSugar
                 {
                     sqlParameter.ParameterName = ':' + sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
                 }
+                if (this.CommandType == CommandType.StoredProcedure)
+                {
+                    sqlParameter.ParameterName = sqlParameter.ParameterName.TrimStart(':');
+                }
                 //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;

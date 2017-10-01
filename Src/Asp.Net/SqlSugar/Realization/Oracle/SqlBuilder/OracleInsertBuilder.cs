@@ -15,7 +15,7 @@ namespace SqlSugar
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) ;";
+           ({2}) ";
 
             }
         }
@@ -28,13 +28,13 @@ namespace SqlSugar
             }
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
-            string columnsString = string.Join(UtilConstants.Dot, groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
+            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(UtilConstants.Dot, this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
                 if (identities.IsValuable()) {
-                    columnsString = columnsString.TrimEnd(UtilConstants.DotChar) + UtilConstants.Dot + string.Join(UtilConstants.Dot, identities.Select(it=> Builder.GetTranslationColumnName(it.DbColumnName)));
-                    columnParametersString = columnParametersString.TrimEnd(UtilConstants.DotChar) + UtilConstants.Dot + string.Join(UtilConstants.Dot, identities.Select(it =>it.OracleSequenceName));
+                    columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it=> Builder.GetTranslationColumnName(it.DbColumnName)));
+                    columnParametersString = columnParametersString.TrimEnd(',') +"," + string.Join(",", identities.Select(it =>it.OracleSequenceName+ ".nextval"));
                 }
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
