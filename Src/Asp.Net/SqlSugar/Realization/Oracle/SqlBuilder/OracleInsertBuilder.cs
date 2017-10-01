@@ -12,11 +12,18 @@ namespace SqlSugar
         {
             get
             {
-                    return @"INSERT INTO {0} 
+                return @"INSERT INTO {0} 
            ({1})
      VALUES
            ({2}) ";
 
+            }
+        }
+        public override string SqlTemplateBatch
+        {
+            get
+            {
+                return "INSERT INTO {0} ({1})";
             }
         }
         public override string ToSqlString()
@@ -32,9 +39,10 @@ namespace SqlSugar
             if (isSingle)
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
-                if (identities.IsValuable()) {
-                    columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it=> Builder.GetTranslationColumnName(it.DbColumnName)));
-                    columnParametersString = columnParametersString.TrimEnd(',') +"," + string.Join(",", identities.Select(it =>it.OracleSequenceName+ ".nextval"));
+                if (identities.IsValuable())
+                {
+                    columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
+                    columnParametersString = columnParametersString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => it.OracleSequenceName + ".nextval"));
                 }
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
@@ -45,6 +53,10 @@ namespace SqlSugar
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                if (identities.IsValuable())
+                {
+                    columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
+                }
                 while (pageCount >= pageIndex)
                 {
                     batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
@@ -57,13 +69,22 @@ namespace SqlSugar
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
                         var insertColumns = string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), Builder.GetTranslationColumnName(it.DbColumnName))));
+                        if (identities.IsValuable())
+                        {
+                            insertColumns = insertColumns.TrimEnd(',') + "," + string.Join(",", identities.Select(it =>
+                            {
+                                var seqValue = this.OracleSeqInfoList[it.OracleSequenceName];
+                                this.OracleSeqInfoList[it.OracleSequenceName] = this.OracleSeqInfoList[it.OracleSequenceName] + 1;
+                                return seqValue + 1+" AS "+it.DbColumnName;
+                            }));
+                        }
                         batchInsetrSql.Append("\r\n SELECT " + insertColumns + " FROM DUAL ");
                         ++i;
                     }
                     pageIndex++;
                     batchInsetrSql.Append("\r\n;\r\n");
                 }
-                return batchInsetrSql.ToString();
+                return "BEGIN\r\n"+ batchInsetrSql.ToString()+"\r\nEND;";
             }
         }
     }
