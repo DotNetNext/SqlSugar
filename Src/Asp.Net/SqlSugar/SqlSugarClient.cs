@@ -345,7 +345,7 @@ namespace SqlSugar
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            return this.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName()));
+            return this.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).Select("*");
         }
         #endregion
 

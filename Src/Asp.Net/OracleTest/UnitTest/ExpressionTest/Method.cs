@@ -54,8 +54,8 @@ namespace OrmTest.UnitTest
                 Between();
                 Equals();
                 Equals_2();
-                DateIsSameByDay();
-                DateIsSameByType();
+                //DateIsSameByDay();
+                //DateIsSameByType();
                 DateAddDay();
                 DateAddByType();
                 DateValue();

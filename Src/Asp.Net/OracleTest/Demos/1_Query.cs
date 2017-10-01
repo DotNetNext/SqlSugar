@@ -144,9 +144,9 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             db.Ado.BeginTran();
-            var t1 = db.Ado.SqlQuery<string>("select 'a'");
-            var t2 = db.Ado.GetInt("select 1");
-            var t3 = db.Ado.GetDataTable("select 1 as id");
+            var t1 = db.Ado.SqlQuery<string>("select 'a'  from dual");
+            var t2 = db.Ado.GetInt("select 1  from dual");
+            var t3 = db.Ado.GetDataTable("select 1 as id  from dual");
             db.Ado.CommitTran();
             //more
             //db.Ado.GetXXX...
@@ -179,7 +179,7 @@ namespace OrmTest.Demo
 
             var between = db.Queryable<Student>().Where(it => SqlFunc.Between(it.Id, 1, 20)).ToList();
 
-            var getTodayList = db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(it.CreateTime, DateTime.Now)).ToList();
+         //   var getTodayList = db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(it.CreateTime, DateTime.Now)).ToList();
 
             var joinSql = db.Queryable("student", "s").OrderBy("id").Select("id,name").ToPageList(1, 2);
         }
@@ -359,7 +359,7 @@ namespace OrmTest.Demo
             var db = GetInstance();
             var join3 = db.Queryable("Student", "st")
                           .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
-                          .Where("st.id>@id")
+                          .Where("st.id>:id")
                           .AddParameters(new { id = 1 })
                           .Select("st.*").ToList();
             //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 

@@ -145,41 +145,11 @@ namespace SqlSugar
         }
         public override string DateIsSameDay(MethodCallExpressionModel model)
         {
-            var parameter = model.Args[0].MemberName;
-            var parameter2 = model.Args[1].MemberName;
-            return string.Format(" (ROUND(TO_NUMBER({0} - {1}))=0) ", parameter, parameter2);
+            throw new NotSupportedException("Oracle NotSupportedException DateIsSameDay");
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
-            var parameter = model.Args[0].MemberName;
-            var parameter2 = model.Args[1].MemberName;
-            var parameter3 = model.Args[2].MemberValue;
-            var type = (DateType)Enum.Parse(typeof(DateType), parameter3.ObjToString(), false);
-            int time = 1;
-            switch (type)
-            {
-                case DateType.Year:
-                    time = time * 1 / 365;
-                    break;
-                case DateType.Month:
-                    time = time * 1 / 30;
-                    break;
-                case DateType.Day:
-                    break;
-                case DateType.Hour:
-                    time = time * 24;
-                    break;
-                case DateType.Second:
-                    time = time * 24 * 60 * 60;
-                    break;
-                case DateType.Minute:
-                    time = time * 24 * 60;
-                    break;
-                case DateType.Millisecond:
-                    time = time * 24 * 60 * 60 * 1000;
-                    break;
-            }
-            return string.Format(" (ROUND(TO_NUMBER({0} - {1}) * {2}) = 0) ", parameter, parameter2, time);
+            throw new NotSupportedException("Oracle NotSupportedException DateIsSameDay");
         }
         public override string Length(MethodCallExpressionModel model)
         {

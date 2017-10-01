@@ -23,7 +23,7 @@ namespace OrmTest
             new Select(1).Init();
             new Field(1).Init();
            // new Where(1).Init();
-            new Method(1).Init();
+            //new Method(1).Init();
             //new JoinQuery(1).Init();
             //new SingleQuery(1).Init();
             //new SelectQuery(1).Init();
@@ -38,7 +38,7 @@ namespace OrmTest
             //new SqlSugarPerformance(100).Select();
 
             /***Demo***/
-            //OrmTest.Demo.Query.Init();
+            OrmTest.Demo.Query.Init();
             //OrmTest.Demo.Insert.Init();
             //OrmTest.Demo.Delete.Init();
             //OrmTest.Demo.Update.Init();

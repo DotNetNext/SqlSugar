@@ -60,7 +60,7 @@ namespace SqlSugar
         }
         public override IDataAdapter GetAdapter()
         {
-            return new SqlDataAdapter();
+            return new OracleDataAdapter();
         }
         public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
