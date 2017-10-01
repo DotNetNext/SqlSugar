@@ -7,5 +7,9 @@ namespace SqlSugar
 {
     public class OracleCodeFirst : CodeFirstProvider
     {
+        public OracleCodeFirst()
+        {
+            throw new Exception("该功能还未测试");
+        }
     }
 }

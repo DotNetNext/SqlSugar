@@ -7,5 +7,8 @@ namespace SqlSugar
 {
     public class OracleDbFirst : DbFirstProvider
     {
+        public OracleDbFirst() {
+            throw new Exception("该功能还未测试");
+        }
     }
 }
