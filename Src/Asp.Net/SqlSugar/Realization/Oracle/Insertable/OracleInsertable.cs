@@ -11,6 +11,20 @@ namespace SqlSugar
         {
             return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.IsValuable()).Select(it => it.DbColumnName).ToList();
         }
+        protected  string GetSeqName()
+        {
+            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.IsValuable()).Select(it => it.OracleSequenceName).First();
+        }
+        public override int ExecuteReturnIdentity()
+        {
+            InsertBuilder.IsReturnIdentity = true;
+            PreToSql();
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : Ado.GetInt(" SELECT "+GetSeqName()+".currval FROM DUAL");
+            return result;
+        }
         protected override void PreToSql()
         {
             var identities = GetIdentityKeys();
