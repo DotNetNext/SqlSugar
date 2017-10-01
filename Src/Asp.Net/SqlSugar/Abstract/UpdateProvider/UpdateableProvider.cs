@@ -142,7 +142,7 @@ namespace SqlSugar
                     UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), item));
                 }
             }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key) == it.DbColumnName|| SqlBuilder.GetNoTranslationColumnName(v.Key) == it.PropertyName) || it.IsPrimarykey == true).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName,StringComparison.CurrentCultureIgnoreCase)|| SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName,StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             return this;
         }
 
