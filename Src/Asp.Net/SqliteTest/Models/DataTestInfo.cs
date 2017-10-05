@@ -130,6 +130,8 @@ namespace OrmTest.Models
            /// Nullable:True
            /// </summary>           
            public double? Float2 {get;set;}
+           public long Long1 { get; set; }
+           public long? Long2 { get; set; }
 
     }
 }
