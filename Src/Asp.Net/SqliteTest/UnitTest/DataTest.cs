@@ -33,15 +33,17 @@ namespace OrmTest.UnitTest
                 Image1 = new byte[] { 1, 2 },
                 Image2 = new byte[] { 2, 3 },
                 Int2 = 6,
-                Money1 = 7,
+                Money1 = Convert.ToDecimal(7.1),
                 Money2 = 8,
                 Varbinary1 = new byte[] { 4, 5 },
                 Varbinary2 = null,
                 String = "string",
                 Long1=100
             };
-            var x = db.Queryable<DataTestInfo2>().Select(it => it.PK).ToList();
+  
             var id = db.Insertable<DataTestInfo>(insertObject).ExecuteReturnIdentity();
+            var x = db.Queryable<DataTestInfo2>().Select(it => it.PK).ToList();
+            var x2 = db.Queryable<DataTestInfo>().Select(it => it.Money1).ToList();
             var data = db.Queryable<DataTestInfo>().InSingle(id);
             if (
                 insertObject.Datetime1.ToString("yyyy-MM-dd") != data.Datetime1.ToString("yyyy-MM-dd") ||

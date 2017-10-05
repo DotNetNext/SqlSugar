@@ -115,13 +115,17 @@ namespace SqlSugar
             while (dataReader.Read())
             {
                 var value = dataReader.GetValue(0);
+                if (type == UtilConstants.GuidType)
+                {
+                    value = Guid.Parse(value.ToString());
+                }
                 if (value == DBNull.Value)
                 {
                     reval.Add(default(T));
                 }
                 else
                 {
-                    reval.Add((T)Convert.ChangeType(dataReader.GetValue(0), UtilMethods.GetUnderType(type)));
+                    reval.Add((T)Convert.ChangeType(value, UtilMethods.GetUnderType(type)));
                 }
             }
             return reval;

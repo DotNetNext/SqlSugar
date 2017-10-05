@@ -57,6 +57,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("int16",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("int64",CSharpDataType.@long),
+                    new KeyValuePair<string, CSharpDataType>("long",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("integer64",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
