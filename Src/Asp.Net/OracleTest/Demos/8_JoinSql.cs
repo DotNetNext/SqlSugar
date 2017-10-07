@@ -23,7 +23,7 @@ namespace OrmTest.Demo
             var db = GetInstance();
             //Parameterized processing
             string value = "'jack';drop table Student";
-            var list = db.Queryable<Student>().Where("name=@name", new { name = value }).ToList();
+            var list = db.Queryable<Student>().Where("name=:name", new { name = value }).ToList();
             //Nothing happened
         }
 
