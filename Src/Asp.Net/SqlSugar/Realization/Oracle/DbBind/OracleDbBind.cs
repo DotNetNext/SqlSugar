@@ -6,6 +6,40 @@ namespace SqlSugar
 {
     public class OracleDbBind : DbBindProvider
     {
+        public override string GetPropertyTypeName(string dbTypeName)
+        {
+            dbTypeName = dbTypeName.ToLower();
+            var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName||it.Key.ToLower()== dbTypeName);
+            if (dbTypeName == "int32")
+            {
+                return "int";
+            }
+            else if (dbTypeName == "int64")
+            {
+                return "long";
+            }
+            else if (propertyTypes == null)
+            {
+                return "other";
+            }
+            else if (dbTypeName == "xml" || dbTypeName == "string")
+            {
+                return "string";
+            }
+            else if (propertyTypes == null || propertyTypes.Count() == 0)
+            {
+                Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
+                return null;
+            }
+            else if (propertyTypes.First().Value == CSharpDataType.byteArray)
+            {
+                return "byte[]";
+            }
+            else
+            {
+                return propertyTypes.First().Value.ToString();
+            }
+        }
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
             get

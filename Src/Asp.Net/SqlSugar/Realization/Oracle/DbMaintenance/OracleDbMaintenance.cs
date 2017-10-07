@@ -28,24 +28,17 @@ namespace SqlSugar
                         AND table_name!='LOGMNRP_CTAS_PART_MAP'
                         AND table_name!='LOGMNR_LOGMNR_BUILDLOG'
                         AND table_name!='SQLPLUS_PRODUCT_PROFILE'  
-                        UNION all
-                        select view_name name  from user_views 
-                                                WHERE VIEW_name NOT LIKE '%$%'
-                                                AND VIEW_NAME !='PRODUCT_PRIVS'
-                        AND VIEW_NAME NOT LIKE 'MVIEW_%'  ";
+                         ";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"SELECT  table_name name from user_tables where
-                        table_name != 'HELP'
-                        AND table_name NOT LIKE '%$%'
-                        AND table_name NOT LIKE 'LOGMNRC_%'
-                        AND table_name!= 'LOGMNRP_CTAS_PART_MAP'
-                        AND table_name!= 'LOGMNR_LOGMNR_BUILDLOG'
-                        AND table_name!= 'SQLPLUS_PRODUCT_PROFILE'";
+                return @"select view_name name  from user_views 
+                                                WHERE VIEW_name NOT LIKE '%$%'
+                                                AND VIEW_NAME !='PRODUCT_PRIVS'
+                        AND VIEW_NAME NOT LIKE 'MVIEW_%' ";
             }
         }
         #endregion
