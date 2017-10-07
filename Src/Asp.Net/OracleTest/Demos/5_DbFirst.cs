@@ -12,28 +12,28 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             //Create all class
-            db.DbFirst.CreateClassFile("c:\\Demo\\1");
+            db.DbFirst.CreateClassFile("c:\\DemoOracle\\1");
 
             //Create student calsss
-            db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\2");
+            db.DbFirst.Where("Student").CreateClassFile("c:\\DemoOracle\\2");
             //Where(array)
 
             //Mapping name
             db.MappingTables.Add("ClassStudent", "Student");
             db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-            db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\3");
+            db.DbFirst.Where("Student").CreateClassFile("c:\\DemoOracle\\3");
 
             //Remove mapping
             db.MappingTables.Clear();
 
             //Create class with default value
-            db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\Demo\\4", "Demo.Models");
+            db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\DemoOracle\\4", "DemoOracle.Models");
 
 
             //Mapping and Attribute
             db.MappingTables.Add("ClassStudent", "Student");
             db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-            db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
+            db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\DemoOracle\\5");
 
 
             //Remove mapping
@@ -66,7 +66,7 @@ namespace OrmTest.Demo
                 {
                     return old;
                 })
-            .CreateClassFile("c:\\Demo\\6");
+            .CreateClassFile("c:\\DemoOracle\\6");
         }
     }
 }
