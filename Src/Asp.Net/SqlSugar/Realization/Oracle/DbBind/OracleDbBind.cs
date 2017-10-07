@@ -60,6 +60,8 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.Single),
+                  new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.Single),
 
                   new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("varchar2",CSharpDataType.@string),
