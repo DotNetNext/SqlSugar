@@ -51,5 +51,12 @@ namespace SqlSugar
 
             }
         }
+        public override List<string> StringThrow
+        {
+            get
+            {
+                return new List<string>() { "int32", "datetime", "decimal", "double", "byte" };
+            }
+        }
     }
 }
