@@ -430,7 +430,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> MergeTable()
         {
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Select(it=>new{}) Method .");
-            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0||this.QueryBuilder.OrderByValue.IsValuable(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             var sql = QueryBuilder.ToSqlString();
             var tableName = this.SqlBuilder.GetPackTable(sql, "MergeTable");
             var mergeQueryable = this.Context.Queryable<ExpandoObject>();
