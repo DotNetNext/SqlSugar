@@ -7,14 +7,10 @@ namespace SqlSugar
 {
     internal class CacheEngines
     {
-        public static string GetCacheMapping(CacheKey key)
+        static string CacheMappingKey = "SqlSugarDataCacheMapping";
+        public static string GetCacheMapping(string tableName)
         {
-            return null;
-        }
-
-        public static string GetCacheData(string key)
-        {
-            return null;
+            return CacheMappingKey+ UtilConstants.Dot+tableName+ UtilConstants.Dot + Guid.NewGuid();
         }
     }
 }
