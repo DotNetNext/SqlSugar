@@ -33,12 +33,26 @@ namespace SqlSugar
             RestoreMapping();
             return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
         }
+        public bool ExecuteCommandHasChange()
+        {
+            return this.ExecuteCommand() > 0;
+        }
         public Task<int> ExecuteCommandAsync()
         {
             Task<int> result = new Task<int>(() =>
             {
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
                 return asyncUpdateable.ExecuteCommand();
+            });
+            result.Start();
+            return result;
+        }
+        public Task<bool> ExecuteCommandHasChangeAsync()
+        {
+            Task<bool> result = new Task<bool>(() =>
+            {
+                IUpdateable<T> asyncUpdateable = CopyUpdateable();
+                return asyncUpdateable.ExecuteCommand()>0;
             });
             result.Start();
             return result;

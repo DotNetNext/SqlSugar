@@ -11,7 +11,9 @@ namespace SqlSugar
     {
         UpdateBuilder UpdateBuilder { get; set; }
         int ExecuteCommand();
+        bool ExecuteCommandHasChange();
         Task<int> ExecuteCommandAsync();
+        Task<bool> ExecuteCommandHasChangeAsync();
         IUpdateable<T> AS(string tableName);
         IUpdateable<T> With(string lockString);
         IUpdateable<T> Where(bool isNoUpdateNull,bool IsOffIdentity = false);

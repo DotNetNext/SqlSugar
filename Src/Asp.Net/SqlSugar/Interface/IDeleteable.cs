@@ -11,7 +11,9 @@ namespace SqlSugar
     {
         DeleteBuilder DeleteBuilder { get; set; }
         int ExecuteCommand();
+        bool ExecuteCommandHasChange();
         Task<int> ExecuteCommandAsync();
+        Task<bool> ExecuteCommandHasChangeAsync();
         IDeleteable<T> AS(string tableName);
         IDeleteable<T> With(string lockString);
         IDeleteable<T> Where(T deleteObj);
