@@ -128,7 +128,7 @@ namespace SqlSugar
                 }
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType)
+                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType&&propertyInfo.PropertyType!=UtilConstants.ObjType)
                     {
                         BindClass(generator, result, propertyInfo);
                     }
@@ -295,6 +295,9 @@ namespace SqlSugar
             if (method == null && bindPropertyType == UtilConstants.StringType)
             {
                 method = getConvertString;
+            }
+            if (bindPropertyType == UtilConstants.ObjType) {
+                method = getValueMethod;
             }
             if (method == null)
                 method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
