@@ -10,12 +10,12 @@ namespace SqlSugar
     {
         public ExpressionContext Context
         {
-            get;set;
+            get; set;
         }
 
         public Expression Expression
         {
-            get;set;
+            get; set;
         }
 
         public string Name
@@ -32,7 +32,7 @@ namespace SqlSugar
             {
                 if (this.Context is SqlServerExpressionContext)
                 {
-                    return  150;
+                    return 150;
                 }
                 else
                 {
@@ -48,7 +48,12 @@ namespace SqlSugar
             {
                 return "TOP 1";
             }
-            else {
+            else if (this.Context is OracleExpressionContext)
+            {
+                return "ROWNUM=1";
+            }
+            else
+            {
                 return "limit 0,1";
             }
         }
