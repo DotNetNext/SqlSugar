@@ -174,11 +174,7 @@ namespace SqlSugar
             bool isNullableType = false;
             MethodInfo method = null;
             Type bindPropertyType = UtilMethods.GetUnderType(bindProperty, ref isNullableType);
-            string dbTypeName = DataRecord.GetDataTypeName(ordinal);
-            if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
-            {
-                dbTypeName = Regex.Replace(dbTypeName, @"\(.+\)", "");
-            }
+            string dbTypeName = UtilMethods.GetParenthesesValue(DataRecord.GetDataTypeName(ordinal));
             string propertyName = bindProperty.Name;
             string validPropertyName = bind.GetPropertyTypeName(dbTypeName);
             validPropertyName = validPropertyName == "byte[]" ? "byteArray" : validPropertyName;
@@ -241,7 +237,7 @@ namespace SqlSugar
                     method = getString;
                     if (bindProperyTypeName == "guid")
                     {
-                        method =isNullableType? getConvertStringGuid : getStringGuid;
+                        method = isNullableType ? getConvertStringGuid : getStringGuid;
                     }
                     break;
                 case CSharpDataType.DateTime:
@@ -259,7 +255,7 @@ namespace SqlSugar
                     CheckType(bind.DoubleThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "double")
                         method = isNullableType ? getConvertDouble : getDouble;
-                    if(bindProperyTypeName=="single")
+                    if (bindProperyTypeName == "single")
                         method = isNullableType ? getConvertFloat : getFloat;
                     break;
                 case CSharpDataType.Guid:
@@ -284,7 +280,7 @@ namespace SqlSugar
                         method = isNullableType ? getConvertInt64 : getInt64;
                     break;
                 case CSharpDataType.DateTimeOffset:
-                        method = isNullableType ? getConvertdatetimeoffset : getdatetimeoffset;
+                    method = isNullableType ? getConvertdatetimeoffset : getdatetimeoffset;
                     if (bindProperyTypeName == "datetime")
                         method = isNullableType ? getConvertdatetimeoffsetDate : getdatetimeoffsetDate;
                     break;
@@ -296,7 +292,8 @@ namespace SqlSugar
             {
                 method = getConvertString;
             }
-            if (bindPropertyType == UtilConstants.ObjType) {
+            if (bindPropertyType == UtilConstants.ObjType)
+            {
                 method = getValueMethod;
             }
             if (method == null)

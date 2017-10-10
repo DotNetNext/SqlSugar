@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public class UtilMethods
@@ -74,5 +76,16 @@ namespace SqlSugar
         {
             return string.Format(" ({0}) {1} ", sql, shortName);
         }
+
+        internal static string GetParenthesesValue(string dbTypeName)
+        {
+            if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
+            {
+                dbTypeName = Regex.Replace(dbTypeName, @"\(.+\)", "");
+            }
+            dbTypeName = dbTypeName.Trim();
+            return dbTypeName;
+        }
+
     }
 }
