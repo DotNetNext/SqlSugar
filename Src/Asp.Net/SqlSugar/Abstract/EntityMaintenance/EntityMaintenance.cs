@@ -23,7 +23,7 @@ namespace SqlSugar
             {
                 EntityInfo result = new EntityInfo();
                 var sugarAttributeInfo = type.GetTypeInfo().GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
-                if (sugarAttributeInfo.IsValuable())
+                if (sugarAttributeInfo.HasValue())
                 {
                     var sugarTable = (SugarTable)sugarAttributeInfo;
                     result.DbTableName = sugarTable.TableName;

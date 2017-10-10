@@ -72,7 +72,7 @@ namespace SqlSugar
             {
                 sqlCommand.Transaction = (OracleTransaction)this.Transaction;
             }
-            if (parameters.IsValuable())
+            if (parameters.HasValue())
             {
                 IDataParameter[] ipars = ToIDbDataParameter(parameters);
                 sqlCommand.Parameters.AddRange((OracleParameter[])ipars);

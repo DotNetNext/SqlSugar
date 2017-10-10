@@ -226,7 +226,7 @@ namespace SqlSugar
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters);
             var reval = resolveExpress.Result;
-            var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.IsValuable();
+            var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
             if (isSingleTableHasSubquery) {
                 Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name");
                 this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
@@ -241,14 +241,14 @@ namespace SqlSugar
             AppendFilter();
             sql = new StringBuilder();
             if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
-            if (this.PartitionByValue.IsValuable())
+            if (this.PartitionByValue.HasValue())
             {
                 this.OrderByValue = this.PartitionByValue + this.OrderByValue;
             }
             var isRowNumber = Skip != null || Take != null;
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
-            string orderByValue = (!isRowNumber && this.OrderByValue.IsValuable()) ? GetOrderByString : null;
+            string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
             if (isIgnoreOrderBy) { orderByValue = null; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
@@ -269,7 +269,7 @@ namespace SqlSugar
 
         public virtual void AppendFilter()
         {
-            if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.IsValuable())
+            if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.HasValue())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
                 foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
@@ -277,7 +277,7 @@ namespace SqlSugar
                     var filterResult = item.FilterValue(this.Context);
                     WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql));
                     var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
-                    if (filterParamters.IsValuable())
+                    if (filterParamters.HasValue())
                     {
                         this.Parameters.AddRange(filterParamters);
                     }
@@ -384,7 +384,7 @@ namespace SqlSugar
             if (this.SelectValue.IsNullOrEmpty())
             {
                 string pre = null;
-                if (this.JoinQueryInfos.IsValuable() && this.JoinQueryInfos.Any(it => TableShortName.IsValuable()))
+                if (this.JoinQueryInfos.HasValue() && this.JoinQueryInfos.Any(it => TableShortName.HasValue()))
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
@@ -426,11 +426,11 @@ namespace SqlSugar
             {
                 var result = Builder.GetTranslationTableName(EntityName);
                 result += UtilConstants.Space;
-                if (this.TableShortName.IsValuable())
+                if (this.TableShortName.HasValue())
                 {
                     result += (TableShortName + UtilConstants.Space);
                 }
-                if (this.TableWithString.IsValuable())
+                if (this.TableWithString.HasValue())
                 {
                     result += TableWithString + UtilConstants.Space;
                 }
@@ -441,7 +441,7 @@ namespace SqlSugar
                 if (this.EasyJoinInfos.IsValuable())
                 {
 
-                    if (this.TableWithString.IsValuable())
+                    if (this.TableWithString.HasValue())
                     {
                         result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} {2} ", GetTableName(it.Value), it.Key, TableWithString)));
                     }

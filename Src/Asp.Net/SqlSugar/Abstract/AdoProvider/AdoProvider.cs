@@ -609,7 +609,7 @@ namespace SqlSugar
         }
         public virtual void ExecuteAfter(string sql, SugarParameter[] parameters)
         {
-            var hasParameter = parameters.IsValuable();
+            var hasParameter = parameters.HasValue();
             if (hasParameter)
             {
                 foreach (var outputParameter in parameters.Where(it => it.Direction == ParameterDirection.Output))

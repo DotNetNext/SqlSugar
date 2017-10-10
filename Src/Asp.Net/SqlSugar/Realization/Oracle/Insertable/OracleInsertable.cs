@@ -9,15 +9,15 @@ namespace SqlSugar
     {
         protected override List<string> GetIdentityKeys()
         {
-            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.IsValuable()).Select(it => it.DbColumnName).ToList();
+            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.HasValue()).Select(it => it.DbColumnName).ToList();
         }
         protected  string GetSeqName()
         {
-            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.IsValuable()).Select(it => it.OracleSequenceName).First();
+            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.HasValue()).Select(it => it.OracleSequenceName).First();
         }
         protected List<string> GetSeqNames()
         {
-            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.IsValuable()).Select(it => it.OracleSequenceName).ToList();
+            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.HasValue()).Select(it => it.OracleSequenceName).ToList();
         }
         public override int ExecuteReturnIdentity()
         {
@@ -40,7 +40,7 @@ namespace SqlSugar
             var identities = GetSeqNames();
             var insertCount = InsertObjs.Count();
             InsertBuilder.OracleSeqInfoList = new Dictionary<string, int>();
-            if (identities.IsValuable()&& insertCount > 1)
+            if (identities.HasValue()&& insertCount > 1)
             {
                 Check.Exception(identities.Count != identities.Distinct().Count(), "The field sequence needs to be unique");
                 foreach (var seqName in identities)

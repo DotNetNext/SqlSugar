@@ -116,7 +116,7 @@ namespace SqlSugar
                 this.IgnoreColumns = new IgnoreColumnList();
             if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
-                if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.IsValuable())
+                if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.HasValue())
                 {
                     this.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
                 }
@@ -127,7 +127,7 @@ namespace SqlSugar
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
                     if (!mappingColumnInfos.Any(it => it.PropertyName == item.PropertyName))
-                        if (item.PropertyName != item.DbColumnName && item.DbColumnName.IsValuable())
+                        if (item.PropertyName != item.DbColumnName && item.DbColumnName.HasValue())
                             this.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
                 var ignoreInfos = this.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
@@ -238,7 +238,7 @@ namespace SqlSugar
             {
                 var isFirst = i == 0; ++i;
                 JoinQueryInfo joinInfo = new JoinQueryInfo();
-                var hasMappingTable = expressionContext.MappingTables.IsValuable();
+                var hasMappingTable = expressionContext.MappingTables.HasValue();
                 MappingTable mappingInfo = null;
                 if (hasMappingTable)
                 {

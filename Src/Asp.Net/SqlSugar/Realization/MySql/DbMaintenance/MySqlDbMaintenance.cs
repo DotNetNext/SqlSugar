@@ -181,7 +181,7 @@ namespace SqlSugar
         #region Methods
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns)
         {
-            if (columns.IsValuable())
+            if (columns.HasValue())
             {
                 foreach (var item in columns)
                 {

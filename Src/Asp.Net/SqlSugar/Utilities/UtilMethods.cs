@@ -59,7 +59,7 @@ namespace SqlSugar
 
         internal static void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
         {
-            if (appendSql.IsValuable() && parameters.IsValuable())
+            if (appendSql.HasValue() && parameters.HasValue())
             {
                 foreach (var parameter in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {

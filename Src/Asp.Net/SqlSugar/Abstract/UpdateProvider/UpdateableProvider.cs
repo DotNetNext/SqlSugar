@@ -148,7 +148,7 @@ namespace SqlSugar
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
             var resultArray = expResult.GetResultArray();
             Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
-            if (resultArray.IsValuable())
+            if (resultArray.HasValue())
             {
                 foreach (var item in resultArray)
                 {
@@ -268,7 +268,7 @@ namespace SqlSugar
                     }
                 });
             }
-            if (this.UpdateBuilder.Parameters.IsValuable() && this.UpdateBuilder.SetValues.IsValuable())
+            if (this.UpdateBuilder.Parameters.HasValue() && this.UpdateBuilder.SetValues.IsValuable())
             {
                 this.UpdateBuilder.Parameters.RemoveAll(it => this.UpdateBuilder.SetValues.Any(v => (SqlBuilder.SqlParameterKeyWord + SqlBuilder.GetNoTranslationColumnName(v.Key)) == it.ParameterName));
             }
@@ -295,7 +295,7 @@ namespace SqlSugar
         }
         private List<string> GetPrimaryKeys()
         {
-            if (this.WhereColumnList.IsValuable())
+            if (this.WhereColumnList.HasValue())
             {
                 return this.WhereColumnList;
             }

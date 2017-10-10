@@ -11,26 +11,23 @@ namespace SqlSugar
         {
             CacheKey key = CacheKeyBuider.GetKey(context, queryBuilder);
             string keyString = key.ToString();
-            foreach (var tableName in key.Tables)
-            {
-                //if (!mappingInfo.Any(it=>it.Key.Equals(tableName,StringComparison.CurrentCultureIgnoreCase))) {
-                //    cacheService.Add<>(new KeyValuePair<string,string>(tableName, keyString));
-                //}
-            }
-    
-            T result = default(T);
-            //if (mappingKey.IsNullOrEmpty())
-            //    result = getData();
-            //else
-            //{
-            //    result = cacheService.GetOrCreate("", () => getData(), cacheDurationInSeconds);
-            //}
+            var result = cacheService.GetOrCreate(keyString, getData, cacheDurationInSeconds);
             return result;
         }
 
-        public static void RemoveCache(string tableName)
+        public static void RemoveCache(ICacheService cacheService, string tableName)
         {
- 
+            var keys = cacheService.GetAllKey<string>();
+            if (keys.HasValue())
+            {
+                foreach (var item in keys)
+                {
+                    if (keys.Contains(UtilConstants.Dot + tableName + UtilConstants.Dot))
+                    {
+                        cacheService.Remove<string>(item);
+                    }
+                }
+            }
         }
     }
 }

@@ -72,7 +72,6 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
-    <Compile Include="CacheScheme\CacheEngines.cs" />
     <Compile Include="CacheScheme\CacheKeyBuider.cs" />
     <Compile Include="CacheScheme\CacheSchemeMain.cs" />
     <Compile Include="Entities\CacheKey.cs" />

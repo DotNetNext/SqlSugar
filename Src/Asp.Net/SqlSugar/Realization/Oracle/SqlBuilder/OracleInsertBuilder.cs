@@ -28,7 +28,7 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
-            var identities = this.EntityInfo.Columns.Where(it => it.OracleSequenceName.IsValuable()).ToList();
+            var identities = this.EntityInfo.Columns.Where(it => it.OracleSequenceName.HasValue()).ToList();
             if (IsNoInsertNull)
             {
                 DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
@@ -39,7 +39,7 @@ namespace SqlSugar
             if (isSingle)
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
-                if (identities.IsValuable())
+                if (identities.HasValue())
                 {
                     columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
                     columnParametersString = columnParametersString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => it.OracleSequenceName + ".nextval"));
@@ -53,7 +53,7 @@ namespace SqlSugar
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
-                if (identities.IsValuable())
+                if (identities.HasValue())
                 {
                     columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
                 }
@@ -69,7 +69,7 @@ namespace SqlSugar
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
                         var insertColumns = string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), Builder.GetTranslationColumnName(it.DbColumnName))));
-                        if (identities.IsValuable())
+                        if (identities.HasValue())
                         {
                             insertColumns = insertColumns.TrimEnd(',') + "," + string.Join(",", identities.Select(it =>
                             {

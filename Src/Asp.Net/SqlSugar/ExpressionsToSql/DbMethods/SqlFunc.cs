@@ -15,7 +15,7 @@ namespace SqlSugar
         }
         public static bool HasValue(object thisValue)
         {
-            return thisValue.IsValuable();
+            return thisValue.HasValue();
         }
         public static bool IsNullOrEmpty(object thisValue)
         {

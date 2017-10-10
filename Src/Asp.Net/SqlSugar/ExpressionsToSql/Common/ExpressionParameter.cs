@@ -40,7 +40,7 @@ namespace SqlSugar
         {
             get
             {
-                return BaseParameter.CommonTempData.IsValuable() && BaseParameter.CommonTempData.Equals(CommonTempDataType.Result);
+                return BaseParameter.CommonTempData.HasValue() && BaseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             }
         }
     }

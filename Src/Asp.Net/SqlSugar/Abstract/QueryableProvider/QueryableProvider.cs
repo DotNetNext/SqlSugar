@@ -117,7 +117,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> Where(string whereString, object whereObj = null)
         {
-            if (whereString.IsValuable())
+            if (whereString.HasValue())
                 this.Where<T>(whereString, whereObj);
             return this;
         }
@@ -389,7 +389,7 @@ namespace SqlSugar
             QueryBuilder.Skip = 0;
             QueryBuilder.Take = 1;
             var reval = this.ToList();
-            if (reval.IsValuable())
+            if (reval.HasValue())
             {
                 return reval.FirstOrDefault();
             }
@@ -438,7 +438,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> MergeTable()
         {
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Select(it=>new{}) Method .");
-            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.IsValuable(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             var sql = QueryBuilder.ToSqlString();
             var tableName = this.SqlBuilder.GetPackTable(sql, "MergeTable");
             var mergeQueryable = this.Context.Queryable<ExpandoObject>();
@@ -536,7 +536,7 @@ namespace SqlSugar
         {
             if (pageIndex == 0)
                 pageIndex = 1;
-            if (QueryBuilder.PartitionByValue.IsValuable())
+            if (QueryBuilder.PartitionByValue.HasValue())
             {
                 QueryBuilder.ExternalPageIndex = pageIndex;
                 QueryBuilder.ExternalPageSize = pageSize;
@@ -566,7 +566,7 @@ namespace SqlSugar
         {
             if (pageIndex == 0)
                 pageIndex = 1;
-            if (QueryBuilder.PartitionByValue.IsValuable())
+            if (QueryBuilder.PartitionByValue.HasValue())
             {
                 QueryBuilder.ExternalPageIndex = pageIndex;
                 QueryBuilder.ExternalPageSize = pageSize;
@@ -989,7 +989,7 @@ namespace SqlSugar
         protected void _Filter(string FilterName, bool isDisabledGobalFilter)
         {
             QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
-            if (this.Context.QueryFilter.GeFilterList.IsValuable() && FilterName.IsValuable())
+            if (this.Context.QueryFilter.GeFilterList.HasValue() && FilterName.HasValue())
             {
                 var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName && it.IsJoinQuery == !QueryBuilder.IsSingle());
                 foreach (var item in list)
@@ -1068,7 +1068,7 @@ namespace SqlSugar
         protected void _InQueryable(Expression<Func<T, object>> expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             string sql = sqlObj.Key;
-            if (sqlObj.Value.IsValuable())
+            if (sqlObj.Value.HasValue())
             {
                 this.SqlBuilder.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), 100);
                 this.QueryBuilder.Parameters.AddRange(sqlObj.Value);
@@ -1119,9 +1119,9 @@ namespace SqlSugar
 
         private void SetContextModel<TResult>(List<TResult> result, Type entityType)
         {
-            if (result.IsValuable())
+            if (result.HasValue())
             {
-                if (entityType.GetTypeInfo().BaseType.IsValuable() && entityType.GetTypeInfo().BaseType == UtilConstants.ModelType)
+                if (entityType.GetTypeInfo().BaseType.HasValue() && entityType.GetTypeInfo().BaseType == UtilConstants.ModelType)
                 {
                     foreach (var item in result)
                     {

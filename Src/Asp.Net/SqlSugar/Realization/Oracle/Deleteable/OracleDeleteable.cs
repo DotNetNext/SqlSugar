@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         protected override List<string> GetIdentityKeys()
         {
-            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.IsValuable()).Select(it => it.DbColumnName).ToList();
+            return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.HasValue()).Select(it => it.DbColumnName).ToList();
         }
     }
 }
