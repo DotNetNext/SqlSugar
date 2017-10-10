@@ -200,7 +200,7 @@ namespace SqlSugar
             return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SerializeObject(value);
         }
 
-   
+
 
         /// <summary>
         /// Serialize Object
@@ -230,13 +230,14 @@ namespace SqlSugar
                 return DeserializeObject<T>(jsonString);
             }
         }
-        public SqlSugarClient CopyContext(bool isCopyEvents=false)
+        public SqlSugarClient CopyContext(bool isCopyEvents = false)
         {
             var newClient = new SqlSugarClient(this.TranslateCopy(Context.CurrentConnectionConfig));
             newClient.MappingColumns = this.TranslateCopy(Context.MappingColumns);
             newClient.MappingTables = this.TranslateCopy(Context.MappingTables);
             newClient.IgnoreColumns = this.TranslateCopy(Context.IgnoreColumns);
-            if (isCopyEvents) {
+            if (isCopyEvents)
+            {
                 newClient.Ado.IsEnableLogEvent = Context.Ado.IsEnableLogEvent;
                 newClient.Ado.LogEventStarting = Context.Ado.LogEventStarting;
                 newClient.Ado.LogEventCompleted = Context.Ado.LogEventCompleted;
@@ -290,6 +291,51 @@ namespace SqlSugar
         }
         #endregion
 
-
+        #region Query
+        public KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<ConditionalModel> models)
+        {
+            if (models.IsNullOrEmpty()) return new KeyValuePair<string, SugarParameter[]>();
+            StringBuilder builder = new StringBuilder();
+            List<SugarParameter> parameters = new List<SugarParameter>() ;
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            foreach (var item in models)
+            {
+                var index = models.IndexOf(item);
+                var type = index == 0?"":"AND";
+                string temp = " {0} {1} {2} {3}  ";
+                string parameterName = string.Format("{0}Conditional{1}{2}",sqlBuilder.SqlParameterKeyWord,item.FieldName,index);
+                switch (item.ConditionalType)
+                {
+                    case ConditionalType.Equal:
+                        builder.AppendFormat(temp,type,item.FieldName,"=", parameterName);
+                        parameters.Add(new SugarParameter(parameterName,item.FieldValue));
+                        break;
+                    case ConditionalType.Like:
+                        builder.AppendFormat(temp, type, item.FieldName, "LIKE", parameterName);
+                        parameters.Add(new SugarParameter(parameterName, "%"+item.FieldValue+"%"));
+                        break;
+                    case ConditionalType.GreaterThan:
+                        builder.AppendFormat(temp, type, item.FieldName, ">", parameterName);
+                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                        break;
+                    case ConditionalType.GreaterThanOrEqual:
+                        builder.AppendFormat(temp, type, item.FieldName, ">=", parameterName);
+                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                        break;
+                    case ConditionalType.LessThan:
+                        builder.AppendFormat(temp, type, item.FieldName, "<", parameterName);
+                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                        break;
+                    case ConditionalType.LessThanOrEqual:
+                        builder.AppendFormat(temp, type, item.FieldName, "<=", parameterName);
+                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
+        }
+        #endregion
     }
 }

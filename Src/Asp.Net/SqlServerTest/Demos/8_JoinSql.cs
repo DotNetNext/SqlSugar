@@ -18,7 +18,18 @@ namespace OrmTest.Demo
             Where();
             OrderBy();
             SelectMerge();
+            ConditionalModel();
         }
+
+        private static void ConditionalModel()
+        {
+            var db = GetInstance();
+            List<ConditionalModel> conModels = new List<ConditionalModel>();
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });
+            var student = db.Queryable<Student>().Where(conModels).ToList();
+        }
+
         private static void SelectMerge()
         {
             var db = GetInstance();

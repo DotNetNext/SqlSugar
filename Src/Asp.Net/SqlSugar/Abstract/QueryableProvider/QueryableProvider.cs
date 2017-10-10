@@ -121,6 +121,14 @@ namespace SqlSugar
                 this.Where<T>(whereString, whereObj);
             return this;
         }
+
+        public virtual ISugarQueryable<T> Where(List<ConditionalModel> conditionalModels)
+        {
+            if (conditionalModels.IsNullOrEmpty()) return this;
+            var sqlObj = this.Context.Utilities.ConditionalModelToSql(conditionalModels);
+            return this.Where(sqlObj.Key, sqlObj.Value);
+        }
+
         public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;
@@ -430,7 +438,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> MergeTable()
         {
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Select(it=>new{}) Method .");
-            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0||this.QueryBuilder.OrderByValue.IsValuable(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.IsValuable(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             var sql = QueryBuilder.ToSqlString();
             var tableName = this.SqlBuilder.GetPackTable(sql, "MergeTable");
             var mergeQueryable = this.Context.Queryable<ExpandoObject>();
@@ -613,9 +621,9 @@ namespace SqlSugar
             {
                 columns.Add(new DbColumnInfo()
                 {
-                     DbColumnName=item.Name,
-                     PropertyName= UtilMethods.GetUnderType(item.PropertyType).Name,
-                     PropertyType=UtilMethods.GetUnderType(item.PropertyType)
+                    DbColumnName = item.Name,
+                    PropertyName = UtilMethods.GetUnderType(item.PropertyType).Name,
+                    PropertyType = UtilMethods.GetUnderType(item.PropertyType)
                 });
             }
             var result = ((this.Context.DbFirst) as DbFirstProvider).GetClassString(columns, ref className);
@@ -1181,6 +1189,11 @@ namespace SqlSugar
             Where<T>(whereString, whereObj);
             return this;
         }
+        public new ISugarQueryable<T, T2> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
+            return this;
+        }
 
         public new ISugarQueryable<T, T2> WhereIF(bool isWhere, string whereString, object whereObj)
         {
@@ -1437,6 +1450,11 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
+        public new ISugarQueryable<T, T2,T3> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
+            return this;
+        }
 
         public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
@@ -1612,6 +1630,11 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, T4, bool>> expression)
         {
             _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3,T4> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
             return this;
         }
 
@@ -1862,6 +1885,11 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
         {
             _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4,T5> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
             return this;
         }
 
@@ -2138,6 +2166,11 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
         {
             _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
             return this;
         }
 
@@ -2440,6 +2473,11 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
         {
             _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
             return this;
         }
 
@@ -2769,6 +2807,11 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
         {
             _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
             return this;
         }
 
@@ -3132,6 +3175,12 @@ namespace SqlSugar
                 _Where(expression);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
+            return this;
+        }
+
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
@@ -3504,6 +3553,12 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
+            return this;
+        }
+
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
@@ -3910,6 +3965,11 @@ namespace SqlSugar
         {
             if (isWhere)
                 _Where(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
             return this;
         }
 
@@ -4333,6 +4393,12 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(List<ConditionalModel> conditionalModels)
+        {
+            base.Where(conditionalModels);
+            return this;
+        }
+
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)

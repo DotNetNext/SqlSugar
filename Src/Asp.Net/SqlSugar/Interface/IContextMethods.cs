@@ -23,6 +23,7 @@ namespace SqlSugar
         void RemoveCacheAll();
         void RemoveCacheAll<T>();
         void RemoveCache<T>(string key);
+        KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<ConditionalModel> models);
 
     }
 }

@@ -25,9 +25,17 @@ namespace SqlSugar
                 var isDictionary = entityType.IsIn(UtilConstants.DicArraySO, UtilConstants.DicArraySS);
                 if (isDictionary)
                     DictionaryToParameters(parameters, sqlParameterKeyWord, result, entityType);
+                else if (parameters is List<SugarParameter>)
+                {
+                    result = (parameters as List<SugarParameter>);
+                }
+                else if (parameters is SugarParameter[])
+                {
+                    result = (parameters as SugarParameter[]).ToList();
+                }
                 else
                 {
-                    Check.Exception(!entityType.IsAnonymousType(), "The parameter format is wrong. \nUse new{{xx=xx, xx2=xx2}}  or \nDictionary<string, object> or \nSugarParameter [] "); 
+                    Check.Exception(!entityType.IsAnonymousType(), "The parameter format is wrong. \nUse new{{xx=xx, xx2=xx2}}  or \nDictionary<string, object> or \nSugarParameter [] ");
                     ProperyToParameter(parameters, propertyInfo, sqlParameterKeyWord, result, entityType);
                 }
             }
