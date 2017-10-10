@@ -400,9 +400,9 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(  CAST( DateName(Year,[Datetime1]) +'-'+ DateName(Month,[Datetime1]) +'-'+ DateName(Day,[Datetime1])  AS DATETIME) > @Date0 )", new List<SugarParameter>()
+            base.Check(value, pars, "( ( [Bool1]=1 ) AND ( [Bool1]=1 ) )", new List<SugarParameter>()
             {
-                new SugarParameter("@Date0",DateTime.Now.Date),
+                
 
             }, "whereSingle26");
         }

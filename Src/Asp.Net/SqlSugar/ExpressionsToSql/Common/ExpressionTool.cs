@@ -58,7 +58,7 @@ namespace SqlSugar
 
         public static bool IsLogicOperator(string operatorValue)
         {
-            return operatorValue == "&&" || operatorValue == "||";
+            return operatorValue == "&&" || operatorValue == "||"||operatorValue == "AND" || operatorValue == "OR";
         }
 
         public static bool IsLogicOperator(Expression expression)
