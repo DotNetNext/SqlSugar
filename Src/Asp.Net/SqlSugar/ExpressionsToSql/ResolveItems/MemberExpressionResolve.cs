@@ -126,14 +126,16 @@ namespace SqlSugar
                 {
                     var value = ExpressionTool.GetMemberValue(expression.Member, expression);
                     base.AppendValue(parameter, isLeft, value);
-                    return;
                 }
-                fieldName = GetName(parameter, expression, isLeft, isSingle);
-                if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+                else
                 {
-                    fieldName = this.Context.DbMehtods.EqualTrue(fieldName);
+                    fieldName = GetName(parameter, expression, isLeft, isSingle);
+                    if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+                    {
+                        fieldName = this.Context.DbMehtods.EqualTrue(fieldName);
+                    }
+                    AppendMember(parameter, isLeft, fieldName);
                 }
-                AppendMember(parameter, isLeft, fieldName);
             }
         }
         #endregion
