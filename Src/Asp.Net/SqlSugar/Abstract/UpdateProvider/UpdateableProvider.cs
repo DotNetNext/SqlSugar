@@ -174,10 +174,18 @@ namespace SqlSugar
             UpdateBuilder.WhereValues.Add(expResult.GetResultString());
             return this;
         }
+
         public IUpdateable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 this.UpdateBuilder.TableWithString = lockString;
+            return this;
+        }
+
+        public IUpdateable<T> RemoveDataCache()
+        {
+            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
             return this;
         }
 

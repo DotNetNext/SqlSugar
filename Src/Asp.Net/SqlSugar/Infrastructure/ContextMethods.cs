@@ -272,7 +272,7 @@ namespace SqlSugar
         #region Cache
         public ICacheService GetReflectionInoCacheInstance()
         {
-            return Context.CurrentConnectionConfig.ConfigureExternalServices.ReflectionInoCache;
+            return Context.CurrentConnectionConfig.ConfigureExternalServices.ReflectionInoCacheService;
         }
 
         public void RemoveCacheAll()

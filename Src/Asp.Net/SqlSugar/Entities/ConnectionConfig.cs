@@ -49,7 +49,7 @@ namespace SqlSugar
             set{ _SerializeService = value;}
         }
 
-        public ICacheService ReflectionInoCache
+        public ICacheService ReflectionInoCacheService
         {
             get
             {
@@ -61,7 +61,7 @@ namespace SqlSugar
             set{_ReflectionInoCache = value;}
         }
 
-        public ICacheService DataInfoCache
+        public ICacheService DataInfoCacheService
         {
             get
             {

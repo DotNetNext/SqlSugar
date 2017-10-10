@@ -30,6 +30,7 @@ namespace SqlSugar
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
         IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
+        IUpdateable<T> RemoveDataCache();
         KeyValuePair<string,List<SugarParameter>> ToSql();
     }
 }

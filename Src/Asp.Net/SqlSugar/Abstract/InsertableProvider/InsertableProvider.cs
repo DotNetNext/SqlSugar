@@ -184,6 +184,13 @@ namespace SqlSugar
             this.InsertBuilder.IsNoInsertNull = isNoInsertNull;
             return this;
         }
+
+        public IInsertable<T> RemoveDataCache()
+        {
+            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            return this;
+        }
         #endregion
 
         #region Protected Methods

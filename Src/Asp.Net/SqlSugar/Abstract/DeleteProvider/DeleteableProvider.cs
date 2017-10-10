@@ -49,7 +49,7 @@ namespace SqlSugar
             Task<bool> result = new Task<bool>(() =>
             {
                 IDeleteable<T> asyncDeleteable = CopyDeleteable();
-                return asyncDeleteable.ExecuteCommand()>0;
+                return asyncDeleteable.ExecuteCommand() > 0;
             });
             result.Start();
             return result;
@@ -173,6 +173,14 @@ namespace SqlSugar
             DeleteBuilder.Parameters.AddRange(parameters);
             return this;
         }
+
+        public IDeleteable<T> RemoveDataCache()
+        {
+            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            return this;
+        }
+
         public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
