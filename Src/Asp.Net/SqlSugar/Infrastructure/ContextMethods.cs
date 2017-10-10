@@ -307,27 +307,27 @@ namespace SqlSugar
                 switch (item.ConditionalType)
                 {
                     case ConditionalType.Equal:
-                        builder.AppendFormat(temp,type,item.FieldName,"=", parameterName);
+                        builder.AppendFormat(temp,type,item.FieldName.ToSqlFilter(),"=", parameterName);
                         parameters.Add(new SugarParameter(parameterName,item.FieldValue));
                         break;
                     case ConditionalType.Like:
-                        builder.AppendFormat(temp, type, item.FieldName, "LIKE", parameterName);
+                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
                         parameters.Add(new SugarParameter(parameterName, "%"+item.FieldValue+"%"));
                         break;
                     case ConditionalType.GreaterThan:
-                        builder.AppendFormat(temp, type, item.FieldName, ">", parameterName);
+                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">", parameterName);
                         parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                         break;
                     case ConditionalType.GreaterThanOrEqual:
-                        builder.AppendFormat(temp, type, item.FieldName, ">=", parameterName);
+                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">=", parameterName);
                         parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                         break;
                     case ConditionalType.LessThan:
-                        builder.AppendFormat(temp, type, item.FieldName, "<", parameterName);
+                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<", parameterName);
                         parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                         break;
                     case ConditionalType.LessThanOrEqual:
-                        builder.AppendFormat(temp, type, item.FieldName, "<=", parameterName);
+                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<=", parameterName);
                         parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                         break;
                     default:
