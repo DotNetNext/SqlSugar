@@ -130,10 +130,6 @@ namespace SqlSugar
                 else
                 {
                     fieldName = GetName(parameter, expression, isLeft, isSingle);
-                    if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
-                    {
-                        fieldName = this.Context.DbMehtods.EqualTrue(fieldName);
-                    }
                     AppendMember(parameter, isLeft, fieldName);
                 }
             }
