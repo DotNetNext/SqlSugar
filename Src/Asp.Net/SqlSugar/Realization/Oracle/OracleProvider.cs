@@ -108,17 +108,20 @@ namespace SqlSugar
                 {
                     sqlParameter.ParameterName = sqlParameter.ParameterName.TrimStart(':');
                 }
-                //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
-                sqlParameter.Value = parameter.Value;
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
                     sqlParameter.Value = sqlParameter.Value.ObjToString();
                 }
+                else if (parameter.DbType == System.Data.DbType.Boolean)
+                {
+                    sqlParameter.DbType = System.Data.DbType.Int16;
+                    sqlParameter.Value = (bool)parameter.Value ? 1 : 0;
+                }
                 else
                 {
-                    sqlParameter.DbType = parameter.DbType;
+                    sqlParameter.Value = parameter.Value;
                 }
                 if (parameter.Direction != 0)
                     sqlParameter.Direction = parameter.Direction;
