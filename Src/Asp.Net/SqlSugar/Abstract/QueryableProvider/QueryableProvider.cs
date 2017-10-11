@@ -452,12 +452,19 @@ namespace SqlSugar
         {
             InitMapping();
             QueryBuilder.IsCount = true;
-
-            int reval = GetCount();
-
+            int result = 0;
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<int>(cacheService, this.QueryBuilder, () => { return GetCount(); }, CacheTime, this.Context);
+            }
+            else
+            {
+              result= GetCount();
+            }
             RestoreMapping();
             QueryBuilder.IsCount = false;
-            return reval;
+            return result;
         }
 
         public virtual int Count(Expression<Func<T, bool>> expression)
