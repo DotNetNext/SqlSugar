@@ -11,7 +11,8 @@ namespace ExtensionsDemo
     {
         public static void Init()
         {
-            var myCache = new SqlSugar.Extensions.HttpRuntimeCache();
+            ICacheService myCache = new SqlSugar.Extensions.HttpRuntimeCache();//ICacheService
+
             SqlSugarClient db = new SqlSugarClient(
               new ConnectionConfig()
               {
@@ -20,7 +21,7 @@ namespace ExtensionsDemo
                   IsAutoCloseConnection = true,
                   ConfigureExternalServices = new ConfigureExternalServices()
                   {
-                      DataInfoCacheService = myCache
+                      DataInfoCacheService = myCache //Setting external cache service
                   }
               });
     
@@ -34,6 +35,7 @@ namespace ExtensionsDemo
             db.Queryable<Student, Student>((s1, s2) => new object[] {
                 JoinType.Left,s1.Id==s2.Id
             }).Select(s1 => s1).WithCache().ToList();
+
 
             Console.WriteLine("Cache Key Count:"+myCache.GetAllKey<string>().Count());
             foreach (var item in myCache.GetAllKey<string>())

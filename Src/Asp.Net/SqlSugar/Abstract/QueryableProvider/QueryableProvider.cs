@@ -600,6 +600,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
         {
+            Check.ArgumentNullException(this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService, "Use Cache ConnectionConfig.ConfigureExternalServices.DataInfoCacheService is required ");
             this.IsCache = true;
             this.CacheTime = cacheDurationInSeconds;
             return this;
