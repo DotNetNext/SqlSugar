@@ -111,7 +111,15 @@ namespace SqlSugar
                 //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
-                sqlParameter.DbType = parameter.DbType;
+                if (sqlParameter.DbType == System.Data.DbType.Guid)
+                {
+                    sqlParameter.DbType = System.Data.DbType.String;
+                    sqlParameter.Value = sqlParameter.Value.ObjToString();
+                }
+                else
+                {
+                    sqlParameter.DbType = parameter.DbType;
+                }
                 if (parameter.Direction != 0)
                     sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
@@ -121,11 +129,7 @@ namespace SqlSugar
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
                 }
-                if (sqlParameter.DbType == System.Data.DbType.Guid)
-                {
-                    sqlParameter.DbType = System.Data.DbType.String;
-                    sqlParameter.Value = sqlParameter.Value.ObjToString();
-                }
+
                 ++index;
             }
             return result;
