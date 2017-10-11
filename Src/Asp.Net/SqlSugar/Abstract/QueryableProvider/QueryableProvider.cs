@@ -1040,6 +1040,7 @@ namespace SqlSugar
             {
                 result = GetData<TResult>(sqlObj);
             }
+            RestoreMapping();
             return result;
         }
 
@@ -1061,7 +1062,6 @@ namespace SqlSugar
             {
                 result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
             }
-            RestoreMapping();
             SetContextModel(result, entityType);
             return result;
         }
