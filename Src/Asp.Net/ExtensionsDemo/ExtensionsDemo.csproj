@@ -50,6 +50,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SqlSugar.Extensions.DataCache\SqlSugar.Extensions.DataCache.csproj">
+      <Project>{cdb72abe-0336-4730-a195-abf2611deeaa}</Project>
+      <Name>SqlSugar.Extensions.DataCache</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
       <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
       <Name>SqlSugar</Name>
