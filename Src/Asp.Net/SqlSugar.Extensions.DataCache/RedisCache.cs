@@ -162,7 +162,7 @@ namespace SqlSugar.Extensions
         {
             using (var client = _redisClientManager.GetClient())
             {
-                return client.SearchKeys("SqlSugarDataCache");
+                return client.SearchKeys("SqlSugarDataCache.*");
             }
         }
     }

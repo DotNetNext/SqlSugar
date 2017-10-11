@@ -12,8 +12,8 @@ namespace ExtensionsDemo
     {
         public static void Init()
         {
-            HttpRuntimeCache();
-            //RedisCache();
+            //HttpRuntimeCache();
+            RedisCache();
 
         }
 
@@ -63,7 +63,7 @@ namespace ExtensionsDemo
         }
         private static void RedisCache()
         {
-            ICacheService myCache = new RedisCache("localhost");//ICacheService
+            ICacheService myCache = new RedisCache("10.1.249.196");//ICacheService
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
@@ -76,18 +76,14 @@ namespace ExtensionsDemo
             });
 
 
-            for (int i = 0; i < 10000; i++)
-            {
-                db.Queryable<Student>().Where(it => it.Id > 0).WithCache().ToList();
-            }
+            db.Queryable<Student>().Where(it => it.Id > 0).WithCache(30).ToList();
 
-
-            db.Queryable<Student, Student>((s1, s2) => s1.Id == s2.Id).Select(s1 => s1).WithCache().ToList();
+            db.Queryable<Student, Student>((s1, s2) => s1.Id == s2.Id).Select(s1 => s1).WithCache(30).ToList();
 
 
             db.Queryable<Student, Student>((s1, s2) => new object[] {
                 JoinType.Left,s1.Id==s2.Id
-            }).Select(s1 => s1).WithCache().ToList();
+            }).Select(s1 => s1).WithCache(30).ToList();
 
 
             Console.WriteLine("Cache Key Count:" + myCache.GetAllKey<string>().Count());
