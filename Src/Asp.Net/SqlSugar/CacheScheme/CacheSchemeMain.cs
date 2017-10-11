@@ -22,7 +22,7 @@ namespace SqlSugar
             {
                 foreach (var item in keys)
                 {
-                    if (keys.Contains(UtilConstants.Dot + tableName + UtilConstants.Dot))
+                    if (item.ToLower().Contains(UtilConstants.Dot + tableName.ToLower() + UtilConstants.Dot))
                     {
                         cacheService.Remove<string>(item);
                     }

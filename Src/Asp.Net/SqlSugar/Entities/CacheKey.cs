@@ -12,7 +12,7 @@ namespace SqlSugar
         public List<string> IdentificationList { get; set; }
         public new string ToString()
         {
-            return "SqlSugarDataCache." + UtilConstants.Dot + string.Join(UtilConstants.Dot, this.Tables) + string.Join(UtilConstants.Dot, this.IdentificationList);
+            return "SqlSugarDataCache" + UtilConstants.Dot + string.Join(UtilConstants.Dot, this.Tables) +UtilConstants.Dot+ string.Join(UtilConstants.Dot, this.IdentificationList.Where(it=>it.HasValue()));
         }
     }
 }
