@@ -452,14 +452,14 @@ namespace SqlSugar
         {
             InitMapping();
             QueryBuilder.IsCount = true;
-            var sql = string.Empty;
-            sql = QueryBuilder.ToSqlString();
-            sql = QueryBuilder.ToCountSql(sql);
-            var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+
+            int reval = GetCount();
+
             RestoreMapping();
             QueryBuilder.IsCount = false;
             return reval;
         }
+
         public virtual int Count(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -1042,6 +1042,14 @@ namespace SqlSugar
             }
             RestoreMapping();
             return result;
+        }
+        protected int GetCount()
+        {
+            var sql = string.Empty;
+            sql = QueryBuilder.ToSqlString();
+            sql = QueryBuilder.ToCountSql(sql);
+            var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            return reval;
         }
 
         protected List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
