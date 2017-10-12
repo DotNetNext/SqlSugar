@@ -18,6 +18,10 @@ namespace SqlSugar
             {
                 return "long";
             }
+            else if (dbTypeName == "int16")
+            {
+                return "short";
+            }
             else if (propertyTypes == null)
             {
                 return "other";
