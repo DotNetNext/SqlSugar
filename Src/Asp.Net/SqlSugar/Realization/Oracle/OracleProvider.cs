@@ -99,6 +99,7 @@ namespace SqlSugar
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new OracleParameter();
+                sqlParameter.Size = parameter.Size == -1 ? 0 : parameter.Size;
                 sqlParameter.ParameterName = parameter.ParameterName.ToLower();
                 if (sqlParameter.ParameterName[0] == '@')
                 {
@@ -108,7 +109,6 @@ namespace SqlSugar
                 {
                     sqlParameter.ParameterName = sqlParameter.ParameterName.TrimStart(':');
                 }
-                sqlParameter.Size = parameter.Size;
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
