@@ -589,11 +589,17 @@ namespace SqlSugar
         {
             _RestoreMapping = false;
             List<T> result = null;
-            totalNumber = this.Count();
-            if (totalNumber == 0)
-                result = new List<T>();
-            else
-                result = ToPageList(pageIndex, pageSize);
+            int count = this.Count();
+            QueryBuilder.IsDisabledGobalFilter = UtilMethods.GetOldValue(QueryBuilder.IsDisabledGobalFilter, () =>
+            {
+                QueryBuilder.IsDisabledGobalFilter = true;
+                if (count == 0)
+                    result = new List<T>();
+                else
+                    result = ToPageList(pageIndex, pageSize);
+
+            });
+            totalNumber = count;
             _RestoreMapping = true;
             return result;
         }

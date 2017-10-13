@@ -87,5 +87,10 @@ namespace SqlSugar
             return dbTypeName;
         }
 
+        internal static T GetOldValue<T>(T value, Action action)
+        {
+            action();
+            return value;
+        }
     }
 }
