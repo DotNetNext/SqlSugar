@@ -48,9 +48,9 @@ namespace OrmTest.Demo
             var insertObjs = new List<Student>();
             for (int i = 0; i < 1000; i++)
             {
-                insertObjs.Add(new Student() { Name = "name" + i });
+                insertObjs.Add(new Student() { Name = "name" + i ,CreateTime=DateTime.Now});
             }
-            var t10 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
+            var t10 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name,it.CreateTime }).ExecuteCommand();
 
             var t11 = db.Insertable(insertObjs.ToArray()).ExecuteCommand();
         }
