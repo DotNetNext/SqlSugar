@@ -61,12 +61,12 @@ namespace SqlSugar
             RestoreMapping();
             return Convert.ToInt64( Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
         }
-        public T ExecuteReturnEntity()
+        public virtual T ExecuteReturnEntity()
         {
             ExecuteCommandIdentityIntoEntity();
             return InsertObjs.First();
         }
-        public bool ExecuteCommandIdentityIntoEntity()
+        public virtual bool ExecuteCommandIdentityIntoEntity()
         {
             var result = InsertObjs.First();
             var identityKeys = GetIdentityKeys();
