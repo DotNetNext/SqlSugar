@@ -8,6 +8,10 @@ namespace SqlSugar
 {
     public class OracleUpdateBuilder : UpdateBuilder
     {
+        protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        {
+            throw new NotSupportedException("Oracle Waiting for updates updateable(List<T>)");
+        }
         public override object FormatValue(object value)
         {
             if (value == null)
