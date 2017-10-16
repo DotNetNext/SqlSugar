@@ -21,6 +21,7 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                whereSingle27();
                 whereSingle26();
                 whereSingle25();
                 whereSingle24();
@@ -53,6 +54,17 @@ namespace OrmTest.UnitTest
           
             }
             base.End("Where Test");
+        }
+        private void whereSingle27() {
+            var schoolData = new School() { Id = 100, Name = "x" };
+            Expression<Func<Student, bool>> exp = it => it.Name.Contains(schoolData.Name);
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " ([it].[Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","x")
+            }, "whereSingle27");
         }
         private void WhereMultiple1()
         {
