@@ -460,7 +460,7 @@ namespace SqlSugar
             }
             else
             {
-              result= GetCount();
+                result = GetCount();
             }
             RestoreMapping();
             QueryBuilder.IsCount = false;
@@ -1071,9 +1071,13 @@ namespace SqlSugar
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
             var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
-            if (typeof(TResult) == typeof(ExpandoObject))
+            if (entityType == UtilConstants.DynamicType)
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
+            }
+            else if (entityType == UtilConstants.ObjType)
+            {
+                result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader).Select(it => ((TResult)(object)it)).ToList();
             }
             else if (entityType.IsAnonymousType() || isComplexModel)
             {
@@ -1440,7 +1444,7 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2,T3> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, string orderFileds)
         {
             if (isOrderBy)
                 base.OrderBy(orderFileds);
@@ -1458,7 +1462,7 @@ namespace SqlSugar
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, Expression<Func<T, T2,T3, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
@@ -1496,7 +1500,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2,T3> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -1678,7 +1682,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2,T3,T4> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -1786,7 +1790,7 @@ namespace SqlSugar
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3,T4, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
@@ -1963,7 +1967,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4,T5> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -2063,7 +2067,7 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4,T5> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, string orderFileds)
         {
             if (isOrderBy)
                 base.OrderBy(orderFileds);
@@ -2093,7 +2097,7 @@ namespace SqlSugar
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4,T5, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
@@ -2280,7 +2284,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -2587,7 +2591,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -2921,7 +2925,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -3287,7 +3291,7 @@ namespace SqlSugar
                 _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -3665,7 +3669,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -4079,7 +4083,7 @@ namespace SqlSugar
                 _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -4505,7 +4509,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(List<ConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;

@@ -476,6 +476,7 @@ namespace OrmTest.Demo
             var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
             var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
             var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
+            var s41 = db.Queryable<Student>().Select<dynamic>("*").ToList();
             var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
             var s6 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
