@@ -218,7 +218,7 @@ namespace SqlSugar
                     {
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                         this.Context.Ado.IsEnableLogEvent = false;
-                        string sql = @" select cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
+                        string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
                             where cu.constraint_name = au.constraint_name
                             and au.constraint_type = 'P' and au.table_name = '" +tableName.ToUpper()+ @"'";
                         var pks = this.Context.Ado.SqlQuery<string>(sql);
