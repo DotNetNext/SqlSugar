@@ -83,11 +83,14 @@ namespace SqlSugar
             {
                 inValueString = inValues.ToArray().ToJoinSqlInVals();
             }
-            else
+            if (inValueString.IsNullOrEmpty())
             {
                 return " (1=2) ";
             }
-            return string.Format(" ({0} IN ({1})) ", value, inValueString);
+            else
+            {
+                return string.Format(" ({0} IN ({1})) ", value, inValueString);
+            }
         }
 
         public virtual string Equals(MethodCallExpressionModel model)
