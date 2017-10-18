@@ -151,11 +151,15 @@ namespace SqlSugar
             {
                 return "long";
             }
+            else if (dbTypeName == "int16") 
+            {
+                return "short";
+            }
             else if (propertyTypes == null)
             {
                 return "other";
             }
-            else if (dbTypeName == "xml")
+            else if (dbTypeName.IsContainsIn("xml", "string", "String"))
             {
                 return "string";
             }
