@@ -123,6 +123,10 @@ namespace SqlSugar
                 {
                     reval.Add(default(T));
                 }
+                else if (type.IsEnum)
+                {
+                    reval.Add((T)Enum.Parse(type,value.ObjToString()));
+                }
                 else
                 {
                     reval.Add((T)Convert.ChangeType(value, UtilMethods.GetUnderType(type)));
