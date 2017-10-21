@@ -45,7 +45,7 @@ namespace SqlSugar
         {
             var result = new DbColumnInfo()
             {
-                DataType = this.Context.Ado.DbBind.GetDbTypeName(UtilMethods.GetUnderType(item.PropertyInfo).Name),
+                DataType = item.PropertyInfo.PropertyType.IsEnum?this.Context.Ado.DbBind.GetDbTypeName(UtilConstants.IntType.Name) :this.Context.Ado.DbBind.GetDbTypeName(UtilMethods.GetUnderType(item.PropertyInfo).Name),
                 TableId = entityInfo.Columns.IndexOf(item),
                 DbColumnName = item.DbColumnName.HasValue() ? item.DbColumnName : item.PropertyName,
                 IsPrimarykey = item.IsPrimarykey,
