@@ -114,9 +114,9 @@ namespace SqlSugar
                             }
                             else
                             {
-                                if (readerValues.ContainsKey(name))
+                                if (readerValues.Any(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
                                 {
-                                    var addValue = readerValues[name];
+                                    var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues[name.ToUpper()];
                                     if (addValue == DBNull.Value)
                                     {
                                         if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
@@ -296,23 +296,23 @@ namespace SqlSugar
         {
             if (models.IsNullOrEmpty()) return new KeyValuePair<string, SugarParameter[]>();
             StringBuilder builder = new StringBuilder();
-            List<SugarParameter> parameters = new List<SugarParameter>() ;
+            List<SugarParameter> parameters = new List<SugarParameter>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             foreach (var item in models)
             {
                 var index = models.IndexOf(item);
-                var type = index == 0?"":"AND";
+                var type = index == 0 ? "" : "AND";
                 string temp = " {0} {1} {2} {3}  ";
-                string parameterName = string.Format("{0}Conditional{1}{2}",sqlBuilder.SqlParameterKeyWord,item.FieldName,index);
+                string parameterName = string.Format("{0}Conditional{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
                 switch (item.ConditionalType)
                 {
                     case ConditionalType.Equal:
-                        builder.AppendFormat(temp,type,item.FieldName.ToSqlFilter(),"=", parameterName);
-                        parameters.Add(new SugarParameter(parameterName,item.FieldValue));
+                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
+                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                         break;
                     case ConditionalType.Like:
                         builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, "%"+item.FieldValue+"%"));
+                        parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue + "%"));
                         break;
                     case ConditionalType.GreaterThan:
                         builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">", parameterName);
