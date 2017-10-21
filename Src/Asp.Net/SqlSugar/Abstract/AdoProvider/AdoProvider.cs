@@ -457,7 +457,6 @@ namespace SqlSugar
             return result;
         }
 
-        [Obsolete("Use SqlSugarClient.SqlQueryable")]
         public virtual List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters)
         {
             if (parameters != null)
