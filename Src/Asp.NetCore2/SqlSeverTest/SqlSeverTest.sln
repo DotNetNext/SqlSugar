@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSeverTest", "SqlSeverTest\SqlSeverTest.csproj", "{B44F2513-E55B-480F-A41C-685DDD083355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSeverTest", "SqlSeverTest\SqlSeverTest.csproj", "{B44F2513-E55B-480F-A41C-685DDD083355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{1E032FA3-627E-4D59-9C11-C8D8114F24FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{1E032FA3-627E-4D59-9C11-C8D8114F24FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlTest", "MySqlTest\MySqlTest.csproj", "{DEB62FB9-C743-4C2B-BC78-50FB0E8B44FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlTest", "MySqlTest\MySqlTest.csproj", "{DEB62FB9-C743-4C2B-BC78-50FB0E8B44FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteTest", "SqliteTest\SqliteTest.csproj", "{AE73F090-22EC-49E4-AFEE-879FFFA292EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqliteTest", "SqliteTest\SqliteTest.csproj", "{AE73F090-22EC-49E4-AFEE-879FFFA292EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OracleTest", "OracleTest\OracleTest.csproj", "{3247B9CB-C92D-4AE3-8A35-3131AB2BD406}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AE73F090-22EC-49E4-AFEE-879FFFA292EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE73F090-22EC-49E4-AFEE-879FFFA292EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE73F090-22EC-49E4-AFEE-879FFFA292EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3247B9CB-C92D-4AE3-8A35-3131AB2BD406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3247B9CB-C92D-4AE3-8A35-3131AB2BD406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3247B9CB-C92D-4AE3-8A35-3131AB2BD406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3247B9CB-C92D-4AE3-8A35-3131AB2BD406}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
