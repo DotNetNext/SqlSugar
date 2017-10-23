@@ -24,6 +24,7 @@ namespace SqlSugar
             {
                 try
                 {
+                    throw new NotSupportedException("NET Core 2.0 Oracle official driver has not yet, please wait");
                     if (base._DbConnection == null)
                     {
                         base._DbConnection = new OracleConnection(base.Context.CurrentConnectionConfig.ConnectionString);
