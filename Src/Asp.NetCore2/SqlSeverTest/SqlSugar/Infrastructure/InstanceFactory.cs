@@ -91,28 +91,28 @@ namespace SqlSugar
         }
 
         #region 9-12
-        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>(ConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
-            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8,T9, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9>>(className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>>(className);
             return result;
         }
-        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>(ConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
-            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>>(className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>>(className);
             return result;
         }
-        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>(ConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
-            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>>(className);
+            ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> result = CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>>(className);
             return result;
         }
-        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(ConnectionConfig currentConnectionConfig)
+        public static ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(ConnectionConfig currentConnectionConfig)
         {
             string className = "Queryable";
             className = GetClassName(currentConnectionConfig.DbType.ToString(), className);
@@ -166,14 +166,64 @@ namespace SqlSugar
 
         public static ISqlBuilder GetSqlbuilder(ConnectionConfig currentConnectionConfig)
         {
-            ISqlBuilder result = CreateInstance<ISqlBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "Builder"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerBuilder();
+            }
+            else
+            {
+                ISqlBuilder result = CreateInstance<ISqlBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "Builder"));
+                return result;
+            }
+        }
+
+        public static UpdateableProvider<T> GetUpdateableProvider<T>(ConnectionConfig currentConnectionConfig) where T : class, new()
+        {
+            if (currentConnectionConfig.DbType == DbType.Oracle)
+            {
+                return new OracleUpdateable<T>();
+            }
+            else
+            {
+                return new UpdateableProvider<T>();
+            }
+        }
+
+        public static DeleteableProvider<T> GetDeleteableProvider<T>(ConnectionConfig currentConnectionConfig) where T : class, new()
+        {
+            if (currentConnectionConfig.DbType == DbType.Oracle)
+            {
+                return new OracleDeleteable<T>();
+            }
+            else
+            {
+                return new DeleteableProvider<T>();
+            }
+        }
+
+        public static InsertableProvider<T> GetInsertableProvider<T>(ConnectionConfig currentConnectionConfig) where T : class, new()
+        {
+            if (currentConnectionConfig.DbType == DbType.Oracle)
+            {
+                return new OracleInsertable<T>();
+            }
+            else
+            {
+                return new InsertableProvider<T>();
+            }
         }
 
         public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
         {
-            IDbBind result = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbBind"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerDbBind();
+            }
+            else
+            {
+                IDbBind result = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbBind"));
+                return result;
+            }
         }
 
         public static IDbMaintenance GetDbMaintenance(ConnectionConfig currentConnectionConfig)
@@ -196,8 +246,15 @@ namespace SqlSugar
 
         public static IAdo GetAdo(ConnectionConfig currentConnectionConfig)
         {
-            IAdo result = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType.ToString(), "Provider"));
-            return result;
+            if (currentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                return new SqlServerProvider();
+            }
+            else
+            {
+                IAdo result = CreateInstance<IAdo>(GetClassName(currentConnectionConfig.DbType.ToString(), "Provider"));
+                return result;
+            }
         }
 
         private static string GetClassName(string type, string name)
@@ -240,21 +297,21 @@ namespace SqlSugar
         }
 
         #region 9-12
-        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8,T9, Restult>(string className)
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, Restult>(string className)
         {
-            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8),typeof(T9));
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9));
         }
-        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, Restult>(string className)
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, Restult>(string className)
         {
-            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9),typeof(T10));
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10));
         }
-        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, Restult>(string className)
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, Restult>(string className)
         {
-            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10),typeof(T11));
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11));
         }
-        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, Restult>(string className)
+        private static Restult CreateInstance<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, Restult>(string className)
         {
-            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11),typeof(T12));
+            return CreateInstance<Restult>(className, typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12));
         }
         #endregion
 

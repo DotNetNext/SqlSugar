@@ -34,7 +34,8 @@ namespace SqlSugar
                     DependencyManagement.TrySqlite();
                     break;
                 case DbType.Oracle:
-                    throw new Exception("Oracle developed 60%,to be continued");
+                    DependencyManagement.TryOracle();
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }
@@ -52,7 +53,6 @@ namespace SqlSugar
                 if (_Ado == null)
                 {
                     var reval = InstanceFactory.GetAdo(base.CurrentConnectionConfig);
-                    Check.ConnectionConfig(base.CurrentConnectionConfig);
                     _Ado = reval;
                     reval.Context = this;
                     return reval;
@@ -68,17 +68,20 @@ namespace SqlSugar
 
         #region Util Methods
         [Obsolete("Use SqlSugarClient.Utilities")]
-        public virtual IRewritableMethods RewritableMethods
+        public virtual IContextMethods RewritableMethods
         {
             get { return this.Utilities; }
             set { this.Utilities = value; }
         }
-        public virtual IRewritableMethods Utilities
+        public virtual IContextMethods Utilities
         {
             get
             {
                 if (base._RewritableMethods == null)
-                    base._RewritableMethods = new RewritableMethods();
+                {
+                    base._RewritableMethods = new ContextMethods();
+                    base._RewritableMethods.Context = this;
+                }
                 return _RewritableMethods;
             }
             set { base._RewritableMethods = value; }
@@ -319,7 +322,7 @@ namespace SqlSugar
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
                 UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i);
-                if (sqlObj.Value.IsValuable())
+                if (sqlObj.Value.HasValue())
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
                 else
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
@@ -342,7 +345,7 @@ namespace SqlSugar
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            return this.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName()));
+            return this.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).Select("*");
         }
         #endregion
 

@@ -21,7 +21,7 @@ namespace SqlSugar
             if (csharpTypeName == "Boolean")
                 csharpTypeName = "bool";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
-            return mappings.IsValuable() ? mappings.First().Key : "varchar";
+            return mappings.HasValue() ? mappings.First().Key : "varchar";
         }
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
@@ -57,6 +57,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("int16",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("int64",CSharpDataType.@long),
+                    new KeyValuePair<string, CSharpDataType>("long",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("integer64",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
@@ -64,6 +65,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("double",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@float),
+                    new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.Single),
                     new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("dec",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),

@@ -27,6 +27,7 @@ namespace SqlSugar
         IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IInsertable<T> IgnoreColumns(Func<string,bool> ignoreColumMethod);
         IInsertable<T> Where(bool isInsertNull, bool isOffIdentity = false);
+        IInsertable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
     }
 }

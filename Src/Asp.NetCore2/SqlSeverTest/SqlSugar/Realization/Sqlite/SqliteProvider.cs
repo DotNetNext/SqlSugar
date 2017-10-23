@@ -62,7 +62,7 @@ namespace SqlSugar
             {
                 sqlCommand.Transaction = (SqliteTransaction)this.Transaction;
             }
-            if (parameters.IsValuable())
+            if (parameters.HasValue())
             {
                 IDataParameter[] ipars = ToIDbDataParameter(parameters);
                 sqlCommand.Parameters.AddRange((SqliteParameter[])ipars);

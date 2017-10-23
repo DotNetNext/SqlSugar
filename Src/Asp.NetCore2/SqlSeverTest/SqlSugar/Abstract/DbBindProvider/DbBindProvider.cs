@@ -30,12 +30,12 @@ namespace SqlSugar
             if (csharpTypeName == "Boolean")
                 csharpTypeName = "bool";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
-            return mappings.IsValuable() ? mappings.First().Key : "varchar";
+            return mappings.HasValue() ? mappings.First().Key : "varchar";
         }
         public string GetCsharpTypeName(string dbTypeName)
         {
             var mappings = this.MappingTypes.Where(it => it.Key == dbTypeName);
-            return mappings.IsValuable() ? mappings.First().Key : "string";
+            return mappings.HasValue() ? mappings.First().Key : "string";
         }
         public virtual string GetConvertString(string dbTypeName)
         {
@@ -151,11 +151,15 @@ namespace SqlSugar
             {
                 return "long";
             }
+            else if (dbTypeName == "int16") 
+            {
+                return "short";
+            }
             else if (propertyTypes == null)
             {
                 return "other";
             }
-            else if (dbTypeName == "xml")
+            else if (dbTypeName.IsContainsIn("xml", "string", "String"))
             {
                 return "string";
             }

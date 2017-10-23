@@ -47,7 +47,8 @@ namespace SqlSugar
                     throw new NotSupportedException();
                 }
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
-                var memberName = memberAssignment.Member.Name;
+                var type = memberAssignment.Member.ReflectedType;
+                var memberName =this.Context.GetDbColumnName(type.Name, memberAssignment.Member.Name);
                 var item = memberAssignment.Expression;
                 if ((item is MemberExpression) && ((MemberExpression)item).Expression == null)
                 {

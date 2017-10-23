@@ -30,12 +30,26 @@ namespace SqlSugar
             RestoreMapping();
             return Db.ExecuteCommand(sql, paramters);
         }
+        public bool ExecuteCommandHasChange()
+        {
+            return ExecuteCommand() > 0;
+        }
         public Task<int> ExecuteCommandAsync()
         {
             Task<int> result = new Task<int>(() =>
             {
                 IDeleteable<T> asyncDeleteable = CopyDeleteable();
                 return asyncDeleteable.ExecuteCommand();
+            });
+            result.Start();
+            return result;
+        }
+        public Task<bool> ExecuteCommandHasChangeAsync()
+        {
+            Task<bool> result = new Task<bool>(() =>
+            {
+                IDeleteable<T> asyncDeleteable = CopyDeleteable();
+                return asyncDeleteable.ExecuteCommand() > 0;
             });
             result.Start();
             return result;
@@ -159,6 +173,14 @@ namespace SqlSugar
             DeleteBuilder.Parameters.AddRange(parameters);
             return this;
         }
+
+        public IDeleteable<T> RemoveDataCache()
+        {
+            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            return this;
+        }
+
         public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)
@@ -188,7 +210,7 @@ namespace SqlSugar
             {
                 if (DeleteBuilder.BigDataInValues == null)
                     DeleteBuilder.BigDataInValues = new List<object>();
-                DeleteBuilder.BigDataInValues.AddRange(primaryKeyValues.Select(it=>(object)it));
+                DeleteBuilder.BigDataInValues.AddRange(primaryKeyValues.Select(it => (object)it));
                 DeleteBuilder.BigDataFiled = primaryField;
             }
             return this;
@@ -228,7 +250,7 @@ namespace SqlSugar
             }
         }
 
-        private List<string> GetIdentityKeys()
+        protected virtual List<string> GetIdentityKeys()
         {
             if (this.Context.IsSystemTablesConfig)
             {
@@ -248,8 +270,9 @@ namespace SqlSugar
             }
         }
 
-        private IDeleteable<T> CopyDeleteable() {
-            var asyncContext = this.Context.Utilities.CopyContext(this.Context,true);
+        private IDeleteable<T> CopyDeleteable()
+        {
+            var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
             var asyncDeleteable = asyncContext.Deleteable<T>();

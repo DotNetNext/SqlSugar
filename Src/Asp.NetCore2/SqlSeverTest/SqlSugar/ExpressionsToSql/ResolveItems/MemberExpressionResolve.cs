@@ -21,13 +21,14 @@ namespace SqlSugar
             var isBool = expression.Type == UtilConstants.BoolType;
             var isValueBool = isValue && isBool && parameter.BaseExpression == null;
             var isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
-            var isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) &&(childIsMember&&childExpression.Type == UtilConstants.DateType);
+            var isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (childIsMember && childExpression.Type == UtilConstants.DateType);
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
             var isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
             var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
-
+            var fieldIsBool = isBool && isLogicOperator;
+            baseParameter.ChildExpression = expression;
             if (isLength)
             {
                 ResolveLength(parameter, isLeft, expression);
@@ -56,9 +57,12 @@ namespace SqlSugar
             {
                 ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
             }
+            else if (fieldIsBool)
+            {
+                ResolvefieldIsBool(parameter, baseParameter, isLeft, isSetTempData, expression, isSingle);
+            }
             else
             {
-                baseParameter.ChildExpression = expression;
                 string fieldName = string.Empty;
                 switch (parameter.Context.ResolveType)
                 {
@@ -122,14 +126,12 @@ namespace SqlSugar
                 {
                     var value = ExpressionTool.GetMemberValue(expression.Member, expression);
                     base.AppendValue(parameter, isLeft, value);
-                    return;
                 }
-                fieldName = GetName(parameter, expression, isLeft, isSingle);
-                if (expression.Type == UtilConstants.BoolType && baseParameter.OperatorValue.IsNullOrEmpty())
+                else
                 {
-                    fieldName = this.Context.DbMehtods.EqualTrue(fieldName);
+                    fieldName = GetName(parameter, expression, isLeft, isSingle);
+                    AppendMember(parameter, isLeft, fieldName);
                 }
-                AppendMember(parameter, isLeft, fieldName);
             }
         }
         #endregion
@@ -163,6 +165,19 @@ namespace SqlSugar
             else
             {
                 AppendValue(parameter, isLeft, value);
+            }
+        }
+        private void ResolvefieldIsBool(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, MemberExpression expression, bool isSingle)
+        {
+            var fieldName = GetName(parameter, expression, isLeft, isSingle);
+            if (isSetTempData)
+            {
+                baseParameter.CommonTempData = fieldName;
+            }
+            else
+            {
+                fieldName = this.Context.DbMehtods.EqualTrue(fieldName.ObjToString());
+                AppendMember(parameter, isLeft, fieldName);
             }
         }
 
@@ -295,7 +310,7 @@ namespace SqlSugar
             string shortName = expression.Expression.ToString();
             string fieldName = expression.Member.Name;
             fieldName = this.Context.GetDbColumnName(expression.Expression.Type.Name, fieldName);
-            fieldName = Context.GetTranslationColumnName(shortName +UtilConstants.Dot+ fieldName);
+            fieldName = Context.GetTranslationColumnName(shortName + UtilConstants.Dot + fieldName);
             return fieldName;
         }
 

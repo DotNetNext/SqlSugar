@@ -130,7 +130,7 @@ namespace SqlSugar
         {
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             if (IsTranslationText(entityName)) return entityName;
-            isMapping = isMapping && this.MappingTables.IsValuable();
+            isMapping = isMapping && this.MappingTables.HasValue();
             var isComplex = entityName.Contains(UtilConstants.Dot);
             if (isMapping && isComplex)
             {
@@ -175,7 +175,7 @@ namespace SqlSugar
         }
         public virtual string GetDbColumnName(string entityName, string propertyName)
         {
-            if (this.MappingColumns.IsValuable())
+            if (this.MappingColumns.HasValue())
             {
                 var mappingInfo = this.MappingColumns.SingleOrDefault(it => it.EntityName == entityName && it.PropertyName == propertyName);
                 return mappingInfo == null ? propertyName : mappingInfo.DbColumnName;

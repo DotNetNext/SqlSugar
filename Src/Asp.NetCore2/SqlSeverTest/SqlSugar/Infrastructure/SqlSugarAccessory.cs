@@ -25,7 +25,7 @@ namespace SqlSugar
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
-        protected IRewritableMethods _RewritableMethods;
+        protected IContextMethods _RewritableMethods;
         protected IDbMaintenance _DbMaintenance;
         protected QueryFilterProvider _QueryFilterProvider;
         protected SimpleClient _SimpleClient;
@@ -98,13 +98,8 @@ namespace SqlSugar
         public void InitMppingInfo(Type type)
         {
             string cacheKey = "Context.InitAttributeMappingTables" + type.FullName;
-            var entityInfo = this.Context.Utilities.GetCacheInstance<EntityInfo>().Func(cacheKey,
-              (cm, key) =>
-              {
-                  var cacheInfo = cm[key];
-                  return cacheInfo;
-              },
-              (cm, key) =>
+            var entityInfo = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<EntityInfo>(cacheKey,
+              () =>
               {
                   var reval = this.Context.EntityMaintenance.GetEntityInfo(type);
                   return reval;
@@ -121,7 +116,7 @@ namespace SqlSugar
                 this.IgnoreColumns = new IgnoreColumnList();
             if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
-                if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.IsValuable())
+                if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.HasValue())
                 {
                     this.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
                 }
@@ -132,7 +127,7 @@ namespace SqlSugar
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
                     if (!mappingColumnInfos.Any(it => it.PropertyName == item.PropertyName))
-                        if (item.PropertyName != item.DbColumnName && item.DbColumnName.IsValuable())
+                        if (item.PropertyName != item.DbColumnName && item.DbColumnName.HasValue())
                             this.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
                 var ignoreInfos = this.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
@@ -166,7 +161,7 @@ namespace SqlSugar
         }
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
-            var reval = new InsertableProvider<T>();
+            var reval = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -181,7 +176,7 @@ namespace SqlSugar
         }
         protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
         {
-            var reval = new DeleteableProvider<T>();
+            var reval = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.SqlBuilder = sqlBuilder;
@@ -193,7 +188,7 @@ namespace SqlSugar
         }
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
         {
-            var reval = new UpdateableProvider<T>();
+            var reval = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -243,7 +238,7 @@ namespace SqlSugar
             {
                 var isFirst = i == 0; ++i;
                 JoinQueryInfo joinInfo = new JoinQueryInfo();
-                var hasMappingTable = expressionContext.MappingTables.IsValuable();
+                var hasMappingTable = expressionContext.MappingTables.HasValue();
                 MappingTable mappingInfo = null;
                 if (hasMappingTable)
                 {

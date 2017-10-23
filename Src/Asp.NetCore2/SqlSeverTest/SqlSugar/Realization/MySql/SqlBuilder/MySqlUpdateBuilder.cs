@@ -63,7 +63,7 @@ namespace SqlSugar
                 pageIndex++;
                 updateTable.Append("\r\n");
                 string whereString = null;
-                if (this.WhereValues.IsValuable())
+                if (this.WhereValues.HasValue())
                 {
                     foreach (var item in WhereValues)
                     {
@@ -72,7 +72,7 @@ namespace SqlSugar
                         whereString += item;
                     }
                 }
-                else if (PrimaryKeys.IsValuable())
+                else if (PrimaryKeys.HasValue())
                 {
                     foreach (var item in PrimaryKeys)
                     {

@@ -28,6 +28,7 @@ namespace SqlSugar
         public bool IsNoInsertNull { get; set; }
         public bool IsReturnIdentity { get; set; }
         public EntityInfo EntityInfo { get; set; }
+        public Dictionary<string, int> OracleSeqInfoList { get; set; }
         #endregion
 
         #region SqlTemplate
@@ -87,7 +88,7 @@ namespace SqlSugar
             {
                 var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 result += UtilConstants.Space;
-                if (this.TableWithString.IsValuable())
+                if (this.TableWithString.HasValue())
                 {
                     result += TableWithString + UtilConstants.Space;
                 }

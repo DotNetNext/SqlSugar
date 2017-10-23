@@ -18,16 +18,12 @@ namespace SqlSugar
         public EntityInfo GetEntityInfo(Type type)
         {
             string cacheKey = "GetEntityInfo" + type.FullName;
-            return this.Context.Utilities.GetCacheInstance<EntityInfo>().Func(cacheKey,
-            (cm, key) =>
-            {
-                return cm[cacheKey];
-
-            }, (cm, key) =>
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+            () =>
             {
                 EntityInfo result = new EntityInfo();
                 var sugarAttributeInfo = type.GetTypeInfo().GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
-                if (sugarAttributeInfo.IsValuable())
+                if (sugarAttributeInfo.HasValue())
                 {
                     var sugarTable = (SugarTable)sugarAttributeInfo;
                     result.DbTableName = sugarTable.TableName;
@@ -80,7 +76,7 @@ namespace SqlSugar
         }
         public string GetDbColumnName<T>(string propertyName)
         {
-            var isAny=this.GetEntityInfo<T>().Columns.Any(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            var isAny = this.GetEntityInfo<T>().Columns.Any(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
             Check.Exception(!isAny, "Property " + propertyName + " is Invalid");
             var typeName = typeof(T).Name;
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return propertyName;
@@ -106,7 +102,7 @@ namespace SqlSugar
             return typeof(T).GetProperties().First(it => it.Name == propertyName);
         }
         #region Primary key
-        private static void SetColumns(EntityInfo result)
+        private void SetColumns(EntityInfo result)
         {
             foreach (var property in result.Type.GetProperties())
             {
@@ -138,11 +134,24 @@ namespace SqlSugar
                         column.OldDbColumnName = sugarColumn.OldColumnName;
                         column.DataType = sugarColumn.ColumnDataType;
                         column.DecimalDigits = sugarColumn.DecimalDigits;
+                        column.OracleSequenceName = sugarColumn.OracleSequenceName;
                     }
                     else
                     {
                         column.IsIgnore = true;
                     }
+                }
+                if (this.Context.MappingColumns.HasValue())
+                {
+                    var golbalMappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName.Equals(result.EntityName, StringComparison.CurrentCultureIgnoreCase) && it.PropertyName == column.PropertyName);
+                    if (golbalMappingInfo != null)
+                        column.DbColumnName = golbalMappingInfo.DbColumnName;
+                }
+                if (this.Context.IgnoreColumns.HasValue())
+                {
+                    var golbalMappingInfo = this.Context.IgnoreColumns.FirstOrDefault(it => it.EntityName.Equals(result.EntityName, StringComparison.CurrentCultureIgnoreCase) && it.PropertyName == column.PropertyName);
+                    if (golbalMappingInfo != null)
+                        column.IsIgnore = true;
                 }
                 result.Columns.Add(column);
             }
