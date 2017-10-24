@@ -75,6 +75,16 @@ namespace SqlSugar
             {
                 this.Connection.Close();
             }
+            if (this.IsMasterSlaveSeparation)
+            {
+                foreach (var slaveConnection in this.SlaveConnections)
+                {
+                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    {
+                        slaveConnection.Close();
+                    }
+                }
+            }
         }
         public virtual void Dispose()
         {
@@ -92,6 +102,17 @@ namespace SqlSugar
                 this.Connection.Dispose();
             }
             this.Connection = null;
+
+            if (this.IsMasterSlaveSeparation)
+            {
+                foreach (var slaveConnection in this.SlaveConnections)
+                {
+                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    {
+                        slaveConnection.Dispose();
+                    }
+                }
+            }
         }
         public virtual void CheckConnection()
         {
@@ -670,7 +691,7 @@ namespace SqlSugar
         }
         private void SetConnectionStart(string sql)
         {
-            if (this.IsMasterSlaveSeparation&&IsRead(sql))
+            if (this.IsMasterSlaveSeparation && IsRead(sql))
             {
                 if (this.MasterConnection == null)
                 {
@@ -681,19 +702,29 @@ namespace SqlSugar
                 var currentSaveConnection = saves[currentIndex];
                 this.Connection = null;
                 this.Context.CurrentConnectionConfig.ConnectionString = currentSaveConnection.ConnectionString;
-                var connection = this.SlaveConnections.FirstOrDefault(it => it.ToString() == currentSaveConnection.ConnectionString);
-                if (connection == null)
+                this.Connection = this.Connection;
+                if (this.SlaveConnections.IsNullOrEmpty() || !this.SlaveConnections.Any(it => EqualsConnectionString(it.ConnectionString, this.Connection.ConnectionString)))
                 {
+                    if (this.SlaveConnections == null) this.SlaveConnections = new List<IDbConnection>();
                     this.SlaveConnections.Add(this.Connection);
                 }
             }
         }
+
+        private bool EqualsConnectionString(string connectionString1, string connectionString2)
+        {
+            var connectionString1Array = connectionString1.Split(';');
+            var connectionString2Array = connectionString2.Split(';');
+            var result = connectionString1Array.Except(connectionString2Array);
+            return result.Count() == 0;
+        }
+
         private void SetConnectionEnd()
         {
             if (this.IsMasterSlaveSeparation)
             {
                 this.Connection = this.MasterConnection;
-                this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnection.ToString();
+                this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnection.ConnectionString;
             }
         }
 

@@ -13,7 +13,7 @@ namespace SqlSugar
             int maxValue = 0;
             foreach (var item in pars)
             {
-                maxValue = +item.Value;
+                maxValue += item.Value;
             }
             var num = Random.Next(1, maxValue);
             var result = 0;
