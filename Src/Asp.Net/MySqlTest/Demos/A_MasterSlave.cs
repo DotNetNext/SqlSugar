@@ -28,8 +28,8 @@ namespace OrmTest.Demo
                 ConnectionString = Config.ConnectionString,
                 DbType = DbType.MySql,
                 IsAutoCloseConnection = true,
-                SlaveConnectionStrings = new List<SlaveConnectionConfig>() {
-                     new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 },
+                SlaveConnectionConfigs = new List<SlaveConnectionConfig>() {
+                     new SlaveConnectionConfig() { HitRate=0, ConnectionString=Config.ConnectionString2 },
                      new SlaveConnectionConfig() { HitRate=30, ConnectionString=Config.ConnectionString3 }
                 }
             });

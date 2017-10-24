@@ -28,7 +28,7 @@ namespace OrmTest.Demo
                 ConnectionString = Config.ConnectionString,
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true,
-                SlaveConnectionStrings = new List<SlaveConnectionConfig>() {
+                SlaveConnectionConfigs = new List<SlaveConnectionConfig>() {
                      new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 },
                      new SlaveConnectionConfig() { HitRate=30, ConnectionString=Config.ConnectionString3 }
                 }

@@ -686,7 +686,7 @@ namespace SqlSugar
         {
             get
             {
-                return this.Context.CurrentConnectionConfig.SlaveConnectionStrings.HasValue();
+                return this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.HasValue();
             }
         }
         private void SetConnectionStart(string sql)
@@ -697,7 +697,7 @@ namespace SqlSugar
                 {
                     this.MasterConnection = this.Connection;
                 }
-                var saves = this.Context.CurrentConnectionConfig.SlaveConnectionStrings.Where(it => it.HitRate > 0).ToList();
+                var saves = this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.Where(it => it.HitRate > 0).ToList();
                 var currentIndex = UtilRandom.GetRandomIndex(saves.ToDictionary(it => saves.ToList().IndexOf(it), it => it.HitRate));
                 var currentSaveConnection = saves[currentIndex];
                 this.Connection = null;
