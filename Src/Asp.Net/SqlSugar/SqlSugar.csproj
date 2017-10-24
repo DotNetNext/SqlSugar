@@ -76,6 +76,7 @@
     <Compile Include="CacheScheme\CacheSchemeMain.cs" />
     <Compile Include="Entities\CacheKey.cs" />
     <Compile Include="Entities\ConditionalModel.cs" />
+    <Compile Include="Entities\SlaveConnectionConfig.cs" />
     <Compile Include="Enum\ConditionalType.cs" />
     <Compile Include="Enum\DbType.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\ISubOperation.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Utilities\Check.cs" />
     <Compile Include="Utilities\DbExtensions.cs" />
     <Compile Include="Utilities\ErrorMessage.cs" />
+    <Compile Include="Utilities\UtilRandom.cs" />
     <Compile Include="Utilities\ValidateExtensions.cs" />
     <Compile Include="Utilities\UtilConstants.cs" />
     <Compile Include="Utilities\UtilConvert.cs" />

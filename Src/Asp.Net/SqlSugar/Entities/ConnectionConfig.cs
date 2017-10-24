@@ -28,6 +28,11 @@ namespace SqlSugar
         /// </summary>
         public ConfigureExternalServices ConfigureExternalServices = _DefaultServices;
         private static ConfigureExternalServices _DefaultServices = new ConfigureExternalServices();
+        /// <summary>
+        /// If SlaveConnectionStrings has value,ConnectionString is write operation, SlaveConnectionStrings is read operation.
+        /// All operations within a transaction is ConnectionString
+        /// </summary>
+        public List<SlaveConnectionConfig> SlaveConnectionStrings { get; set; }
     }
 
     public class ConfigureExternalServices
