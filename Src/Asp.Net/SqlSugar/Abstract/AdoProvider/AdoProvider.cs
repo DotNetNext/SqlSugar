@@ -691,7 +691,7 @@ namespace SqlSugar
         }
         private void SetConnectionStart(string sql)
         {
-            if (this.IsMasterSlaveSeparation && IsRead(sql))
+            if (this.Transaction==null&&this.IsMasterSlaveSeparation && IsRead(sql))
             {
                 if (this.MasterConnection == null)
                 {
