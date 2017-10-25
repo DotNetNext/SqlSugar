@@ -281,11 +281,11 @@ namespace SqlSugar
                 this.UpdateBuilder.Parameters.RemoveAll(it => this.UpdateBuilder.SetValues.Any(v => (SqlBuilder.SqlParameterKeyWord + SqlBuilder.GetNoTranslationColumnName(v.Key)) == it.ParameterName));
             }
         }
-        private string GetDbColumnName(string entityName)
+        private string GetDbColumnName(string propertyName)
         {
             if (!IsMappingColumns)
             {
-                return entityName;
+                return propertyName;
             }
             if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase)))
             {
@@ -293,12 +293,12 @@ namespace SqlSugar
             }
             if (MappingColumnList == null || !MappingColumnList.Any())
             {
-                return entityName;
+                return propertyName;
             }
             else
             {
-                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.PropertyName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                return mappInfo == null ? entityName : mappInfo.DbColumnName;
+                var mappInfo = this.MappingColumnList.FirstOrDefault(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+                return mappInfo == null ? propertyName : mappInfo.DbColumnName;
             }
         }
         private List<string> GetPrimaryKeys()

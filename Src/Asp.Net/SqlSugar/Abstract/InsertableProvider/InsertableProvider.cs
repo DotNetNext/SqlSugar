@@ -262,11 +262,11 @@ namespace SqlSugar
                 ++i;
             }
         }
-        protected string GetDbColumnName(string columns)
+        private string GetDbColumnName(string propertyName)
         {
             if (!IsMappingColumns)
             {
-                return columns;
+                return propertyName;
             }
             if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase)))
             {
@@ -274,12 +274,12 @@ namespace SqlSugar
             }
             if (MappingColumnList == null || !MappingColumnList.Any())
             {
-                return columns;
+                return propertyName;
             }
             else
             {
-                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == EntityInfo.EntityName && it.PropertyName.Equals(columns, StringComparison.CurrentCultureIgnoreCase));
-                return mappInfo == null ? columns : mappInfo.DbColumnName;
+                var mappInfo = this.MappingColumnList.FirstOrDefault(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+                return mappInfo == null ? propertyName : mappInfo.DbColumnName;
             }
         }
 
