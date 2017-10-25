@@ -27,7 +27,7 @@ namespace SqlSugar
             var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
             var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
-            var fieldIsBool = isBool && isLogicOperator;
+            var fieldIsBool = isBool && isLogicOperator&&(parameter.BaseParameter==null||!(parameter.BaseParameter.CurrentExpression is MemberInitExpression|| parameter.BaseParameter.CurrentExpression is NewExpression));
             baseParameter.ChildExpression = expression;
             if (isLength)
             {
