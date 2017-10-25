@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -55,6 +56,8 @@ namespace SqlSugar
         public virtual Action<string, SugarParameter[]> LogEventCompleted { get; set; }
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
         public virtual Action<Exception> ErrorEvent { get; set; }
+        public virtual List<IDbConnection> SlaveConnections { get; set; }
+        public virtual IDbConnection MasterConnection { get; set; }
         #endregion
 
         #region Connection
@@ -71,6 +74,16 @@ namespace SqlSugar
             if (this.Connection != null && this.Connection.State == ConnectionState.Open)
             {
                 this.Connection.Close();
+            }
+            if (this.IsMasterSlaveSeparation)
+            {
+                foreach (var slaveConnection in this.SlaveConnections)
+                {
+                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    {
+                        slaveConnection.Close();
+                    }
+                }
             }
         }
         public virtual void Dispose()
@@ -89,6 +102,17 @@ namespace SqlSugar
                 this.Connection.Dispose();
             }
             this.Connection = null;
+
+            if (this.IsMasterSlaveSeparation)
+            {
+                foreach (var slaveConnection in this.SlaveConnections)
+                {
+                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    {
+                        slaveConnection.Dispose();
+                    }
+                }
+            }
         }
         public virtual void CheckConnection()
         {
@@ -230,6 +254,7 @@ namespace SqlSugar
         {
             try
             {
+                SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -238,6 +263,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                SetConnectionEnd();
                 return count;
             }
             catch (Exception ex)
@@ -255,6 +281,7 @@ namespace SqlSugar
         {
             try
             {
+                SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
@@ -266,6 +293,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                SetConnectionEnd();
                 return sqlDataReader;
             }
             catch (Exception ex)
@@ -279,6 +307,7 @@ namespace SqlSugar
         {
             try
             {
+                SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -290,6 +319,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                SetConnectionEnd();
                 return ds;
             }
             catch (Exception ex)
@@ -307,6 +337,7 @@ namespace SqlSugar
         {
             try
             {
+                SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
@@ -316,6 +347,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                SetConnectionEnd();
                 return scalar;
             }
             catch (Exception ex)
@@ -649,6 +681,58 @@ namespace SqlSugar
         private bool IsAutoClose()
         {
             return this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
+        }
+        private bool IsMasterSlaveSeparation
+        {
+            get
+            {
+                return this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.HasValue();
+            }
+        }
+        private void SetConnectionStart(string sql)
+        {
+            if (this.Transaction==null&&this.IsMasterSlaveSeparation && IsRead(sql))
+            {
+                if (this.MasterConnection == null)
+                {
+                    this.MasterConnection = this.Connection;
+                }
+                var saves = this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.Where(it => it.HitRate > 0).ToList();
+                var currentIndex = UtilRandom.GetRandomIndex(saves.ToDictionary(it => saves.ToList().IndexOf(it), it => it.HitRate));
+                var currentSaveConnection = saves[currentIndex];
+                this.Connection = null;
+                this.Context.CurrentConnectionConfig.ConnectionString = currentSaveConnection.ConnectionString;
+                this.Connection = this.Connection;
+                if (this.SlaveConnections.IsNullOrEmpty() || !this.SlaveConnections.Any(it => EqualsConnectionString(it.ConnectionString, this.Connection.ConnectionString)))
+                {
+                    if (this.SlaveConnections == null) this.SlaveConnections = new List<IDbConnection>();
+                    this.SlaveConnections.Add(this.Connection);
+                }
+            }
+        }
+
+        private bool EqualsConnectionString(string connectionString1, string connectionString2)
+        {
+            var connectionString1Array = connectionString1.Split(';');
+            var connectionString2Array = connectionString2.Split(';');
+            var result = connectionString1Array.Except(connectionString2Array);
+            return result.Count() == 0;
+        }
+
+        private void SetConnectionEnd()
+        {
+            if (this.IsMasterSlaveSeparation)
+            {
+                this.Connection = this.MasterConnection;
+                this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnection.ConnectionString;
+            }
+        }
+
+        private bool IsRead(string sql)
+        {
+            var sqlLower = sql.ToLower();
+            var result = Regex.IsMatch(sqlLower, "[ ]*select[ ]") && !Regex.IsMatch(sqlLower, "[ ]*insert[ ]|[ ]*update[ ]|[ ]*delete[ ]");
+            return result;
         }
         #endregion
     }

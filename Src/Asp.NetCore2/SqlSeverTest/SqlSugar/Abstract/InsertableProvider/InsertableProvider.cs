@@ -278,7 +278,7 @@ namespace SqlSugar
             }
             else
             {
-                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it =>it.EntityName==EntityInfo.EntityName&&it.PropertyName.Equals(columns, StringComparison.CurrentCultureIgnoreCase));
+                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == EntityInfo.EntityName && it.PropertyName.Equals(columns, StringComparison.CurrentCultureIgnoreCase));
                 return mappInfo == null ? columns : mappInfo.DbColumnName;
             }
         }
