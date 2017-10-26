@@ -25,6 +25,10 @@ namespace SqlSugar
         /// </summary>
         public InitKeyType InitKeyType = InitKeyType.SystemTable;
         /// <summary>
+        ///If true, there is only one connection instance in the same thread within the same connection string
+        /// </summary>
+        public bool OneThreadOnlyOneDbConnectionInstance { get; set; }
+        /// <summary>
         /// Configure External Services replace default services,For example, Redis storage
         /// </summary>
         [JsonIgnore]
