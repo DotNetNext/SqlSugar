@@ -15,6 +15,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OracleTest", "OracleTest\Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTest", "PerformanceTest\PerformanceTest.csproj", "{60D6AA62-93ED-4D02-80E4-6BEB81766D3E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlSugar.Extensions", "SqlSugar.Extensions", "{B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionsDemo", "ExtensionsDemo\ExtensionsDemo.csproj", "{EBBA686A-C1F0-4823-85EB-32EB306ADD7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.Extensions.DataCache", "SqlSugar.Extensions.DataCache\SqlSugar.Extensions.DataCache.csproj", "{CDB72ABE-0336-4730-A195-ABF2611DEEAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,8 +51,20 @@ Global
 		{60D6AA62-93ED-4D02-80E4-6BEB81766D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60D6AA62-93ED-4D02-80E4-6BEB81766D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60D6AA62-93ED-4D02-80E4-6BEB81766D3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBBA686A-C1F0-4823-85EB-32EB306ADD7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBBA686A-C1F0-4823-85EB-32EB306ADD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBBA686A-C1F0-4823-85EB-32EB306ADD7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBBA686A-C1F0-4823-85EB-32EB306ADD7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB72ABE-0336-4730-A195-ABF2611DEEAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB72ABE-0336-4730-A195-ABF2611DEEAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB72ABE-0336-4730-A195-ABF2611DEEAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB72ABE-0336-4730-A195-ABF2611DEEAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EBBA686A-C1F0-4823-85EB-32EB306ADD7F} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
+		{CDB72ABE-0336-4730-A195-ABF2611DEEAA} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
 	EndGlobalSection
 EndGlobal

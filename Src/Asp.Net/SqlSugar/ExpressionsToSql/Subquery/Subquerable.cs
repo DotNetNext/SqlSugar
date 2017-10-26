@@ -6,10 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    /// <summary>
-    /// 开发中....
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
+
     public class Subqueryable<T> where T : class, new()
     {
         public Subqueryable<T> Where(Func<T, bool> expression)

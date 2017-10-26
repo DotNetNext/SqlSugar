@@ -15,7 +15,7 @@ namespace SqlSugar
             var isLeft = parameter.IsLeft;
             object value = ExpressionTool.GetMemberValue(expression.Member, expression);
             var baseParameter = parameter.BaseParameter;
-            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
+            var isSetTempData = baseParameter.CommonTempData.HasValue() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.Update:

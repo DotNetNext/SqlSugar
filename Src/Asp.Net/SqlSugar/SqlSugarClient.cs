@@ -34,7 +34,7 @@ namespace SqlSugar
                     DependencyManagement.TrySqlite();
                     break;
                 case DbType.Oracle:
-                    //throw new Exception("Oracle developed 75%,to be continued");
+                    DependencyManagement.TryOracle();
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
@@ -322,7 +322,7 @@ namespace SqlSugar
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
                 UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i);
-                if (sqlObj.Value.IsValuable())
+                if (sqlObj.Value.HasValue())
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
                 else
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));

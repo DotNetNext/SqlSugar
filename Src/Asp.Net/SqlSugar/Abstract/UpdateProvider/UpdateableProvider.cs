@@ -33,12 +33,26 @@ namespace SqlSugar
             RestoreMapping();
             return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
         }
+        public bool ExecuteCommandHasChange()
+        {
+            return this.ExecuteCommand() > 0;
+        }
         public Task<int> ExecuteCommandAsync()
         {
             Task<int> result = new Task<int>(() =>
             {
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
                 return asyncUpdateable.ExecuteCommand();
+            });
+            result.Start();
+            return result;
+        }
+        public Task<bool> ExecuteCommandHasChangeAsync()
+        {
+            Task<bool> result = new Task<bool>(() =>
+            {
+                IUpdateable<T> asyncUpdateable = CopyUpdateable();
+                return asyncUpdateable.ExecuteCommand()>0;
             });
             result.Start();
             return result;
@@ -134,7 +148,7 @@ namespace SqlSugar
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
             var resultArray = expResult.GetResultArray();
             Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
-            if (resultArray.IsValuable())
+            if (resultArray.HasValue())
             {
                 foreach (var item in resultArray)
                 {
@@ -160,10 +174,18 @@ namespace SqlSugar
             UpdateBuilder.WhereValues.Add(expResult.GetResultString());
             return this;
         }
+
         public IUpdateable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 this.UpdateBuilder.TableWithString = lockString;
+            return this;
+        }
+
+        public IUpdateable<T> RemoveDataCache()
+        {
+            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
             return this;
         }
 
@@ -254,16 +276,16 @@ namespace SqlSugar
                     }
                 });
             }
-            if (this.UpdateBuilder.Parameters.IsValuable() && this.UpdateBuilder.SetValues.IsValuable())
+            if (this.UpdateBuilder.Parameters.HasValue() && this.UpdateBuilder.SetValues.IsValuable())
             {
                 this.UpdateBuilder.Parameters.RemoveAll(it => this.UpdateBuilder.SetValues.Any(v => (SqlBuilder.SqlParameterKeyWord + SqlBuilder.GetNoTranslationColumnName(v.Key)) == it.ParameterName));
             }
         }
-        private string GetDbColumnName(string entityName)
+        private string GetDbColumnName(string propertyName)
         {
             if (!IsMappingColumns)
             {
-                return entityName;
+                return propertyName;
             }
             if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase)))
             {
@@ -271,17 +293,17 @@ namespace SqlSugar
             }
             if (MappingColumnList == null || !MappingColumnList.Any())
             {
-                return entityName;
+                return propertyName;
             }
             else
             {
-                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.PropertyName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                return mappInfo == null ? entityName : mappInfo.DbColumnName;
+                var mappInfo = this.MappingColumnList.FirstOrDefault(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+                return mappInfo == null ? propertyName : mappInfo.DbColumnName;
             }
         }
         private List<string> GetPrimaryKeys()
         {
-            if (this.WhereColumnList.IsValuable())
+            if (this.WhereColumnList.HasValue())
             {
                 return this.WhereColumnList;
             }

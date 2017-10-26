@@ -264,6 +264,10 @@ namespace SqlSugar
             {
                 return (T)Convert.ChangeType(dr.GetBoolean(i), type);
             }
+            else if (type == UtilConstants.LongType)
+            {
+                return (T)Convert.ChangeType(dr.GetInt64(i), type);
+            }
             else if (type == UtilConstants.GuidType)
             {
                 string guidString = dr.GetString(i);

@@ -21,6 +21,8 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                whereSingle27();
+                whereSingle26();
                 whereSingle25();
                 whereSingle24();
                 whereSingle23();
@@ -52,6 +54,17 @@ namespace OrmTest.UnitTest
           
             }
             base.End("Where Test");
+        }
+        private void whereSingle27() {
+            var schoolData = new School() { Id = 100, Name = "x" };
+            Expression<Func<Student, bool>> exp = it => it.Name.Contains(schoolData.Name);
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " ([it].[Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","x")
+            }, "whereSingle27");
         }
         private void WhereMultiple1()
         {
@@ -391,6 +404,20 @@ namespace OrmTest.UnitTest
                 new SugarParameter("@Datetime10",DateTime.Now.Date)
             }, "whereSingle24");
         }
+        private void whereSingle26()
+        {
+            var p = DateTime.Now;
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool1&&it.Bool1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( ( [Bool1]=1 ) AND ( [Bool1]=1 ) )", new List<SugarParameter>()
+            {
+                
+
+            }, "whereSingle26");
+        }
         private void whereSingle25()
         {
             var p = DateTime.Now;
@@ -403,7 +430,7 @@ namespace OrmTest.UnitTest
             {
                 new SugarParameter("@Date0",DateTime.Now.Date),
               
-            }, "whereSingle24");
+            }, "whereSingle25");
         }
     }
 

@@ -13,7 +13,7 @@ namespace SqlSugar
             string backupName = tableName + DateTime.Now.ToString("yyyyMMddHHmmss");
             Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
-            if (entityInfo.Columns.IsValuable())
+            if (entityInfo.Columns.HasValue())
             {
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
@@ -31,7 +31,7 @@ namespace SqlSugar
             string backupName=tableName+DateTime.Now.ToString("yyyyMMddHHmmss");
             Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
-            if (entityInfo.Columns.IsValuable())
+            if (entityInfo.Columns.HasValue())
             {
                 foreach (var item in entityInfo.Columns.Where(it=>it.IsIgnore==false))
                 {
@@ -45,9 +45,9 @@ namespace SqlSugar
         {
             var result = new DbColumnInfo()
             {
-                DataType = this.Context.Ado.DbBind.GetDbTypeName(UtilMethods.GetUnderType(item.PropertyInfo).Name),
+                DataType = item.PropertyInfo.PropertyType.IsEnum?this.Context.Ado.DbBind.GetDbTypeName(UtilConstants.IntType.Name) :this.Context.Ado.DbBind.GetDbTypeName(UtilMethods.GetUnderType(item.PropertyInfo).Name),
                 TableId = entityInfo.Columns.IndexOf(item),
-                DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
+                DbColumnName = item.DbColumnName.HasValue() ? item.DbColumnName : item.PropertyName,
                 IsPrimarykey = item.IsPrimarykey,
                 IsIdentity = item.IsIdentity,
                 TableName = tableName,

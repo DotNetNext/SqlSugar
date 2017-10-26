@@ -28,6 +28,11 @@ namespace SqlSugar
         /// </summary>
         public ConfigureExternalServices ConfigureExternalServices = _DefaultServices;
         private static ConfigureExternalServices _DefaultServices = new ConfigureExternalServices();
+        /// <summary>
+        /// If SlaveConnectionStrings has value,ConnectionString is write operation, SlaveConnectionStrings is read operation.
+        /// All operations within a transaction is ConnectionString
+        /// </summary>
+        public List<SlaveConnectionConfig> SlaveConnectionConfigs { get; set; }
     }
 
     public class ConfigureExternalServices
@@ -49,7 +54,7 @@ namespace SqlSugar
             set{ _SerializeService = value;}
         }
 
-        public ICacheService ReflectionInoCache
+        public ICacheService ReflectionInoCacheService
         {
             get
             {
@@ -61,7 +66,7 @@ namespace SqlSugar
             set{_ReflectionInoCache = value;}
         }
 
-        public ICacheService DataInfoCache
+        public ICacheService DataInfoCacheService
         {
             get
             {

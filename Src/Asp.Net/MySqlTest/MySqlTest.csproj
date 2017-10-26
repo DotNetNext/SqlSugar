@@ -57,6 +57,7 @@
     <Compile Include="Demos\6_ComplexModel.cs" />
     <Compile Include="Demos\7_Filter.cs" />
     <Compile Include="Demos\8_JoinSql.cs" />
+    <Compile Include="Demos\A_MasterSlave.cs" />
     <Compile Include="Demos\DemoBase.cs" />
     <Compile Include="Models\DataTestInfo.cs" />
     <Compile Include="Models\DataTestInfo2.cs" />

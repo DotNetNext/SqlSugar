@@ -11,7 +11,7 @@ namespace SqlSugar
     {
         public override void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
-            if (sql.IsValuable() && parameters.IsValuable())
+            if (sql.HasValue() && parameters.HasValue())
             {
                 foreach (var parameter in parameters)
                 {
@@ -30,7 +30,7 @@ namespace SqlSugar
                 {
                     if (parameters == null || parameters.Length == 0)
                     {
-                        action(sql, null);
+                        action(sql, new SugarParameter[] { });
                     }
                     else
                     {

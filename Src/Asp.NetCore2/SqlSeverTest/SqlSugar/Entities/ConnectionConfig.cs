@@ -23,5 +23,59 @@ namespace SqlSugar
         /// Default SystemTable,If you do not have system table permissions, use attribute
         /// </summary>
         public InitKeyType InitKeyType = InitKeyType.SystemTable;
+        /// <summary>
+        /// Configure External Services replace default services,For example, Redis storage
+        /// </summary>
+        public ConfigureExternalServices ConfigureExternalServices = _DefaultServices;
+        private static ConfigureExternalServices _DefaultServices = new ConfigureExternalServices();
+        /// <summary>
+        /// If SlaveConnectionStrings has value,ConnectionString is write operation, SlaveConnectionStrings is read operation.
+        /// All operations within a transaction is ConnectionString
+        /// </summary>
+        public List<SlaveConnectionConfig> SlaveConnectionConfigs { get; set; }
+    }
+
+    public class ConfigureExternalServices
+    {
+
+        private ISerializeService _SerializeService;
+        private ICacheService _ReflectionInoCache;
+        private ICacheService _DataInfoCache;
+
+        public ISerializeService SerializeService
+        {
+            get
+            {
+                if (_SerializeService == null)
+                    return DefaultServices.Serialize;
+                else
+                    return _SerializeService;
+            }
+            set{ _SerializeService = value;}
+        }
+
+        public ICacheService ReflectionInoCacheService
+        {
+            get
+            {
+                if (_ReflectionInoCache == null)
+                    return DefaultServices.ReflectionInoCache;
+                else
+                    return _ReflectionInoCache;
+            }
+            set{_ReflectionInoCache = value;}
+        }
+
+        public ICacheService DataInfoCacheService
+        {
+            get
+            {
+                if (_DataInfoCache == null)
+                    return DefaultServices.DataInoCache;
+                else
+                    return _DataInfoCache;
+            }
+            set { _DataInfoCache = value; }
+        }
     }
 }

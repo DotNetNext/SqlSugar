@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public class UtilMethods
@@ -57,7 +59,7 @@ namespace SqlSugar
 
         internal static void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
         {
-            if (appendSql.IsValuable() && parameters.IsValuable())
+            if (appendSql.HasValue() && parameters.HasValue())
             {
                 foreach (var parameter in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
@@ -73,6 +75,22 @@ namespace SqlSugar
         internal static string GetPackTable(string sql, string shortName)
         {
             return string.Format(" ({0}) {1} ", sql, shortName);
+        }
+
+        internal static string GetParenthesesValue(string dbTypeName)
+        {
+            if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
+            {
+                dbTypeName = Regex.Replace(dbTypeName, @"\(.+\)", "");
+            }
+            dbTypeName = dbTypeName.Trim();
+            return dbTypeName;
+        }
+
+        internal static T GetOldValue<T>(T value, Action action)
+        {
+            action();
+            return value;
         }
     }
 }

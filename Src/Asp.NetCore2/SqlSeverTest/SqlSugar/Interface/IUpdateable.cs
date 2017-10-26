@@ -11,7 +11,9 @@ namespace SqlSugar
     {
         UpdateBuilder UpdateBuilder { get; set; }
         int ExecuteCommand();
+        bool ExecuteCommandHasChange();
         Task<int> ExecuteCommandAsync();
+        Task<bool> ExecuteCommandHasChangeAsync();
         IUpdateable<T> AS(string tableName);
         IUpdateable<T> With(string lockString);
         IUpdateable<T> Where(bool isNoUpdateNull,bool IsOffIdentity = false);
@@ -28,6 +30,7 @@ namespace SqlSugar
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
         IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
+        IUpdateable<T> RemoveDataCache();
         KeyValuePair<string,List<SugarParameter>> ToSql();
     }
 }

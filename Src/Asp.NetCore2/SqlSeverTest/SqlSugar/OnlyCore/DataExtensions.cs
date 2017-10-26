@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.OracleClient;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -751,6 +752,134 @@ namespace SqlSugar
                 ds = new DataSet();
             }
             using (SqliteDataReader dr = command.ExecuteReader())
+            {
+                do
+                {
+                    var dt = new DataTable();
+                    var columns = dt.Columns;
+                    var rows = dt.Rows;
+                    for (int i = 0; i < dr.FieldCount; i++)
+                    {
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.ContainsKey(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    }
+
+                    while (dr.Read())
+                    {
+                        DataRow daRow = new DataRow();
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            if (!daRow.ContainsKey(columns[i].ColumnName))
+                                daRow.Add(columns[i].ColumnName, dr.GetValue(i));
+                        }
+                        dt.Rows.Add(daRow);
+                    }
+                    ds.Tables.Add(dt);
+                } while (dr.NextResult());
+            }
+        }
+    }
+
+    /// <summary>
+    /// 数据填充器
+    /// </summary>
+    public class OracleDataAdapter : IDataAdapter
+    {
+        private OracleCommand command;
+        private string sql;
+        private OracleConnection _sqlConnection;
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="command"></param>
+        public OracleDataAdapter(OracleCommand command)
+        {
+            this.command = command;
+        }
+
+        public OracleDataAdapter()
+        {
+
+        }
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="_sqlConnection"></param>
+        public OracleDataAdapter(string sql, OracleConnection _sqlConnection)
+        {
+            this.sql = sql;
+            this._sqlConnection = _sqlConnection;
+        }
+
+        /// <summary>
+        /// SelectCommand
+        /// </summary>
+        public OracleCommand SelectCommand
+        {
+            get
+            {
+                if (this.command == null)
+                {
+                    this.command = new OracleCommand(this.sql, this._sqlConnection);
+                }
+                return this.command;
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="dt"></param>
+        public void Fill(DataTable dt)
+        {
+            if (dt == null)
+            {
+                dt = new DataTable();
+            }
+            var columns = dt.Columns;
+            var rows = dt.Rows;
+            using (OracleDataReader dr = command.ExecuteReader())
+            {
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string name = dr.GetName(i).Trim();
+                    if (!columns.ContainsKey(name))
+                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                }
+
+                while (dr.Read())
+                {
+                    DataRow daRow = new DataRow();
+                    for (int i = 0; i < columns.Count; i++)
+                    {
+                        if (!daRow.ContainsKey(columns[i].ColumnName))
+                            daRow.Add(columns[i].ColumnName, dr.GetValue(i));
+                    }
+                    dt.Rows.Add(daRow);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Fill(DataSet ds)
+        {
+            if (ds == null)
+            {
+                ds = new DataSet();
+            }
+            using (OracleDataReader dr = command.ExecuteReader())
             {
                 do
                 {

@@ -6,14 +6,14 @@ using System.Text;
 
 namespace SqlSugar
 {
-    internal class JsonHelper  
+    public class SerializeService:ISerializeService
     {
-        public static string SerializeObject(object value)
+        public string SerializeObject(object value)
         {
             return JsonConvert.SerializeObject(value);
         }
 
-        public static T DeserializeObject<T>(string value)
+        public T DeserializeObject<T>(string value)
         {
             var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             return JsonConvert.DeserializeObject<T>(value, jSetting);

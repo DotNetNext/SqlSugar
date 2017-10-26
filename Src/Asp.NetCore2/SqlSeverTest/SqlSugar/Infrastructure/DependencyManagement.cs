@@ -11,13 +11,14 @@ namespace SqlSugar
         private static bool IsTryJsonNet = false;
         private static bool IsTryMySqlData = false;
         private static bool IsTrySqlite = false;
+        private static bool IsTryOracle = true;
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
             {
                 try
                 {
-                    JsonHelper.SerializeObject(new { });
+                    new SerializeService().SerializeObject(new { });
                     IsTryJsonNet = true;
                 }
                 catch
@@ -39,11 +40,31 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryMySqlData = true;
                 }
-                catch 
+                catch
                 {
                     var message = ErrorMessage.GetThrowMessage(
-                     "You need to refer to MySql.Data.dll" ,
+                     "You need to refer to MySql.Data.dll",
                      "需要引用MySql.Data.dll，请在Nuget安装最新稳定版本,如果有版本兼容问题请先删除原有引用");
+                    throw new Exception(message);
+                }
+            }
+        }
+
+        internal static void TryOracle()
+        {
+            if (!IsTryOracle)
+            {
+                try
+                {
+                    OracleProvider db = new OracleProvider();
+                    var conn = db.GetAdapter();
+                    IsTryOracle = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to Oracle.ManagedDataAccess.dll",
+                     "需要引用ManagedDataAccess.dll，请在Nuget安装最新稳定版本,如果有版本兼容问题请先删除原有引用");
                     throw new Exception(message);
                 }
             }
@@ -56,10 +77,10 @@ namespace SqlSugar
                 try
                 {
                     SqliteProvider db = new SqliteProvider();
-                    var conn= db.GetAdapter();
+                    var conn = db.GetAdapter();
                     IsTrySqlite = true;
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Microsoft.Data.Sqlite." + ex.Message,

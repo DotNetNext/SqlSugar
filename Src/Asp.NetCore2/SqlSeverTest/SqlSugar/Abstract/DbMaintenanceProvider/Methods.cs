@@ -41,12 +41,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance<List<string>>().Func(cacheKey,
-                    (cm, key) =>
-                    {
-                        return cm[cacheKey];
-
-                    }, (cm, key) =>
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,() =>
                     {
                         var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
                         return result.Select(it => it.DbColumnName).ToList();
@@ -56,12 +51,7 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaries" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetCacheInstance<List<string>>().Func(cacheKey,
-            (cm, key) =>
-            {
-                return cm[cacheKey];
-
-            }, (cm, key) =>
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,() =>
             {
                 var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
                 return result.Select(it => it.DbColumnName).ToList();
@@ -216,12 +206,8 @@ namespace SqlSugar
         #region Private
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
-            return this.Context.Utilities.GetCacheInstance<List<T>>().Func(cacheKey,
-             (cm, key) =>
-             {
-                 return cm[cacheKey];
-
-             }, (cm, key) =>
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+             () =>
              {
                  var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
                  this.Context.Ado.IsEnableLogEvent = false;

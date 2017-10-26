@@ -61,12 +61,12 @@ namespace SqlSugar
             RestoreMapping();
             return Convert.ToInt64( Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
         }
-        public T ExecuteReturnEntity()
+        public virtual T ExecuteReturnEntity()
         {
             ExecuteCommandIdentityIntoEntity();
             return InsertObjs.First();
         }
-        public bool ExecuteCommandIdentityIntoEntity()
+        public virtual bool ExecuteCommandIdentityIntoEntity()
         {
             var result = InsertObjs.First();
             var identityKeys = GetIdentityKeys();
@@ -184,6 +184,13 @@ namespace SqlSugar
             this.InsertBuilder.IsNoInsertNull = isNoInsertNull;
             return this;
         }
+
+        public IInsertable<T> RemoveDataCache()
+        {
+            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            return this;
+        }
         #endregion
 
         #region Protected Methods
@@ -255,11 +262,11 @@ namespace SqlSugar
                 ++i;
             }
         }
-        protected string GetDbColumnName(string entityName)
+        private string GetDbColumnName(string propertyName)
         {
             if (!IsMappingColumns)
             {
-                return entityName;
+                return propertyName;
             }
             if (this.Context.MappingColumns.Any(it => it.EntityName.Equals(EntityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase)))
             {
@@ -267,12 +274,12 @@ namespace SqlSugar
             }
             if (MappingColumnList == null || !MappingColumnList.Any())
             {
-                return entityName;
+                return propertyName;
             }
             else
             {
-                var mappInfo = this.Context.MappingColumns.FirstOrDefault(it => it.PropertyName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                return mappInfo == null ? entityName : mappInfo.DbColumnName;
+                var mappInfo = this.MappingColumnList.FirstOrDefault(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+                return mappInfo == null ? propertyName : mappInfo.DbColumnName;
             }
         }
 

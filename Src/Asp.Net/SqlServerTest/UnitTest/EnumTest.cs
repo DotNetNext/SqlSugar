@@ -20,7 +20,7 @@ namespace OrmTest.UnitTest
             var db = GetInstance();
             var shoolValue = SchoolEnum.HarvardUniversity;
             var enums = new SchoolEnum[] { shoolValue, SchoolEnum.UniversityOfOxford };
-            var list = db.Queryable<StudentEnum>().AS("student").Where(it => it.SchoolId == shoolValue).ToList();
+            var list = db.Queryable<StudentEnum>().AS("student").Where(it => it.SchoolId == shoolValue).Select(it=>it.SchoolId).ToList();
 
             var x = new StudentEnum()
             {

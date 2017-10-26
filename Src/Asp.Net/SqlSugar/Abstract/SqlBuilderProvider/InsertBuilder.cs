@@ -88,7 +88,7 @@ namespace SqlSugar
             {
                 var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 result += UtilConstants.Space;
-                if (this.TableWithString.IsValuable())
+                if (this.TableWithString.HasValue())
                 {
                     result += TableWithString + UtilConstants.Space;
                 }

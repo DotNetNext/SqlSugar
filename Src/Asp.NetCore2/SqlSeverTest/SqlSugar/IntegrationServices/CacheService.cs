@@ -6,12 +6,48 @@ using System.Collections;
 using System.Linq.Expressions;
 namespace SqlSugar
 {
-    public class CacheManager<V> : ICacheManager<V>
+    public class ReflectionInoCacheService : ICacheService
+    {
+        public void Add<V>(string key, V value)
+        {
+            ReflectionInoCore<V>.GetInstance().Add(key,value);
+        }
+        public void Add<V>(string key, V value, int cacheDurationInSeconds)
+        {
+            ReflectionInoCore<V>.GetInstance().Add(key, value,cacheDurationInSeconds);
+        }
+
+        public bool ContainsKey<V>(string key)
+        {
+           return ReflectionInoCore<V>.GetInstance().ContainsKey(key);
+        }
+
+        public V Get<V>(string key)
+        {
+            return ReflectionInoCore<V>.GetInstance().Get(key);
+        }
+
+        public IEnumerable<string> GetAllKey<V>()
+        {
+            return ReflectionInoCore<V>.GetInstance().GetAllKey();
+        }
+
+        public V GetOrCreate<V>(string cacheKey, Func<V> create,int cacheDurationInSeconds=int.MaxValue)
+        {
+            return ReflectionInoCore<V>.GetInstance().GetOrCreate(cacheKey, create);
+        }
+
+        public void Remove<V>(string key)
+        {
+            ReflectionInoCore<V>.GetInstance().Remove(key);
+        }
+    }
+    public class ReflectionInoCore<V>  
     {
         readonly System.Collections.Concurrent.ConcurrentDictionary<string, V> InstanceCache = new System.Collections.Concurrent.ConcurrentDictionary<string, V>();
-        private static CacheManager<V> _instance = null;
+        private static ReflectionInoCore<V> _instance = null;
         private static readonly object _instanceLock = new object();
-        private CacheManager() { }
+        private ReflectionInoCore() { }
 
         public V this[string key]
         {
@@ -34,15 +70,15 @@ namespace SqlSugar
                 return default(V);
         }
 
-        public static CacheManager<V> GetInstance()
+        public static ReflectionInoCore<V> GetInstance()
         {
             if (_instance == null)
                 lock (_instanceLock)
                     if (_instance == null)
                     {
-                        _instance = new CacheManager<V>();
-                        Action addItem =()=> { CacheManager<V>.GetInstance().RemoveAllCache(); };
-                        CacheManager.Add(addItem);
+                        _instance = new ReflectionInoCore<V>();
+                        Action addItem =()=> { ReflectionInoCore<V>.GetInstance().RemoveAllCache(); };
+                        ReflectionInoHelper.AddRemoveFunc(addItem);
                     }
             return _instance;
         }
@@ -54,7 +90,7 @@ namespace SqlSugar
 
         public void Add(string key, V value, int cacheDurationInSeconds)
         {
-            Add(key, value);
+            Check.ThrowNotSupportedException("ReflectionInoCache.Add(string key, V value, int cacheDurationInSeconds)");
         }
 
         public void Remove(string key)
@@ -76,30 +112,21 @@ namespace SqlSugar
             return this.InstanceCache.Keys;
         }
 
-        public void Action(string cacheKey, Action<ICacheManager<V>, string> successAction, Func<ICacheManager<V>, string, V> errorAction)
+        public V GetOrCreate(string cacheKey, Func<V> create)
         {
-            if (this.ContainsKey(cacheKey)) successAction(this, cacheKey);
+            if (this.ContainsKey(cacheKey)) return Get(cacheKey);
             else
             {
-                this.Add(cacheKey, errorAction(this, cacheKey));
-            }
-        }
-        public V Func(string cacheKey, Func<ICacheManager<V>, string, V> successAction, Func<ICacheManager<V>, string, V> errorAction)
-        {
-            var cm = CacheManager<V>.GetInstance();
-            if (cm.ContainsKey(cacheKey)) return successAction(cm, cacheKey);
-            else
-            {
-                var reval = errorAction(cm, cacheKey);
-                cm.Add(cacheKey, reval);
+                var reval = create();
+                this.Add(cacheKey, reval);
                 return reval;
             }
         }
     }
-    public static class CacheManager
+    internal static class ReflectionInoHelper
     {
         private static List<Action> removeActions = new List<Action>();
-        internal static void Add(Action removeAction)
+        internal static void AddRemoveFunc(Action removeAction)
         {
             removeActions.Add(removeAction);
         }

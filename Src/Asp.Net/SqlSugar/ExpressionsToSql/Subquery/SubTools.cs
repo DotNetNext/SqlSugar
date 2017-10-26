@@ -39,7 +39,7 @@ namespace SqlSugar
             newContext.Resolve(item, type);
             context.Index = newContext.Index;
             context.ParameterIndex = newContext.ParameterIndex;
-            if (newContext.Parameters.IsValuable())
+            if (newContext.Parameters.HasValue())
                 context.Parameters.AddRange(newContext.Parameters);
             return newContext.Result.GetResultString();
         }

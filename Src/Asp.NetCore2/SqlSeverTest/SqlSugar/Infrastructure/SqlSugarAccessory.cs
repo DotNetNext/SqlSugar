@@ -25,7 +25,7 @@ namespace SqlSugar
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
-        protected IRewritableMethods _RewritableMethods;
+        protected IContextMethods _RewritableMethods;
         protected IDbMaintenance _DbMaintenance;
         protected QueryFilterProvider _QueryFilterProvider;
         protected SimpleClient _SimpleClient;
@@ -74,19 +74,19 @@ namespace SqlSugar
             InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
             InitMppingInfo<T9>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8,T9,T10>()
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7,T8,T9>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>();
             InitMppingInfo<T10>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>()
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
             InitMppingInfo<T11>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12>()
+        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>();
+            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
             InitMppingInfo<T12>();
         }
         #endregion
@@ -98,13 +98,8 @@ namespace SqlSugar
         public void InitMppingInfo(Type type)
         {
             string cacheKey = "Context.InitAttributeMappingTables" + type.FullName;
-            var entityInfo = this.Context.Utilities.GetCacheInstance<EntityInfo>().Func(cacheKey,
-              (cm, key) =>
-              {
-                  var cacheInfo = cm[key];
-                  return cacheInfo;
-              },
-              (cm, key) =>
+            var entityInfo = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<EntityInfo>(cacheKey,
+              () =>
               {
                   var reval = this.Context.EntityMaintenance.GetEntityInfo(type);
                   return reval;
@@ -121,7 +116,7 @@ namespace SqlSugar
                 this.IgnoreColumns = new IgnoreColumnList();
             if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
-                if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.IsValuable())
+                if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.HasValue())
                 {
                     this.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
                 }
@@ -132,7 +127,7 @@ namespace SqlSugar
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
                     if (!mappingColumnInfos.Any(it => it.PropertyName == item.PropertyName))
-                        if (item.PropertyName != item.DbColumnName && item.DbColumnName.IsValuable())
+                        if (item.PropertyName != item.DbColumnName && item.DbColumnName.HasValue())
                             this.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
                 var ignoreInfos = this.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
@@ -166,7 +161,7 @@ namespace SqlSugar
         }
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
-            var reval = new InsertableProvider<T>();
+            var reval = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -181,7 +176,7 @@ namespace SqlSugar
         }
         protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
         {
-            var reval = new DeleteableProvider<T>();
+            var reval = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.SqlBuilder = sqlBuilder;
@@ -193,7 +188,7 @@ namespace SqlSugar
         }
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
         {
-            var reval = new UpdateableProvider<T>();
+            var reval = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             reval.Context = this.Context;
             reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -211,10 +206,11 @@ namespace SqlSugar
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
-            List<SugarParameter> paramters =new List<SugarParameter>();
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(queryable.SqlBuilder,joinExpression, ref  paramters, ref shortName, types);
+            List<SugarParameter> paramters = new List<SugarParameter>();
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(queryable.SqlBuilder, joinExpression, ref paramters, ref shortName, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            if (paramters != null) {
+            if (paramters != null)
+            {
                 queryable.SqlBuilder.QueryBuilder.Parameters.AddRange(paramters);
             }
         }
@@ -222,13 +218,13 @@ namespace SqlSugar
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
-            queryable.SqlBuilder.QueryBuilder.EasyJoinInfos = this.GetEasyJoinInfo(joinExpression, ref shortName,queryable.SqlBuilder,types);
+            queryable.SqlBuilder.QueryBuilder.EasyJoinInfos = this.GetEasyJoinInfo(joinExpression, ref shortName, queryable.SqlBuilder, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
         }
         #endregion
 
         #region Private methods
-        protected List<JoinQueryInfo> GetJoinInfos(ISqlBuilder sqlBuilder,Expression joinExpression,ref List<SugarParameter> parameters, ref string shortName, params Type[] entityTypeArray)
+        protected List<JoinQueryInfo> GetJoinInfos(ISqlBuilder sqlBuilder, Expression joinExpression, ref List<SugarParameter> parameters, ref string shortName, params Type[] entityTypeArray)
         {
             List<JoinQueryInfo> result = new List<JoinQueryInfo>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
@@ -237,13 +233,13 @@ namespace SqlSugar
             expressionContext.MappingTables = this.Context.MappingTables;
             expressionContext.Resolve(joinExpression, ResolveExpressType.Join);
             int i = 0;
-            var joinArray = expressionContext.Result.GetResultArray();
+            var joinArray = MergeJoinArray(expressionContext.Result.GetResultArray());
             parameters = expressionContext.Parameters;
             foreach (var entityType in entityTypeArray)
             {
                 var isFirst = i == 0; ++i;
                 JoinQueryInfo joinInfo = new JoinQueryInfo();
-                var hasMappingTable = expressionContext.MappingTables.IsValuable();
+                var hasMappingTable = expressionContext.MappingTables.HasValue();
                 MappingTable mappingInfo = null;
                 if (hasMappingTable)
                 {
@@ -270,7 +266,38 @@ namespace SqlSugar
             expressionContext.Clear();
             return result;
         }
-        protected Dictionary<string,string> GetEasyJoinInfo(Expression joinExpression, ref string shortName, ISqlBuilder builder, params Type[] entityTypeArray)
+
+        private string[] MergeJoinArray(string[] joinArray)
+        {
+            List<string> result = new List<string>();
+            string joinValue = null;
+            int i = 0;
+            foreach (var item in joinArray)
+            {
+                ++i;
+                var isLast = joinArray.Length == i;
+                var isJoinType = item.IsIn(JoinType.Inner.ToString(), JoinType.Left.ToString(), JoinType.Right.ToString());
+                if (isJoinType)
+                {
+                    if (joinValue != null)
+                        result.Add(joinValue);
+                    joinValue = null;
+                    result.Add(item);
+                }
+                else
+                {
+                    isJoinType = false;
+                    joinValue += joinValue==null?item:(","+item);
+                }
+                if (isLast)
+                {
+                    result.Add(joinValue);
+                }
+            }
+            return result.ToArray(); ;
+        }
+
+        protected Dictionary<string, string> GetEasyJoinInfo(Expression joinExpression, ref string shortName, ISqlBuilder builder, params Type[] entityTypeArray)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
@@ -278,7 +305,7 @@ namespace SqlSugar
             var index = 1;
             foreach (var item in entityTypeArray)
             {
-                result.Add(UtilConstants.Space +lambdaParameters[index].Name, item.Name);
+                result.Add(UtilConstants.Space + lambdaParameters[index].Name, item.Name);
                 ++index;
             }
             return result;

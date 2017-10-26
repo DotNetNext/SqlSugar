@@ -38,7 +38,7 @@ namespace SqlSugar
         }
         public virtual void InitTables(Type[] entityTypes)
         {
-            if (entityTypes.IsValuable())
+            if (entityTypes.HasValue())
             {
                 foreach (var item in entityTypes)
                 {
@@ -53,7 +53,7 @@ namespace SqlSugar
         }
         public virtual void InitTables(params string[] entitiesNamespaces)
         {
-            if (entitiesNamespaces.IsValuable())
+            if (entitiesNamespaces.HasValue())
             {
                 foreach (var item in entitiesNamespaces)
                 {
@@ -79,7 +79,7 @@ namespace SqlSugar
             var tableName = GetTableName(entityInfo);
             Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
-            if (entityInfo.Columns.IsValuable())
+            if (entityInfo.Columns.HasValue())
             {
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
@@ -96,7 +96,7 @@ namespace SqlSugar
         }
         public virtual void ExistLogic(EntityInfo entityInfo)
         {
-            if (entityInfo.Columns.IsValuable())
+            if (entityInfo.Columns.HasValue())
             {
                 Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
 
@@ -216,7 +216,7 @@ namespace SqlSugar
             var result = new DbColumnInfo()
             {
                 TableId = entityInfo.Columns.IndexOf(item),
-                DbColumnName = item.DbColumnName.IsValuable() ? item.DbColumnName : item.PropertyName,
+                DbColumnName = item.DbColumnName.HasValue() ? item.DbColumnName : item.PropertyName,
                 IsPrimarykey = item.IsPrimarykey,
                 IsIdentity = item.IsIdentity,
                 TableName = tableName,

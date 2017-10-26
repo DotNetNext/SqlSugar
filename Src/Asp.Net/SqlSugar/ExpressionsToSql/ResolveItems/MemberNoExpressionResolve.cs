@@ -16,7 +16,7 @@ namespace SqlSugar
             var isField = expression.Member is System.Reflection.FieldInfo;
             var isProperty = expression.Member is System.Reflection.PropertyInfo;
             var baseParameter = parameter.BaseParameter;
-            var isSetTempData = baseParameter.CommonTempData.IsValuable() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
+            var isSetTempData = baseParameter.CommonTempData.HasValue() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
             if (isField)
             {
                 value = ExpressionTool.GetFiledValue(expression);

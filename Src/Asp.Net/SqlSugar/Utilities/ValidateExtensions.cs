@@ -51,13 +51,13 @@ namespace SqlSugar
             return false;
         }
 
-        public static bool IsValuable(this object thisValue)
+        public static bool HasValue(this object thisValue)
         {
             if (thisValue == null || thisValue == DBNull.Value) return false;
             return thisValue.ToString() != "";
         }
 
-        public static bool IsValuable(this IEnumerable<object> thisValue)
+        public static bool HasValue(this IEnumerable<object> thisValue)
         {
             if (thisValue == null || thisValue.Count() == 0) return false;
             return true;
