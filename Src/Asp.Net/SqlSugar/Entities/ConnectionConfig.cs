@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,7 @@ namespace SqlSugar
         /// <summary>
         /// Configure External Services replace default services,For example, Redis storage
         /// </summary>
+        [JsonIgnore]
         public ConfigureExternalServices ConfigureExternalServices = _DefaultServices;
         private static ConfigureExternalServices _DefaultServices = new ConfigureExternalServices();
         /// <summary>
