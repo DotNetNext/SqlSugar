@@ -22,6 +22,7 @@ namespace SqlSugar
         {
             base.Context = this;
             base.CurrentConnectionConfig = config;
+            base.ContextID = Guid.NewGuid();
             Check.ArgumentNullException(config, "config is null");
             switch (config.DbType)
             {
@@ -50,14 +51,14 @@ namespace SqlSugar
         {
             get
             {
-                if (_Ado == null)
+                if (base.Context._Ado == null)
                 {
-                    var reval = InstanceFactory.GetAdo(base.CurrentConnectionConfig);
-                    _Ado = reval;
+                    var reval = InstanceFactory.GetAdo(base.Context.CurrentConnectionConfig);
+                    base.Context._Ado = reval;
                     reval.Context = base.Context;
                     return reval;
                 }
-                return _Ado;
+                return base.Context._Ado;
             }
         }
         #endregion
@@ -77,14 +78,14 @@ namespace SqlSugar
         {
             get
             {
-                if (base._RewritableMethods == null)
+                if (base.Context._RewritableMethods == null)
                 {
-                    base._RewritableMethods = new ContextMethods();
-                    base._RewritableMethods.Context = base.Context;
+                    base.Context._RewritableMethods = new ContextMethods();
+                    base.Context._RewritableMethods.Context = base.Context;
                 }
-                return _RewritableMethods;
+                return base.Context._RewritableMethods;
             }
-            set { base._RewritableMethods = value; }
+            set { base.Context._RewritableMethods = value; }
         }
         #endregion
 
@@ -504,13 +505,13 @@ namespace SqlSugar
         {
             get
             {
-                if (base._DbMaintenance == null)
+                if (base.Context._DbMaintenance == null)
                 {
                     IDbMaintenance maintenance = InstanceFactory.GetDbMaintenance(base.Context.CurrentConnectionConfig);
-                    base._DbMaintenance = maintenance;
+                    base.Context._DbMaintenance = maintenance;
                     maintenance.Context = base.Context;
                 }
-                return base._DbMaintenance;
+                return base.Context._DbMaintenance;
             }
         }
         #endregion
@@ -526,14 +527,14 @@ namespace SqlSugar
         {
             get
             {
-                if (base._EntityProvider == null)
+                if (base.Context._EntityProvider == null)
                 {
-                    base._EntityProvider = new EntityMaintenance();
-                    base._EntityProvider.Context = base.Context;
+                    base.Context._EntityProvider = new EntityMaintenance();
+                    base.Context._EntityProvider.Context = base.Context;
                 }
-                return _EntityProvider;
+                return base.Context._EntityProvider;
             }
-            set { base._EntityProvider = value; }
+            set { base.Context._EntityProvider = value; }
         }
         #endregion
 
@@ -542,14 +543,14 @@ namespace SqlSugar
         {
             get
             {
-                if (base._QueryFilterProvider == null)
+                if (base.Context._QueryFilterProvider == null)
                 {
-                    base._QueryFilterProvider = new QueryFilterProvider();
-                    base._QueryFilterProvider.Context = base.Context;
+                    base.Context._QueryFilterProvider = new QueryFilterProvider();
+                    base.Context._QueryFilterProvider.Context = base.Context;
                 }
-                return _QueryFilterProvider;
+                return base.Context._QueryFilterProvider;
             }
-            set { base._QueryFilterProvider = value; }
+            set { base.Context._QueryFilterProvider = value; }
         }
         #endregion
 
@@ -558,9 +559,9 @@ namespace SqlSugar
         {
             get
             {
-                if (_SimpleClient == null)
-                    _SimpleClient = new SimpleClient(base.Context);
-                return _SimpleClient;
+                if (base.Context._SimpleClient == null)
+                    base.Context._SimpleClient = new SimpleClient(base.Context);
+                return base.Context._SimpleClient;
             }
         }
         #endregion

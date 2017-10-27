@@ -47,6 +47,7 @@ namespace OrmTest
             OrmTest.Demo.CodeFirst.Init();
             OrmTest.Demo.Aop.Init();
             OrmTest.Demo.MasterSlave.Init();
+            OrmTest.Demo.SharedConnection.Init();
         }
     }
 }
