@@ -54,7 +54,7 @@ namespace SqlSugar
                 {
                     var reval = InstanceFactory.GetAdo(base.CurrentConnectionConfig);
                     _Ado = reval;
-                    reval.Context = this;
+                    reval.Context = base.Context;
                     return reval;
                 }
                 return _Ado;
@@ -63,15 +63,15 @@ namespace SqlSugar
         #endregion
 
         #region Aop Log Methods
-        public virtual AopProvider Aop { get { return new AopProvider(this.Context); } }
+        public virtual AopProvider Aop { get { return new AopProvider(base.Context); } }
         #endregion
 
         #region Util Methods
         [Obsolete("Use SqlSugarClient.Utilities")]
         public virtual IContextMethods RewritableMethods
         {
-            get { return this.Utilities; }
-            set { this.Utilities = value; }
+            get { return base.Context.Utilities; }
+            set { base.Context.Utilities = value; }
         }
         public virtual IContextMethods Utilities
         {
@@ -80,7 +80,7 @@ namespace SqlSugar
                 if (base._RewritableMethods == null)
                 {
                     base._RewritableMethods = new ContextMethods();
-                    base._RewritableMethods.Context = this;
+                    base._RewritableMethods.Context = base.Context;
                 }
                 return _RewritableMethods;
             }
@@ -313,7 +313,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.Context.CurrentConnectionConfig);
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             int i = 1;
             List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
@@ -330,7 +330,7 @@ namespace SqlSugar
             }
             var allSql = sqlBuilder.GetUnionAllSql(allItems.Select(it => it.Key).ToList());
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
-            var resulut = this.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
+            var resulut = base.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
             resulut.AddParameters(allParameters);
             return resulut.Select<T>("*");
         }
@@ -344,8 +344,8 @@ namespace SqlSugar
         #region SqlQueryable
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            return this.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).Select("*");
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.Context.CurrentConnectionConfig);
+            return base.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).Select("*");
         }
         #endregion
 
@@ -359,33 +359,33 @@ namespace SqlSugar
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
             Check.ArgumentNullException(insertObjs, "Insertable.insertObjs can't be null");
-            return this.Insertable(insertObjs.ToArray());
+            return base.Context.Insertable(insertObjs.ToArray());
         }
         public virtual IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
-            return this.Insertable(new T[] { insertObj });
+            return base.Context.Insertable(new T[] { insertObj });
         }
         public virtual IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             InitMppingInfo<T>();
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Insertable.columnDictionary can't be null");
-            var insertObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(columnDictionary));
+            var insertObject = base.Context.Utilities.DeserializeObject<T>(base.Context.Utilities.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
-            return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+            return base.Context.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
         }
         public virtual IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
             InitMppingInfo<T>();
             if (insertDynamicObject is T)
             {
-                return this.Insertable((T)insertDynamicObject);
+                return base.Context.Insertable((T)insertDynamicObject);
             }
             else
             {
                 var columns = ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
                 Check.Exception(columns.IsNullOrEmpty(), "Insertable.updateDynamicObject can't be null");
-                T insertObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(insertDynamicObject));
-                return this.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase)));
+                T insertObject = base.Context.Utilities.DeserializeObject<T>(base.Context.Utilities.SerializeObject(insertDynamicObject));
+                return base.Context.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase)));
             }
         }
         #endregion
@@ -400,32 +400,32 @@ namespace SqlSugar
         public virtual IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
             InitMppingInfo<T>();
-            return this.Deleteable<T>().Where(expression);
+            return base.Context.Deleteable<T>().Where(expression);
         }
         public virtual IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
         {
             InitMppingInfo<T>();
-            return this.Deleteable<T>().In(primaryKeyValue);
+            return base.Context.Deleteable<T>().In(primaryKeyValue);
         }
         public virtual IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
         {
             InitMppingInfo<T>();
-            return this.Deleteable<T>().In(primaryKeyValues);
+            return base.Context.Deleteable<T>().In(primaryKeyValues);
         }
         public virtual IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
         {
             InitMppingInfo<T>();
-            return this.Deleteable<T>().In(pkValue);
+            return base.Context.Deleteable<T>().In(pkValue);
         }
         public virtual IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
         {
             InitMppingInfo<T>();
-            return this.Deleteable<T>().Where(deleteObj);
+            return base.Context.Deleteable<T>().Where(deleteObj);
         }
         public virtual IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
         {
             InitMppingInfo<T>();
-            return this.Deleteable<T>().Where(deleteObjs);
+            return base.Context.Deleteable<T>().Where(deleteObjs);
         }
         #endregion
 
@@ -443,33 +443,33 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
         {
-            return this.Updateable(new T[] { UpdateObj });
+            return base.Context.Updateable(new T[] { UpdateObj });
         }
         public virtual IUpdateable<T> Updateable<T>() where T : class, new()
         {
-            return this.Updateable(new T[] { new T() });
+            return base.Context.Updateable(new T[] { new T() });
         }
         public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             InitMppingInfo<T>();
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Updateable.columnDictionary can't be null");
-            var updateObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(columnDictionary));
+            var updateObject = base.Context.Utilities.DeserializeObject<T>(base.Context.Utilities.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
-            return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+            return base.Context.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
         }
         public virtual IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
         {
             InitMppingInfo<T>();
             if (updateDynamicObject is T)
             {
-                return this.Updateable((T)updateDynamicObject);
+                return base.Context.Updateable((T)updateDynamicObject);
             }
             else
             {
                 var columns = ((object)updateDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
                 Check.Exception(columns.IsNullOrEmpty(), "Updateable.updateDynamicObject can't be null");
-                T updateObject = this.Utilities.DeserializeObject<T>(this.Utilities.SerializeObject(updateDynamicObject));
-                return this.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+                T updateObject = base.Context.Utilities.DeserializeObject<T>(base.Context.Utilities.SerializeObject(updateDynamicObject));
+                return base.Context.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
             }
         }
         #endregion
@@ -479,8 +479,8 @@ namespace SqlSugar
         {
             get
             {
-                IDbFirst dbFirst = InstanceFactory.GetDbFirst(this.Context.CurrentConnectionConfig);
-                dbFirst.Context = this.Context;
+                IDbFirst dbFirst = InstanceFactory.GetDbFirst(base.Context.CurrentConnectionConfig);
+                dbFirst.Context = base.Context;
                 dbFirst.Init();
                 return dbFirst;
             }
@@ -492,8 +492,8 @@ namespace SqlSugar
         {
             get
             {
-                ICodeFirst codeFirst = InstanceFactory.GetCodeFirst(this.Context.CurrentConnectionConfig);
-                codeFirst.Context = this.Context;
+                ICodeFirst codeFirst = InstanceFactory.GetCodeFirst(base.Context.CurrentConnectionConfig);
+                codeFirst.Context = base.Context;
                 return codeFirst;
             }
         }
@@ -506,9 +506,9 @@ namespace SqlSugar
             {
                 if (base._DbMaintenance == null)
                 {
-                    IDbMaintenance maintenance = InstanceFactory.GetDbMaintenance(this.Context.CurrentConnectionConfig);
+                    IDbMaintenance maintenance = InstanceFactory.GetDbMaintenance(base.Context.CurrentConnectionConfig);
                     base._DbMaintenance = maintenance;
-                    maintenance.Context = this.Context;
+                    maintenance.Context = base.Context;
                 }
                 return base._DbMaintenance;
             }
@@ -519,8 +519,8 @@ namespace SqlSugar
         [Obsolete("Use SqlSugarClient.EntityMaintenance")]
         public virtual EntityMaintenance EntityProvider
         {
-            get { return this.EntityMaintenance; }
-            set { this.EntityMaintenance = value; }
+            get { return base.Context.EntityMaintenance; }
+            set {  base.Context.EntityMaintenance = value; }
         }
         public virtual EntityMaintenance EntityMaintenance
         {
@@ -529,7 +529,7 @@ namespace SqlSugar
                 if (base._EntityProvider == null)
                 {
                     base._EntityProvider = new EntityMaintenance();
-                    base._EntityProvider.Context = this;
+                    base._EntityProvider.Context = base.Context;
                 }
                 return _EntityProvider;
             }
@@ -545,7 +545,7 @@ namespace SqlSugar
                 if (base._QueryFilterProvider == null)
                 {
                     base._QueryFilterProvider = new QueryFilterProvider();
-                    base._QueryFilterProvider.Context = this;
+                    base._QueryFilterProvider.Context = base.Context;
                 }
                 return _QueryFilterProvider;
             }
@@ -559,7 +559,7 @@ namespace SqlSugar
             get
             {
                 if (_SimpleClient == null)
-                    _SimpleClient = new SimpleClient(this);
+                    _SimpleClient = new SimpleClient(base.Context);
                 return _SimpleClient;
             }
         }
@@ -568,13 +568,13 @@ namespace SqlSugar
         #region Dispose OR Close
         public virtual void Close()
         {
-            if (this.Ado != null)
-                this.Ado.Close();
+            if (base.Context.Ado != null)
+                base.Context.Ado.Close();
         }
         public virtual void Dispose()
         {
-            if (this.Ado != null)
-                this.Ado.Dispose();
+            if (base.Context.Ado != null)
+                base.Context.Ado.Dispose();
         }
         #endregion
     }
