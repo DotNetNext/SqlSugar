@@ -13,12 +13,13 @@ namespace OrmTest.Demo
 
         public static void Init()
         {
-            var db = GetMasterSlaveInstance();
-            for (int i = 0; i < 10; i++)
+         
+            for (int i = 0; i < 1000; i++)
             {
-                var list = db.Queryable<Student>().ToList(); // ConnectionString2 or ConnectionString3
+                var db = GetMasterSlaveInstance();
+                var list = db.Insertable(new Student() { Name="aa" }).ExecuteCommand(); // ConnectionString2 or ConnectionString3
             }
-            db.Insertable(new Student() { Name = "masterTest" }).ExecuteCommand();// Config.ConnectionString
+            //db.Insertable(new Student() { Name = "masterTest" }).ExecuteCommand();// Config.ConnectionString
         }
 
         public static SqlSugarClient GetMasterSlaveInstance()
@@ -29,8 +30,8 @@ namespace OrmTest.Demo
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true,
                 SlaveConnectionConfigs = new List<SlaveConnectionConfig>() {
-                     new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 },
-                     new SlaveConnectionConfig() { HitRate=30, ConnectionString=Config.ConnectionString3 }
+                     new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 } ,
+                       new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 }
                 }
             });
             db.Aop.OnLogExecuting = (sql, pars) =>

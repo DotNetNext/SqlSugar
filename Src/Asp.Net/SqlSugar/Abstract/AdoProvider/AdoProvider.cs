@@ -75,7 +75,7 @@ namespace SqlSugar
             {
                 this.Connection.Close();
             }
-            if (this.IsMasterSlaveSeparation)
+            if (this.IsMasterSlaveSeparation && this.SlaveConnections.HasValue())
             {
                 foreach (var slaveConnection in this.SlaveConnections)
                 {
@@ -263,7 +263,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
-                SetConnectionEnd();
+                SetConnectionEnd(sql);
                 return count;
             }
             catch (Exception ex)
@@ -293,7 +293,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
-                SetConnectionEnd();
+                SetConnectionEnd(sql);
                 return sqlDataReader;
             }
             catch (Exception ex)
@@ -319,7 +319,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
-                SetConnectionEnd();
+                SetConnectionEnd(sql);
                 return ds;
             }
             catch (Exception ex)
@@ -347,7 +347,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
-                SetConnectionEnd();
+                SetConnectionEnd(sql);
                 return scalar;
             }
             catch (Exception ex)
@@ -719,9 +719,9 @@ namespace SqlSugar
             return result.Count() == 0;
         }
 
-        private void SetConnectionEnd()
+        private void SetConnectionEnd(string sql)
         {
-            if (this.IsMasterSlaveSeparation)
+            if (this.IsMasterSlaveSeparation && IsRead(sql))
             {
                 this.Connection = this.MasterConnection;
                 this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnection.ConnectionString;
