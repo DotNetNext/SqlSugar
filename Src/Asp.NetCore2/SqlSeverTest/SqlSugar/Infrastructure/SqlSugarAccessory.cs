@@ -10,7 +10,38 @@ namespace SqlSugar
     public partial class SqlSugarAccessory
     {
         #region Properties
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarClient Context
+        {
+            get
+            {
+                var result = _Context; ;
+                if (CurrentConnectionConfig.IsShardSameThread)
+                {
+                    if (CallContext.ContextList.Value.IsNullOrEmpty())
+                    {
+                        CallContext.ContextList.Value = new List<SqlSugarClient>();
+                        CallContext.ContextList.Value.Add(_Context);
+                    }
+                    else
+                    {
+                        var cacheContext = CallContext.ContextList.Value.FirstOrDefault(it =>
+                         it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString &&
+                         it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType &&
+                         it.CurrentConnectionConfig.IsAutoCloseConnection == _Context.CurrentConnectionConfig.IsAutoCloseConnection &&
+                         it.CurrentConnectionConfig.IsShardSameThread == _Context.CurrentConnectionConfig.IsShardSameThread);
+                        if (cacheContext != null)
+                        {
+                            return cacheContext;
+                        }
+                    }
+                }
+                return result;
+            }
+            set
+            {
+                _Context = value;
+            }
+        }
         public ConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get; set; }
         public bool IsSystemTablesConfig { get { return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable; } }
@@ -22,6 +53,7 @@ namespace SqlSugar
 
         #region Fields
         protected ISqlBuilder _SqlBuilder;
+        public SqlSugarClient _Context { get; set; }
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
@@ -287,7 +319,7 @@ namespace SqlSugar
                 else
                 {
                     isJoinType = false;
-                    joinValue += joinValue==null?item:(","+item);
+                    joinValue += joinValue == null ? item : ("," + item);
                 }
                 if (isLast)
                 {
