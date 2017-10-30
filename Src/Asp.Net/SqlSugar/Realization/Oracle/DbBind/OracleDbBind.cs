@@ -9,7 +9,7 @@ namespace SqlSugar
         public override string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();
-            var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName||it.Key.ToLower()== dbTypeName);
+            var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
             if (dbTypeName == "int32")
             {
                 return "int";
@@ -29,6 +29,10 @@ namespace SqlSugar
             else if (dbTypeName == "xml" || dbTypeName == "string")
             {
                 return "string";
+            }
+            if (dbTypeName == "byte[]")
+            {
+                return "byte[]";
             }
             else if (propertyTypes == null || propertyTypes.Count() == 0)
             {
@@ -75,7 +79,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("long",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("nclob",CSharpDataType.@string),
-                  new KeyValuePair<string, CSharpDataType>("rowid",CSharpDataType.@string),              
+                  new KeyValuePair<string, CSharpDataType>("rowid",CSharpDataType.@string),
 
                   new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
