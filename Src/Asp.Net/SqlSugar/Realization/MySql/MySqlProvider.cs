@@ -38,7 +38,7 @@ namespace SqlSugar
                 base._DbConnection = value;
             }
         }
-        
+
         public override void BeginTran(string transactionName)
         {
             base.BeginTran();
@@ -97,8 +97,13 @@ namespace SqlSugar
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
                 sqlParameter.Direction = parameter.Direction;
+                if (sqlParameter.Direction == 0)
+                {
+                    sqlParameter.Direction = ParameterDirection.Input;
+                }
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction == ParameterDirection.Output) {
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput))
+                {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
