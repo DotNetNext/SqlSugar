@@ -78,6 +78,8 @@ namespace SqlSugar
         {
             var isAny = this.GetEntityInfo<T>().Columns.Any(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
             Check.Exception(!isAny, "Property " + propertyName + " is Invalid");
+            if (propertyName.Contains(','))
+                propertyName = propertyName.ToSqlFilter();
             var typeName = typeof(T).Name;
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return propertyName;
             else
