@@ -25,6 +25,7 @@ namespace SqlSugar
         /// <returns></returns>
         IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns);
+        IUpdateable<T> UpdateColumns(Expression<Func<T, bool>> columns);
         IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod);
         IUpdateable<T> UpdateColumns(Expression<Func<T, T>> columns);
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
