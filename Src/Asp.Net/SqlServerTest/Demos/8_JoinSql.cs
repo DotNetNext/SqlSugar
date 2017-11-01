@@ -19,6 +19,19 @@ namespace OrmTest.Demo
             OrderBy();
             SelectMerge();
             ConditionalModel();
+            JoinExp();
+        }
+
+        private static void JoinExp()
+        {
+            var db = GetInstance();
+
+            var exp= Expressionable.Create<Student>()
+                .OrIF(1==1,it => it.Id == 11)
+                .And(it=>it.Id==1)
+                .AndIF(2==2,it => it.Id == 1)
+                .Or(it =>it.Name == "a1").ToExpression();
+            var list=db.Queryable<Student>().Where(exp).ToList();
         }
 
         private static void ConditionalModel()
