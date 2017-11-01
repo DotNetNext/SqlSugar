@@ -9,7 +9,28 @@ namespace SqlSugar
     {
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
-            throw new Exception("Batch updates are not supported for the time being. Please wait for updates");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(string.Join("\r\n", groupList.Select(t =>
+            {
+                var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
+                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(m)).ToArray());
+                var pkList = t.Where(s => s.IsPrimarykey).ToList();
+                List<string> whereList = new List<string>();
+                foreach (var item in pkList)
+                {
+                    var isFirst = pkList.First() == item;
+                    var whereString = isFirst ? " " : " AND ";
+                    whereString += GetOracleUpdateColums(item);
+                    whereList.Add(whereString);
+                }
+                return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("AND", whereList));
+            }).ToArray()));
+            return sb.ToString();
+        }
+
+        private string GetOracleUpdateColums(DbColumnInfo m)
+        {
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value));
         }
         public override object FormatValue(object value)
         {
