@@ -11,5 +11,10 @@ namespace SqlSugar
         {
             return this.EntityInfo.Columns.Where(it => it.OracleSequenceName.HasValue()).Select(it => it.DbColumnName).ToList();
         }
+        public override int ExecuteCommand()
+        {
+            base.ExecuteCommand();
+            return base.UpdateObjs.Count();
+        }
     }
 }

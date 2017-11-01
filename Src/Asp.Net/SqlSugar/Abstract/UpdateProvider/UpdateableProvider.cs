@@ -25,7 +25,7 @@ namespace SqlSugar
         private bool IsOffIdentity { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
-        public int ExecuteCommand()
+        public virtual int ExecuteCommand()
         {
             PreToSql();
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
