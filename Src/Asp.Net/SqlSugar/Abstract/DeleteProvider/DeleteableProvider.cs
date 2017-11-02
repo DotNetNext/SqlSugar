@@ -74,7 +74,7 @@ namespace SqlSugar
             string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             var primaryFields = this.GetPrimaryKeys();
             var isSinglePrimaryKey = primaryFields.Count == 1;
-            Check.ArgumentNullException(primaryFields, string.Format("Table {0} with no primarykey", tableName));
+            Check.Exception(primaryFields.IsNullOrEmpty(), string.Format("Table {0} with no primarykey", tableName));
             if (isSinglePrimaryKey)
             {
                 List<object> primaryKeyValues = new List<object>();
@@ -106,7 +106,7 @@ namespace SqlSugar
                 {
                     StringBuilder orString = new StringBuilder();
                     var isFirst = deleteObjs.IndexOf(deleteObj) == 0;
-                    if (isFirst)
+                    if (!isFirst)
                     {
                         orString.Append(DeleteBuilder.WhereInOrTemplate + UtilConstants.Space);
                     }
@@ -114,7 +114,7 @@ namespace SqlSugar
                     StringBuilder andString = new StringBuilder();
                     foreach (var primaryField in primaryFields)
                     {
-                        if (i == 0)
+                        if (i != 0)
                             andString.Append(DeleteBuilder.WhereInAndTemplate + UtilConstants.Space);
                         var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);

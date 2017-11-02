@@ -51,5 +51,11 @@ namespace OrmTest.UnitTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
             return db;
         }
+
+        public SqlSugarClient GetInstanceByAttribute()
+        {
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { InitKeyType=InitKeyType.Attribute, ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+            return db;
+        }
     }
 }

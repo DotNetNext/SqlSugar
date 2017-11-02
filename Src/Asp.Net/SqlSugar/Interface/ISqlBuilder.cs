@@ -12,6 +12,8 @@ namespace SqlSugar
         CommandType CommandType { get; set; }
         String AppendWhereOrAnd(bool isWhere, string sqlString);
         string AppendHaving(string sqlString);
+        string SqlTranslationLeft { get; }
+        string SqlTranslationRight { get; } 
         SqlQueryBuilder SqlQueryBuilder { get; set; }
         QueryBuilder QueryBuilder { get; set; }
         InsertBuilder InsertBuilder { get; set; }

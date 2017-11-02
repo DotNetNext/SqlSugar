@@ -56,6 +56,20 @@ namespace OrmTest
             base.Check(@"DELETE FROM [STudent] WHERE id=@id", new List<SugarParameter>() {
                 new SugarParameter("@id",1)
             }, t6.Key, t6.Value, "Delte t6 error");
+
+            var t7 = base.GetInstanceByAttribute().Deleteable<DeleteTestTable>().Where(new List<DeleteTestTable>() {
+                new DeleteTestTable() { Id=1, Id2="x" },
+                new DeleteTestTable() { Id=2, Id2="x1" }
+            }).ToSql();
+            base.Check("DELETE FROM [DeleteTestTable] WHERE (([Id]=N'1'AND [Id2]=N'x')OR ([Id]=N'2'AND [Id2]=N'x1')) ",null, t7.Key, null,
+                "Delte t7 error");
         }
+    }
+
+    public class DeleteTestTable {
+        [SugarColumn(IsPrimaryKey =true)]
+        public int Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Id2 { get; set; }
     }
 }
