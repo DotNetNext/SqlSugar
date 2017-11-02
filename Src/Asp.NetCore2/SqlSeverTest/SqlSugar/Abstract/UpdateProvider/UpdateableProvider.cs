@@ -25,7 +25,7 @@ namespace SqlSugar
         private bool IsOffIdentity { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
-        public int ExecuteCommand()
+        public virtual int ExecuteCommand()
         {
             PreToSql();
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
@@ -52,7 +52,7 @@ namespace SqlSugar
             Task<bool> result = new Task<bool>(() =>
             {
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
-                return asyncUpdateable.ExecuteCommand()>0;
+                return asyncUpdateable.ExecuteCommand() > 0;
             });
             result.Start();
             return result;
@@ -125,7 +125,19 @@ namespace SqlSugar
                     item.IsPrimarykey = true;
                 }
             }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumns.Any(uc=>uc.Equals(it.PropertyName,StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey || it.IsIdentity).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumns.Any(uc => uc.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey || it.IsIdentity).ToList();
+            return this;
+        }
+
+        public IUpdateable<T> UpdateColumns(Expression<Func<T, bool>> columns) {
+            var binaryExp = columns.Body as BinaryExpression;
+            Check.Exception(!binaryExp.NodeType.IsIn(ExpressionType.Equal), "No support {0}", columns.ToString());
+            Check.Exception(!(binaryExp.Left is MemberExpression), "No support {0}", columns.ToString());
+            Check.Exception(ExpressionTool.IsConstExpression(binaryExp.Left as MemberExpression), "No support {0}", columns.ToString());
+            var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.WhereSingle).GetResultString().Trim().TrimStart('(').TrimEnd(')');
+            string key = SqlBuilder.GetNoTranslationColumnName(expResult);
+            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), expResult));
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             return this;
         }
 

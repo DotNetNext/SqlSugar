@@ -57,7 +57,7 @@ namespace SqlSugar
             {
                 ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
             }
-            else if (fieldIsBool)
+            else if (fieldIsBool&& !this.Context.ResolveType.IsIn(ResolveExpressType.FieldSingle, ResolveExpressType.FieldMultiple))
             {
                 ResolvefieldIsBool(parameter, baseParameter, isLeft, isSetTempData, expression, isSingle);
             }

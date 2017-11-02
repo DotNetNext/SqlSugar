@@ -65,7 +65,7 @@ namespace SqlSugar
         {
             get
             {
-                return "[{0}]=N'{1}'";
+                return Builder.SqlTranslationLeft+"{0}"+Builder.SqlTranslationRight+"=N'{1}'";
             }
         }
         public string WhereInAreaTemplate
