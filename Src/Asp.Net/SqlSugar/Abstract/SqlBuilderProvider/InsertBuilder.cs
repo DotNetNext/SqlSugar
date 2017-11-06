@@ -166,6 +166,11 @@ namespace SqlSugar
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = System.Text.Encoding.ASCII.GetString((byte[])value);
+                    return "N'" + bytesString + "'";
+                }
                 else if (type.IsEnum())
                 {
                     return Convert.ToInt64(value);

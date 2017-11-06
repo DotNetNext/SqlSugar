@@ -175,7 +175,7 @@ namespace SqlSugar
                     {
                         updateTable.Append(SqlTemplateBatchUnion);
                     }
-                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value),Builder.GetTranslationColumnName(it.DbColumnName)))));
+                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), Builder.GetTranslationColumnName(it.DbColumnName)))));
                     ++i;
                 }
                 pageIndex++;
@@ -210,7 +210,7 @@ namespace SqlSugar
             {
                 if (SetValues.IsValuable())
                 {
-                    var setValue = SetValues.Where(sv => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName)|| sv.Key==Builder.GetTranslationColumnName(it.PropertyName));
+                    var setValue = SetValues.Where(sv => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName) || sv.Key == Builder.GetTranslationColumnName(it.PropertyName));
                     if (setValue != null && setValue.Any())
                     {
                         return setValue.First().Value;
@@ -258,6 +258,11 @@ namespace SqlSugar
                         date = Convert.ToDateTime("1900-1-1");
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = System.Text.Encoding.ASCII.GetString((byte[])value);
+                    return "N'" + bytesString + "'";
                 }
                 else if (type.IsEnum())
                 {

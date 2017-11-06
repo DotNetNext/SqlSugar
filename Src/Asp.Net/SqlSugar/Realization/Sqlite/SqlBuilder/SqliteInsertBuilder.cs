@@ -56,6 +56,11 @@ namespace SqlSugar
                 {
                     return Convert.ToInt64(value);
                 }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = System.Text.Encoding.ASCII.GetString((byte[])value);
+                    return "N'" + bytesString + "'";
+                }
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
