@@ -87,6 +87,8 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubFromTable.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAny.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubBegin.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAvg.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubSum.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubMin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubMax.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubOrderBy.cs" />
