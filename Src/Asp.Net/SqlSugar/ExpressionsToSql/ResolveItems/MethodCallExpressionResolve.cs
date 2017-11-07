@@ -45,7 +45,7 @@ namespace SqlSugar
                 //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
                 SubResolve subResolve = new SubResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = subResolve.GetSql();
-                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple,ResolveExpressType.SelectSingle))
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle))
                 {
                     parameter.BaseParameter.CommonTempData = appendSql;
                 }
@@ -284,7 +284,7 @@ namespace SqlSugar
             base.Start();
             var methodCallExpressionArgs = new MethodCallExpressionArgs()
             {
-                IsMember = parameter.ChildExpression is MemberExpression&&!ExpressionTool.IsConstExpression(parameter.ChildExpression as MemberExpression),
+                IsMember = parameter.ChildExpression is MemberExpression && !ExpressionTool.IsConstExpression(parameter.ChildExpression as MemberExpression),
                 MemberName = parameter.CommonTempData
             };
             if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now")
@@ -409,6 +409,8 @@ namespace SqlSugar
                     return mappingColumnResult;
                 case "IsNull":
                     return this.Context.DbMehtods.IsNull(model);
+                case "MergeString":
+                        return this.Context.DbMehtods.MergeString(model.Args.Select(it=>it.MemberName.ObjToString()).ToArray());
                 case "GetSelfAndAutoFill":
                     this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
                     return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
@@ -452,12 +454,12 @@ namespace SqlSugar
             { "AddMilliseconds",DateType.Millisecond}
         };
 
-        private  bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
+        private bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
         {
             return !isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains";
         }
 
-        private  bool IsSubMethod(MethodCallExpression express, string methodName)
+        private bool IsSubMethod(MethodCallExpression express, string methodName)
         {
             return SubTools.SubItemsConst.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
         }

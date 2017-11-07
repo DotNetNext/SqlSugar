@@ -164,5 +164,9 @@ namespace SqlSugar
             return string.Format("NVL({0},{1})", parameter.MemberName, parameter1.MemberName);
         }
 
+        public override string MergeString(params string[] strings)
+        {
+            return string.Join("||", strings).Replace("+", "");
+        }
     }
 }

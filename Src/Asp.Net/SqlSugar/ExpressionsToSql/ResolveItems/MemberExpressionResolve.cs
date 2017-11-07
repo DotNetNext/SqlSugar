@@ -204,9 +204,9 @@ namespace SqlSugar
                 };
                 AppendMember(parameter, isLeft, GetToDate(this.Context.DbMehtods.MergeString(
                     this.GetDateValue(parameter.CommonTempData, DateType.Year),
-                    "+'-'+",
+                    "'-'",
                     this.GetDateValue(parameter.CommonTempData, DateType.Month),
-                    "+'-'+",
+                    "'-'",
                     this.GetDateValue(parameter.CommonTempData, DateType.Day))));
             }
             parameter.CommonTempData = oldCommonTempDate;

@@ -302,7 +302,7 @@ namespace SqlSugar
 
         public virtual string MergeString(params string[] strings)
         {
-            return string.Join("", strings);
+            return string.Join("+", strings);
         }
 
         public virtual string Pack(string sql)

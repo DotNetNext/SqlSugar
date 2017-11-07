@@ -68,6 +68,12 @@ namespace SqlSugar
         public static bool Between(object value, object start, object end) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult IIF<TResult>(bool Expression, TResult thenValue, TResult elseValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult IsNull<TResult>(TResult thisValue, TResult ifNullValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1,string value2) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2,string value3) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2,string value3,string value4) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4,string value5) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4, string value5,string value6) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4, string value5, string value6,string value7) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int ToInt32(object value) { return value.ObjToInt(); }
         public static long ToInt64(object value) { return Convert.ToInt64(value); }
         /// <summary>
