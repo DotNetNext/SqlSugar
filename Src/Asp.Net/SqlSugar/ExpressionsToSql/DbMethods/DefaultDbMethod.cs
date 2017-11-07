@@ -271,6 +271,13 @@ namespace SqlSugar
             return string.Format("{0}", parameter1.MemberValue);
         }
 
+        public virtual string IsNull(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return string.Format("ISNULL({0},{1})",parameter.MemberName,parameter1.MemberName);
+        }
+
         public virtual string True()
         {
             return "( 1 = 1 ) ";

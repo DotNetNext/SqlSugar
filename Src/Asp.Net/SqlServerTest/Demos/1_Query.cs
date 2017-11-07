@@ -433,6 +433,7 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             var t1 = db.Queryable<Student>().Where(it => SqlFunc.ToLower(it.Name) == SqlFunc.ToLower("JACK")).ToList();
+            var t2 = db.Queryable<Student>().Where(it => SqlFunc.IsNull(it.Name,"nullvalue")=="nullvalue").ToList();
             //SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
 
             /***More Functions***/
