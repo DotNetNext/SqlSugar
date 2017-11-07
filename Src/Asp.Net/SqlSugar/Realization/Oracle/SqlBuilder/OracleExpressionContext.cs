@@ -156,5 +156,13 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format(" LENGTH({0}) ", parameter.MemberName);
         }
+
+        public override string IsNull(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return string.Format("NVL({0},{1})", parameter.MemberName, parameter1.MemberName);
+        }
+
     }
 }
