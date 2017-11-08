@@ -414,6 +414,8 @@ namespace SqlSugar
                 case "GetSelfAndAutoFill":
                     this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
                     return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
+                case "GetDate":
+                    return this.Context.DbMehtods.GetDate();
                 default:
                     break;
             }

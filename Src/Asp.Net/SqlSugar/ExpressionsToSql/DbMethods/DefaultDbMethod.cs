@@ -275,7 +275,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter1 = model.Args[1];
-            return string.Format("ISNULL({0},{1})",parameter.MemberName,parameter1.MemberName);
+            return string.Format("ISNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
         }
 
         public virtual string True()
@@ -318,6 +318,11 @@ namespace SqlSugar
         public virtual string Null()
         {
             return "NULL";
+        }
+
+        public virtual string GetDate()
+        {
+            return "GETDATE()";
         }
     }
 }

@@ -57,5 +57,6 @@ namespace SqlSugar
         string EqualTrue(string value);
         string Pack(string sql);
         string Null();
+        string GetDate();
     }
 }
