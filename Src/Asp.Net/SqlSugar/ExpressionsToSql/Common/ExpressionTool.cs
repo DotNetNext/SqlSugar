@@ -41,6 +41,8 @@ namespace SqlSugar
                 case ExpressionType.Multiply:
                 case ExpressionType.MultiplyChecked:
                     return "*";
+                case ExpressionType.Coalesce:
+                    throw new Exception("Expression no support ?? ,Use SqlFunc.IsNull");
                 default:
                     Check.ThrowNotSupportedException(string.Format(ErrorMessage.OperatorError, expressiontype.ToString()));
                     return null;
