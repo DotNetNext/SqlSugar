@@ -168,5 +168,10 @@ namespace SqlSugar
         {
             return string.Join("||", strings).Replace("+", "");
         }
+
+        public override string GetDate()
+        {
+            return "sysdate";
+        }
     }
 }

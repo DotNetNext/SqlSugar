@@ -129,5 +129,9 @@ namespace SqlSugar
             var parameter1 = model.Args[1];
             return string.Format("IFNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
         }
+        public override string GetDate()
+        {
+            return "NOW()";
+        }
     }
 }
