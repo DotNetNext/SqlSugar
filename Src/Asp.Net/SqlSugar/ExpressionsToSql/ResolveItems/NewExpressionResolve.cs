@@ -13,6 +13,7 @@ namespace SqlSugar
         public NewExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var expression = base.Expression as NewExpression;
+            Check.Exception(expression.Type == UtilConstants.GuidType, "Not Support new Guid(), Use Guid.New()");
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.WhereSingle:
