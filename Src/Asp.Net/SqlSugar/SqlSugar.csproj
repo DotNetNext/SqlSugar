@@ -80,6 +80,7 @@
     <Compile Include="Entities\SlaveConnectionConfig.cs" />
     <Compile Include="Enum\ConditionalType.cs" />
     <Compile Include="Enum\DbType.cs" />
+    <Compile Include="ExpressionsToSql\CaseWhen\CaseWhen.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\ISubOperation.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAnd.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubCount.cs" />

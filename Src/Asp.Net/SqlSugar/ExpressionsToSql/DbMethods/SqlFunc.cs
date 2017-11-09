@@ -116,5 +116,6 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Subqueryable<T> Subqueryable<T>() where T:class,new(){ throw new NotSupportedException("Can only be used in expressions");}
+        public static CaseThen  IF(bool condition) { throw new NotSupportedException("Can only be used in expressions"); }
     }
 }

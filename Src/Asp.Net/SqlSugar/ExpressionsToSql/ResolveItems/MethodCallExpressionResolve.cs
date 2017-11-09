@@ -55,6 +55,10 @@ namespace SqlSugar
                 }
                 return;
             }
+            else if (IsIfElse(express, methodName)) {
+                List<Expression> expList = new List<Expression>();
+                return;
+            }
             if (IsContainsArray(express, methodName, isValidNativeMethod))
             {
                 methodName = "ContainsArray";
@@ -68,6 +72,14 @@ namespace SqlSugar
             {
                 SqlFuncMethod(parameter, express, isLeft);
             }
+        }
+
+        private bool IsIfElse(MethodCallExpression express, string methodName)
+        {
+            if (methodName == "End"&& express.Object.Type==typeof(CaseWhen))
+                return true;
+            else
+                return false;
         }
 
         private void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)

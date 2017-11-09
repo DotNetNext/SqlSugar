@@ -40,6 +40,10 @@ namespace OrmTest.Demo
             List<ConditionalModel> conModels = new List<ConditionalModel>();
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNullOrEmpty });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.In,FieldValue="1,2,3" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NotIn, FieldValue = "1,2,3" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1,2,3" });
             var student = db.Queryable<Student>().Where(conModels).ToList();
         }
 
