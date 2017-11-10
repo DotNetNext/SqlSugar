@@ -15,11 +15,12 @@ namespace SqlSugar
             var childExpression = expression.Expression as MemberExpression;
             var memberName = expression.Member.Name;
             var childIsMember = childExpression != null;
+            var isRoot = parameter.BaseExpression == null;
             var isLeft = parameter.IsLeft;
             var isSetTempData = parameter.IsSetTempData;
             var isValue = memberName == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
             var isBool = expression.Type == UtilConstants.BoolType;
-            var isValueBool = isValue && isBool && parameter.BaseExpression == null;
+            var isValueBool = isValue && isBool && isRoot;
             var isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
             var isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (childIsMember && childExpression.Type == UtilConstants.DateType);
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
@@ -28,6 +29,9 @@ namespace SqlSugar
             var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
             var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
             var fieldIsBool = isBool && isLogicOperator&&(parameter.BaseParameter==null||!(parameter.BaseParameter.CurrentExpression is MemberInitExpression|| parameter.BaseParameter.CurrentExpression is NewExpression));
+            var isSelect = this.Context.ResolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple);
+            var isSelectField = isSelect && isRoot;
+            var isField = this.Context.ResolveType.IsIn(ResolveExpressType.FieldSingle, ResolveExpressType.FieldMultiple);
             baseParameter.ChildExpression = expression;
             if (isLength)
             {
@@ -57,7 +61,7 @@ namespace SqlSugar
             {
                 ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
             }
-            else if (fieldIsBool&& !this.Context.ResolveType.IsIn(ResolveExpressType.FieldSingle, ResolveExpressType.FieldMultiple))
+            else if (fieldIsBool&& !isField&&!isSelectField)
             {
                 ResolvefieldIsBool(parameter, baseParameter, isLeft, isSetTempData, expression, isSingle);
             }
