@@ -289,7 +289,7 @@ namespace OrmTest.Demo
                         SqlFunc.IF(st.Id > 1)
                              .Return(st.Id)
                              .ElseIF(st.Id == 1)
-                             .Return(st.SchoolId).End(st.Id) == 1).ToList();
+                             .Return(st.SchoolId).End(st.Id) == 1).Select(st=>st).ToList();
             var test3 = db.Queryable<DataTestInfo2>().Select(it => it.Bool1).ToSql();
             var test4 = db.Queryable<DataTestInfo2>().Select(it => new { b=it.Bool1 }).ToSql();
         }

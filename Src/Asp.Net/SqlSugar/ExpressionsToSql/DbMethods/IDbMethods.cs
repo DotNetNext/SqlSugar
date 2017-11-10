@@ -36,6 +36,7 @@ namespace SqlSugar
         string ToGuid(MethodCallExpressionModel model);
         string ToDouble(MethodCallExpressionModel model);
         string ToBool(MethodCallExpressionModel model);
+        string CaseWhen(List<KeyValuePair<string,string>> sqls);
         string Substring(MethodCallExpressionModel model);
         string ToDate(MethodCallExpressionModel model);
         string ToTime(MethodCallExpressionModel model);

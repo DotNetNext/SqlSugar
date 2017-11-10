@@ -56,7 +56,16 @@ namespace SqlSugar
                 return;
             }
             else if (IsIfElse(express, methodName)) {
-                List<Expression> expList = new List<Expression>();
+                CaseWhenResolve caseResole = new CaseWhenResolve(express, this.Context, parameter.OppsiteExpression);
+                var appendSql = caseResole.GetSql();
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle))
+                {
+                    parameter.BaseParameter.CommonTempData = appendSql;
+                }
+                else
+                {
+                    base.AppendValue(parameter, isLeft, appendSql);
+                }
                 return;
             }
             if (IsContainsArray(express, methodName, isValidNativeMethod))

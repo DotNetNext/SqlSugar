@@ -324,5 +324,29 @@ namespace SqlSugar
         {
             return "GETDATE()";
         }
+
+        public virtual string CaseWhen(List<KeyValuePair<string, string>> sqls)
+        {
+            StringBuilder reslut = new StringBuilder();
+            foreach (var item in sqls)
+            {
+                if (item.Key == "IF")
+                {
+                    reslut.AppendFormat(" ( CASE  WHEN {0} ", item.Value);
+                }
+                else if (item.Key == "End")
+                {
+                    reslut.AppendFormat("ELSE {0} END )", item.Value);
+                }
+                else if (item.Key == "Return")
+                {
+                    reslut.AppendFormat(" THEN {0} ", item.Value);
+                }
+                else {
+                    reslut.AppendFormat(" WHEN {0} ", item.Value);
+                }
+            }
+            return reslut.ToString();
+        }
     }
 }

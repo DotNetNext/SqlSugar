@@ -16,7 +16,6 @@ namespace SqlSugar
     {
         List<MethodCallExpression> allMethods = new List<MethodCallExpression>();
         private ExpressionContext context = null;
-        private bool hasWhere;
         public CaseWhenResolve(MethodCallExpression expression, ExpressionContext context, Expression oppsiteExpression)
         {
             this.context = context;
@@ -42,7 +41,17 @@ namespace SqlSugar
 
         public string GetSql()
         {
-            return "";
+            allMethods.Reverse();
+            List<KeyValuePair<string, string>> sqls = new List<KeyValuePair<string, string>>();
+            foreach (var methodExp in allMethods)
+            {
+                var isFirst = allMethods.First() == methodExp;
+                var isLast= allMethods.Last() == methodExp;
+                var sql= SubTools.GetMethodValue(this.context, methodExp.Arguments[0],this.context.IsSingle?ResolveExpressType.WhereSingle:ResolveExpressType.WhereMultiple);
+                sqls.Add(new KeyValuePair<string, string>(methodExp.Method.Name, sql));
+            }
+            var result= this.context.DbMehtods.CaseWhen(sqls);
+            return result;
         }
     }
 }

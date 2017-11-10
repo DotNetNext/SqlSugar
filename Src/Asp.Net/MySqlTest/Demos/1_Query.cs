@@ -232,6 +232,12 @@ namespace OrmTest.Demo
             var getDay1List = db.Queryable<Student>().Where(it => it.CreateTime.Value.Hour == 1).ToList();
             var getDateAdd = db.Queryable<Student>().Where(it => it.CreateTime.Value.AddDays(1) == DateTime.Now).ToList();
             var getDateIsSame = db.Queryable<Student>().Where(it => SqlFunc.DateIsSame(DateTime.Now, DateTime.Now, DateType.Hour)).ToList();
+            var test2 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id)
+              .Where(st =>
+                SqlFunc.IF(st.Id > 1)
+                     .Return(st.Id)
+                     .ElseIF(st.Id == 1)
+                     .Return(st.SchoolId).End(st.Id) == 1).Select(st => st).ToList();
         }
         public static void Page()
         {
