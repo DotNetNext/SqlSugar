@@ -261,7 +261,7 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
-                    string bytesString = System.Text.Encoding.ASCII.GetString((byte[])value);
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value);
                     return "N'" + bytesString + "'";
                 }
                 else if (type.IsEnum())
