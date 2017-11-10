@@ -18,16 +18,14 @@ namespace SqlSugar
         public virtual string GetDbTypeName(string csharpTypeName)
         {
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
-            {
                 return "varbinary";
-            }
-            if (csharpTypeName == "Int32")
+            if (csharpTypeName.ToLower() == "int32")
                 csharpTypeName = "int";
-            if (csharpTypeName == "Int16")
+            if (csharpTypeName.ToLower() == "int16")
                 csharpTypeName = "short";
-            if (csharpTypeName == "Int64")
+            if (csharpTypeName.ToLower() == "int64")
                 csharpTypeName = "long";
-            if (csharpTypeName == "Boolean")
+            if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
             return mappings.HasValue() ? mappings.First().Key : "varchar";
@@ -151,7 +149,7 @@ namespace SqlSugar
             {
                 return "long";
             }
-            else if (dbTypeName == "int16") 
+            else if (dbTypeName == "int16")
             {
                 return "short";
             }
