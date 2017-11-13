@@ -271,6 +271,13 @@ namespace SqlSugar
             return string.Format("{0}", parameter1.MemberValue);
         }
 
+        public virtual string IsNull(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return string.Format("ISNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
+        }
+
         public virtual string True()
         {
             return "( 1 = 1 ) ";
@@ -295,7 +302,7 @@ namespace SqlSugar
 
         public virtual string MergeString(params string[] strings)
         {
-            return string.Join("", strings);
+            return string.Join("+", strings);
         }
 
         public virtual string Pack(string sql)
@@ -311,6 +318,35 @@ namespace SqlSugar
         public virtual string Null()
         {
             return "NULL";
+        }
+
+        public virtual string GetDate()
+        {
+            return "GETDATE()";
+        }
+
+        public virtual string CaseWhen(List<KeyValuePair<string, string>> sqls)
+        {
+            StringBuilder reslut = new StringBuilder();
+            foreach (var item in sqls)
+            {
+                if (item.Key == "IF")
+                {
+                    reslut.AppendFormat(" ( CASE  WHEN {0} ", item.Value);
+                }
+                else if (item.Key == "End")
+                {
+                    reslut.AppendFormat("ELSE {0} END )", item.Value);
+                }
+                else if (item.Key == "Return")
+                {
+                    reslut.AppendFormat(" THEN {0} ", item.Value);
+                }
+                else {
+                    reslut.AppendFormat(" WHEN {0} ", item.Value);
+                }
+            }
+            return reslut.ToString();
         }
     }
 }

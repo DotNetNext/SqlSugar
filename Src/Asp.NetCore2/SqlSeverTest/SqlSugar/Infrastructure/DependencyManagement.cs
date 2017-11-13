@@ -84,7 +84,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Microsoft.Data.Sqlite." + ex.Message,
-                    "你需要引用System.Data.SQLite.dll,如果有版本兼容问题请先删除原有引用");
+                    "你需要引用Microsoft.Data.Sqlite,如果有版本兼容问题请先删除原有引用");
                     throw new Exception(message);
                 }
             }

@@ -156,5 +156,22 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format(" LENGTH({0}) ", parameter.MemberName);
         }
+
+        public override string IsNull(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return string.Format("NVL({0},{1})", parameter.MemberName, parameter1.MemberName);
+        }
+
+        public override string MergeString(params string[] strings)
+        {
+            return string.Join("||", strings).Replace("+", "");
+        }
+
+        public override string GetDate()
+        {
+            return "sysdate";
+        }
     }
 }

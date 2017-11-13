@@ -67,6 +67,13 @@ namespace SqlSugar
         public static int DateValue(DateTime date, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
         public static bool Between(object value, object start, object end) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult IIF<TResult>(bool Expression, TResult thenValue, TResult elseValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult IsNull<TResult>(TResult thisValue, TResult ifNullValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1,string value2) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2,string value3) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2,string value3,string value4) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4,string value5) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4, string value5,string value6) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4, string value5, string value6,string value7) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int ToInt32(object value) { return value.ObjToInt(); }
         public static long ToInt64(object value) { return Convert.ToInt64(value); }
         /// <summary>
@@ -102,11 +109,13 @@ namespace SqlSugar
         /// <param name="value"></param>
         /// <returns></returns>
         public static TResult GetSelfAndAutoFill<TResult>(TResult value) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static DateTime GetDate() { throw new NotSupportedException("Can only be used in expressions"); }
         /// <summary>
         /// Subquery
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static Subqueryable<T> Subqueryable<T>() where T:class,new(){ throw new NotSupportedException("Can only be used in expressions");}
+        public static CaseThen  IF(bool condition) { throw new NotSupportedException("Can only be used in expressions"); }
     }
 }

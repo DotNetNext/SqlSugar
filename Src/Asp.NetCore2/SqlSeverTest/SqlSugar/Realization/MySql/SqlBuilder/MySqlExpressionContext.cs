@@ -123,5 +123,15 @@ namespace SqlSugar
         {
             return " concat("+string.Join(",", strings).Replace("+", "") + ") ";
         }
+        public override string IsNull(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return string.Format("IFNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
+        }
+        public override string GetDate()
+        {
+            return "NOW()";
+        }
     }
 }

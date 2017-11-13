@@ -12,6 +12,12 @@ namespace SqlSugar
         GreaterThan =2,
         GreaterThanOrEqual = 3,
         LessThan=4,
-        LessThanOrEqual = 5
+        LessThanOrEqual = 5,
+        In=6,
+        NotIn=7,
+        LikeLeft=8,
+        LikeRight=9,
+        NoEqual=10,
+        IsNullOrEmpty=11
     }
 }

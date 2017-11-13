@@ -36,6 +36,7 @@ namespace SqlSugar
         string ToGuid(MethodCallExpressionModel model);
         string ToDouble(MethodCallExpressionModel model);
         string ToBool(MethodCallExpressionModel model);
+        string CaseWhen(List<KeyValuePair<string,string>> sqls);
         string Substring(MethodCallExpressionModel model);
         string ToDate(MethodCallExpressionModel model);
         string ToTime(MethodCallExpressionModel model);
@@ -48,6 +49,7 @@ namespace SqlSugar
         string AggregateMax(MethodCallExpressionModel model);
         string AggregateCount(MethodCallExpressionModel model);
         string MappingColumn(MethodCallExpressionModel model);
+        string IsNull(MethodCallExpressionModel model);
         string GetSelfAndAutoFill(string shortName,bool isSingle);
         string True();
         string False();
@@ -56,5 +58,6 @@ namespace SqlSugar
         string EqualTrue(string value);
         string Pack(string sql);
         string Null();
+        string GetDate();
     }
 }
