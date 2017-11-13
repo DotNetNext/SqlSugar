@@ -67,43 +67,48 @@ namespace SqlSugar
             }
             else
             {
-                string fieldName = string.Empty;
-                switch (parameter.Context.ResolveType)
-                {
-                    case ResolveExpressType.SelectSingle:
-                        fieldName = GetSingleName(parameter, expression, isLeft);
-                        if (isSetTempData)
-                            baseParameter.CommonTempData = fieldName;
-                        else
-                            base.Context.Result.Append(fieldName);
-                        break;
-                    case ResolveExpressType.SelectMultiple:
-                        fieldName = GetMultipleName(parameter, expression, isLeft);
-                        if (isSetTempData)
-                            baseParameter.CommonTempData = fieldName;
-                        else
-                            base.Context.Result.Append(fieldName);
-                        break;
-                    case ResolveExpressType.WhereSingle:
-                    case ResolveExpressType.WhereMultiple:
-                        ResolveWhereLogic(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
-                        break;
-                    case ResolveExpressType.FieldSingle:
-                        fieldName = GetSingleName(parameter, expression, isLeft);
+                ResolveDefault(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            }
+        }
+
+        private void ResolveDefault(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
+        {
+            string fieldName = string.Empty;
+            switch (parameter.Context.ResolveType)
+            {
+                case ResolveExpressType.SelectSingle:
+                    fieldName = GetSingleName(parameter, expression, isLeft);
+                    if (isSetTempData)
+                        baseParameter.CommonTempData = fieldName;
+                    else
                         base.Context.Result.Append(fieldName);
-                        break;
-                    case ResolveExpressType.FieldMultiple:
-                        fieldName = GetMultipleName(parameter, expression, isLeft);
+                    break;
+                case ResolveExpressType.SelectMultiple:
+                    fieldName = GetMultipleName(parameter, expression, isLeft);
+                    if (isSetTempData)
+                        baseParameter.CommonTempData = fieldName;
+                    else
                         base.Context.Result.Append(fieldName);
-                        break;
-                    case ResolveExpressType.ArrayMultiple:
-                    case ResolveExpressType.ArraySingle:
-                        fieldName = GetName(parameter, expression, isLeft, parameter.Context.ResolveType == ResolveExpressType.ArraySingle);
-                        base.Context.Result.Append(fieldName);
-                        break;
-                    default:
-                        break;
-                }
+                    break;
+                case ResolveExpressType.WhereSingle:
+                case ResolveExpressType.WhereMultiple:
+                    ResolveWhereLogic(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+                    break;
+                case ResolveExpressType.FieldSingle:
+                    fieldName = GetSingleName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
+                    break;
+                case ResolveExpressType.FieldMultiple:
+                    fieldName = GetMultipleName(parameter, expression, isLeft);
+                    base.Context.Result.Append(fieldName);
+                    break;
+                case ResolveExpressType.ArrayMultiple:
+                case ResolveExpressType.ArraySingle:
+                    fieldName = GetName(parameter, expression, isLeft, parameter.Context.ResolveType == ResolveExpressType.ArraySingle);
+                    base.Context.Result.Append(fieldName);
+                    break;
+                default:
+                    break;
             }
         }
 
