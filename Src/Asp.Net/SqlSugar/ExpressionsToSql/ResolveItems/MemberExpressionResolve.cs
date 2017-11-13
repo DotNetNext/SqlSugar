@@ -71,6 +71,7 @@ namespace SqlSugar
             }
         }
 
+        #region Resolve default
         private void ResolveDefault(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
         {
             string fieldName = string.Empty;
@@ -111,6 +112,8 @@ namespace SqlSugar
                     break;
             }
         }
+
+        #endregion
 
         #region Resolve Where
         private void ResolveWhereLogic(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
