@@ -10,28 +10,11 @@ namespace SqlSugar
         public ExpressionParameter Parameter { get; set; }
         public MemberExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
-            var baseParameter = parameter.BaseParameter;
-            var expression = base.Expression as MemberExpression;
-            var childExpression = expression.Expression as MemberExpression;
-            var memberName = expression.Member.Name;
-            var childIsMember = childExpression != null;
-            var isRoot = parameter.BaseExpression == null;
-            var isLeft = parameter.IsLeft;
-            var isSetTempData = parameter.IsSetTempData;
-            var isValue = memberName == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
-            var isBool = expression.Type == UtilConstants.BoolType;
-            var isValueBool = isValue && isBool && isRoot;
-            var isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
-            var isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (childIsMember && childExpression.Type == UtilConstants.DateType);
-            var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
-            var isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
-            var isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
-            var isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
-            var isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
-            var fieldIsBool = isBool && isLogicOperator&&(parameter.BaseParameter==null||!(parameter.BaseParameter.CurrentExpression is MemberInitExpression|| parameter.BaseParameter.CurrentExpression is NewExpression));
-            var isSelect = this.Context.ResolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple);
-            var isSelectField = isSelect && isRoot;
-            var isField = this.Context.ResolveType.IsIn(ResolveExpressType.FieldSingle, ResolveExpressType.FieldMultiple);
+            ExpressionParameter baseParameter;
+            MemberExpression expression;
+            bool? isLeft;
+            bool isSetTempData, isValue, isValueBool, isLength, isDateValue, isHasValue, isDateDate, isMemberValue, isSingle, fieldIsBool, isSelectField, isField;
+            SettingParameters(parameter, out baseParameter, out expression, out isLeft, out isSetTempData, out isValue, out isValueBool, out isLength, out isDateValue, out isHasValue, out isDateDate, out isMemberValue, out isSingle, out fieldIsBool, out isSelectField, out isField);
             baseParameter.ChildExpression = expression;
             if (isLength)
             {
@@ -61,7 +44,7 @@ namespace SqlSugar
             {
                 ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
             }
-            else if (fieldIsBool&& !isField&&!isSelectField)
+            else if (fieldIsBool && !isField && !isSelectField)
             {
                 ResolvefieldIsBool(parameter, baseParameter, isLeft, isSetTempData, expression, isSingle);
             }
@@ -356,6 +339,33 @@ namespace SqlSugar
             };
             return this.Context.DbMehtods.ToDate(pars);
         }
+
+        private void SettingParameters(ExpressionParameter parameter, out ExpressionParameter baseParameter, out MemberExpression expression, out bool? isLeft, out bool isSetTempData, out bool isValue, out bool isValueBool, out bool isLength, out bool isDateValue, out bool isHasValue, out bool isDateDate, out bool isMemberValue, out bool isSingle, out bool fieldIsBool, out bool isSelectField, out bool isField)
+        {
+            baseParameter = parameter.BaseParameter;
+            expression = base.Expression as MemberExpression;
+            var childExpression = expression.Expression as MemberExpression;
+            var memberName = expression.Member.Name;
+            var childIsMember = childExpression != null;
+            var isRoot = parameter.BaseExpression == null;
+            isLeft = parameter.IsLeft;
+            isSetTempData = parameter.IsSetTempData;
+            isValue = memberName == "Value" && expression.Member.DeclaringType.Name == "Nullable`1";
+            var isBool = expression.Type == UtilConstants.BoolType;
+            isValueBool = isValue && isBool && isRoot;
+            isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
+            isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (childIsMember && childExpression.Type == UtilConstants.DateType);
+            var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
+            isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
+            isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
+            isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
+            isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
+            fieldIsBool = isBool && isLogicOperator && (parameter.BaseParameter == null || !(parameter.BaseParameter.CurrentExpression is MemberInitExpression || parameter.BaseParameter.CurrentExpression is NewExpression));
+            var isSelect = this.Context.ResolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple);
+            isSelectField = isSelect && isRoot;
+            isField = this.Context.ResolveType.IsIn(ResolveExpressType.FieldSingle, ResolveExpressType.FieldMultiple);
+        }
+
         #endregion
     }
 }
