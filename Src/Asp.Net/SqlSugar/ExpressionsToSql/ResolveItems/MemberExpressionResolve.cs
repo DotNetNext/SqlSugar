@@ -116,7 +116,7 @@ namespace SqlSugar
                 if (ExpressionTool.IsConstExpression(expression))
                 {
                     var value = ExpressionTool.GetMemberValue(expression.Member, expression);
-                    base.AppendValue(parameter, isLeft, value);
+                    baseParameter.CommonTempData = value;
                 }
                 else
                 {

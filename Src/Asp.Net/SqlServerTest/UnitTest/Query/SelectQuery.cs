@@ -92,6 +92,13 @@ namespace OrmTest.UnitTest
                           JoinType.Left,st.SchoolId==sc.Id,
                           JoinType.Left,sc2.Id==sc.Id
                 }).GroupBy(st => st.Id).Select(st=>st.Id).Count();
+
+                DateTime? result = DateTime.Now;
+                var t5 = db.Queryable<Student>().Where(it => it.CreateTime > result.Value.Date).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE ( [CreateTime] > @Const0 )",
+           new List<SugarParameter>() {
+                new SugarParameter("@Const0",result.Value.Date)
+           }, t5.Key, t5.Value, "select t5 Error");
                 #endregion
 
 

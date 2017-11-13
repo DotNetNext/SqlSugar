@@ -292,6 +292,8 @@ namespace OrmTest.Demo
                              .Return(st.SchoolId).End(st.Id) == 1).Select(st=>st).ToList();
             var test3 = db.Queryable<DataTestInfo2>().Select(it => it.Bool1).ToSql();
             var test4 = db.Queryable<DataTestInfo2>().Select(it => new { b=it.Bool1 }).ToSql();
+            DateTime? result = DateTime.Now;
+            var test5 = db.Queryable<Student>().Where(it=>it.CreateTime> result.Value.Date).ToList();
         }
         public static void Page()
         {
