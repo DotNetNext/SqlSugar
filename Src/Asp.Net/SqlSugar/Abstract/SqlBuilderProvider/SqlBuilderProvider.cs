@@ -44,7 +44,14 @@ namespace SqlSugar
             {
                 return name;
             }
-            return SqlTranslationLeft + name + SqlTranslationRight;
+            if (name.Contains("."))
+            {
+                return string.Join(".", name.Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
+            }
+            else
+            {
+                return SqlTranslationLeft + name + SqlTranslationRight;
+            }
         }
         public virtual string GetTranslationColumnName(string entityName, string propertyName)
         {
