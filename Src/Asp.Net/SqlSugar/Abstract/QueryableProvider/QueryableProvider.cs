@@ -1009,7 +1009,7 @@ namespace SqlSugar
                 foreach (var item in list)
                 {
                     var filterResult = item.FilterValue(this.Context);
-                    Where(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(), filterResult.Sql), filterResult.Parameters);
+                    Where(filterResult.Sql, filterResult.Parameters);
                 }
             }
         }
