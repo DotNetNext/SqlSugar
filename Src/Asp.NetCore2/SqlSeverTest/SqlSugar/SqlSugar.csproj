@@ -20,8 +20,4 @@
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstract\CacheScheme\" />
-  </ItemGroup>
-
 </Project>
