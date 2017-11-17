@@ -140,7 +140,7 @@ namespace SqlSugar
         public virtual string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();
-            var propertyTypes = MappingTypes.Where(it => it.Key == dbTypeName);
+            var propertyTypes = MappingTypes.Where(it => it.Key.Equals(dbTypeName,StringComparison.CurrentCultureIgnoreCase));
             if (dbTypeName == "int32")
             {
                 return "int";
