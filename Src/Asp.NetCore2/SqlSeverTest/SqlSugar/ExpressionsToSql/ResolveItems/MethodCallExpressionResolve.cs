@@ -14,7 +14,7 @@ namespace SqlSugar
             var express = base.Expression as MethodCallExpression;
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
-            var isValidNativeMethod = MethodMapping.ContainsKey(methodName) && express.Method.DeclaringType.Namespace == ("System");
+            var isValidNativeMethod = IsValidNativeMethod(express, methodName);
             List<MethodCallExpressionArgs> appendArgs = null;
             if (MethodTimeMapping.ContainsKey(methodName))
             {
@@ -55,7 +55,8 @@ namespace SqlSugar
                 }
                 return;
             }
-            else if (IsIfElse(express, methodName)) {
+            else if (IsIfElse(express, methodName))
+            {
                 CaseWhenResolve caseResole = new CaseWhenResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = caseResole.GetSql();
                 if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle))
@@ -81,6 +82,17 @@ namespace SqlSugar
             {
                 SqlFuncMethod(parameter, express, isLeft);
             }
+        }
+
+        private  bool IsValidNativeMethod(MethodCallExpression express, string methodName)
+        {
+            return MethodMapping.ContainsKey(methodName) && express.Method.DeclaringType.Namespace == ("System");
+        }
+
+        private bool IsExtMethod(string methodName)
+        {
+            if (this.Context.SqlFuncServices == null) return false;
+            return this.Context.SqlFuncServices.Select(it => it.UniqueMethodName).Contains(methodName);
         }
 
         private bool IsIfElse(MethodCallExpression express, string methodName)
@@ -197,7 +209,7 @@ namespace SqlSugar
                 model.Args.AddRange(appendArgs);
             }
             var methodValue = GetMdthodValue(name, model);
-            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue") {
+            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue"&&!(parameter.OppsiteExpression is BinaryExpression)) {
                 methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
                     new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
                     new KeyValuePair<string, string>("Return","1"),
@@ -342,110 +354,126 @@ namespace SqlSugar
 
         private object GetMdthodValue(string name, MethodCallExpressionModel model)
         {
-            switch (name)
+            if (IsExtMethod(name))
             {
-                case "IIF":
-                    return this.Context.DbMehtods.IIF(model);
-                case "HasNumber":
-                    return this.Context.DbMehtods.HasNumber(model);
-                case "HasValue":
-                    return this.Context.DbMehtods.HasValue(model);
-                case "IsNullOrEmpty":
-                    return this.Context.DbMehtods.IsNullOrEmpty(model);
-                case "ToLower":
-                    return this.Context.DbMehtods.ToLower(model);
-                case "ToUpper":
-                    return this.Context.DbMehtods.ToUpper(model);
-                case "Trim":
-                    return this.Context.DbMehtods.Trim(model);
-                case "Contains":
-                    return this.Context.DbMehtods.Contains(model);
-                case "ContainsArray":
-                    var caResult = this.Context.DbMehtods.ContainsArray(model);
-                    this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
-                    return caResult;
-                case "Equals":
-                    return this.Context.DbMehtods.Equals(model);
-                case "DateIsSame":
-                    if (model.Args.Count == 2)
-                        return this.Context.DbMehtods.DateIsSameDay(model);
-                    else
-                    {
-                        var dsResult = this.Context.DbMehtods.DateIsSameByType(model);
-                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[2].MemberName.ObjToString());
-                        return dsResult;
-                    }
-                case "DateAdd":
-                    if (model.Args.Count == 2)
-                        return this.Context.DbMehtods.DateAddDay(model);
-                    else
-                    {
-                        var daResult = this.Context.DbMehtods.DateAddByType(model);
-                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[2].MemberName.ObjToString());
-                        return daResult;
-                    }
-                case "DateValue":
-                    var dvResult = this.Context.DbMehtods.DateValue(model);
-                    this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
-                    return dvResult;
-                case "Between":
-                    return this.Context.DbMehtods.Between(model);
-                case "StartsWith":
-                    return this.Context.DbMehtods.StartsWith(model);
-                case "EndsWith":
-                    return this.Context.DbMehtods.EndsWith(model);
-                case "ToInt32":
-                    return this.Context.DbMehtods.ToInt32(model);
-                case "ToInt64":
-                    return this.Context.DbMehtods.ToInt64(model);
-                case "ToDate":
-                    return this.Context.DbMehtods.ToDate(model);
-                case "ToTime":
-                    return this.Context.DbMehtods.ToTime(model);
-                case "ToString":
-                    Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
-                    return this.Context.DbMehtods.ToString(model);
-                case "ToDecimal":
-                    return this.Context.DbMehtods.ToDecimal(model);
-                case "ToGuid":
-                    return this.Context.DbMehtods.ToGuid(model);
-                case "ToDouble":
-                    return this.Context.DbMehtods.ToDouble(model);
-                case "ToBool":
-                    return this.Context.DbMehtods.ToBool(model);
-                case "Substring":
-                    return this.Context.DbMehtods.Substring(model);
-                case "Replace":
-                    return this.Context.DbMehtods.Replace(model);
-                case "Length":
-                    return this.Context.DbMehtods.Length(model);
-                case "AggregateSum":
-                    return this.Context.DbMehtods.AggregateSum(model);
-                case "AggregateAvg":
-                    return this.Context.DbMehtods.AggregateAvg(model);
-                case "AggregateMin":
-                    return this.Context.DbMehtods.AggregateMin(model);
-                case "AggregateMax":
-                    return this.Context.DbMehtods.AggregateMax(model);
-                case "AggregateCount":
-                    return this.Context.DbMehtods.AggregateCount(model);
-                case "MappingColumn":
-                    var mappingColumnResult = this.Context.DbMehtods.MappingColumn(model);
-                    var isValid = model.Args[0].IsMember && model.Args[1].IsMember == false;
-                    Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
-                    this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
-                    return mappingColumnResult;
-                case "IsNull":
-                    return this.Context.DbMehtods.IsNull(model);
-                case "MergeString":
-                        return this.Context.DbMehtods.MergeString(model.Args.Select(it=>it.MemberName.ObjToString()).ToArray());
-                case "GetSelfAndAutoFill":
-                    this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
-                    return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
-                case "GetDate":
-                    return this.Context.DbMehtods.GetDate();
-                default:
-                    break;
+                DbType type = DbType.SqlServer;
+                if (this.Context is SqlServerExpressionContext)
+                    type = DbType.SqlServer;
+                else if (this.Context is MySqlExpressionContext)
+                    type = DbType.MySql;
+                else if (this.Context is SqliteExpressionContext)
+                    type = DbType.Sqlite;
+                else if(this.Context is OracleExpressionContext)
+                    type = DbType.Oracle;
+                return this.Context.SqlFuncServices.First(it => it.UniqueMethodName == name).MethodValue(model,type,this.Context);
+            }
+            else
+            {
+                switch (name)
+                {
+                    case "IIF":
+                        return this.Context.DbMehtods.IIF(model);
+                    case "HasNumber":
+                        return this.Context.DbMehtods.HasNumber(model);
+                    case "HasValue":
+                        return this.Context.DbMehtods.HasValue(model);
+                    case "IsNullOrEmpty":
+                        return this.Context.DbMehtods.IsNullOrEmpty(model);
+                    case "ToLower":
+                        return this.Context.DbMehtods.ToLower(model);
+                    case "ToUpper":
+                        return this.Context.DbMehtods.ToUpper(model);
+                    case "Trim":
+                        return this.Context.DbMehtods.Trim(model);
+                    case "Contains":
+                        return this.Context.DbMehtods.Contains(model);
+                    case "ContainsArray":
+                        var caResult = this.Context.DbMehtods.ContainsArray(model);
+                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
+                        return caResult;
+                    case "Equals":
+                        return this.Context.DbMehtods.Equals(model);
+                    case "DateIsSame":
+                        if (model.Args.Count == 2)
+                            return this.Context.DbMehtods.DateIsSameDay(model);
+                        else
+                        {
+                            var dsResult = this.Context.DbMehtods.DateIsSameByType(model);
+                            this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[2].MemberName.ObjToString());
+                            return dsResult;
+                        }
+                    case "DateAdd":
+                        if (model.Args.Count == 2)
+                            return this.Context.DbMehtods.DateAddDay(model);
+                        else
+                        {
+                            var daResult = this.Context.DbMehtods.DateAddByType(model);
+                            this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[2].MemberName.ObjToString());
+                            return daResult;
+                        }
+                    case "DateValue":
+                        var dvResult = this.Context.DbMehtods.DateValue(model);
+                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
+                        return dvResult;
+                    case "Between":
+                        return this.Context.DbMehtods.Between(model);
+                    case "StartsWith":
+                        return this.Context.DbMehtods.StartsWith(model);
+                    case "EndsWith":
+                        return this.Context.DbMehtods.EndsWith(model);
+                    case "ToInt32":
+                        return this.Context.DbMehtods.ToInt32(model);
+                    case "ToInt64":
+                        return this.Context.DbMehtods.ToInt64(model);
+                    case "ToDate":
+                        return this.Context.DbMehtods.ToDate(model);
+                    case "ToTime":
+                        return this.Context.DbMehtods.ToTime(model);
+                    case "ToString":
+                        Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
+                        return this.Context.DbMehtods.ToString(model);
+                    case "ToDecimal":
+                        return this.Context.DbMehtods.ToDecimal(model);
+                    case "ToGuid":
+                        return this.Context.DbMehtods.ToGuid(model);
+                    case "ToDouble":
+                        return this.Context.DbMehtods.ToDouble(model);
+                    case "ToBool":
+                        return this.Context.DbMehtods.ToBool(model);
+                    case "Substring":
+                        return this.Context.DbMehtods.Substring(model);
+                    case "Replace":
+                        return this.Context.DbMehtods.Replace(model);
+                    case "Length":
+                        return this.Context.DbMehtods.Length(model);
+                    case "AggregateSum":
+                        return this.Context.DbMehtods.AggregateSum(model);
+                    case "AggregateAvg":
+                        return this.Context.DbMehtods.AggregateAvg(model);
+                    case "AggregateMin":
+                        return this.Context.DbMehtods.AggregateMin(model);
+                    case "AggregateMax":
+                        return this.Context.DbMehtods.AggregateMax(model);
+                    case "AggregateCount":
+                        return this.Context.DbMehtods.AggregateCount(model);
+                    case "MappingColumn":
+                        var mappingColumnResult = this.Context.DbMehtods.MappingColumn(model);
+                        var isValid = model.Args[0].IsMember && model.Args[1].IsMember == false;
+                        Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
+                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
+                        return mappingColumnResult;
+                    case "IsNull":
+                        return this.Context.DbMehtods.IsNull(model);
+                    case "MergeString":
+                        return this.Context.DbMehtods.MergeString(model.Args.Select(it => it.MemberName.ObjToString()).ToArray());
+                    case "GetSelfAndAutoFill":
+                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
+                        return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
+                    case "GetDate":
+                        return this.Context.DbMehtods.GetDate();
+                    default:
+                        break;
+                }
             }
             return null;
         }
@@ -495,6 +523,7 @@ namespace SqlSugar
         }
         private void CheckMethod(MethodCallExpression expression)
         {
+            if (IsExtMethod(expression.Method.Name)) return;
             Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ErrorMessage.MethodError, expression.Method.Name));
         }
     }
