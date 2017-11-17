@@ -82,6 +82,7 @@
     <Compile Include="Enum\DbType.cs" />
     <Compile Include="ExpressionsToSql\CaseWhen\CaseWhen.cs" />
     <Compile Include="ExpressionsToSql\CaseWhen\CaseWhenResolve.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\SqlFuncExternal.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\ISubOperation.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAnd.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubCount.cs" />

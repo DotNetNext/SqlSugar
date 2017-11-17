@@ -48,6 +48,7 @@ namespace OrmTest
             OrmTest.Demo.Aop.Init();
             OrmTest.Demo.MasterSlave.Init();
             OrmTest.Demo.SharedConnection.Init();
+            OrmTest.Demo.ExtSqlFun.Init();
         }
     }
 }

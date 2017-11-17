@@ -11,6 +11,8 @@ namespace SqlSugar
         MappingColumnList MappingColumns { get; set; }
         MappingTableList MappingTables { get; set; }
         IgnoreColumnList IgnoreComumnList { get; set; }
+        List<SqlFuncExternal> SqlFuncServices { get; set; }
+
         List<JoinQueryInfo> JoinQueryInfos { get; set; }
         bool IsSingle { get; set; }
         SqlSugarClient Context { get; set; }

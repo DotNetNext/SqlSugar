@@ -56,6 +56,7 @@
     <Compile Include="Demos\4_Delete.cs" />
     <Compile Include="Demos\9_Aop.cs" />
     <Compile Include="Demos\B_SharedConnection.cs" />
+    <Compile Include="Demos\C_ExtSqlFun.cs" />
     <Compile Include="Demos\DemoBase.cs" />
     <Compile Include="Demos\3_Insert.cs" />
     <Compile Include="Demos\1_Query.cs" />

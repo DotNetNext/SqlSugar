@@ -148,6 +148,7 @@ namespace SqlSugar
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
+            resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             resolveExpress.Resolve(expression, resolveType);
             if (this.Parameters == null)
                 this.Parameters = new List<SugarParameter>();
