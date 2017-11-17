@@ -124,6 +124,14 @@ namespace OrmTest.UnitTest
                         new SugarParameter("@Id0",1),
                         new SugarParameter("@Const1",1)
                     }, t13.Key, t13.Value, "single t13 error ");
+
+
+                var t14 = db.Queryable<Student>()
+                    .Where(it => it.Name == "a" && SqlFunc.HasValue(it.Name)).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE (( [Name] = @Name0 ) AND ( [Name]<>'' AND [Name] IS NOT NULL ))",
+                   new List<SugarParameter>() {
+                        new SugarParameter("@Name0","a")
+                   }, t14.Key, t14.Value, "single t14 error ");
             }
         }
     }
