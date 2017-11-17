@@ -39,6 +39,7 @@ namespace SqlSeverTest
             OrmTest.Demo.CodeFirst.Init();
             OrmTest.Demo.MasterSlave.Init();
             OrmTest.Demo.SharedConnection.Init();
+            OrmTest.Demo.ExtSqlFun.Init();
         }
     }
 }
