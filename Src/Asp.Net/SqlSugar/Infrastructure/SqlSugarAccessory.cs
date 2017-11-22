@@ -140,33 +140,33 @@ namespace SqlSugar
         }
         private void InitMppingInfo(EntityInfo entityInfo)
         {
-            if (this.MappingTables == null)
-                this.MappingTables = new MappingTableList();
-            if (this.MappingColumns == null)
-                this.MappingColumns = new MappingColumnList();
-            if (this.IgnoreColumns == null)
-                this.IgnoreColumns = new IgnoreColumnList();
-            if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
+            if (this.Context.MappingTables == null)
+                this.Context.MappingTables = new MappingTableList();
+            if (this.Context.MappingColumns == null)
+                this.Context.MappingColumns = new MappingColumnList();
+            if (this.Context.IgnoreColumns == null)
+                this.Context.IgnoreColumns = new IgnoreColumnList();
+            if (!this.Context.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
                 if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.HasValue())
                 {
-                    this.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
+                    this.Context.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
                 }
             }
             if (entityInfo.Columns.Any(it => it.EntityName == entityInfo.EntityName))
             {
-                var mappingColumnInfos = this.MappingColumns.Where(it => it.EntityName == entityInfo.EntityName);
+                var mappingColumnInfos = this.Context.MappingColumns.Where(it => it.EntityName == entityInfo.EntityName);
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
                     if (!mappingColumnInfos.Any(it => it.PropertyName == item.PropertyName))
                         if (item.PropertyName != item.DbColumnName && item.DbColumnName.HasValue())
-                            this.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
+                            this.Context.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
-                var ignoreInfos = this.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
+                var ignoreInfos = this.Context.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore))
                 {
                     if (!ignoreInfos.Any(it => it.PropertyName == item.PropertyName))
-                        this.IgnoreColumns.Add(item.PropertyName, item.EntityName);
+                        this.Context.IgnoreColumns.Add(item.PropertyName, item.EntityName);
                 }
             }
         }
