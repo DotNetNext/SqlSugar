@@ -64,7 +64,13 @@ namespace OrmTest.Demo
             t12.Wait();
 
             //update one columns
-            var count= db.Updateable<Student>().UpdateColumns(it => it.SchoolId == 1).Where(it => it.Id == 1).ExecuteCommand();
+            var count = db.Updateable<Student>().UpdateColumns(it => it.SchoolId == 1).Where(it => it.Id == 1).ExecuteCommand();
+
+
+            var t13 = db.Updateable<Student>().UpdateColumns(it => new Student() {
+                         SchoolId = SqlFunc.Subqueryable<School>().Where(s=>s.Id==it.SchoolId).Select(s=>s.Id),
+                         Name="newname"
+            }).Where(it => it.Id == 1).ExecuteCommand();
         }
     }
 }
