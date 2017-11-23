@@ -216,12 +216,14 @@ namespace SqlSugar
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
+            resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             resolveExpress.InitMappingInfo = this.Context.InitMppingInfo;
             resolveExpress.RefreshMapping = () =>
             {
                 resolveExpress.MappingColumns = Context.MappingColumns;
                 resolveExpress.MappingTables = Context.MappingTables;
                 resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
+                resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             };
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters);

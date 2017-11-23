@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -247,13 +248,15 @@ namespace SqlSugar
         }
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
         {
+            var seChar= Path.DirectorySeparatorChar.ToString();
             Check.ArgumentNullException(directoryPath, "directoryPath can't null");
             var classStringList = ToClassStringList(nameSpace);
             if (classStringList.IsValuable())
             {
                 foreach (var item in classStringList)
                 {
-                    FileHelper.CreateFile(directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format("\\{0}.cs", item.Key), item.Value, Encoding.UTF8);
+                    var filePath = directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format(seChar + "{0}.cs", item.Key);
+                    FileHelper.CreateFile(filePath, item.Value, Encoding.UTF8);
                 }
             }
         }

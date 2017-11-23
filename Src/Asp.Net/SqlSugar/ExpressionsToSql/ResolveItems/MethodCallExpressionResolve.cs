@@ -209,7 +209,7 @@ namespace SqlSugar
                 model.Args.AddRange(appendArgs);
             }
             var methodValue = GetMdthodValue(name, model);
-            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue") {
+            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue"&&!(parameter.OppsiteExpression is BinaryExpression)) {
                 methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
                     new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
                     new KeyValuePair<string, string>("Return","1"),

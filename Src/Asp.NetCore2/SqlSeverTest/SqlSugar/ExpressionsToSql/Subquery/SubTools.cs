@@ -38,6 +38,7 @@ namespace SqlSugar
             newContext.MappingColumns = context.MappingColumns;
             newContext.MappingTables = context.MappingTables;
             newContext.IgnoreComumnList = context.IgnoreComumnList;
+            newContext.SqlFuncServices = context.SqlFuncServices;
             newContext.Resolve(item, type);
             context.Index = newContext.Index;
             context.ParameterIndex = newContext.ParameterIndex;

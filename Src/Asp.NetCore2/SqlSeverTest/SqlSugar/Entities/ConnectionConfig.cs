@@ -83,5 +83,7 @@ namespace SqlSugar
             }
             set { _DataInfoCache = value; }
         }
+
+        public List<SqlFuncExternal> SqlFuncServices { get; set; }
     }
 }
