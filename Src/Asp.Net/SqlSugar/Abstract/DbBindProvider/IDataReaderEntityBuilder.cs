@@ -121,14 +121,13 @@ namespace SqlSugar
                         }
                     }
                 }
-                if (Context.IgnoreColumns != null && Context.IgnoreColumns.Any(it => it.PropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
-                         && it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase)))
+                if (IsIgnore(type, propertyInfo))
                 {
                     continue;
                 }
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType&&propertyInfo.PropertyType!=UtilConstants.ObjType)
+                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType && propertyInfo.PropertyType != UtilConstants.ObjType)
                     {
                         BindClass(generator, result, propertyInfo);
                     }
@@ -146,9 +145,15 @@ namespace SqlSugar
             DynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
             return DynamicBuilder;
         }
+
         #endregion
 
         #region Private methods
+        private bool IsIgnore(Type type, PropertyInfo propertyInfo)
+        {
+            return Context.IgnoreColumns != null && Context.IgnoreColumns.Any(it => it.PropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
+                                     && it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
+        }
         private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
         {
 
