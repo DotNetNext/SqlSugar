@@ -175,7 +175,7 @@ namespace SqlSugar
                 return propertyTypes.First().Value.ToString();
             }
         }
-        public virtual List<T> DataReaderToList<T>(Type type, IDataReader dataReader, string fields)
+        public virtual List<T> DataReaderToList<T>(Type type, IDataReader dataReader)
         {
             using (dataReader)
             {
@@ -193,7 +193,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    return GetEntityList<T>(Context, dataReader, fields);
+                    return GetEntityList<T>(Context, dataReader);
                 }
             }
         }
