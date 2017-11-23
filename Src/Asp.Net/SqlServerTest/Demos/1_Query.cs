@@ -509,7 +509,8 @@ namespace OrmTest.Demo
             .Select((st, sc) => sc)
             .Take(1).ToList();
 
-            var s9 = db.Queryable<Student>().Select(it=>it.Name).First();
+            var s9 = db.Queryable<Student>().Select(it=>new Student() { Id=it.Id, TestId=1, Name=it.Name, CreateTime=it.CreateTime }).First();
+            var s10 = db.Queryable<Student>().Select(it => new Student() { Id = it.Id}).First();
         }
         private static void Sqlable()
         {

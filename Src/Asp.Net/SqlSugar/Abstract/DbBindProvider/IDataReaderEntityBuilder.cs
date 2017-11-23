@@ -117,7 +117,7 @@ namespace SqlSugar
                         }
                     }
                 }
-                if (IsIgnore(type, propertyInfo))
+                if (IsIgnore(type, propertyInfo)&&!this.ReaderKeys.Any(it=>it==fileName))
                 {
                     continue;
                 }
