@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -58,7 +59,8 @@ namespace SqlSugar
                 }
                 else if (IsMethod(item))
                 {
-                    item = (item as UnaryExpression).Operand;
+                    if (item is UnaryExpression)
+                        item = (item as UnaryExpression).Operand;
                     MethodCall(parameter, memberName, item);
                 }
                 else if (IsConst(item))
@@ -104,9 +106,26 @@ namespace SqlSugar
 
         private void MethodCall(ExpressionParameter parameter, string memberName, Expression item)
         {
-            base.Expression = item;
-            base.Start();
-            parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
+            if (IsSubMethod(item as MethodCallExpression))
+            {
+                UtilMethods.GetOldValue(parameter.CommonTempData, () =>
+                {
+                    parameter.CommonTempData = CommonTempDataType.Result;
+                    base.Expression = item;
+                    base.Start();
+                    var subSql = base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString());
+                    if (ResolveExpressType.Update == this.Context.ResolveType) {
+                        subSql = Regex.Replace(subSql,@" \[\w+?\]\.",this.Context.GetTranslationTableName(parameter.CurrentExpression.Type.Name,true) +".");
+                    }
+                    parameter.Context.Result.Append(subSql);
+                });        
+            }
+            else
+            {
+                base.Expression = item;
+                base.Start();
+                parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
+            }
         }
 
         private void Select(MemberInitExpression expression, ExpressionParameter parameter, bool isSingle)
@@ -124,9 +143,9 @@ namespace SqlSugar
             }
         }
 
-        private bool IsSubMethod(MethodCallExpression express, string methodName)
+        private bool IsSubMethod(MethodCallExpression express)
         {
-            return SubTools.SubItemsConst.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
+            return SubTools.SubItemsConst.Any(it =>express.Object != null && express.Object.Type.Name == "Subqueryable`1");
         }
     }
 }

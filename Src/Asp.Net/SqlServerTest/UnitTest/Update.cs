@@ -164,6 +164,24 @@ namespace OrmTest.UnitTest
             var t15 = db.Updateable(new StudentTest() { Id = 1, Name = "1" }).AS("student").ToSql();
             base.Check(@"UPDATE [student]  SET
            [SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime  WHERE [Id]=@Id", null, t15.Key, null, "Update t15 error");
+
+
+            var t16= db.Updateable<Student>().UpdateColumns(it => new Student()
+            {
+                SchoolId = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.SchoolId).Select(s => s.Id),
+                Name = "newname"
+            }).Where(it => it.Id == 1).ToSql();
+
+            var t17 = db.Updateable<Student>().UpdateColumns(it => new Student()
+            {
+                SchoolId = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.SchoolId).Select(s => s.Id),
+                Name = "newname"
+            }).Where(it => it.Id == 1).ToSql();
+            base.Check(@"UPDATE [STudent]  SET
+            [SchoolId] = (SELECT TOP 1 [Id] FROM [School] WHERE ( [Id] =[STudent].[SchoolId] )) , [Name] = @Const0   WHERE ( [ID] = @Id1 )", new List<SugarParameter>() {
+                            new SugarParameter("@Const0","newname"),
+                            new SugarParameter("@Id1","1")
+            }, t17.Key, t17.Value, "Update t17 error");
         }
 
     }

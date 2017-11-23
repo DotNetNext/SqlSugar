@@ -45,7 +45,7 @@ namespace SqlSugar
                 //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
                 SubResolve subResolve = new SubResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = subResolve.GetSql();
-                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle))
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle)||(parameter.BaseParameter!=null&&parameter.BaseParameter.CommonTempData!=null&&parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Result)))
                 {
                     parameter.BaseParameter.CommonTempData = appendSql;
                 }

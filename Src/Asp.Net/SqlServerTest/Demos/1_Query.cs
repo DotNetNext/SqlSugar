@@ -508,6 +508,8 @@ namespace OrmTest.Demo
             .OrderBy((st, sc) => st.SchoolId)
             .Select((st, sc) => sc)
             .Take(1).ToList();
+
+            var s9 = db.Queryable<Student>().Select(it=>it.Name).First();
         }
         private static void Sqlable()
         {
