@@ -122,7 +122,7 @@ namespace OrmTest.Models
            /// Default:
            /// Nullable:False
            /// </summary>           
-           public double Float1 {get;set;}
+           public float Float1 {get;set;}
 
            /// <summary>
            /// Desc:

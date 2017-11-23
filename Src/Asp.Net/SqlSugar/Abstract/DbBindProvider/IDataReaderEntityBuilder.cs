@@ -253,10 +253,8 @@ namespace SqlSugar
                 case CSharpDataType.@float:
                 case CSharpDataType.@double:
                     CheckType(bind.DoubleThrow, bindProperyTypeName, validPropertyName, propertyName);
-                    if (bindProperyTypeName == "double")
+                    if (bindProperyTypeName.IsIn( "double", "single"))
                         method = isNullableType ? getConvertDouble : getDouble;
-                    if (bindProperyTypeName == "single")
-                        method = isNullableType ? getConvertFloat : getFloat;
                     break;
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
