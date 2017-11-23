@@ -74,12 +74,12 @@ namespace SqlSugar
 
         }
 
-        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord)
+        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord,List<string> fieldNames)
         {
             this.Context = context;
             this.DataRecord = dataRecord;
             this.DynamicBuilder = new IDataReaderEntityBuilder<T>();
-            this.ReaderKeys = new List<string>();
+            this.ReaderKeys = fieldNames;
         }
         #endregion
 
@@ -91,10 +91,6 @@ namespace SqlSugar
 
         public IDataReaderEntityBuilder<T> CreateBuilder(Type type)
         {
-            for (int i = 0; i < this.DataRecord.FieldCount; i++)
-            {
-                this.ReaderKeys.Add(this.DataRecord.GetName(i));
-            }
             DynamicMethod method = new DynamicMethod("SqlSugarEntity", type,
             new Type[] { typeof(IDataRecord) }, type, true);
             ILGenerator generator = method.GetILGenerator();

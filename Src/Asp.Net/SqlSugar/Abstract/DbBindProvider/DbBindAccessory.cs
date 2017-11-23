@@ -10,10 +10,11 @@ namespace SqlSugar
         protected List<T> GetEntityList<T>(SqlSugarClient context, IDataReader dataReader, string fields)
         {
             Type type = typeof(T);
-            string key = "DataReaderToList." + fields+ dataReader.FieldCount+ context.CurrentConnectionConfig.DbType + type.FullName;
-            IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(key, () =>
+            var fieldNames = GetDataReaderNames(dataReader);
+            string cacheKey = GetCacheKey(type,fieldNames);
+            IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
-                var cacheResult = new IDataReaderEntityBuilder<T>(context, dataReader).CreateBuilder(type);
+                var cacheResult = new IDataReaderEntityBuilder<T>(context, dataReader,fieldNames).CreateBuilder(type);
                 return cacheResult;
             });
             List<T> result = new List<T>();
@@ -30,6 +31,29 @@ namespace SqlSugar
                 Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
             }
             return result;
+        }
+
+        private  string GetCacheKey(Type type,List<string> keys)
+        {
+            StringBuilder sb = new StringBuilder("DataReaderToList.");
+            sb.Append(type.FullName);
+            sb.Append(".");
+            foreach (var item in keys)
+            {
+                sb.Append(item);
+            }
+            return sb.ToString();
+        }
+
+        private List<string> GetDataReaderNames(IDataReader dataReader)
+        {
+            List<string> keys = new List<string>();
+            var count = dataReader.FieldCount;
+            for (int i = 0; i < count; i++)
+            {
+                keys.Add(dataReader.GetName(i));
+            }
+            return keys;
         }
 
         protected List<T> GetKeyValueList<T>(Type type, IDataReader dataReader)
@@ -125,7 +149,7 @@ namespace SqlSugar
                 }
                 else if (type.IsEnum)
                 {
-                    reval.Add((T)Enum.Parse(type,value.ObjToString()));
+                    reval.Add((T)Enum.Parse(type, value.ObjToString()));
                 }
                 else
                 {
