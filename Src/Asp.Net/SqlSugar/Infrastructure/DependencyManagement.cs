@@ -25,7 +25,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                         " SqlSugar Some functions are used in newtonsoft ,Nuget references Newtonsoft.Json 9.0.0.1 + .",
-                        " SqlSugar 部分功能用到Newtonsoft.Json.dll，需要在Nuget上安装 Newtonsoft.Json 9.0.0.1及以上版本。如果有版本兼容问题请先删除原有引用,重新从NUGET下载,如果还不明白查看教程 http://www.codeisbug.com/Doc/8/1154");
+                        " SqlSugar 部分功能用到Newtonsoft.Json.dll，需要在Nuget上安装 Newtonsoft.Json 9.0.0.1及以上版本。如果有版本兼容问题请先删除原有引用（注意：所有项目类库）,全部重新从NUGET下载,如果还不明白，请查看详细教程 http://www.codeisbug.com/Doc/8/1154");
                     throw new Exception(message);
                 }
             }
