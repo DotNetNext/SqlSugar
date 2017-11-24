@@ -87,6 +87,10 @@ namespace SqlSugar
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
+                if (parameter.Value.GetType() == UtilConstants.GuidType)
+                {
+                    parameter.Value = parameter.Value.ToString();
+                }
                 var sqlParameter = new SQLiteParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 sqlParameter.Size = parameter.Size;
@@ -102,6 +106,7 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.String;
                     sqlParameter.Value = sqlParameter.Value.ObjToString();
                 }
+
                 ++index;
             }
             return result;

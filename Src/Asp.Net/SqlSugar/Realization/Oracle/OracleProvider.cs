@@ -117,10 +117,21 @@ namespace SqlSugar
                 else if (parameter.DbType == System.Data.DbType.Boolean)
                 {
                     sqlParameter.DbType = System.Data.DbType.Int16;
-                    sqlParameter.Value = (bool)parameter.Value ? 1 : 0;
+                    if (parameter.Value == DBNull.Value)
+                    {
+                        parameter.Value = 0;
+                    }
+                    else
+                    {
+                        sqlParameter.Value = (bool)parameter.Value ? 1 : 0;
+                    }
                 }
                 else
                 {
+                    if (parameter.Value != null && parameter.Value.GetType() == UtilConstants.GuidType)
+                    {
+                        parameter.Value = parameter.Value.ToString();
+                    }
                     sqlParameter.Value = parameter.Value;
                 }
                 if (parameter.Direction != 0)
