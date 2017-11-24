@@ -310,6 +310,35 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
+
+        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
+             ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
+        {
+            throw new Exception("Still in the process of development");
+        }
+        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(
+             ISugarQueryable<T> joinQueryableMaster, ISugarQueryable<T2> joinQueryable1, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression1,
+             ISugarQueryable<T2> joinQueryable2, JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2) where T : class, new()
+        {
+            throw new Exception("Still in the process of development");
+        }
+
+        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(
+             ISugarQueryable<T> joinQueryableMaster, ISugarQueryable<T2> joinQueryable1, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression1,
+             ISugarQueryable<T2> joinQueryable2, JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2,
+             ISugarQueryable<T2> joinQueryable3, JoinType joinType3, Expression<Func<T, T2, T3, T4, bool>> joinExpression3) where T : class, new()
+        {
+            throw new Exception("Still in the process of development");
+        }
+
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(
+             ISugarQueryable<T> joinQueryableMaster, ISugarQueryable<T2> joinQueryable1, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression1,
+             ISugarQueryable<T2> joinQueryable2, JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2,
+             ISugarQueryable<T3> joinQueryable3, JoinType joinType3, Expression<Func<T, T2, T3, T4, bool>> joinExpression3,
+             ISugarQueryable<T4> joinQueryable4, JoinType joinType4, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression4) where T : class, new()
+        {
+            throw new Exception("Still in the process of development");
+        }
         #endregion
 
         public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
@@ -521,7 +550,7 @@ namespace SqlSugar
         public virtual EntityMaintenance EntityProvider
         {
             get { return base.Context.EntityMaintenance; }
-            set {  base.Context.EntityMaintenance = value; }
+            set { base.Context.EntityMaintenance = value; }
         }
         public virtual EntityMaintenance EntityMaintenance
         {
