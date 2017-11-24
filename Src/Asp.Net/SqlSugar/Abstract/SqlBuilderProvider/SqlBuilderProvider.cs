@@ -110,6 +110,7 @@ namespace SqlSugar
         public abstract string SqlTranslationRight { get; }
         public virtual string SqlFalse { get { return "1=2 "; } }
         public virtual string SqlDateNow { get { return "GETDATE()"; } }
+        public virtual string SqlSelectAll { get { return "*"; } }
         #endregion
     }
 }

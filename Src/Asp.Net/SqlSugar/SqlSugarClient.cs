@@ -333,7 +333,7 @@ namespace SqlSugar
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
             var resulut = base.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
             resulut.AddParameters(allParameters);
-            return resulut.Select<T>("*");
+            return resulut.Select<T>(sqlBuilder.SqlSelectAll);
         }
         public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
