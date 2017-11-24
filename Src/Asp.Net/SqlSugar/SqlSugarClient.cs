@@ -310,7 +310,11 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-
+        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
+     ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
+        {
+            return Queryable(joinQueryable1, joinQueryable2, JoinType.Inner, joinExpression);
+        }
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
              ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
         {
