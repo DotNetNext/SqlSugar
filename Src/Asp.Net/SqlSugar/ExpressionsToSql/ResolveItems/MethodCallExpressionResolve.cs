@@ -105,7 +105,9 @@ namespace SqlSugar
 
         private void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
         {
-            CheckMethod(express);
+            if (!CheckMethod(express)) {
+                Check.Exception(true, string.Format(ErrorMessage.MethodError, express.Method.Name));
+            }
             var method = express.Method;
             string name = method.Name;
             var args = express.Arguments.Cast<Expression>().ToList();
@@ -521,10 +523,14 @@ namespace SqlSugar
         {
             return SubTools.SubItemsConst.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
         }
-        private void CheckMethod(MethodCallExpression expression)
+        private bool CheckMethod(MethodCallExpression expression)
         {
-            if (IsExtMethod(expression.Method.Name)) return;
-            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ErrorMessage.MethodError, expression.Method.Name));
+            if (IsExtMethod(expression.Method.Name))
+                return true;
+            if (expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName)
+                return false;
+            else
+                return true;
         }
     }
 }
