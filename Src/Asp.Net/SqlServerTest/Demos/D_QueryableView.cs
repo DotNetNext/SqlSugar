@@ -19,7 +19,9 @@ namespace OrmTest.Demo
             var q2 = db.Queryable<School>();
 
 
-            var q3 = db.Queryable(q1, q2, (j1, j2) => j1.Id == j2.Id).Select((j1, j2) => j1).ToList();
+            var innerJoinList = db.Queryable(q1, q2, (j1, j2) => j1.Id == j2.Id).Select((j1, j2) => j1).ToList();//inner join
+
+            var leftJoinList = db.Queryable(q1, q2,JoinType.Left, (j1, j2) => j1.Id == j2.Id).Select((j1, j2) => j1).ToList();//left join
         }
     }
 
