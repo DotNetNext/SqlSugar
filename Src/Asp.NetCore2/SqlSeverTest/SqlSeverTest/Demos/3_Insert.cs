@@ -55,6 +55,10 @@ namespace OrmTest.Demo
             var t10 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
 
             var t11 = db.Insertable(insertObjs.ToArray()).ExecuteCommand();
+
+
+            var t12 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReturnIdentityAsync();
+            t12.Wait();
         }
     }
 }

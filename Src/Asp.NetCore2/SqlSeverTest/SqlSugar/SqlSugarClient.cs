@@ -310,6 +310,51 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
+        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
+     ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
+        {
+            return Queryable(joinQueryable1, joinQueryable2, JoinType.Inner, joinExpression);
+        }
+        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
+             ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
+        {
+            Check.Exception(joinQueryable1.QueryBuilder.Take != null || joinQueryable1.QueryBuilder.Skip != null || joinQueryable1.QueryBuilder.OrderByValue.HasValue(), "joinQueryable1 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+            Check.Exception(joinQueryable2.QueryBuilder.Take != null || joinQueryable2.QueryBuilder.Skip != null || joinQueryable2.QueryBuilder.OrderByValue.HasValue(), "joinQueryable2 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.Context.CurrentConnectionConfig);
+
+            sqlBuilder.Context = base.Context;
+            InitMppingInfo<T, T2>();
+            var types = new Type[] { typeof(T2) };
+            var queryable = InstanceFactory.GetQueryable<T, T2>(base.CurrentConnectionConfig);
+            queryable.Context = base.Context;
+            queryable.SqlBuilder = sqlBuilder;
+            queryable.QueryBuilder = InstanceFactory.GetQueryBuilder(base.CurrentConnectionConfig);
+            queryable.QueryBuilder.JoinQueryInfos = new List<JoinQueryInfo>();
+            queryable.QueryBuilder.Builder = sqlBuilder;
+            queryable.QueryBuilder.Context = base.Context;
+            queryable.QueryBuilder.EntityType = typeof(T);
+            queryable.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
+
+            //master
+            var shortName1 = joinExpression.Parameters[0].Name;
+            var sqlObj1 = joinQueryable1.ToSql();
+            string sql1 = sqlObj1.Key;
+            UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0);
+            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, shortName1); ;
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj1.Value);
+
+            //join table 1
+            var shortName2 = joinExpression.Parameters[1].Name;
+            var sqlObj2 = joinQueryable2.ToSql();
+            string sql2 = sqlObj2.Key;
+            UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1);
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj2.Value);
+            var exp = queryable.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
+            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2,shortName2)});
+
+            return queryable;
+        }
         #endregion
 
         public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
@@ -333,7 +378,7 @@ namespace SqlSugar
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
             var resulut = base.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
             resulut.AddParameters(allParameters);
-            return resulut.Select<T>("*");
+            return resulut.Select<T>(sqlBuilder.SqlSelectAll);
         }
         public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
@@ -521,7 +566,7 @@ namespace SqlSugar
         public virtual EntityMaintenance EntityProvider
         {
             get { return base.Context.EntityMaintenance; }
-            set {  base.Context.EntityMaintenance = value; }
+            set { base.Context.EntityMaintenance = value; }
         }
         public virtual EntityMaintenance EntityMaintenance
         {

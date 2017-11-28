@@ -45,7 +45,7 @@ namespace SqlSugar
                 //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
                 SubResolve subResolve = new SubResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = subResolve.GetSql();
-                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle))
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle)||(parameter.BaseParameter!=null&&parameter.BaseParameter.CommonTempData!=null&&parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Result)))
                 {
                     parameter.BaseParameter.CommonTempData = appendSql;
                 }
@@ -105,32 +105,61 @@ namespace SqlSugar
 
         private void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
         {
-            CheckMethod(express);
-            var method = express.Method;
-            string name = method.Name;
-            var args = express.Arguments.Cast<Expression>().ToList();
-            MethodCallExpressionModel model = new MethodCallExpressionModel();
-            model.Args = new List<MethodCallExpressionArgs>();
-            switch (this.Context.ResolveType)
+            if (!CheckMethod(express))
             {
-                case ResolveExpressType.WhereSingle:
-                case ResolveExpressType.WhereMultiple:
-                    Check.Exception(name == "GetSelfAndAutoFill", "SqlFunc.GetSelfAndAutoFill can only be used in Select.");
-                    Where(parameter, isLeft, name, args, model);
-                    break;
-                case ResolveExpressType.SelectSingle:
-                case ResolveExpressType.SelectMultiple:
-                case ResolveExpressType.Update:
-                    Select(parameter, isLeft, name, args, model);
-                    break;
-                case ResolveExpressType.FieldSingle:
-                case ResolveExpressType.FieldMultiple:
-                    Field(parameter, isLeft, name, args, model);
-                    break;
-                default:
-                    break;
+                CusMethod(parameter, express, isLeft);
+            }
+            else
+            {
+                var method = express.Method;
+                string name = method.Name;
+                var args = express.Arguments.Cast<Expression>().ToList();
+                MethodCallExpressionModel model = new MethodCallExpressionModel();
+                model.Args = new List<MethodCallExpressionArgs>();
+                switch (this.Context.ResolveType)
+                {
+                    case ResolveExpressType.WhereSingle:
+                    case ResolveExpressType.WhereMultiple:
+                        Check.Exception(name == "GetSelfAndAutoFill", "SqlFunc.GetSelfAndAutoFill can only be used in Select.");
+                        Where(parameter, isLeft, name, args, model);
+                        break;
+                    case ResolveExpressType.SelectSingle:
+                    case ResolveExpressType.SelectMultiple:
+                    case ResolveExpressType.Update:
+                        Select(parameter, isLeft, name, args, model);
+                        break;
+                    case ResolveExpressType.FieldSingle:
+                    case ResolveExpressType.FieldMultiple:
+                        Field(parameter, isLeft, name, args, model);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
+
+        private void CusMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
+        {
+            try
+            {
+                var constValue = ExpressionTool.DynamicInvoke(express);
+                parameter.BaseParameter.CommonTempData = constValue;
+                var parameterName = base.AppendParameter(constValue);
+                if (parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Result))
+                {
+                    this.Context.Result.Append(parameterName);
+                }
+                else
+                {
+                    base.AppendValue(parameter, isLeft, parameterName);
+                }
+            }
+            catch
+            {
+                Check.Exception(true, string.Format(ErrorMessage.MethodError, express.Method.Name));
+            }
+        }
+
         private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft, string name, List<MethodCallExpressionArgs> appendArgs = null)
         {
             var method = express.Method;
@@ -521,10 +550,14 @@ namespace SqlSugar
         {
             return SubTools.SubItemsConst.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
         }
-        private void CheckMethod(MethodCallExpression expression)
+        private bool CheckMethod(MethodCallExpression expression)
         {
-            if (IsExtMethod(expression.Method.Name)) return;
-            Check.Exception(expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName, string.Format(ErrorMessage.MethodError, expression.Method.Name));
+            if (IsExtMethod(expression.Method.Name))
+                return true;
+            if (expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName)
+                return false;
+            else
+                return true;
         }
     }
 }

@@ -26,12 +26,53 @@ namespace OrmTest.UnitTest
                 single3();
                 single4();
                 single5();
+                single6();
+                single7();
+                single8();
                 Multiple();
                 Multiple2();
                 singleDynamic();
                 MultipleDynamic();
             }
             base.End("Select Test");
+        }
+
+        private void single7()
+        {
+            Expression<Func<DataTestInfo2, DataTestInfo2>> exp =it => new DataTestInfo2() {  Bool1=it.Bool1 , Bool2=it.Bool2 };
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.SelectSingle);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                selectorValue,
+                pars,
+                @"[Bool1] AS [Bool1] , [Bool2] AS [Bool2] ",
+                new List<SugarParameter>()
+                {
+
+                },
+                "Select.single7 Error");
+        }
+
+        private void single8()
+        {
+            Expression<Func<DataTestInfo2, object>> exp = it => new  { Bool1 = it.Bool1, Bool2 = it.Bool2 };
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.SelectSingle);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                selectorValue,
+                pars,
+                @"[Bool1] AS [Bool1] , [Bool2] AS [Bool2] ",
+                new List<SugarParameter>()
+                {
+
+                },
+                "Select.single8 Error");
         }
 
         private void Multiple()
@@ -161,7 +202,22 @@ namespace OrmTest.UnitTest
                 @"( @constant0<>'' AND @constant0 IS NOT NULL )", new List<SugarParameter>() {
                     new SugarParameter("@constant0",p)
                 }, selectorValue, pars,
-                "Select.single4 Error");
+                "Select.single5 Error");
+        }
+        private void single6()
+        {
+            var p = (DateTime?)DateTime.Now;
+            Expression<Func<Student, object>> exp = it => p.Value;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.IsSingle = false;
+            expContext.Resolve(exp, ResolveExpressType.FieldSingle);
+            var selectorValue = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(
+                @" @Const0 ", new List<SugarParameter>() {
+                    new SugarParameter("@Const0",p)
+                }, selectorValue, pars,
+                "Select.single6 Error");
         }
 
         private  void singleDynamic()

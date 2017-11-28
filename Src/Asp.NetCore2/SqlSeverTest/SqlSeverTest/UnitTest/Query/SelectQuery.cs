@@ -91,7 +91,21 @@ namespace OrmTest.UnitTest
                 var t4 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
                           JoinType.Left,st.SchoolId==sc.Id,
                           JoinType.Left,sc2.Id==sc.Id
-                }).GroupBy(st => st.Id).Select(st=>st.Id).Count();
+                }).GroupBy(st => st.Id).Select(st => st.Id).Count();
+
+                DateTime? result = DateTime.Now;
+                var t5 = db.Queryable<Student>().Where(it => it.CreateTime > result.Value.Date).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE ( [CreateTime] > @Const0 )",
+           new List<SugarParameter>() {
+                new SugarParameter("@Const0",result.Value.Date)
+           }, t5.Key, t5.Value, "select t5 Error");
+                db.Ado.IsEnableLogEvent = false;
+
+                var t6 = db.Queryable<DataTestInfo2>().Where(it => SqlFunc.HasValue(it.Bool2) == false).ToSql();
+                base.Check("SELECT [PK],[Bool1],[Bool2],[Text1] FROM [DataTestInfo2]  WHERE (( CASE  WHEN ( [Bool2]<>'' AND [Bool2] IS NOT NULL )  THEN 1 ELSE 0 END ) = @Const0 )",
+   new List<SugarParameter>() {
+                new SugarParameter("@Const0",false)
+   }, t6.Key, t6.Value, "select t6 Error");
                 #endregion
 
 

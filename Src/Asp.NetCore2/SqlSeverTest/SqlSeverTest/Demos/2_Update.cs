@@ -24,7 +24,7 @@ namespace OrmTest.Demo
 
             //Only  update  Name 
             var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
-            var t3_1 = db.Updateable(updateObj).UpdateColumns(it => it=="Name").ExecuteCommand();
+            var t3_1 = db.Updateable(updateObj).UpdateColumns(it => it == "Name").ExecuteCommand();
 
 
             //Ignore  Name and TestId
@@ -58,6 +58,16 @@ namespace OrmTest.Demo
 
             //Column is null no update
             db.Updateable(updateObj).Where(true).ExecuteCommand();
+
+
+            var t12 = db.Updateable<School>().AS("Student").UpdateColumns(it => new School() { Name = "jack" }).Where(it => it.Id == 1).ExecuteCommandAsync();
+            t12.Wait();
+
+            //update one columns
+            var count = db.Updateable<Student>().UpdateColumns(it => it.SchoolId == 1).Where(it => it.Id == 1).ExecuteCommand();
+
+
+
         }
     }
 }

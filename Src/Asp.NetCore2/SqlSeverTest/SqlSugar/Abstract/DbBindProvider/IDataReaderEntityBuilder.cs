@@ -74,12 +74,12 @@ namespace SqlSugar
 
         }
 
-        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord)
+        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord,List<string> fieldNames)
         {
             this.Context = context;
             this.DataRecord = dataRecord;
             this.DynamicBuilder = new IDataReaderEntityBuilder<T>();
-            this.ReaderKeys = new List<string>();
+            this.ReaderKeys = fieldNames;
         }
         #endregion
 
@@ -91,10 +91,6 @@ namespace SqlSugar
 
         public IDataReaderEntityBuilder<T> CreateBuilder(Type type)
         {
-            for (int i = 0; i < this.DataRecord.FieldCount; i++)
-            {
-                this.ReaderKeys.Add(this.DataRecord.GetName(i));
-            }
             DynamicMethod method = new DynamicMethod("SqlSugarEntity", type,
             new Type[] { typeof(IDataRecord) }, type, true);
             ILGenerator generator = method.GetILGenerator();
@@ -121,14 +117,13 @@ namespace SqlSugar
                         }
                     }
                 }
-                if (Context.IgnoreColumns != null && Context.IgnoreColumns.Any(it => it.PropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
-                         && it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase)))
+                if (IsIgnore(type, propertyInfo)&&!this.ReaderKeys.Any(it=>it==fileName))
                 {
                     continue;
                 }
                 if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType&&propertyInfo.PropertyType!=UtilConstants.ObjType)
+                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType && propertyInfo.PropertyType != UtilConstants.ObjType)
                     {
                         BindClass(generator, result, propertyInfo);
                     }
@@ -146,9 +141,15 @@ namespace SqlSugar
             DynamicBuilder.handler = (Load)method.CreateDelegate(typeof(Load));
             return DynamicBuilder;
         }
+
         #endregion
 
         #region Private methods
+        private bool IsIgnore(Type type, PropertyInfo propertyInfo)
+        {
+            return Context.IgnoreColumns != null && Context.IgnoreColumns.Any(it => it.PropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
+                                     && it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
+        }
         private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
         {
 
@@ -253,9 +254,9 @@ namespace SqlSugar
                 case CSharpDataType.@float:
                 case CSharpDataType.@double:
                     CheckType(bind.DoubleThrow, bindProperyTypeName, validPropertyName, propertyName);
-                    if (bindProperyTypeName == "double")
+                    if (bindProperyTypeName.IsIn( "double", "single")&&dbTypeName!="real")
                         method = isNullableType ? getConvertDouble : getDouble;
-                    if (bindProperyTypeName == "single")
+                    else
                         method = isNullableType ? getConvertFloat : getFloat;
                     break;
                 case CSharpDataType.Guid:

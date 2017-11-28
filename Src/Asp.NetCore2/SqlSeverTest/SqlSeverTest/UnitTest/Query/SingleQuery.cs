@@ -116,6 +116,22 @@ namespace OrmTest.UnitTest
 
                 var t12 = db.Queryable<Student>().Where(it=>it.Id!=null).ToSql();
                 base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE ( [ID] IS NOT NULL )", null, t12.Key, t12.Value, "single t12 error");
+
+                var id = 1;
+                var t13 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id&&s.Id==id).Max(s => s.Id) == 1).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent] it  WHERE ((SELECT MAX([Id]) FROM [School] WHERE (( [Id] = [it].[ID] ) AND ( [Id] = @Id0 ))) = @Const1 )",
+                    new List<SugarParameter>() {
+                        new SugarParameter("@Id0",1),
+                        new SugarParameter("@Const1",1)
+                    }, t13.Key, t13.Value, "single t13 error ");
+
+
+                var t14 = db.Queryable<Student>()
+                    .Where(it => it.Name == "a" && SqlFunc.HasValue(it.Name)).ToSql();
+                base.Check("SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE (( [Name] = @Name0 ) AND ( [Name]<>'' AND [Name] IS NOT NULL ))",
+                   new List<SugarParameter>() {
+                        new SugarParameter("@Name0","a")
+                   }, t14.Key, t14.Value, "single t14 error ");
             }
         }
     }

@@ -151,14 +151,37 @@ namespace OrmTest.UnitTest
            [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
                            new SugarParameter("@Name","a"),
                            new SugarParameter("@ID",1)
-            }, t13.Key, t13.Value, "Insert t13 error");
+            }, t13.Key, t13.Value, "Update t13 error");
 
             var t14 = db.Updateable<Student>(new Dictionary<string, object>() { { "id", 0 }, { "name", "2" } }).ToSql();
             base.Check(@"UPDATE [STudent]  SET
            [Name]=@Name  WHERE [Id]=@Id", new List<SugarParameter>() {
                                new SugarParameter("@Name", "2"),
                            new SugarParameter("@ID", 0)
-            }, t14.Key, t14.Value, "Insert t14 error");
+            }, t14.Key, t14.Value, "Update t14 error");
+
+
+           // var t15 = db.Updateable(new StudentTest() { Id = 1, Name = "1" }).AS("student").ToSql();
+           // base.Check(@"UPDATE [student]  SET
+           //[SchoolId]=@SchoolId,[Name]=@Name,[CreateTime]=@CreateTime  WHERE [Id]=@Id", null, t15.Key, null, "Update t15 error");
+
+
+            var t16= db.Updateable<Student>().UpdateColumns(it => new Student()
+            {
+                SchoolId = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.SchoolId).Select(s => s.Id),
+                Name = "newname"
+            }).Where(it => it.Id == 1).ToSql();
+
+            var t17 = db.Updateable<Student>().UpdateColumns(it => new Student()
+            {
+                SchoolId = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.SchoolId).Select(s => s.Id),
+                Name = "newname"
+            }).Where(it => it.Id == 1).ToSql();
+            base.Check(@"UPDATE [STudent]  SET
+            [SchoolId] = (SELECT TOP 1 [Id] FROM [School] WHERE ( [Id] =[STudent].[SchoolId] )) , [Name] = @Const0   WHERE ( [ID] = @Id1 )", new List<SugarParameter>() {
+                            new SugarParameter("@Const0","newname"),
+                            new SugarParameter("@Id1","1")
+            }, t17.Key, t17.Value, "Update t17 error");
         }
 
     }

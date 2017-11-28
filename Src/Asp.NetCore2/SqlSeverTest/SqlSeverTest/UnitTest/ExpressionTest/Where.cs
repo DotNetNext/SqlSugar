@@ -21,7 +21,12 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
-
+                whereSingle29("22");
+                whereSingle28();
+                whereSingle27();
+                whereSingle26();
+                whereSingle25();
+                whereSingle24();
                 whereSingle23();
                 whereSingle22();
                 whereSingle21();
@@ -51,6 +56,45 @@ namespace OrmTest.UnitTest
           
             }
             base.End("Where Test");
+        }
+        public string Get28(string a) {
+            return a + "1";
+        }
+
+        private void whereSingle29(string p2)
+        {
+            Expression<Func<Student, bool>> exp = it => Get28("22") == p2;
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " (@constant0 = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@constant0","221"),
+                new SugarParameter("@Const1","22")
+            }, "whereSingle28");
+        }
+        private void whereSingle28()
+        {
+            Expression<Func<Student, bool>> exp = it => Get28("22")=="22";
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " (@constant0 = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@constant0","221"),
+                new SugarParameter("@Const1","22")
+            }, "whereSingle28");
+        }
+        private void whereSingle27() {
+            var schoolData = new School() { Id = 100, Name = "x" };
+            Expression<Func<Student, bool>> exp = it => it.Name.Contains(schoolData.Name);
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " ([it].[Name] like '%'+@MethodConst0+'%') ", new List<SugarParameter>() {
+                new SugarParameter("@MethodConst0","x")
+            }, "whereSingle27");
         }
         private void WhereMultiple1()
         {
@@ -377,6 +421,46 @@ namespace OrmTest.UnitTest
             {
                 new SugarParameter("@Const0",val)
             }, "whereSingle23");
+        }
+        private void whereSingle24()
+        {
+            Expression<Func<DataTestInfo, bool>> exp = it => it.Datetime1 > DateTime.Now.Date;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Datetime1] > @Datetime10 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Datetime10",DateTime.Now.Date)
+            }, "whereSingle24");
+        }
+        private void whereSingle26()
+        {
+            var p = DateTime.Now;
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool1&&it.Bool1;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( ( [Bool1]=1 ) AND ( [Bool1]=1 ) )", new List<SugarParameter>()
+            {
+                
+
+            }, "whereSingle26");
+        }
+        private void whereSingle25()
+        {
+            var p = DateTime.Now;
+            Expression<Func<DataTestInfo, bool>> exp = it => it.Datetime1.Date > p.Date;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(  CAST( DateName(Year,[Datetime1]) +'-'+ DateName(Month,[Datetime1]) +'-'+ DateName(Day,[Datetime1])  AS DATETIME) > @Date0 )", new List<SugarParameter>()
+            {
+                new SugarParameter("@Date0",DateTime.Now.Date),
+              
+            }, "whereSingle25");
         }
     }
 

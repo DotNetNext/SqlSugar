@@ -20,6 +20,6 @@ namespace SqlSugar
         string GetDbTypeName(string csharpTypeName);
         string GetCsharpTypeName(string dbTypeName);
         List<KeyValuePair<string, CSharpDataType>> MappingTypes { get; }
-        List<T> DataReaderToList<T>(Type type, IDataReader reader, string fields);
+        List<T> DataReaderToList<T>(Type type, IDataReader reader);
     }
 }

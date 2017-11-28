@@ -14,7 +14,7 @@ namespace OrmTest.Demo
             db.Ado.IsEnableLogEvent = true;
             db.Ado.LogEventStarting = (sql, pars) =>
             {
-                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(s => s.ParameterName, s => s.Value)));
+                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
                 Console.WriteLine();
             };
             return db;

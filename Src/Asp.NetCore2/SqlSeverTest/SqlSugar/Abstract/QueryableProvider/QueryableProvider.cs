@@ -1085,7 +1085,7 @@ namespace SqlSugar
             }
             else
             {
-                result = this.Bind.DataReaderToList<TResult>(entityType, dataReader, QueryBuilder.SelectCacheKey);
+                result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);
             }
             SetContextModel(result, entityType);
             return result;

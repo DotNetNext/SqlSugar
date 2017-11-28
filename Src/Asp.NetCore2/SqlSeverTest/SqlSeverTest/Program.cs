@@ -1,9 +1,17 @@
-﻿using OrmTest;
-using OrmTest.PerformanceTesting;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
+using SqlSugar;
+using OrmTest.Models;
+using System.Data.SqlClient;
 using OrmTest.UnitTest;
-using System;
+using OrmTest.PerformanceTesting;
 
-namespace SqlSeverTest
+namespace OrmTest
 {
     class Program
     {
@@ -37,9 +45,11 @@ namespace SqlSeverTest
             OrmTest.Demo.Filter.Init();
             OrmTest.Demo.ComplexModel.Init();
             OrmTest.Demo.CodeFirst.Init();
+            OrmTest.Demo.Aop.Init();
             OrmTest.Demo.MasterSlave.Init();
             OrmTest.Demo.SharedConnection.Init();
             OrmTest.Demo.ExtSqlFun.Init();
+            OrmTest.Demo.D_QueryableViewn.Init();
         }
     }
 }

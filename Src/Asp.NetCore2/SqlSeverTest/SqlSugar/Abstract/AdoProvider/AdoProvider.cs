@@ -472,7 +472,7 @@ namespace SqlSugar
             if (parameters != null && parameters.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parameters);
             var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray());
-            List<T> result = this.DbBind.DataReaderToList<T>(typeof(T), dataReader, builder.SqlQueryBuilder.Fields);
+            List<T> result = this.DbBind.DataReaderToList<T>(typeof(T), dataReader);
             builder.SqlQueryBuilder.Clear();
             if (this.Context.Ado.DataReaderParameters != null)
             {

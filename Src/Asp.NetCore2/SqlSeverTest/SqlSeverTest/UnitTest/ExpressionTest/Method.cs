@@ -74,8 +74,23 @@ namespace OrmTest.UnitTest
                 Replace();
                 Length();
                 Time();
+
+                Test1();
             }
             base.End("Method Test");
+        }
+
+        private void Test1()
+        {
+            var ids = new int[] { 1, 2, 3 };
+            Expression<Func<Student, bool>> exp = it => ids.Contains(it.Id)&&!SqlFunc.IsNullOrEmpty(it.Name);
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "(([Id] IN ('1','2','3')) AND NOT( [Name]='' OR [Name] IS NULL ))", new List<SugarParameter>() {
+           
+            }, "Test1 error");
         }
 
         private void ExtendToString()

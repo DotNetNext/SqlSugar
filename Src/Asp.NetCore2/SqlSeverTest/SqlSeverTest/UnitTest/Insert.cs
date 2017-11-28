@@ -37,7 +37,7 @@ namespace OrmTest.UnitTest
 
 
             //Insert reutrn Command Count
-            var t2 = db.Insertable(insertObj).ExecuteCommand();
+            var t2 = db.Insertable(insertObj).ExecuteReturnEntity();
 
             db.IgnoreColumns = null;
             //Only  insert  Name 
