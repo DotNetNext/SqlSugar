@@ -311,37 +311,45 @@ namespace SqlSugar
             return queryable;
         }
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
-     ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
+     ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
         {
             return Queryable(joinQueryable1, joinQueryable2, JoinType.Inner, joinExpression);
         }
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
-             ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
+             ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
         {
-            throw new Exception("Still in the process of development");
-        }
-        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(
-             ISugarQueryable<T> joinQueryableMaster, ISugarQueryable<T2> joinQueryable1, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression1,
-             ISugarQueryable<T2> joinQueryable2, JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2) where T : class, new()
-        {
-            throw new Exception("Still in the process of development");
-        }
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(base.Context.CurrentConnectionConfig);
+            sqlBuilder.Context = base.Context;
+            InitMppingInfo<T, T2>();
+            var types = new Type[] { typeof(T2) };
+            var queryable = InstanceFactory.GetQueryable<T, T2>(base.CurrentConnectionConfig);
+            queryable.Context = base.Context;
+            queryable.SqlBuilder = sqlBuilder;
+            queryable.QueryBuilder = InstanceFactory.GetQueryBuilder(base.CurrentConnectionConfig);
+            queryable.QueryBuilder.JoinQueryInfos = new List<JoinQueryInfo>();
+            queryable.QueryBuilder.Builder = sqlBuilder;
+            queryable.QueryBuilder.Context = base.Context;
+            queryable.QueryBuilder.EntityType = typeof(T);
+            queryable.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(base.CurrentConnectionConfig);
 
-        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(
-             ISugarQueryable<T> joinQueryableMaster, ISugarQueryable<T2> joinQueryable1, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression1,
-             ISugarQueryable<T2> joinQueryable2, JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2,
-             ISugarQueryable<T2> joinQueryable3, JoinType joinType3, Expression<Func<T, T2, T3, T4, bool>> joinExpression3) where T : class, new()
-        {
-            throw new Exception("Still in the process of development");
-        }
+            //master
+            var shortName1 = joinExpression.Parameters[0].Name;
+            var sqlObj1 = joinQueryable1.ToSql();
+            string sql1 = sqlObj1.Key;
+            UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0);
+            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, shortName1); ;
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj1.Value);
 
-        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(
-             ISugarQueryable<T> joinQueryableMaster, ISugarQueryable<T2> joinQueryable1, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression1,
-             ISugarQueryable<T2> joinQueryable2, JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2,
-             ISugarQueryable<T3> joinQueryable3, JoinType joinType3, Expression<Func<T, T2, T3, T4, bool>> joinExpression3,
-             ISugarQueryable<T4> joinQueryable4, JoinType joinType4, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression4) where T : class, new()
-        {
-            throw new Exception("Still in the process of development");
+            //join table 1
+            var shortName2 = joinExpression.Parameters[1].Name;
+            var sqlObj2 = joinQueryable2.ToSql();
+            string sql2 = sqlObj2.Key;
+            UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1);
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj2.Value);
+            var exp = queryable.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
+            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2,shortName2)});
+
+            return queryable;
         }
         #endregion
 
