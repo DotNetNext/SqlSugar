@@ -21,6 +21,7 @@ namespace OrmTest.UnitTest
             base.Begin();
             for (int i = 0; i < base.Count; i++)
             {
+                whereSingle28();
                 whereSingle27();
                 whereSingle26();
                 whereSingle25();
@@ -54,6 +55,21 @@ namespace OrmTest.UnitTest
           
             }
             base.End("Where Test");
+        }
+        public string Get28(string a) {
+            return a + "1";
+        }
+        private void whereSingle28()
+        {
+            Expression<Func<Student, bool>> exp = it => Get28("22")=="22";
+            ExpressionContext expContext = new ExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereMultiple);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, " (@constant0 = @Const1 )", new List<SugarParameter>() {
+                new SugarParameter("@constant0","221"),
+                new SugarParameter("@Const1","22")
+            }, "whereSingle28");
         }
         private void whereSingle27() {
             var schoolData = new School() { Id = 100, Name = "x" };
