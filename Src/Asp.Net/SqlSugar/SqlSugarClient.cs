@@ -318,7 +318,11 @@ namespace SqlSugar
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
              ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
         {
+            Check.Exception(joinQueryable1.QueryBuilder.Take != null || joinQueryable1.QueryBuilder.Skip != null || joinQueryable1.QueryBuilder.OrderByValue.HasValue(), "joinQueryable1 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+            Check.Exception(joinQueryable2.QueryBuilder.Take != null || joinQueryable2.QueryBuilder.Skip != null || joinQueryable2.QueryBuilder.OrderByValue.HasValue(), "joinQueryable2 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.Context.CurrentConnectionConfig);
+
             sqlBuilder.Context = base.Context;
             InitMppingInfo<T, T2>();
             var types = new Type[] { typeof(T2) };
