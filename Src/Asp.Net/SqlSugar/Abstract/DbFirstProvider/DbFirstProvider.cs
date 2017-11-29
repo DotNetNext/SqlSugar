@@ -137,11 +137,18 @@ namespace SqlSugar
             {
                 foreach (var tableInfo in this.TableInfoList)
                 {
-                    string classText = null;
-                    string className = tableInfo.Name;
-                    classText = GetClassString(tableInfo, ref className);
-                    result.Remove(className);
-                    result.Add(className, classText);
+                    try
+                    {
+                        string classText = null;
+                        string className = tableInfo.Name;
+                        classText = GetClassString(tableInfo, ref className);
+                        result.Remove(className);
+                        result.Add(className, classText);
+                    }
+                    catch (Exception ex)
+                    {
+                        Check.Exception(true, "Table '{0}' error,You can filter it with Db.DbFirst.Where(name=>name!=\"{0}\" ) \r\n Error message:{1}", tableInfo.Name, ex.Message);
+                    }
                 }
             }
             return result;
