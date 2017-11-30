@@ -105,7 +105,7 @@
     <Compile Include="ExpressionsToSql\Subquery\SubResolve.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
     <Compile Include="Infrastructure\DependencyManagement.cs" />
-    <Compile Include="IntegrationInterface\ISerializeService.cs" />
+    <Compile Include="ExternalServiceInterface\ISerializeService.cs" />
     <Compile Include="Entities\DefaultServices.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
@@ -148,7 +148,7 @@
     <Compile Include="Enum\DbObjectType.cs" />
     <Compile Include="Enum\ProperyType.cs" />
     <Compile Include="Utilities\FileHelper.cs" />
-    <Compile Include="IntegrationInterface\ICacheService.cs" />
+    <Compile Include="ExternalServiceInterface\ICacheService.cs" />
     <Compile Include="Entities\DbResult.cs" />
     <Compile Include="Enum\InitKeyType.cs" />
     <Compile Include="Interface\IFilter.cs" />
