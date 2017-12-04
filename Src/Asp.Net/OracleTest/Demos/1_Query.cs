@@ -26,6 +26,13 @@ namespace OrmTest.Demo
             //StoredProcedure();
             Enum();
             Simple();
+            SqlTest();
+        }
+
+        private static void SqlTest()
+        {
+            var db = GetInstance();
+            var x = db.Ado.ExecuteCommand("select '@id' as id  from student  where id=@id",new { id=1});
         }
 
         private static void Simple()

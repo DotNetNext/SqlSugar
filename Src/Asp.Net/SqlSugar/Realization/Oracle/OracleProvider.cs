@@ -5,12 +5,30 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
     public class OracleProvider : AdoProvider
     {
-        public OracleProvider() { }
+        public OracleProvider()
+        {
+            this.FormatSql = sql =>
+            {
+                if (sql.HasValue()&&sql.Contains("@")) {
+                    var exceptionalCaseInfo = Regex.Matches(sql,@"\'.*?\@.*?\'");
+                    if (exceptionalCaseInfo != null) {
+                        foreach (var item in exceptionalCaseInfo.Cast<Match>())
+                        {
+                            sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
+                        }
+                    }
+                    sql = sql .Replace("@",":");
+                    sql = sql.Replace(UtilConstants.ReplaceKey, "@");
+                }
+                return sql;
+            };
+        }
         public override string SqlParameterKeyWord
         {
             get

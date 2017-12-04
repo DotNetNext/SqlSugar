@@ -55,6 +55,7 @@ namespace SqlSugar
         public virtual Action<string, SugarParameter[]> LogEventStarting { get; set; }
         public virtual Action<string, SugarParameter[]> LogEventCompleted { get; set; }
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
+        protected virtual Func<string,string> FormatSql { get; set; }
         public virtual Action<Exception> ErrorEvent { get; set; }
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
@@ -254,6 +255,8 @@ namespace SqlSugar
         {
             try
             {
+                if (FormatSql != null) 
+                    sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
@@ -281,6 +284,8 @@ namespace SqlSugar
         {
             try
             {
+                if (FormatSql != null)
+                    sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
@@ -307,6 +312,8 @@ namespace SqlSugar
         {
             try
             {
+                if (FormatSql != null)
+                    sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
@@ -337,6 +344,8 @@ namespace SqlSugar
         {
             try
             {
+                if (FormatSql != null)
+                    sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, parameters);
