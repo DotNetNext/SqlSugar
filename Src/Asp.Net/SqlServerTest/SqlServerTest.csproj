@@ -57,12 +57,13 @@
     <Compile Include="Demos\9_Aop.cs" />
     <Compile Include="Demos\B_SharedConnection.cs" />
     <Compile Include="Demos\C_ExtSqlFun.cs" />
-    <Compile Include="Demos\DemoBase.cs" />
+    <Compile Include="Demos\Z_DemoBase.cs" />
     <Compile Include="Demos\3_Insert.cs" />
     <Compile Include="Demos\1_Query.cs" />
     <Compile Include="Demos\2_Update.cs" />
     <Compile Include="Demos\A_MasterSlave.cs" />
     <Compile Include="Demos\D_QueryableView.cs" />
+    <Compile Include="Demos\E_Attribute.cs" />
     <Compile Include="Models\DataTestInfo.cs" />
     <Compile Include="Models\DataTestInfo2.cs" />
     <Compile Include="Models\Enum.cs" />

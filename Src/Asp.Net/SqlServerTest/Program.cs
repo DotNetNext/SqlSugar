@@ -36,20 +36,21 @@ namespace OrmTest
             new SqlSugarPerformance(100).Select();
 
             /***Demo***/
-            OrmTest.Demo.Query.Init();
-            OrmTest.Demo.Insert.Init();
-            OrmTest.Demo.Delete.Init();
-            OrmTest.Demo.Update.Init();
-            OrmTest.Demo.DbFirst.Init();
-            OrmTest.Demo.JoinSql.Init();
-            OrmTest.Demo.Filter.Init();
-            OrmTest.Demo.ComplexModel.Init();
-            OrmTest.Demo.CodeFirst.Init();
-            OrmTest.Demo.Aop.Init();
-            OrmTest.Demo.MasterSlave.Init();
-            OrmTest.Demo.SharedConnection.Init();
-            OrmTest.Demo.ExtSqlFun.Init();
-            OrmTest.Demo.D_QueryableViewn.Init();
+            Demo.Query.Init();
+            Demo.Insert.Init();
+            Demo.Delete.Init();
+            Demo.Update.Init();
+            Demo.DbFirst.Init();
+            Demo.JoinSql.Init();
+            Demo.Filter.Init();
+            Demo.ComplexModel.Init();
+            Demo.CodeFirst.Init();
+            Demo.Aop.Init();
+            Demo.MasterSlave.Init();
+            Demo.SharedConnection.Init();
+            Demo.ExtSqlFun.Init();
+            Demo.QueryableView.Init();
+            Demo.AttributeDemo.Init();
         }
     }
 }

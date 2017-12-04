@@ -98,6 +98,13 @@ namespace SqlSugar
             get { return _OracleSequenceName; }
             set { _OracleSequenceName = value; }
         }
+
+        private bool _IsOnlyIgnoreInsert;
+        public bool IsOnlyIgnoreInsert
+        {
+            get { return _IsOnlyIgnoreInsert; }
+            set { _IsOnlyIgnoreInsert = value; }
+        }
     }
 
 }
