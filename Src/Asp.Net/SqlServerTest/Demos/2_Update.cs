@@ -67,7 +67,8 @@ namespace OrmTest.Demo
             var count = db.Updateable<Student>().UpdateColumns(it => it.SchoolId == it.SchoolId).Where(it => it.Id == it.Id+1).ExecuteCommand();
 
 
-
+            //update one columns
+            var count2 = db.Updateable<Student>().UpdateColumns(it => it.SchoolId == it.SchoolId+1).Where(it => it.Id == it.Id + 1).ExecuteCommand();
         }
     }
 }
