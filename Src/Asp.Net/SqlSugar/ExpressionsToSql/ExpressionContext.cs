@@ -122,6 +122,13 @@ namespace SqlSugar
             ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
             copyContext.Index = this.Index;
             copyContext.ParameterIndex = this.ParameterIndex;
+            return copyContext;
+        }
+        public ExpressionContext GetCopyContextWithMapping()
+        {
+            ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
+            copyContext.Index = this.Index;
+            copyContext.ParameterIndex = this.ParameterIndex;
             copyContext.MappingColumns = this.MappingColumns;
             copyContext.MappingTables = this.MappingTables;
             copyContext.IgnoreComumnList = this.IgnoreComumnList;

@@ -379,7 +379,7 @@ namespace SqlSugar
             {
                 if (this.Context.Result.IsLockCurrentParameter == false)
                 {
-                    var newContext = this.Context.GetCopyContext();
+                    var newContext = this.Context.GetCopyContextWithMapping();
                     var resolveExpressType = this.Context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
                     newContext.Resolve(item, resolveExpressType);
                     this.Context.Index = newContext.Index;

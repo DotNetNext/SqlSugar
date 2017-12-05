@@ -49,6 +49,7 @@ namespace SqlSugar
         public MappingTableList MappingTables = new MappingTableList();
         public MappingColumnList MappingColumns = new MappingColumnList();
         public IgnoreColumnList IgnoreColumns = new IgnoreColumnList();
+        public IgnoreColumnList IgnoreInsertColumns = new IgnoreColumnList();
         #endregion
 
         #region Fields
@@ -146,6 +147,8 @@ namespace SqlSugar
                 this.Context.MappingColumns = new MappingColumnList();
             if (this.Context.IgnoreColumns == null)
                 this.Context.IgnoreColumns = new IgnoreColumnList();
+            if (this.Context.IgnoreInsertColumns == null)
+                this.Context.IgnoreInsertColumns = new IgnoreColumnList();
             if (!this.Context.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
                 if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.HasValue())
@@ -163,10 +166,17 @@ namespace SqlSugar
                             this.Context.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
                 var ignoreInfos = this.Context.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
-                foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore||it.IsOnlyIgnoreInsert))
+                foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore))
                 {
                     if (!ignoreInfos.Any(it => it.PropertyName == item.PropertyName))
                         this.Context.IgnoreColumns.Add(item.PropertyName, item.EntityName);
+                }
+
+                var ignoreInsertInfos = this.Context.IgnoreInsertColumns.Where(it => it.EntityName == entityInfo.EntityName);
+                foreach (var item in entityInfo.Columns.Where(it => it.IsOnlyIgnoreInsert))
+                {
+                    if (!ignoreInsertInfos.Any(it => it.PropertyName == item.PropertyName))
+                        this.Context.IgnoreInsertColumns.Add(item.PropertyName, item.EntityName);
                 }
             }
         }
