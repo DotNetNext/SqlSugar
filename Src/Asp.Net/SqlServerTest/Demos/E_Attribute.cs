@@ -15,6 +15,8 @@ namespace OrmTest.Demo
                 Name = "attr"
             };
             db.Insertable(a).AS("student").ExecuteCommand();
+
+            var list = db.Queryable<AttributeTest>().AS("student").Select(it => new AttributeTest() { Aid = it.Aid + 1 }).ToList();
         }
 
         public class AttributeTest
