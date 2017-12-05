@@ -14,7 +14,7 @@ namespace OrmTest.Demo
         public static void Init()
         {
          
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var db = GetMasterSlaveInstance();
                 var list = db.Insertable(new Student() { Name="aa" }).ExecuteCommand(); // ConnectionString2 or ConnectionString3

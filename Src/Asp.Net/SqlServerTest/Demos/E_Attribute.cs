@@ -16,7 +16,7 @@ namespace OrmTest.Demo
             };
             db.Insertable(a).AS("student").ExecuteCommand();
 
-            var list = db.Queryable<AttributeTest>().AS("student").Select(it => new AttributeTest() { Aid = it.Aid + 1 }).ToList();
+            var list = db.Queryable<AttributeTest>().AS("student").Select(it => new AttributeTest() { Aid = it.Aid + 1,CreateTime=DateTime.Now,Name=it.Name }).ToList();
         }
 
         public class AttributeTest
@@ -25,7 +25,7 @@ namespace OrmTest.Demo
             public int Aid { get; set; }
             public string Name { get; set; }
             [SugarColumn(IsOnlyIgnoreInsert = true)]
-            public int CreateTime { get; set; }
+            public DateTime CreateTime { get; set; }
         }
     }
 }
