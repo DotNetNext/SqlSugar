@@ -163,7 +163,7 @@ namespace SqlSugar
                             this.Context.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
                 var ignoreInfos = this.Context.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
-                foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore))
+                foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore||it.IsOnlyIgnoreInsert))
                 {
                     if (!ignoreInfos.Any(it => it.PropertyName == item.PropertyName))
                         this.Context.IgnoreColumns.Add(item.PropertyName, item.EntityName);
