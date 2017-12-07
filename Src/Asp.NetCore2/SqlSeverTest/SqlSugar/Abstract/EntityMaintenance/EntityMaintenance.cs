@@ -135,6 +135,7 @@ namespace SqlSugar
                         column.DataType = sugarColumn.ColumnDataType;
                         column.DecimalDigits = sugarColumn.DecimalDigits;
                         column.OracleSequenceName = sugarColumn.OracleSequenceName;
+                        column.IsOnlyIgnoreInsert = sugarColumn.IsOnlyIgnoreInsert;
                     }
                     else
                     {

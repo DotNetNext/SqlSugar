@@ -219,6 +219,15 @@ namespace SqlSugar
                     return !currentIgnoreColumns.Any(i => it.PropertyName.Equals(i.PropertyName, StringComparison.CurrentCulture));
                 }).ToList();
             }
+
+            if (this.Context.IgnoreInsertColumns != null && this.Context.IgnoreInsertColumns.Any())
+            {
+                var currentIgnoreColumns = this.Context.IgnoreInsertColumns.Where(it => it.EntityName == this.EntityInfo.EntityName).ToList();
+                this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it =>
+                {
+                    return !currentIgnoreColumns.Any(i => it.PropertyName.Equals(i.PropertyName, StringComparison.CurrentCulture));
+                }).ToList();
+            }
             #endregion
             if (this.IsSingle)
             {
