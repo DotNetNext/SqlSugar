@@ -132,6 +132,19 @@ namespace OrmTest.UnitTest
                    new List<SugarParameter>() {
                         new SugarParameter("@Name0","a")
                    }, t14.Key, t14.Value, "single t14 error ");
+
+
+                var t15 = db.Queryable<CapitalEntity>()
+     .Select(x => new
+     {
+
+         TGYArea = SqlFunc.AggregateSum(SqlFunc.IIF(x.FlatProp == "1", x.Areas, 0))
+     }).ToSql();
+                base.Check("SELECT  SUM(( CASE  WHEN ( [FlatProp] = @FlatProp0 ) THEN [Areas]  ELSE @MethodConst1 END )) AS [TGYArea]  FROM [RENT_CAPITAL] ", new List<SugarParameter>()
+                {
+  new SugarParameter("@FlatProp0","1"),
+  new SugarParameter("@MethodConst1",0)
+                }, t15.Key, t15.Value, "single t15 error");
             }
         }
     }
