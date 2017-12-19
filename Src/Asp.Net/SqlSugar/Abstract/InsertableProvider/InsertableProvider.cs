@@ -32,6 +32,7 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = false;
             PreToSql();
+            AutoRemoveDataCache();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             return Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
@@ -41,6 +42,7 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
+            AutoRemoveDataCache();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, InsertBuilder.Parameters);
@@ -49,6 +51,7 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
+            AutoRemoveDataCache();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             return Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
@@ -57,6 +60,7 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
+            AutoRemoveDataCache();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             return Convert.ToInt64( Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
@@ -194,6 +198,15 @@ namespace SqlSugar
         #endregion
 
         #region Protected Methods
+        private void AutoRemoveDataCache()
+        {
+            var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
+            var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
+            if (moreSetts != null && moreSetts.IsAutoRemoveDataCache && extService != null && extService.DataInfoCacheService != null)
+            {
+                this.RemoveDataCache();
+            }
+        }
         protected virtual void PreToSql()
         {
             #region Identities
