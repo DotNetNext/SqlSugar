@@ -15,5 +15,6 @@ namespace SqlSugar
         public const string TabLockX = "WITH(TABLOCKX)";
         public const string UpdLock = "WITH(UPDLOCK)";
         public const string RowLock = "WITH(ROWLOCK)";
+        public const string Null = "Non";
     }
 }
