@@ -77,6 +77,7 @@
     <Compile Include="CacheScheme\CacheSchemeMain.cs" />
     <Compile Include="Entities\CacheKey.cs" />
     <Compile Include="Entities\ConditionalModel.cs" />
+    <Compile Include="Entities\ConnMoreSettings.cs" />
     <Compile Include="Entities\SlaveConnectionConfig.cs" />
     <Compile Include="Enum\ConditionalType.cs" />
     <Compile Include="Enum\DbType.cs" />

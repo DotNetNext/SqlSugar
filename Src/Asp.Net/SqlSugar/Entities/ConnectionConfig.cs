@@ -39,6 +39,10 @@ namespace SqlSugar
         /// All operations within a transaction is ConnectionString
         /// </summary>
         public List<SlaveConnectionConfig> SlaveConnectionConfigs { get; set; }
+        /// <summary>
+        /// More Gobal Settings
+        /// </summary>
+        public ConnMoreSettings MoreSettings { get; set; }
     }
 
     public class ConfigureExternalServices
