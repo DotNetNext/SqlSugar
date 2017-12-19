@@ -157,6 +157,9 @@ namespace SqlSugar
         #region GroupBy
         new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression);
+        new ISugarQueryable<T,T2> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2> Having(Expression<Func<T,T2, bool>> expression);
+        new ISugarQueryable<T,T2> Having(string whereString, object whereObj = null);
         #endregion
 
         #region Aggr
@@ -220,6 +223,10 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        new ISugarQueryable<T, T2,T3> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2,T3> Having(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3> Having(Expression<Func<T, T2,T3, bool>> expression);
+        new ISugarQueryable<T, T2,T3> Having(string whereString, object whereObj = null);
         #endregion
 
         #region Aggr
@@ -289,6 +296,11 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, object>> expression);
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
+        new ISugarQueryable<T, T2, T3,T4> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3,T4> Having(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3,T4> Having(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> Having(Expression<Func<T, T2, T3,T4, bool>> expression);
+        new ISugarQueryable<T, T2,T3,T4> Having(string whereString, object whereObj = null);
         #endregion
 
         #region Aggr
