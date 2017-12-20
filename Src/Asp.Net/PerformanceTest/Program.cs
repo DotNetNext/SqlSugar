@@ -15,7 +15,7 @@ namespace PerformanceTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            var type = DemoType.GetById;
+            var type = DemoType.GetAll;
             var ormType = OrmType.Dapper;
             switch (type)
             {
