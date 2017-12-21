@@ -352,7 +352,7 @@ namespace SqlSugar
                 ExecuteBefore(sql, parameters);
                 IDbCommand sqlCommand = GetCommand(sql, parameters);
                 object scalar = sqlCommand.ExecuteScalar();
-                scalar = (scalar == null ? 0 : scalar);
+                //scalar = (scalar == null ? 0 : scalar);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
