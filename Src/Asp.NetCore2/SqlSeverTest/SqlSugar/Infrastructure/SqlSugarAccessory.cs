@@ -137,8 +137,50 @@ namespace SqlSugar
                   var reval = this.Context.EntityMaintenance.GetEntityInfo(type);
                   return reval;
               });
-            InitMppingInfo(entityInfo);
+            var copyObj = CopyEntityInfo(entityInfo);
+            InitMppingInfo(copyObj);
         }
+
+        private EntityInfo CopyEntityInfo(EntityInfo entityInfo)
+        {
+            EntityInfo result = new EntityInfo()
+            {
+                DbTableName = entityInfo.DbTableName,
+                EntityName = entityInfo.EntityName,
+                Type = entityInfo.Type
+            };
+            List<EntityColumnInfo> columns = new List<EntityColumnInfo>();
+            if (entityInfo.Columns.HasValue())
+            {
+                foreach (var item in entityInfo.Columns)
+                {
+                    EntityColumnInfo column = new EntityColumnInfo()
+                    {
+                        ColumnDescription = item.ColumnDescription,
+                        DataType = item.DataType,
+                        DbColumnName = item.DbColumnName,
+                        DbTableName = item.DbTableName,
+                        DecimalDigits = item.DecimalDigits,
+                        DefaultValue = item.DefaultValue,
+                        EntityName = item.EntityName,
+                        IsIdentity = item.IsIdentity,
+                        IsIgnore = item.IsIgnore,
+                        IsNullable = item.IsNullable,
+                        IsOnlyIgnoreInsert = item.IsOnlyIgnoreInsert,
+                        IsPrimarykey = item.IsPrimarykey,
+                        Length = item.Length,
+                        OldDbColumnName = item.OldDbColumnName,
+                        OracleSequenceName = item.OracleSequenceName,
+                        PropertyInfo = item.PropertyInfo,
+                        PropertyName = item.PropertyName
+                    };
+                    columns.Add(item);
+                }
+            }
+            result.Columns = columns;
+            return result;
+        }
+
         private void InitMppingInfo(EntityInfo entityInfo)
         {
             if (this.Context.MappingTables == null)

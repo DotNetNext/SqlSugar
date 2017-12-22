@@ -28,6 +28,7 @@ namespace SqlSugar
             string sql = DeleteBuilder.ToSqlString();
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
+            AutoRemoveDataCache();
             return Db.ExecuteCommand(sql, paramters);
         }
         public bool ExecuteCommandHasChange()
@@ -269,6 +270,17 @@ namespace SqlSugar
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
+
+        private void AutoRemoveDataCache()
+        {
+            var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
+            var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
+            if (moreSetts != null && moreSetts.IsAutoRemoveDataCache && extService != null && extService.DataInfoCacheService != null)
+            {
+                this.RemoveDataCache();
+            }
+        }
+
 
         private IDeleteable<T> CopyDeleteable()
         {

@@ -376,7 +376,7 @@ namespace SqlSugar
             }
             var allSql = sqlBuilder.GetUnionAllSql(allItems.Select(it => it.Key).ToList());
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
-            var resulut = base.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable"));
+            var resulut = base.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable")).With(SqlWith.Null);
             resulut.AddParameters(allParameters);
             return resulut.Select<T>(sqlBuilder.SqlSelectAll);
         }
@@ -391,7 +391,7 @@ namespace SqlSugar
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(base.Context.CurrentConnectionConfig);
-            return base.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).Select("*");
+            return base.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).With(SqlWith.Null).Select("*");
         }
         #endregion
 

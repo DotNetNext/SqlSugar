@@ -432,7 +432,7 @@ namespace SqlSugar
                 {
                     result += (TableShortName + UtilConstants.Space);
                 }
-                if (this.TableWithString.HasValue())
+                if (this.TableWithString.HasValue()&&this.TableWithString!= SqlWith.Null)
                 {
                     result += TableWithString + UtilConstants.Space;
                 }
@@ -443,7 +443,7 @@ namespace SqlSugar
                 if (this.EasyJoinInfos.IsValuable())
                 {
 
-                    if (this.TableWithString.HasValue())
+                    if (this.TableWithString.HasValue() && this.TableWithString != SqlWith.Null)
                     {
                         result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} {2} ", GetTableName(it.Value), it.Key, TableWithString)));
                     }

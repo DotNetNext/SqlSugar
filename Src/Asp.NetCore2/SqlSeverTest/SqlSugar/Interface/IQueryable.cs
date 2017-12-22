@@ -18,7 +18,7 @@ namespace SqlSugar
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> With(string withString);
-        ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter= false);
+        ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
         ISugarQueryable<T> AddParameters(object parameters);
         ISugarQueryable<T> AddParameters(SugarParameter[] parameters);
         ISugarQueryable<T> AddParameters(List<SugarParameter> parameters);
@@ -45,7 +45,7 @@ namespace SqlSugar
 
         ISugarQueryable<T> OrderBy(string orderFileds);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T> OrderByIF(bool isOrderBy,string orderFileds);
+        ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
 
 
@@ -66,7 +66,7 @@ namespace SqlSugar
         T First();
         Task<T> FirstAsync();
         T First(Expression<Func<T, bool>> expression);
-        Task<T>  FirstAsync(Expression<Func<T, bool>> expression);
+        Task<T> FirstAsync(Expression<Func<T, bool>> expression);
 
         bool Any(Expression<Func<T, bool>> expression);
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
@@ -107,7 +107,7 @@ namespace SqlSugar
         string ToJsonPage(int pageIndex, int pageSize);
         Task<string> ToJsonPageAsync(int pageIndex, int pageSize);
         string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber);
-        Task<KeyValuePair<string,int>> ToJsonPageAsync(int pageIndex, int pageSize, int totalNumber);
+        Task<KeyValuePair<string, int>> ToJsonPageAsync(int pageIndex, int pageSize, int totalNumber);
         KeyValuePair<string, List<SugarParameter>> ToSql();
 
 
@@ -116,12 +116,12 @@ namespace SqlSugar
         DataTable ToDataTablePage(int pageIndex, int pageSize);
         Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize);
         DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber);
-        Task<KeyValuePair<DataTable,int>> ToDataTablePageAsync(int pageIndex, int pageSize, int totalNumber);
+        Task<KeyValuePair<DataTable, int>> ToDataTablePageAsync(int pageIndex, int pageSize, int totalNumber);
 
         List<T> ToPageList(int pageIndex, int pageSize);
         Task<List<T>> ToPageListAsync(int pageIndex, int pageSize);
         List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);
-        Task<KeyValuePair<List<T>,int>> ToPageListAsync(int pageIndex, int pageSize, int totalNumber);
+        Task<KeyValuePair<List<T>, int>> ToPageListAsync(int pageIndex, int pageSize, int totalNumber);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         string ToClassString(string className);
@@ -132,13 +132,13 @@ namespace SqlSugar
         #region Where
         new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression);
-        new ISugarQueryable<T,T2> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2> Where(List<ConditionalModel> conditionalModels);
 
-        new ISugarQueryable<T, T2> WhereIF(bool isWhere,Expression<Func<T, bool>> expression);
+        new ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
 
-        new ISugarQueryable<T,T2> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T,T2> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion
 
         #region Select
@@ -146,43 +146,46 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
-        new ISugarQueryable<T,T2> OrderBy(string orderFileds);
+        new ISugarQueryable<T, T2> OrderBy(string orderFileds);
         new ISugarQueryable<T, T2> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
-        new ISugarQueryable<T,T2> OrderByIF(bool isOrderBy, string orderFileds);
+        new ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, string orderFileds);
         new ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T,T2> OrderByIF(bool isOrderBy, Expression<Func<T,T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
         new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression);
+        new ISugarQueryable<T, T2> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2> Having(Expression<Func<T, T2, bool>> expression);
+        new ISugarQueryable<T, T2> Having(string whereString, object whereObj = null);
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T,T2, TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T,T2, TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T,T2, TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T,T2, TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T,T2> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T,T2> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T,T2> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T,T2> AS<AsT>(string tableName);
-        new ISugarQueryable<T,T2> AS(string tableName);
-        new ISugarQueryable<T,T2> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T,T2> AddParameters(object parameters);
-        new ISugarQueryable<T,T2> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2> AS(string tableName);
+        new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2> AddParameters(object parameters);
+        new ISugarQueryable<T, T2> AddParameters(SugarParameter[] parameters);
         new ISugarQueryable<T, T2> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T,T2> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T,T2> With(string withString);
-        new ISugarQueryable<T,T2> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T,T2> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2> With(string withString);
+        new ISugarQueryable<T, T2> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
@@ -191,14 +194,14 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, T3, bool>> expression);
-        new ISugarQueryable<T, T2,T3> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3> Where(List<ConditionalModel> conditionalModels);
 
         new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
 
-        new ISugarQueryable<T, T2,T3> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2,T3> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion
 
         #region Select
@@ -210,42 +213,46 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
-        new ISugarQueryable<T, T2,T3> OrderByIF(bool isOrderBy, string orderFileds);
-        new ISugarQueryable<T, T2,T3> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2,T3> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, Expression<Func<T, T2,T3, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, string orderFileds);
+        new ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
         new ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        new ISugarQueryable<T, T2, T3> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3> Having(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3> Having(Expression<Func<T, T2, T3, bool>> expression);
+        new ISugarQueryable<T, T2, T3> Having(string whereString, object whereObj = null);
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2,T3> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2,T3> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2,T3> AS(string tableName);
-        new ISugarQueryable<T, T2,T3> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2,T3> AddParameters(object parameters);
-        new ISugarQueryable<T, T2,T3> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2,T3> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2,T3> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2,T3> With(string withString);
-        new ISugarQueryable<T, T2,T3> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3> AS(string tableName);
+        new ISugarQueryable<T, T2, T3> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3> With(string withString);
+        new ISugarQueryable<T, T2, T3> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
@@ -255,14 +262,14 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
-        new ISugarQueryable<T, T2, T3,T4> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4> Where(List<ConditionalModel> conditionalModels);
 
         new ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
 
-        new ISugarQueryable<T, T2,T3,T4> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4> Where(string whereString, object whereObj = null);
         new ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion
 
@@ -277,11 +284,11 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
-        new ISugarQueryable<T, T2, T3,T4> OrderByIF(bool isOrderBy, string orderFileds);
-        new ISugarQueryable<T, T2, T3,T4> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, string orderFileds);
+        new ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3,T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
@@ -289,32 +296,37 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, object>> expression);
         ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
+        new ISugarQueryable<T, T2, T3, T4> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> Having(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> Having(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> Having(Expression<Func<T, T2, T3, T4, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4> Having(string whereString, object whereObj = null);
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3,T4,TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3,T4> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3,T4> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3,T4> AS(string tableName);
-        new ISugarQueryable<T, T2, T3,T4> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3,T4> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3,T4> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3,T4> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3,T4> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3,T4> With(string withString);
-        new ISugarQueryable<T, T2, T3,T4> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
@@ -325,7 +337,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4,T5> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4, T5> Where(List<ConditionalModel> conditionalModels);
 
 
         new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
@@ -334,8 +346,8 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
 
-        new ISugarQueryable<T, T2, T3, T4,T5> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4,T5> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion
 
         #region Select
@@ -351,12 +363,12 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
-        new ISugarQueryable<T, T2, T3, T4,T5> OrderByIF(bool isOrderBy, string orderFileds);
+        new ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, string orderFileds);
         new ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4,T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
@@ -368,29 +380,29 @@ namespace SqlSugar
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4,T5,TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4,T5> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4, T5> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3, T4,T5> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4,T5> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4,T5> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4,T5> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4,T5> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4,T5> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4,T5> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4,T5> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4,T5> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
@@ -402,7 +414,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(List<ConditionalModel> conditionalModels);
 
         new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
@@ -411,8 +423,8 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
 
-        new ISugarQueryable<T, T2, T3, T4, T5 ,T6> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion
 
         #region Select
@@ -442,29 +454,29 @@ namespace SqlSugar
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5,T6,TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4,T5,T6> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5,T6> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7> : ISugarQueryable<T>
@@ -477,7 +489,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(List<ConditionalModel> conditionalModels);
 
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
@@ -487,8 +499,8 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion
 
         #region Select
@@ -521,29 +533,29 @@ namespace SqlSugar
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7,TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> : ISugarQueryable<T>
@@ -557,7 +569,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(List<ConditionalModel> conditionalModels);
 
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
@@ -568,8 +580,8 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion                              
 
         #region Select
@@ -605,150 +617,59 @@ namespace SqlSugar
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion
     }
 
     #region 9-12
-    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> : ISugarQueryable<T>
+    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> : ISugarQueryable<T>
     {
         #region Where
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(List<ConditionalModel> conditionalModels);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WhereIF(bool isWhere, string whereString, object whereObj = null);
-        #endregion                              
-
-        #region Select
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
-        #endregion
-
-        #region OrderBy
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, object>> expression, OrderByType type = OrderByType.Asc);
-        #endregion
-
-        #region GroupBy
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, object>> expression);
-        #endregion
-
-        #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, TResult>> expression);
-        #endregion
-
-        #region In
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
-        #endregion
-
-        #region Other
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
-        #endregion                                       
-    }
-    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> : ISugarQueryable<T>
-    {
-        #region Where
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(List<ConditionalModel> conditionalModels);
-
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, bool>> expression);
-
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion                              
 
         #region Select
@@ -760,91 +681,86 @@ namespace SqlSugar
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
         #endregion
 
         #region OrderBy
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, T2, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, T2, T3, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, object>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression);
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WithCacheIF(bool isCache,int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion                                       
     }
-    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11> : ISugarQueryable<T>
+    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> : ISugarQueryable<T>
     {
         #region Where
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(List<ConditionalModel> conditionalModels);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion                              
 
         #region Select
@@ -857,95 +773,90 @@ namespace SqlSugar
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
         #endregion
 
         #region OrderBy
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, object>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression);
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion                                       
     }
-    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10,T11,T12> : ISugarQueryable<T>
+    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : ISugarQueryable<T>
     {
         #region Where
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, bool>> expression);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(List<ConditionalModel> conditionalModels);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(List<ConditionalModel> conditionalModels);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> expression);
 
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(string whereString, object whereObj = null);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, string whereString, object whereObj = null);
         #endregion                              
 
         #region Select
@@ -959,63 +870,164 @@ namespace SqlSugar
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> expression);
-        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
+        #endregion
+
+        #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object>> expression, OrderByType type = OrderByType.Asc);
+        #endregion
+
+        #region GroupBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object>> expression);
+        #endregion
+
+        #region Aggr
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> expression);
+        #endregion
+
+        #region In
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        #endregion
+
+        #region Other
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        #endregion                                       
+    }
+    public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : ISugarQueryable<T>
+    {
+        #region Where
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(List<ConditionalModel> conditionalModels);
+
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> expression);
+
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(string whereString, object whereObj = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        #endregion                              
+
+        #region Select
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>> expression);
         #endregion
 
         #region OrderBy
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object>> expression, OrderByType type = OrderByType.Asc);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GroupBy(Expression<Func<T, T2, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GroupBy(Expression<Func<T, T2, T3, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object>> expression);
-        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object>> expression);
         #endregion
 
         #region Aggr
-        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
-        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
-        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
-        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression);
+        TResult Max<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>> expression);
+        TResult Min<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>> expression);
+        TResult Sum<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>> expression);
+        TResult Avg<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>> expression);
         #endregion
 
         #region In
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
         #endregion
 
         #region Other
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AS<AsT>(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AS(string tableName);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Filter(string FilterName, bool isDisabledGobalFilter = false);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddParameters(object parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddParameters(SugarParameter[] parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddParameters(List<SugarParameter> parameters);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> With(string withString);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> WithCache(int cacheDurationInSeconds = int.MaxValue);
-        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11,T12> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AS<AsT>(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(object parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(SugarParameter[] parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(List<SugarParameter> parameters);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> With(string withString);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCache(int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         #endregion                                               
     }
     #endregion

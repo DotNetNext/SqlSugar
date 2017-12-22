@@ -231,7 +231,11 @@ namespace SqlSugar
         {
             foreach (var item in args)
             {
-                AppendItem(parameter, name, args, model, item);
+                var expItem = item;
+                if (item is UnaryExpression) {
+                    expItem = (item as UnaryExpression).Operand;
+                }
+                AppendItem(parameter, name, args, model, expItem);
             }
             if (appendArgs != null)
             {

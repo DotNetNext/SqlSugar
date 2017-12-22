@@ -140,7 +140,7 @@ namespace SqlSugar
         public virtual string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();
-            var propertyTypes = MappingTypes.Where(it => it.Key.Equals(dbTypeName,StringComparison.CurrentCultureIgnoreCase));
+            var propertyTypes = MappingTypes.Where(it => it.Key.Equals(dbTypeName, StringComparison.CurrentCultureIgnoreCase));
             if (dbTypeName == "int32")
             {
                 return "int";
@@ -160,6 +160,10 @@ namespace SqlSugar
             else if (dbTypeName.IsContainsIn("xml", "string", "String"))
             {
                 return "string";
+            }
+            else if (dbTypeName.IsContainsIn("boolean", "bool"))
+            {
+                return "bool";
             }
             else if (propertyTypes == null || propertyTypes.Count() == 0)
             {

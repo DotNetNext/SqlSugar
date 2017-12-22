@@ -28,6 +28,7 @@ namespace SqlSugar
         public virtual int ExecuteCommand()
         {
             PreToSql();
+            AutoRemoveDataCache();
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             string sql = UpdateBuilder.ToSqlString();
             RestoreMapping();
@@ -93,7 +94,15 @@ namespace SqlSugar
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(leftResultString, resultString));
             return this;
         }
-
+        private void AutoRemoveDataCache()
+        {
+            var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
+            var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
+            if (moreSetts != null && moreSetts.IsAutoRemoveDataCache && extService!=null&& extService.DataInfoCacheService!=null)
+            {
+                this.RemoveDataCache();
+            }
+        }
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             PreToSql();
