@@ -730,7 +730,7 @@ namespace SqlSugar
 
         private void SetConnectionEnd(string sql)
         {
-            if (this.IsMasterSlaveSeparation && IsRead(sql))
+            if (this.IsMasterSlaveSeparation && IsRead(sql)&&this.Transaction==null)
             {
                 this.Connection = this.MasterConnection;
                 this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnection.ConnectionString;
