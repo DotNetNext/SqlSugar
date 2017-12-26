@@ -54,6 +54,8 @@ namespace OrmTest.Demo
             var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
+            .Where(st => st.Id==1)
+            .Where(st => st.Id==2)
             .Select((st, sc) => new { id = st.Id, name = sc.Name })
             .MergeTable().Where(XXX => XXX.id == 1).OrderBy("name asc").ToList();// Prefix, is, not, necessary, and take the columns in select
 
