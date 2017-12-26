@@ -446,6 +446,7 @@ namespace SqlSugar
             mergeQueryable.QueryBuilder.Parameters = QueryBuilder.Parameters;
             mergeQueryable.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex + 1;
             mergeQueryable.QueryBuilder.JoinIndex = QueryBuilder.JoinIndex + 1;
+            mergeQueryable.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex;
             return mergeQueryable.AS(tableName).Select<T>("*");
         }
 
