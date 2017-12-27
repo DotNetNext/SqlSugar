@@ -266,7 +266,6 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
-                SetConnectionEnd(sql);
                 return count;
             }
             catch (Exception ex)
@@ -278,6 +277,7 @@ namespace SqlSugar
             finally
             {
                 if (this.IsAutoClose()) this.Close();
+                SetConnectionEnd(sql);
             }
         }
         public virtual IDataReader GetDataReader(string sql, params SugarParameter[] parameters)
@@ -326,7 +326,6 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
-                SetConnectionEnd(sql);
                 return ds;
             }
             catch (Exception ex)
@@ -338,6 +337,7 @@ namespace SqlSugar
             finally
             {
                 if (this.IsAutoClose()) this.Close();
+                SetConnectionEnd(sql);
             }
         }
         public virtual object GetScalar(string sql, params SugarParameter[] parameters)
@@ -356,7 +356,6 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
-                SetConnectionEnd(sql);
                 return scalar;
             }
             catch (Exception ex)
@@ -368,6 +367,7 @@ namespace SqlSugar
             finally
             {
                 if (this.IsAutoClose()) this.Close();
+                SetConnectionEnd(sql);
             }
         }
         #endregion
