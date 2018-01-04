@@ -386,7 +386,7 @@ namespace SqlSugar
             {
                 QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
             }
-            if (QueryBuilder.Skip.Value > 0)
+            if (QueryBuilder.Skip.HasValue)
             {
                 QueryBuilder.Take = 1;
                 return this.ToList().FirstOrDefault();
