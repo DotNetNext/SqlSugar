@@ -26,7 +26,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("smalldatetime",CSharpDataType.DateTime),
-                  new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("datetime2",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
