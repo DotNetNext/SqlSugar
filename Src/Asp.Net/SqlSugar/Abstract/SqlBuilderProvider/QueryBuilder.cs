@@ -210,6 +210,9 @@ namespace SqlSugar
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
+            if (resolveType.IsIn(ResolveExpressType.FieldSingle,ResolveExpressType.FieldMultiple,ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple) &&(expression is LambdaExpression)&& (expression as LambdaExpression).Body is BinaryExpression) {
+                resolveType = resolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.FieldSingle) ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
+            }
             this.LambdaExpressions.Clear();
             resolveExpress.JoinQueryInfos = Builder.QueryBuilder.JoinQueryInfos;
             resolveExpress.IsSingle = IsSingle();
