@@ -5,12 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public enum DbType
+    public class PostgreSQLDbFirst : DbFirstProvider
     {
-        MySql ,
-        SqlServer,
-        Sqlite,
-        Oracle,
-        PostgreSQL
     }
 }
