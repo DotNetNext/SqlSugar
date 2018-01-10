@@ -106,6 +106,18 @@ namespace OrmTest.UnitTest
    new List<SugarParameter>() {
                 new SugarParameter("@Const0",false)
    }, t6.Key, t6.Value, "select t6 Error");
+
+
+                var t7 = db.Queryable<Student>().Select(it=>new DataTestInfo2() {
+                     Bool1=SqlFunc.IIF(SqlFunc.Subqueryable<Student>().Where(x=>x.Id
+                     ==it.Id).Any(),true,false)
+                }).ToSql();
+
+                base.Check("SELECT  ( CASE  WHEN (EXISTS ( SELECT * FROM [STudent] WHERE ( [ID] = [it].[ID] ) )) THEN @MethodConst0  ELSE @MethodConst1 END ) AS [Bool1]  FROM [STudent] it ",
+                    new List<SugarParameter>() {
+                        new SugarParameter("@MethodConst0",true),
+                         new SugarParameter("@MethodConst1",false)
+                    }, t7.Key, t7.Value, "select t7 Error");
                 #endregion
 
 

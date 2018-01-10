@@ -264,6 +264,10 @@ namespace SqlSugar
             {
                 this.Context.Parameters.AddRange(newContext.Parameters);
             }
+            if (newContext.SingleTableNameSubqueryShortName.HasValue())
+            {
+                this.Context.SingleTableNameSubqueryShortName = newContext.SingleTableNameSubqueryShortName;
+            }
             var methodCallExpressionArgs = new MethodCallExpressionArgs()
             {
                 IsMember = true,
