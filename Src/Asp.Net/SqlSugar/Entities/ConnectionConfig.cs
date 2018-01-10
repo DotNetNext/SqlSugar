@@ -89,5 +89,6 @@ namespace SqlSugar
         }
 
         public List<SqlFuncExternal> SqlFuncServices { get; set; }
+        public List<KeyValuePair<string, CSharpDataType>> AppendDataReaderTypeMappings { get;  set; }
     }
 }

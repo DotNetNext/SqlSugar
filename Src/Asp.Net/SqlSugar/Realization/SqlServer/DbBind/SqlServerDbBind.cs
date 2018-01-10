@@ -10,7 +10,18 @@ namespace SqlSugar
         {
             get
             {
-                return new List<KeyValuePair<string, CSharpDataType>>()
+                var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
+                if (extService != null&& extService.AppendDataReaderTypeMappings.HasValue())
+                {
+                    return extService.AppendDataReaderTypeMappings.Union(MappingTypesConst).ToList();
+                }
+                else
+                {
+                    return MappingTypesConst;
+                }
+            }
+        }
+        public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>()
                 {
                   new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@int),
                   new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
@@ -45,7 +56,6 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("datetimeoffset", CSharpDataType.DateTimeOffset),
                   new KeyValuePair<string, CSharpDataType>("datetimeoffset", CSharpDataType.DateTime)};
-            }
-        }
-    }
+    };
+
 }

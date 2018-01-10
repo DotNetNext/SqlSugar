@@ -52,7 +52,18 @@ namespace SqlSugar
         {
             get
             {
-                return new List<KeyValuePair<string, CSharpDataType>>()
+                var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
+                if (extService != null && extService.AppendDataReaderTypeMappings.HasValue())
+                {
+                    return extService.AppendDataReaderTypeMappings.Union(MappingTypesConst).ToList();
+                }
+                else
+                {
+                    return MappingTypesConst;
+                }
+            }
+        }
+        public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>()
                 {
                   new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@int),
                   new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
@@ -94,9 +105,6 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("raw",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("bfile",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray) };
-
-            }
-        }
         public override List<string> StringThrow
         {
             get
