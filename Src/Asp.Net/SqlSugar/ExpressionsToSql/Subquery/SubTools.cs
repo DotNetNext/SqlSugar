@@ -26,7 +26,8 @@ namespace SqlSugar
                                                     new SubSum(){ Context=Context },
                                                     new SubAvg(){ Context=Context },
                                                     new SubOrderBy(){ Context=Context },
-                                                    new SubOrderByDesc(){ Context=Context }
+                                                    new SubOrderByDesc(){ Context=Context },
+                                                    new SubGroupBy(){ Context=Context}
                                                 };
         }
 
