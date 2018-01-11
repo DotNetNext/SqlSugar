@@ -27,9 +27,21 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
-            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : GetSeqValue(GetSeqName());
+            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : GetSeqValue(GetSeqName()).ObjToInt();
             return result;
         }
+
+        public override long ExecuteReturnBigIdentity()
+        {
+            InsertBuilder.IsReturnIdentity = true;
+            PreToSql();
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 :Convert.ToInt64(GetSeqValue(GetSeqName()));
+            return result;
+        }
+
 
         public override int ExecuteCommand()
         {
@@ -37,11 +49,10 @@ namespace SqlSugar
             return base.InsertObjs.Count();
         }
 
-        private int GetSeqValue(string seqName)
+        private object GetSeqValue(string seqName)
         {
-            return Ado.GetInt(" SELECT " + seqName + ".currval FROM DUAL");
+            return Ado.GetScalar(" SELECT " + seqName + ".currval FROM DUAL");
         }
-
         protected override void PreToSql()
         {
             var identities = GetSeqNames();
