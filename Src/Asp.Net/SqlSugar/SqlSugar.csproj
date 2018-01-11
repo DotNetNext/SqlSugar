@@ -112,7 +112,6 @@
     <Compile Include="Realization\PostgreSQL\CodeFirst\PostgreSQLCodeFirst.cs" />
     <Compile Include="Realization\PostgreSQL\DbBind\PostgreSQLDbBind.cs" />
     <Compile Include="Realization\PostgreSQL\DbFirst\PostgreSQLDbFirst.cs" />
-    <Compile Include="Realization\PostgreSQL\DbMaintenance\PostgreSQLMaintenance.cs" />
     <Compile Include="Realization\PostgreSQL\PostgreSQLProvider.cs" />
     <Compile Include="Realization\PostgreSQL\Queryable\PostgreSQLQueryable.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
@@ -275,6 +274,7 @@
     <Content Include="References\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Realization\PostgreSQL\DbMaintenance\" />
     <Folder Include="Realization\PostgreSQL\SqlBuilder\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
