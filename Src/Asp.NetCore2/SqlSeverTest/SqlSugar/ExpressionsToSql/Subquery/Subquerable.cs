@@ -17,6 +17,10 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T> GroupBy(Func<T, object> expression)
+        {
+            return this;
+        }
         public Subqueryable<T> OrderByDesc(Func<T, object> expression)
         {
             return this;

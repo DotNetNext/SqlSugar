@@ -160,6 +160,12 @@ namespace SqlSugar
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             var type = item.PropertyType;
+            if (UtilConstants.SugarType == type) {
+                return result;
+            }
+            if (type.FullName.IsCollectionsList()) {
+                return null;
+            }
             var classProperties = type.GetProperties().ToList();
             foreach (var prop in classProperties)
             {

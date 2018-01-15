@@ -10,6 +10,7 @@ namespace SqlSugar
         MySql ,
         SqlServer,
         Sqlite,
-        Oracle
+        Oracle,
+        PostgreSQL
     }
 }

@@ -64,7 +64,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Oracle.ManagedDataAccess.dll",
-                     "需要引用ManagedDataAccess.dll，请在Nuget安装最新稳定版本,如果有版本兼容问题请先删除原有引用");
+                     "Oracle .NET Core官方驱动还没发布，暂不支持Oracle");
                     throw new Exception(message);
                 }
             }

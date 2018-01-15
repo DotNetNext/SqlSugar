@@ -206,7 +206,7 @@ namespace SqlSugar
                     });
         }
 
-        public override bool CreateTable(string tableName, List<DbColumnInfo> columns)
+        public override bool CreateTable(string tableName, List<DbColumnInfo> columns,bool isCreatePrimaryKey=true)
         {
             if (columns.HasValue())
             {

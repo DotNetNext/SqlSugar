@@ -22,12 +22,23 @@ namespace SqlSugar
                 csharpTypeName = "bool";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
             return mappings.HasValue() ? mappings.First().Key : "varchar";
-        }
+        }      
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
             get
             {
-                return new List<KeyValuePair<string, CSharpDataType>>()
+                var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
+                if (extService != null && extService.AppendDataReaderTypeMappings.HasValue())
+                {
+                    return extService.AppendDataReaderTypeMappings.Union(MappingTypesConst).ToList();
+                }
+                else
+                {
+                    return MappingTypesConst;
+                }
+            }
+        }
+        public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>()
                 {
 
                     new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
@@ -87,9 +98,7 @@ namespace SqlSugar
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("guid",CSharpDataType.Guid)
-                };
-            }
-        }
+         };
         public override List<string> StringThrow
         {
             get

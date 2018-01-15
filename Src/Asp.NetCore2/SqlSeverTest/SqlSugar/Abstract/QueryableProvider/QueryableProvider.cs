@@ -386,16 +386,20 @@ namespace SqlSugar
             {
                 QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
             }
-            QueryBuilder.Skip = 0;
-            QueryBuilder.Take = 1;
-            var reval = this.ToList();
-            if (reval.HasValue())
+            if (QueryBuilder.Skip.HasValue)
             {
-                return reval.FirstOrDefault();
+                QueryBuilder.Take = 1;
+                return this.ToList().FirstOrDefault();
             }
             else
             {
-                return default(T);
+                QueryBuilder.Skip = 0;
+                QueryBuilder.Take = 1;
+                var reval = this.ToList();
+                if (reval.HasValue())
+                    return reval.FirstOrDefault();
+                else
+                    return default(T);
             }
         }
         public virtual T First(Expression<Func<T, bool>> expression)
@@ -1072,8 +1076,9 @@ namespace SqlSugar
         private void ToSqlBefore()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
-            if (moreSetts != null && moreSetts.IsWithNoLockQuery&&string.IsNullOrEmpty(QueryBuilder.TableWithString)) {
-                this.With(SqlWith.NoLock); 
+            if (moreSetts != null && moreSetts.IsWithNoLockQuery && string.IsNullOrEmpty(QueryBuilder.TableWithString))
+            {
+                this.With(SqlWith.NoLock);
             }
         }
 

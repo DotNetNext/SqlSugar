@@ -141,7 +141,7 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns)
+        public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = GetCreateTableSql(tableName, columns);

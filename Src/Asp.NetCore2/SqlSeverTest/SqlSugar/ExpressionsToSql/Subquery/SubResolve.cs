@@ -22,14 +22,31 @@ namespace SqlSugar
             this.context = context;
             var currentExpression = expression;
             allMethods.Add(currentExpression);
-            if (context.IsSingle && oppsiteExpression != null&& oppsiteExpression is MemberExpression)
+            if (context.IsSingle && oppsiteExpression != null && oppsiteExpression is MemberExpression)
             {
                 var childExpression = (oppsiteExpression as MemberExpression).Expression;
                 this.context.SingleTableNameSubqueryShortName = (childExpression as ParameterExpression).Name;
             }
             else if (context.IsSingle)
             {
-                this.context.SingleTableNameSubqueryShortName = (context.Expression as LambdaExpression).Parameters.First().Name;
+                if (context.Expression is LambdaExpression)
+                {
+                    this.context.SingleTableNameSubqueryShortName = (context.Expression as LambdaExpression).Parameters.First().Name;
+                }
+                else if (context.Expression is MethodCallExpression)
+                {
+                    var meExp = ((context.Expression as MethodCallExpression).Object as MethodCallExpression).Arguments[0] as LambdaExpression;
+                    var selfParameterName = meExp.Parameters.First().Name;
+                    context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
+                    if (context.SingleTableNameSubqueryShortName == selfParameterName)
+                    {
+                        context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                    }
+                }
+                else
+                {
+                    Check.Exception(true, "I'm sorry I can't parse the current expression");
+                }
             }
             while (currentExpression != null)
             {
@@ -69,7 +86,7 @@ namespace SqlSugar
             isubList.Insert(0, new SubBegin());
             if (isubList.Any(it => it is SubSelect))
             {
-                isubList.Add(new SubTop() { Context=this.context });
+                isubList.Add(new SubTop() { Context = this.context });
             }
             if (isubList.Any(it => it is SubAny || it is SubNotAny))
             {
