@@ -127,6 +127,10 @@ namespace SqlSugar
                 {
                     sqlParameter.ParameterName = sqlParameter.ParameterName.TrimStart(':');
                 }
+                if (parameter.IsRefCursor)
+                {
+                    sqlParameter.OracleDbType = OracleDbType.RefCursor;
+                }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
