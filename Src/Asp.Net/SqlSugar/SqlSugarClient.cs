@@ -62,6 +62,10 @@ namespace SqlSugar
                 }
                 return base.Context._Ado;
             }
+            set
+            {
+                base.Context._Ado = value;
+            }
         }
         #endregion
 
@@ -353,7 +357,7 @@ namespace SqlSugar
             UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1);
             queryable.QueryBuilder.Parameters.AddRange(sqlObj2.Value);
             var exp = queryable.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
-            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2,shortName2)});
+            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2, shortName2) });
 
             return queryable;
         }
