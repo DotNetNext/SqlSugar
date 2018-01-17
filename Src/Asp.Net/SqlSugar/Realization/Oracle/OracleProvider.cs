@@ -118,7 +118,7 @@ namespace SqlSugar
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new OracleParameter();
                 sqlParameter.Size = parameter.Size == -1 ? 0 : parameter.Size;
-                sqlParameter.ParameterName = parameter.ParameterName.ToLower();
+                sqlParameter.ParameterName = parameter.ParameterName;
                 if (sqlParameter.ParameterName[0] == '@')
                 {
                     sqlParameter.ParameterName = ':' + sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
