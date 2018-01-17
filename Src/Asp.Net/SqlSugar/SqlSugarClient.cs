@@ -62,10 +62,6 @@ namespace SqlSugar
                 }
                 return base.Context._Ado;
             }
-            set
-            {
-                base.Context._Ado=base._Ado = value;
-            }
         }
         #endregion
 
