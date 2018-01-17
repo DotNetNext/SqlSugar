@@ -54,7 +54,7 @@ namespace SqlSugar
 
         #region Fields
         protected ISqlBuilder _SqlBuilder;
-        public SqlSugarClient _Context { get; set; }
+        protected SqlSugarClient _Context { get; set; }
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
