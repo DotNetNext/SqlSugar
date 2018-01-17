@@ -146,7 +146,7 @@ namespace SqlSugar
         }
         #endregion
 
-        protected void InitMppingInfo<T>()
+        internal void InitMppingInfo<T>()
         {
             InitMppingInfo(typeof(T));
         }

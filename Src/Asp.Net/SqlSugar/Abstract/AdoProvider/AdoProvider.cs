@@ -476,6 +476,7 @@ namespace SqlSugar
         }
         public virtual List<T> SqlQuery<T>(string sql, params SugarParameter[] parameters)
         {
+            this.Context.InitMppingInfo<T>();
             var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parameters != null && parameters.Any())
