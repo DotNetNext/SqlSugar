@@ -62,6 +62,17 @@ namespace SqlSugar
         protected IDbMaintenance _DbMaintenance;
         protected QueryFilterProvider _QueryFilterProvider;
         protected SimpleClient _SimpleClient;
+        protected IAdo ContextAdo
+        {
+            get
+            {
+                return this.Context._Ado;
+            }
+            set
+            {
+                this.Context._Ado = value;
+            }
+        }
         #endregion
 
         #region Init mppingInfo

@@ -53,10 +53,10 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context._Ado == null)
+                if (this.ContextAdo == null)
                 {
                     var reval = InstanceFactory.GetAdo(this.Context.CurrentConnectionConfig);
-                    this.Context._Ado = reval;
+                    this.ContextAdo = reval;
                     reval.Context = this.Context;
                     return reval;
                 }
