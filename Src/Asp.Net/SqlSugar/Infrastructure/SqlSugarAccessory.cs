@@ -73,6 +73,17 @@ namespace SqlSugar
                 this.Context._Ado = value;
             }
         }
+        protected IContextMethods ContextRewritableMethods
+        {
+            get
+            {
+                return this.Context._RewritableMethods;
+            }
+            set
+            {
+                this.Context._RewritableMethods = value;
+            }
+        }
         #endregion
 
         #region Init mppingInfo

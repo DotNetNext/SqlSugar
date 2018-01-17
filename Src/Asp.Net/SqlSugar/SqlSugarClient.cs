@@ -80,14 +80,14 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context._RewritableMethods == null)
+                if (ContextRewritableMethods == null)
                 {
-                    this.Context._RewritableMethods = new ContextMethods();
-                    this.Context._RewritableMethods.Context = this.Context;
+                    ContextRewritableMethods = new ContextMethods();
+                    ContextRewritableMethods.Context = this.Context;
                 }
-                return this.Context._RewritableMethods;
+                return ContextRewritableMethods;
             }
-            set { this.Context._RewritableMethods = value; }
+            set { ContextRewritableMethods = value; }
         }
         #endregion
 
