@@ -602,6 +602,7 @@ namespace SqlSugar
         #endregion
 
         #region SimpleClient
+        [Obsolete("Use SqlSugarClient.SimpleClient() Or SqlSugarClient.SimpleClient<T>() ")]
         public virtual SimpleClient SimpleClient
         {
             get
@@ -610,6 +611,14 @@ namespace SqlSugar
                     this.Context._SimpleClient = new SimpleClient(this.Context);
                 return this.Context._SimpleClient;
             }
+        }
+        public virtual SimpleClient<T> GetSimpleClient<T>() where T : class, new()
+        {
+            return new SimpleClient<T>(this.Context);
+        }
+        public virtual SimpleClient GetSimpleClient()
+        {
+            return this.SimpleClient;
         }
         #endregion
 
