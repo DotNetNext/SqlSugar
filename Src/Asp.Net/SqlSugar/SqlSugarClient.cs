@@ -602,7 +602,7 @@ namespace SqlSugar
         #endregion
 
         #region SimpleClient
-        [Obsolete("Use SqlSugarClient.SimpleClient() Or SqlSugarClient.SimpleClient<T>() ")]
+        [Obsolete("Use SqlSugarClient.GetSimpleClient() Or SqlSugarClient.GetSimpleClient<T>() ")]
         public virtual SimpleClient SimpleClient
         {
             get
