@@ -24,9 +24,9 @@ namespace SqlSugar
         }
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
+            var propertyType = UtilMethods.GetUnderType(item.PropertyInfo);
             var result = new DbColumnInfo()
             {
-                DataType = this.Context.Ado.DbBind.GetDbTypeName(UtilMethods.GetUnderType(item.PropertyInfo).Name),
                 TableId = entityInfo.Columns.IndexOf(item),
                 DbColumnName = item.DbColumnName.HasValue() ? item.DbColumnName : item.PropertyName,
                 IsPrimarykey = item.IsPrimarykey,
@@ -37,6 +37,7 @@ namespace SqlSugar
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length
             };
+            GetDbType(item, propertyType, result);
             if (result.DataType.Equals("varchar", StringComparison.CurrentCultureIgnoreCase) && result.Length == 0)
             {
                 result.Length = 1;
