@@ -32,6 +32,13 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().Where(whereExpression).ToList();
         }
+        public List<T> GetPageList<T>(Expression<Func<T, bool>> whereExpression,PageModel page) where T : class, new()
+        {
+            int count = 0;
+            var result= Context.Queryable<T>().Where(whereExpression).ToPageList(page.PageIndex,page.PageSize,ref count);
+            page.PageCount = count;
+            return result;
+        }
         public bool Insert<T>(T insertObj) where T : class, new()
         {
             return this.Context.Insertable(insertObj).ExecuteCommand() > 0;
@@ -98,6 +105,13 @@ namespace SqlSugar
         public List<T> GetList(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().Where(whereExpression).ToList();
+        }
+        public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page)
+        {
+            int count = 0;
+            var result = Context.Queryable<T>().Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
+            page.PageCount = count;
+            return result;
         }
         public bool Insert(T insertObj) 
         {
