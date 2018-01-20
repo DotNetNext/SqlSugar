@@ -40,8 +40,9 @@ namespace OrmTest.Demo
         private static void Subqueryable()
         {
             var db = GetInstance();
-            var getAll11 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s=>s.Id)==1).ToList();
-
+            var i = 0;
+            var getAll11 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s=>s.Id)==i).ToList();
+            var getAll12 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s => s.Id) == 1).ToList();
             var getAll7 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Any()).ToList();
 
             var getAll9 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Count()==1).ToList();
