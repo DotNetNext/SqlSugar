@@ -138,7 +138,7 @@ namespace SqlSugar
             return _exp;
         }
     }
-    public class Expressionable<T, T2, T3,T4> where T : class, new() where T2 : class, new() where T3 : class, new()) where T3 : class, new()
+    public class Expressionable<T, T2, T3,T4> where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new()
     {
         Expression<Func<T, T2, T3,T4, bool>> _exp = null;
 
@@ -197,7 +197,7 @@ namespace SqlSugar
         {
             return new Expressionable<T, T2,T3>();
         }
-        public static Expressionable<T, T2, T3,T4> Create<T, T2, T3,T4>() where T : class, new() where T2 : class, new() where T3 : class, new()
+        public static Expressionable<T, T2, T3,T4> Create<T, T2, T3,T4>() where T : class, new() where T2 : class, new() where T3 : class, new() where T4: class, new()
         {
             return new Expressionable<T, T2, T3,T4>();
         }
