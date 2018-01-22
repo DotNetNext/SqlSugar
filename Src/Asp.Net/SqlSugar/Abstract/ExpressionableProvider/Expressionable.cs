@@ -8,7 +8,7 @@ namespace SqlSugar
 {
     public class Expressionable<T> where T : class, new()
     {
-        Expression<Func<T, bool>> _exp = it=>true;
+        Expression<Func<T, bool>> _exp = null;
 
         public Expressionable<T> And(Expression<Func<T, bool>> exp)
         {
@@ -45,6 +45,8 @@ namespace SqlSugar
 
         public Expression<Func<T, bool>> ToExpression()
         {
+            if (_exp == null)
+                _exp = it => true;
             return _exp;
         }
     }
