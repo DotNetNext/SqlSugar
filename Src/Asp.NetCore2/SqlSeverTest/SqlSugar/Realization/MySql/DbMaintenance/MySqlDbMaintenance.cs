@@ -179,7 +179,7 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override bool CreateTable(string tableName, List<DbColumnInfo> columns,bool isCreatePrimaryKey=true)
+        public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
             {
@@ -193,8 +193,8 @@ namespace SqlSugar
             }
             string sql = GetCreateTableSql(tableName, columns);
             string primaryKeyInfo = null;
-            if (columns.Any(it => it.IsIdentity)) {
-                primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsIdentity).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
+            if (columns.Any(it => it.IsPrimarykey)) {
+                primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsPrimarykey).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
 
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);

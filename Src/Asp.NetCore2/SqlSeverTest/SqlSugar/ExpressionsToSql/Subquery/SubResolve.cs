@@ -25,7 +25,11 @@ namespace SqlSugar
             if (context.IsSingle && oppsiteExpression != null && oppsiteExpression is MemberExpression)
             {
                 var childExpression = (oppsiteExpression as MemberExpression).Expression;
-                this.context.SingleTableNameSubqueryShortName = (childExpression as ParameterExpression).Name;
+                if (childExpression is ParameterExpression)
+                    this.context.SingleTableNameSubqueryShortName = (childExpression as ParameterExpression).Name;
+                else {
+                    this.context.SingleTableNameSubqueryShortName = (context.Expression as LambdaExpression).Parameters.First().Name;
+                }
             }
             else if (context.IsSingle)
             {

@@ -224,8 +224,14 @@ namespace SqlSugar
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length,
-                DecimalDigits=item.DecimalDigits
+                DecimalDigits = item.DecimalDigits
             };
+            GetDbType(item, propertyType, result);
+            return result;
+        }
+
+        protected virtual void GetDbType(EntityColumnInfo item, Type propertyType, DbColumnInfo result)
+        {
             if (!string.IsNullOrEmpty(item.DataType))
             {
                 result.DataType = item.DataType;
@@ -238,7 +244,6 @@ namespace SqlSugar
             {
                 result.DataType = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
             }
-            return result;
         }
 
         protected virtual bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)

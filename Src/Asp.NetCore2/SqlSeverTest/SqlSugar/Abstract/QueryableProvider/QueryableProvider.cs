@@ -1430,7 +1430,7 @@ namespace SqlSugar
         }
         public new ISugarQueryable<T, T2> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
         {
-            if (IsCache)
+            if (isCache)
             {
                 this.IsCache = true;
                 this.CacheTime = cacheDurationInSeconds;

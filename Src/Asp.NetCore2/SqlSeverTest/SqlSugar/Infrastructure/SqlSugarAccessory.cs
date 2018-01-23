@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public partial class SqlSugarAccessory
+    public partial class SqlSugarClient
     {
         #region Properties
         public SqlSugarClient Context
@@ -54,7 +54,7 @@ namespace SqlSugar
 
         #region Fields
         protected ISqlBuilder _SqlBuilder;
-        public SqlSugarClient _Context { get; set; }
+        protected SqlSugarClient _Context { get; set; }
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
@@ -62,6 +62,28 @@ namespace SqlSugar
         protected IDbMaintenance _DbMaintenance;
         protected QueryFilterProvider _QueryFilterProvider;
         protected SimpleClient _SimpleClient;
+        protected IAdo ContextAdo
+        {
+            get
+            {
+                return this.Context._Ado;
+            }
+            set
+            {
+                this.Context._Ado = value;
+            }
+        }
+        protected IContextMethods ContextRewritableMethods
+        {
+            get
+            {
+                return this.Context._RewritableMethods;
+            }
+            set
+            {
+                this.Context._RewritableMethods = value;
+            }
+        }
         #endregion
 
         #region Init mppingInfo
@@ -124,7 +146,7 @@ namespace SqlSugar
         }
         #endregion
 
-        protected void InitMppingInfo<T>()
+        internal void InitMppingInfo<T>()
         {
             InitMppingInfo(typeof(T));
         }

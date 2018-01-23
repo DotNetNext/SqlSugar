@@ -359,7 +359,7 @@ namespace SqlSugar
             isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;
             isMemberValue = expression.Expression != null && expression.Expression.NodeType != ExpressionType.Parameter && !isValueBool;
-            isSingle = parameter.Context.ResolveType == ResolveExpressType.WhereSingle;
+            isSingle = parameter.Context.ResolveType.IsIn(ResolveExpressType.WhereSingle, ResolveExpressType.SelectSingle, ResolveExpressType.FieldSingle, ResolveExpressType.ArraySingle);
             fieldIsBool = isBool && isLogicOperator && (parameter.BaseParameter == null || !(parameter.BaseParameter.CurrentExpression is MemberInitExpression || parameter.BaseParameter.CurrentExpression is NewExpression));
             var isSelect = this.Context.ResolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple);
             isSelectField = isSelect && isRoot;

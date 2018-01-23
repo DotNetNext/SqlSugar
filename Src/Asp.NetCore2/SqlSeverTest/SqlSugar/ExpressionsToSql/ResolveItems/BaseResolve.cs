@@ -415,7 +415,12 @@ namespace SqlSugar
                     }
                     else
                     {
-                        asName = this.Context.GetTranslationText(item.Type.Name + "." + property.Name);
+                        var fieldName = property.Name;
+                        var mappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == item.Type.Name && it.PropertyName.Equals(fieldName, StringComparison.CurrentCultureIgnoreCase));
+                        if (mappingInfo.HasValue()) {
+                            fieldName = mappingInfo.DbColumnName;
+                        }
+                        asName = this.Context.GetTranslationText(item.Type.Name + "." + fieldName);
                         var columnName = property.Name;
                         if (Context.IsJoin)
                         {
