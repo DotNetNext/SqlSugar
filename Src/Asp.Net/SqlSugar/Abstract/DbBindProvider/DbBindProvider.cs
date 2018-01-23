@@ -187,7 +187,7 @@ namespace SqlSugar
                 {
                     return GetKeyValueList<T>(type, dataReader);
                 }
-                else if (type.IsValueType() || type == UtilConstants.StringType)
+                else if (type.IsValueType() || type == UtilConstants.StringType||type== UtilConstants.ByteArrayType)
                 {
                     return GetValueTypeList<T>(type, dataReader);
                 }
