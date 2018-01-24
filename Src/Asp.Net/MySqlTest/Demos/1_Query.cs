@@ -198,6 +198,7 @@ namespace OrmTest.Demo
         public static void Easy()
         {
             var db = GetInstance();
+            var dbTime = db.GetDate();
             var getAll = db.Queryable<Student>().ToList();
             var getTop2 = db.Queryable<Student>().Take(2).ToList();//TOP2
             var getLike = db.Queryable<Student>().Where(it => it.Name.Contains("a")).ToList();

@@ -93,6 +93,14 @@ namespace SqlSugar
 
         #region Queryable
         /// <summary>
+        /// Get datebase time
+        /// </summary>
+        /// <returns></returns>
+        public DateTime GetDate() {
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            return this.Ado.GetDateTime(sqlBuilder.FullSqlDateNow);
+        }
+        /// <summary>
         /// Lambda Query operation
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>() where T : class, new()
