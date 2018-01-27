@@ -45,7 +45,7 @@ namespace SqlSugar
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
                 return asyncUpdateable.ExecuteCommand();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public Task<bool> ExecuteCommandHasChangeAsync()
@@ -55,7 +55,7 @@ namespace SqlSugar
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
                 return asyncUpdateable.ExecuteCommand() > 0;
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public IUpdateable<T> AS(string tableName)
@@ -354,6 +354,14 @@ namespace SqlSugar
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+        private void TaskStart<Type>(Task<Type> result)
+        {
+            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+            {
+                Check.Exception(true, "IsShardSameThread=true can't be used async method");
+            }
+            result.Start();
         }
         private IUpdateable<T> CopyUpdateable()
         {

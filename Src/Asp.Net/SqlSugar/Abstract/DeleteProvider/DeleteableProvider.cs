@@ -42,9 +42,10 @@ namespace SqlSugar
                 IDeleteable<T> asyncDeleteable = CopyDeleteable();
                 return asyncDeleteable.ExecuteCommand();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
+
         public Task<bool> ExecuteCommandHasChangeAsync()
         {
             Task<bool> result = new Task<bool>(() =>
@@ -52,7 +53,7 @@ namespace SqlSugar
                 IDeleteable<T> asyncDeleteable = CopyDeleteable();
                 return asyncDeleteable.ExecuteCommand() > 0;
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public IDeleteable<T> AS(string tableName)
@@ -269,6 +270,14 @@ namespace SqlSugar
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+
+        private void TaskStart<Type>(Task<Type> result)
+        {
+            if (this.Context.CurrentConnectionConfig.IsShardSameThread) {
+                Check.Exception(true, "IsShardSameThread=true can't be used async method");
+            }
+            result.Start();
         }
 
         private void AutoRemoveDataCache()
