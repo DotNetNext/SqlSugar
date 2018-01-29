@@ -109,6 +109,9 @@ namespace SqlSugar
             }
             // fetch the root object reference:
             var constExpr = expression as ConstantExpression;
+            if (constExpr == null) {
+                return DynamicInvoke(rootExpression);
+            }
             object objReference = constExpr.Value;
             // "ascend" back whence we came from and resolve object references along the way:
             while (memberInfos.Count > 0)  // or some other break condition
