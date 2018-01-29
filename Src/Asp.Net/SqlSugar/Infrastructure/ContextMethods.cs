@@ -396,11 +396,15 @@ namespace SqlSugar
                             var isLast = index == (item.ConditionalList.Count - 1);
                             if (isFirst)
                             {
-                                builder.Append(" AND( ");
+                                builder.AppendFormat(" {0} ( ", con.Key.ToString().ToUpper());
                             }
                             List<IConditionalModel> conModels = new List<IConditionalModel>();
                             conModels.Add(con.Value);
                             var childSqlInfo = ConditionalModelToSql(conModels,1000*(1+index));
+                            if (!isFirst) {
+
+                                builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
+                            }
                             builder.Append(childSqlInfo.Key);
                             parameters.AddRange(childSqlInfo.Value);
                             if (isLast)
@@ -409,7 +413,6 @@ namespace SqlSugar
                             }
                             else {
 
-                                builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
                             }
                         }
                     }
