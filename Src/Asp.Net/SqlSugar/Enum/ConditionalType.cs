@@ -18,6 +18,7 @@ namespace SqlSugar
         LikeLeft=8,
         LikeRight=9,
         NoEqual=10,
-        IsNullOrEmpty=11
+        IsNullOrEmpty=11,
+        IsNot=12
     }
 }
