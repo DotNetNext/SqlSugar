@@ -7,8 +7,16 @@ Email:610262374@qq.com
 QQ Group:225982985
 
 ## Nuget 
-Install-Package sqlSugar  (MySql、SqlServer、Sqlite、Oracle)  
-Install-Package sqlSugarCore  (MySql、SqlServer、sqlite、Oracle)
+支持：MySql、SqlServer、Sqlite、Oracle
+
+.net版本安装：
+```
+Install-Package sqlSugar 
+```
+.net core版本安装：
+```
+Install-Package sqlSugarCore
+```
 
 ## Here's the history version
 https://github.com/sunkaixuan/SqlSugar/tree/master
