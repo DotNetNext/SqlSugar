@@ -7,13 +7,13 @@ Email:610262374@qq.com
 QQ Group:225982985
 
 ## Nuget 
-支持：MySql、SqlServer、Sqlite、Oracle
+Support：MySql、SqlServer、Sqlite、Oracle
 
-.net版本安装：
+.net Install：
 ```
 Install-Package sqlSugar 
 ```
-.net core版本安装：
+.net core Install：
 ```
 Install-Package sqlSugarCore
 ```
