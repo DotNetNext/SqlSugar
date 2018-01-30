@@ -39,6 +39,10 @@ namespace SqlSugar
             page.PageCount = count;
             return result;
         }
+        public bool IsAny<T>(Expression<Func<T, bool>> whereExpression) where T : class, new()
+        {
+            return Context.Queryable<T>().Where(whereExpression).Any();
+        }
         public bool Insert<T>(T insertObj) where T : class, new()
         {
             return this.Context.Insertable(insertObj).ExecuteCommand() > 0;
@@ -112,6 +116,10 @@ namespace SqlSugar
             var result = Context.Queryable<T>().Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
+        }
+        public bool IsAny(Expression<Func<T, bool>> whereExpression)
+        {
+            return Context.Queryable<T>().Where(whereExpression).Any();
         }
         public bool Insert(T insertObj) 
         {
