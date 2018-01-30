@@ -636,6 +636,11 @@ namespace SqlSugar
             if (this.Context.Ado != null)
                 this.Context.Ado.Close();
         }
+        public virtual void Open()
+        {
+            if (this.Context.Ado != null)
+                this.Context.Ado.Open();
+        }
         public virtual void Dispose()
         {
             if (this.Context.Ado != null)
