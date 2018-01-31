@@ -140,6 +140,7 @@ namespace OrmTest.Demo
             var t1 = db.Ado.SqlQuery<string>("select 'a'  from dual");
             var t2 = db.Ado.GetInt("select 1  from dual");
             var t3 = db.Ado.GetDataTable("select 1 as id  from dual");
+            var sqlPage = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
             db.Ado.CommitTran();
             //more
             //db.Ado.GetXXX...
