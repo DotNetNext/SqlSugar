@@ -400,7 +400,10 @@ namespace SqlSugar
                 reval = this.SelectValue.ObjToString();
                 this.SelectCacheKey = reval;
             }
-
+            if (reval.IsNullOrEmpty())
+            {
+                reval = "*";
+            }
             return reval;
         }
         public virtual string GetWhereValueString

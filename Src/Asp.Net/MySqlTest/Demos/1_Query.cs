@@ -216,6 +216,7 @@ namespace OrmTest.Demo
             var date = db.Queryable<Student>().Where(it => it.CreateTime.Value.Date ==DateTime.Now.Date).ToList();
             var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
             var getListByRename = db.Queryable<School>().AS("Student").ToList();
+            var asCount = db.Queryable<object>().AS("student").Count();
             var in1 = db.Queryable<Student>().In(it => it.Id, new int[] { 1, 2, 3 }).ToList();
             var in2 = db.Queryable<Student>().In(new int[] { 1, 2, 3 }).ToList();
             int[] array = new int[] { 1, 2 };
