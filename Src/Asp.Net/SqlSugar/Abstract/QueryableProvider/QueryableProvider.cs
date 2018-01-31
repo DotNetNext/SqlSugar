@@ -354,22 +354,22 @@ namespace SqlSugar
             QueryBuilder.Skip = null;
             QueryBuilder.Take = null;
             QueryBuilder.OrderByValue = null;
-            var reval = this.ToList();
+            var result = this.ToList();
             QueryBuilder.Skip = oldSkip;
             QueryBuilder.Take = oldTake;
             QueryBuilder.OrderByValue = oldOrderBy;
-            if (reval == null || reval.Count == 0)
+            if (result == null || result.Count == 0)
             {
                 return default(T);
             }
-            else if (reval.Count == 2)
+            else if (result.Count == 2)
             {
                 Check.Exception(true, ".Single()  result must not exceed one . You can use.First()");
                 return default(T);
             }
             else
             {
-                return reval.SingleOrDefault();
+                return result.SingleOrDefault();
             }
         }
         public virtual T Single(Expression<Func<T, bool>> expression)
@@ -395,9 +395,9 @@ namespace SqlSugar
             {
                 QueryBuilder.Skip = 0;
                 QueryBuilder.Take = 1;
-                var reval = this.ToList();
-                if (reval.HasValue())
-                    return reval.FirstOrDefault();
+                var result = this.ToList();
+                if (result.HasValue())
+                    return result.FirstOrDefault();
                 else
                     return default(T);
             }
@@ -428,11 +428,11 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue)
         {
-            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
-            reval.Context = this.Context;
-            reval.SqlBuilder = this.SqlBuilder;
+            var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.SqlBuilder = this.SqlBuilder;
             QueryBuilder.SelectValue = selectValue;
-            return reval;
+            return result;
         }
         public virtual ISugarQueryable<T> Select(string selectValue)
         {
@@ -484,8 +484,8 @@ namespace SqlSugar
         public virtual TResult Max<TResult>(string maxField)
         {
             this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Max<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -495,8 +495,8 @@ namespace SqlSugar
         public virtual TResult Min<TResult>(string minField)
         {
             this.Select(string.Format(QueryBuilder.MinTemplate, minField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Min<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -506,8 +506,8 @@ namespace SqlSugar
         public virtual TResult Sum<TResult>(string sumField)
         {
             this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Sum<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -517,8 +517,8 @@ namespace SqlSugar
         public virtual TResult Avg<TResult>(string avgField)
         {
             this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Avg<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -942,12 +942,12 @@ namespace SqlSugar
         }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
-            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
-            reval.Context = this.Context;
-            reval.SqlBuilder = this.SqlBuilder;
-            reval.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            reval.SqlBuilder.QueryBuilder.SelectValue = expression;
-            return reval;
+            var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.SqlBuilder = this.SqlBuilder;
+            result.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
+            result.SqlBuilder.QueryBuilder.SelectValue = expression;
+            return result;
         }
         protected void _Where(Expression expression)
         {
@@ -1077,8 +1077,8 @@ namespace SqlSugar
             ToSqlBefore();
             sql = QueryBuilder.ToSqlString();
             sql = QueryBuilder.ToCountSql(sql);
-            var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
-            return reval;
+            var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            return result;
         }
 
         private void ToSqlBefore()

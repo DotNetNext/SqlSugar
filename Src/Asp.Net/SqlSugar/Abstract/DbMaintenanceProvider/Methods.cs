@@ -211,9 +211,9 @@ namespace SqlSugar
              {
                  var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
                  this.Context.Ado.IsEnableLogEvent = false;
-                 var reval = this.Context.Ado.SqlQuery<T>(sql);
+                 var result = this.Context.Ado.SqlQuery<T>(sql);
                  this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
-                 return reval;
+                 return result;
              });
         }
         protected virtual string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)

@@ -71,20 +71,20 @@ namespace SqlSugar
         {
             get
             {
-                string reval = string.Empty;
+                string result = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {
-                    reval = GetSelectValueByString();
+                    result = GetSelectValueByString();
                 }
                 else
                 {
-                    reval = GetSelectValueByExpression();
+                    result = GetSelectValueByExpression();
                 }
                 if (this.SelectType == ResolveExpressType.SelectMultiple)
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
                 }
-                return reval;
+                return result;
             }
         }
 

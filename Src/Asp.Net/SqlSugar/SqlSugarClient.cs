@@ -55,10 +55,10 @@ namespace SqlSugar
             {
                 if (this.ContextAdo == null)
                 {
-                    var reval = InstanceFactory.GetAdo(this.Context.CurrentConnectionConfig);
-                    this.ContextAdo = reval;
-                    reval.Context = this.Context;
-                    return reval;
+                    var result = InstanceFactory.GetAdo(this.Context.CurrentConnectionConfig);
+                    this.ContextAdo = result;
+                    result.Context = this.Context;
+                    return result;
                 }
                 return this.Context._Ado;
             }
@@ -409,8 +409,8 @@ namespace SqlSugar
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
             InitMppingInfo<T>();
-            InsertableProvider<T> reval = this.CreateInsertable(insertObjs);
-            return reval;
+            InsertableProvider<T> result = this.CreateInsertable(insertObjs);
+            return result;
         }
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
@@ -450,8 +450,8 @@ namespace SqlSugar
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             InitMppingInfo<T>();
-            DeleteableProvider<T> reval = this.CreateDeleteable<T>();
-            return reval;
+            DeleteableProvider<T> result = this.CreateDeleteable<T>();
+            return result;
         }
         public virtual IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
@@ -489,8 +489,8 @@ namespace SqlSugar
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             InitMppingInfo<T>();
-            UpdateableProvider<T> reval = this.CreateUpdateable(UpdateObjs);
-            return reval;
+            UpdateableProvider<T> result = this.CreateUpdateable(UpdateObjs);
+            return result;
         }
         public virtual IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new()
         {
