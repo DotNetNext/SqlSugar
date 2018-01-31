@@ -25,14 +25,14 @@ namespace SqlSugar
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
 
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
-        ISugarQueryable<T> Where(string whereString, object whereObj = null);
+        ISugarQueryable<T> Where(string whereString, object parameters = null);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);
 
         ISugarQueryable<T> Having(Expression<Func<T, bool>> expression);
-        ISugarQueryable<T> Having(string whereString, object whereObj = null);
+        ISugarQueryable<T> Having(string whereString, object parameters = null);
 
         ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
-        ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object parameters = null);
 
         T InSingle(object pkValue);
         ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues);
