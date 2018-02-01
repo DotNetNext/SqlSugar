@@ -2,12 +2,13 @@
 
 In addition to EF, the most powerful ORM
 
+Support：MySql、SqlServer、Sqlite、Oracle
+
 ## Contactinfomation  
 Email:610262374@qq.com 
 QQ Group:225982985
 
 ## Nuget 
-Support：MySql、SqlServer、Sqlite、Oracle
 
 .net Install：
 ```
