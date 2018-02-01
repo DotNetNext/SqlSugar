@@ -19,6 +19,8 @@ namespace SqlSugar
                 case ResolveExpressType.FieldMultiple:
                 case ResolveExpressType.SelectSingle:
                 case ResolveExpressType.SelectMultiple:
+                case ResolveExpressType.ArraySingle:
+                case ResolveExpressType.ArrayMultiple:
                 case ResolveExpressType.Update:
                     var nodeType = expression.NodeType;
                     base.Expression = expression.Operand;
