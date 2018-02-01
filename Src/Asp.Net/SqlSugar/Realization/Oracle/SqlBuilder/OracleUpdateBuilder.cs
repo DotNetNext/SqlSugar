@@ -25,7 +25,7 @@ namespace SqlSugar
                     whereString += GetOracleUpdateColums(item);
                     whereList.Add(whereString);
                 }
-                return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("AND",whereList));
+                return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("",whereList));
             }).ToArray()));
             sb.AppendLine("End;");
             return sb.ToString();

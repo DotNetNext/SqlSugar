@@ -117,7 +117,7 @@ namespace SqlSugar
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
             {
-                this.WhereColumnList.Add(this.Context.EntityMaintenance.GetDbColumnName<T>(item));
+                this.WhereColumnList.Add(item);
             }
             return this;
         }
