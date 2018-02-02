@@ -24,7 +24,7 @@ https://github.com/sunkaixuan/SqlSugar/tree/master
 
 
 
-#Demo
+# Let's look at a DEMO first
 ```
 //创建一个DbContext类，使用DbSet(或者SimpleClient)
 public class DbContext
@@ -65,7 +65,7 @@ public class Business : DbContext
 }
 ```
 
-
+# Detailed usage introduction
 
 ##  1. Query
 
