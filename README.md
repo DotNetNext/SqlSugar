@@ -66,6 +66,7 @@ public class Business : DbContext
 }
 ```
 SimpleClient encapsulates common operations
+
 Transaction or multi table operation use SqlSugarClient
 
 # Detailed usage introduction
