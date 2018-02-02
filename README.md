@@ -26,7 +26,7 @@ https://github.com/sunkaixuan/SqlSugar/tree/master
 
 # Let's look at a DEMO first
 ```
-//创建一个DbContext类，使用DbSet(或者SimpleClient)
+//Create DbContext 
 public class DbContext
 {
     public SqlSugarClient db;
@@ -44,6 +44,7 @@ public class DbContext
 }
 public class Business : DbContext
 {
+    //use DbContext
     public void GetAll()
     {
 
