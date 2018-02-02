@@ -22,6 +22,51 @@ Install-Package sqlSugarCore
 ## Here's the history version
 https://github.com/sunkaixuan/SqlSugar/tree/master
 
+
+
+#Demo
+```
+//创建一个DbContext类，使用DbSet(或者SimpleClient)
+public class DbContext
+{
+    public SqlSugarClient db;
+    public DbContext()
+    {
+        db = new SqlSugarClient(new ConnectionConfig()
+        {
+            ConnectionString = Config.ConnectionString,
+            DbType = DbType.Oracle,
+            IsAutoCloseConnection = true
+        });
+    }
+    public SimpleClient<Student> StudentDb { get { return new SimpleClient<Student>(db); } }
+    public SimpleClient<School> SchoolDb { get { return new SimpleClient<School>(db); } }
+}
+public class Business : DbContext
+{
+    public void GetAll()
+    {
+
+        //use db get student list
+        List<Student> list= db.Queryable<Student>().ToList();
+
+        //use  StudentDb get student list
+        List<Student> list2=StudentDb.GetList();
+        //StudentDb.GetById
+        //StudentDb.Delete
+        //StudentDb.Update
+        //StudentDb.Insert
+        //StudentDb.GetPageList
+        //....
+        //SchoolDb.GetById
+        //....
+
+    }
+}
+```
+
+
+
 ##  1. Query
 
 ### 1.1 Create Connection
