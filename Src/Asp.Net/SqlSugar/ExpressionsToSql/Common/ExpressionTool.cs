@@ -148,6 +148,10 @@ namespace SqlSugar
 
         public static object GetFiledValue(MemberExpression memberExpr)
         {
+            if (!(memberExpr.Member is FieldInfo))
+            {
+                return DynamicInvoke(memberExpr);
+            }
             object reval = null;
             FieldInfo field = (FieldInfo)memberExpr.Member;
             Check.Exception(field.IsPrivate, string.Format(" Field \"{0}\" can't be private ", field.Name));
@@ -192,6 +196,10 @@ namespace SqlSugar
 
         public static object GetPropertyValue(MemberExpression memberExpr)
         {
+            if (!(memberExpr.Member is PropertyInfo))
+            {
+                return DynamicInvoke(memberExpr);
+            }
             object reval = null;
             PropertyInfo pro = (PropertyInfo)memberExpr.Member;
             reval = pro.GetValue(memberExpr.Member, null);
