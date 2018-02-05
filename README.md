@@ -29,7 +29,6 @@ https://github.com/sunkaixuan/SqlSugar/tree/master
 //Create DbContext 
 public class DbContext
 {
-    public SqlSugarClient db;
     public DbContext()
     {
         db = new SqlSugarClient(new ConnectionConfig()
@@ -39,8 +38,9 @@ public class DbContext
             IsAutoCloseConnection = true
         });
     }
-    public SimpleClient<Student> StudentDb { get { return new SimpleClient<Student>(db); } }
-    public SimpleClient<School> SchoolDb { get { return new SimpleClient<School>(db); } }
+    public SqlSugarClient Db;
+    public SimpleClient<Student> StudentDb { get { return new SimpleClient<Student>(Db); } }
+    public SimpleClient<School> SchoolDb { get { return new SimpleClient<School>(Db); } }
 }
 public class Business : DbContext
 {
@@ -48,8 +48,8 @@ public class Business : DbContext
     public void GetAll()
     {
 
-        //use db get student list
-        List<Student> list= db.Queryable<Student>().ToList();
+        //use Db get student list
+        List<Student> list= Db.Queryable<Student>().ToList();
 
         //use  StudentDb get student list
         List<Student> list2=StudentDb.GetList();
@@ -65,6 +65,9 @@ public class Business : DbContext
     }
 }
 ```
+SimpleClient encapsulates common operations
+
+Transaction or multi table operation use SqlSugarClient
 
 # Detailed usage introduction
 
