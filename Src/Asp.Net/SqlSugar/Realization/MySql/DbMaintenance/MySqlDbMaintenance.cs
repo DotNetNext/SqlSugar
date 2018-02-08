@@ -193,7 +193,7 @@ namespace SqlSugar
             }
             string sql = GetCreateTableSql(tableName, columns);
             string primaryKeyInfo = null;
-            if (columns.Any(it => it.IsPrimarykey)) {
+            if (columns.Any(it => it.IsPrimarykey)&&isCreatePrimaryKey) {
                 primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsPrimarykey).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
 
             }
