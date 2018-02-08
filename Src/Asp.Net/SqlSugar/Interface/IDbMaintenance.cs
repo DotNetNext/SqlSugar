@@ -9,15 +9,15 @@ namespace SqlSugar
         SqlSugarClient Context { get; set; }
 
         #region DML
-        List<DbTableInfo> GetViewInfoList();
-        List<DbTableInfo> GetTableInfoList();
-        List<DbColumnInfo> GetColumnInfosByTableName(string tableName);
+        List<DbTableInfo> GetViewInfoList(bool isCache=true);
+        List<DbTableInfo> GetTableInfoList(bool isCache=true);
+        List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true);
         List<string> GetIsIdentities(string tableName);
         List<string> GetPrimaries(string tableName);
         #endregion
 
         #region Check
-        bool IsAnyTable(string tableName);
+        bool IsAnyTable(string tableName, bool isCache = true);
         bool IsAnyColumn(string tableName, string column);
         bool IsPrimaryKey(string tableName, string column);
         bool IsIdentity(string tableName, string column);

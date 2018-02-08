@@ -172,43 +172,52 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
+            if (!isCache)
+                return GetColumnInfosByTableName(tableName);
+            else
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
                     () =>
                     {
-                        string sql = "select * from " + tableName + " WHERE 1=2 ";
-                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
-                        this.Context.Ado.IsEnableLogEvent = false;
-                        using (DbDataReader reader = (DbDataReader)this.Context.Ado.GetDataReader(sql))
-                        {
-                            this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
-                            List<DbColumnInfo> result = new List<DbColumnInfo>();
-                            var schemaTable = reader.GetSchemaTable();
-                            foreach (DataRow row in schemaTable.Rows)
-                            {
-                                DbColumnInfo column = new DbColumnInfo()
-                                {
-                                    TableName = tableName,
-                                    DataType = row["DataType"].ToString().Replace("System.", "").Trim(),
-                                    IsNullable = (bool)row["AllowDBNull"],
-                                    //IsIdentity = (bool)row["IsAutoIncrement"],
-                                    ColumnDescription = GetFieldComment(tableName, row["ColumnName"].ToString()),
-                                    DbColumnName = row["ColumnName"].ToString(),
-                                    //DefaultValue = row["defaultValue"].ToString(),
-                                    IsPrimarykey = GetPrimaryKeyByTableNames(tableName).Any(it => it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
-                                    Length = row["ColumnSize"].ObjToInt(),
-                                    Scale = row["numericscale"].ObjToInt()
-                                };
-                                result.Add(column);
-                            }
-                            return result;
-                        }
+                        return GetColumnInfosByTableName(tableName);
 
                     });
         }
+
+        private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            string sql = "select * from " + tableName + " WHERE 1=2 ";
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            using (DbDataReader reader = (DbDataReader)this.Context.Ado.GetDataReader(sql))
+            {
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                List<DbColumnInfo> result = new List<DbColumnInfo>();
+                var schemaTable = reader.GetSchemaTable();
+                foreach (DataRow row in schemaTable.Rows)
+                {
+                    DbColumnInfo column = new DbColumnInfo()
+                    {
+                        TableName = tableName,
+                        DataType = row["DataType"].ToString().Replace("System.", "").Trim(),
+                        IsNullable = (bool)row["AllowDBNull"],
+                        //IsIdentity = (bool)row["IsAutoIncrement"],
+                        ColumnDescription = GetFieldComment(tableName, row["ColumnName"].ToString()),
+                        DbColumnName = row["ColumnName"].ToString(),
+                        //DefaultValue = row["defaultValue"].ToString(),
+                        IsPrimarykey = GetPrimaryKeyByTableNames(tableName).Any(it => it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
+                        Length = row["ColumnSize"].ObjToInt(),
+                        Scale = row["numericscale"].ObjToInt()
+                    };
+                    result.Add(column);
+                }
+                return result;
+            }
+        }
+
         private List<string> GetPrimaryKeyByTableNames(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();

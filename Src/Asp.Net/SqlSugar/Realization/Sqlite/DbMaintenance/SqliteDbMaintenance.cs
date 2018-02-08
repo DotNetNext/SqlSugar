@@ -164,41 +164,50 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
+            if (!isCache)
+            {
+                return GetColumnInfosByTableName(tableName);
+            }
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                    () =>
-                    {
-                        string sql = "select * from " + tableName + " limit 0,1";
-                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
-                        this.Context.Ado.IsEnableLogEvent = false;
-                        using (DbDataReader reader = (SQLiteDataReader)this.Context.Ado.GetDataReader(sql))
-                        {
-                            this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
-                            List<DbColumnInfo> result = new List<DbColumnInfo>();
-                            var schemaTable = reader.GetSchemaTable();
-                            foreach (DataRow row in schemaTable.Rows)
-                            {
-                                DbColumnInfo column = new DbColumnInfo()
-                                {
-                                    TableName = tableName,
-                                    DataType = row["DataTypeName"].ToString().Trim(),
-                                    IsNullable = (bool)row["AllowDBNull"],
-                                    IsIdentity = (bool)row["IsAutoIncrement"],
-                                    ColumnDescription = null,
-                                    DbColumnName = row["ColumnName"].ToString(),
-                                    DefaultValue = row["defaultValue"].ToString(),
-                                    IsPrimarykey = (bool)row["IsKey"],
-                                    Length = Convert.ToInt32(row["ColumnSize"])
-                                };
-                                result.Add(column);
-                            }
-                            return result;
-                        }
+            () =>
+                 {
+                     return GetColumnsByTableName(tableName);
 
-                    });
+                 });
+        }
+
+        private List<DbColumnInfo> GetColumnsByTableName(string tableName)
+        {
+            string sql = "select * from " + tableName + " limit 0,1";
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            using (DbDataReader reader = (SQLiteDataReader)this.Context.Ado.GetDataReader(sql))
+            {
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                List<DbColumnInfo> result = new List<DbColumnInfo>();
+                var schemaTable = reader.GetSchemaTable();
+                foreach (DataRow row in schemaTable.Rows)
+                {
+                    DbColumnInfo column = new DbColumnInfo()
+                    {
+                        TableName = tableName,
+                        DataType = row["DataTypeName"].ToString().Trim(),
+                        IsNullable = (bool)row["AllowDBNull"],
+                        IsIdentity = (bool)row["IsAutoIncrement"],
+                        ColumnDescription = null,
+                        DbColumnName = row["ColumnName"].ToString(),
+                        DefaultValue = row["defaultValue"].ToString(),
+                        IsPrimarykey = (bool)row["IsKey"],
+                        Length = Convert.ToInt32(row["ColumnSize"])
+                    };
+                    result.Add(column);
+                }
+                return result;
+            }
         }
 
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
@@ -219,8 +228,9 @@ namespace SqlSugar
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
-            if (!isCreatePrimaryKey) {
-                sql = sql.Replace("PRIMARY KEY AUTOINCREMENT","").Replace("PRIMARY KEY", "");
+            if (!isCreatePrimaryKey)
+            {
+                sql = sql.Replace("PRIMARY KEY AUTOINCREMENT", "").Replace("PRIMARY KEY", "");
             }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
@@ -239,7 +249,7 @@ namespace SqlSugar
                 }
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey = item.IsPrimarykey?this.CreateTablePirmaryKey:null;
+                string primaryKey = item.IsPrimarykey ? this.CreateTablePirmaryKey : null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
                 columnArray.Add(addItem);
