@@ -259,6 +259,11 @@ namespace SqlSugar
             return comments.HasValue() ? comments.First(it=>it.DbColumnName.Equals(filedName,StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
 
         }
+
+        public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

@@ -20,7 +20,7 @@ namespace SqlSugar
                     columns.Add(dbColumnInfo);
                 }
             }
-            this.Context.DbMaintenance.CreateTable(tableName, columns);
+            this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {

@@ -87,12 +87,7 @@ namespace SqlSugar
                     columns.Add(dbColumnInfo);
                 }
             }
-            this.Context.DbMaintenance.CreateTable(tableName, columns);
-            var pkColumns = entityInfo.Columns.Where(it => it.IsPrimarykey).ToList();
-            foreach (var item in pkColumns)
-            {
-                this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
-            }
+            this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
         public virtual void ExistLogic(EntityInfo entityInfo)
         {

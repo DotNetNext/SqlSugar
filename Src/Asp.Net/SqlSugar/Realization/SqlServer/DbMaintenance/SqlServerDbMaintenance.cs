@@ -201,5 +201,20 @@ namespace SqlSugar
             }
         }
         #endregion
+
+        public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
+        {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string sql = GetCreateTableSql(tableName, columns);
+            this.Context.Ado.ExecuteCommand(sql);
+            if (isCreatePrimaryKey) {
+                var pkColumns = columns.Where(it => it.IsPrimarykey).ToList();
+                foreach (var item in pkColumns)
+                {
+                    this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                }
+            }
+            return true;
+        }
     }
 }
