@@ -219,6 +219,9 @@ namespace SqlSugar
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
+            if (!isCreatePrimaryKey) {
+                sql = sql.Replace("PRIMARY KEY AUTOINCREMENT","").Replace("PRIMARY KEY", "");
+            }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
