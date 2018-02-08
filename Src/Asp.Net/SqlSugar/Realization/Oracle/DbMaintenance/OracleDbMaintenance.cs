@@ -195,10 +195,10 @@ namespace SqlSugar
                                     DataType = row["DataType"].ToString().Replace("System.", "").Trim(),
                                     IsNullable = (bool)row["AllowDBNull"],
                                     //IsIdentity = (bool)row["IsAutoIncrement"],
-                                    ColumnDescription = null,
+                                    ColumnDescription = GetFieldComment(tableName, row["ColumnName"].ToString()),
                                     DbColumnName = row["ColumnName"].ToString(),
                                     //DefaultValue = row["defaultValue"].ToString(),
-                                    IsPrimarykey = GetPrimaryKeyByTableNames(tableName).Any(it=>it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
+                                    IsPrimarykey = GetPrimaryKeyByTableNames(tableName).Any(it => it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
                                     Length = row["ColumnSize"].ObjToInt(),
                                     Scale = row["numericscale"].ObjToInt()
                                 };
@@ -220,11 +220,44 @@ namespace SqlSugar
                         this.Context.Ado.IsEnableLogEvent = false;
                         string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
                             where cu.constraint_name = au.constraint_name
-                            and au.constraint_type = 'P' and au.table_name = '" +tableName.ToUpper()+ @"'";
+                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper() + @"'";
                         var pks = this.Context.Ado.SqlQuery<string>(sql);
                         this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                         return pks;
                     });
+        }
+
+        public string GetTableComment(string tableName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetTableComment." + tableName;
+            var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                          () =>
+                          {
+                              string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
+                              var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                              this.Context.Ado.IsEnableLogEvent = false;
+                              var pks = this.Context.Ado.SqlQuery<string>(sql,new { tableName=tableName.ToUpper() });
+                              this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                              return pks;
+                          });
+            return comments.HasValue() ? comments.First() : "";
+        }
+
+        public string GetFieldComment(string tableName, string filedName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetFieldComment." + tableName;
+            var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                           () =>
+                           {
+                               string sql = "SELECT TABLE_NAME AS TableName, COLUMN_NAME AS DbColumnName,COMMENTS AS ColumnDescription  FROM user_col_comments   WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
+                               var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                               this.Context.Ado.IsEnableLogEvent = false;
+                               var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql, new { tableName = tableName.ToUpper() });
+                               this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                               return pks;
+                           });
+            return comments.HasValue() ? comments.First(it=>it.DbColumnName.Equals(filedName,StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
+
         }
         #endregion
     }
