@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubGroupBy : ISubOperation
     {
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public string Name
         {
             get { return "GroupBy"; }

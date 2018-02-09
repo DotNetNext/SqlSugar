@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubWhere: ISubOperation
     {
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public string Name
         {
             get { return "Where"; }

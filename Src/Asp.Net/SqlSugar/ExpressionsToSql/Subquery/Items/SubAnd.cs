@@ -31,6 +31,11 @@ namespace SqlSugar
             get;set;
         }
 
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public string GetValue(Expression expression)
         {
             var exp = expression as MethodCallExpression;

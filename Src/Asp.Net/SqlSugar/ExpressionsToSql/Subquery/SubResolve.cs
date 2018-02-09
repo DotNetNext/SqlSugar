@@ -99,8 +99,10 @@ namespace SqlSugar
                 isubList.Add(new SubSelectDefault());
             }
             isubList = isubList.OrderBy(it => it.Sort).ToList();
+            var isHasWhere = isubList.Where(it => it is SubWhere).Any();
             List<string> result = isubList.Select(it =>
             {
+                it.HasWhere = isHasWhere;
                 return it.GetValue(it.Expression);
             }).ToList();
             return result;
