@@ -415,20 +415,20 @@ namespace SqlSugar
                     }
                     else
                     {
-                        var fieldName = property.Name;
-                        var mappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == item.Type.Name && it.PropertyName.Equals(fieldName, StringComparison.CurrentCultureIgnoreCase));
+                        var propertyName = property.Name;
+                        var dbColumnName = propertyName;
+                        var mappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == item.Type.Name && it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
                         if (mappingInfo.HasValue()) {
-                            fieldName = mappingInfo.DbColumnName;
+                            dbColumnName = mappingInfo.DbColumnName;
                         }
-                        asName = this.Context.GetTranslationText(item.Type.Name + "." + fieldName);
-                        var columnName = property.Name;
+                        asName = this.Context.GetTranslationText(item.Type.Name + "." + propertyName);
                         if (Context.IsJoin)
                         {
-                            this.Context.Result.Append(Context.GetAsString(asName, columnName, shortName.ObjToString()));
+                            this.Context.Result.Append(Context.GetAsString(asName, dbColumnName, shortName.ObjToString()));
                         }
                         else
                         {
-                            this.Context.Result.Append(Context.GetAsString(asName, columnName));
+                            this.Context.Result.Append(Context.GetAsString(asName, dbColumnName));
                         }
                     }
                 }
