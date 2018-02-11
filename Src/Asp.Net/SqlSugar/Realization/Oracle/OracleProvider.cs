@@ -16,7 +16,7 @@ namespace SqlSugar
             this.FormatSql = sql =>
             {
                 if (sql.HasValue()&&sql.Contains("@")) {
-                    var exceptionalCaseInfo = Regex.Matches(sql,@"\'.*?\@.*?\'");
+                    var exceptionalCaseInfo = Regex.Matches(sql,@"\'.*?\@.*?\'| \w+\@\w+ ");
                     if (exceptionalCaseInfo != null) {
                         foreach (var item in exceptionalCaseInfo.Cast<Match>())
                         {
