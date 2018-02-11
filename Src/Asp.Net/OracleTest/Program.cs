@@ -40,7 +40,7 @@ namespace OrmTest
             /***Demo***/
             OrmTest.Demo.Query.Init();
             OrmTest.Demo.Insert.Init();
-            OrmTest.Demo.Delete.Init();
+           // OrmTest.Demo.Delete.Init();
             OrmTest.Demo.Update.Init();
             OrmTest.Demo.DbFirst.Init();
             OrmTest.Demo.JoinSql.Init();

@@ -180,9 +180,10 @@ namespace SqlSugar
                 else
                 {
                     var key = typeName + "." + name;
-                    if (readerValues.ContainsKey(key))
+                    var info = readerValues.Select(it=>it.Key).FirstOrDefault(it=>it.ToLower() == key.ToLower());
+                    if (info!=null)
                     {
-                        var addItem = readerValues[key];
+                        var addItem = readerValues[info];
                         if (addItem == DBNull.Value)
                             addItem = null;
                         result.Add(name, addItem);
