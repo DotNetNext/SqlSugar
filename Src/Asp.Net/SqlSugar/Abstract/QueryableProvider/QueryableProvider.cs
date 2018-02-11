@@ -942,6 +942,7 @@ namespace SqlSugar
         }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
+            this.Context.InitMppingInfo<TResult>();
             var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             result.Context = this.Context;
             result.SqlBuilder = this.SqlBuilder;
