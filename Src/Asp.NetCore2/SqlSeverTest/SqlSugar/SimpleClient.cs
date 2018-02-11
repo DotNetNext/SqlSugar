@@ -39,6 +39,17 @@ namespace SqlSugar
             page.PageCount = count;
             return result;
         }
+        public List<T> GetPageList<T>(List<IConditionalModel> conditionalList, PageModel page) where T : class, new()
+        {
+            int count = 0;
+            var result = Context.Queryable<T>().Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
+            page.PageCount = count;
+            return result;
+        }
+        public bool IsAny<T>(Expression<Func<T, bool>> whereExpression) where T : class, new()
+        {
+            return Context.Queryable<T>().Where(whereExpression).Any();
+        }
         public bool Insert<T>(T insertObj) where T : class, new()
         {
             return this.Context.Insertable(insertObj).ExecuteCommand() > 0;
@@ -112,6 +123,17 @@ namespace SqlSugar
             var result = Context.Queryable<T>().Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
+        }
+        public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page)
+        {
+            int count = 0;
+            var result = Context.Queryable<T>().Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
+            page.PageCount = count;
+            return result;
+        }
+        public bool IsAny(Expression<Func<T, bool>> whereExpression)
+        {
+            return Context.Queryable<T>().Where(whereExpression).Any();
         }
         public bool Insert(T insertObj) 
         {

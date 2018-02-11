@@ -37,12 +37,12 @@ namespace SqlSugar
         }
         public virtual string GetConvertString(string dbTypeName)
         {
-            string reval = string.Empty;
+            string result = string.Empty;
             switch (dbTypeName.ToLower())
             {
                 #region Int
                 case "int":
-                    reval = "Convert.ToInt32";
+                    result = "Convert.ToInt32";
                     break;
                 #endregion
 
@@ -53,19 +53,19 @@ namespace SqlSugar
                 case "nvarchar":
                 case "varchar":
                 case "text":
-                    reval = "Convert.ToString";
+                    result = "Convert.ToString";
                     break;
                 #endregion
 
                 #region Long
                 case "bigint":
-                    reval = "Convert.ToInt64";
+                    result = "Convert.ToInt64";
                     break;
                 #endregion
 
                 #region Bool
                 case "bit":
-                    reval = "Convert.ToBoolean";
+                    result = "Convert.ToBoolean";
                     break;
 
                 #endregion
@@ -76,7 +76,7 @@ namespace SqlSugar
                 case "datetime":
                 case "date":
                 case "datetime2":
-                    reval = "Convert.ToDateTime";
+                    result = "Convert.ToDateTime";
                     break;
                 #endregion
 
@@ -86,13 +86,13 @@ namespace SqlSugar
                 case "numeric":
                 case "money":
                 case "decimal":
-                    reval = "Convert.ToDecimal";
+                    result = "Convert.ToDecimal";
                     break;
                 #endregion
 
                 #region Double
                 case "float":
-                    reval = "Convert.ToDouble";
+                    result = "Convert.ToDouble";
                     break;
                 #endregion
 
@@ -100,42 +100,42 @@ namespace SqlSugar
                 case "varbinary":
                 case "binary":
                 case "image":
-                    reval = "byte[]";
+                    result = "byte[]";
                     break;
                 #endregion
 
                 #region Float
                 case "real":
-                    reval = "Convert.ToSingle";
+                    result = "Convert.ToSingle";
                     break;
                 #endregion
 
                 #region Short
                 case "smallint":
-                    reval = "Convert.ToInt16";
+                    result = "Convert.ToInt16";
                     break;
                 #endregion
 
                 #region Byte
                 case "tinyint":
-                    reval = "Convert.ToByte";
+                    result = "Convert.ToByte";
                     break;
 
                 #endregion
 
                 #region Guid
                 case "uniqueidentifier":
-                    reval = "Guid.Parse";
+                    result = "Guid.Parse";
                     break;
                 #endregion
 
                 #region Null
                 default:
-                    reval = null;
+                    result = null;
                     break;
                     #endregion
             }
-            return reval;
+            return result;
         }
         public virtual string GetPropertyTypeName(string dbTypeName)
         {
@@ -187,7 +187,7 @@ namespace SqlSugar
                 {
                     return GetKeyValueList<T>(type, dataReader);
                 }
-                else if (type.IsValueType() || type == UtilConstants.StringType)
+                else if (type.IsValueType() || type == UtilConstants.StringType||type== UtilConstants.ByteArrayType)
                 {
                     return GetValueTypeList<T>(type, dataReader);
                 }

@@ -37,7 +37,7 @@ namespace OrmTest.Demo
         private static void ConditionalModel()
         {
             var db = GetInstance();
-            List<ConditionalModel> conModels = new List<ConditionalModel>();
+            List<IConditionalModel> conModels = new List<IConditionalModel>();
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNullOrEmpty });

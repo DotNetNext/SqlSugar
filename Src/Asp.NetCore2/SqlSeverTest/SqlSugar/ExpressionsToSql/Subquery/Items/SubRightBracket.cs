@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubRightBracket : ISubOperation
     {
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public ExpressionContext Context
         {
             get;set;

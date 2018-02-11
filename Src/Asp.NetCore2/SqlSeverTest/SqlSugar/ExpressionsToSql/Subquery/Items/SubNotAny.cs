@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubNotAny : ISubOperation
     {
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public ExpressionContext Context
         {
             get;set;

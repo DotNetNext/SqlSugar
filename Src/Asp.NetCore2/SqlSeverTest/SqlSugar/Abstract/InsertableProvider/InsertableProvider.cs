@@ -93,7 +93,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteCommand();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public Task<int> ExecuteReturnIdentityAsync()
@@ -103,7 +103,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteReturnIdentity();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public Task<T> ExecuteReturnEntityAsync()
@@ -113,7 +113,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteReturnEntity();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
@@ -123,7 +123,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteCommandIdentityIntoEntity();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public Task<long> ExecuteReturnBigIdentityAsync()
@@ -133,7 +133,7 @@ namespace SqlSugar
                 IInsertable<T> asyncInsertable = CopyInsertable();
                 return asyncInsertable.ExecuteReturnBigIdentity();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         #endregion
@@ -326,6 +326,14 @@ namespace SqlSugar
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
+        }
+        private void TaskStart<Type>(Task<Type> result)
+        {
+            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+            {
+                Check.Exception(true, "IsShardSameThread=true can't be used async method");
+            }
+            result.Start();
         }
         protected void RestoreMapping()
         {

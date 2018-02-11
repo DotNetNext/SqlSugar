@@ -122,7 +122,7 @@ namespace SqlSugar
             return this;
         }
 
-        public virtual ISugarQueryable<T> Where(List<ConditionalModel> conditionalModels)
+        public virtual ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels)
         {
             if (conditionalModels.IsNullOrEmpty()) return this;
             var sqlObj = this.Context.Utilities.ConditionalModelToSql(conditionalModels);
@@ -354,22 +354,22 @@ namespace SqlSugar
             QueryBuilder.Skip = null;
             QueryBuilder.Take = null;
             QueryBuilder.OrderByValue = null;
-            var reval = this.ToList();
+            var result = this.ToList();
             QueryBuilder.Skip = oldSkip;
             QueryBuilder.Take = oldTake;
             QueryBuilder.OrderByValue = oldOrderBy;
-            if (reval == null || reval.Count == 0)
+            if (result == null || result.Count == 0)
             {
                 return default(T);
             }
-            else if (reval.Count == 2)
+            else if (result.Count == 2)
             {
                 Check.Exception(true, ".Single()  result must not exceed one . You can use.First()");
                 return default(T);
             }
             else
             {
-                return reval.SingleOrDefault();
+                return result.SingleOrDefault();
             }
         }
         public virtual T Single(Expression<Func<T, bool>> expression)
@@ -395,9 +395,9 @@ namespace SqlSugar
             {
                 QueryBuilder.Skip = 0;
                 QueryBuilder.Take = 1;
-                var reval = this.ToList();
-                if (reval.HasValue())
-                    return reval.FirstOrDefault();
+                var result = this.ToList();
+                if (result.HasValue())
+                    return result.FirstOrDefault();
                 else
                     return default(T);
             }
@@ -428,11 +428,11 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue)
         {
-            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
-            reval.Context = this.Context;
-            reval.SqlBuilder = this.SqlBuilder;
+            var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.SqlBuilder = this.SqlBuilder;
             QueryBuilder.SelectValue = selectValue;
-            return reval;
+            return result;
         }
         public virtual ISugarQueryable<T> Select(string selectValue)
         {
@@ -484,8 +484,8 @@ namespace SqlSugar
         public virtual TResult Max<TResult>(string maxField)
         {
             this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Max<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -495,8 +495,8 @@ namespace SqlSugar
         public virtual TResult Min<TResult>(string minField)
         {
             this.Select(string.Format(QueryBuilder.MinTemplate, minField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Min<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -506,8 +506,8 @@ namespace SqlSugar
         public virtual TResult Sum<TResult>(string sumField)
         {
             this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Sum<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -517,8 +517,8 @@ namespace SqlSugar
         public virtual TResult Avg<TResult>(string avgField)
         {
             this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
-            var reval = this._ToList<TResult>().SingleOrDefault();
-            return reval;
+            var result = this._ToList<TResult>().SingleOrDefault();
+            return result;
         }
         public virtual TResult Avg<TResult>(Expression<Func<T, TResult>> expression)
         {
@@ -658,7 +658,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Single();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -669,7 +669,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Single(expression);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -680,7 +680,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.First();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -691,7 +691,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.First(expression);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -702,7 +702,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Any(expression);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -713,7 +713,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Any();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -724,7 +724,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Count();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public Task<int> CountAsync(Expression<Func<T, bool>> expression)
@@ -734,7 +734,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Count(expression);
             });
-            result.Start();
+            TaskStart(result); ;
             return result;
         }
         public Task<TResult> MaxAsync<TResult>(string maxField)
@@ -744,7 +744,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Max<TResult>(maxField);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -755,7 +755,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Max<TResult>(expression);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -766,7 +766,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Min<TResult>(minField);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -777,7 +777,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Min<TResult>(expression);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -788,7 +788,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Sum<TResult>(sumField);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -799,7 +799,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Sum<TResult>(expression);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -810,7 +810,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Avg<TResult>(avgField);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -821,7 +821,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.Avg<TResult>(expression);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -832,7 +832,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToList();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -843,7 +843,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToJson();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -854,7 +854,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToJsonPage(pageIndex, pageSize);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -867,7 +867,7 @@ namespace SqlSugar
                 var list = asyncQueryable.ToJsonPage(pageIndex, pageSize, ref totalNumberAsync);
                 return new KeyValuePair<string, int>(list, totalNumberAsync);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -878,7 +878,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToDataTable();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -889,7 +889,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToDataTablePage(pageIndex, pageSize);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -902,7 +902,7 @@ namespace SqlSugar
                 var list = asyncQueryable.ToDataTablePage(pageIndex, pageSize, ref totalNumberAsync);
                 return new KeyValuePair<DataTable, int>(list, totalNumberAsync);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -913,7 +913,7 @@ namespace SqlSugar
                 ISugarQueryable<T> asyncQueryable = CopyQueryable();
                 return asyncQueryable.ToPageList(pageIndex, pageSize);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
 
@@ -926,20 +926,29 @@ namespace SqlSugar
                 var list = asyncQueryable.ToPageList(pageIndex, pageSize, ref totalNumberAsync);
                 return new KeyValuePair<List<T>, int>(list, totalNumberAsync);
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         #endregion
 
         #region Private Methods
+        private void TaskStart<Type>(Task<Type> result)
+        {
+            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+            {
+                Check.Exception(true, "IsShardSameThread=true can't be used async method");
+            }
+            result.Start();
+        }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
-            var reval = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
-            reval.Context = this.Context;
-            reval.SqlBuilder = this.SqlBuilder;
-            reval.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            reval.SqlBuilder.QueryBuilder.SelectValue = expression;
-            return reval;
+            this.Context.InitMppingInfo<TResult>();
+            var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.SqlBuilder = this.SqlBuilder;
+            result.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
+            result.SqlBuilder.QueryBuilder.SelectValue = expression;
+            return result;
         }
         protected void _Where(Expression expression)
         {
@@ -1069,8 +1078,8 @@ namespace SqlSugar
             ToSqlBefore();
             sql = QueryBuilder.ToSqlString();
             sql = QueryBuilder.ToCountSql(sql);
-            var reval = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
-            return reval;
+            var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            return result;
         }
 
         private void ToSqlBefore()
@@ -1232,7 +1241,7 @@ namespace SqlSugar
             Where<T>(whereString, whereObj);
             return this;
         }
-        public new ISugarQueryable<T, T2> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -1559,7 +1568,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -1741,7 +1750,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -2055,7 +2064,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -2372,7 +2381,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -2679,7 +2688,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -3013,7 +3022,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -3379,7 +3388,7 @@ namespace SqlSugar
                 _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -3757,7 +3766,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -4171,7 +4180,7 @@ namespace SqlSugar
                 _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;
@@ -4597,7 +4606,7 @@ namespace SqlSugar
             _Where(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(List<ConditionalModel> conditionalModels)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
             return this;

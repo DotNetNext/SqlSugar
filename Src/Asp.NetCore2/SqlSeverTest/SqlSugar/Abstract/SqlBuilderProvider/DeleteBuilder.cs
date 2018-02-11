@@ -161,8 +161,8 @@ namespace SqlSugar
             if (this.Parameters == null)
                 this.Parameters = new List<SugarParameter>();
             this.Parameters.AddRange(resolveExpress.Parameters);
-            var reval = resolveExpress.Result;
-            return reval;
+            var result = resolveExpress.Result;
+            return result;
         }
         #endregion
     }

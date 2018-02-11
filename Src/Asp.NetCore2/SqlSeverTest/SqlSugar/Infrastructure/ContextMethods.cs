@@ -86,6 +86,33 @@ namespace SqlSugar
         }
 
         /// <summary>
+        ///DataReader to DataReaderToDictionary
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> DataReaderToDictionary(IDataReader reader,Type type)
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                string name = reader.GetName(i);
+                try
+                {
+                    name = this.Context.EntityMaintenance.GetPropertyName(name,type);
+                    var addItem = reader.GetValue(i);
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    result.Add(name, addItem);
+                }
+                catch
+                {
+                    result.Add(name, null);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// DataReaderToDynamicList
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -102,7 +129,7 @@ namespace SqlSugar
                 {
                     while (reader.Read())
                     {
-                        var readerValues = DataReaderToDictionary(reader);
+                        var readerValues = DataReaderToDictionary(reader,tType);
                         var result = new Dictionary<string, object>();
                         foreach (var item in classProperties)
                         {
@@ -160,10 +187,12 @@ namespace SqlSugar
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             var type = item.PropertyType;
-            if (UtilConstants.SugarType == type) {
+            if (UtilConstants.SugarType == type)
+            {
                 return result;
             }
-            if (type.FullName.IsCollectionsList()) {
+            if (type.FullName.IsCollectionsList())
+            {
                 return null;
             }
             var classProperties = type.GetProperties().ToList();
@@ -178,9 +207,10 @@ namespace SqlSugar
                 else
                 {
                     var key = typeName + "." + name;
-                    if (readerValues.ContainsKey(key))
+                    var info = readerValues.Select(it=>it.Key).FirstOrDefault(it=>it.ToLower() == key.ToLower());
+                    if (info!=null)
                     {
-                        var addItem = readerValues[key];
+                        var addItem = readerValues[info];
                         if (addItem == DBNull.Value)
                             addItem = null;
                         result.Add(name, addItem);
@@ -295,74 +325,125 @@ namespace SqlSugar
         #endregion
 
         #region Query
-        public KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<ConditionalModel> models)
+        public KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models,int beginIndex=0)
         {
             if (models.IsNullOrEmpty()) return new KeyValuePair<string, SugarParameter[]>();
             StringBuilder builder = new StringBuilder();
             List<SugarParameter> parameters = new List<SugarParameter>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            foreach (var item in models)
+            foreach (var model in models)
             {
-                var index = models.IndexOf(item);
-                var type = index == 0 ? "" : "AND";
-                string temp = " {0} {1} {2} {3}  ";
-                string parameterName = string.Format("{0}Conditional{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
-                switch (item.ConditionalType)
+                if (model is ConditionalModel)
                 {
-                    case ConditionalType.Equal:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.Like:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue + "%"));
-                        break;
-                    case ConditionalType.GreaterThan:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.GreaterThanOrEqual:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">=", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.LessThan:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.LessThanOrEqual:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<=", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.In:
-                        if (item.FieldValue == null) item.FieldValue = string.Empty;
-                        var inValue1 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.NotIn:
-                        if (item.FieldValue == null) item.FieldValue = string.Empty;
-                        var inValue2 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "NOT IN", inValue2);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.LikeLeft:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue + "%"));
-                        break;
-                    case ConditionalType.LikeRight:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue));
-                        break;
-                    case ConditionalType.NoEqual:
-                        builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    case ConditionalType.IsNullOrEmpty:
-                        builder.AppendFormat("{0} ({1}) OR ({2}) ", type, item.FieldName.ToSqlFilter() + " IS NULL ", item.FieldName.ToSqlFilter() + " = '' ");
-                        parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                        break;
-                    default:
-                        break;
+                    var item = model as ConditionalModel;
+                    var index = models.IndexOf(item)+ beginIndex;
+                    var type = index == 0 ? "" : "AND";
+                    if (beginIndex > 0) {
+                        type = null;
+                    }
+                    string temp = " {0} {1} {2} {3}  ";
+                    string parameterName = string.Format("{0}Conditional{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
+                    switch (item.ConditionalType)
+                    {
+                        case ConditionalType.Equal:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.Like:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue + "%"));
+                            break;
+                        case ConditionalType.GreaterThan:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.GreaterThanOrEqual:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">=", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.LessThan:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.LessThanOrEqual:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<=", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.In:
+                            if (item.FieldValue == null) item.FieldValue = string.Empty;
+                            var inValue1 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.NotIn:
+                            if (item.FieldValue == null) item.FieldValue = string.Empty;
+                            var inValue2 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "NOT IN", inValue2);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.LikeLeft:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue + "%"));
+                            break;
+                        case ConditionalType.LikeRight:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue));
+                            break;
+                        case ConditionalType.NoEqual:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.IsNullOrEmpty:
+                            builder.AppendFormat("{0} ({1}) OR ({2}) ", type, item.FieldName.ToSqlFilter() + " IS NULL ", item.FieldName.ToSqlFilter() + " = '' ");
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            break;
+                        case ConditionalType.IsNot:
+                            if (item.FieldValue == null)
+                            {
+                                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), " IS NOT ", "NULL");
+                            }
+                            else
+                            {
+                                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
+                                parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    var item = model as ConditionalCollections;
+                    if (item != null)
+                    {
+                        foreach (var con in item.ConditionalList)
+                        {
+                            var index = item.ConditionalList.IndexOf(con);
+                            var isFirst = index == 0;
+                            var isLast = index == (item.ConditionalList.Count - 1);
+                            if (isFirst)
+                            {
+                                builder.AppendFormat(" {0} ( ", con.Key.ToString().ToUpper());
+                            }
+                            List<IConditionalModel> conModels = new List<IConditionalModel>();
+                            conModels.Add(con.Value);
+                            var childSqlInfo = ConditionalModelToSql(conModels,1000*(1+index));
+                            if (!isFirst) {
+
+                                builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
+                            }
+                            builder.Append(childSqlInfo.Key);
+                            parameters.AddRange(childSqlInfo.Value);
+                            if (isLast)
+                            {
+                                builder.Append(" ) ");
+                            }
+                            else {
+
+                            }
+                        }
+                    }
                 }
             }
             return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());

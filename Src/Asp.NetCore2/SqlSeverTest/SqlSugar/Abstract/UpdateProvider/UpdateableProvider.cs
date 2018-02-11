@@ -45,7 +45,7 @@ namespace SqlSugar
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
                 return asyncUpdateable.ExecuteCommand();
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public Task<bool> ExecuteCommandHasChangeAsync()
@@ -55,7 +55,7 @@ namespace SqlSugar
                 IUpdateable<T> asyncUpdateable = CopyUpdateable();
                 return asyncUpdateable.ExecuteCommand() > 0;
             });
-            result.Start();
+            TaskStart(result);
             return result;
         }
         public IUpdateable<T> AS(string tableName)
@@ -117,7 +117,7 @@ namespace SqlSugar
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
             {
-                this.WhereColumnList.Add(this.Context.EntityMaintenance.GetDbColumnName<T>(item));
+                this.WhereColumnList.Add(item);
             }
             return this;
         }
@@ -354,6 +354,14 @@ namespace SqlSugar
             {
                 this.Context.MappingTables = OldMappingTableList;
             }
+        }
+        private void TaskStart<Type>(Task<Type> result)
+        {
+            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+            {
+                Check.Exception(true, "IsShardSameThread=true can't be used async method");
+            }
+            result.Start();
         }
         private IUpdateable<T> CopyUpdateable()
         {

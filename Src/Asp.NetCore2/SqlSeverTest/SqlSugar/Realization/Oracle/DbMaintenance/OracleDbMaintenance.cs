@@ -169,10 +169,15 @@ namespace SqlSugar
                 return "IDENTITY(1,1)";
             }
         }
+
+        public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Methods
-        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);

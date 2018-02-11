@@ -18,6 +18,11 @@ namespace SqlSugar
             get;set;
         }
 
+        public bool HasWhere
+        {
+            get;set;
+        }
+
         public string Name
         {
             get

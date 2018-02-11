@@ -11,8 +11,8 @@ namespace SqlSugar
         #region Common Extensions
         public static Guid GetStringGuid(this IDataRecord dr, int i)
         {
-            var reval = Guid.Parse(dr.GetValue(i).ToString());
-            return reval;
+            var result = Guid.Parse(dr.GetValue(i).ToString());
+            return result;
         }
 
         public static Guid? GetConvertStringGuid(this IDataRecord dr, int i)
@@ -21,14 +21,14 @@ namespace SqlSugar
             {
                 return Guid.Empty;
             }
-            var reval = Guid.Parse(dr.GetValue(i).ToString());
-            return reval;
+            var result = Guid.Parse(dr.GetValue(i).ToString());
+            return result;
         }
 
         public static bool? GetConvertBoolean(this IDataRecord dr, int i)
         {
-            var reval = dr.GetBoolean(i);
-            return reval;
+            var result = dr.GetBoolean(i);
+            return result;
         }
 
         public static byte? GetConvertByte(this IDataRecord dr, int i)
@@ -37,8 +37,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetByte(i);
-            return reval;
+            var result = dr.GetByte(i);
+            return result;
         }
 
         public static char? GetConvertChar(this IDataRecord dr, int i)
@@ -47,18 +47,18 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetChar(i);
-            return reval;
+            var result = dr.GetChar(i);
+            return result;
         }
 
         public static DateTime? GetConvertDateTime(this IDataRecord dr, int i)
         {
-            var reval = dr.GetDateTime(i);
-            if (reval == DateTime.MinValue)
+            var result = dr.GetDateTime(i);
+            if (result == DateTime.MinValue)
             {
                 return null; ;
             }
-            return reval;
+            return result;
         }
 
         public static decimal? GetConvertDecimal(this IDataRecord dr, int i)
@@ -67,8 +67,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetDecimal(i);
-            return reval;
+            var result = dr.GetDecimal(i);
+            return result;
         }
 
 
@@ -78,8 +78,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetDouble(i);
-            return reval;
+            var result = dr.GetDouble(i);
+            return result;
         }
 
         public static Guid? GetConvertGuid(this IDataRecord dr, int i)
@@ -88,8 +88,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetGuid(i);
-            return reval;
+            var result = dr.GetGuid(i);
+            return result;
         }
 
         public static short? GetConvertInt16(this IDataRecord dr, int i)
@@ -98,8 +98,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetInt16(i);
-            return reval;
+            var result = dr.GetInt16(i);
+            return result;
         }
 
         public static Int32? GetConvertInt32(this IDataRecord dr, int i)
@@ -108,8 +108,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetInt32(i);
-            return reval;
+            var result = dr.GetInt32(i);
+            return result;
         }
 
         public static long? GetConvetInt64(this IDataRecord dr, int i)
@@ -118,8 +118,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetInt64(i);
-            return reval;
+            var result = dr.GetInt64(i);
+            return result;
         }
 
         public static float? GetConvertFloat(this IDataRecord dr, int i)
@@ -128,8 +128,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = dr.GetFloat(i);
-            return reval;
+            var result = dr.GetFloat(i);
+            return result;
         }
 
         public static DateTime GetdatetimeoffsetDate(this IDataRecord dr, int i)
@@ -139,8 +139,8 @@ namespace SqlSugar
                 return DateTime.MinValue;
             }
             var offsetValue = (DateTimeOffset)dr.GetValue(i);
-            var reval = offsetValue.DateTime;
-            return reval;
+            var result = offsetValue.DateTime;
+            return result;
         }
 
         public static DateTime? GetConvertdatetimeoffsetDate(this IDataRecord dr, int i)
@@ -150,8 +150,8 @@ namespace SqlSugar
                 return DateTime.MinValue;
             }
             var offsetValue = (DateTimeOffset)dr.GetValue(i);
-            var reval = offsetValue.DateTime;
-            return reval;
+            var result = offsetValue.DateTime;
+            return result;
         }
 
         public static DateTimeOffset Getdatetimeoffset(this IDataRecord dr, int i)
@@ -160,8 +160,8 @@ namespace SqlSugar
             {
                 return default(DateTimeOffset);
             }
-            var reval = (DateTimeOffset)dr.GetValue(i);
-            return reval;
+            var result = (DateTimeOffset)dr.GetValue(i);
+            return result;
         }
 
         public static DateTimeOffset? GetConvertdatetimeoffset(this IDataRecord dr, int i)
@@ -170,8 +170,8 @@ namespace SqlSugar
             {
                 return default(DateTimeOffset);
             }
-            var reval = (DateTimeOffset)dr.GetValue(i);
-            return reval;
+            var result = (DateTimeOffset)dr.GetValue(i);
+            return result;
         }
 
 
@@ -181,8 +181,8 @@ namespace SqlSugar
             {
                 return null;
             }
-            var reval = Convert.ToString(dr.GetValue(i));
-            return reval;
+            var result = Convert.ToString(dr.GetValue(i));
+            return result;
         }
 
         public static Nullable<T> GetOtherNull<T>(this IDataReader dr, int i) where T : struct

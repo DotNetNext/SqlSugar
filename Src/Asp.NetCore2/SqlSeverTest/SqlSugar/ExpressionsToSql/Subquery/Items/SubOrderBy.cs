@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubOrderBy : ISubOperation
     {
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public string Name
         {
             get { return "OrderBy"; }
@@ -33,6 +38,10 @@ namespace SqlSugar
 
         public string GetValue(Expression expression)
         {
+            if (this.Context is OracleExpressionContext)
+            {
+                throw new Exception("Oracle Subquery can't OrderBy");
+            }
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
             var result = "ORDER BY " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);
@@ -43,6 +52,11 @@ namespace SqlSugar
     }
     public class SubOrderByDesc : ISubOperation
     {
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public string Name
         {
             get { return "OrderByDesc"; }

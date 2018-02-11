@@ -24,6 +24,7 @@ namespace SqlSugar
         string SqlParameterKeyWord { get; }
         string SqlFalse { get; }
         string SqlDateNow { get; }
+        string FullSqlDateNow { get; }
         string SqlTranslationLeft { get; }
         string SqlTranslationRight { get; }
         string SqlSelectAll { get;  }

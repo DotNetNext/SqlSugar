@@ -109,6 +109,9 @@ namespace SqlSugar
             }
             // fetch the root object reference:
             var constExpr = expression as ConstantExpression;
+            if (constExpr == null) {
+                return DynamicInvoke(rootExpression);
+            }
             object objReference = constExpr.Value;
             // "ascend" back whence we came from and resolve object references along the way:
             while (memberInfos.Count > 0)  // or some other break condition
@@ -145,6 +148,10 @@ namespace SqlSugar
 
         public static object GetFiledValue(MemberExpression memberExpr)
         {
+            if (!(memberExpr.Member is FieldInfo))
+            {
+                return DynamicInvoke(memberExpr);
+            }
             object reval = null;
             FieldInfo field = (FieldInfo)memberExpr.Member;
             Check.Exception(field.IsPrivate, string.Format(" Field \"{0}\" can't be private ", field.Name));
@@ -189,6 +196,10 @@ namespace SqlSugar
 
         public static object GetPropertyValue(MemberExpression memberExpr)
         {
+            if (!(memberExpr.Member is PropertyInfo))
+            {
+                return DynamicInvoke(memberExpr);
+            }
             object reval = null;
             PropertyInfo pro = (PropertyInfo)memberExpr.Member;
             reval = pro.GetValue(memberExpr.Member, null);

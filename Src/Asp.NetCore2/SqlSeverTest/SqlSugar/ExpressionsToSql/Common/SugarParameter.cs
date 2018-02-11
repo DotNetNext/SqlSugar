@@ -25,6 +25,21 @@ namespace SqlSugar
             this.ParameterName = name;
             SettingDataType(type);
         }
+        public SugarParameter(string name, object value, Type type,ParameterDirection direction)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            this.Direction = direction;
+            SettingDataType(type);
+        }
+        public SugarParameter(string name, object value, Type type, ParameterDirection direction,int size)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            this.Direction = direction;
+            this.Size = size;
+            SettingDataType(type);
+        }
 
         private void SettingDataType(Type type)
         {

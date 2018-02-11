@@ -13,5 +13,6 @@ namespace SqlSugar
         string GetValue(Expression expression);
         int Sort { get; }
         Expression Expression { get; set; }
+        bool HasWhere { get; set; }
     }
 }

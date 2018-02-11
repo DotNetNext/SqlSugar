@@ -156,8 +156,8 @@ namespace SqlSugar
             var entityInfo = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<EntityInfo>(cacheKey,
               () =>
               {
-                  var reval = this.Context.EntityMaintenance.GetEntityInfo(type);
-                  return reval;
+                  var result = this.Context.EntityMaintenance.GetEntityInfo(type);
+                  return result;
               });
             var copyObj = CopyEntityInfo(entityInfo);
             InitMppingInfo(copyObj);
@@ -267,45 +267,45 @@ namespace SqlSugar
         }
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
-            var reval = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
+            var result = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
-            reval.Context = this.Context;
-            reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            reval.SqlBuilder = sqlBuilder;
-            reval.InsertObjs = insertObjs;
-            sqlBuilder.InsertBuilder = reval.InsertBuilder = InstanceFactory.GetInsertBuilder(this.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            result.SqlBuilder = sqlBuilder;
+            result.InsertObjs = insertObjs;
+            sqlBuilder.InsertBuilder = result.InsertBuilder = InstanceFactory.GetInsertBuilder(this.CurrentConnectionConfig);
             sqlBuilder.InsertBuilder.Builder = sqlBuilder;
             sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.InsertBuilder.Context = this.Context;
-            reval.Init();
-            return reval;
+            sqlBuilder.Context = result.SqlBuilder.InsertBuilder.Context = this.Context;
+            result.Init();
+            return result;
         }
         protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
         {
-            var reval = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
+            var result = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
-            reval.Context = this.Context;
-            reval.SqlBuilder = sqlBuilder;
-            sqlBuilder.DeleteBuilder = reval.DeleteBuilder = InstanceFactory.GetDeleteBuilder(this.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.SqlBuilder = sqlBuilder;
+            sqlBuilder.DeleteBuilder = result.DeleteBuilder = InstanceFactory.GetDeleteBuilder(this.CurrentConnectionConfig);
             sqlBuilder.DeleteBuilder.Builder = sqlBuilder;
             sqlBuilder.DeleteBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.DeleteBuilder.Context = this.Context;
-            return reval;
+            sqlBuilder.Context = result.SqlBuilder.DeleteBuilder.Context = this.Context;
+            return result;
         }
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
         {
-            var reval = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
+            var result = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
-            reval.Context = this.Context;
-            reval.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            reval.SqlBuilder = sqlBuilder;
-            reval.UpdateObjs = UpdateObjs;
-            sqlBuilder.UpdateBuilder = reval.UpdateBuilder = InstanceFactory.GetUpdateBuilder(this.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            result.SqlBuilder = sqlBuilder;
+            result.UpdateObjs = UpdateObjs;
+            sqlBuilder.UpdateBuilder = result.UpdateBuilder = InstanceFactory.GetUpdateBuilder(this.CurrentConnectionConfig);
             sqlBuilder.UpdateBuilder.Builder = sqlBuilder;
             sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
-            sqlBuilder.Context = reval.SqlBuilder.UpdateBuilder.Context = this.Context;
-            reval.Init();
-            return reval;
+            sqlBuilder.Context = result.SqlBuilder.UpdateBuilder.Context = this.Context;
+            result.Init();
+            return result;
         }
 
         protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()

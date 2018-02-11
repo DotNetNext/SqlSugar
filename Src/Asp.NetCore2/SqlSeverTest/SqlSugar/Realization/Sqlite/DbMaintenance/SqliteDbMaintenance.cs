@@ -165,45 +165,56 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<List<DbColumnInfo>>(cacheKey,() =>
-                    {
-                        string sql = "PRAGMA table_info(" + tableName + ")";
-                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
-                        this.Context.Ado.IsEnableLogEvent = false;
-                        using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
-                        {
-                            List<DbColumnInfo> result = new List<DbColumnInfo>();
-                            while (dataReader.Read())
-                            {
-                                var type = dataReader.GetValue(2).ObjToString();
-                                var length = 0;
-                                if (type.Contains("("))
-                                {
-                                    type = type.Split('(').First();
-                                    length = type.Split('(').Last().TrimEnd(')').ObjToInt();
-                                }
-                                DbColumnInfo column = new DbColumnInfo()
-                                {
-                                    TableName = tableName,
-                                    DataType = type,
-                                    IsNullable = !dataReader.GetBoolean(3),
-                                    IsIdentity = dataReader.GetBoolean(3) && dataReader.GetBoolean(5).ObjToBool() && (type.IsIn("integer", "int", "int32", "int64", "long")),
-                                    ColumnDescription = null,
-                                    DbColumnName = dataReader.GetString(1),
-                                    DefaultValue = dataReader.GetValue(4).ObjToString(),
-                                    IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
-                                    Length = length
-                                };
-                                result.Add(column);
-                            }
-                            return result;
-                        }
+            if (isCache)
+            {
+                return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<List<DbColumnInfo>>(cacheKey, () =>
+                {
+                    return GetColumnInfosByTableName(tableName);
 
-                    });
+                });
+            }
+            else {
+                return GetColumnInfosByTableName(tableName);
+            }
+        }
+
+        private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            string sql = "PRAGMA table_info(" + tableName + ")";
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
+            {
+                List<DbColumnInfo> result = new List<DbColumnInfo>();
+                while (dataReader.Read())
+                {
+                    var type = dataReader.GetValue(2).ObjToString();
+                    var length = 0;
+                    if (type.Contains("("))
+                    {
+                        type = type.Split('(').First();
+                        length = type.Split('(').Last().TrimEnd(')').ObjToInt();
+                    }
+                    DbColumnInfo column = new DbColumnInfo()
+                    {
+                        TableName = tableName,
+                        DataType = type,
+                        IsNullable = !dataReader.GetBoolean(3),
+                        IsIdentity = dataReader.GetBoolean(3) && dataReader.GetBoolean(5).ObjToBool() && (type.IsIn("integer", "int", "int32", "int64", "long")),
+                        ColumnDescription = null,
+                        DbColumnName = dataReader.GetString(1),
+                        DefaultValue = dataReader.GetValue(4).ObjToString(),
+                        IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
+                        Length = length
+                    };
+                    result.Add(column);
+                }
+                return result;
+            }
         }
 
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns,bool isCreatePrimaryKey=true)
@@ -224,6 +235,10 @@ namespace SqlSugar
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
+            if (!isCreatePrimaryKey)
+            {
+                sql = sql.Replace("PRIMARY KEY AUTOINCREMENT", "").Replace("PRIMARY KEY", "");
+            }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }

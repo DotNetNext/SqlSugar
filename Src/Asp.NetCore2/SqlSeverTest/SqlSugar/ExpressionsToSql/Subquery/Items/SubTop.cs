@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SubTop : ISubOperation
     {
+        public bool HasWhere
+        {
+            get; set;
+        }
+
         public ExpressionContext Context
         {
             get; set;
@@ -34,6 +39,10 @@ namespace SqlSugar
                 {
                     return 150;
                 }
+                else if (this.Context is OracleExpressionContext) {
+
+                    return 401;
+                }
                 else
                 {
                     return 490;
@@ -50,7 +59,7 @@ namespace SqlSugar
             }
             else if (this.Context is OracleExpressionContext)
             {
-                return "ROWNUM=1";
+                return (HasWhere?"AND":"WHERE")+ " ROWNUM=1";
             }
             else
             {

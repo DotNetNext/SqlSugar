@@ -5,7 +5,15 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class ConditionalModel
+    public interface IConditionalModel {
+
+    }
+    public class ConditionalCollections : IConditionalModel
+    {
+         public List<KeyValuePair<WhereType, ConditionalModel>> ConditionalList { get; set; }
+    }
+ 
+    public class ConditionalModel: IConditionalModel
     {
         public ConditionalModel()
         {

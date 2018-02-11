@@ -105,8 +105,8 @@ namespace SqlSugar
             resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters);
-            var reval = resolveExpress.Result;
-            return reval;
+            var result = resolveExpress.Result;
+            return result;
         }
         public virtual string ToSqlString()
         {

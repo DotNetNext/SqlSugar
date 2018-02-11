@@ -109,7 +109,7 @@ namespace SqlSugar
                     {
                         if (!ReaderKeys.Contains(mappInfo.DbColumnName))
                         {
-                            fileName = ReaderKeys.First(it => it.Equals(mappInfo.DbColumnName, StringComparison.CurrentCultureIgnoreCase)|| it.Equals(mappInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase));
+                            fileName = ReaderKeys.FirstOrDefault(it => it.Equals(mappInfo.DbColumnName, StringComparison.CurrentCultureIgnoreCase)|| it.Equals(mappInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase));
                         }
                         else
                         {
@@ -131,7 +131,7 @@ namespace SqlSugar
                     {
                         if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                         {
-                            BindField(generator, result, propertyInfo, ReaderKeys.Single(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
+                            BindField(generator, result, propertyInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
                     }
                 }
@@ -223,7 +223,7 @@ namespace SqlSugar
                     if (bindProperyTypeName.IsContainsIn("int", "int32"))
                         method = isNullableType ? getConvertInt32 : getInt32;
                     if (bindProperyTypeName.IsContainsIn("int64"))
-                        method = isNullableType ? getConvertInt32 : getInt32;
+                        method = isNullableType ? getConvertInt64 : getInt64;
                     if (bindProperyTypeName.IsContainsIn("byte"))
                         method = isNullableType ? getConvertByte : getByte;
                     if (bindProperyTypeName.IsContainsIn("int16"))

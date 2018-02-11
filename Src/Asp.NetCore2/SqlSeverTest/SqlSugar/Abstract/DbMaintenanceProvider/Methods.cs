@@ -8,62 +8,75 @@ namespace SqlSugar
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
         #region DML
-        public virtual List<DbTableInfo> GetViewInfoList()
+        public virtual List<DbTableInfo> GetViewInfoList(bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetViewInfoList";
             cacheKey = GetCacheKey(cacheKey);
-            var result = GetListOrCache<DbTableInfo>(cacheKey, this.GetViewInfoListSql);
+            var result = new List<DbTableInfo>();
+            if (isCache)
+                result = GetListOrCache<DbTableInfo>(cacheKey, this.GetViewInfoListSql);
+            else
+                result = this.Context.Ado.SqlQuery<DbTableInfo>(this.GetViewInfoListSql);
             foreach (var item in result)
             {
                 item.DbObjectType = DbObjectType.View;
             }
             return result;
         }
-        public virtual List<DbTableInfo> GetTableInfoList()
+        public virtual List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetTableInfoList";
             cacheKey = GetCacheKey(cacheKey);
-            var result = GetListOrCache<DbTableInfo>(cacheKey, this.GetTableInfoListSql);
+            var result = new List<DbTableInfo>();
+            if (isCache)
+                result = GetListOrCache<DbTableInfo>(cacheKey, this.GetTableInfoListSql);
+            else
+                result = this.Context.Ado.SqlQuery<DbTableInfo>(this.GetTableInfoListSql);
             foreach (var item in result)
             {
                 item.DbObjectType = DbObjectType.Table;
             }
             return result;
         }
-        public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return GetListOrCache<DbColumnInfo>(cacheKey, string.Format(this.GetColumnInfosByTableNameSql, tableName));
+            var sql = string.Format(this.GetColumnInfosByTableNameSql, tableName);
+            if (isCache)
+                return GetListOrCache<DbColumnInfo>(cacheKey, sql);
+            else
+                return this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
+
         }
         public virtual List<string> GetIsIdentities(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,() =>
-                    {
-                        var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
-                        return result.Select(it => it.DbColumnName).ToList();
-                    });
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
+                     {
+                         var result = GetColumnInfosByTableName(tableName).Where(it => it.IsIdentity).ToList();
+                         return result.Select(it => it.DbColumnName).ToList();
+                     });
         }
         public virtual List<string> GetPrimaries(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaries" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,() =>
-            {
-                var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
-                return result.Select(it => it.DbColumnName).ToList();
-            });
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
+             {
+                 var result = GetColumnInfosByTableName(tableName).Where(it => it.IsPrimarykey).ToList();
+                 return result.Select(it => it.DbColumnName).ToList();
+             });
         }
         #endregion
 
         #region Check
-        public virtual bool IsAnyTable(string tableName)
+        public virtual bool IsAnyTable(string tableName, bool isCache = true)
         {
             tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
-            var tables = GetTableInfoList();
+            var tables = GetTableInfoList(isCache);
             if (tables == null) return false;
             else return tables.Any(it => it.Name.Equals(tableName, StringComparison.CurrentCultureIgnoreCase));
         }
@@ -141,13 +154,7 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
-        {
-            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
-            string sql = GetCreateTableSql(tableName, columns);
-            this.Context.Ado.ExecuteCommand(sql);
-            return true;
-        }
+        public abstract bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true);
         public virtual bool DropTable(string tableName)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
@@ -211,9 +218,9 @@ namespace SqlSugar
              {
                  var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
                  this.Context.Ado.IsEnableLogEvent = false;
-                 var reval = this.Context.Ado.SqlQuery<T>(sql);
+                 var result = this.Context.Ado.SqlQuery<T>(sql);
                  this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
-                 return reval;
+                 return result;
              });
         }
         protected virtual string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)

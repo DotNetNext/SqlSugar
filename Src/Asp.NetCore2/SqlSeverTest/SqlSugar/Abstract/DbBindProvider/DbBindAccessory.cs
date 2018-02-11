@@ -58,50 +58,50 @@ namespace SqlSugar
 
         protected List<T> GetKeyValueList<T>(Type type, IDataReader dataReader)
         {
-            List<T> reval = new List<T>();
+            List<T> result = new List<T>();
             while (dataReader.Read())
             {
                 if (UtilConstants.DicOO == type)
                 {
                     var kv = new KeyValuePair<object, object>(dataReader.GetValue(0), dataReader.GetValue(1));
-                    reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<object, object>)));
+                    result.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<object, object>)));
                 }
                 else if (UtilConstants.DicIS == type)
                 {
                     var kv = new KeyValuePair<int, string>(dataReader.GetValue(0).ObjToInt(), dataReader.GetValue(1).ObjToString());
-                    reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<int, string>)));
+                    result.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<int, string>)));
                 }
                 else if (UtilConstants.Dicii == type)
                 {
                     var kv = new KeyValuePair<int, int>(dataReader.GetValue(0).ObjToInt(), dataReader.GetValue(1).ObjToInt());
-                    reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<int, int>)));
+                    result.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<int, int>)));
                 }
                 else if (UtilConstants.DicSi == type)
                 {
                     var kv = new KeyValuePair<string, int>(dataReader.GetValue(0).ObjToString(), dataReader.GetValue(1).ObjToInt());
-                    reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, int>)));
+                    result.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, int>)));
                 }
                 else if (UtilConstants.DicSo == type)
                 {
                     var kv = new KeyValuePair<string, object>(dataReader.GetValue(0).ObjToString(), dataReader.GetValue(1));
-                    reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, object>)));
+                    result.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, object>)));
                 }
                 else if (UtilConstants.DicSS == type)
                 {
                     var kv = new KeyValuePair<string, string>(dataReader.GetValue(0).ObjToString(), dataReader.GetValue(1).ObjToString());
-                    reval.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, string>)));
+                    result.Add((T)Convert.ChangeType(kv, typeof(KeyValuePair<string, string>)));
                 }
                 else
                 {
                     Check.Exception(true, ErrorMessage.NotSupportedDictionary);
                 }
             }
-            return reval;
+            return result;
         }
 
         protected List<T> GetArrayList<T>(Type type, IDataReader dataReader)
         {
-            List<T> reval = new List<T>();
+            List<T> result = new List<T>();
             int count = dataReader.FieldCount;
             var childType = type.GetElementType();
             while (dataReader.Read())
@@ -112,30 +112,30 @@ namespace SqlSugar
                     array[i] = Convert.ChangeType(dataReader.GetValue(i), childType);
                 }
                 if (childType == UtilConstants.StringType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToString()).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it.ObjToString()).ToArray(), type));
                 else if (childType == UtilConstants.ObjType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? null : (object)it).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? null : (object)it).ToArray(), type));
                 else if (childType == UtilConstants.BoolType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToBool()).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it.ObjToBool()).ToArray(), type));
                 else if (childType == UtilConstants.ByteType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? 0 : (byte)it).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? 0 : (byte)it).ToArray(), type));
                 else if (childType == UtilConstants.DecType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToDecimal()).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it.ObjToDecimal()).ToArray(), type));
                 else if (childType == UtilConstants.GuidType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? Guid.Empty : (Guid)it).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? Guid.Empty : (Guid)it).ToArray(), type));
                 else if (childType == UtilConstants.DateType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? DateTime.MinValue : (DateTime)it).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it == DBNull.Value ? DateTime.MinValue : (DateTime)it).ToArray(), type));
                 else if (childType == UtilConstants.IntType)
-                    reval.Add((T)Convert.ChangeType(array.Select(it => it.ObjToInt()).ToArray(), type));
+                    result.Add((T)Convert.ChangeType(array.Select(it => it.ObjToInt()).ToArray(), type));
                 else
                     Check.Exception(true, ErrorMessage.NotSupportedArray);
             }
-            return reval;
+            return result;
         }
 
         protected List<T> GetValueTypeList<T>(Type type, IDataReader dataReader)
         {
-            List<T> reval = new List<T>();
+            List<T> result = new List<T>();
             while (dataReader.Read())
             {
                 var value = dataReader.GetValue(0);
@@ -145,18 +145,18 @@ namespace SqlSugar
                 }
                 if (value == DBNull.Value)
                 {
-                    reval.Add(default(T));
+                    result.Add(default(T));
                 }
                 else if (type.IsEnum)
                 {
-                    reval.Add((T)Enum.Parse(type, value.ObjToString()));
+                    result.Add((T)Enum.Parse(type, value.ObjToString()));
                 }
                 else
                 {
-                    reval.Add((T)Convert.ChangeType(value, UtilMethods.GetUnderType(type)));
+                    result.Add((T)Convert.ChangeType(value, UtilMethods.GetUnderType(type)));
                 }
             }
-            return reval;
+            return result;
         }
     }
 }

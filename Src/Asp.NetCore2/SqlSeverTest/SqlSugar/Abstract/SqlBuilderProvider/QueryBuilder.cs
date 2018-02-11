@@ -230,13 +230,13 @@ namespace SqlSugar
             };
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters);
-            var reval = resolveExpress.Result;
+            var result = resolveExpress.Result;
             var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
             if (isSingleTableHasSubquery) {
                 Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name");
                 this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
             }
-            return reval;
+            return result;
         }
         public virtual string ToSqlString()
         {
@@ -360,32 +360,32 @@ namespace SqlSugar
         {
             get
             {
-                string reval = string.Empty;
+                string result = string.Empty;
                 if (this.SelectValue == null || this.SelectValue is string)
                 {
-                    reval = GetSelectValueByString();
+                    result = GetSelectValueByString();
                 }
                 else
                 {
-                    reval = GetSelectValueByExpression();
+                    result = GetSelectValueByExpression();
                 }
                 if (this.SelectType == ResolveExpressType.SelectMultiple)
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this._JoinQueryInfos.Select(it => it.TableName));
                 }
-                return reval;
+                return result;
             }
         }
         public virtual string GetSelectValueByExpression()
         {
             var expression = this.SelectValue as Expression;
-            var reval = GetExpressionValue(expression, this.SelectType).GetResultString();
-            this.SelectCacheKey = reval;
-            return reval;
+            var result = GetExpressionValue(expression, this.SelectType).GetResultString();
+            this.SelectCacheKey = result;
+            return result;
         }
         public virtual string GetSelectValueByString()
         {
-            string reval;
+            string result;
             if (this.SelectValue.IsNullOrEmpty())
             {
                 string pre = null;
@@ -393,15 +393,18 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                reval = string.Join(",", this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
+                result = string.Join(",", this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
             }
             else
             {
-                reval = this.SelectValue.ObjToString();
-                this.SelectCacheKey = reval;
+                result = this.SelectValue.ObjToString();
+                this.SelectCacheKey = result;
             }
-
-            return reval;
+            if (result.IsNullOrEmpty())
+            {
+                result = "*";
+            }
+            return result;
         }
         public virtual string GetWhereValueString
         {
