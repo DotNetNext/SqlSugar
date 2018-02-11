@@ -86,9 +86,31 @@ namespace SqlSugar
                 return mappingInfo == null ? propertyName : mappingInfo.DbColumnName;
             }
         }
+        public string GetDbColumnName(string propertyName,Type entityType)
+        {
+            var isAny = this.GetEntityInfo(entityType).Columns.Any(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            Check.Exception(!isAny, "Property " + propertyName + " is Invalid");
+            var typeName = entityType.Name;
+            if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return propertyName;
+            else
+            {
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.PropertyName == propertyName);
+                return mappingInfo == null ? propertyName : mappingInfo.DbColumnName;
+            }
+        }
         public string GetPropertyName<T>(string dbColumnName)
         {
             var typeName = typeof(T).Name;
+            if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
+            else
+            {
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName == dbColumnName);
+                return mappingInfo == null ? dbColumnName : mappingInfo.PropertyName;
+            }
+        }
+        public string GetPropertyName(string dbColumnName,Type entityType)
+        {
+            var typeName = entityType.Name;
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
             else
             {

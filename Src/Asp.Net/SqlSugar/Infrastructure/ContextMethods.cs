@@ -86,6 +86,33 @@ namespace SqlSugar
         }
 
         /// <summary>
+        ///DataReader to DataReaderToDictionary
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> DataReaderToDictionary(IDataReader reader,Type type)
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                string name = reader.GetName(i);
+                try
+                {
+                    name = this.Context.EntityMaintenance.GetPropertyName(name,type);
+                    var addItem = reader.GetValue(i);
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    result.Add(name, addItem);
+                }
+                catch
+                {
+                    result.Add(name, null);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// DataReaderToDynamicList
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -102,7 +129,7 @@ namespace SqlSugar
                 {
                     while (reader.Read())
                     {
-                        var readerValues = DataReaderToDictionary(reader);
+                        var readerValues = DataReaderToDictionary(reader,tType);
                         var result = new Dictionary<string, object>();
                         foreach (var item in classProperties)
                         {
