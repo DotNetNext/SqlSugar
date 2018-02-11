@@ -104,7 +104,7 @@ namespace SqlSugar
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
             else
             {
-                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName == dbColumnName);
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName.Equals(dbColumnName,StringComparison.CurrentCultureIgnoreCase));
                 return mappingInfo == null ? dbColumnName : mappingInfo.PropertyName;
             }
         }
@@ -114,7 +114,7 @@ namespace SqlSugar
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
             else
             {
-                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName == dbColumnName);
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName.Equals(dbColumnName,StringComparison.CurrentCultureIgnoreCase));
                 return mappingInfo == null ? dbColumnName : mappingInfo.PropertyName;
             }
         }
