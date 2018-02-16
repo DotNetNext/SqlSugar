@@ -50,6 +50,11 @@ namespace SqlSugar
             }
         }
 
+        internal static void TryPostgreSQL()
+        {
+            throw new NotImplementedException();
+        }
+
         internal static void TryOracle()
         {
             if (!IsTryOracle)
