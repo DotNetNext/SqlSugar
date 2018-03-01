@@ -469,19 +469,19 @@ db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
 
 ## 9. AOP LOG
 ```
-db.Aop.OnLogExecuted = (sql, pars) => //SQL执行完事件
+db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
 {
  
 };
-db.Aop.OnLogExecuting = (sql, pars) => //SQL执行前事件
+db.Aop.OnLogExecuting = (sql, pars) => //SQL executing event (pre-execution)
 {
  
 };
-db.Aop.OnError = (exp) =>//执行SQL 错误事件
+db.Aop.OnError = (exp) =>//SQL execution error event
 {
                  
 };
-db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL执行前 可以修改SQL
+db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-execution,SQL script can be modified)
 {
     return new KeyValuePair<string, SugarParameter[]>(sql,pars);
 };
