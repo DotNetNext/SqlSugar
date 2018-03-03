@@ -252,6 +252,7 @@ namespace OrmTest.Demo
             var getSingleOrDefault = db.Queryable<Student>().Where(it => it.Id == 1).Single();
             var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
+            var getByWhere2 = db.Queryable<Student>().Where(it => it.Id ==DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var sum = db.Queryable<Student>().Select(it => it.SchoolId).ToList();
             var sum2 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Sum((st, sc) => sc.Id);
