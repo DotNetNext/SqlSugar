@@ -653,7 +653,7 @@ namespace SqlSugar
             var hasParameter = parameters.HasValue();
             if (hasParameter)
             {
-                foreach (var outputParameter in parameters.Where(it => it.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput)))
+                foreach (var outputParameter in parameters.Where(it => it.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue)))
                 {
                     var gobalOutputParamter = this.OutputParameters.Single(it => it.ParameterName == outputParameter.ParameterName);
                     outputParameter.Value = gobalOutputParamter.Value;

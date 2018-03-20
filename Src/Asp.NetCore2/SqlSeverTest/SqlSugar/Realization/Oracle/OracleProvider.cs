@@ -1,16 +1,34 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.OracleClient;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
     public class OracleProvider : AdoProvider
     {
-        public OracleProvider() { }
+        public OracleProvider()
+        {
+            this.FormatSql = sql =>
+            {
+                if (sql.HasValue()&&sql.Contains("@")) {
+                    var exceptionalCaseInfo = Regex.Matches(sql,@"\'.*?\@.*?\'| \w+\@\w+ ");
+                    if (exceptionalCaseInfo != null) {
+                        foreach (var item in exceptionalCaseInfo.Cast<Match>())
+                        {
+                            sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
+                        }
+                    }
+                    sql = sql .Replace("@",":");
+                    sql = sql.Replace(UtilConstants.ReplaceKey, "@");
+                }
+                return sql;
+            };
+        }
         public override string SqlParameterKeyWord
         {
             get
@@ -24,7 +42,6 @@ namespace SqlSugar
             {
                 try
                 {
-                    throw new NotSupportedException("NET Core 2.0 Oracle official driver has not yet, please wait");
                     if (base._DbConnection == null)
                     {
                         base._DbConnection = new OracleConnection(base.Context.CurrentConnectionConfig.ConnectionString);
@@ -61,11 +78,12 @@ namespace SqlSugar
         }
         public override IDataAdapter GetAdapter()
         {
-            return new OracleDataAdapter();
+            return new MyOracleDataAdapter();
         }
         public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             OracleCommand sqlCommand = new OracleCommand(sql, (OracleConnection)this.Connection);
+            sqlCommand.BindByName = true;
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (this.Transaction != null)
@@ -82,7 +100,7 @@ namespace SqlSugar
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
         {
-            ((OracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
+            ((MyOracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
@@ -100,7 +118,7 @@ namespace SqlSugar
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new OracleParameter();
                 sqlParameter.Size = parameter.Size == -1 ? 0 : parameter.Size;
-                sqlParameter.ParameterName = parameter.ParameterName.ToLower();
+                sqlParameter.ParameterName = parameter.ParameterName;
                 if (sqlParameter.ParameterName[0] == '@')
                 {
                     sqlParameter.ParameterName = ':' + sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
@@ -108,6 +126,10 @@ namespace SqlSugar
                 if (this.CommandType == CommandType.StoredProcedure)
                 {
                     sqlParameter.ParameterName = sqlParameter.ParameterName.TrimStart(':');
+                }
+                if (parameter.IsRefCursor)
+                {
+                    sqlParameter.OracleDbType = OracleDbType.RefCursor;
                 }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
@@ -117,16 +139,27 @@ namespace SqlSugar
                 else if (parameter.DbType == System.Data.DbType.Boolean)
                 {
                     sqlParameter.DbType = System.Data.DbType.Int16;
-                    sqlParameter.Value = (bool)parameter.Value ? 1 : 0;
+                    if (parameter.Value == DBNull.Value)
+                    {
+                        parameter.Value = 0;
+                    }
+                    else
+                    {
+                        sqlParameter.Value = (bool)parameter.Value ? 1 : 0;
+                    }
                 }
                 else
                 {
+                    if (parameter.Value != null && parameter.Value.GetType() == UtilConstants.GuidType)
+                    {
+                        parameter.Value = parameter.Value.ToString();
+                    }
                     sqlParameter.Value = parameter.Value;
                 }
                 if (parameter.Direction != 0)
                     sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction == ParameterDirection.Output)
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue))
                 {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
