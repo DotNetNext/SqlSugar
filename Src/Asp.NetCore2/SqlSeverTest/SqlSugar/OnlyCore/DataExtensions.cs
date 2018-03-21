@@ -1,9 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.OracleClient;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -784,7 +784,7 @@ namespace SqlSugar
     /// <summary>
     /// 数据填充器
     /// </summary>
-    public class OracleDataAdapter : IDataAdapter
+    public class MyOracleDataAdapter : IDataAdapter
     {
         private OracleCommand command;
         private string sql;
@@ -794,12 +794,12 @@ namespace SqlSugar
         /// SqlDataAdapter
         /// </summary>
         /// <param name="command"></param>
-        public OracleDataAdapter(OracleCommand command)
+        public MyOracleDataAdapter(OracleCommand command)
         {
             this.command = command;
         }
 
-        public OracleDataAdapter()
+        public MyOracleDataAdapter()
         {
 
         }
@@ -809,7 +809,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="_sqlConnection"></param>
-        public OracleDataAdapter(string sql, OracleConnection _sqlConnection)
+        public MyOracleDataAdapter(string sql, OracleConnection _sqlConnection)
         {
             this.sql = sql;
             this._sqlConnection = _sqlConnection;

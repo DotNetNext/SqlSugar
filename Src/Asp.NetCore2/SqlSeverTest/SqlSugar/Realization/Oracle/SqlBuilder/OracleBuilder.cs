@@ -23,6 +23,13 @@ namespace SqlSugar
                 return "sysdate";
             }
         }
+        public override string FullSqlDateNow
+        {
+            get
+            {
+                return "select sysdate from dual";
+            }
+        }
         public override string SqlTranslationLeft { get { return "\""; } }
         public override string SqlTranslationRight { get { return "\""; } }
         public override string GetTranslationTableName(string name)

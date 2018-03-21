@@ -214,15 +214,24 @@ namespace SqlSugar
             parameter.CommonTempData = CommonTempDataType.Result;
             this.Expression = expression.Expression;
             var isConst = this.Expression is ConstantExpression;
-            this.Start();
-            var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
+            if (this.Expression.Type == UtilConstants.DateType && this.Expression.ToString() == "DateTime.Now")
             {
-                Args = new List<MethodCallExpressionArgs>() {
+                this.Expression = expression;
+                var parameterName=base.AppendParameter(ExpressionTool.GetMemberValue(expression.Member, expression));
+                base.AppendMember(parameter, isLeft, parameterName);
+            }
+            else
+            {
+                this.Start();
+                var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
                      new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null },
                      new MethodCallExpressionArgs() { IsMember = true, MemberName = name, MemberValue = name }
                   }
-            });
-            base.AppendMember(parameter, isLeft, result);
+                });
+                base.AppendMember(parameter, isLeft, result);
+            }
             parameter.CommonTempData = oldCommonTempDate;
         }
 

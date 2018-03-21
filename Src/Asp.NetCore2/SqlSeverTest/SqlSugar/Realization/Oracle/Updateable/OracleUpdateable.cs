@@ -13,8 +13,15 @@ namespace SqlSugar
         }
         public override int ExecuteCommand()
         {
-            base.ExecuteCommand();
-            return base.UpdateObjs.Count();
+            if (base.UpdateObjs.Count() == 1)
+            {
+                return base.ExecuteCommand();
+            }
+            else
+            {
+                base.ExecuteCommand();
+                return base.UpdateObjs.Count();
+            }
         }
     }
 }

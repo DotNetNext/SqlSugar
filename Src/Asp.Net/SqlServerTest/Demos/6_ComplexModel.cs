@@ -28,6 +28,8 @@ namespace OrmTest.Demo
                     }
                 }
             }
+
+            db.Insertable(new CMStudent() { Name="xx" }).ExecuteCommand();
         }
     }
 

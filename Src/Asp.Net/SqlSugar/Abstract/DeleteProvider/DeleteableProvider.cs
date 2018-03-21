@@ -121,7 +121,14 @@ namespace SqlSugar
                         var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
-                        andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
+                        if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                        {
+                            andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField.ToUpper(), entityValue);
+                        }
+                        else
+                        {
+                            andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
+                        }
                         ++i;
                     }
                     orString.AppendFormat(DeleteBuilder.WhereInAreaTemplate, andString);
