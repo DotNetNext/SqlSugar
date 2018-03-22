@@ -110,11 +110,6 @@
     <Compile Include="Infrastructure\DependencyManagement.cs" />
     <Compile Include="ExternalServiceInterface\ISerializeService.cs" />
     <Compile Include="Entities\DefaultServices.cs" />
-    <Compile Include="Realization\PostgreSQL\CodeFirst\PostgreSQLCodeFirst.cs" />
-    <Compile Include="Realization\PostgreSQL\DbBind\PostgreSQLDbBind.cs" />
-    <Compile Include="Realization\PostgreSQL\DbFirst\PostgreSQLDbFirst.cs" />
-    <Compile Include="Realization\PostgreSQL\PostgreSQLProvider.cs" />
-    <Compile Include="Realization\PostgreSQL\Queryable\PostgreSQLQueryable.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
     <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
@@ -274,10 +269,7 @@
     <Content Include="References\Oracle.ManagedDataAccess.dll" />
     <Content Include="References\System.Data.SQLite.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Realization\PostgreSQL\DbMaintenance\" />
-    <Folder Include="Realization\PostgreSQL\SqlBuilder\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
