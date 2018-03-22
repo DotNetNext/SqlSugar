@@ -987,7 +987,9 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Min<TResult>(lamResult.GetResultString());
+            var result= Min<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return result;
         }
         protected TResult _Avg<TResult>(Expression expression)
         {
@@ -999,13 +1001,17 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Max<TResult>(lamResult.GetResultString());
+            var reslut= Max<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
         }
         protected TResult _Sum<TResult>(Expression expression)
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Sum<TResult>(lamResult.GetResultString());
+            var reslut= Sum<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
         }
         protected ISugarQueryable<T> _As(string tableName, string entityName)
         {
