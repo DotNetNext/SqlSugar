@@ -135,6 +135,10 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().Where(whereExpression).Any();
         }
+        public int Count(Expression<Func<T,bool>> whereExpression){
+            return Context.Queryable<T>().Where(whereExpression).Count();
+        }
+
         public bool Insert(T insertObj) 
         {
             return this.Context.Insertable(insertObj).ExecuteCommand() > 0;
