@@ -82,8 +82,8 @@ namespace SqlSugar
         }
         public virtual bool IsAnyColumn(string tableName, string columnName)
         {
-            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
-            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
+            tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -92,7 +92,7 @@ namespace SqlSugar
         }
         public virtual bool IsPrimaryKey(string tableName, string columnName)
         {
-            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
+            columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -101,7 +101,7 @@ namespace SqlSugar
         }
         public virtual bool IsIdentity(string tableName, string columnName)
         {
-            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
+            columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
