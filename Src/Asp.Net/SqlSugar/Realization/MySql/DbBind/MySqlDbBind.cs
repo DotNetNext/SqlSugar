@@ -70,6 +70,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
 
                     new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("longblob",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("tinyblob",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
