@@ -141,7 +141,7 @@ namespace SqlSugar
         public IUpdateable<T> UpdateColumns(Expression<Func<T, bool>> columns) {
             var binaryExp = columns.Body as BinaryExpression;
             Check.Exception(!binaryExp.NodeType.IsIn(ExpressionType.Equal), "No support {0}", columns.ToString());
-            Check.Exception(!(binaryExp.Left is MemberExpression), "No support {0}", columns.ToString());
+            Check.Exception(!(binaryExp.Left is MemberExpression)&& !(binaryExp.Left is UnaryExpression), "No support {0}", columns.ToString());
             Check.Exception(ExpressionTool.IsConstExpression(binaryExp.Left as MemberExpression), "No support {0}", columns.ToString());
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.WhereSingle).GetResultString().Replace("))",") )").Replace("((", "( (").Trim().TrimStart('(').TrimEnd(')');
             string key = SqlBuilder.GetNoTranslationColumnName(expResult);
