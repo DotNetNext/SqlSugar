@@ -627,7 +627,9 @@ namespace SqlSugar
         }
         public virtual SimpleClient GetSimpleClient()
         {
-            return this.SimpleClient;
+            if (this.Context._SimpleClient == null)
+                this.Context._SimpleClient = new SimpleClient(this.Context);
+            return this.Context._SimpleClient;
         }
         #endregion
 
