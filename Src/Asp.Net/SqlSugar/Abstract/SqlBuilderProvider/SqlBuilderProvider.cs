@@ -90,6 +90,10 @@ namespace SqlSugar
         {
             return string.Join("UNION ALL \r\n", sqlList);
         }
+        public virtual string GetUnionSql(List<string> sqlList)
+        {
+            return string.Join("UNION \r\n", sqlList);
+        }
         public virtual void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
         {
             UtilMethods.RepairReplicationParameters(ref appendSql, parameters, addIndex);

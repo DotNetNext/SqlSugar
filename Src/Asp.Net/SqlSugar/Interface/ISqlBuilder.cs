@@ -36,6 +36,7 @@ namespace SqlSugar
         string GetPackTable(string sql,string shortName);
         string GetDefaultShortName();
         string GetUnionAllSql(List<string> sqlList);
+        string GetUnionSql(List<string> sqlList);
         void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex);
     }
 }
