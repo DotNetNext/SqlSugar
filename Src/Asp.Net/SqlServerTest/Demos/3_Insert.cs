@@ -63,7 +63,7 @@ namespace OrmTest.Demo
 
             var dt = new Dictionary<string, object>();
             dt.Add("name", "1");
-            var t66 = db.Insertable(dt).AS("student").ExecuteReturnEntity();
+            var t66 = db.Insertable(dt).AS("student").ExecuteReturnIdentity();
         }
     }
 }
