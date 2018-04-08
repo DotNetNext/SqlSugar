@@ -226,26 +226,59 @@ namespace SqlSugar
             foreach (var item in UpdateObjs)
             {
                 List<DbColumnInfo> updateItem = new List<DbColumnInfo>();
-                foreach (var column in EntityInfo.Columns)
+                var isDic = item is Dictionary<string,object>;
+                if (isDic)
                 {
-                    var columnInfo = new DbColumnInfo()
-                    {
-                        Value = column.PropertyInfo.GetValue(item, null),
-                        DbColumnName = GetDbColumnName(column.PropertyName),
-                        PropertyName = column.PropertyName,
-                        PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
-                        TableId = i
-                    };
-                    if (columnInfo.PropertyType.IsEnum())
-                    {
-                        columnInfo.Value = Convert.ToInt64(columnInfo.Value);
-                    }
-                    updateItem.Add(columnInfo);
+                    SetUpdateItemByDic(i, item, updateItem);
                 }
-                this.UpdateBuilder.DbColumnInfoList.AddRange(updateItem);
+                else
+                {
+                    SetUpdateItemByEntity(i, item, updateItem);
+                }
                 ++i;
             }
         }
+        private void SetUpdateItemByDic(int i, T item, List<DbColumnInfo> updateItem)
+        {
+            foreach (var column in item as Dictionary<string,object>)
+            {
+                var columnInfo = new DbColumnInfo()
+                {
+                    Value = column.Value,
+                    DbColumnName =column.Key,
+                    PropertyName = column.Key,
+                    PropertyType = UtilMethods.GetUnderType(column.Value.GetType()),
+                    TableId = i
+                };
+                if (columnInfo.PropertyType.IsEnum())
+                {
+                    columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                }
+                updateItem.Add(columnInfo);
+            }
+            this.UpdateBuilder.DbColumnInfoList.AddRange(updateItem);
+        }
+        private void SetUpdateItemByEntity(int i, T item, List<DbColumnInfo> updateItem)
+        {
+            foreach (var column in EntityInfo.Columns)
+            {
+                var columnInfo = new DbColumnInfo()
+                {
+                    Value = column.PropertyInfo.GetValue(item, null),
+                    DbColumnName = GetDbColumnName(column.PropertyName),
+                    PropertyName = column.PropertyName,
+                    PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
+                    TableId = i
+                };
+                if (columnInfo.PropertyType.IsEnum())
+                {
+                    columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                }
+                updateItem.Add(columnInfo);
+            }
+            this.UpdateBuilder.DbColumnInfoList.AddRange(updateItem);
+        }
+
         private void PreToSql()
         {
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();

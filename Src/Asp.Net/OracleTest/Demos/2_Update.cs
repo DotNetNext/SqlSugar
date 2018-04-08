@@ -38,6 +38,11 @@ namespace OrmTest.Demo
             //Use Lock
             var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
 
+            var dt = new Dictionary<string,object>();
+            dt.Add("id", 1);
+            dt.Add("name", "1");
+            var t66 = db.Updateable(dt).AS("student").With(SqlWith.UpdLock).ExecuteCommand();
+
             //update List<T>
             //var t7 = db.Updateable(updateObjs).ExecuteCommand();
 
