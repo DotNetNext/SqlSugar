@@ -60,6 +60,19 @@ namespace SqlSugar
             }
             return result;
         }
+        public static DateTime? GetConvertTime(this IDataRecord dr, int i)
+        {
+            var result = dr.GetValue(i);
+            if (result == DBNull.Value)
+            {
+                return null; ;
+            }
+            return Convert.ToDateTime(result.ToString());
+        }
+        public static DateTime GetTime(this IDataRecord dr, int i)
+        {
+            return Convert.ToDateTime(dr.GetValue(i).ToString());
+        }
 
         public static decimal? GetConvertDecimal(this IDataRecord dr, int i)
         {

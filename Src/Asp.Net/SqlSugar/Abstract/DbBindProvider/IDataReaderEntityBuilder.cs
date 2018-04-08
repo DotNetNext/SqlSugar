@@ -49,6 +49,8 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertByte = typeof(IDataRecordExtensions).GetMethod("GetConvertByte");
         private static readonly MethodInfo getConvertChar = typeof(IDataRecordExtensions).GetMethod("GetConvertChar");
         private static readonly MethodInfo getConvertDateTime = typeof(IDataRecordExtensions).GetMethod("GetConvertDateTime");
+        private static readonly MethodInfo getConvertTime = typeof(IDataRecordExtensions).GetMethod("GetConvertTime");
+        private static readonly MethodInfo getTime = typeof(IDataRecordExtensions).GetMethod("GetTime");
         private static readonly MethodInfo getConvertDecimal = typeof(IDataRecordExtensions).GetMethod("GetConvertDecimal");
         private static readonly MethodInfo getConvertDouble = typeof(IDataRecordExtensions).GetMethod("GetConvertDouble");
         private static readonly MethodInfo getConvertGuid = typeof(IDataRecordExtensions).GetMethod("GetConvertGuid");
@@ -245,6 +247,8 @@ namespace SqlSugar
                     CheckType(bind.DateThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "datetime")
                         method = isNullableType ? getConvertDateTime : getDateTime;
+                    if (bindProperyTypeName == "datetime"&&dbTypeName == "time")
+                        method = isNullableType ? getConvertTime : getTime;
                     break;
                 case CSharpDataType.@decimal:
                     CheckType(bind.DecimalThrow, bindProperyTypeName, validPropertyName, propertyName);
