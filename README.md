@@ -275,19 +275,19 @@ var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("
 var t2 = db.Insertable(insertObj).ExecuteCommand();
 
 //Insert reutrn Identity Value
-var t3 = db.Insertable(insertObj).ExecuteReutrnIdentity();
+var t3 = db.Insertable(insertObj).ExecuteReturnBigIdentity();
 
 
 //Only  insert  Name 
-var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name,it.SchoolId }).ExecuteReutrnIdentity();
+var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name,it.SchoolId }).ExecuteReturnBigIdentity();
 
 
 //Ignore TestId
-var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReutrnIdentity();
+var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReturnBigIdentity();
 
 
 //Ignore   TestId
-var t6 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReutrnIdentity();
+var t6 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReturnBigIdentity();
 
 
 //Use Lock
