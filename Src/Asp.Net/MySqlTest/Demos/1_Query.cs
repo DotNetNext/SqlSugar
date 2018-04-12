@@ -81,7 +81,7 @@ namespace OrmTest.Demo
             var student1 = db.Queryable<Student>().InSingle(1);
 
             //get SimpleClient
-            var sdb = db.SimpleClient;
+            var sdb = db.GetSimpleClient();
             var student2 = sdb.GetById<Student>(1);
             sdb.DeleteById<Student>(1);
             sdb.Insert(new Student() { Name = "xx" });

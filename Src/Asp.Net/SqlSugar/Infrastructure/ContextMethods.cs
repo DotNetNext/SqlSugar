@@ -388,6 +388,10 @@ namespace SqlSugar
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
                             parameters.Add(new SugarParameter(parameterName, item.FieldValue + "%"));
                             break;
+                        case ConditionalType.NoLike:
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), " NOT LIKE", parameterName);
+                            parameters.Add(new SugarParameter(parameterName, item.FieldValue + "%"));
+                            break;
                         case ConditionalType.LikeRight:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
                             parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue));

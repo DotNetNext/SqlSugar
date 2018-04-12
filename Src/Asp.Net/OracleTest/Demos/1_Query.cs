@@ -374,11 +374,12 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             db.IgnoreColumns.Add("TestId", "Student");
-            db.Insertable<Student>( new Student() { Name="a" }).ExecuteCommand();
+            db.Insertable<Student>( new Student() { Name="abc" }).ExecuteCommand();
             var s1 = db.Queryable<Student>().Select(it => new  { Name = it.Name, Student = it }).ToList();
             var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
             var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
             var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
+            var s44 = db.Queryable<Student>().Where(it=>it.Name.Substring(0,1)=="a").ToList();
             var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
             var s6 = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id

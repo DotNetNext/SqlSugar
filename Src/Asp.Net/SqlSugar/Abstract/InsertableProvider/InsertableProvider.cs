@@ -264,27 +264,58 @@ namespace SqlSugar
             foreach (var item in InsertObjs)
             {
                 List<DbColumnInfo> insertItem = new List<DbColumnInfo>();
-                foreach (var column in EntityInfo.Columns)
+                if (item is Dictionary<string, object>)
                 {
-                    if (column.IsIgnore || column.IsOnlyIgnoreInsert) continue;
-                    var columnInfo = new DbColumnInfo()
-                    {
-                        Value = column.PropertyInfo.GetValue(item, null),
-                        DbColumnName = GetDbColumnName(column.PropertyName),
-                        PropertyName = column.PropertyName,
-                        PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
-                        TableId = i
-                    };
-                    if (columnInfo.PropertyType.IsEnum())
-                    {
-                        columnInfo.Value = Convert.ToInt64(columnInfo.Value);
-                    }
-                    insertItem.Add(columnInfo);
+                    SetInsertItemByDic(i, item, insertItem);
+                }
+                else
+                {
+                    SetInsertItemByEntity(i, item, insertItem);
                 }
                 this.InsertBuilder.DbColumnInfoList.AddRange(insertItem);
                 ++i;
             }
         }
+        private void SetInsertItemByDic(int i, T item, List<DbColumnInfo> insertItem)
+        {
+            foreach (var column in item as Dictionary<string,object>)
+            {
+                var columnInfo = new DbColumnInfo()
+                {
+                    Value = column.Value,
+                    DbColumnName = column.Key,
+                    PropertyName = column.Key,
+                    PropertyType = UtilMethods.GetUnderType(column.Value.GetType()),
+                    TableId = i
+                };
+                if (columnInfo.PropertyType.IsEnum())
+                {
+                    columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                }
+                insertItem.Add(columnInfo);
+            }
+        }
+        private void SetInsertItemByEntity(int i, T item, List<DbColumnInfo> insertItem)
+        {
+            foreach (var column in EntityInfo.Columns)
+            {
+                if (column.IsIgnore || column.IsOnlyIgnoreInsert) continue;
+                var columnInfo = new DbColumnInfo()
+                {
+                    Value = column.PropertyInfo.GetValue(item, null),
+                    DbColumnName = GetDbColumnName(column.PropertyName),
+                    PropertyName = column.PropertyName,
+                    PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
+                    TableId = i
+                };
+                if (columnInfo.PropertyType.IsEnum())
+                {
+                    columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                }
+                insertItem.Add(columnInfo);
+            }
+        }
+
         private string GetDbColumnName(string propertyName)
         {
             if (!IsMappingColumns)
