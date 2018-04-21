@@ -178,6 +178,9 @@ namespace SqlSugar
             MethodInfo method = null;
             Type bindPropertyType = UtilMethods.GetUnderType(bindProperty, ref isNullableType);
             string dbTypeName = UtilMethods.GetParenthesesValue(DataRecord.GetDataTypeName(ordinal));
+            if (dbTypeName.IsNullOrEmpty()) {
+                dbTypeName = bindPropertyType.Name;
+            }
             string propertyName = bindProperty.Name;
             string validPropertyName = bind.GetPropertyTypeName(dbTypeName);
             validPropertyName = validPropertyName == "byte[]" ? "byteArray" : validPropertyName;
