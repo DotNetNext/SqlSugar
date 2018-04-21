@@ -207,6 +207,15 @@ namespace SqlSugar
             return this;
         }
 
+        public IUpdateable<T> Where(string fieldName,string conditionalType, object fieldValue)
+        {
+            var whereSql=this.SqlBuilder.GetWhere(fieldName, conditionalType,0);
+            this.Where(whereSql);
+            string parameterName = this.SqlBuilder.SqlParameterKeyWord + fieldName+ "0";
+            this.UpdateBuilder.Parameters.Add(new SugarParameter(parameterName, fieldValue));
+            return this;
+        }
+
         public IUpdateable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)

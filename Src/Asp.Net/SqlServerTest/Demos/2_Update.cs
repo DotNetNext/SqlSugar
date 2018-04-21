@@ -61,7 +61,7 @@ namespace OrmTest.Demo
 
             //sql
             db.Updateable(updateObj).Where("id=@x",new { x="1"}).ExecuteCommand();
-
+            db.Updateable(updateObj).Where("id","=",1).ExecuteCommand();
             var t12 = db.Updateable<School>().AS("Student").UpdateColumns(it => new School() { Name = "jack" }).Where(it => it.Id == 1).ExecuteCommandAsync();
             t12.Wait();
 

@@ -20,6 +20,14 @@ namespace SqlSugar
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);
         IUpdateable<T> Where(string whereSql,object parameters=null);
         /// <summary>
+        ///  
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <param name="conditionalType">for example : = </param>
+        /// <param name="fieldValue"></param>
+        /// <returns></returns>
+        IUpdateable<T> Where(string fieldName, string conditionalType, object fieldValue);
+        /// <summary>
         /// Non primary key entity update function
         /// </summary>
         /// <param name="columns"></param>
