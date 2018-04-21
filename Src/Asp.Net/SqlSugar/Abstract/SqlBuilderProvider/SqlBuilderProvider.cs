@@ -86,6 +86,12 @@ namespace SqlSugar
         {
             return "t";
         }
+
+
+        public string GetWhere(string fieldName,string conditionalType,int? parameterIndex=null)
+        {
+            return string.Format(" {0} {1} {2}{3} ",fieldName,conditionalType,this.SqlParameterKeyWord,fieldName+ parameterIndex);
+        }
         public virtual string GetUnionAllSql(List<string> sqlList)
         {
             return string.Join("UNION ALL \r\n", sqlList);

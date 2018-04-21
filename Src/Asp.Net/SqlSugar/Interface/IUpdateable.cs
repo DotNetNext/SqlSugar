@@ -18,6 +18,7 @@ namespace SqlSugar
         IUpdateable<T> With(string lockString);
         IUpdateable<T> Where(bool isNoUpdateNull,bool IsOffIdentity = false);
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);
+        IUpdateable<T> Where(string whereSql,object parameters=null);
         /// <summary>
         /// Non primary key entity update function
         /// </summary>

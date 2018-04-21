@@ -196,6 +196,17 @@ namespace SqlSugar
             return this;
         }
 
+        public IUpdateable<T> Where(string whereSql, object parameters = null)
+        {
+            if (whereSql.HasValue()) {
+                UpdateBuilder.WhereValues.Add(whereSql);
+            }
+            if (parameters != null) {
+                UpdateBuilder.Parameters.AddRange(Context.Ado.GetParameters(parameters));
+            }
+            return this;
+        }
+
         public IUpdateable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
