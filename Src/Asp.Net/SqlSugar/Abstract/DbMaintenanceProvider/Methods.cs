@@ -45,9 +45,9 @@ namespace SqlSugar
             cacheKey = GetCacheKey(cacheKey);
             var sql = string.Format(this.GetColumnInfosByTableNameSql, tableName);
             if (isCache)
-                return GetListOrCache<DbColumnInfo>(cacheKey, sql);
+                return GetListOrCache<DbColumnInfo>(cacheKey, sql).GroupBy(it=>it.DbColumnName).Select(it=>it.First()).ToList();
             else
-                return this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
+                return this.Context.Ado.SqlQuery<DbColumnInfo>(sql).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
 
         }
         public virtual List<string> GetIsIdentities(string tableName)
