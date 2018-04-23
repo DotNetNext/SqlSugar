@@ -74,6 +74,10 @@ namespace SqlSugar
         {
             return this.Context.Updateable(updateObj).ExecuteCommand() > 0;
         }
+        public bool UpdateRange<T>(T[] updateObjs) where T : class, new()
+        {
+            return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
+        }
         public bool Update<T>(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression) where T : class, new()
         {
             return this.Context.Updateable<T>().UpdateColumns(columns).Where(whereExpression).ExecuteCommand() > 0;
@@ -168,6 +172,10 @@ namespace SqlSugar
         public bool Update(T updateObj)
         {
             return this.Context.Updateable(updateObj).ExecuteCommand() > 0;
+        }
+        public bool UpdateRange(T [] updateObjs)
+        {
+            return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
         }
         public bool Update(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
         {
