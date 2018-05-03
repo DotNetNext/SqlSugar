@@ -1180,7 +1180,7 @@ namespace SqlSugar
         {
             if (result.HasValue())
             {
-                if (entityType.GetTypeInfo().BaseType.HasValue() && entityType.GetTypeInfo().BaseType == UtilConstants.ModelType)
+                if (UtilMethods.GetRootBaseType(entityType).HasValue() &&UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
                 {
                     foreach (var item in result)
                     {

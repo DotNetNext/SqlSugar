@@ -12,6 +12,7 @@ namespace OrmTest.Demo
         public static void Init()
         {
             var db = GetInstance();
+            db.Insertable(new CMStudent() { SchoolId = 1, Name = "xx1" }).ExecuteCommand();
             var students = db.Queryable<CMStudent>().ToList();
             if (students != null)
             {
