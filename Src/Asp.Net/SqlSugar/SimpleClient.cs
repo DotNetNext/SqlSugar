@@ -43,10 +43,24 @@ namespace SqlSugar
             page.PageCount = count;
             return result;
         }
+        public List<T> GetPageList<T>(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc) where T : class, new()
+        {
+            int count = 0;
+            var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
+            page.PageCount = count;
+            return result;
+        }
         public List<T> GetPageList<T>(List<IConditionalModel> conditionalList, PageModel page) where T : class, new()
         {
             int count = 0;
             var result = Context.Queryable<T>().Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
+            page.PageCount = count;
+            return result;
+        }
+        public List<T> GetPageList<T>(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc) where T : class, new()
+        {
+            int count = 0;
+            var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
         }
@@ -136,10 +150,24 @@ namespace SqlSugar
             page.PageCount = count;
             return result;
         }
+        public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc) 
+        {
+            int count = 0;
+            var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
+            page.PageCount = count;
+            return result;
+        }
         public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page)
         {
             int count = 0;
             var result = Context.Queryable<T>().Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
+            page.PageCount = count;
+            return result;
+        }
+        public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)  
+        {
+            int count = 0;
+            var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
         }
