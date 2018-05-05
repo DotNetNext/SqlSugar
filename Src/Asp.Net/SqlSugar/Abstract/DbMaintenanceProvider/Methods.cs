@@ -257,8 +257,8 @@ namespace SqlSugar
         {
             string columnName = this.SqlBuilder.GetTranslationTableName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
-            string dataType = columnInfo.DataType;
             string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
             string primaryKey = null;
             string identity = null;
@@ -276,6 +276,11 @@ namespace SqlSugar
             if (isMax)
             {
                 dataSize = item.Length > 0 ? string.Format("({0})", "max") : null;
+            }
+            else if (item.Length == 0 && item.DecimalDigits > 0)
+            {
+                item.Length = 10;
+                dataSize = string.Format("({0},{1})", item.Length, item.DecimalDigits);
             }
             else if (item.Length > 0 && item.DecimalDigits == 0)
             {

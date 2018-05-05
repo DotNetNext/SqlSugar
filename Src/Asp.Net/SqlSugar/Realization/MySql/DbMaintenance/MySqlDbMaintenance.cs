@@ -208,11 +208,9 @@ namespace SqlSugar
             foreach (var item in columns)
             {
                 string columnName = item.DbColumnName;
+                string dataSize = "";
+                dataSize = GetSize(item);
                 string dataType = item.DataType;
-                if (dataType == "varchar"&& item.Length==0) {
-                    item.Length = 1;
-                }
-                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
@@ -222,6 +220,32 @@ namespace SqlSugar
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
+
+        protected override string GetSize(DbColumnInfo item)
+        {
+            string dataSize = null;
+            var isMax = item.Length > 4000 || item.Length == -1;
+            if (isMax)
+            {
+                dataSize="";
+                item.DataType = "longtext";
+            }
+            else if (item.Length > 0 && item.DecimalDigits == 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+            }
+            else if (item.Length == 0 && item.DecimalDigits > 0)
+            {
+                item.Length = 10;
+                dataSize = string.Format("({0},{1})", item.Length, item.DecimalDigits);
+            }
+            else if (item.Length > 0 && item.DecimalDigits > 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0},{1})", item.Length, item.DecimalDigits) : null;
+            }
+            return dataSize;
+        }
+
         public override bool IsAnyConstraint(string constraintName)
         {
             throw new NotSupportedException("MySql IsAnyConstraint NotSupportedException");
