@@ -16,6 +16,8 @@ namespace SqlSugar
             {
                 foreach (var item in entityInfo.Columns)
                 {
+                    if (item.IsIgnore)
+                        continue;
                     DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
