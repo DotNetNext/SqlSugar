@@ -167,6 +167,7 @@ namespace SqlSugar
 
         public virtual T InSingle(object pkValue)
         {
+            Check.Exception(this.QueryBuilder.SelectValue.HasValue(), "'InSingle' and' Select' can't be used together,You can use .Select(it=>...).Single(it.id==1)");
             var list = In(pkValue).ToList();
             if (list == null) return default(T);
             else return list.SingleOrDefault();
@@ -987,7 +988,9 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Min<TResult>(lamResult.GetResultString());
+            var result= Min<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return result;
         }
         protected TResult _Avg<TResult>(Expression expression)
         {
@@ -999,13 +1002,17 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Max<TResult>(lamResult.GetResultString());
+            var reslut= Max<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
         }
         protected TResult _Sum<TResult>(Expression expression)
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            return Sum<TResult>(lamResult.GetResultString());
+            var reslut= Sum<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
         }
         protected ISugarQueryable<T> _As(string tableName, string entityName)
         {
@@ -1173,7 +1180,7 @@ namespace SqlSugar
         {
             if (result.HasValue())
             {
-                if (entityType.GetTypeInfo().BaseType.HasValue() && entityType.GetTypeInfo().BaseType == UtilConstants.ModelType)
+                if (UtilMethods.GetRootBaseType(entityType).HasValue() &&UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
                 {
                     foreach (var item in result)
                     {

@@ -45,9 +45,9 @@ namespace SqlSugar
             cacheKey = GetCacheKey(cacheKey);
             var sql = string.Format(this.GetColumnInfosByTableNameSql, tableName);
             if (isCache)
-                return GetListOrCache<DbColumnInfo>(cacheKey, sql);
+                return GetListOrCache<DbColumnInfo>(cacheKey, sql).GroupBy(it=>it.DbColumnName).Select(it=>it.First()).ToList();
             else
-                return this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
+                return this.Context.Ado.SqlQuery<DbColumnInfo>(sql).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
 
         }
         public virtual List<string> GetIsIdentities(string tableName)
@@ -82,8 +82,8 @@ namespace SqlSugar
         }
         public virtual bool IsAnyColumn(string tableName, string columnName)
         {
-            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
-            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
+            tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -92,7 +92,7 @@ namespace SqlSugar
         }
         public virtual bool IsPrimaryKey(string tableName, string columnName)
         {
-            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
+            columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -101,7 +101,7 @@ namespace SqlSugar
         }
         public virtual bool IsIdentity(string tableName, string columnName)
         {
-            columnName = this.SqlBuilder.GetTranslationColumnName(columnName);
+            columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
             var isAny = IsAnyTable(tableName);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
@@ -257,8 +257,8 @@ namespace SqlSugar
         {
             string columnName = this.SqlBuilder.GetTranslationTableName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
-            string dataType = columnInfo.DataType;
             string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
             string primaryKey = null;
             string identity = null;
@@ -276,6 +276,11 @@ namespace SqlSugar
             if (isMax)
             {
                 dataSize = item.Length > 0 ? string.Format("({0})", "max") : null;
+            }
+            else if (item.Length == 0 && item.DecimalDigits > 0)
+            {
+                item.Length = 10;
+                dataSize = string.Format("({0},{1})", item.Length, item.DecimalDigits);
             }
             else if (item.Length > 0 && item.DecimalDigits == 0)
             {

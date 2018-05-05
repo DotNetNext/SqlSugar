@@ -17,6 +17,17 @@ namespace SqlSugar
             return type==null ? oldType : type;
         }
 
+        internal static Type GetRootBaseType(Type entityType)
+        {
+            var baseType = entityType.BaseType;
+            while (baseType != null && baseType.BaseType != UtilConstants.ObjType)
+            {
+                baseType = baseType.BaseType;
+            }
+            return baseType;
+        }
+
+
         internal static Type GetUnderType(PropertyInfo propertyInfo, ref bool isNullable)
         {
             Type unType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);

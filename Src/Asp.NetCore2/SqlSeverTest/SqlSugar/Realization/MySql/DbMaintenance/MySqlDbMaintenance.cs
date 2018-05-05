@@ -185,7 +185,7 @@ namespace SqlSugar
             {
                 foreach (var item in columns)
                 {
-                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
+                    if (item.DbColumnName.Equals("GUID",StringComparison.CurrentCultureIgnoreCase)&&item.Length==0)
                     {
                         item.Length = 10;
                     }
@@ -193,9 +193,8 @@ namespace SqlSugar
             }
             string sql = GetCreateTableSql(tableName, columns);
             string primaryKeyInfo = null;
-            if (columns.Any(it => it.IsPrimarykey) && isCreatePrimaryKey)
-            {
-                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
+            if (columns.Any(it => it.IsPrimarykey)&&isCreatePrimaryKey) {
+                primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsPrimarykey).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
 
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
@@ -209,11 +208,9 @@ namespace SqlSugar
             foreach (var item in columns)
             {
                 string columnName = item.DbColumnName;
+                string dataSize = "";
+                dataSize = GetSize(item);
                 string dataType = item.DataType;
-                if (dataType == "varchar"&& item.Length==0) {
-                    item.Length = 1;
-                }
-                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
@@ -223,6 +220,32 @@ namespace SqlSugar
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
+
+        protected override string GetSize(DbColumnInfo item)
+        {
+            string dataSize = null;
+            var isMax = item.Length > 4000 || item.Length == -1;
+            if (isMax)
+            {
+                dataSize="";
+                item.DataType = "longtext";
+            }
+            else if (item.Length > 0 && item.DecimalDigits == 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+            }
+            else if (item.Length == 0 && item.DecimalDigits > 0)
+            {
+                item.Length = 10;
+                dataSize = string.Format("({0},{1})", item.Length, item.DecimalDigits);
+            }
+            else if (item.Length > 0 && item.DecimalDigits > 0)
+            {
+                dataSize = item.Length > 0 ? string.Format("({0},{1})", item.Length, item.DecimalDigits) : null;
+            }
+            return dataSize;
+        }
+
         public override bool IsAnyConstraint(string constraintName)
         {
             throw new NotSupportedException("MySql IsAnyConstraint NotSupportedException");

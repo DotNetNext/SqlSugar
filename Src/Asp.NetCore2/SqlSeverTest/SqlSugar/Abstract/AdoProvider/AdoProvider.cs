@@ -655,7 +655,10 @@ namespace SqlSugar
             {
                 foreach (var outputParameter in parameters.Where(it => it.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue)))
                 {
-                    var gobalOutputParamter = this.OutputParameters.Single(it => it.ParameterName == outputParameter.ParameterName);
+                    var gobalOutputParamter = this.OutputParameters.FirstOrDefault(it => it.ParameterName == outputParameter.ParameterName);
+                    if (gobalOutputParamter == null) {//Oracle bug
+                        gobalOutputParamter=this.OutputParameters.FirstOrDefault(it => it.ParameterName == outputParameter.ParameterName.TrimStart(outputParameter.ParameterName.First()));
+                    }
                     outputParameter.Value = gobalOutputParamter.Value;
                     this.OutputParameters.Remove(gobalOutputParamter);
                 }
