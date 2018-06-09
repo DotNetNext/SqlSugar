@@ -16,6 +16,7 @@ namespace SqlSugar
         Task<bool> ExecuteCommandHasChangeAsync();
         IUpdateable<T> AS(string tableName);
         IUpdateable<T> With(string lockString);
+        [Obsolete]
         IUpdateable<T> Where(bool isNoUpdateNull,bool IsOffIdentity = false);
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);
         IUpdateable<T> Where(string whereSql,object parameters=null);
@@ -32,6 +33,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="columns"></param>
         /// <returns></returns>
+        IUpdateable<T> IgnoreColumns(bool IgnoreAllNullColumns, bool IsOffIdentity = false);
         IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> UpdateColumns(Expression<Func<T, bool>> columns);
