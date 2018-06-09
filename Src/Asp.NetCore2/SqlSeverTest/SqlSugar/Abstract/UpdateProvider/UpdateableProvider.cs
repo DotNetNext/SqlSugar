@@ -67,6 +67,16 @@ namespace SqlSugar
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
+        
+        public IUpdateable<T> IgnoreColumns(bool IgnoreAllNullColumns, bool IsOffIdentity = false)
+        {
+            UpdateBuilder.IsOffIdentity = IsOffIdentity;
+            if (this.UpdateBuilder.LambdaExpressions == null)
+                this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
+            this.UpdateBuilder.IsNoUpdateNull = IgnoreAllNullColumns;
+            return this;
+        }
+        
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
@@ -181,6 +191,7 @@ namespace SqlSugar
             return this;
         }
 
+        [Obsolete]
         public IUpdateable<T> Where(bool isUpdateNull, bool IsOffIdentity = false)
         {
             UpdateBuilder.IsOffIdentity = IsOffIdentity;
@@ -189,6 +200,7 @@ namespace SqlSugar
             this.UpdateBuilder.IsNoUpdateNull = isUpdateNull;
             return this;
         }
+        
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
             var expResult = UpdateBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
