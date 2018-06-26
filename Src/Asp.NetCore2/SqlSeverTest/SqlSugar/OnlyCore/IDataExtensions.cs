@@ -41,6 +41,3 @@ namespace SqlSugar
         }
     }
 }
-namespace System.Data.Sqlite {
-
-}
