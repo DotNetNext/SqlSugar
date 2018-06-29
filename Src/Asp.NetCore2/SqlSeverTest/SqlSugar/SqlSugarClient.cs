@@ -16,8 +16,48 @@ namespace SqlSugar
     /// </summary>
     public partial class SqlSugarClient : IDisposable
     {
-
         #region Constructor
+        private static ConnectionConfig _config;
+        public static void InitConfig(string connStr,DbType dbType,bool isAutoCloseConnection=true,InitKeyType initKeyType = InitKeyType.SystemTable)
+        {
+            _config = new ConnectionConfig
+            {
+                ConnectionString = connStr,
+                DbType = dbType, 
+                IsAutoCloseConnection = isAutoCloseConnection,
+                InitKeyType = initKeyType
+            };
+        }
+        public static void InitConfig(ConnectionConfig connectionConfig)
+        {
+            _config = connectionConfig;
+        }
+        public SqlSugarClient()
+        {
+            Context = this;
+            CurrentConnectionConfig = _config;
+            ContextID = Guid.NewGuid();
+            Check.ArgumentNullException(_config, "config is null");
+            switch (_config.DbType)
+            {
+                case DbType.MySql:
+                    DependencyManagement.TryMySqlData();
+                    break;
+                case DbType.SqlServer:
+                    break;
+                case DbType.Sqlite:
+                    DependencyManagement.TrySqlite();
+                    break;
+                case DbType.Oracle:
+                    DependencyManagement.TryOracle();
+                    break;
+                case DbType.PostgreSQL:
+                    throw new Exception("开发中");
+                default:
+                    throw new Exception("ConnectionConfig.DbType is null");
+            }
+        }
+        [Obsolete("程序启动的时候，先调用SqlSugarClient.InitConfig,框架将帮你持有数据库配置信息")]
         public SqlSugarClient(ConnectionConfig config)
         {
             this.Context = this;
