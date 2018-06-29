@@ -282,6 +282,7 @@ namespace SqlSugar
         {
             foreach (var column in EntityInfo.Columns)
             {
+                if (column.IsIgnore) continue;
                 var columnInfo = new DbColumnInfo()
                 {
                     Value = column.PropertyInfo.GetValue(item, null),
