@@ -21,7 +21,8 @@ namespace SqlSugar
         public ISqlBuilder Builder { get; set; }
         public StringBuilder sql { get; set; }
         public List<SugarParameter> Parameters { get; set; }
-        public string TableName { get; set; }
+        //public string TableName { get; set; }
+        public EntityInfo EntityInfo { get; set; }
         public string TableWithString { get; set; }
         public List<DbColumnInfo> DbColumnInfoList { get; set; }
         public List<string> WhereValues { get; set; }
@@ -91,7 +92,7 @@ namespace SqlSugar
         {
             get
             {
-                var result = Builder.GetTranslationTableName(TableName);
+                var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 result += UtilConstants.Space;
                 if (this.TableWithString.HasValue())
                 {
@@ -104,7 +105,7 @@ namespace SqlSugar
         {
             get
             {
-                var result = Builder.GetTranslationTableName(TableName);
+                var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 return result;
             }
         }
