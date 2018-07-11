@@ -70,6 +70,17 @@ namespace SqlSugar
             ExecuteCommandIdentityIntoEntity();
             return InsertObjs.First();
         }
+        public virtual T ExecuteReturnGuidEntity()
+        {
+            ExecuteCommandGuidIdentityIntoEntity();
+            return InsertObjs.First();
+        }
+        public virtual bool ExecuteCommandGuidIdentityIntoEntity()
+        {
+            PreExecuteCommandGuid();
+            return ExecuteCommandIdentityIntoEntity();
+        }
+
         public virtual bool ExecuteCommandIdentityIntoEntity()
         {
             var result = InsertObjs.First();
@@ -358,6 +369,24 @@ namespace SqlSugar
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
+        }
+
+        protected virtual void PreExecuteCommandGuid()
+        {
+            var result = InsertObjs.First();
+            var guidKeys = GetGuidInitBySqlSugar();
+            Check.Exception(guidKeys.Count > 1, "PreExecuteCommandGuid does not support multiple Guid keys");
+            var guidKey = guidKeys.First();
+            var newKey = Guid.NewGuid();
+            var key = InsertBuilder.DbColumnInfoList.FirstOrDefault(d => d.DbColumnName == guidKey);
+            if (key == null)
+                return;
+            key.Value = newKey;
+            this.Context.EntityMaintenance.GetProperty<T>(guidKey).SetValue(result, newKey, null);
+        }
+        protected virtual List<string> GetGuidInitBySqlSugar()
+        {
+            return this.EntityInfo.Columns.Where(it => it.IsOnlyInsertInitGuid).Select(it => it.DbColumnName).ToList();
         }
         private void TaskStart<Type>(Task<Type> result)
         {
