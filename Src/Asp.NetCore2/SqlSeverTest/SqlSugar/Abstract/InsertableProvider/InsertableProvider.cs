@@ -373,16 +373,20 @@ namespace SqlSugar
 
         protected virtual void PreExecuteCommandGuid()
         {
-            var result = InsertObjs.First();
             var guidKeys = GetGuidInitBySqlSugar();
             Check.Exception(guidKeys.Count > 1, "PreExecuteCommandGuid does not support multiple Guid keys");
             var guidKey = guidKeys.First();
-            var newKey = Guid.NewGuid();
-            var key = InsertBuilder.DbColumnInfoList.FirstOrDefault(d => d.DbColumnName == guidKey);
-            if (key == null)
-                return;
-            key.Value = newKey;
-            this.Context.EntityMaintenance.GetProperty<T>(guidKey).SetValue(result, newKey, null);
+
+            for (var index = 0; index < InsertObjs.Length; index++)
+            {
+                var key = InsertBuilder.DbColumnInfoList.FirstOrDefault(d => d.DbColumnName == guidKey && d.TableId ==index);
+                if (key == null)
+                    continue;
+                var insertObj = InsertObjs[index];
+                var newKey = Guid.NewGuid();
+                this.Context.EntityMaintenance.GetProperty<T>(guidKey).SetValue(insertObj, newKey, null);
+                key.Value = newKey;
+            }
         }
         protected virtual List<string> GetGuidInitBySqlSugar()
         {
