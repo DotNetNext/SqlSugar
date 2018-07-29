@@ -278,6 +278,7 @@ namespace SqlSugar
                 newClient.Ado.LogEventStarting = Context.Ado.LogEventStarting;
                 newClient.Ado.LogEventCompleted = Context.Ado.LogEventCompleted;
                 newClient.Ado.ProcessingEventStartingSQL = Context.Ado.ProcessingEventStartingSQL;
+                newClient.QueryFilter = Context.QueryFilter;
             }
             return newClient;
         }
