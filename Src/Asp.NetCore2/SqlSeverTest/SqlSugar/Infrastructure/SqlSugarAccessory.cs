@@ -14,7 +14,7 @@ namespace SqlSugar
         {
             get
             {
-                var result = _Context; 
+                var result = _Context; ;
                 if (CurrentConnectionConfig.IsShardSameThread)
                 {
                     if (CallContext.ContextList.Value.IsNullOrEmpty())
@@ -268,7 +268,7 @@ namespace SqlSugar
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
             var result = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); 
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             result.Context = this.Context;
             result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             result.SqlBuilder = sqlBuilder;
@@ -283,7 +283,7 @@ namespace SqlSugar
         protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
         {
             var result = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig);
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             result.Context = this.Context;
             result.SqlBuilder = sqlBuilder;
             sqlBuilder.DeleteBuilder = result.DeleteBuilder = InstanceFactory.GetDeleteBuilder(this.CurrentConnectionConfig);
@@ -295,7 +295,7 @@ namespace SqlSugar
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
         {
             var result = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig);
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             result.Context = this.Context;
             result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             result.SqlBuilder = sqlBuilder;
@@ -400,7 +400,7 @@ namespace SqlSugar
                     result.Add(joinValue);
                 }
             }
-            return result.ToArray(); 
+            return result.ToArray(); ;
         }
 
         protected Dictionary<string, string> GetEasyJoinInfo(Expression joinExpression, ref string shortName, ISqlBuilder builder, params Type[] entityTypeArray)
