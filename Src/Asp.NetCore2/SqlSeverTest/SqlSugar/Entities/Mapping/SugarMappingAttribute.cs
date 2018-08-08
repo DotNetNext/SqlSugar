@@ -105,6 +105,13 @@ namespace SqlSugar
             get { return _IsOnlyIgnoreInsert; }
             set { _IsOnlyIgnoreInsert = value; }
         }
+
+        private bool _isOnlyInsertInitGuid;
+        public bool IsOnlyInsertInitGuid
+        {
+            get { return _isOnlyInsertInitGuid; }
+            set { _isOnlyInsertInitGuid = value; }
+        }
     }
 
 }

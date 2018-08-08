@@ -26,5 +26,6 @@ namespace SqlSugar
         public int DecimalDigits { get; set; }
         public string OracleSequenceName { get; set; }
         public bool IsOnlyIgnoreInsert { get; set; }
+        public bool IsOnlyInsertInitGuid { get; set; }
     }
 }

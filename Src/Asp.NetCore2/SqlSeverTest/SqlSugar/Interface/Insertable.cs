@@ -15,8 +15,10 @@ namespace SqlSugar
         int ExecuteReturnIdentity();
         Task<int> ExecuteReturnIdentityAsync();
         T ExecuteReturnEntity();
+        T ExecuteReturnGuidEntity();
         Task<T> ExecuteReturnEntityAsync();
         bool ExecuteCommandIdentityIntoEntity();
+        bool ExecuteCommandGuidIdentityIntoEntity();
         Task<bool> ExecuteCommandIdentityIntoEntityAsync();
         long ExecuteReturnBigIdentity();
         Task<long> ExecuteReturnBigIdentityAsync();
