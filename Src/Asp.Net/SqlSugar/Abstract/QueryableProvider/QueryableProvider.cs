@@ -1083,8 +1083,7 @@ namespace SqlSugar
         {
             var sql = string.Empty;
             ToSqlBefore();
-            sql = QueryBuilder.ToSqlString();
-            sql = QueryBuilder.ToCountSql(sql);
+            sql = QueryBuilder.ToCountSql();
             var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
             return result;
         }
