@@ -108,6 +108,13 @@ namespace SqlSugar
         #endregion
 
         #region Sql Template
+        public virtual string CountTemplate
+        {
+            get
+            {
+                return "SELECT COUNT(*) FROM {0}{1} ";
+            }
+        }
         public virtual string SqlTemplate
         {
             get
@@ -295,10 +302,11 @@ namespace SqlSugar
             return Regex.Replace(externalOrderBy, @"\[\w+\]\.", "");
         }
 
-        public virtual string ToCountSql(string sql)
+        public virtual string ToCountSql()
         {
-
-            return string.Format(" SELECT COUNT(1) FROM ({0}) CountTable ", sql);
+            var sqlCount = new StringBuilder();
+            sqlCount.AppendFormat(CountTemplate, GetTableNameString, GetWhereValueString);
+            return sqlCount.ToString();
         }
 
         public virtual string ToPageSql(string sql, int? take, int? skip, bool isExternal = false)
