@@ -504,6 +504,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
                     case "GetDate":
                         return this.Context.DbMehtods.GetDate();
+                    case "GetRandom":
+                        return this.Context.DbMehtods.GetRandom();
                     default:
                         break;
                 }
