@@ -1212,6 +1212,7 @@ namespace SqlSugar
             asyncQueryableBuilder.TableWithString = this.QueryBuilder.TableWithString;
             asyncQueryableBuilder.GroupByValue = this.QueryBuilder.GroupByValue;
             asyncQueryableBuilder.OrderByValue = this.QueryBuilder.OrderByValue;
+            asyncQueryableBuilder.IsDisabledGobalFilter = this.QueryBuilder.IsDisabledGobalFilter;
             return asyncQueryable;
         }
         #endregion
