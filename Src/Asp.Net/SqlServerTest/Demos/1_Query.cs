@@ -194,6 +194,27 @@ namespace OrmTest.Demo
                 db.Ado.RollbackTran();
                 throw;
             }
+
+
+
+            //async tran
+            var asyncResult = db.Ado.UseTranAsync(() =>
+            {
+
+                var beginCount = db.Queryable<Student>().ToList();
+                db.Ado.ExecuteCommand("delete student");
+                var endCount = db.Queryable<Student>().Count();
+                throw new Exception("error haha");
+            });
+            asyncResult.Wait();
+            var asyncCount = db.Queryable<Student>().Count();
+
+            //async
+            var asyncResult2 = db.Ado.UseTranAsync<List<Student>>(() =>
+            {
+                return db.Queryable<Student>().ToList();
+            });
+            asyncResult2.Wait();
         }
         private static void Group()
         {

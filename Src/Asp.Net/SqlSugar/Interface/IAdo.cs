@@ -86,6 +86,9 @@ namespace SqlSugar
 
         DbResult<bool> UseTran(Action action);
         DbResult<T> UseTran<T>(Func<T> action);
+        Task<DbResult<bool>> UseTranAsync(Action action);
+        Task<DbResult<T>> UseTranAsync<T>(Func<T> action);
+
         void UseStoredProcedure(Action action);
         T UseStoredProcedure<T>(Func<T> action);
         IAdo UseStoredProcedure();
