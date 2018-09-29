@@ -1019,6 +1019,10 @@ namespace SqlSugar
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
             this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
+            if (this.Context.MappingTables.Any(it => it.EntityName == entityName))
+            {
+                this.Context.MappingTables.Add(this.Context.MappingTables.First(it => it.EntityName == entityName).DbTableName, tableName);
+            }
             this.Context.MappingTables.Add(entityName, tableName);
             this.QueryableMappingTableList = this.Context.MappingTables;
             return this;
