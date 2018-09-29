@@ -133,5 +133,10 @@ namespace SqlSugar
         {
             return "NOW()";
         }
+
+        public override string GetRandom()
+        {
+            return "rand()";
+        }
     }
 }
