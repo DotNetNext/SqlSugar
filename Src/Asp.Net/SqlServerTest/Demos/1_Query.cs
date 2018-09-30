@@ -194,6 +194,27 @@ namespace OrmTest.Demo
                 db.Ado.RollbackTran();
                 throw;
             }
+
+
+
+            //async tran
+            var asyncResult = db.Ado.UseTranAsync(() =>
+            {
+
+                var beginCount = db.Queryable<Student>().ToList();
+                db.Ado.ExecuteCommand("delete student");
+                var endCount = db.Queryable<Student>().Count();
+                throw new Exception("error haha");
+            });
+            asyncResult.Wait();
+            var asyncCount = db.Queryable<Student>().Count();
+
+            //async
+            var asyncResult2 = db.Ado.UseTranAsync<List<Student>>(() =>
+            {
+                return db.Queryable<Student>().ToList();
+            });
+            asyncResult2.Wait();
         }
         private static void Group()
         {
@@ -244,6 +265,8 @@ namespace OrmTest.Demo
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Student>().Select<object>("*").ToList();
+            var getAll2 = db.Queryable<Student>().ToList();
+            var getRandomList = db.Queryable<Student>().OrderBy(it => SqlFunc.GetRandom()).ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getId = db.Queryable<Student>().Select(it => it.Id).ToList();
             var getNew = db.Queryable<Student>().Where(it => it.Id == 1).Select(it => new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id), it.Name, it.SchoolId }).ToList();

@@ -208,5 +208,10 @@ namespace SqlSugar
         {
             return "DATETIME('now')";
         }
+
+        public override string GetRandom()
+        {
+            return "RANDOM()";
+        }
     }
 }

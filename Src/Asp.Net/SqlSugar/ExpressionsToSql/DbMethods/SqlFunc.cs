@@ -110,6 +110,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static TResult GetSelfAndAutoFill<TResult>(TResult value) { throw new NotSupportedException("Can only be used in expressions"); }
         public static DateTime GetDate() { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string GetRandom() { throw new NotSupportedException("Can only be used in expressions"); }
         /// <summary>
         /// Subquery
         /// </summary>

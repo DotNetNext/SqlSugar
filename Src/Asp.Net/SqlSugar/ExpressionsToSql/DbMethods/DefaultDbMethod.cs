@@ -325,6 +325,11 @@ namespace SqlSugar
             return "GETDATE()";
         }
 
+        public virtual string GetRandom()
+        {
+            return "NEWID()";
+        }
+
         public virtual string CaseWhen(List<KeyValuePair<string, string>> sqls)
         {
             StringBuilder reslut = new StringBuilder();
