@@ -111,7 +111,7 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
-                    string bytesString = "0x" + BitConverter.ToString((byte[])value);
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
                     return bytesString;
                 }
                 else if (type == UtilConstants.BoolType)
