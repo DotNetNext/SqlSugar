@@ -157,7 +157,7 @@ namespace SqlSugar
             var parameter = model.Args[0].MemberName;
             var parameter2 = model.Args[1].MemberName;
             int time = 1;
-            return string.Format(" Cast((JulianDay({0}) - JulianDay({1}))  *{2} As INTEGER)", parameter, parameter2, time);
+            return string.Format(" Cast((JulianDay({0}) - JulianDay({1}))  *{2} As INTEGER)=0 ", parameter, parameter2, time);
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
@@ -207,6 +207,11 @@ namespace SqlSugar
         public override string GetDate()
         {
             return "DATETIME('now')";
+        }
+
+        public override string GetRandom()
+        {
+            return "RANDOM()";
         }
     }
 }

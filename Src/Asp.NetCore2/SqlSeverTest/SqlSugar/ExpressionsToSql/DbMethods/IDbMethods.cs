@@ -59,5 +59,6 @@ namespace SqlSugar
         string Pack(string sql);
         string Null();
         string GetDate();
+        string GetRandom();
     }
 }

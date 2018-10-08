@@ -180,5 +180,10 @@ namespace SqlSugar
         {
             return "sysdate";
         }
+
+        public override string GetRandom()
+        {
+            return "dbms_random.value";
+        }
     }
 }

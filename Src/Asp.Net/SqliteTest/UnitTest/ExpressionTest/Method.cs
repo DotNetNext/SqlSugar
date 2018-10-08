@@ -356,7 +356,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, " Cast((JulianDay(@MethodConst0) - JulianDay(@MethodConst1))  *1 As INTEGER)", new List<SugarParameter>() {
+            base.Check(value, pars, " Cast((JulianDay(@MethodConst0) - JulianDay(@MethodConst1))  *1 As INTEGER)=0 ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2)
             }, "DateIsSameDay error");
         }

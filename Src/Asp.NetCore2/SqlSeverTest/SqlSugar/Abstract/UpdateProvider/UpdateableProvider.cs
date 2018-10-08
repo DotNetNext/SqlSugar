@@ -64,22 +64,24 @@ namespace SqlSugar
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
             this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
+            if (this.Context.MappingTables.Any(it => it.EntityName == entityName)) {
+                this.Context.MappingTables.Add(this.Context.MappingTables.First(it => it.EntityName == entityName).DbTableName, tableName);
+            }
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
-        
-        public IUpdateable<T> IgnoreColumns(bool IgnoreAllNullColumns, bool IsOffIdentity = false)
-        {
-            UpdateBuilder.IsOffIdentity = IsOffIdentity;
-            if (this.UpdateBuilder.LambdaExpressions == null)
-                this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
-            this.UpdateBuilder.IsNoUpdateNull = IgnoreAllNullColumns;
-            return this;
-        }
-        
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
+            return this;
+        }
+
+        public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false)
+        {
+            UpdateBuilder.IsOffIdentity = isOffIdentity;
+            if (this.UpdateBuilder.LambdaExpressions == null)
+                this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
+            this.UpdateBuilder.IsNoUpdateNull = ignoreAllNullColumns;
             return this;
         }
 
@@ -190,8 +192,8 @@ namespace SqlSugar
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName,StringComparison.CurrentCultureIgnoreCase)|| SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName,StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             return this;
         }
+        [Obsolete("Use IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);")]
 
-        [Obsolete]
         public IUpdateable<T> Where(bool isUpdateNull, bool IsOffIdentity = false)
         {
             UpdateBuilder.IsOffIdentity = IsOffIdentity;
@@ -200,7 +202,6 @@ namespace SqlSugar
             this.UpdateBuilder.IsNoUpdateNull = isUpdateNull;
             return this;
         }
-        
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
             var expResult = UpdateBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
@@ -294,6 +295,7 @@ namespace SqlSugar
         {
             foreach (var column in EntityInfo.Columns)
             {
+                if (column.IsIgnore) continue;
                 var columnInfo = new DbColumnInfo()
                 {
                     Value = column.PropertyInfo.GetValue(item, null),

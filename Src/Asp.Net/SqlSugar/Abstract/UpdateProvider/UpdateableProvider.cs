@@ -76,6 +76,15 @@ namespace SqlSugar
             return this;
         }
 
+        public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false)
+        {
+            UpdateBuilder.IsOffIdentity = isOffIdentity;
+            if (this.UpdateBuilder.LambdaExpressions == null)
+                this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
+            this.UpdateBuilder.IsNoUpdateNull = ignoreAllNullColumns;
+            return this;
+        }
+
         public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
@@ -183,6 +192,7 @@ namespace SqlSugar
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName,StringComparison.CurrentCultureIgnoreCase)|| SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName,StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             return this;
         }
+        [Obsolete("Use IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);")]
 
         public IUpdateable<T> Where(bool isUpdateNull, bool IsOffIdentity = false)
         {
