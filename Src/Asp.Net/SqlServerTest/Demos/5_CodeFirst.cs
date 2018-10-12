@@ -49,7 +49,7 @@ namespace OrmTest.Demo
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
 
             //No backup table
-            db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
+            db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
         }
     }
 }
