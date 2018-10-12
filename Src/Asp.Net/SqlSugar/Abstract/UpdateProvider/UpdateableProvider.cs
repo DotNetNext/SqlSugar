@@ -23,7 +23,7 @@ namespace SqlSugar
         private List<string> IgnoreColumnNameList { get; set; }
         private List<string> WhereColumnList { get; set; }
         private bool IsOffIdentity { get; set; }
-        private bool IsVersionValidation = true;
+        private bool IsVersionValidation { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
         public virtual int ExecuteCommand()
@@ -80,9 +80,9 @@ namespace SqlSugar
             return this;
         }
 
-        public IUpdateable<T> CloseVersionValidation()
+        public IUpdateable<T> IsEnableUpdateVersionValidation()
         {
-            this.IsVersionValidation = false;
+            this.IsVersionValidation = true;
             return this;
         }
 
@@ -480,10 +480,8 @@ namespace SqlSugar
                 {
                     var currentVersion = this.EntityInfo.Type.GetProperty(versionColumn.PropertyName).GetValue(UpdateObjs.Last(), null);
                     var dbVersion = this.EntityInfo.Type.GetProperty(versionColumn.PropertyName).GetValue(dbInfo, null);
-                    if (currentVersion == null)
-                        currentVersion = UtilMethods.DefaultForType(versionColumn.PropertyInfo.PropertyType);
-                    if (dbVersion == null)
-                        dbVersion = UtilMethods.DefaultForType(versionColumn.PropertyInfo.PropertyType);
+                    Check.Exception(currentVersion == null, "ValidateVersion entity property {0} is not null", versionColumn.PropertyName);
+                    Check.Exception(dbVersion == null, "ValidateVersion database column {0} is not null", versionColumn.DbColumnName);
                     if (versionColumn.PropertyInfo.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.LongType))
                     {
                         if (Convert.ToInt64(dbVersion) > Convert.ToInt64(currentVersion))
@@ -500,7 +498,7 @@ namespace SqlSugar
                     }
                     else if (versionColumn.PropertyInfo.PropertyType.IsIn(UtilConstants.ByteArrayType))
                     {
-                        if (UtilMethods.IsBigOne((byte[])dbVersion, (byte[])currentVersion))
+                        if (UtilMethods.GetLong((byte[])dbVersion)>UtilMethods.GetLong((byte[])currentVersion))
                         {
                             throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", versionColumn.PropertyName));
                         }

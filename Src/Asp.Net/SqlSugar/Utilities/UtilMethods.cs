@@ -109,25 +109,10 @@ namespace SqlSugar
             return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
         }
 
-        internal static bool IsBigOne(byte[] bytearray1, byte[] bytearray2)
+        internal static Int64  GetLong(byte[] bytes)
         {
-            int result = 0;
-            if (bytearray1.Length != bytearray2.Length)
-            {
-                result = bytearray1.Length - bytearray2.Length;
-            }
-            else
-            {
-                for (int i = 0; i < bytearray1.Length; i++)
-                {
-                    if (bytearray1[i] != bytearray2[i])
-                    {
-                        result = (int)(bytearray1[i] - bytearray2[i]);
-                        break;
-                    }
-                }
-            }
-            return result<0;
+            return Convert.ToInt64(string.Join("", bytes).PadRight(20, '0'));
         }
+
     }
 }

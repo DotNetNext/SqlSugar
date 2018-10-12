@@ -14,24 +14,28 @@ namespace OrmTest.Demo
             var db = GetInstance();
             try
             {
-                for (int i = 0; i < 10; i++)
+
+                var data = new StudentVersion()
                 {
-                    var data = new StudentVersion()
-                    {
-                        Id = db.Queryable<Student>().Select(it => it.Id).First(),
-                        CreateTime = DateTime.Now,
-                        Name = ""
-                    };
-                    db.Updateable(data).AS("student").ExecuteCommand();
+                    Id = db.Queryable<Student>().Select(it => it.Id).First(),
+                    CreateTime = DateTime.Now,
+                    Name = "",
+                };
+                db.Updateable(data).IgnoreColumns(it => new { it.Timestamp }).ExecuteCommand();
 
-                    var time = db.Queryable<Student>().Where(it=>it.Id==data.Id).Select(it => it.CreateTime).Single();
-                    data.CreateTime = time.Value;
-                    db.Updateable(data).AS("student").ExecuteCommand();
+                var time = db.Queryable<StudentVersion>().Where(it => it.Id == data.Id).Select(it => it.Timestamp).Single();
 
-                    data.CreateTime = time.Value.AddMilliseconds(-1);
-                    db.Updateable(data).AS("student").CloseVersionValidation().ExecuteCommand();//Close Version Validation
-                    db.Updateable(data).AS("student").ExecuteCommand(); 
-                }
+                data.Timestamp = time;
+
+                //is ok
+                db.Updateable(data).IsEnableUpdateVersionValidation().IgnoreColumns(it => new { it.Timestamp }).ExecuteCommand();
+                //updated Timestamp change
+
+                //is error
+                db.Updateable(data).IsEnableUpdateVersionValidation().IgnoreColumns(it => new { it.Timestamp }).ExecuteCommand();
+
+                //IsEnableUpdateVersionValidation Types of support  int or long or byte[](Timestamp) or Datetime 
+
             }
             catch (Exception ex)
             {
@@ -39,18 +43,20 @@ namespace OrmTest.Demo
                 {
                     Console.Write(ex.Message);
                 }
-                else {
+                else
+                {
 
                 }
             }
         }
-
+        [SqlSugar.SugarTable("Student")]
         public class StudentVersion
         {
             public int Id { get; set; }
             public string Name { get; set; }
-            [SqlSugar.SugarColumn(IsEnableUpdateVersionValidation = true)]
             public DateTime CreateTime { get; set; }
+            [SqlSugar.SugarColumn(IsEnableUpdateVersionValidation = true,IsOnlyIgnoreInsert=true)]
+            public byte[] Timestamp { get; set; }
         }
     }
 }
