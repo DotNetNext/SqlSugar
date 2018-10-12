@@ -11,6 +11,12 @@ namespace OrmTest.Demo
     {
         public static void Init()
         {
+            TimestampDome();
+            DateTimeDome();
+        }
+
+        private static void TimestampDome()
+        {
             var db = GetInstance();
             try
             {
@@ -49,6 +55,48 @@ namespace OrmTest.Demo
                 }
             }
         }
+        private static void DateTimeDome()
+        {
+            var db = GetInstance();
+            try
+            {
+
+                var data = new StudentVersion2()
+                {
+                    Id = db.Queryable<Student>().Select(it => it.Id).First(),
+                    CreateTime = DateTime.Now,
+                    Name = "",
+                };
+                db.Updateable(data).ExecuteCommand();
+
+                var time = db.Queryable<StudentVersion2>().Where(it => it.Id == data.Id).Select(it => it.CreateTime).Single();
+
+                data.CreateTime = time;
+
+                //is ok
+                db.Updateable(data).IsEnableUpdateVersionValidation().ExecuteCommand();
+
+
+                data.CreateTime = time.AddMilliseconds(-1);
+                //is error
+                db.Updateable(data).IsEnableUpdateVersionValidation().ExecuteCommand();
+
+                //IsEnableUpdateVersionValidation Types of support  int or long or byte[](Timestamp) or Datetime 
+
+            }
+            catch (Exception ex)
+            {
+                if (ex is SqlSugar.VersionExceptions)
+                {
+                    Console.Write(ex.Message);
+                }
+                else
+                {
+
+                }
+            }
+        }
+
         [SqlSugar.SugarTable("Student")]
         public class StudentVersion
         {
@@ -57,6 +105,15 @@ namespace OrmTest.Demo
             public DateTime CreateTime { get; set; }
             [SqlSugar.SugarColumn(IsEnableUpdateVersionValidation = true,IsOnlyIgnoreInsert=true)]
             public byte[] Timestamp { get; set; }
+        }
+
+        [SqlSugar.SugarTable("Student")]
+        public class StudentVersion2
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            [SqlSugar.SugarColumn(IsEnableUpdateVersionValidation = true, IsOnlyIgnoreInsert = true)]
+            public DateTime CreateTime { get; set; }
         }
     }
 }
