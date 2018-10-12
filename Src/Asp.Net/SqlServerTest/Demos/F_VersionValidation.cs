@@ -29,6 +29,7 @@ namespace OrmTest.Demo
                     db.Updateable(data).AS("student").ExecuteCommand();
 
                     data.CreateTime = time.Value.AddMilliseconds(-1);
+                    db.Updateable(data).AS("student").CloseVersionValidation().ExecuteCommand();//Close Version Validation
                     db.Updateable(data).AS("student").ExecuteCommand(); 
                 }
             }

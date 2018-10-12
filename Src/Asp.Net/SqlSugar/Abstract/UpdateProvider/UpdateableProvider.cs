@@ -23,6 +23,7 @@ namespace SqlSugar
         private List<string> IgnoreColumnNameList { get; set; }
         private List<string> WhereColumnList { get; set; }
         private bool IsOffIdentity { get; set; }
+        private bool IsVersionValidation = true;
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
         public virtual int ExecuteCommand()
@@ -76,6 +77,12 @@ namespace SqlSugar
         public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
         {
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
+            return this;
+        }
+
+        public IUpdateable<T> CloseVersionValidation()
+        {
+            this.IsVersionValidation = false;
             return this;
         }
 
@@ -460,7 +467,7 @@ namespace SqlSugar
         private void ValidateVersion()
         {
             var versionColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsEnableUpdateVersionValidation);
-            if (versionColumn != null)
+            if (versionColumn != null && this.IsVersionValidation)
             {
                 var pks = this.UpdateBuilder.DbColumnInfoList.Where(it => it.IsPrimarykey).ToList();
                 List<IConditionalModel> conModels = new List<IConditionalModel>();

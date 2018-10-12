@@ -107,7 +107,8 @@ namespace OrmTest.Models
            /// Desc:
            /// Default:
            /// Nullable:False
-           /// </summary>           
+           /// </summary> 
+           [SqlSugar.SugarColumn(IsEnableUpdateVersionValidation =true)]
            public byte[] Varbinary1 {get;set;}
 
            /// <summary>
