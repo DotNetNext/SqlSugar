@@ -278,7 +278,7 @@ namespace SqlSugar
 
         protected string GetNewExpressionValue(Expression item)
         {
-            var newContext = this.Context.GetCopyContext();
+            var newContext = this.Context.GetCopyContextWithMapping();
             newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);
             this.Context.Index = newContext.Index;
             this.Context.ParameterIndex = newContext.ParameterIndex;
