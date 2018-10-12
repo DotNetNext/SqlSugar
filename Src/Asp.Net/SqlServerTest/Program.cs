@@ -51,6 +51,7 @@ namespace OrmTest
             Demo.ExtSqlFun.Init();
             Demo.QueryableView.Init();
             Demo.AttributeDemo.Init();
+            Demo.VersionValidation.Init();
         }
     }
 }

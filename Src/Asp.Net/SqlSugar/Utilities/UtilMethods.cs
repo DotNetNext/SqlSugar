@@ -14,7 +14,7 @@ namespace SqlSugar
         internal static Type GetUnderType(Type oldType)
         {
             Type type = Nullable.GetUnderlyingType(oldType);
-            return type==null ? oldType : type;
+            return type == null ? oldType : type;
         }
 
         internal static Type GetRootBaseType(Type entityType)
@@ -102,6 +102,32 @@ namespace SqlSugar
         {
             action();
             return value;
+        }
+
+        internal static object DefaultForType(Type targetType)
+        {
+            return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+        }
+
+        internal static bool IsBigOne(byte[] bytearray1, byte[] bytearray2)
+        {
+            int result = 0;
+            if (bytearray1.Length != bytearray2.Length)
+            {
+                result = bytearray1.Length - bytearray2.Length;
+            }
+            else
+            {
+                for (int i = 0; i < bytearray1.Length; i++)
+                {
+                    if (bytearray1[i] != bytearray2[i])
+                    {
+                        result = (int)(bytearray1[i] - bytearray2[i]);
+                        break;
+                    }
+                }
+            }
+            return result<0;
         }
     }
 }

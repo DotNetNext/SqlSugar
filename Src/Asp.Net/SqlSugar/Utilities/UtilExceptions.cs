@@ -52,4 +52,9 @@ namespace SqlSugar
             return string.Format("{0} ： '{1}' \r\n", key, value);
         }
     }
+    public class VersionExceptions : UtilExceptions
+    {
+        public VersionExceptions(string message)
+            : base(message){ }
+    }
 }
