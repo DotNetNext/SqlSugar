@@ -467,9 +467,10 @@ namespace SqlSugar
         private void ValidateVersion()
         {
             var versionColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsEnableUpdateVersionValidation);
+            var pks = this.UpdateBuilder.DbColumnInfoList.Where(it => it.IsPrimarykey).ToList();
             if (versionColumn != null && this.IsVersionValidation)
             {
-                var pks = this.UpdateBuilder.DbColumnInfoList.Where(it => it.IsPrimarykey).ToList();
+                Check.Exception(pks.IsNullOrEmpty(), "UpdateVersionValidation the primary key is required.");
                 List<IConditionalModel> conModels = new List<IConditionalModel>();
                 foreach (var item in pks)
                 {
@@ -480,8 +481,8 @@ namespace SqlSugar
                 {
                     var currentVersion = this.EntityInfo.Type.GetProperty(versionColumn.PropertyName).GetValue(UpdateObjs.Last(), null);
                     var dbVersion = this.EntityInfo.Type.GetProperty(versionColumn.PropertyName).GetValue(dbInfo, null);
-                    Check.Exception(currentVersion == null, "ValidateVersion entity property {0} is not null", versionColumn.PropertyName);
-                    Check.Exception(dbVersion == null, "ValidateVersion database column {0} is not null", versionColumn.DbColumnName);
+                    Check.Exception(currentVersion == null, "UpdateVersionValidation entity property {0} is not null", versionColumn.PropertyName);
+                    Check.Exception(dbVersion == null, "UpdateVersionValidation database column {0} is not null", versionColumn.DbColumnName);
                     if (versionColumn.PropertyInfo.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.LongType))
                     {
                         if (Convert.ToInt64(dbVersion) > Convert.ToInt64(currentVersion))
