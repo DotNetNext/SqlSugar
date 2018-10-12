@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubSum:ISubOperation
+    public class SubSum : ISubOperation
     {
         public bool HasWhere
         {
@@ -43,7 +43,11 @@ namespace SqlSugar
         public string GetValue(Expression expression = null)
         {
             var exp = expression as MethodCallExpression;
-            return "SUM("+SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldSingle)+")";
+            var argExp = exp.Arguments[0];
+            var result = "SUM(" + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple)+")";
+            var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
+            result = result.Replace(selfParameterName, string.Empty);
+            return result;
         }
     }
 }
