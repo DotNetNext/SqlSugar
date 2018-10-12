@@ -11,11 +11,11 @@ namespace OrmTest.Demo
     {
         public static void Init()
         {
-            TimestampDome();
-            DateTimeDome();
+            TimestampDemo();
+            DateTimeDemo();
         }
 
-        private static void TimestampDome()
+        private static void TimestampDemo()
         {
             var db = GetInstance();
             try
@@ -55,7 +55,7 @@ namespace OrmTest.Demo
                 }
             }
         }
-        private static void DateTimeDome()
+        private static void DateTimeDemo()
         {
             var db = GetInstance();
             try
