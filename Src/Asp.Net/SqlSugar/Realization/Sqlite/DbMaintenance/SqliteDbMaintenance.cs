@@ -209,7 +209,14 @@ namespace SqlSugar
                 return result;
             }
         }
-
+        public override bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue)
+        {
+            oldTableName = this.SqlBuilder.GetTranslationTableName(oldTableName);
+            newTableName = this.SqlBuilder.GetTranslationTableName(newTableName);
+            string sql = string.Format(this.BackupTableSql, newTableName, oldTableName, maxBackupDataRows);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
