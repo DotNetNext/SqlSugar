@@ -427,6 +427,21 @@ namespace SqlSugar
         {
             return _Select<TResult>(expression);
         }
+
+        public virtual ISugarQueryable<TResult> Select<TResult>()
+        {
+            var isJoin = this.QueryBuilder.JoinExpression!=null;
+            if (isJoin)
+            {
+                var selectValue = new SugarMapper(this.Context).GetSelectValue<TResult>(this.QueryBuilder);
+                return this.Select<TResult>(selectValue);
+            }
+            else
+            {
+                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+            }
+        }
+
         public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue)
         {
             var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
@@ -988,7 +1003,7 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            var result= Min<TResult>(lamResult.GetResultString());
+            var result = Min<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return result;
         }
@@ -1002,7 +1017,7 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            var reslut= Max<TResult>(lamResult.GetResultString());
+            var reslut = Max<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return reslut;
         }
@@ -1010,7 +1025,7 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            var reslut= Sum<TResult>(lamResult.GetResultString());
+            var reslut = Sum<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return reslut;
         }
@@ -1184,7 +1199,7 @@ namespace SqlSugar
         {
             if (result.HasValue())
             {
-                if (UtilMethods.GetRootBaseType(entityType).HasValue() &&UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
+                if (UtilMethods.GetRootBaseType(entityType).HasValue() && UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
                 {
                     foreach (var item in result)
                     {

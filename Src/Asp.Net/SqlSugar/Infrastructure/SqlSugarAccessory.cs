@@ -315,6 +315,7 @@ namespace SqlSugar
             List<SugarParameter> paramters = new List<SugarParameter>();
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(queryable.SqlBuilder, joinExpression, ref paramters, ref shortName, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            queryable.SqlBuilder.QueryBuilder.JoinExpression = joinExpression;
             if (paramters != null)
             {
                 queryable.SqlBuilder.QueryBuilder.Parameters.AddRange(paramters);
@@ -326,6 +327,7 @@ namespace SqlSugar
             string shortName = string.Empty;
             queryable.SqlBuilder.QueryBuilder.EasyJoinInfos = this.GetEasyJoinInfo(joinExpression, ref shortName, queryable.SqlBuilder, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
+            queryable.SqlBuilder.QueryBuilder.JoinExpression=joinExpression;
         }
         #endregion
 
