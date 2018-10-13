@@ -36,8 +36,13 @@ namespace SqlSugar
                     new { asName = (expPars.type.Name + _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type)), dbName = _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type) }).ToList();
                     var joinModelDbColumns_WithType = columns.Select(it =>
                     new { asName = (expPars.type.Name +"_"+ it.PropertyName), dbName = _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type) }).ToList();
-                    var joinModelProperties_WithTye = columns.Select(it =>
+                    var joinModelProperties_WithType = columns.Select(it =>
                     new { asName = (expPars.type.Name +"_"+ _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type)), dbName = _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type) }).ToList();
+                    var joinModelDbColumnsWithSN = columns.Select(it =>
+                    new { asName = (expPars.shortName + it.PropertyName), dbName = _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type) }).ToList();
+                    var joinModelPropertiesWithSN = columns.Select(it =>
+                    new { asName = (expPars.shortName + _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type)), dbName = _context.EntityMaintenance.GetDbColumnName(it.PropertyName, expPars.type) }).ToList();
+
                     if (joinModelDbColumns.Any(it => it.asName.Equals(viewColumn.PropertyName,StringComparison.CurrentCultureIgnoreCase)))
                     {
                         var value = joinModelDbColumns.First(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase));
@@ -74,9 +79,23 @@ namespace SqlSugar
                             selectItems.Add(new KeyValuePair<string, object>(expPars.shortName, value));
                         break;
                     }
-                    if (joinModelProperties_WithTye.Any(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                    if (joinModelProperties_WithType.Any(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
                     {
-                        var value = joinModelProperties_WithTye.First(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase));
+                        var value = joinModelProperties_WithType.First(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase));
+                        if (viewColumn.PropertyName.Equals(value.asName, StringComparison.CurrentCultureIgnoreCase))
+                            selectItems.Add(new KeyValuePair<string, object>(expPars.shortName, value));
+                        break;
+                    }
+                    if (joinModelDbColumnsWithSN.Any(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        var value = joinModelDbColumnsWithSN.First(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase));
+                        if (viewColumn.PropertyName.Equals(value.asName, StringComparison.CurrentCultureIgnoreCase))
+                            selectItems.Add(new KeyValuePair<string, object>(expPars.shortName, value));
+                        break;
+                    }
+                    if (joinModelPropertiesWithSN.Any(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        var value = joinModelPropertiesWithSN.First(it => it.asName.Equals(viewColumn.PropertyName, StringComparison.CurrentCultureIgnoreCase));
                         if (viewColumn.PropertyName.Equals(value.asName, StringComparison.CurrentCultureIgnoreCase))
                             selectItems.Add(new KeyValuePair<string, object>(expPars.shortName, value));
                         break;

@@ -537,6 +537,9 @@ namespace OrmTest.Demo
 
             var s9 = db.Queryable<Student>().Select(it=>new Student() { Id=it.Id, TestId=1, Name=it.Name, CreateTime=it.CreateTime }).First();
             var s10 = db.Queryable<Student>().Select(it => new Student() { Id = it.Id}).First();
+
+            //auto fill
+            var s11 = db.Queryable<Student, School>((st,sc)=>st.SchoolId==sc.Id).Select<ViewModelStudent3>().ToList();
         }
         private static void Sqlable()
         {
