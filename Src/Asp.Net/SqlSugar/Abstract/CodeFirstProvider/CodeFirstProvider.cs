@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         #region Properties
         public virtual SqlSugarClient Context { get; set; }
-        private bool IsBackupTable { get; set; }
+        protected bool IsBackupTable { get; set; }
         private int MaxBackupDataRows { get; set; }
         #endregion
 
