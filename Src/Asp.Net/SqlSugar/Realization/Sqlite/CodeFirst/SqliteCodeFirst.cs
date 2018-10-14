@@ -21,7 +21,8 @@ namespace SqlSugar
                     columns.Add(dbColumnInfo);
                 }
             }
-            this.Context.DbMaintenance.BackupTable(tableName, backupName, int.MaxValue);
+            if (IsBackupTable)
+                this.Context.DbMaintenance.BackupTable(tableName, backupName, int.MaxValue);
             this.Context.DbMaintenance.DropTable(tableName);
             this.Context.DbMaintenance.CreateTable(tableName,columns);
         }
