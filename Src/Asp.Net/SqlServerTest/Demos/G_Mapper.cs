@@ -22,7 +22,8 @@ namespace OrmTest.Demo
                 .Mapper((it, cache) =>
                 {
 
-                    var allSchools = cache.GetListByPrimaryKeys<School>(vmodel => vmodel.SchoolId);//in（ViewModelStudent3[0].SchoolId , ViewModelStudent3[1].SchoolId...）
+                    var allSchools = cache.GetListByPrimaryKeys<School>(vmodel => vmodel.SchoolId);
+                    //sql select shool where id (in（ViewModelStudent3[0].SchoolId , ViewModelStudent3[1].SchoolId...）
 
                     //Equal to allSchools
                     //var allSchools2= cache.Get(list =>
