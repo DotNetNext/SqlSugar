@@ -23,6 +23,7 @@ namespace SqlSugar
         public MappingTableList OldMappingTableList { get; set; }
         public MappingTableList QueryableMappingTableList { get; set; }
         public Action<T> MapperAction { get; set; }
+        public Action<T, MapperCache<T>> MapperActionWithCache { get; set; }
         public bool IsCache { get; set; }
         public int CacheTime { get; set; }
         public bool IsAs { get; set; }
@@ -73,6 +74,11 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction) {
             this.MapperAction = mapperAction;
+            return this;
+        }
+        public virtual ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction)
+        {
+            this.MapperActionWithCache = mapperAction;
             return this;
         }
 
@@ -184,6 +190,14 @@ namespace SqlSugar
             {
                 Where(SqlBuilder.SqlFalse);
                 return this;
+            }
+            if (pkValues.Length == 1&& pkValues.First() is IEnumerable) {
+                var newValues =new List<object>();
+                foreach (var item in pkValues.First() as IEnumerable)
+                {
+                    newValues.Add(item);
+                }
+                return In(newValues);
             }
             var pks = GetPrimaryKeys().Select(it => SqlBuilder.GetTranslationTableName(it)).ToList();
             Check.Exception(pks == null || pks.Count != 1, "Queryable.In(params object[] pkValues): Only one primary key");
@@ -1114,11 +1128,26 @@ namespace SqlSugar
                 {
                     if (typeof(TResult) == typeof(T))
                     {
-                        MapperAction((T)Convert.ChangeType(item, typeof(T)));
+                        this.MapperAction((T)Convert.ChangeType(item, typeof(T)));
                     }
                     else {
                         Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName,typeof(T).FullName);
                     }
+                }
+            }
+            if (this.MapperActionWithCache != null)
+            {
+                if (typeof(TResult) == typeof(T))
+                {
+                    var list = (List<T>)Convert.ChangeType(result, typeof(List<T>));
+                    var mapperCache = new MapperCache<T>(list,this.Context);
+                    foreach (T item in list)
+                    {
+                        this.MapperActionWithCache(item, mapperCache);
+                    }
+                }
+                else {
+                    Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
                 }
             }
         }
