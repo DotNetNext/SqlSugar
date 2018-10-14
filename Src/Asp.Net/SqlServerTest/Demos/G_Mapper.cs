@@ -24,7 +24,7 @@ namespace OrmTest.Demo
 
                     var allSchools = cache.GetListByPrimaryKeys<School>(vmodel => vmodel.SchoolId);//in（ViewModelStudent3[0].SchoolId , ViewModelStudent3[1].SchoolId...）
 
-                    //Equal to the following writing.
+                    //Equal to allSchools
                     //var allSchools2= cache.Get(list =>
                     // {
                     //     var ids=list.Select(i => it.SchoolId).ToList(); 
@@ -32,11 +32,19 @@ namespace OrmTest.Demo
                     //});Complex writing metho
 
 
+                    /*one to one*/
+                    //Good performance
+                    it.School = allSchools.FirstOrDefault(i => i.Id == it.SchoolId);
 
-                    it.School = allSchools.FirstOrDefault(i => i.Id == it.SchoolId);//one to one
+                    //Poor performance.
+                    //it.School = db.Queryable<School>().InSingle(it.SchoolId); 
 
-                    it.Schools = allSchools.Where(i => i.Id == it.SchoolId).ToList();//one to many
 
+                    /*one to many*/
+                    it.Schools = allSchools.Where(i => i.Id == it.SchoolId).ToList();
+
+
+                    /*C# syntax conversion*/
                     it.Name = it.Name == null ? "null" : it.Name;
 
                 }).ToList();
