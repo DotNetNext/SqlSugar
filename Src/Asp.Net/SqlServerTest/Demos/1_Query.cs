@@ -41,6 +41,15 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             var i = 0;
+
+
+            var sumflat2num = db.Queryable<Student, Student>((s1, s2) => 
+            new object[] { JoinType.Left, s1.Id == s2.Id })
+ 
+            .Select((s1, s2) => new Student
+            {  Id = SqlFunc.IsNull(SqlFunc.AggregateSum(SqlFunc.IIF(s1.Id ==1, s1.Id, s1.Id * -1)), 0) })
+            .First();
+
             var getAll11 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s=>s.Id)==i).ToList();
             var getAll12 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s => s.Id) == 1).ToList();
             var getAll7 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Any()).ToList();

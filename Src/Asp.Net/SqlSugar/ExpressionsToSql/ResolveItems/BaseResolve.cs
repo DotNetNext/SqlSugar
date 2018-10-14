@@ -256,6 +256,7 @@ namespace SqlSugar
             newContext.MappingColumns = this.Context.MappingColumns;
             newContext.MappingTables = this.Context.MappingTables;
             newContext.IgnoreComumnList = this.Context.IgnoreComumnList;
+            newContext.IsSingle = this.Context.IsSingle;
             newContext.SqlFuncServices = this.Context.SqlFuncServices;
             newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);
             this.Context.Index = newContext.Index;
