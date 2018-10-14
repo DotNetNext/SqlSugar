@@ -37,6 +37,8 @@ namespace OrmTest.Demo
 
                     it.Schools = allSchools.Where(i => i.Id == it.SchoolId).ToList();//one to many
 
+                    it.Name = it.Name == null ? "null" : it.Name;
+
                 }).ToList();
 
 
