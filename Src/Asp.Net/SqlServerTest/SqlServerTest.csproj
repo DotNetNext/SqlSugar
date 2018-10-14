@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Demos\F_VersionValidation.cs" />
+    <Compile Include="Demos\G_Mapper.cs" />
     <Compile Include="Models\CapitalEntity.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Demos\5_CodeFirst.cs" />

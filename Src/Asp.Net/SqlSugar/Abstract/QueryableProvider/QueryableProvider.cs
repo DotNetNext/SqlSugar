@@ -22,6 +22,7 @@ namespace SqlSugar
         public ISqlBuilder SqlBuilder { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public MappingTableList QueryableMappingTableList { get; set; }
+        public Action<T> MapperAction { get; set; }
         public bool IsCache { get; set; }
         public int CacheTime { get; set; }
         public bool IsAs { get; set; }
@@ -67,6 +68,11 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+
+        public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction) {
+            this.MapperAction = mapperAction;
             return this;
         }
 
@@ -1096,8 +1102,27 @@ namespace SqlSugar
                 result = GetData<TResult>(sqlObj);
             }
             RestoreMapping();
+            _Mapper(result);
             return result;
         }
+
+        protected void _Mapper<TResult>(List<TResult> result)
+        {
+            if (this.MapperAction != null)
+            {
+                foreach (TResult item in result)
+                {
+                    if (typeof(TResult) == typeof(T))
+                    {
+                        MapperAction((T)Convert.ChangeType(item, typeof(T)));
+                    }
+                    else {
+                        Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName,typeof(T).FullName);
+                    }
+                }
+            }
+        }
+
         protected int GetCount()
         {
             var sql = string.Empty;
@@ -1233,6 +1258,7 @@ namespace SqlSugar
             asyncQueryableBuilder.OrderByValue = this.QueryBuilder.OrderByValue;
             asyncQueryableBuilder.IsDisabledGobalFilter = this.QueryBuilder.IsDisabledGobalFilter;
             asyncQueryableBuilder.PartitionByValue = this.QueryBuilder.PartitionByValue;
+            asyncQueryableBuilder.JoinExpression = this.QueryBuilder.JoinExpression;
             return asyncQueryable;
         }
         #endregion
