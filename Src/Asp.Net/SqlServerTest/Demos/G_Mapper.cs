@@ -22,7 +22,7 @@ namespace OrmTest.Demo
                 .Mapper((it, cache) =>
                 {
 
-                    var allSchools = cache.GetListByPrimaryKeys<School>(i => i.SchoolId);//in（ViewModelStudent3[0].id , ViewModelStudent3[1].id...）
+                    var allSchools = cache.GetListByPrimaryKeys<School>(i => i.SchoolId);//in（ViewModelStudent3[0].SchoolId , ViewModelStudent3[1].SchoolId...）
 
                     //Equal to the following writing.
                     //var allSchools2= cache.Get(list =>
