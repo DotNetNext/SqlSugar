@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -41,6 +42,8 @@ namespace SqlSugar
         public object SelectValue { get; set; }
         public string SelectCacheKey { get; set; }
         public string EntityName { get; set; }
+
+
         public Type EntityType { get; set; }
         public string TableWithString { get; set; }
         public string GroupByValue { get; set; }
@@ -49,6 +52,7 @@ namespace SqlSugar
         public int JoinIndex { get; set; }
         public bool IsDisabledGobalFilter { get; set; }
         public virtual List<SugarParameter> Parameters { get; set; }
+        public Expression JoinExpression { get; set; }
         public Dictionary<string, string> EasyJoinInfos
         {
             get
@@ -328,6 +332,17 @@ namespace SqlSugar
             return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize+1, pageIndex * pageSize);
         }
 
+        public virtual string GetSelectByItems(List<KeyValuePair<string, object>> items)
+        {
+            var array = items.Select(it => {
+                dynamic dynamicObj = this.Context.Utilities.DeserializeObject<dynamic>(this.Context.Utilities.SerializeObject(it.Value));
+                var dbName =Builder.GetTranslationColumnName( (string)(dynamicObj.dbName));
+                var asName = Builder.GetTranslationColumnName((string)(dynamicObj.asName));
+                return string.Format("{0}.{1} AS {2}",it.Key,dbName,asName);
+            });
+            return  string.Join(",",array);
+        }
+
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             return string.Format(
@@ -485,6 +500,7 @@ namespace SqlSugar
                 return this.GroupByValue;
             }
         }
+
         #endregion
 
         private string GetTableName(string entityName)

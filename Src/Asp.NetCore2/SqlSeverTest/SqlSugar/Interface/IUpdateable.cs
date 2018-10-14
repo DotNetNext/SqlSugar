@@ -41,6 +41,7 @@ namespace SqlSugar
         IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
+        IUpdateable<T> IsEnableUpdateVersionValidation();
         IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
         IUpdateable<T> RemoveDataCache();
         KeyValuePair<string,List<SugarParameter>> ToSql();

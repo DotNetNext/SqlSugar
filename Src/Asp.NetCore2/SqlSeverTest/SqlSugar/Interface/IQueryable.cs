@@ -19,6 +19,8 @@ namespace SqlSugar
         ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> With(string withString);
         ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        ISugarQueryable<T> Mapper(Action<T> mapperAction);
+        ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction);
         ISugarQueryable<T> AddParameters(object parameters);
         ISugarQueryable<T> AddParameters(SugarParameter[] parameters);
         ISugarQueryable<T> AddParameters(List<SugarParameter> parameters);
@@ -74,6 +76,7 @@ namespace SqlSugar
         Task<bool> AnyAsync();
 
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>();
         ISugarQueryable<TResult> Select<TResult>(string select);
         ISugarQueryable<T> Select(string select);
         ISugarQueryable<T> MergeTable();

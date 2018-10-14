@@ -19,6 +19,7 @@ namespace SqlSugar
         public bool IsNullable { get; set; }
         public bool IsIdentity { get; set; }
         public bool IsPrimarykey { get; set; }
+        public bool IsEnableUpdateVersionValidation { get; set; }
         public string EntityName { get;  set; }
         public string DbTableName { get; set; }
         public bool IsIgnore { get;  set; }

@@ -22,6 +22,8 @@ namespace SqlSugar
         public ISqlBuilder SqlBuilder { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public MappingTableList QueryableMappingTableList { get; set; }
+        public Action<T> MapperAction { get; set; }
+        public Action<T, MapperCache<T>> MapperActionWithCache { get; set; }
         public bool IsCache { get; set; }
         public int CacheTime { get; set; }
         public bool IsAs { get; set; }
@@ -67,6 +69,16 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+
+        public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction) {
+            this.MapperAction = mapperAction;
+            return this;
+        }
+        public virtual ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction)
+        {
+            this.MapperActionWithCache = mapperAction;
             return this;
         }
 
@@ -178,6 +190,14 @@ namespace SqlSugar
             {
                 Where(SqlBuilder.SqlFalse);
                 return this;
+            }
+            if (pkValues.Length == 1&& pkValues.First() is IEnumerable) {
+                var newValues =new List<object>();
+                foreach (var item in pkValues.First() as IEnumerable)
+                {
+                    newValues.Add(item);
+                }
+                return In(newValues);
             }
             var pks = GetPrimaryKeys().Select(it => SqlBuilder.GetTranslationTableName(it)).ToList();
             Check.Exception(pks == null || pks.Count != 1, "Queryable.In(params object[] pkValues): Only one primary key");
@@ -427,6 +447,21 @@ namespace SqlSugar
         {
             return _Select<TResult>(expression);
         }
+
+        public virtual ISugarQueryable<TResult> Select<TResult>()
+        {
+            var isJoin = this.QueryBuilder.JoinExpression!=null;
+            if (isJoin)
+            {
+                var selectValue = new SugarMapper(this.Context).GetSelectValue<TResult>(this.QueryBuilder);
+                return this.Select<TResult>(selectValue);
+            }
+            else
+            {
+                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+            }
+        }
+
         public virtual ISugarQueryable<TResult> Select<TResult>(string selectValue)
         {
             var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
@@ -988,7 +1023,7 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            var result= Min<TResult>(lamResult.GetResultString());
+            var result = Min<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return result;
         }
@@ -1002,7 +1037,7 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            var reslut= Max<TResult>(lamResult.GetResultString());
+            var reslut = Max<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return reslut;
         }
@@ -1010,7 +1045,7 @@ namespace SqlSugar
         {
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            var reslut= Sum<TResult>(lamResult.GetResultString());
+            var reslut = Sum<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return reslut;
         }
@@ -1081,8 +1116,42 @@ namespace SqlSugar
                 result = GetData<TResult>(sqlObj);
             }
             RestoreMapping();
+            _Mapper(result);
             return result;
         }
+
+        protected void _Mapper<TResult>(List<TResult> result)
+        {
+            if (this.MapperAction != null)
+            {
+                foreach (TResult item in result)
+                {
+                    if (typeof(TResult) == typeof(T))
+                    {
+                        this.MapperAction((T)Convert.ChangeType(item, typeof(T)));
+                    }
+                    else {
+                        Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName,typeof(T).FullName);
+                    }
+                }
+            }
+            if (this.MapperActionWithCache != null)
+            {
+                if (typeof(TResult) == typeof(T))
+                {
+                    var list = (List<T>)Convert.ChangeType(result, typeof(List<T>));
+                    var mapperCache = new MapperCache<T>(list,this.Context);
+                    foreach (T item in list)
+                    {
+                        this.MapperActionWithCache(item, mapperCache);
+                    }
+                }
+                else {
+                    Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
+                }
+            }
+        }
+
         protected int GetCount()
         {
             var sql = string.Empty;
@@ -1184,7 +1253,7 @@ namespace SqlSugar
         {
             if (result.HasValue())
             {
-                if (UtilMethods.GetRootBaseType(entityType).HasValue() &&UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
+                if (UtilMethods.GetRootBaseType(entityType).HasValue() && UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
                 {
                     foreach (var item in result)
                     {
@@ -1218,6 +1287,7 @@ namespace SqlSugar
             asyncQueryableBuilder.OrderByValue = this.QueryBuilder.OrderByValue;
             asyncQueryableBuilder.IsDisabledGobalFilter = this.QueryBuilder.IsDisabledGobalFilter;
             asyncQueryableBuilder.PartitionByValue = this.QueryBuilder.PartitionByValue;
+            asyncQueryableBuilder.JoinExpression = this.QueryBuilder.JoinExpression;
             return asyncQueryable;
         }
         #endregion

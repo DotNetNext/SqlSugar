@@ -242,6 +242,16 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+
+        public override bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue)
+        {
+            oldTableName = this.SqlBuilder.GetTranslationTableName(oldTableName);
+            newTableName = this.SqlBuilder.GetTranslationTableName(newTableName);
+            string sql = string.Format(this.BackupTableSql, newTableName, oldTableName, maxBackupDataRows);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
             List<string> columnArray = new List<string>();
