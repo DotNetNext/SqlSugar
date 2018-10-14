@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OrmTest.Demo
 {
-    public class D_QueryableViewn : DemoBase
+    public class QueryableView : DemoBase
     {
         public static void Init()
         {

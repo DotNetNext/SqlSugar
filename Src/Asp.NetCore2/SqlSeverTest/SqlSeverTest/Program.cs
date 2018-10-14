@@ -49,7 +49,9 @@ namespace OrmTest
             OrmTest.Demo.MasterSlave.Init();
             OrmTest.Demo.SharedConnection.Init();
             OrmTest.Demo.ExtSqlFun.Init();
-            OrmTest.Demo.D_QueryableViewn.Init();
+            OrmTest.Demo.QueryableView.Init();
+            OrmTest.Demo.Mapper.Init();
+            //OrmTest.Demo.VersionValidation.Init();
         }
     }
 }

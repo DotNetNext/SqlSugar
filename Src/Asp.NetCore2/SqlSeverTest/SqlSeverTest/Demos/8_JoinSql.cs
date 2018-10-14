@@ -38,12 +38,22 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             List<IConditionalModel> conModels = new List<IConditionalModel>();
-            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });
-            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "Student.id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });// id like '%1%'
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNullOrEmpty });
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.In,FieldValue="1,2,3" });
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NotIn, FieldValue = "1,2,3" });
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1,2,3" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNot,FieldValue=null});// id is not null
+
+            conModels.Add(new ConditionalCollections() { ConditionalList=new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()//  (id=1 or id=2 and id=1)
+            {
+                new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
+                new  KeyValuePair<WhereType, ConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" }),
+                new  KeyValuePair<WhereType, ConditionalModel> ( WhereType.And,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" })
+            }
+            });
             var student = db.Queryable<Student>().Where(conModels).ToList();
         }
 
@@ -54,6 +64,8 @@ namespace OrmTest.Demo
             var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
+            .Where(st => st.Id==1)
+            .Where(st => st.Id==2)
             .Select((st, sc) => new { id = st.Id, name = sc.Name })
             .MergeTable().Where(XXX => XXX.id == 1).OrderBy("name asc").ToList();// Prefix, is, not, necessary, and take the columns in select
 

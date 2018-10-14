@@ -40,8 +40,18 @@ namespace OrmTest.Demo
         private static void Subqueryable()
         {
             var db = GetInstance();
-            var getAll11 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s=>s.Id)==1).ToList();
+            var i = 0;
 
+
+            var sumflat2num = db.Queryable<Student, Student>((s1, s2) => 
+            new object[] { JoinType.Left, s1.Id == s2.Id })
+ 
+            .Select((s1, s2) => new Student
+            {  Id = SqlFunc.IsNull(SqlFunc.AggregateSum(SqlFunc.IIF(s1.Id ==1, s1.Id, s1.Id * -1)), 0) })
+            .First();
+
+            var getAll11 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s=>s.Id)==i).ToList();
+            var getAll12 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Max(s => s.Id) == 1).ToList();
             var getAll7 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Any()).ToList();
 
             var getAll9 = db.Queryable<Student>().Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Count()==1).ToList();
@@ -193,6 +203,27 @@ namespace OrmTest.Demo
                 db.Ado.RollbackTran();
                 throw;
             }
+
+
+
+            //async tran
+            var asyncResult = db.Ado.UseTranAsync(() =>
+            {
+
+                var beginCount = db.Queryable<Student>().ToList();
+                db.Ado.ExecuteCommand("delete student");
+                var endCount = db.Queryable<Student>().Count();
+                throw new Exception("error haha");
+            });
+            asyncResult.Wait();
+            var asyncCount = db.Queryable<Student>().Count();
+
+            //async
+            var asyncResult2 = db.Ado.UseTranAsync<List<Student>>(() =>
+            {
+                return db.Queryable<Student>().ToList();
+            });
+            asyncResult2.Wait();
         }
         private static void Group()
         {
@@ -241,7 +272,10 @@ namespace OrmTest.Demo
         public static void Easy()
         {
             var db = GetInstance();
-            var getAll = db.Queryable<Student>().ToList();
+            var dbTime = db.GetDate();
+            var getAll = db.Queryable<Student>().Select<object>("*").ToList();
+            var getAll2 = db.Queryable<Student>().ToList();
+            var getRandomList = db.Queryable<Student>().OrderBy(it => SqlFunc.GetRandom()).ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getId = db.Queryable<Student>().Select(it => it.Id).ToList();
             var getNew = db.Queryable<Student>().Where(it => it.Id == 1).Select(it => new { id = SqlFunc.IIF(it.Id == 0, 1, it.Id), it.Name, it.SchoolId }).ToList();
@@ -250,6 +284,7 @@ namespace OrmTest.Demo
             var getSingleOrDefault = db.Queryable<Student>().Where(it => it.Id == 1).Single();
             var getFirstOrDefault = db.Queryable<Student>().First();
             var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
+            var getByWhere2 = db.Queryable<Student>().Where(it => it.Id ==DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var sum = db.Queryable<Student>().Select(it => it.SchoolId).ToList();
             var sum2 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Sum((st, sc) => sc.Id);
@@ -511,6 +546,9 @@ namespace OrmTest.Demo
 
             var s9 = db.Queryable<Student>().Select(it=>new Student() { Id=it.Id, TestId=1, Name=it.Name, CreateTime=it.CreateTime }).First();
             var s10 = db.Queryable<Student>().Select(it => new Student() { Id = it.Id}).First();
+
+            //auto fill
+            var s11 = db.Queryable<Student, School>((st,sc)=>st.SchoolId==sc.Id).Select<ViewModelStudent3>().ToList();
         }
         private static void Sqlable()
         {
