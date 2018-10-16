@@ -177,6 +177,9 @@ namespace SqlSugar
                     if (golbalMappingInfo != null)
                         column.IsIgnore = true;
                 }
+                if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService != null) {
+                    this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
+                }
                 result.Columns.Add(column);
             }
         }

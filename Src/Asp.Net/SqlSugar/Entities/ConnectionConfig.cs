@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
@@ -90,5 +91,8 @@ namespace SqlSugar
 
         public List<SqlFuncExternal> SqlFuncServices { get; set; }
         public List<KeyValuePair<string, CSharpDataType>> AppendDataReaderTypeMappings { get;  set; }
+
+
+        public Action<PropertyInfo, EntityColumnInfo> EntityService{ get; set; }
     }
 }

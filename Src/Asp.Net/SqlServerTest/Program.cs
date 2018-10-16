@@ -52,6 +52,7 @@ namespace OrmTest
             Demo.QueryableView.Init();
             Demo.AttributeDemo.Init();
             Demo.Mapper.Init();
+            Demo.ExtEntity.Init();
         }
     }
 }
