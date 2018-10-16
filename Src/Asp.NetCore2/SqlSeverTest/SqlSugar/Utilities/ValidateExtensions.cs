@@ -151,7 +151,7 @@ namespace SqlSugar
         }
         public static bool IsCollectionsList(this string thisValue)
         {
-            return (thisValue + "").StartsWith("System.Collections.Generic.List");
+            return (thisValue + "").StartsWith("System.Collections.Generic.List")|| (thisValue + "").StartsWith("System.Collections.Generic.IEnumerable");
         }
         public static bool IsStringArray(this string thisValue)
         {
