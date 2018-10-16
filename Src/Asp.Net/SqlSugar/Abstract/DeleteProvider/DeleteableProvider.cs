@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -231,6 +232,17 @@ namespace SqlSugar
 
         public IDeleteable<T> In<PkType>(PkType primaryKeyValue)
         {
+            if (typeof(PkType).FullName.IsCollectionsList())
+            {
+                var newValues = new List<object>();
+                foreach (var item in primaryKeyValue as IEnumerable)
+                {
+                    newValues.Add(item);
+                }
+                return In(newValues);
+            }
+
+
             In(new PkType[] { primaryKeyValue });
             return this;
         }
