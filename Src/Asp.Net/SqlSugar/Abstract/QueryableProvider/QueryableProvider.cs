@@ -1269,7 +1269,7 @@ namespace SqlSugar
             var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
-            var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty);
+            var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
             var asyncQueryableBuilder = asyncQueryable.QueryBuilder;
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;
