@@ -318,6 +318,12 @@ namespace OrmTest.Demo
 
             var getUnionAllList2 = db.UnionAll(db.Queryable<Student>(), db.Queryable<Student>()).ToList();
 
+            var getUnionAllList3= db.UnionAll(db.Queryable<Student>()
+                .Select(it => new Student { Id =SqlFunc.ToInt32(1) ,Name=SqlFunc.ToString("2"), SchoolId = Convert.ToInt32(3) })
+                , db.Queryable<Student>()
+                .Select(it => new Student { Id = SqlFunc.ToInt32(11) , Name = SqlFunc.ToString("22") , SchoolId=Convert.ToInt32(33)}))
+                .Select(it=>new Student() { Id=SqlFunc.ToInt32(111), Name = SqlFunc.ToString("222") }).ToList();
+
             var test1 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Where(st=>st.CreateTime>SqlFunc.GetDate()).Select((st, sc) => SqlFunc.ToInt64(sc.Id)).ToList();
             var test2 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id)
                       .Where(st =>

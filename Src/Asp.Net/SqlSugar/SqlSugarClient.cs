@@ -351,7 +351,7 @@ namespace SqlSugar
             var shortName1 = joinExpression.Parameters[0].Name;
             var sqlObj1 = joinQueryable1.ToSql();
             string sql1 = sqlObj1.Key;
-            UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0);
+            UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0,"Join");
             queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, shortName1); ;
             queryable.QueryBuilder.Parameters.AddRange(sqlObj1.Value);
 
@@ -359,7 +359,7 @@ namespace SqlSugar
             var shortName2 = joinExpression.Parameters[1].Name;
             var sqlObj2 = joinQueryable2.ToSql();
             string sql2 = sqlObj2.Key;
-            UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1);
+            UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1, "Join");
             queryable.QueryBuilder.Parameters.AddRange(sqlObj2.Value);
             var exp = queryable.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
             queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2, shortName2) });
@@ -378,7 +378,7 @@ namespace SqlSugar
             {
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
-                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i);
+                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "UnionAll");
                 if (sqlObj.Value.HasValue())
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
                 else
@@ -406,7 +406,7 @@ namespace SqlSugar
             {
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
-                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i);
+                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");
                 if (sqlObj.Value.HasValue())
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
                 else
