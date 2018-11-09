@@ -17,6 +17,7 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
+   
             //    /***Unit Test***/
             new Select(1).Init();
             new Field(1).Init();
@@ -53,6 +54,9 @@ namespace OrmTest
             Demo.AttributeDemo.Init();
             Demo.Mapper.Init();
             Demo.ExtEntity.Init();
+
+            /***BUG repair test***/
+            //new BugTest.Bug1().Init();
         }
     }
 }
