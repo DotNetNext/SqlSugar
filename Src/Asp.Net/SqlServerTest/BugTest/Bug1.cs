@@ -46,7 +46,7 @@ SqlFunc.Contains(u.BuildName, keyword) || SqlFunc.IsNullOrEmpty(keyword)))
    CountRoomer = SqlFunc.AggregateCount(ru.RoomerName),
    RoomID = SqlFunc.AggregateMax(ru.RoomID),
    Owner = SqlFunc.Subqueryable<SubTable>().Where(r => r.RoomID == ru.RoomID && SqlFunc.Equals(r.RoomUserType, "业主") && SqlFunc.Equals(r.RoomUserType, "业主")).Select(s => s.RoomerName)
-}).OrderBy((r) => r.RoomNumber, type: OrderByType.Desc).ToPageList(1, 2);
+}).OrderBy((r) => r.RoomNumber, type: OrderByType.Desc).ToPageListAsync(1, 2).Wait();
         }
         public class MainTable
         {
