@@ -56,7 +56,7 @@ namespace OrmTest
             Demo.ExtEntity.Init();
 
             /***BUG repair test***/
-            //new BugTest.Bug1().Init();
+            new BugTest.Bug1().Init();
         }
     }
 }
