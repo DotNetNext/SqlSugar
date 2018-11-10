@@ -42,11 +42,11 @@ namespace SqlSugar
                             {
                                 if (i > 0)
                                 {
-                                    base.Context.Result.Append("," + parameter.CommonTempData.ObjToString() + ",");
+                                    base.Context.Result.Append("," + parameter.CommonTempData.ObjToString().Replace(",",UtilConstants.ReplaceCommaKey) + ",");
                                 }
                                 else
                                 {
-                                    base.Context.Result.Append(parameter.CommonTempData.ObjToString() + ",");
+                                    base.Context.Result.Append(parameter.CommonTempData.ObjToString().Replace(",", UtilConstants.ReplaceCommaKey) + ",");
                                 }
                                 ++i;
                             }

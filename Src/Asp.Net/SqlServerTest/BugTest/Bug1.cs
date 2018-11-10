@@ -1,4 +1,5 @@
 ﻿using OrmTest.Demo;
+using OrmTest.Models;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,20 @@ SqlFunc.Contains(u.BuildName, keyword) || SqlFunc.IsNullOrEmpty(keyword)))
    RoomID = SqlFunc.AggregateMax(ru.RoomID),
    Owner = SqlFunc.Subqueryable<SubTable>().Where(r => r.RoomID == ru.RoomID && SqlFunc.Equals(r.RoomUserType, "业主") && SqlFunc.Equals(r.RoomUserType, "业主")).Select(s => s.RoomerName)
 }).OrderBy((r) => r.RoomNumber, type: OrderByType.Desc).ToPageListAsync(1, 2).Wait();
+
+            GetInstance().Updateable<Student>().UpdateColumns(it =>
+            new Student() {
+                Name = "a".ToString(),
+                CreateTime=DateTime.Now.AddDays(-1)
+
+            }
+            ).Where(it=>it.Id==1).ExecuteCommand();
+
+
+            var list = GetInstance().Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id&&st.CreateTime==DateTime.Now.AddDays(-1)
+            })
+      .Where(st => st.Name == "jack").ToList();
         }
         public class MainTable
         {
