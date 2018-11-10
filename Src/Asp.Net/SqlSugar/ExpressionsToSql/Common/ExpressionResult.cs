@@ -71,10 +71,12 @@ namespace SqlSugar
         public string[] GetResultArray()
         {
             if (this._Result == null) return null;
+            var reslut = new List<string>();
             if (IsUpper)
-                return this.Result.ToString().ToUpper().TrimEnd(',').Split(',');
+                reslut= this.Result.ToString().ToUpper().TrimEnd(',').Split(',').ToList();
             else
-                return this.Result.ToString().TrimEnd(',').Split(',');
+                reslut= this.Result.ToString().TrimEnd(',').Split(',').ToList();
+            return reslut.ToArray();
         }
 
         public string GetResultString()
