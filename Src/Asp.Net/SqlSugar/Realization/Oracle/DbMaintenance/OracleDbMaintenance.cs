@@ -169,6 +169,54 @@ namespace SqlSugar
                 return "IDENTITY(1,1)";
             }
         }
+
+        protected override string AddColumnRemarkSql
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        protected override string DeleteColumnRemarkSql
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        protected override string IsAnyColumnRemarkSql
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        protected override string AddTableRemarkSql
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        protected override string DeleteTableRemarkSql
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        protected override string IsAnyTableRemarkSql
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
         #endregion
 
         #region Methods

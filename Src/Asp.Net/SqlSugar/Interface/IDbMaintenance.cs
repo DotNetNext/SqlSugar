@@ -37,6 +37,12 @@ namespace SqlSugar
         bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue);
         bool DropColumn(string tableName,string columnName);
         bool RenameColumn(string tableName, string oldColumnName, string newColumnName);
+        bool AddColumnRemark(string columnName,string tableName,string description);
+        bool DeleteColumnRemark(string columnName, string tableName);
+        bool IsAnyColumnRemark(string columnName, string tableName);
+        bool AddTableRemark(string columnName, string tableName, string description);
+        bool DeleteTableRemark(string columnName, string tableName);
+        bool IsAnyTableRemark(string columnName, string tableName);
         #endregion
     }
 }

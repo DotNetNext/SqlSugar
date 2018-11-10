@@ -45,7 +45,7 @@ namespace SqlSugar
             cacheKey = GetCacheKey(cacheKey);
             var sql = string.Format(this.GetColumnInfosByTableNameSql, tableName);
             if (isCache)
-                return GetListOrCache<DbColumnInfo>(cacheKey, sql).GroupBy(it=>it.DbColumnName).Select(it=>it.First()).ToList();
+                return GetListOrCache<DbColumnInfo>(cacheKey, sql).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
             else
                 return this.Context.Ado.SqlQuery<DbColumnInfo>(sql).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
 
@@ -205,6 +205,42 @@ namespace SqlSugar
             oldColumnName = this.SqlBuilder.GetTranslationColumnName(oldColumnName);
             newColumnName = this.SqlBuilder.GetTranslationColumnName(newColumnName);
             string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            string sql = string.Format(this.AddColumnRemarkSql, columnName, tableName, description);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool DeleteColumnRemark(string columnName, string tableName)
+        {
+            string sql = string.Format(this.DeleteColumnRemarkSql, columnName, tableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            string sql = string.Format(this.IsAnyColumnRemarkSql, columnName, tableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool AddTableRemark(string columnName, string tableName, string description)
+        {
+            string sql = string.Format(this.AddTableRemarkSql, columnName, tableName, description);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool DeleteTableRemark(string columnName, string tableName)
+        {
+            string sql = string.Format(this.DeleteTableRemarkSql, columnName, tableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool IsAnyTableRemark(string columnName, string tableName)
+        {
+            string sql = string.Format(this.IsAnyTableRemarkSql, columnName, tableName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
