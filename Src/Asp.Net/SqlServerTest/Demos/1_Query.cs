@@ -479,6 +479,13 @@ namespace OrmTest.Demo
      .OrderBy(st => st.Id)
      .Select(st => st)
      .ToList();
+
+            var subquery = db.Queryable<Student>().Where(it => it.Id == 1);
+            var subquery2 = db.Queryable<Student>();
+            db.Queryable(subquery, subquery2, (st1, st2) => st1.Id == st2.Id).Select((st1,st2)=>new {
+                id=st1.Id,
+                name=st2.Name
+            }).ToList();
         }
         public static void Funs()
         {
