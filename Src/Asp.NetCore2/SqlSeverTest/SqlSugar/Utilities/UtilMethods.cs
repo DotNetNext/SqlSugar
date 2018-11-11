@@ -68,7 +68,7 @@ namespace SqlSugar
             return (T)Convert.ChangeType(obj, typeof(T));
         }
 
-        internal static void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex)
+        internal static void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex,string append=null)
         {
             if (appendSql.HasValue() && parameters.HasValue())
             {
@@ -76,7 +76,7 @@ namespace SqlSugar
                 {
                     //Compatible with.NET CORE parameters case
                     var name = parameter.ParameterName;
-                    string newName = name + addIndex;
+                    string newName = name +append+ addIndex;
                     appendSql = appendSql.Replace(name, newName);
                     parameter.ParameterName = newName;
                 }

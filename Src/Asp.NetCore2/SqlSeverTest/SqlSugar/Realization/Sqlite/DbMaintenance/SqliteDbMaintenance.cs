@@ -162,9 +162,60 @@ namespace SqlSugar
                 return "AUTOINCREMENT";
             }
         }
+        protected override string AddColumnRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string DeleteColumnRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string IsAnyColumnRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string AddTableRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string DeleteTableRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string IsAnyTableRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
         #endregion
 
         #region Methods
+        public override bool AddRemark(EntityInfo entity)
+        {
+            return true;
+        }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();

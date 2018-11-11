@@ -27,6 +27,10 @@ namespace SqlSugar
                 {
                     var sugarTable = (SugarTable)sugarAttributeInfo;
                     result.DbTableName = sugarTable.TableName;
+                    result.TableDescription = sugarTable.TableDescription;
+                }
+                if (this.Context.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null) {
+                    this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService(type,result);
                 }
                 result.Type = type;
                 result.EntityName = result.Type.Name;

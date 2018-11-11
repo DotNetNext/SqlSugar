@@ -94,5 +94,6 @@ namespace SqlSugar
 
 
         public Action<PropertyInfo, EntityColumnInfo> EntityService{ get; set; }
+        public Action<Type,EntityInfo> EntityNameService { get; set; }
     }
 }

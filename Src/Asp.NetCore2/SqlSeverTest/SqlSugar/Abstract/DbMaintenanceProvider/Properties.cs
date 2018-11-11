@@ -43,6 +43,12 @@ namespace SqlSugar
         protected abstract string DropConstraintSql { get; }
         protected abstract string AddPrimaryKeySql { get; }
         protected abstract string RenameColumnSql { get; }
+        protected abstract string AddColumnRemarkSql { get;  }
+        protected abstract string DeleteColumnRemarkSql { get; }
+        protected abstract string IsAnyColumnRemarkSql { get;  }
+        protected abstract string AddTableRemarkSql { get;  }
+        protected abstract string DeleteTableRemarkSql { get; }
+        protected abstract string IsAnyTableRemarkSql { get;  }
         #endregion
 
         #region Check

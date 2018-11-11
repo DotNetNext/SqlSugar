@@ -97,8 +97,8 @@ namespace SqlSugar
 
         public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
         {
-            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName)).ToList();
+            var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it).ToLower()).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName.ToLower())).ToList();
             return this;
         }
 
@@ -203,8 +203,33 @@ namespace SqlSugar
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             return this;
         }
-        [Obsolete("Use IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);")]
 
+        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> columns)
+        {
+            if (isUpdateColumns)
+                UpdateColumns(columns);
+            return this;
+        }
+        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, bool>> columns)
+        {
+            if (isUpdateColumns)
+                UpdateColumns(columns);
+            return this;
+        }
+        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Func<string, bool> updateColumMethod)
+        {
+            if (isUpdateColumns)
+                UpdateColumns(updateColumMethod);
+            return this;
+        }
+        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, T>> columns)
+        {
+            if (isUpdateColumns)
+                UpdateColumns(columns);
+            return this;
+        }
+
+        [Obsolete("Use IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);")]
         public IUpdateable<T> Where(bool isUpdateNull, bool IsOffIdentity = false)
         {
             UpdateBuilder.IsOffIdentity = IsOffIdentity;
@@ -499,7 +524,7 @@ namespace SqlSugar
                     }
                     else if (versionColumn.PropertyInfo.PropertyType.IsIn(UtilConstants.ByteArrayType))
                     {
-                        if (UtilMethods.GetLong((byte[])dbVersion)>UtilMethods.GetLong((byte[])currentVersion))
+                        if (UtilMethods.GetLong((byte[])dbVersion) > UtilMethods.GetLong((byte[])currentVersion))
                         {
                             throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", versionColumn.PropertyName));
                         }

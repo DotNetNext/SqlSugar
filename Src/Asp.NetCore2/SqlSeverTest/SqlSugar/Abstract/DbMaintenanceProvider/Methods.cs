@@ -45,7 +45,7 @@ namespace SqlSugar
             cacheKey = GetCacheKey(cacheKey);
             var sql = string.Format(this.GetColumnInfosByTableNameSql, tableName);
             if (isCache)
-                return GetListOrCache<DbColumnInfo>(cacheKey, sql).GroupBy(it=>it.DbColumnName).Select(it=>it.First()).ToList();
+                return GetListOrCache<DbColumnInfo>(cacheKey, sql).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
             else
                 return this.Context.Ado.SqlQuery<DbColumnInfo>(sql).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
 
@@ -206,6 +206,79 @@ namespace SqlSugar
             newColumnName = this.SqlBuilder.GetTranslationColumnName(newColumnName);
             string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
             this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            string sql = string.Format(this.AddColumnRemarkSql, columnName, tableName, description);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool DeleteColumnRemark(string columnName, string tableName)
+        {
+            string sql = string.Format(this.DeleteColumnRemarkSql, columnName, tableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            string sql = string.Format(this.IsAnyColumnRemarkSql, columnName, tableName);
+            var dt=this.Context.Ado.GetDataTable(sql);
+            return dt.Rows!=null&&dt.Rows.Count>0;
+        }
+        public virtual bool AddTableRemark(string tableName, string description)
+        {
+            string sql = string.Format(this.AddTableRemarkSql, tableName, description);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool DeleteTableRemark(string tableName)
+        {
+            string sql = string.Format(this.DeleteTableRemarkSql,tableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool IsAnyTableRemark(string tableName)
+        {
+            string sql = string.Format(this.IsAnyTableRemarkSql, tableName);
+            var dt=this.Context.Ado.GetDataTable(sql);
+            return dt.Rows != null && dt.Rows.Count > 0;
+        }
+        public virtual bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    //column remak
+                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName, item.DbTableName))
+                    {
+                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName, item.DbTableName);
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                    }
+                    else
+                    {
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                    }
+                }
+            }
+
+            //table remak
+            if (entity.TableDescription != null)
+            {
+                if (db.DbMaintenance.IsAnyTableRemark(entity.DbTableName))
+                {
+                    db.DbMaintenance.DeleteTableRemark(entity.DbTableName);
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
+                else
+                {
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
+            }
             return true;
         }
         #endregion

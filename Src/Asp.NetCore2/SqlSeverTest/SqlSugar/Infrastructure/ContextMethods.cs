@@ -269,6 +269,7 @@ namespace SqlSugar
         public SqlSugarClient CopyContext(bool isCopyEvents = false)
         {
             var newClient = new SqlSugarClient(this.TranslateCopy(Context.CurrentConnectionConfig));
+            newClient.CurrentConnectionConfig.ConfigureExternalServices=Context.CurrentConnectionConfig.ConfigureExternalServices;
             newClient.MappingColumns = this.TranslateCopy(Context.MappingColumns);
             newClient.MappingTables = this.TranslateCopy(Context.MappingTables);
             newClient.IgnoreColumns = this.TranslateCopy(Context.IgnoreColumns);

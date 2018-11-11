@@ -63,18 +63,29 @@ namespace SqlSugar
         {
             if (_Result == null) return null;
             if (IsUpper)
-                return _Result.ToString().ToUpper().TrimEnd(',');
+                return _Result.ToString().ToUpper().Replace(UtilConstants.ReplaceCommaKey,",").TrimEnd(',');
             else
-                return _Result.ToString().TrimEnd(',');
+                return _Result.ToString().Replace(UtilConstants.ReplaceCommaKey, ",").TrimEnd(',');
         }
         #region functions
         public string[] GetResultArray()
         {
             if (this._Result == null) return null;
+            var reslut = new List<string>();
+
             if (IsUpper)
-                return this.Result.ToString().ToUpper().TrimEnd(',').Split(',');
+                reslut= this.Result.ToString().ToUpper().TrimEnd(',').Split(',').ToList();
             else
-                return this.Result.ToString().TrimEnd(',').Split(',');
+                reslut= this.Result.ToString().TrimEnd(',').Split(',').ToList();
+
+            if (this.Result.ToString().Contains(UtilConstants.ReplaceCommaKey))
+            {
+                for (int i = 0; i < reslut.Count; i++)
+                {
+                    reslut[i] = reslut[i].Replace(UtilConstants.ReplaceCommaKey, ",");
+                }
+            }
+            return reslut.ToArray();
         }
 
         public string GetResultString()
@@ -82,12 +93,12 @@ namespace SqlSugar
             if (this._Result == null) return null;
             if (this._ResolveExpressType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle))
             {
-                return this.Result.ToString().TrimEnd(',');
+                return this.Result.ToString().Replace(UtilConstants.ReplaceCommaKey, ",").TrimEnd(',');
             }
             if (IsUpper)
-                return this.Result.ToString().ToUpper();
+                return this.Result.ToString().Replace(UtilConstants.ReplaceCommaKey, ",").ToUpper();
             else
-                return this.Result.ToString();
+                return this.Result.ToString().Replace(UtilConstants.ReplaceCommaKey, ",");
         }
 
         public void TrimEnd()

@@ -11,6 +11,7 @@ namespace SqlSugar
         public virtual SqlSugarClient Context { get; set; }
         private bool IsBackupTable { get; set; }
         private int MaxBackupDataRows { get; set; }
+        private int DefultLength { get; set; }
         #endregion
 
         #region Public methods
@@ -20,6 +21,12 @@ namespace SqlSugar
             this.MaxBackupDataRows = maxBackupDataRows;
             return this;
         }
+
+        public virtual ICodeFirst SetStringDefaultLength(int length) {
+            DefultLength = length;
+            return this;
+        }
+
         public virtual void InitTables(Type entityType)
         {
 
@@ -67,12 +74,22 @@ namespace SqlSugar
         protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType);
+            if (this.DefultLength > 0) {
+                foreach (var item in entityInfo.Columns)
+                {
+                    if (item.PropertyInfo.PropertyType == UtilConstants.StringType && item.DataType.IsNullOrEmpty()&& item.Length==0) {
+                        item.Length = DefultLength;
+                    }
+                }
+            }
             var tableName = GetTableName(entityInfo);
             var isAny = this.Context.DbMaintenance.IsAnyTable(tableName);
             if (isAny)
                 ExistLogic(entityInfo);
             else
                 NoExistLogic(entityInfo);
+
+            this.Context.DbMaintenance.AddRemark(entityInfo);
         }
         public virtual void NoExistLogic(EntityInfo entityInfo)
         {

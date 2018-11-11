@@ -169,6 +169,53 @@ namespace SqlSugar
                 return "IDENTITY(1,1)";
             }
         }
+        protected override string AddColumnRemarkSql
+        {
+            get
+            {
+                return "comment on column {1}.{0} is '{2}';";
+            }
+        }
+
+        protected override string DeleteColumnRemarkSql
+        {
+            get
+            {
+                return "comment on column {1}.{0} is '';";
+            }
+        }
+
+        protected override string IsAnyColumnRemarkSql
+        {
+            get
+            {
+                return "select * from user_col_comments where Table_Name='{1}' AND COLUMN_NAME='{0}' order by column_name";
+            }
+        }
+
+        protected override string AddTableRemarkSql
+        {
+            get
+            {
+                return "comment on table {0}  is  '{1}';";
+            }
+        }
+
+        protected override string DeleteTableRemarkSql
+        {
+            get
+            {
+                return "comment on table {0}  is  '';";
+            }
+        }
+
+        protected override string IsAnyTableRemarkSql
+        {
+            get
+            {
+                return "select * from user_tab_comments where Table_Name='{0}'order by Table_Name";
+            }
+        }
         #endregion
 
         #region Methods

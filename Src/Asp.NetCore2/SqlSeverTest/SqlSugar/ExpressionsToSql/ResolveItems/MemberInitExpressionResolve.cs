@@ -124,7 +124,7 @@ namespace SqlSugar
             {
                 base.Expression = item;
                 base.Start();
-                parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
+                parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString().Replace(",", UtilConstants.ReplaceCommaKey)));
             }
         }
 

@@ -176,9 +176,72 @@ namespace SqlSugar
                 return "AUTO_INCREMENT";
             }
         }
+        protected override string AddColumnRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string DeleteColumnRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string IsAnyColumnRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override string AddTableRemarkSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} COMMENT='{1}';";
+            }
+        }
+
+        protected override string DeleteTableRemarkSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} COMMENT='';";
+            }
+        }
+
+        protected override string IsAnyTableRemarkSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
         #endregion
 
         #region Methods
+        public override bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+            List<EntityColumnInfo> columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    var mySqlCodeFirst = this.Context.CodeFirst as MySqlCodeFirst;
+                    string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item)) + " " + (item.IsIdentity ? "AUTO_INCREMENT" : "") + " " + " COMMENT '" + item.ColumnDescription + "'";
+                    db.Ado.ExecuteCommand(sql);
+                }
+            }
+            return true;
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
