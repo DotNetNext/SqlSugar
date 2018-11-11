@@ -73,6 +73,8 @@ namespace SqlSugar
                 ExistLogic(entityInfo);
             else
                 NoExistLogic(entityInfo);
+
+            this.Context.DbMaintenance.AddRemark(entityInfo);
         }
         public virtual void NoExistLogic(EntityInfo entityInfo)
         {

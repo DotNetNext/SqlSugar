@@ -10,8 +10,14 @@ namespace SqlSugar
     public class SugarTable : Attribute {
         private SugarTable() { }
         public string TableName { get; set; }
+        public string TableDescription { get; set; }
         public SugarTable(string tableName) {
             this.TableName = tableName;
+        }
+        public SugarTable(string tableName,string tableDescription)
+        {
+            this.TableName = tableName;
+            this.TableDescription = tableName;
         }
     }
    [AttributeUsage(AttributeTargets.Property , Inherited = true)]
