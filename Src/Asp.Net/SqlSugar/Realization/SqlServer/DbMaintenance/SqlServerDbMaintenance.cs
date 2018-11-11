@@ -205,7 +205,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "EXECUTE sp_addextendedproperty N'MS_Description', '{2}', N'user', N'dbo', N'table', N'{1}', N'column', N'{0}'"; ;
             }
         }
 
@@ -213,7 +213,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "EXEC sp_dropextendedproperty 'MS_Description','user',dbo,'table','{1}','column',{0}";
             }
 
         }
@@ -222,16 +222,24 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return @"SELECT" +
+                                " A.name AS table_name," +
+                                " B.name AS column_name," +
+                                " C.value AS column_description" +
+                                " FROM sys.tables A" +
+                                " LEFT JOIN sys.extended_properties C ON C.major_id = A.object_id" +
+                                " LEFT JOIN sys.columns B ON B.object_id = A.object_id AND C.minor_id = B.column_id" +
+                                " INNER JOIN sys.schemas SC ON SC.schema_id = A.schema_id AND SC.name = 'dbo'"+
+                                " WHERE A.name = '{1}' and b.name = '{0}'";
+ 
             }
-
         }
 
         protected override string AddTableRemarkSql
         {
             get
             {
-                throw new NotImplementedException();
+                return "EXECUTE sp_addextendedproperty N'MS_Description', '{1}', N'user', N'dbo', N'table', N'{0}', NULL, NULL";
             }
         }
 
@@ -239,7 +247,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "EXEC sp_dropextendedproperty 'MS_Description','user',dbo,'table','{0}' ";
             }
 
         }
@@ -248,7 +256,11 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return @"SELECT C.class_desc
+                                FROM sys.tables A 
+                                LEFT JOIN sys.extended_properties C ON C.major_id = A.object_id 
+								INNER JOIN sys.schemas SC ON  SC.schema_id=A.schema_id AND SC.name='dbo'
+                                WHERE A.name = '{0}'  AND minor_id=0";
             }
 
         }

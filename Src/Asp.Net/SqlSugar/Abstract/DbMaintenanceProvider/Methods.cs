@@ -223,26 +223,26 @@ namespace SqlSugar
         public virtual bool IsAnyColumnRemark(string columnName, string tableName)
         {
             string sql = string.Format(this.IsAnyColumnRemarkSql, columnName, tableName);
+            var dt=this.Context.Ado.GetDataTable(sql);
+            return dt.Rows!=null&&dt.Rows.Count>0;
+        }
+        public virtual bool AddTableRemark(string tableName, string description)
+        {
+            string sql = string.Format(this.AddTableRemarkSql, tableName, description);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool AddTableRemark(string columnName, string tableName, string description)
+        public virtual bool DeleteTableRemark(string tableName)
         {
-            string sql = string.Format(this.AddTableRemarkSql, columnName, tableName, description);
+            string sql = string.Format(this.DeleteTableRemarkSql,tableName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool DeleteTableRemark(string columnName, string tableName)
+        public virtual bool IsAnyTableRemark(string tableName)
         {
-            string sql = string.Format(this.DeleteTableRemarkSql, columnName, tableName);
-            this.Context.Ado.ExecuteCommand(sql);
-            return true;
-        }
-        public virtual bool IsAnyTableRemark(string columnName, string tableName)
-        {
-            string sql = string.Format(this.IsAnyTableRemarkSql, columnName, tableName);
-            this.Context.Ado.ExecuteCommand(sql);
-            return true;
+            string sql = string.Format(this.IsAnyTableRemarkSql, tableName);
+            var dt=this.Context.Ado.GetDataTable(sql);
+            return dt.Rows != null && dt.Rows.Count > 0;
         }
         #endregion
 

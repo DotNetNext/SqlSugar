@@ -40,9 +40,9 @@ namespace SqlSugar
         bool AddColumnRemark(string columnName,string tableName,string description);
         bool DeleteColumnRemark(string columnName, string tableName);
         bool IsAnyColumnRemark(string columnName, string tableName);
-        bool AddTableRemark(string columnName, string tableName, string description);
-        bool DeleteTableRemark(string columnName, string tableName);
-        bool IsAnyTableRemark(string columnName, string tableName);
+        bool AddTableRemark( string tableName, string description);
+        bool DeleteTableRemark(string tableName);
+        bool IsAnyTableRemark(string tableName);
         #endregion
     }
 }
