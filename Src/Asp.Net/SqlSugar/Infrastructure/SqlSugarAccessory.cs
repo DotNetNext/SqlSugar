@@ -254,6 +254,7 @@ namespace SqlSugar
         }
         protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result) 
         {
+            Check.Exception(typeof(T).IsClass()==false|| typeof(T).GetConstructors().Length==0, "Queryable<{0}> Error ,{0} is invalid , need is a class,and can new().", typeof(T).Name);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(CurrentConnectionConfig);
             result.Context = this.Context;
             result.SqlBuilder = sqlBuilder;
