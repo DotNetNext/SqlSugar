@@ -91,6 +91,10 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.String;
             }
+            else if (type == UtilConstants.DateTimeOffsetType)
+            {
+                this.DbType = System.Data.DbType.DateTimeOffset;
+            }
 
         }
         public SugarParameter(string name, object value, bool isOutput)
