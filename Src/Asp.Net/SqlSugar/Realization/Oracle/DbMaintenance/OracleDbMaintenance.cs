@@ -174,7 +174,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "comment on column {1}.{0} is '{2}';";
             }
         }
 
@@ -182,7 +182,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "comment on column {1}.{0} is '';";
             }
         }
 
@@ -190,7 +190,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "select * from user_col_comments where Table_Name='{1}' AND COLUMN_NAME='{0}' order by column_name";
             }
         }
 
@@ -198,7 +198,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "comment on table {0}  is  '{1}';";
             }
         }
 
@@ -206,7 +206,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "comment on table {0}  is  '';";
             }
         }
 
@@ -214,7 +214,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "select * from user_tab_comments where Table_Name='{0}'order by Table_Name";
             }
         }
         #endregion
