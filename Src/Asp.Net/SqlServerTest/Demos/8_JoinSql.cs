@@ -30,6 +30,16 @@ namespace OrmTest.Demo
 
             var list1 = qy.Clone().Where(it => it.Id == 1).ToList();
             var list2 = qy.Clone().Where(it => it.Id == 2).ToList();
+
+
+
+            var qy2 = db.Queryable<Student,School>((st,sc)=>new object[]{
+                JoinType.Left,st.SchoolId==sc.Id
+            }).Where((st,sc)=>st.Id == 1);
+
+            var join0 = qy2.Clone().Where((st, sc) => sc.Id == 222).Select(st=>st.Id).ToList();
+            var join1 = qy2.Clone().Where((st,sc) => st.Id== 1111).ToList();
+            var join2 = qy2.Clone().Where((st,sc)=>sc.Id==222).ToList();
         }
 
         private static void JoinExp()

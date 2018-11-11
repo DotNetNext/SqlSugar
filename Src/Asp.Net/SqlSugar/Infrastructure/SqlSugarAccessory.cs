@@ -343,6 +343,7 @@ namespace SqlSugar
             expressionContext.Resolve(joinExpression, ResolveExpressType.Join);
             int i = 0;
             var joinArray = MergeJoinArray(expressionContext.Result.GetResultArray());
+            if (joinArray == null) return null;
             parameters = expressionContext.Parameters;
             foreach (var entityType in entityTypeArray)
             {
@@ -381,6 +382,7 @@ namespace SqlSugar
             List<string> result = new List<string>();
             string joinValue = null;
             int i = 0;
+            if (joinArray == null) return null;
             foreach (var item in joinArray)
             {
                 ++i;

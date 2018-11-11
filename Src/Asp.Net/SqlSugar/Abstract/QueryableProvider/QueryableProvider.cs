@@ -53,7 +53,7 @@ namespace SqlSugar
         public ISugarQueryable<T> Clone()
         {
             var queryable = this.Context.Queryable<T>().WithCacheIF(IsCache, CacheTime);
-            CopyQueryBuilder(this.QueryBuilder);
+            CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public virtual ISugarQueryable<T> AS<T2>(string tableName)
@@ -1280,16 +1280,18 @@ namespace SqlSugar
 
         protected void CopyQueryBuilder(QueryBuilder asyncQueryableBuilder)
         {
+            var pars = new List<SugarParameter>();
+            pars.AddRange(this.QueryBuilder.Parameters);
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;
             asyncQueryableBuilder.SelectValue = this.QueryBuilder.SelectValue;
-            asyncQueryableBuilder.WhereInfos = this.QueryBuilder.WhereInfos;
+            asyncQueryableBuilder.WhereInfos =this.Context.Utilities.TranslateCopy(this.QueryBuilder.WhereInfos);
             asyncQueryableBuilder.EasyJoinInfos = this.QueryBuilder.EasyJoinInfos;
             asyncQueryableBuilder.JoinQueryInfos = this.QueryBuilder.JoinQueryInfos;
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
             asyncQueryableBuilder.EntityType = this.QueryBuilder.EntityType;
             asyncQueryableBuilder.EntityName = this.QueryBuilder.EntityName;
-            asyncQueryableBuilder.Parameters = this.QueryBuilder.Parameters;
+            asyncQueryableBuilder.Parameters = pars;
             asyncQueryableBuilder.TableShortName = this.QueryBuilder.TableShortName;
             asyncQueryableBuilder.TableWithString = this.QueryBuilder.TableWithString;
             asyncQueryableBuilder.GroupByValue = this.QueryBuilder.GroupByValue;
@@ -1473,7 +1475,7 @@ namespace SqlSugar
         public new ISugarQueryable<T,T2> Clone()
         {
             var queryable = this.Context.Queryable<T,T2>((t,t2)=>new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2> AS<AsT>(string tableName)
@@ -1756,7 +1758,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2,T3> Clone()
         {
             var queryable = this.Context.Queryable<T, T2,T3>((t, t2,t3) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3> AS<AsT>(string tableName)
@@ -2071,7 +2073,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2,T3,T4> Clone()
         {
             var queryable = this.Context.Queryable<T, T2,T3,T4>((t, t2,t3,t4) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4> AS<AsT>(string tableName)
@@ -2389,7 +2391,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4,T5> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4,T5>((t, t2, t3, t4,t5) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5> AS<AsT>(string tableName)
@@ -2697,7 +2699,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5,T6> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5,T6>((t, t2, t3, t4, t5,T6) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6> AS<AsT>(string tableName)
@@ -3032,7 +3034,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6,T7>((t, t2, t3, t4, t5, T6,t7) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AS<AsT>(string tableName)
@@ -3393,7 +3395,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7,T8>((t, t2, t3, t4, t5, T6, t7,t8) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AS<AsT>(string tableName)
@@ -3778,7 +3780,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8,T9>((t, t2, t3, t4, t5, T6, t7, t8,t9) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AS<AsT>(string tableName)
@@ -4187,7 +4189,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>((t, t2, t3, t4, t5, T6, t7, t8, t9,t10) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AS<AsT>(string tableName)
@@ -4620,7 +4622,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>((t, t2, t3, t4, t5, T6, t7, t8, t9,t10,t11) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AS<AsT>(string tableName)
@@ -5079,7 +5081,7 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10, t11,t12) => new object[] { }).WithCacheIF(IsCache, CacheTime);
-            base.CopyQueryBuilder(this.QueryBuilder);
+            base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AS<AsT>(string tableName)
