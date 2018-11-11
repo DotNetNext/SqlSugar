@@ -247,12 +247,12 @@ namespace SqlSugar
         #endregion
 
         #region Create Instance
-        protected ISugarQueryable<T> CreateQueryable<T>() where T : class, new()
+        protected ISugarQueryable<T> CreateQueryable<T>() 
         {
             ISugarQueryable<T> result = InstanceFactory.GetQueryable<T>(this.CurrentConnectionConfig);
             return CreateQueryable(result);
         }
-        protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result) where T : class, new()
+        protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result) 
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(CurrentConnectionConfig);
             result.Context = this.Context;
@@ -308,7 +308,7 @@ namespace SqlSugar
             return result;
         }
 
-        protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
+        protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)  
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
@@ -321,7 +321,7 @@ namespace SqlSugar
                 queryable.SqlBuilder.QueryBuilder.Parameters.AddRange(paramters);
             }
         }
-        protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable) where T : class, new()
+        protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)  
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
