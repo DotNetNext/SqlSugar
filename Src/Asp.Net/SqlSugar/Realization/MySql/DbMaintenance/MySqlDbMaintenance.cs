@@ -181,7 +181,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -189,7 +189,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -197,7 +197,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -205,7 +205,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                 return "ALTER TABLE {0} COMMENT='{1}';";
             }
         }
 
@@ -213,7 +213,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                return "ALTER TABLE {0} COMMENT='';";
             }
         }
 
@@ -221,7 +221,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
         #endregion
