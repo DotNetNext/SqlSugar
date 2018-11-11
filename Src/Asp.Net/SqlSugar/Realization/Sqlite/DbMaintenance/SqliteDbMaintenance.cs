@@ -166,7 +166,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -174,7 +174,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -182,7 +182,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -190,7 +190,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -198,7 +198,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -206,7 +206,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
         #endregion
@@ -227,7 +227,10 @@ namespace SqlSugar
 
                  });
         }
-
+        public override bool AddRemark(EntityInfo entity)
+        {
+            return true;
+        }
         private List<DbColumnInfo> GetColumnsByTableName(string tableName)
         {
             string sql = "select * from " + tableName + " limit 0,1";
