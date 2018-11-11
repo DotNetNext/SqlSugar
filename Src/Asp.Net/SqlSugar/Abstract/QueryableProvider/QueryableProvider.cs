@@ -1270,6 +1270,11 @@ namespace SqlSugar
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
 
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
+            CopyQueryBuilder(asyncQueryable); return asyncQueryable;
+        }
+
+        private void CopyQueryBuilder(ISugarQueryable<T> asyncQueryable)
+        {
             var asyncQueryableBuilder = asyncQueryable.QueryBuilder;
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;
@@ -1290,7 +1295,6 @@ namespace SqlSugar
             asyncQueryableBuilder.JoinExpression = this.QueryBuilder.JoinExpression;
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
-            return asyncQueryable;
         }
         #endregion
     }
