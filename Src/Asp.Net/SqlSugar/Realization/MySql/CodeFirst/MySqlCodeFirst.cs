@@ -67,5 +67,10 @@ namespace SqlSugar
             if (item.IsPrimarykey)
                 this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
+
+        internal DbColumnInfo GetEntityColumnToDbColumn(EntityInfo entity, string dbTableName, EntityColumnInfo item)
+        {
+            return EntityColumnToDbColumn(entity,dbTableName,item);
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace SqlSugar
         public SugarTable(string tableName,string tableDescription)
         {
             this.TableName = tableName;
-            this.TableDescription = tableName;
+            this.TableDescription = tableDescription;
         }
     }
    [AttributeUsage(AttributeTargets.Property , Inherited = true)]

@@ -6,12 +6,13 @@ using System.Text;
 
 namespace OrmTest.Demo
 {
+    [SugarTable("CodeTable", " CodeTable test ")]
     public class CodeTable
     {
      
-        [SugarColumn(IsNullable =false ,IsPrimaryKey =true,IsIdentity =true)]
+        [SugarColumn(IsNullable =false ,IsPrimaryKey =true,IsIdentity =true,ColumnDescription ="test")]
         public int Id { get; set; }
-        [SugarColumn(Length = 21,OldColumnName = "Name2")]
+        [SugarColumn(Length = 21,OldColumnName = "Name2",ColumnDescription ="name")]
         public string Name{ get; set; }
         [SugarColumn(IsNullable = true,Length =11)]
         public string IsOk { get; set; }

@@ -249,6 +249,22 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+        public override bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+            List<EntityColumnInfo> columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    var mySqlCodeFirst = this.Context.CodeFirst as MySqlCodeFirst;
+                    string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item))+" "+(item.IsIdentity? "AUTO_INCREMENT" : "")+" " + " COMMENT '" + item.ColumnDescription + "'";
+                    db.Ado.ExecuteCommand(sql);
+                }
+            }
+            return true;
+        }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
             List<string> columnArray = new List<string>();
@@ -303,6 +319,7 @@ namespace SqlSugar
             Check.ThrowNotSupportedException("MySql BackupDataBase NotSupported");
             return false;
         }
+
         #endregion
     }
 }
