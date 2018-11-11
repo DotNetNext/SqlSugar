@@ -25,11 +25,11 @@ namespace OrmTest.Demo
 
         private static void Clone()
         {
-            //var db = GetInstance();
-            //var qy = db.Queryable<Student>().Where(it => 1 == 1);
+            var db = GetInstance();
+            var qy = db.Queryable<Student>().Where(it => 1 == 1);
 
-            //var list1 =qy.Clone<Student>().Where(it => it.Id == 1).ToList();
-            //var list2 = qy.Clone<Student>().Where(it => it.Id == 2).ToList();
+            var list1 = qy.Clone().Where(it => it.Id == 1).ToList();
+            var list2 = qy.Clone().Where(it => it.Id == 2).ToList();
         }
 
         private static void JoinExp()
