@@ -244,6 +244,43 @@ namespace SqlSugar
             var dt=this.Context.Ado.GetDataTable(sql);
             return dt.Rows != null && dt.Rows.Count > 0;
         }
+        public virtual bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    //column remak
+                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName, item.DbTableName))
+                    {
+                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName, item.DbTableName);
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                    }
+                    else
+                    {
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                    }
+                }
+            }
+
+            //table remak
+            if (entity.TableDescription != null)
+            {
+                if (db.DbMaintenance.IsAnyTableRemark(entity.DbTableName))
+                {
+                    db.DbMaintenance.DeleteTableRemark(entity.DbTableName);
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
+                else
+                {
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
+            }
+            return true;
+        }
         #endregion
 
         #region Private
