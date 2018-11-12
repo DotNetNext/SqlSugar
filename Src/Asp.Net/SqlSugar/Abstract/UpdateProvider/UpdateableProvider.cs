@@ -27,6 +27,7 @@ namespace SqlSugar
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
+        public DiffLogModel diffModel { get; set; }
         public virtual int ExecuteCommand()
         {
             PreToSql();
@@ -35,7 +36,8 @@ namespace SqlSugar
             string sql = UpdateBuilder.ToSqlString();
             ValidateVersion();
             RestoreMapping();
-            return this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            var result= this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            return result;
         }
 
         public bool ExecuteCommandHasChange()
