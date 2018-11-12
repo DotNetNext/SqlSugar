@@ -13,6 +13,7 @@ namespace SqlSugar
         public string Sql { get; set; }
         public TimeSpan? Time { get; set; }
         public object BusinessData { get; set; }
+        public DiffType DiffType { get; set; }
     }
     public class DiffLogTableInfo
     {

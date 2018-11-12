@@ -99,6 +99,7 @@ namespace SqlSugar
             diffModel = new DiffLogModel();
             this.IsEnableDiffLogEvent = true;
             diffModel.BusinessData = businessData;
+            diffModel.DiffType = DiffType.update;
             return this;
         }
 
