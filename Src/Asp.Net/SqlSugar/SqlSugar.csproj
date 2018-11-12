@@ -78,6 +78,7 @@
     <Compile Include="Entities\CacheKey.cs" />
     <Compile Include="Entities\ConditionalModel.cs" />
     <Compile Include="Entities\ConnMoreSettings.cs" />
+    <Compile Include="Entities\DiffLogModel.cs" />
     <Compile Include="Entities\MapperCache.cs" />
     <Compile Include="Entities\SlaveConnectionConfig.cs" />
     <Compile Include="Enum\ConditionalType.cs" />

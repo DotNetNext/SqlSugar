@@ -60,6 +60,7 @@ namespace SqlSugar
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
         protected virtual Func<string,string> FormatSql { get; set; }
         public virtual Action<Exception> ErrorEvent { get; set; }
+        public virtual Action<DiffLogModel> DiffLogEvent { get; set; }
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
         #endregion

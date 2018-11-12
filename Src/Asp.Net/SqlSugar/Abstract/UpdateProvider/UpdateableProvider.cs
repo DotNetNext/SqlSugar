@@ -26,6 +26,7 @@ namespace SqlSugar
         private bool IsVersionValidation { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
+        public bool IsEnableDiffLogEvent { get; set; }
         public virtual int ExecuteCommand()
         {
             PreToSql();
@@ -83,6 +84,12 @@ namespace SqlSugar
         public IUpdateable<T> IsEnableUpdateVersionValidation()
         {
             this.IsVersionValidation = true;
+            return this;
+        }
+
+        public IUpdateable<T> EnableDiffLogEvent() {
+
+            this.IsEnableDiffLogEvent = true;
             return this;
         }
 

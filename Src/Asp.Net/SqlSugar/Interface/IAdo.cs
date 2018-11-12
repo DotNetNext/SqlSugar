@@ -27,6 +27,7 @@ namespace SqlSugar
         Action<string, SugarParameter []> LogEventCompleted { get; set; }
         Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
         Action<Exception> ErrorEvent { get; set; }
+        Action<DiffLogModel> DiffLogEvent { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
         TimeSpan SqlExecutionTime { get; }

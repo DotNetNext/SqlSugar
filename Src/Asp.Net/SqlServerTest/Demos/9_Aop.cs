@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using OrmTest.Models;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,19 @@ namespace OrmTest.Demo
 
                 
             }
+
+
+            //diff log demo
+
+            db.Ado.DiffLogEvent = it =>
+            {
+                var editBeforeData = it.BeforeData;
+                var editAfterData = it.AfterDate;
+                var sql = it.Sql;
+                var parameter = it.Parameters;
+            };
+
+            db.Updateable<Student>().EnableDiffLogEvent().ExecuteCommand();
         }
 
 }
