@@ -35,6 +35,9 @@ namespace SqlSugar
         internal CommandType OldCommandType { get; set; }
         internal bool OldClearParameters { get; set; }
         public IDataParameterCollection DataReaderParameters { get; set; }
+        public TimeSpan SqlExecutionTime { get { return AfterTime - BeforeTime; } }
+        internal DateTime BeforeTime = DateTime.MinValue;
+        internal DateTime AfterTime = DateTime.MinValue;
         public virtual IDbBind DbBind
         {
             get
@@ -662,6 +665,7 @@ namespace SqlSugar
         }
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
+            this.BeforeTime = DateTime.Now;
             if (this.IsEnableLogEvent)
             {
                 Action<string, SugarParameter[]> action = LogEventStarting;
@@ -680,6 +684,7 @@ namespace SqlSugar
         }
         public virtual void ExecuteAfter(string sql, SugarParameter[] parameters)
         {
+            this.AfterTime = DateTime.Now;
             var hasParameter = parameters.HasValue();
             if (hasParameter)
             {

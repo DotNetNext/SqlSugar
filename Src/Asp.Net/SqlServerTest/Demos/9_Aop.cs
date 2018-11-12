@@ -14,7 +14,7 @@ namespace OrmTest.Demo
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
             db.Aop.OnLogExecuted = (sql, pars) =>
             {
-
+                Console.Write("time:" + db.Ado.SqlExecutionTime.ToString());
             };
             db.Aop.OnLogExecuting = (sql, pars) =>
             {

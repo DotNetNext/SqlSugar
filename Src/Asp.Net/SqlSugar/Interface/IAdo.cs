@@ -29,6 +29,7 @@ namespace SqlSugar
         Action<Exception> ErrorEvent { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
+        TimeSpan SqlExecutionTime { get; }
         IDbBind DbBind { get; }
         void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
         IDataAdapter GetAdapter();
