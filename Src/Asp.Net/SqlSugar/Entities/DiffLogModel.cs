@@ -11,7 +11,8 @@ namespace SqlSugar
         public List<DiffLogTableInfo> BeforeData { get; set; }
         public SugarParameter[] Parameters { get; set; }
         public string Sql { get; set; }
-        public TimeSpan Time { get; set; }
+        public TimeSpan? Time { get; set; }
+        public object BusinessData { get; set; }
     }
     public class DiffLogTableInfo
     {
@@ -23,5 +24,6 @@ namespace SqlSugar
 
         public string ColumnName { get; set; }
         public string ColumnDescription { get; set; }
+        public object Value { get; set; }
     }
 }

@@ -46,7 +46,7 @@ namespace SqlSugar
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
         IUpdateable<T> IsEnableUpdateVersionValidation();
-        IUpdateable<T> EnableDiffLogEvent();
+        IUpdateable<T> EnableDiffLogEvent(object businessData = null);
         IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
         IUpdateable<T> RemoveDataCache();
         KeyValuePair<string,List<SugarParameter>> ToSql();

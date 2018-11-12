@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -28,6 +29,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
+
         public virtual int ExecuteCommand()
         {
             PreToSql();
@@ -36,7 +38,9 @@ namespace SqlSugar
             string sql = UpdateBuilder.ToSqlString();
             ValidateVersion();
             RestoreMapping();
-            var result= this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            Before(sql);
+            var result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            After(sql);
             return result;
         }
 
@@ -89,9 +93,12 @@ namespace SqlSugar
             return this;
         }
 
-        public IUpdateable<T> EnableDiffLogEvent() {
+        public IUpdateable<T> EnableDiffLogEvent(object businessData = null)
+        {
 
+            diffModel = new DiffLogModel();
             this.IsEnableDiffLogEvent = true;
+            diffModel.BusinessData = businessData;
             return this;
         }
 
@@ -544,6 +551,54 @@ namespace SqlSugar
                     }
                 }
             }
+        }
+        private void After(string sql)
+        {
+            if (this.IsEnableDiffLogEvent)
+            {
+                var parameters = UpdateBuilder.Parameters.ToList();
+                diffModel.AfterDate = GetDiffTable(sql, parameters);
+                diffModel.Time = this.Context.Ado.SqlExecutionTime;
+                this.Context.Ado.DiffLogEvent(diffModel);
+            }
+        }
+
+        private void Before(string sql)
+        {
+            if (this.IsEnableDiffLogEvent)
+            {
+                var parameters = UpdateBuilder.Parameters;
+                diffModel.BeforeData = GetDiffTable(sql, parameters);
+                diffModel.Sql = sql;
+                diffModel.Parameters = parameters.ToArray();
+            }
+        }
+
+        private List<DiffLogTableInfo> GetDiffTable(string sql, List<SugarParameter> parameters)
+        {
+            List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
+            var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
+            var dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
+            if (dt.Rows != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    DiffLogTableInfo item = new DiffLogTableInfo();
+                    item.TableDescription = this.EntityInfo.TableDescription;
+                    item.TableName = this.EntityInfo.DbTableName;
+                    item.Columns = new List<DiffLogColumnInfo>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        DiffLogColumnInfo addItem = new DiffLogColumnInfo();
+                        addItem.Value = row[col.ColumnName];
+                        addItem.ColumnName = col.ColumnName;
+                        addItem.ColumnDescription = this.EntityInfo.Columns.First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
+                        item.Columns.Add(addItem);
+                    }
+                    result.Add(item);
+                }
+            }
+            return result;
         }
     }
 }
