@@ -104,7 +104,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT  *　INTO {1} FROM  {2} limit 0,{0}";
+                return "Create table {1} (Select * from {2} LIMIT 0,{0})";
             }
         }
         protected override string DropTableSql
