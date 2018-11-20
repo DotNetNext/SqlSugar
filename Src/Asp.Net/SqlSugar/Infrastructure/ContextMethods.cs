@@ -118,7 +118,7 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public List<T> DataReaderToDynamicList<T>(IDataReader reader)
+        public List<T> DataReaderList<T>(IDataReader reader)
         {
             using (reader)
             {
@@ -304,6 +304,24 @@ namespace SqlSugar
             }
             return this.DeserializeObject<dynamic>(this.SerializeObject(deserializeObject));
 
+        }
+        public List<T> DataTableToList<T>(DataTable table)
+        {
+            List<Dictionary<string, object>> deserializeObject = new List<Dictionary<string, object>>();
+            Dictionary<string, object> childRow;
+            foreach (DataRow row in table.Rows)
+            {
+                childRow = new Dictionary<string, object>();
+                foreach (DataColumn col in table.Columns)
+                {
+                    var addItem = row[col];
+                    if (addItem == DBNull.Value)
+                        addItem = null;
+                    childRow.Add(col.ColumnName, addItem);
+                }
+                deserializeObject.Add(childRow);
+            }
+            return this.DeserializeObject<List<T>>(this.SerializeObject(deserializeObject));
         }
         #endregion
 
