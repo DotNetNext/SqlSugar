@@ -13,7 +13,7 @@ namespace SqlSugar
         SqlSugarClient Context { get; set; }
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
         List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
-        List<T> DataReaderList<T>(IDataReader reader);
+        List<T> DataReaderToList<T>(IDataReader reader);
         string SerializeObject(object value);
         T DeserializeObject<T>(string value);
         T TranslateCopy<T>(T sourceObject);

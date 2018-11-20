@@ -113,12 +113,12 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// DataReaderToDynamicList
+        /// DataReaderToList
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public List<T> DataReaderList<T>(IDataReader reader)
+        public List<T> DataReaderToList<T>(IDataReader reader)
         {
             using (reader)
             {

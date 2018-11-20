@@ -1193,7 +1193,7 @@ namespace SqlSugar
             }
             else if (entityType.IsAnonymousType() || isComplexModel)
             {
-                result = this.Context.Utilities.DataReaderList<TResult>(dataReader);
+                result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
             }
             else
             {
