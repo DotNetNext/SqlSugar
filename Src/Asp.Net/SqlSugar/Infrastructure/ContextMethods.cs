@@ -143,7 +143,7 @@ namespace SqlSugar
                             {
                                 if (readerValues.Any(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
                                 {
-                                    var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues[name.ToUpper()];
+                                    var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it=>it.Key.Equals(name,StringComparison.CurrentCultureIgnoreCase)).Value;
                                     if (addValue == DBNull.Value)
                                     {
                                         if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
