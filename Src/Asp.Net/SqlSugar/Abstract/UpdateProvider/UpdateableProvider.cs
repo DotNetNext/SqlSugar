@@ -562,7 +562,8 @@ namespace SqlSugar
                     parameters = new List<SugarParameter>();
                 diffModel.AfterDate = GetDiffTable(sql, parameters);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
-                this.Context.Ado.DiffLogEvent(diffModel);
+                if (this.Context.Ado.DiffLogEvent != null)
+                    this.Context.Ado.DiffLogEvent(diffModel);
             }
         }
 
