@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -16,6 +18,8 @@ namespace SqlSugar
         public DeleteBuilder DeleteBuilder { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public bool IsAs { get; set; }
+        public bool IsEnableDiffLogEvent { get; set; }
+        public DiffLogModel diffModel { get; set; }
         public EntityInfo EntityInfo
         {
             get
@@ -30,8 +34,12 @@ namespace SqlSugar
             var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
             AutoRemoveDataCache();
-            return Db.ExecuteCommand(sql, paramters);
+            Before(sql);
+            var result= Db.ExecuteCommand(sql, paramters);
+            After(sql);
+            return result;
         }
+
         public bool ExecuteCommandHasChange()
         {
             return ExecuteCommand() > 0;
@@ -69,6 +77,16 @@ namespace SqlSugar
             }
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
+        }
+
+        public IDeleteable<T> EnableDiffLogEvent(object businessData = null)
+        {
+
+            diffModel = new DiffLogModel();
+            this.IsEnableDiffLogEvent = true;
+            diffModel.BusinessData = businessData;
+            diffModel.DiffType = DiffType.delete;
+            return this;
         }
 
         public IDeleteable<T> Where(List<T> deleteObjs)
@@ -328,6 +346,59 @@ namespace SqlSugar
             asyncDeleteBuilder.WhereInfos = this.DeleteBuilder.WhereInfos;
             asyncDeleteBuilder.TableWithString = this.DeleteBuilder.TableWithString;
             return asyncDeleteable;
+        }
+
+        private void After(string sql)
+        {
+            if (this.IsEnableDiffLogEvent)
+            {
+                var parameters = DeleteBuilder.Parameters;
+                if (parameters == null)
+                    parameters = new List<SugarParameter>();
+                diffModel.AfterDate = null;
+                diffModel.Time = this.Context.Ado.SqlExecutionTime;
+                this.Context.Ado.DiffLogEvent(diffModel);
+            }
+        }
+
+        private void Before(string sql)
+        {
+            if (this.IsEnableDiffLogEvent)
+            {
+                var parameters = DeleteBuilder.Parameters;
+                if (parameters == null)
+                    parameters = new List<SugarParameter>();
+                diffModel.BeforeData = GetDiffTable(sql, parameters);
+                diffModel.Sql = sql;
+                diffModel.Parameters = parameters.ToArray();
+            }
+        }
+
+        private List<DiffLogTableInfo> GetDiffTable(string sql, List<SugarParameter> parameters)
+        {
+            List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
+            var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
+            var dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
+            if (dt.Rows != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    DiffLogTableInfo item = new DiffLogTableInfo();
+                    item.TableDescription = this.EntityInfo.TableDescription;
+                    item.TableName = this.EntityInfo.DbTableName;
+                    item.Columns = new List<DiffLogColumnInfo>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        DiffLogColumnInfo addItem = new DiffLogColumnInfo();
+                        addItem.Value = row[col.ColumnName];
+                        addItem.ColumnName = col.ColumnName;
+                        addItem.ColumnDescription = this.EntityInfo.Columns.First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
+                        item.Columns.Add(addItem);
+                    }
+                    result.Add(item);
+                }
+            }
+            return result;
         }
     }
 }

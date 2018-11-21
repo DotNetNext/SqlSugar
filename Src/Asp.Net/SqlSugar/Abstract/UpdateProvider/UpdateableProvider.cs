@@ -557,7 +557,9 @@ namespace SqlSugar
         {
             if (this.IsEnableDiffLogEvent)
             {
-                var parameters = UpdateBuilder.Parameters.ToList();
+                var parameters = UpdateBuilder.Parameters;
+                if (parameters == null)
+                    parameters = new List<SugarParameter>();
                 diffModel.AfterDate = GetDiffTable(sql, parameters);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 this.Context.Ado.DiffLogEvent(diffModel);
@@ -569,6 +571,8 @@ namespace SqlSugar
             if (this.IsEnableDiffLogEvent)
             {
                 var parameters = UpdateBuilder.Parameters;
+                if (parameters == null)
+                    parameters = new List<SugarParameter>();
                 diffModel.BeforeData = GetDiffTable(sql, parameters);
                 diffModel.Sql = sql;
                 diffModel.Parameters = parameters.ToArray();
