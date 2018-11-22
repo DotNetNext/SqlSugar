@@ -57,26 +57,19 @@ namespace OrmTest.Demo
             };
 
 
-            var id = db.Queryable<Student>().First().Id;
+            var id = db.Insertable(new Student() { Name="beforeName" }).ExecuteReturnIdentity();
             db.Updateable<Student>(new Student()
             {
                 Id = id,
                 CreateTime = DateTime.Now,
-                Name = "before",
-                SchoolId = 1
-            })
-            .EnableDiffLogEvent(new { title = "update Student", Modular = 1, Operator = "admin" }).ExecuteCommand();
-
-
-            db.Updateable<Student>(new Student()
-            {
-                Id = id,
-                CreateTime = DateTime.Now,
-                Name = "after",
+                Name = "afterName",
                 SchoolId = 2
             })
             .EnableDiffLogEvent(new { title= "update Student", Modular=1, Operator="admin" })
             .ExecuteCommand();
+
+            db.Deleteable<Student>(id).EnableDiffLogEvent(new { title = "delete student" }).ExecuteCommand();
+         
         }
 
     }
