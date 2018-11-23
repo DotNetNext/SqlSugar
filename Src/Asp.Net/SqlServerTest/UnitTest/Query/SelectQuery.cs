@@ -120,7 +120,32 @@ namespace OrmTest.UnitTest
                     }, t7.Key, t7.Value, "select t7 Error");
                 #endregion
 
+                try
+                {
 
+                    var t8 = db.Queryable<Student, School, School>((st, sc, sc2) => new object[] {
+                          JoinType.Left,st.SchoolId==sc.Id,
+                          JoinType.Left,sc2.Id==sc.Id
+                }).Where(st => st.Id > 0)
+                    .Select<School>((st1) => new School() { Id = st1.Id }).ToList();
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine(ex.Message);
+                }
+
+                try
+                {
+
+                    var t8 = db.Queryable<Student, School>((st, sc) =>st.Id==sc.Id).Where(st => st.Id > 0)
+                    .Select<School>((st1) => new School() { Id = st1.Id }).ToList();
+                }
+                catch (Exception ex)
+                {
+
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
     }
