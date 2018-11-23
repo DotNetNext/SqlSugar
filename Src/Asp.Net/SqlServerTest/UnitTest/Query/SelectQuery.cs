@@ -131,7 +131,9 @@ namespace OrmTest.UnitTest
                 }
                 catch (Exception ex)
                 {
-
+                    if (!ex.Message.Contains("English Message : Join st needs to be the same as Select st1")){
+                        throw new Exception("selec t8 error");
+                    }
                     Console.WriteLine(ex.Message);
                 }
 
@@ -139,11 +141,30 @@ namespace OrmTest.UnitTest
                 {
 
                     var t8 = db.Queryable<Student, School>((st, sc) =>st.Id==sc.Id).Where(st => st.Id > 0)
-                    .Select<School>((st1) => new School() { Id = st1.Id }).ToList();
+                    .Where(x=>x.Id==1)
+                    .Select<School>((st) => new School() { Id = st.Id }).ToList();
                 }
                 catch (Exception ex)
                 {
 
+                    if (!ex.Message.Contains("English Message : Join st needs to be the same as Where x")){
+                        throw new Exception("selec t8 error");
+                    }
+                    Console.WriteLine(ex.Message);
+                }
+
+                try
+                {
+
+                    var t8 = db.Queryable<Student, School>((st, sc) => st.Id == sc.Id)
+                    .Sum(x =>x.Id );
+                }
+                catch (Exception ex)
+                {
+
+                    if (!ex.Message.Contains("English Message : Join st needs to be the same as Sum x")){
+                        throw new Exception("selec t8 error");
+                    }
                     Console.WriteLine(ex.Message);
                 }
             }
