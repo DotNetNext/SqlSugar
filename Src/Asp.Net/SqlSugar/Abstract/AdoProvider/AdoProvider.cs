@@ -110,11 +110,14 @@ namespace SqlSugar
 
             if (this.IsMasterSlaveSeparation)
             {
-                foreach (var slaveConnection in this.SlaveConnections)
+                if (this.SlaveConnections != null)
                 {
-                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    foreach (var slaveConnection in this.SlaveConnections)
                     {
-                        slaveConnection.Dispose();
+                        if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                        {
+                            slaveConnection.Dispose();
+                        }
                     }
                 }
             }
