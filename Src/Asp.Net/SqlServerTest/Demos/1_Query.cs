@@ -94,6 +94,27 @@ namespace OrmTest.Demo
                           Id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
                       }).ToList();
 
+            var getAll6 = db.Queryable<Student>().Select(it =>
+                      new
+                      {
+                          name = it.Name,
+                          id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Sum(s => (int)s.SchoolId)
+                      }).ToList();
+
+            var getAll66 = db.Queryable<Student>().Select(it =>
+                new
+                {
+                    name = it.Name,
+                    id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Sum(s =>s.SchoolId.Value)
+                }).ToList();
+
+            var getAll666 = db.Queryable<Student>().Select(it =>
+                new
+                {
+                    name = it.Name,
+                    id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Min(s => s.Id)
+                }).ToList();
+
         }
 
         private static void Async()

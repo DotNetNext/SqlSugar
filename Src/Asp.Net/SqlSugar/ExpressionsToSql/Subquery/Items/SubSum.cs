@@ -44,8 +44,13 @@ namespace SqlSugar
         {
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
+            var parametres = (argExp as LambdaExpression).Parameters;
+            if ((argExp as LambdaExpression).Body is UnaryExpression)
+            {
+                argExp =((argExp as LambdaExpression).Body as UnaryExpression).Operand;
+            }
             var result = "SUM(" + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple)+")";
-            var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
+            var selfParameterName = Context.GetTranslationColumnName(parametres.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, string.Empty);
             return result;
         }
