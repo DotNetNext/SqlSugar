@@ -20,6 +20,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
+        public List<string> tempPrimaryKeys { get; set; }
         public EntityInfo EntityInfo
         {
             get
@@ -35,7 +36,7 @@ namespace SqlSugar
             RestoreMapping();
             AutoRemoveDataCache();
             Before(sql);
-            var result= Db.ExecuteCommand(sql, paramters);
+            var result = Db.ExecuteCommand(sql, paramters);
             After(sql);
             return result;
         }
@@ -265,6 +266,34 @@ namespace SqlSugar
             return this;
         }
 
+        public IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, PkType primaryKeyValue)
+        {
+            var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
+            var fieldName = lamResult.GetResultString();
+            tempPrimaryKeys = new List<string>() { fieldName };
+            var result = In(primaryKeyValue);;
+            tempPrimaryKeys = null;
+            return this;
+        }
+        public IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, PkType[] primaryKeyValues)
+        {
+            var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
+            var fieldName = lamResult.GetResultString();
+            tempPrimaryKeys = new List<string>() { fieldName };
+            var result = In(primaryKeyValues);
+            tempPrimaryKeys = null;
+            return this;
+        }
+        public IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, List<PkType> primaryKeyValues)
+        {
+            var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
+            var fieldName = lamResult.GetResultString();
+            tempPrimaryKeys = new List<string>() { fieldName };
+            var result = In(primaryKeyValues);
+            tempPrimaryKeys = null;
+            return this;
+        }
+
         public IDeleteable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
@@ -283,7 +312,11 @@ namespace SqlSugar
 
         private List<string> GetPrimaryKeys()
         {
-            if (this.Context.IsSystemTablesConfig)
+            if (tempPrimaryKeys.HasValue())
+            {
+                return tempPrimaryKeys;
+            }
+            else if (this.Context.IsSystemTablesConfig)
             {
                 return this.Context.DbMaintenance.GetPrimaries(this.Context.EntityMaintenance.GetTableName(this.EntityInfo.EntityName));
             }
@@ -315,7 +348,8 @@ namespace SqlSugar
 
         private void TaskStart<Type>(Task<Type> result)
         {
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread) {
+            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+            {
                 Check.Exception(true, "IsShardSameThread=true can't be used async method");
             }
             result.Start();

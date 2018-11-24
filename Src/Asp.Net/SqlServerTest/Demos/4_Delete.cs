@@ -28,6 +28,13 @@ namespace OrmTest.Demo
             var t41 = db.Deleteable<Student>().In(new int[] { 1, 2 }.Select(it=>it)).ExecuteCommand();
             var t42 = db.Deleteable<Student>().In(new int[] { 1, 2 }.AsEnumerable()).ExecuteCommand();
 
+
+            //by exp key array
+            var t44 = db.Deleteable<Student>().In(it=>it.SchoolId,new int[] { 1, 2 }).ExecuteCommand();
+            var t441 = db.Deleteable<Student>().In(it => it.SchoolId,new int[] { 1, 2 }.Select(it => it)).ExecuteCommand();
+            var t442 = db.Deleteable<Student>().In(it => it.SchoolId,new int[] { 1, 2 }.AsEnumerable()).ExecuteCommand();
+            var t443 = db.Deleteable<Student>().In(it => it.SchoolId, new int[] { 1, 2 }.ToList()).ExecuteCommand();
+
             //by expression   id>1 and id==1
             var t5 = db.Deleteable<Student>().Where(it => it.Id > 1).Where(it => it.Id == 1).ExecuteCommand();
 
