@@ -254,6 +254,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
@@ -1214,8 +1215,9 @@ namespace SqlSugar
             return result;
         }
 
-        protected void _InQueryable(Expression<Func<T, object>> expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
+        protected void _InQueryable(Expression expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             string sql = sqlObj.Key;
             if (sqlObj.Value.HasValue())
             {
@@ -1460,6 +1462,7 @@ namespace SqlSugar
         #region In
         public new ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
@@ -1468,6 +1471,7 @@ namespace SqlSugar
         }
         public new ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
@@ -1475,6 +1479,31 @@ namespace SqlSugar
             return this;
         }
         public new ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        {
+            var sqlObj = childQueryExpression.ToSql();
+            _InQueryable(expression, sqlObj);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, params FieldType[] inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public  ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, List<FieldType> inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public  ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
@@ -1743,6 +1772,7 @@ namespace SqlSugar
         #region In
         public new ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
@@ -1751,6 +1781,7 @@ namespace SqlSugar
         }
         public new ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
@@ -1758,6 +1789,56 @@ namespace SqlSugar
             return this;
         }
         public new ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        {
+            var sqlObj = childQueryExpression.ToSql();
+            _InQueryable(expression, sqlObj);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T,T2, object>> expression, params FieldType[] inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T,T2, object>> expression, List<FieldType> inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T,T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        {
+            var sqlObj = childQueryExpression.ToSql();
+            _InQueryable(expression, sqlObj);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, params FieldType[] inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, List<FieldType> inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
@@ -2058,6 +2139,7 @@ namespace SqlSugar
         #region In
         public new ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
@@ -2066,6 +2148,7 @@ namespace SqlSugar
         }
         public new ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues)
         {
+            QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
@@ -2078,7 +2161,83 @@ namespace SqlSugar
             _InQueryable(expression, sqlObj);
             return this;
         }
+
+        public  ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T,T2, object>> expression, params FieldType[] inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public  ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T,T2, object>> expression, List<FieldType> inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public  ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T,T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        {
+            var sqlObj = childQueryExpression.ToSql();
+            _InQueryable(expression, sqlObj);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, params FieldType[] inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, List<FieldType> inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        {
+            var sqlObj = childQueryExpression.ToSql();
+            _InQueryable(expression, sqlObj);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, params FieldType[] inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, List<FieldType> inValues)
+        {
+            QueryBuilder.CheckExpression(expression, "In");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var fieldName = lamResult.GetResultString();
+            In(fieldName, inValues);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        {
+            var sqlObj = childQueryExpression.ToSql();
+            _InQueryable(expression, sqlObj);
+            return this;
+        }
         #endregion
+
 
         #region Other
         public new ISugarQueryable<T, T2,T3,T4> Clone()
