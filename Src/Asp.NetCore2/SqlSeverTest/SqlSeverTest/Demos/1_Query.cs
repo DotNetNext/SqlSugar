@@ -94,6 +94,27 @@ namespace OrmTest.Demo
                           Id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
                       }).ToList();
 
+            var getAll6 = db.Queryable<Student>().Select(it =>
+                      new
+                      {
+                          name = it.Name,
+                          id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Sum(s => (int)s.SchoolId)
+                      }).ToList();
+
+            var getAll66 = db.Queryable<Student>().Select(it =>
+                new
+                {
+                    name = it.Name,
+                    id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Sum(s =>s.SchoolId.Value)
+                }).ToList();
+
+            var getAll666 = db.Queryable<Student>().Select(it =>
+                new
+                {
+                    name = it.Name,
+                    id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Min(s => s.Id)
+                }).ToList();
+
         }
 
         private static void Async()
@@ -318,6 +339,12 @@ namespace OrmTest.Demo
 
             var getUnionAllList2 = db.UnionAll(db.Queryable<Student>(), db.Queryable<Student>()).ToList();
 
+            var getUnionAllList3= db.UnionAll(db.Queryable<Student>()
+                .Select(it => new Student { Id =SqlFunc.ToInt32(1) ,Name=SqlFunc.ToString("2"), SchoolId = Convert.ToInt32(3) })
+                , db.Queryable<Student>()
+                .Select(it => new Student { Id = SqlFunc.ToInt32(11) , Name = SqlFunc.ToString("22") , SchoolId=Convert.ToInt32(33)}))
+                .Select(it=>new Student() { Id=SqlFunc.ToInt32(111), Name = SqlFunc.ToString("222") }).ToList();
+
             var test1 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Where(st=>st.CreateTime>SqlFunc.GetDate()).Select((st, sc) => SqlFunc.ToInt64(sc.Id)).ToList();
             var test2 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id)
                       .Where(st =>
@@ -473,6 +500,13 @@ namespace OrmTest.Demo
      .OrderBy(st => st.Id)
      .Select(st => st)
      .ToList();
+
+            var subquery = db.Queryable<Student>().Where(it => it.Id == 1);
+            var subquery2 = db.Queryable<Student>();
+            db.Queryable(subquery, subquery2, (st1, st2) => st1.Id == st2.Id).Select((st1,st2)=>new {
+                id=st1.Id,
+                name=st2.Name
+            }).ToList();
         }
         public static void Funs()
         {
