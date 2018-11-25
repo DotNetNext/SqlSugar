@@ -125,7 +125,7 @@ namespace SqlSugar
         {
             get
             {
-                return "exec sp_rename '{0}.{1}','{2}','column';";
+                return "ALTER TABLE {0} rename   column  {1} to {2}";
             }
         }
         #endregion

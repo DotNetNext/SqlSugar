@@ -24,7 +24,6 @@ namespace OrmTest.Demo
         public double? Dob2 { get; set; }
         [SugarColumn(Length =110)]
         public string A1 { get; set; }
-        public string X2 { get; set; }
     }
     public class CodeTable2 {
         public int Id { get; set; }
@@ -48,7 +47,7 @@ namespace OrmTest.Demo
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
 
             //No backup table
-            db.CodeFirst.InitTables(typeof(CodeTable));
+            db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
         }
     }
 }
