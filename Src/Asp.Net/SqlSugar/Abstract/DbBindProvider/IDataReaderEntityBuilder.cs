@@ -53,6 +53,7 @@ namespace SqlSugar
         private static readonly MethodInfo getTime = typeof(IDataRecordExtensions).GetMethod("GetTime");
         private static readonly MethodInfo getConvertDecimal = typeof(IDataRecordExtensions).GetMethod("GetConvertDecimal");
         private static readonly MethodInfo getConvertDouble = typeof(IDataRecordExtensions).GetMethod("GetConvertDouble");
+        private static readonly MethodInfo getConvertDoubleToFloat = typeof(IDataRecordExtensions).GetMethod("GetConvertDoubleToFloat");
         private static readonly MethodInfo getConvertGuid = typeof(IDataRecordExtensions).GetMethod("GetConvertGuid");
         private static readonly MethodInfo getConvertInt16 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt16");
         private static readonly MethodInfo getConvertInt32 = typeof(IDataRecordExtensions).GetMethod("GetConvertInt32");
@@ -265,6 +266,9 @@ namespace SqlSugar
                         method = isNullableType ? getConvertDouble : getDouble;
                     else
                         method = isNullableType ? getConvertFloat : getFloat;
+                    if (dbTypeName == "float" && isNullableType && bindProperyTypeName == "single") {
+                        method = getConvertDoubleToFloat;
+                    }
                     break;
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);

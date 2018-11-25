@@ -95,6 +95,18 @@ namespace SqlSugar
             return result;
         }
 
+
+        public static float? GetConvertDoubleToFloat(this IDataRecord dr, int i)
+        {
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            var result = dr.GetDouble(i);
+            return Convert.ToSingle(result);
+        }
+
+
         public static Guid? GetConvertGuid(this IDataRecord dr, int i)
         {
             if (dr.IsDBNull(i))
