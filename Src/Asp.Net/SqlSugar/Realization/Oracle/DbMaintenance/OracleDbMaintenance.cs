@@ -166,7 +166,7 @@ namespace SqlSugar
         {
             get
             {
-                return "IDENTITY(1,1)";
+                return "";
             }
         }
 
@@ -319,7 +319,27 @@ namespace SqlSugar
 
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
-            throw new NotImplementedException();
+            if (columns.HasValue())
+            {
+                foreach (var item in columns)
+                {
+                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
+                    {
+                        item.Length = 50;
+                    }
+                }
+            }
+            string sql = GetCreateTableSql(tableName, columns);
+            this.Context.Ado.ExecuteCommand(sql);
+            if (isCreatePrimaryKey)
+            {
+                var pkColumns = columns.Where(it => it.IsPrimarykey).ToList();
+                foreach (var item in pkColumns)
+                {
+                    this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                }
+            }
+            return true;
         }
         #endregion
     }

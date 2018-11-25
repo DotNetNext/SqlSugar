@@ -7,9 +7,27 @@ namespace SqlSugar
 {
     public class OracleCodeFirst : CodeFirstProvider
     {
-        public OracleCodeFirst()
+        protected override void GetDbType(EntityColumnInfo item, Type propertyType, DbColumnInfo result)
         {
-            throw new Exception("Oracle该功能还未测试");
+            if (!string.IsNullOrEmpty(item.DataType))
+            {
+                result.DataType = item.DataType;
+            }
+            else if (propertyType.IsEnum())
+            {
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
+            }
+            else
+            {
+                if (propertyType.Name.Equals("Guid", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    result.DataType = this.Context.Ado.DbBind.GetDbTypeName(UtilConstants.StringType.Name);
+                }
+                else
+                {
+                    result.DataType = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+                }
+            }
         }
     }
 }
