@@ -16,7 +16,7 @@ namespace OrmTest.Models
            /// Desc:
            /// Default:
            /// Nullable:False
-           /// </summary>           
+           /// </summary>  
            public Guid PK {get;set;}
 
            /// <summary>

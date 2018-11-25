@@ -77,7 +77,11 @@ namespace OrmTest.Demo
             .EnableDiffLogEvent(new { title = "delete student" })
             .ExecuteCommand();
 
-        }
 
+            //primary key guid
+             db.Insertable(new DataTestInfo2() { Bool1=true, Bool2=false, PK=Guid.NewGuid(), Text1="a" })
+            .EnableDiffLogEvent(new { title = "add DataTestInfo2" })
+            .ExecuteReturnIdentity();
+        }
     }
 }

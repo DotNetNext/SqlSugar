@@ -449,13 +449,13 @@ namespace SqlSugar
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = string.Empty;
             List<IConditionalModel> cons = new List<IConditionalModel>();
-            if (identity != null)
+            if (identity != null&&identity>0)
             {
-                var fieldName = EntityInfo.Columns.Last(it => it.IsIdentity).DbColumnName;
+                var fieldName = GetIdentityKeys().Last();
                  cons.Add(new ConditionalModel() { ConditionalType=ConditionalType.Equal, FieldName= fieldName, FieldValue=identity.ToString() });
             }
             else {
-                foreach(var item in this.EntityInfo.Columns.Where(it => it.IsIgnore == false&&it.IsPrimarykey==true)) {
+                foreach(var item in this.EntityInfo.Columns.Where(it => it.IsIgnore == false&&GetPrimaryKeys().Any(pk=>pk.Equals(it.DbColumnName,StringComparison.CurrentCultureIgnoreCase)))) {
                     var fielddName = item.DbColumnName;
                     var fieldValue = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null).ObjToString();
                     cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue =fieldValue });
