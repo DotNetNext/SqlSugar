@@ -55,14 +55,14 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ADD {1} {2}{3} {4} {5} {6}";
+                return "ALTER TABLE {0} ADD ({1} {2}{3} {4} {5} {6})";
             }
         }
         protected override string AlterColumnToTableSql
         {
             get
             {
-                return "ALTER TABLE {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
+                return "ALTER TABLE {0} modify ({1} {2}{3} {4} {5} {6}) ";
             }
         }
         protected override string BackupDataBaseSql
@@ -145,14 +145,14 @@ namespace SqlSugar
         {
             get
             {
-                return "NULL";
+                return "";
             }
         }
         protected override string CreateTableNotNull
         {
             get
             {
-                return "NOT NULL";
+                return "";
             }
         }
         protected override string CreateTablePirmaryKey
@@ -174,7 +174,7 @@ namespace SqlSugar
         {
             get
             {
-                return "comment on column {1}.{0} is '{2}';";
+                return "comment on column {1}.{0} is '{2}'";
             }
         }
 
@@ -182,7 +182,7 @@ namespace SqlSugar
         {
             get
             {
-                return "comment on column {1}.{0} is '';";
+                return "comment on column {1}.{0} is ''";
             }
         }
 
@@ -198,7 +198,7 @@ namespace SqlSugar
         {
             get
             {
-                return "comment on table {0}  is  '{1}';";
+                return "comment on table {0}  is  '{1}'";
             }
         }
 
@@ -206,7 +206,7 @@ namespace SqlSugar
         {
             get
             {
-                return "comment on table {0}  is  '';";
+                return "comment on table {0}  is  ''";
             }
         }
 
@@ -220,6 +220,43 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    //column remak
+                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper()))
+                    {
+                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper());
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                    }
+                    else
+                    {
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                    }
+                }
+            }
+
+            //table remak
+            if (entity.TableDescription != null)
+            {
+                if (db.DbMaintenance.IsAnyTableRemark(entity.DbTableName))
+                {
+                    db.DbMaintenance.DeleteTableRemark(entity.DbTableName);
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
+                else
+                {
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
+            }
+            return true;
+        }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();

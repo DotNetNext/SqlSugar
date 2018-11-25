@@ -11,7 +11,7 @@ namespace SqlSugar
         public virtual SqlSugarClient Context { get; set; }
         private bool IsBackupTable { get; set; }
         private int MaxBackupDataRows { get; set; }
-        private int DefultLength { get; set; }
+        protected virtual int DefultLength { get; set; }
         #endregion
 
         #region Public methods
@@ -162,8 +162,8 @@ namespace SqlSugar
                 {
                     var dbColumn = dbColumns.FirstOrDefault(dc => dc.DbColumnName.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
                     if (dbColumn == null) continue;
-                    var pkDiff = item.IsPrimarykey != dbColumn.IsPrimarykey;
-                    var idEntityDiff = item.IsIdentity != dbColumn.IsIdentity;
+                    bool pkDiff, idEntityDiff;
+                    KeyAction(item, dbColumn, out pkDiff, out idEntityDiff);
                     if (dbColumn != null && pkDiff && !idEntityDiff)
                     {
                         var isAdd = item.IsPrimarykey;
@@ -186,6 +186,12 @@ namespace SqlSugar
                     this.Context.DbMaintenance.BackupTable(tableName, tableName + DateTime.Now.ToString("yyyyMMddHHmmss"), MaxBackupDataRows);
                 }
             }
+        }
+
+        protected virtual void KeyAction(EntityColumnInfo item, DbColumnInfo dbColumn, out bool pkDiff, out bool idEntityDiff)
+        {
+            pkDiff = item.IsPrimarykey != dbColumn.IsPrimarykey;
+            idEntityDiff = item.IsIdentity != dbColumn.IsIdentity;
         }
 
         protected virtual void ChangeKey(EntityInfo entityInfo, string tableName, EntityColumnInfo item)

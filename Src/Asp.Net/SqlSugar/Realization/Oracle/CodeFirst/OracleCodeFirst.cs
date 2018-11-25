@@ -7,6 +7,12 @@ namespace SqlSugar
 {
     public class OracleCodeFirst : CodeFirstProvider
     {
+        public OracleCodeFirst() {
+            if (DefultLength == 0)
+                DefultLength = 40;
+        }
+        protected override int DefultLength { get; set; }
+
         protected override void GetDbType(EntityColumnInfo item, Type propertyType, DbColumnInfo result)
         {
             if (!string.IsNullOrEmpty(item.DataType))
@@ -28,6 +34,12 @@ namespace SqlSugar
                     result.DataType = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
                 }
             }
+        }
+
+        protected override void KeyAction(EntityColumnInfo item, DbColumnInfo dbColumn, out bool pkDiff, out bool idEntityDiff)
+        {
+            pkDiff = item.IsPrimarykey != dbColumn.IsPrimarykey;
+            idEntityDiff = false;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace OrmTest.Demo
      
         [SugarColumn(IsNullable =false ,IsPrimaryKey =true,IsIdentity =true)]
         public int Id { get; set; }
-        [SugarColumn(Length = 21,OldColumnName = "Name2")]
+        [SugarColumn(Length = 21,OldColumnName = "Name2",ColumnDescription ="haha")]
         public string Name{ get; set; }
         [SugarColumn(IsNullable = true,Length =10)]
         public string IsOk { get; set; }
@@ -24,6 +24,7 @@ namespace OrmTest.Demo
         public double? Dob2 { get; set; }
         [SugarColumn(Length =110)]
         public string A1 { get; set; }
+        public string X2 { get; set; }
     }
     public class CodeTable2 {
         public int Id { get; set; }
