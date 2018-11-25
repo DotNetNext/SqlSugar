@@ -37,5 +37,12 @@ namespace SqlSugar
                 return ErrorMessage.GetThrowMessage("Connection open error . {0}", " 连接数据库过程中发生错误，检查服务器是否正常连接字符串是否正确，实在找不到原因请先Google错误信息：{0}.");
             }
         }
+        public static string ExpressionCheck
+        {
+            get
+            {
+                return ErrorMessage.GetThrowMessage("Join {0} needs to be the same as {1} {2}", "多表查询存在别名不一致,请把{1}中的{2}改成{0}就可以了，特殊需求可以使用.Select((x,y)=>new{{ id=x.id,name=y.name}}).MergeTable().Orderby(xxx=>xxx.Id)功能将Select中的多表结果集变成单表，这样就可以不限制别名一样");
+            }
+        }
     }
 }

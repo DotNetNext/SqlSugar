@@ -14,6 +14,7 @@ namespace SqlSugar
             this.Context.Ado.IsEnableLogEvent = true;
         }
         private SqlSugarClient Context { get; set; }
+        public Action<DiffLogModel> OnDiffLogEvent { set { this.Context.Ado.DiffLogEvent = value; } }
         public Action<Exception> OnError { set { this.Context.Ado.ErrorEvent = value; } }
         public Action<string, SugarParameter[]> OnLogExecuting { set { this.Context.Ado.LogEventStarting = value; } }
         public Action<string, SugarParameter[]> OnLogExecuted { set { this.Context.Ado.LogEventCompleted = value; } }

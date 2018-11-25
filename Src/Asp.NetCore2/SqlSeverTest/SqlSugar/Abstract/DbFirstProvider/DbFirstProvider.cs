@@ -122,7 +122,7 @@ namespace SqlSugar
         {
             if (objectNames.HasValue())
             {
-                this.TableInfoList = this.TableInfoList.Where(it => objectNames.Contains(it.Name)).ToList();
+                this.TableInfoList = this.TableInfoList.Where(it => objectNames.Select(x=>x.ToLower()).Contains(it.Name.ToLower())).ToList();
             }
             return this;
         }

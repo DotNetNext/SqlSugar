@@ -31,7 +31,7 @@ namespace SqlSugar
         public virtual string GetTranslationTableName(string name)
         {
             Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
-            if (name.IsContainsIn("(", ")", SqlTranslationLeft))
+            if (name.IsContainsIn("(", ")", SqlTranslationLeft)&&name!= "Dictionary`2")
             {
                 return name;
             }

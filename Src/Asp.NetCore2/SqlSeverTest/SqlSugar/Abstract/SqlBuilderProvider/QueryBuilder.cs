@@ -508,5 +508,24 @@ namespace SqlSugar
             var result = this.Context.EntityMaintenance.GetTableName(entityName);
             return this.Builder.GetTranslationTableName(result);
         }
+
+        public void CheckExpression(Expression expression, string methodName)
+        {
+            if (IsSingle() == false&& this.JoinExpression!=null)
+            {
+                var jsoinParameters = (this.JoinExpression as LambdaExpression).Parameters;
+                var currentParametres = (expression as LambdaExpression).Parameters;
+                if (currentParametres != null && currentParametres.Count > 0)
+                {
+                    foreach (var item in currentParametres)
+                    {
+                        var index = currentParametres.IndexOf(item);
+                        var name = item.Name;
+                        var joinName = jsoinParameters[index].Name;
+                        Check.Exception(name.ToLower() != joinName.ToLower(), ErrorMessage.ExpressionCheck, joinName, methodName, name);
+                    }
+                }
+            }
+        }
     }
 }

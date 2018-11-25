@@ -104,7 +104,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT  *　INTO {1} FROM  {2} limit 0,{0}";
+                return "Create table {1} (Select * from {2} LIMIT 0,{0})";
             }
         }
         protected override string DropTableSql
@@ -176,6 +176,7 @@ namespace SqlSugar
                 return "AUTO_INCREMENT";
             }
         }
+
         protected override string AddColumnRemarkSql
         {
             get
@@ -204,7 +205,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} COMMENT='{1}';";
+                 return "ALTER TABLE {0} COMMENT='{1}';";
             }
         }
 
@@ -226,22 +227,6 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override bool AddRemark(EntityInfo entity)
-        {
-            var db = this.Context;
-            db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
-            List<EntityColumnInfo> columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
-            foreach (var item in columns)
-            {
-                if (item.ColumnDescription != null)
-                {
-                    var mySqlCodeFirst = this.Context.CodeFirst as MySqlCodeFirst;
-                    string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item)) + " " + (item.IsIdentity ? "AUTO_INCREMENT" : "") + " " + " COMMENT '" + item.ColumnDescription + "'";
-                    db.Ado.ExecuteCommand(sql);
-                }
-            }
-            return true;
-        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
@@ -262,6 +247,22 @@ namespace SqlSugar
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public override bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+            List<EntityColumnInfo> columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    var mySqlCodeFirst = this.Context.CodeFirst as MySqlCodeFirst;
+                    string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item))+" "+(item.IsIdentity? "AUTO_INCREMENT" : "")+" " + " COMMENT '" + item.ColumnDescription + "'";
+                    db.Ado.ExecuteCommand(sql);
+                }
+            }
             return true;
         }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
@@ -318,6 +319,7 @@ namespace SqlSugar
             Check.ThrowNotSupportedException("MySql BackupDataBase NotSupported");
             return false;
         }
+
         #endregion
     }
 }

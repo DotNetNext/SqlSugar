@@ -35,6 +35,9 @@ namespace SqlSugar
         internal CommandType OldCommandType { get; set; }
         internal bool OldClearParameters { get; set; }
         public IDataParameterCollection DataReaderParameters { get; set; }
+        public TimeSpan SqlExecutionTime { get { return AfterTime - BeforeTime; } }
+        internal DateTime BeforeTime = DateTime.MinValue;
+        internal DateTime AfterTime = DateTime.MinValue;
         public virtual IDbBind DbBind
         {
             get
@@ -57,6 +60,7 @@ namespace SqlSugar
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
         protected virtual Func<string,string> FormatSql { get; set; }
         public virtual Action<Exception> ErrorEvent { get; set; }
+        public virtual Action<DiffLogModel> DiffLogEvent { get; set; }
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
         #endregion
@@ -106,11 +110,14 @@ namespace SqlSugar
 
             if (this.IsMasterSlaveSeparation)
             {
-                foreach (var slaveConnection in this.SlaveConnections)
+                if (this.SlaveConnections != null)
                 {
-                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    foreach (var slaveConnection in this.SlaveConnections)
                     {
-                        slaveConnection.Dispose();
+                        if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                        {
+                            slaveConnection.Dispose();
+                        }
                     }
                 }
             }
@@ -662,6 +669,7 @@ namespace SqlSugar
         }
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
+            this.BeforeTime = DateTime.Now;
             if (this.IsEnableLogEvent)
             {
                 Action<string, SugarParameter[]> action = LogEventStarting;
@@ -680,6 +688,7 @@ namespace SqlSugar
         }
         public virtual void ExecuteAfter(string sql, SugarParameter[] parameters)
         {
+            this.AfterTime = DateTime.Now;
             var hasParameter = parameters.HasValue();
             if (hasParameter)
             {
