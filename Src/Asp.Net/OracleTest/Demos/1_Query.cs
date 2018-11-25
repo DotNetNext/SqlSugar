@@ -187,10 +187,10 @@ namespace OrmTest.Demo
             var db = GetInstance();
 
 
-            string spName = "PR_TEST";
-            var p1 = new SugarParameter("@O_RESULT", null, true);
-            p1.IsRefCursor = true;
-            var dt3 = db.Ado.UseStoredProcedure().GetDataTable(spName, p1);
+            //string spName = "PR_TEST";
+            //var p1 = new SugarParameter("@O_RESULT", null, true);
+            //p1.IsRefCursor = true;
+            //var dt3 = db.Ado.UseStoredProcedure().GetDataTable(spName, p1);
 
             db.Ado.BeginTran();
             var t1 = db.Ado.SqlQuery<string>("select 'a'  from dual");
