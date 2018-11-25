@@ -95,7 +95,7 @@ namespace SqlSugar
 
         public IUpdateable<T> EnableDiffLogEvent(object businessData = null)
         {
-
+            Check.Exception(this.UpdateObjs.HasValue() && this.UpdateObjs.Count() > 1, "DiffLog does not support batch operations");
             diffModel = new DiffLogModel();
             this.IsEnableDiffLogEvent = true;
             diffModel.BusinessData = businessData;
