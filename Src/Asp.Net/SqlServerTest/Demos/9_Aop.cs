@@ -14,7 +14,7 @@ namespace OrmTest.Demo
         {
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
 
-            
+
             db.Aop.OnLogExecuted = (sql, pars) =>
             {
                 Console.Write("time:" + db.Ado.SqlExecutionTime.ToString());
@@ -57,7 +57,11 @@ namespace OrmTest.Demo
             };
 
 
-            var id = db.Insertable(new Student() { Name="beforeName" }).ExecuteReturnIdentity();
+            var id = db.Insertable(new Student() { Name = "beforeName" })
+            .EnableDiffLogEvent(new {  title="add student"})
+            .ExecuteReturnIdentity();
+
+
             db.Updateable<Student>(new Student()
             {
                 Id = id,
@@ -65,11 +69,14 @@ namespace OrmTest.Demo
                 Name = "afterName",
                 SchoolId = 2
             })
-            .EnableDiffLogEvent(new { title= "update Student", Modular=1, Operator="admin" })
+            .EnableDiffLogEvent(new { title = "update Student", Modular = 1, Operator = "admin" })
             .ExecuteCommand();
 
-            db.Deleteable<Student>(id).EnableDiffLogEvent(new { title = "delete student" }).ExecuteCommand();
-         
+
+            db.Deleteable<Student>(id)
+            .EnableDiffLogEvent(new { title = "delete student" })
+            .ExecuteCommand();
+
         }
 
     }
