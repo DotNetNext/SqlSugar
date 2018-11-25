@@ -12,7 +12,7 @@ namespace OrmTest.Demo
         public static void Init()
         {
             var db = GetInstance();
-            var students = db.Queryable<CMStudent>().ToList();
+            var students = db.Queryable<CMStudent>().Take(10).ToList();
             if (students != null)
             {
                 foreach (var item in students)
