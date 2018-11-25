@@ -9,7 +9,7 @@ namespace OrmTest.Demo
     public class CodeTable
     {
      
-        [SugarColumn(IsNullable =false ,IsPrimaryKey =true,IsIdentity =true)]
+        [SugarColumn(IsPrimaryKey =true)]
         public int Id { get; set; }
         [SugarColumn(Length = 21,OldColumnName = "Name2",ColumnDescription ="haha")]
         public string Name{ get; set; }
@@ -23,7 +23,7 @@ namespace OrmTest.Demo
         [SugarColumn(IsNullable = true,OldColumnName = "Dob")]
         public double? Dob2 { get; set; }
         [SugarColumn(Length =110)]
-        public string A1 { get; set; }
+        public string A2{ get; set; }
     }
     public class CodeTable2 {
         public int Id { get; set; }

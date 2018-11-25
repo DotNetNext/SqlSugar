@@ -97,7 +97,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT TOP {0} *　INTO {1} FROM  {2}";
+                return "create table {1} as select * from {2}  where ROWNUM<={0}";
             }
         }
         protected override string DropTableSql
