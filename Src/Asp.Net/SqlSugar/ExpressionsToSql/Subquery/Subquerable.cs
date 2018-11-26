@@ -13,6 +13,10 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T> WhereIF(bool isWhere,Func<T, bool> expression)
+        {
+            return this;
+        }
         public Subqueryable<T> OrderBy(Func<T, object> expression)
         {
             return this;

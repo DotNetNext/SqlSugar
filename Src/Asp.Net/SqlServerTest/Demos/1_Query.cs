@@ -114,7 +114,20 @@ namespace OrmTest.Demo
                     name = it.Name,
                     id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Min(s => s.Id)
                 }).ToList();
-
+            string name = "a";
+            var getAll6666 = db.Queryable<Student>().Select(it =>
+            new
+            {
+                name = it.Name,
+                id = SqlFunc.Subqueryable<Student>().WhereIF(!string.IsNullOrEmpty(name), s=>s.Id==1).Min(s => s.Id)
+            }).ToList();
+            name = null;
+            var getAll66666 = db.Queryable<Student>().Select(it =>
+            new
+            {
+                name = it.Name,
+                id = SqlFunc.Subqueryable<Student>().WhereIF(!string.IsNullOrEmpty(name), s => s.Id == 1).Min(s => s.Id)
+            }).ToList();
         }
 
         private static void Async()
