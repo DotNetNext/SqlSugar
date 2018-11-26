@@ -32,6 +32,10 @@ namespace SqlSugar
             {
                 base.Context.Result.Replace(ExpressionConst.FormatSymbol, ExpressionConst.LeftParenthesis + ExpressionConst.FormatSymbol);
             }
+            if (leftExpression is UnaryExpression&& (leftExpression as UnaryExpression).Operand is UnaryExpression)
+            {
+                leftExpression = (leftExpression as UnaryExpression).Operand;
+            }
             parameter.LeftExpression = leftExpression;
             parameter.RightExpression = rightExpression;
             base.Expression = leftExpression;
@@ -44,7 +48,7 @@ namespace SqlSugar
             if (lsbs && parameter.ValueIsNull)
             {
                 base.Context.Result.Replace(ExpressionConst.ExpressionReplace + parameter.Index, isEqual ? "IS" : "IS NOT");
-                base.Context.Result.Replace(ExpressionConst.ExpressionReplace + (parameter.Index+1), isEqual ? "IS" : "IS NOT");
+                base.Context.Result.Replace(ExpressionConst.ExpressionReplace + (parameter.Index + 1), isEqual ? "IS" : "IS NOT");
             }
             else
             {
