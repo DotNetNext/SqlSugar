@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public class DiffLogModel
     {
-        public List<DiffLogTableInfo> AfterDate { get; set; }
+        public List<DiffLogTableInfo> AfterData { get; set; }
         public List<DiffLogTableInfo> BeforeData { get; set; }
         public SugarParameter[] Parameters { get; set; }
         public string Sql { get; set; }

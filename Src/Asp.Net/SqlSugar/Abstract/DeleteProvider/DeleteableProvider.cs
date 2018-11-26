@@ -389,7 +389,7 @@ namespace SqlSugar
                 var parameters = DeleteBuilder.Parameters;
                 if (parameters == null)
                     parameters = new List<SugarParameter>();
-                diffModel.AfterDate = null;
+                diffModel.AfterData = null;
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);
