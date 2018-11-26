@@ -515,6 +515,9 @@ namespace SqlSugar
             {
                 var jsoinParameters = (this.JoinExpression as LambdaExpression).Parameters;
                 var currentParametres = (expression as LambdaExpression).Parameters;
+                if ((expression as LambdaExpression).Body.ToString() == "True") {
+                    return;
+                }
                 if (currentParametres != null && currentParametres.Count > 0)
                 {
                     foreach (var item in currentParametres)
