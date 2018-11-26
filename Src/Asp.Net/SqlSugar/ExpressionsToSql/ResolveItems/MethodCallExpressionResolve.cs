@@ -220,11 +220,11 @@ namespace SqlSugar
             }
             if (parameter.BaseParameter.BaseParameter.BaseParameter == null)
             {
-                this.Context.Result.Append(GetMdthodValue(name, model));
+                this.Context.Result.Append(GetMethodValue(name, model));
             }
             else
             {
-                parameter.BaseParameter.CommonTempData = GetMdthodValue(name, model);
+                parameter.BaseParameter.CommonTempData = GetMethodValue(name, model);
             }
         }
         private void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
@@ -241,7 +241,7 @@ namespace SqlSugar
             {
                 model.Args.AddRange(appendArgs);
             }
-            var methodValue = GetMdthodValue(name, model);
+            var methodValue = GetMethodValue(name, model);
             if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue"&&!(parameter.OppsiteExpression is BinaryExpression)) {
                 methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
                     new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
@@ -385,7 +385,7 @@ namespace SqlSugar
             parameter.ChildExpression = null;
         }
 
-        private object GetMdthodValue(string name, MethodCallExpressionModel model)
+        private object GetMethodValue(string name, MethodCallExpressionModel model)
         {
             if (IsExtMethod(name))
             {
