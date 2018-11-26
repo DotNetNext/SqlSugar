@@ -49,7 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Brand.cs" />
     <Compile Include="BugTest\Bug1.cs" />
+    <Compile Include="Models\VendorAndBrand.cs" />
     <Compile Include="Demos\F_VersionValidation.cs" />
     <Compile Include="Demos\G_Mapper.cs" />
     <Compile Include="Demos\H_ExtEntity.cs" />

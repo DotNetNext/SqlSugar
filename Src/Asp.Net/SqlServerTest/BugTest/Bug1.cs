@@ -1,4 +1,5 @@
-﻿using OrmTest.Demo;
+﻿using Models;
+using OrmTest.Demo;
 using OrmTest.Models;
 using SqlSugar;
 using System;
@@ -32,22 +33,22 @@ namespace OrmTest.BugTest
             var buildId = "";
             var unitId = "";
             var keyword = "";
-            GetInstance().CodeFirst.InitTables(typeof(MainTable), typeof(SubTable));
+            GetInstance().CodeFirst.InitTables(typeof(MainTable), typeof(SubTable), typeof(Brand), typeof(VendorAndBrand));
             GetInstance().Queryable<MainTable>().Where(u =>
-(u.CommunityID == communityId || SqlFunc.IsNullOrEmpty(communityId)) &&
-(SqlFunc.Contains(u.BuildID, buildId) || SqlFunc.IsNullOrEmpty(buildId)) &&
-(SqlFunc.Contains(u.UnitID, unitId) || SqlFunc.IsNullOrEmpty(unitId)) &&
-(SqlFunc.Contains(u.RoomNumber, keyword) || SqlFunc.Contains(u.RoomerName, keyword) ||
-SqlFunc.Contains(u.HousePlace, keyword) || SqlFunc.Contains(u.UnitName, keyword) ||
-SqlFunc.Contains(u.BuildName, keyword) || SqlFunc.IsNullOrEmpty(keyword)))
-.GroupBy(ru => new { ru.RoomNumber, ru.RoomID })
-.Select(ru => new
-{
-    RoomNumber = SqlFunc.AggregateMax(ru.RoomNumber),
-    CountRoomer = SqlFunc.AggregateCount(ru.RoomerName),
-    RoomID = SqlFunc.AggregateMax(ru.RoomID),
-    Owner = SqlFunc.Subqueryable<SubTable>().Where(r => r.RoomID == ru.RoomID && SqlFunc.Equals(r.RoomUserType, "业主") && SqlFunc.Equals(r.RoomUserType, "业主")).Select(s => s.RoomerName)
-}).OrderBy((r) => r.RoomNumber, type: OrderByType.Desc).ToPageListAsync(1, 2).Wait();
+            (u.CommunityID == communityId || SqlFunc.IsNullOrEmpty(communityId)) &&
+            (SqlFunc.Contains(u.BuildID, buildId) || SqlFunc.IsNullOrEmpty(buildId)) &&
+            (SqlFunc.Contains(u.UnitID, unitId) || SqlFunc.IsNullOrEmpty(unitId)) &&
+            (SqlFunc.Contains(u.RoomNumber, keyword) || SqlFunc.Contains(u.RoomerName, keyword) ||
+            SqlFunc.Contains(u.HousePlace, keyword) || SqlFunc.Contains(u.UnitName, keyword) ||
+            SqlFunc.Contains(u.BuildName, keyword) || SqlFunc.IsNullOrEmpty(keyword)))
+            .GroupBy(ru => new { ru.RoomNumber, ru.RoomID })
+            .Select(ru => new
+            {
+            RoomNumber = SqlFunc.AggregateMax(ru.RoomNumber),
+            CountRoomer = SqlFunc.AggregateCount(ru.RoomerName),
+            RoomID = SqlFunc.AggregateMax(ru.RoomID),
+            Owner = SqlFunc.Subqueryable<SubTable>().Where(r => r.RoomID == ru.RoomID && SqlFunc.Equals(r.RoomUserType, "业主") && SqlFunc.Equals(r.RoomUserType, "业主")).Select(s => s.RoomerName)
+            }).OrderBy((r) => r.RoomNumber, type: OrderByType.Desc).ToPageListAsync(1, 2).Wait();
 
             GetInstance().Updateable<Student>().UpdateColumns(it =>
             new Student()
@@ -62,11 +63,22 @@ SqlFunc.Contains(u.BuildName, keyword) || SqlFunc.IsNullOrEmpty(keyword)))
             var list = GetInstance().Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id&&st.CreateTime==DateTime.Now.AddDays(-1)
             })
-      .Where(st => st.Name == "jack").ToList();
+           .Where(st => st.Name == "jack").ToList();
 
 
             GetInstance().Updateable<BugStudent>().Where(it => true).UpdateColumns(it => new BugStudent() { Float = 11 }).ExecuteCommand();
-           var reslut= GetInstance().Queryable<BugStudent>().ToList();
+            var reslut = GetInstance().Queryable<BugStudent>().ToList();
+
+            var list2 = GetInstance().Queryable<Brand, VendorAndBrand>((b, vb) => new object[] {
+                JoinType.Left,b.Id == vb.BrandId
+            })
+          .Where((b) => b.BrandType == 1).Select((b) => b).ToList();
+
+
+            var list3 = GetInstance().Queryable<Brand, VendorAndBrand>((b, vb) =>
+               b.Id == vb.BrandId)
+.          Where((b) => b.BrandType == 1).Select((b) => b).ToList();
+
         }
 
 
