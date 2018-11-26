@@ -425,7 +425,7 @@ namespace SqlSugar
                 var parameters = InsertBuilder.Parameters;
                 if (parameters == null)
                     parameters = new List<SugarParameter>();
-                diffModel.AfterDate = GetDiffTable(sql,result);
+                diffModel.AfterData = GetDiffTable(sql,result);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);

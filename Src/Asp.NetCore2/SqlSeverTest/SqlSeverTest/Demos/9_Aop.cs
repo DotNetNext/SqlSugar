@@ -50,7 +50,7 @@ namespace OrmTest.Demo
             db.Aop.OnDiffLogEvent = it =>
             {
                 var editBeforeData = it.BeforeData;
-                var editAfterData = it.AfterDate;
+                var editAfterData = it.AfterData;
                 var sql = it.Sql;
                 var parameter = it.Parameters;
                 var data = it.BusinessData;
