@@ -247,14 +247,14 @@ namespace SqlSugar
         #endregion
 
         #region Create Instance
-        protected ISugarQueryable<T> CreateQueryable<T>() 
+        protected ISugarQueryable<T> CreateQueryable<T>()
         {
             ISugarQueryable<T> result = InstanceFactory.GetQueryable<T>(this.CurrentConnectionConfig);
             return CreateQueryable(result);
         }
-        protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result) 
+        protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result)
         {
-            Check.Exception(typeof(T).IsClass()==false|| typeof(T).GetConstructors().Length==0, "Queryable<{0}> Error ,{0} is invalid , need is a class,and can new().", typeof(T).Name);
+            Check.Exception(typeof(T).IsClass() == false || typeof(T).GetConstructors().Length == 0, "Queryable<{0}> Error ,{0} is invalid , need is a class,and can new().", typeof(T).Name);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(CurrentConnectionConfig);
             result.Context = this.Context;
             result.SqlBuilder = sqlBuilder;
@@ -309,7 +309,7 @@ namespace SqlSugar
             return result;
         }
 
-        protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)  
+        protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
@@ -322,13 +322,13 @@ namespace SqlSugar
                 queryable.SqlBuilder.QueryBuilder.Parameters.AddRange(paramters);
             }
         }
-        protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)  
+        protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)
         {
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
             queryable.SqlBuilder.QueryBuilder.EasyJoinInfos = this.GetEasyJoinInfo(joinExpression, ref shortName, queryable.SqlBuilder, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            queryable.SqlBuilder.QueryBuilder.JoinExpression=joinExpression;
+            queryable.SqlBuilder.QueryBuilder.JoinExpression = joinExpression;
         }
         #endregion
 
@@ -340,6 +340,8 @@ namespace SqlSugar
             ILambdaExpressions expressionContext = sqlBuilder.QueryBuilder.LambdaExpressions;
             expressionContext.MappingColumns = this.Context.MappingColumns;
             expressionContext.MappingTables = this.Context.MappingTables;
+            if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null)
+                expressionContext.SqlFuncServices = this.Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             expressionContext.Resolve(joinExpression, ResolveExpressType.Join);
             int i = 0;
             var joinArray = MergeJoinArray(expressionContext.Result.GetResultArray());
