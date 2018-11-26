@@ -266,7 +266,7 @@ namespace SqlSugar
                         method = isNullableType ? getConvertDouble : getDouble;
                     else
                         method = isNullableType ? getConvertFloat : getFloat;
-                    if (dbTypeName == "float" && isNullableType && bindProperyTypeName == "single") {
+                    if (dbTypeName.Equals("float",StringComparison.CurrentCultureIgnoreCase) && isNullableType && bindProperyTypeName.Equals("single",StringComparison.CurrentCultureIgnoreCase)) {
                         method = getConvertDoubleToFloat;
                     }
                     break;
