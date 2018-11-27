@@ -484,8 +484,21 @@ namespace SqlSugar
                     }
                     result.Add(item);
                 }
+                return result;
             }
-            return result;
+            else {
+                DiffLogTableInfo diffTable = new DiffLogTableInfo();
+                diffTable.TableName = this.EntityInfo.DbTableName;
+                diffTable.TableDescription = this.EntityInfo.TableDescription;
+                diffTable.Columns = this.EntityInfo.Columns.Where(it => it.IsIgnore == false).Select(it => new DiffLogColumnInfo()
+                {
+                    ColumnDescription = it.ColumnDescription,
+                    ColumnName = it.DbColumnName,
+                    Value = it.PropertyInfo.GetValue(this.InsertObjs.Last(), null)
+                }).ToList();
+                return new List<DiffLogTableInfo>() { diffTable };
+            }
+           
         }
         #endregion
     }
