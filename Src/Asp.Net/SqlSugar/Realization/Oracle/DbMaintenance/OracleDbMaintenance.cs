@@ -257,19 +257,19 @@ namespace SqlSugar
             }
             return true;
         }
-        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true)
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
             if (!isCache)
                 return GetColumnInfosByTableName(tableName);
             else
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                    () =>
-                    {
-                        return GetColumnInfosByTableName(tableName);
+                return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                        () =>
+                        {
+                            return GetColumnInfosByTableName(tableName);
 
-                    });
+                        });
         }
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
@@ -282,7 +282,7 @@ namespace SqlSugar
                 this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 List<DbColumnInfo> result = new List<DbColumnInfo>();
                 var schemaTable = reader.GetSchemaTable();
-                foreach (DataRow row in schemaTable.Rows)
+                foreach (System.Data.DataRow row in schemaTable.Rows)
                 {
                     DbColumnInfo column = new DbColumnInfo()
                     {
@@ -330,7 +330,7 @@ namespace SqlSugar
                               string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
                               var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                               this.Context.Ado.IsEnableLogEvent = false;
-                              var pks = this.Context.Ado.SqlQuery<string>(sql,new { tableName=tableName.ToUpper() });
+                              var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper() });
                               this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                               return pks;
                           });
@@ -350,7 +350,7 @@ namespace SqlSugar
                                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                                return pks;
                            });
-            return comments.HasValue() ? comments.First(it=>it.DbColumnName.Equals(filedName,StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
+            return comments.HasValue() ? comments.First(it => it.DbColumnName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
 
         }
 
@@ -361,6 +361,10 @@ namespace SqlSugar
                 foreach (var item in columns)
                 {
                     if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
+                    {
+                        item.Length = 50;
+                    }
+                    if (item.DataType == "varchar" && item.Length == 0)
                     {
                         item.Length = 50;
                     }
