@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
+using Npgsql;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections;
@@ -880,6 +881,134 @@ namespace SqlSugar
                 ds = new DataSet();
             }
             using (OracleDataReader dr = command.ExecuteReader())
+            {
+                do
+                {
+                    var dt = new DataTable();
+                    var columns = dt.Columns;
+                    var rows = dt.Rows;
+                    for (int i = 0; i < dr.FieldCount; i++)
+                    {
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.ContainsKey(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    }
+
+                    while (dr.Read())
+                    {
+                        DataRow daRow = new DataRow();
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            if (!daRow.ContainsKey(columns[i].ColumnName))
+                                daRow.Add(columns[i].ColumnName, dr.GetValue(i));
+                        }
+                        dt.Rows.Add(daRow);
+                    }
+                    ds.Tables.Add(dt);
+                } while (dr.NextResult());
+            }
+        }
+    }
+
+    /// <summary>
+    /// 数据填充器
+    /// </summary>
+    public class NpgsqlDataAdapter : IDataAdapter
+    {
+        private NpgsqlCommand command;
+        private string sql;
+        private NpgsqlConnection _sqlConnection;
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="command"></param>
+        public NpgsqlDataAdapter(NpgsqlCommand command)
+        {
+            this.command = command;
+        }
+
+        public NpgsqlDataAdapter()
+        {
+
+        }
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="_sqlConnection"></param>
+        public NpgsqlDataAdapter(string sql, NpgsqlConnection _sqlConnection)
+        {
+            this.sql = sql;
+            this._sqlConnection = _sqlConnection;
+        }
+
+        /// <summary>
+        /// SelectCommand
+        /// </summary>
+        public NpgsqlCommand SelectCommand
+        {
+            get
+            {
+                if (this.command == null)
+                {
+                    this.command = new NpgsqlCommand(this.sql, this._sqlConnection);
+                }
+                return this.command;
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="dt"></param>
+        public void Fill(DataTable dt)
+        {
+            if (dt == null)
+            {
+                dt = new DataTable();
+            }
+            var columns = dt.Columns;
+            var rows = dt.Rows;
+            using (NpgsqlDataReader dr = command.ExecuteReader())
+            {
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string name = dr.GetName(i).Trim();
+                    if (!columns.ContainsKey(name))
+                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                }
+
+                while (dr.Read())
+                {
+                    DataRow daRow = new DataRow();
+                    for (int i = 0; i < columns.Count; i++)
+                    {
+                        if (!daRow.ContainsKey(columns[i].ColumnName))
+                            daRow.Add(columns[i].ColumnName, dr.GetValue(i));
+                    }
+                    dt.Rows.Add(daRow);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Fill(DataSet ds)
+        {
+            if (ds == null)
+            {
+                ds = new DataSet();
+            }
+            using (NpgsqlDataReader dr = command.ExecuteReader())
             {
                 do
                 {
