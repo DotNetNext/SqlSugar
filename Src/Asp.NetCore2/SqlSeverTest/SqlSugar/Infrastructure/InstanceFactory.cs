@@ -207,6 +207,10 @@ namespace SqlSugar
             {
                 return new OracleInsertable<T>();
             }
+            else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
+            {
+                return new PostgreSQLInserttable<T>();
+            }
             else
             {
                 return new InsertableProvider<T>();

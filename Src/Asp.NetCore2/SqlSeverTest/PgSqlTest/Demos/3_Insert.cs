@@ -63,8 +63,8 @@ namespace OrmTest.Demo
 
             var dt = new Dictionary<string, object>();
             dt.Add("name", "1");
-            dt.Add("CreateTime", null);
-            var t66 = db.Insertable(dt).AS("student").ExecuteReturnIdentity();
+            dt.Add("CreateTime", DateTime.Now);
+            var t66 = db.Insertable(dt).AS("student").ExecuteCommand();
         }
     }
 }

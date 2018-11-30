@@ -43,7 +43,7 @@ namespace SqlSugar
 
         public override string GetNoTranslationColumnName(string name)
         {
-            return name.ToLower();
+            return name.TrimEnd(Convert.ToChar(SqlTranslationRight)).TrimStart(Convert.ToChar(SqlTranslationLeft)).ToLower();
         }
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {

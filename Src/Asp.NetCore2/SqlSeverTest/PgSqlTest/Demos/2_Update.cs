@@ -42,7 +42,7 @@ namespace OrmTest.Demo
 
             //Re Set Value
             var t8 = db.Updateable(updateObj)
-                .ReSetValue(it => it.Name == (it.Name + 1)).ExecuteCommand();
+                .ReSetValue(it => it.Name=="xx").ExecuteCommand();
 
             //Where By Expression
             var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
