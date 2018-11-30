@@ -18,14 +18,14 @@ namespace OrmTest.Demo
                 UniqueMethodName = "MyToString",
                 MethodValue = (expInfo, dbType, expContext) =>
                 {
-                    return string.Format("CAST({0} AS VARCHAR(MAX))", expInfo.Args[0].MemberName);
+                    return string.Format("CAST({0} AS VARCHAR)", expInfo.Args[0].MemberName);
                 }
             });
 
             var config = new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.SqlServer,
+                DbType = DbType.PostgreSQL,
                 IsAutoCloseConnection = true,
                 ConfigureExternalServices = new ConfigureExternalServices()
                 {
