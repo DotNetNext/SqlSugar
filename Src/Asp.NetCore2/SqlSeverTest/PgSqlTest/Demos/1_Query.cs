@@ -140,7 +140,7 @@ namespace OrmTest.Demo
             var student1 = db.Queryable<Student>().InSingle(1);
 
             //get SimpleClient
-            var sdb = db.SimpleClient;
+            var sdb = db.GetSimpleClient();
             var student2 = sdb.GetById<Student>(1);
             sdb.DeleteById<Student>(1);
             sdb.Insert(new Student() { Name = "xx" });
@@ -154,42 +154,7 @@ namespace OrmTest.Demo
 
         private static void StoredProcedure()
         {
-            var db = GetInstance();
-            //1. no result 
-            db.Ado.UseStoredProcedure(() =>
-            {
-                string spName = "sp_help";
-                var getSpReslut = db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-            });
-
-            //2. has result 
-            var result = db.Ado.UseStoredProcedure<dynamic>(() =>
-             {
-                 string spName = "sp_help";
-                 return db.Ado.SqlQueryDynamic(spName, new { objname = "student" });
-             });
-
-            //2. has output 
-            object outPutValue;
-            var outputResult = db.Ado.UseStoredProcedure<dynamic>(() =>
-            {
-                string spName = "sp_school";
-                var p1 = new SugarParameter("@p1", "1");
-                var p2 = new SugarParameter("@p2", null, true);//isOutput=true
-                var dbResult = db.Ado.SqlQueryDynamic(spName, new SugarParameter[] { p1, p2 });
-                outPutValue = p2.Value;
-                return dbResult;
-            });
-
-
-            //3
-            var dt = db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { p1 = 1, p2 = 2 });
-
-
-            var p11 = new SugarParameter("@p1", "1");
-            var p22 = new SugarParameter("@p2", null, true);//isOutput=true
-            //4
-            var dt2 = db.Ado.UseStoredProcedure().SqlQuery<School>("sp_school", p11, p22);
+            
         }
         private static void Tran()
         {

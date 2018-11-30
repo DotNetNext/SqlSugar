@@ -34,6 +34,12 @@ namespace SqlSugar
                 return "select current_date";
             }
         }
+        public override string GetTranslationColumnName(string propertyName)
+        {
+            if (propertyName.Contains(SqlTranslationLeft)) return propertyName;
+            else
+                return SqlTranslationLeft + propertyName.ToLower() + SqlTranslationRight;
+        }
 
         public override string GetNoTranslationColumnName(string name)
         {
