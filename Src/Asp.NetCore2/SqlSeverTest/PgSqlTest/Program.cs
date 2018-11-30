@@ -20,6 +20,9 @@ namespace OrmTest
            // Demo.CodeFirst.Init();
           //  Demo.Aop.Init();
             Demo.Query.Init();
+            Demo.Insert.Init();
+            Demo.Delete.Init();
+            Demo.Update.Init();
             Demo.MasterSlave.Init();
             Demo.SharedConnection.Init();
             Demo.ExtSqlFun.Init();
