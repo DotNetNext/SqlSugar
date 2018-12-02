@@ -15,7 +15,7 @@
     <PackageReference Include="MySql.Data" Version="6.10.4" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Npgsql" Version="3.2.7" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.12.0-beta2" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.18.3" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
