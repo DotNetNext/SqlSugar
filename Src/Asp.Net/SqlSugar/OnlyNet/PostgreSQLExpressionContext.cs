@@ -11,12 +11,18 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotImplementedException();
+                var message = ErrorMessage.GetThrowMessage(
+             "SqlSugar PostGreSQL only support.NET CORE",
+             "SqlSugar使用 PostGreSQL只支持.NET CORE");
+                throw new Exception(message);
             }
 
             set
             {
-                throw new NotImplementedException();
+                var message = ErrorMessage.GetThrowMessage(
+                     "SqlSugar PostGreSQL only support.NET CORE",
+                     "SqlSugar使用 PostGreSQL只支持.NET CORE");
+                throw new Exception(message);
             }
         }
     }
