@@ -11,7 +11,8 @@ namespace SqlSugar
         private static bool IsTryJsonNet = false;
         private static bool IsTryMySqlData = false;
         private static bool IsTrySqlite = false;
-        private static bool IsTryOracle = true;
+        private static bool IsTryOracle = false;
+        private static bool IsTryPgSql = false;
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
@@ -52,7 +53,22 @@ namespace SqlSugar
 
         public static void PostgreSQL()
         {
-            
+            if (!IsTryPgSql)
+            {
+                try
+                {
+                    PostgreSQLProvider db = new PostgreSQLProvider();
+                    var conn = db.GetAdapter();
+                    IsTryPgSql = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to Npgsql 3.2.7",
+                     "你需要引用 Npgsql 3.2.7及以上版本");
+                    throw new Exception(message);
+                }
+            }
         }
 
         public static void TryOracle()
