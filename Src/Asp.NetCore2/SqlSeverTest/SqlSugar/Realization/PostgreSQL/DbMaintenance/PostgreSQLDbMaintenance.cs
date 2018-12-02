@@ -194,9 +194,9 @@ namespace SqlSugar
 
         protected override string IsAnyColumnRemarkSql => throw new NotSupportedException();
 
-        protected override string AddTableRemarkSql => "comment on {0} user is '{1}'";
+        protected override string AddTableRemarkSql => "comment on table {0} is '{1}'";
 
-        protected override string DeleteTableRemarkSql => "comment on {0} user is ''";
+        protected override string DeleteTableRemarkSql => "comment on table {0} is ''";
 
         protected override string IsAnyTableRemarkSql => throw new NotSupportedException();
         #endregion
