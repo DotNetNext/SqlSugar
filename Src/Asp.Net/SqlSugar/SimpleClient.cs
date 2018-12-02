@@ -80,7 +80,7 @@ namespace SqlSugar
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
         }
-        public bool InsertRange<T>(List<T>[] insertObjs) where T : class, new()
+        public bool InsertRange<T>(List<T> insertObjs) where T : class, new()
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
         }
@@ -89,6 +89,10 @@ namespace SqlSugar
             return this.Context.Updateable(updateObj).ExecuteCommand() > 0;
         }
         public bool UpdateRange<T>(T[] updateObjs) where T : class, new()
+        {
+            return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
+        }
+        public bool UpdateRange<T>(List<T> updateObjs) where T : class, new()
         {
             return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
         }
@@ -193,7 +197,7 @@ namespace SqlSugar
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
         }
-        public bool InsertRange(List<T>[] insertObjs)
+        public bool InsertRange(List<T> insertObjs)
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
         }
@@ -202,6 +206,10 @@ namespace SqlSugar
             return this.Context.Updateable(updateObj).ExecuteCommand() > 0;
         }
         public bool UpdateRange(T [] updateObjs)
+        {
+            return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
+        }
+        public bool UpdateRange(List<T> updateObjs)
         {
             return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
         }
