@@ -12,7 +12,7 @@ namespace OrmTest.Models
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
-        [SugarColumn(Length = 50)]
+        [SugarColumn(Length = 50,IsNullable =true)]
         public string Name { get; set; }
     }
 }

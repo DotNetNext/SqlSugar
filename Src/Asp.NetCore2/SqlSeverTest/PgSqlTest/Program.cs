@@ -26,7 +26,7 @@ namespace OrmTest
             Demo.MasterSlave.Init();
             Demo.SharedConnection.Init();
             Demo.ExtSqlFun.Init();
-          //  Demo.QueryableView.Init();
+            //Demo.QueryableView.Init();
             Demo.AttributeDemo.Init();
             Demo.Mapper.Init();
             Demo.ExtEntity.Init();

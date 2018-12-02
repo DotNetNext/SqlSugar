@@ -13,9 +13,11 @@ namespace OrmTest.Models
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "ID")]
         public int Id { get; set; }
+        [SugarColumn(IsNullable =true)]
         public int? SchoolId { get; set; }
-        [SugarColumn(Length =50)]
+        [SugarColumn(Length =50,IsNullable =true)]
         public string Name { get; set; }
+        [SugarColumn(IsNullable = true)]
         public DateTime? CreateTime { get; set; }
         [SugarColumn(IsIgnore=true)]
         public int TestId { get; set; }

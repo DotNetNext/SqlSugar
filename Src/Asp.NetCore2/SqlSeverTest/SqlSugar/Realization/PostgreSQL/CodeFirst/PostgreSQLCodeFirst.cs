@@ -14,7 +14,7 @@ namespace SqlSugar
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.HasValue())
             {
-                foreach (var item in entityInfo.Columns)
+                foreach (var item in entityInfo.Columns.Where(it=>it.IsIgnore==false))
                 {
                     DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
