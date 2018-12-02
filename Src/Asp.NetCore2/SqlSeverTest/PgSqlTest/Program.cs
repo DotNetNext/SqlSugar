@@ -17,7 +17,7 @@ namespace OrmTest
         static void Main(string[] args)
         {
 
-           // Demo.CodeFirst.Init();
+            Demo.CodeFirst.Init();
             Demo.Aop.Init();
             Demo.Query.Init();
             Demo.Insert.Init();
