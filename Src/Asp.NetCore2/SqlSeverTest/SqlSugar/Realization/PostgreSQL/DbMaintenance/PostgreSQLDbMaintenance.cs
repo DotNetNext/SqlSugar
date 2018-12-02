@@ -192,16 +192,36 @@ namespace SqlSugar
 
         protected override string DeleteColumnRemarkSql => "comment on column {1}.{0} is ''";
 
-        protected override string IsAnyColumnRemarkSql => "";
+        protected override string IsAnyColumnRemarkSql => throw new NotSupportedException();
 
         protected override string AddTableRemarkSql => "comment on {0} user is '{1}'";
 
         protected override string DeleteTableRemarkSql => "comment on {0} user is ''";
 
-        protected override string IsAnyTableRemarkSql => "";
+        protected override string IsAnyTableRemarkSql => throw new NotSupportedException();
         #endregion
 
         #region Methods
+        public override bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+
+                }
+            }
+            //table remak
+            if (entity.TableDescription != null)
+            {
+                db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+            }
+            return true;
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
@@ -236,6 +256,11 @@ namespace SqlSugar
                 if (dataType == "varchar" && item.Length == 0)
                 {
                     item.Length = 1;
+                }
+                if (dataType == "uuid")
+                {
+                    item.Length = 50;
+                    dataType = "varchar";
                 }
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
