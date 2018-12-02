@@ -13,17 +13,19 @@
     <copyright>Copyright 2016</copyright>
     <tags>Asp.net core orm</tags>
     <dependencies>
-           <group targetFramework=".NETStandard2.0">
-           <dependency id="System.Data.Common" version="4.3.0" />
-           <dependency id="System.Data.SqlClient" version="4.4.0" />
-           <dependency id="Newtonsoft.Json" version="10.0.3" />
-           <dependency id="Microsoft.Data.Sqlite" version="2.0.0" />
-           <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
-           <dependency id="MySql.Data" version="6.10.4" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Data.Common" version="4.3.0" />
+        <dependency id="System.Data.SqlClient" version="4.4.0" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="Microsoft.Data.Sqlite" version="2.0.0" />
+        <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
+        <dependency id="MySql.Data" version="6.10.4" />
+        <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
+        <dependency id="Npgsql" version="3.2.7" />
       </group>
     </dependencies>
   </metadata>
   <files>
-   <file src="C:\NugetCore\SqlSugar.dll" target="lib\netstandard2.0"></file>
+    <file src="C:\NugetCore\SqlSugar.dll" target="lib\netstandard2.0"></file>
   </files>
 </package>
