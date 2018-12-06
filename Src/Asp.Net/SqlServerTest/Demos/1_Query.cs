@@ -369,6 +369,10 @@ namespace OrmTest.Demo
             var test4 = db.Queryable<DataTestInfo2>().Select(it => new { b=it.Bool1 }).ToSql();
             DateTime? result = DateTime.Now;
             var test5 = db.Queryable<Student>().Where(it=>it.CreateTime> result.Value.Date).ToList();
+
+            var test6 = db.Queryable<DataTestInfo2>().Where(it => SqlFunc.HasValue(it.Bool2)==true && SqlFunc.HasValue(it.Bool2)==true).ToList();
+            var test7 = db.Queryable<DataTestInfo2>().Where(it => SqlFunc.HasValue(it.Bool1) && SqlFunc.HasValue(it.Bool1)).ToList();
+            var test8 = db.Queryable<Student>().Where(it => SqlFunc.HasValue(it.SchoolId) && SqlFunc.HasValue(it.SchoolId)).ToList();
         }
         public static void Page()
         {
