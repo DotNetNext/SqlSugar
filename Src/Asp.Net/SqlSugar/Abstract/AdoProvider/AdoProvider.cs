@@ -59,7 +59,7 @@ namespace SqlSugar
         public virtual Action<string, SugarParameter[]> LogEventCompleted { get; set; }
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
         protected virtual Func<string,string> FormatSql { get; set; }
-        public virtual Action<Exception> ErrorEvent { get; set; }
+        public virtual Action<SqlSugarException> ErrorEvent { get; set; }
         public virtual Action<DiffLogModel> DiffLogEvent { get; set; }
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
@@ -300,7 +300,7 @@ namespace SqlSugar
             catch (Exception ex)
             {
                 if (ErrorEvent != null)
-                    ErrorEvent(ex);
+                    ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
             }
             finally
@@ -333,7 +333,7 @@ namespace SqlSugar
             catch (Exception ex)
             {
                 if (ErrorEvent != null)
-                    ErrorEvent(ex);
+                    ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
             }
         }
@@ -360,7 +360,7 @@ namespace SqlSugar
             catch (Exception ex)
             {
                 if (ErrorEvent != null)
-                    ErrorEvent(ex);
+                    ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
             }
             finally
@@ -390,7 +390,7 @@ namespace SqlSugar
             catch (Exception ex)
             {
                 if (ErrorEvent != null)
-                    ErrorEvent(ex);
+                    ExecuteErrorEvent(sql,parameters,ex);
                 throw ex;
             }
             finally
@@ -785,6 +785,11 @@ namespace SqlSugar
             var sqlLower = sql.ToLower();
             var result = Regex.IsMatch(sqlLower, "[ ]*select[ ]") && !Regex.IsMatch(sqlLower, "[ ]*insert[ ]|[ ]*update[ ]|[ ]*delete[ ]");
             return result;
+        }
+
+        private void ExecuteErrorEvent(string sql, SugarParameter[] parameters, Exception ex)
+        {
+            ErrorEvent(new SqlSugarException(this.Context,ex, sql, parameters));
         }
         #endregion
     }

@@ -323,7 +323,7 @@ namespace SqlSugar
             var isAny = invalidTypes.Contains(bindProperyTypeName);
             if (isAny)
             {
-                throw new UtilExceptions(string.Format("{0} can't  convert {1} to {2}", propertyName, validPropertyType, bindProperyTypeName));
+                throw new SqlSugarException(string.Format("{0} can't  convert {1} to {2}", propertyName, validPropertyType, bindProperyTypeName));
             }
         }
         #endregion
