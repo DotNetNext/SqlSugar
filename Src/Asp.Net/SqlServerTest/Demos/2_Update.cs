@@ -57,7 +57,7 @@ namespace OrmTest.Demo
             //Update Student set Name='jack' Where Id=1
 
             //Column is null no update
-            db.Updateable(updateObj).Where(true).ExecuteCommand();
+            db.Updateable(updateObj).IgnoreColumns(ignoreAllNullColumns:true).ExecuteCommand();
 
             //sql
             db.Updateable(updateObj).Where("id=@x",new { x="1"}).ExecuteCommand();
