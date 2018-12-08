@@ -260,7 +260,7 @@ namespace OrmTest.Demo
             var list = db.Queryable<Student, School>((st, sc) => new object[] {
               JoinType.Left,st.SchoolId==sc.Id
             })
-            .Where((st, sc) => sc.Id == 1)
+            .Where((st, sc) => sc.Id == 1&&st.CreateTime.Value.Date==DateTime.Now.Date)
             .Where((st, sc) => st.Id == 1)
             .Where((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
 
