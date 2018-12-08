@@ -82,6 +82,17 @@ namespace OrmTest.Demo
             dt.Add("name", null);
             dt.Add("createTime", DateTime.Now);
             var t66 = db.Updateable(dt).AS("student").WhereColumns("id").With(SqlWith.UpdLock).ExecuteCommand();
+
+
+
+            var dt2 = new Dictionary<string, object>();
+            dt2.Add("id", 2);
+            dt2.Add("name", null);
+            dt2.Add("createTime", DateTime.Now);
+            var dtList = new List<Dictionary<string, object>>();
+            dtList.Add(dt);
+            dtList.Add(dt2);
+            var t666 = db.Updateable(dtList).AS("student").WhereColumns("id").With(SqlWith.UpdLock).ExecuteCommand();
         }
     }
 }
