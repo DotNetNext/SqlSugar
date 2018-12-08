@@ -81,7 +81,7 @@ namespace OrmTest.Demo
             dt.Add("id", 1);
             dt.Add("name", null);
             dt.Add("createTime", DateTime.Now);
-            var t66 = db.Updateable(dt).AS("student").With(SqlWith.UpdLock).ExecuteCommand();
+            var t66 = db.Updateable(dt).AS("student").WhereColumns("id").With(SqlWith.UpdLock).ExecuteCommand();
         }
     }
 }

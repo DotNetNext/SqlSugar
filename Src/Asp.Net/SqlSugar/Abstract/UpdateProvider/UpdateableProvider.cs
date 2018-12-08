@@ -160,6 +160,22 @@ namespace SqlSugar
             }
             return this;
         }
+        public IUpdateable<T> WhereColumns(string columnName)
+        {
+            if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
+            this.WhereColumnList.Add(columnName);
+            return this;
+        }
+
+        public IUpdateable<T> WhereColumns(string [] columnNames)
+        {
+            if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
+            foreach (var columnName in columnNames)
+            {
+                this.WhereColumnList.Add(columnName);
+            }
+            return this;
+        }
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
