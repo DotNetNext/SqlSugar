@@ -35,6 +35,7 @@ namespace SqlSugar
                 _DbMehtods = value;
             }
         }
+        public int SubQueryIndex { get; set; }
         public int Index { get; set; }
         public int ParameterIndex { get; set; }
         public string SingleTableNameSubqueryShortName{ get;  set; }

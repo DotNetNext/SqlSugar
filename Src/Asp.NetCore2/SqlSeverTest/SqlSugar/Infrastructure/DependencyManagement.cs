@@ -51,7 +51,7 @@ namespace SqlSugar
             }
         }
 
-        public static void PostgreSQL()
+        public static void TryPostgreSQL()
         {
             if (!IsTryPgSql)
             {

@@ -60,20 +60,20 @@ namespace SqlSugar
             switch (type)
             {
                 case DateType.Year:
-                    return string.Format("(CAST(TO_CHAR({0},'yyyy') AS NUMBER)",parameter.MemberName);
+                    return string.Format("(CAST(TO_CHAR({0},'yyyy') AS NUMBER))", parameter.MemberName);
                 case DateType.Month:
-                    return string.Format("(CAST(TO_CHAR({0},'mm') AS NUMBER)", parameter.MemberName);
+                    return string.Format("(CAST(TO_CHAR({0},'mm') AS NUMBER))", parameter.MemberName);
                 case DateType.Hour:
-                    return string.Format("(CAST(TO_CHAR({0},'hh24') AS NUMBER)", parameter.MemberName);
+                    return string.Format("(CAST(TO_CHAR({0},'hh24') AS NUMBER))", parameter.MemberName);
                 case DateType.Second:
-                    return string.Format("(CAST(TO_CHAR({0},'ss') AS NUMBER)", parameter.MemberName);
+                    return string.Format("(CAST(TO_CHAR({0},'ss') AS NUMBER))", parameter.MemberName);
                 case DateType.Minute:
-                    return string.Format("(CAST(TO_CHAR({0},'mi') AS NUMBER)", parameter.MemberName);
+                    return string.Format("(CAST(TO_CHAR({0},'mi') AS NUMBER))", parameter.MemberName);
                 case DateType.Millisecond:
-                    return string.Format("(CAST(TO_CHAR({0},'ff3') AS NUMBER)", parameter.MemberName);
+                    return string.Format("(CAST(TO_CHAR({0},'ff3') AS NUMBER))", parameter.MemberName);
                 case DateType.Day:
                 default:
-                    return string.Format("(CAST(TO_CHAR({0},'dd') AS NUMBER)", parameter.MemberName);
+                    return string.Format("(CAST(TO_CHAR({0},'dd') AS NUMBER))", parameter.MemberName);
             }
         }
         public override string DateAddByType(MethodCallExpressionModel model)

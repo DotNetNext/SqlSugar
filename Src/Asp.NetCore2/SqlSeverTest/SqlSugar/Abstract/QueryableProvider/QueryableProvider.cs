@@ -609,8 +609,8 @@ namespace SqlSugar
         {
             _RestoreMapping = false;
             totalNumber = this.Count();
-            var result = ToDataTablePage(pageIndex, pageSize);
             _RestoreMapping = true;
+            var result = ToDataTablePage(pageIndex, pageSize);
             return result;
         }
 
@@ -640,6 +640,7 @@ namespace SqlSugar
             _RestoreMapping = false;
             List<T> result = null;
             int count = this.Count();
+            _RestoreMapping = true;
             QueryBuilder.IsDisabledGobalFilter = UtilMethods.GetOldValue(QueryBuilder.IsDisabledGobalFilter, () =>
             {
                 QueryBuilder.IsDisabledGobalFilter = true;
@@ -650,7 +651,6 @@ namespace SqlSugar
 
             });
             totalNumber = count;
-            _RestoreMapping = true;
             return result;
         }
 

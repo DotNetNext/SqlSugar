@@ -6,6 +6,21 @@ namespace SqlSugar
 {
     public class OracleDbBind : DbBindProvider
     {
+        public override string GetDbTypeName(string csharpTypeName)
+        {
+            if (csharpTypeName == UtilConstants.ByteArrayType.Name)
+                return "blob";
+            if (csharpTypeName.ToLower() == "int32")
+                csharpTypeName = "int";
+            if (csharpTypeName.ToLower() == "int16")
+                csharpTypeName = "short";
+            if (csharpTypeName.ToLower() == "int64")
+                csharpTypeName = "long";
+            if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
+                csharpTypeName = "bool";
+            var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
+            return mappings.HasValue() ? mappings.First().Key : "varchar";
+        }
         public override string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();

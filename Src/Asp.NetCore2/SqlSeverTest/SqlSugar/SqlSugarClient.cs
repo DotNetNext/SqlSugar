@@ -38,7 +38,7 @@ namespace SqlSugar
                     DependencyManagement.TryOracle();
                     break;
                 case DbType.PostgreSQL:
-                    DependencyManagement.PostgreSQL();
+                    DependencyManagement.TryPostgreSQL();
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");

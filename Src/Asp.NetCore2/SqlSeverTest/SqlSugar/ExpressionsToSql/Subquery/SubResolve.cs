@@ -52,11 +52,15 @@ namespace SqlSugar
                     Check.Exception(true, "I'm sorry I can't parse the current expression");
                 }
             }
+            var subIndex = this.context.SubQueryIndex;
             while (currentExpression != null)
             {
                 var addItem = currentExpression.Object as MethodCallExpression;
                 if (addItem != null)
                     allMethods.Add(addItem);
+                if (subIndex==this.context.SubQueryIndex&&addItem !=null&&addItem.Arguments.HasValue()&&addItem.Arguments.Any(it=>it.ToString().Contains("Subqueryable()"))) {
+                    this.context.SubQueryIndex++;
+                }
                 currentExpression = addItem;
             }
         }
