@@ -51,7 +51,7 @@ namespace SqlSugar
             }
             var result = "MAX(" + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple) + ")";
             var selfParameterName = Context.GetTranslationColumnName(parametres.First().Name) + UtilConstants.Dot;
-            result = result.Replace(selfParameterName, string.Empty);
+            result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }
     }

@@ -42,7 +42,7 @@ namespace SqlSugar
             var argExp = exp.Arguments[0];
             var result = "GROUP BY " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
-            result = result.Replace(selfParameterName, string.Empty);
+            result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }
     }

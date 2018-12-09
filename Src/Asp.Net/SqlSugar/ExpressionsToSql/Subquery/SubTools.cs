@@ -32,6 +32,14 @@ namespace SqlSugar
                                                 };
         }
 
+        public static string GetSubReplace(ExpressionContext context)
+        {
+            if (context.SubQueryIndex == 0)
+                return string.Empty;
+            else
+                return "subTableIndex"+context.SubQueryIndex+".";
+        }
+
         public static List<ISubOperation> SubItemsConst = SubItems(null);
 
         public static string GetMethodValue(ExpressionContext context, Expression item, ResolveExpressType type)
