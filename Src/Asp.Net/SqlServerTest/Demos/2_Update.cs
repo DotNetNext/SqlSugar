@@ -93,6 +93,18 @@ namespace OrmTest.Demo
             dtList.Add(dt);
             dtList.Add(dt2);
             var t666 = db.Updateable(dtList).AS("student").WhereColumns("id").With(SqlWith.UpdLock).ExecuteCommand();
+
+
+            var t20 = db.Updateable<Student>().UpdateColumns(p => new Student()
+            {
+                SchoolId = SqlFunc.IIF(p.Id == 1, 2, 3)
+            }).Where(p => p.Id == 10000).ExecuteCommand();
+            var t21= db.Updateable<Student>().UpdateColumns(p => new Student()
+            {
+                SchoolId = SqlFunc.IF(p.Id==1).Return(1).End(p.Id)
+            }).Where(p => p.Id == 10000).ExecuteCommand();
+
+
         }
     }
 }
