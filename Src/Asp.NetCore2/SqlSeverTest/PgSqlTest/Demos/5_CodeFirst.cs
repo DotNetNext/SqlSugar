@@ -47,7 +47,7 @@ namespace OrmTest.Demo
                 InitKeyType = InitKeyType.Attribute 
             });
 
-            db.CodeFirst.InitTables(typeof(Student), typeof(School));
+            db.CodeFirst.SetStringDefaultLength(30).InitTables(typeof(Student), typeof(School));
 
             //Backup table
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));

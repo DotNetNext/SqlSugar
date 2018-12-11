@@ -5,6 +5,9 @@ using System.Text;
 
 namespace SqlSugar
 {
+    internal class PostgreSQLInserttable<T> :InsertableProvider<T> where T : class, new()
+    {
+    }
     internal class PostgreSQLExpressionContext : ExpressionContext, ILambdaExpressions
     {
         public SqlSugarClient Context
