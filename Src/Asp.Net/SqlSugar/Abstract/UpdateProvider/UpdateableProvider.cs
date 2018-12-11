@@ -274,7 +274,12 @@ namespace SqlSugar
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
             var expResult = UpdateBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
-            UpdateBuilder.WhereValues.Add(expResult.GetResultString());
+            var whereString = expResult.GetResultString();
+            if (expression.ToString().Contains("Subqueryable()"))
+            {
+                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+            }
+            UpdateBuilder.WhereValues.Add(whereString);
             return this;
         }
 
