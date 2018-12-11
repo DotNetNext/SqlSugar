@@ -184,6 +184,12 @@ namespace SqlSugar
             return this;
         }
 
+        public IInsertable<T> InsertColumns(string[] columns)
+        {
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => columns.Any(ig => ig.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase))).ToList();
+            return this;
+        }
+
         public IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod)
         {
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => insertColumMethod(it.PropertyName)).ToList();
