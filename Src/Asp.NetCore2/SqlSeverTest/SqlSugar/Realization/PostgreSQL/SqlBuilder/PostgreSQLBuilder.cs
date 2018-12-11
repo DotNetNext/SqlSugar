@@ -41,10 +41,10 @@ namespace SqlSugar
                 return SqlTranslationLeft + propertyName.ToLower() + SqlTranslationRight;
         }
 
-        public override string GetNoTranslationColumnName(string name)
-        {
-            return name.TrimEnd(Convert.ToChar(SqlTranslationRight)).TrimStart(Convert.ToChar(SqlTranslationLeft)).ToLower();
-        }
+        //public override string GetNoTranslationColumnName(string name)
+        //{
+        //    return name.TrimEnd(Convert.ToChar(SqlTranslationRight)).TrimStart(Convert.ToChar(SqlTranslationLeft)).ToLower();
+        //}
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
