@@ -166,7 +166,11 @@ namespace SqlSugar
         public IDeleteable<T> Where(Expression<Func<T, bool>> expression)
         {
             var expResult = DeleteBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
-            DeleteBuilder.WhereInfos.Add(expResult.GetResultString());
+            var whereString = expResult.GetResultString();
+            if (expression.ToString().Contains("Subqueryable()")){
+                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".",this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+            }
+            DeleteBuilder.WhereInfos.Add(whereString);
             return this;
         }
 

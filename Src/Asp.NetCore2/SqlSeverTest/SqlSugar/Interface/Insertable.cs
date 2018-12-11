@@ -23,6 +23,7 @@ namespace SqlSugar
         IInsertable<T> AS(string tableName);
         IInsertable<T> With(string lockString);
         IInsertable<T> InsertColumns(Expression<Func<T, object>> columns);
+        IInsertable<T> InsertColumns(string[] columns);
         IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod);
         IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IInsertable<T> IgnoreColumns(Func<string,bool> ignoreColumMethod);

@@ -75,6 +75,10 @@ namespace SqlSugar
 
         public virtual string GetNoTranslationColumnName(string name)
         {
+            if (name.Contains("="))
+            {
+               name=name.Split('=').First();
+            }
             if (!name.Contains(SqlTranslationLeft)) return name;
             return name == null ? string.Empty : Regex.Match(name, @".*" + "\\" + SqlTranslationLeft + "(.*?)" + "\\" + SqlTranslationRight + "").Groups[1].Value;
         }
