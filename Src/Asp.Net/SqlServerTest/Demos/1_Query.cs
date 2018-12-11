@@ -385,6 +385,8 @@ namespace OrmTest.Demo
             var test6 = db.Queryable<DataTestInfo2>().Where(it => SqlFunc.HasValue(it.Bool2)==true && SqlFunc.HasValue(it.Bool2)==true).ToList();
             var test7 = db.Queryable<DataTestInfo2>().Where(it => SqlFunc.HasValue(it.Bool1) && SqlFunc.HasValue(it.Bool1)).ToList();
             var test8 = db.Queryable<Student>().Where(it => SqlFunc.HasValue(it.SchoolId) && SqlFunc.HasValue(it.SchoolId)).ToList();
+            bool? b = false;
+            var test9 = db.Queryable<DataTestInfo2>().Where(it => it.Bool1 == b).ToList();
         }
         public static void Page()
         {

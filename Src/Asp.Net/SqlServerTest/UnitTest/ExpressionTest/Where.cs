@@ -82,7 +82,23 @@ namespace OrmTest.UnitTest
             var pars = expContext.Parameters;
             base.Check(value, pars, "( [Bool2] = @Bool20 )", new List<SugarParameter>() {
                 new SugarParameter("@Bool20",false)
-            }, "whereSingle30");
+            }, "whereSingle31");
+
+            whereSingle32();
+        }
+
+
+        private void whereSingle32()
+        {
+            bool? b = false;
+            Expression<Func<DataTestInfo2, bool>> exp = it => it.Bool1 == b;
+            SqlServerExpressionContext expContext = new SqlServerExpressionContext();
+            expContext.Resolve(exp, ResolveExpressType.WhereSingle);
+            var value = expContext.Result.GetString();
+            var pars = expContext.Parameters;
+            base.Check(value, pars, "( [Bool1] = @Bool10 )", new List<SugarParameter>() {
+                new SugarParameter("@Bool10",false)
+            }, "whereSingle32");
         }
 
         public string Get28(string a) {
