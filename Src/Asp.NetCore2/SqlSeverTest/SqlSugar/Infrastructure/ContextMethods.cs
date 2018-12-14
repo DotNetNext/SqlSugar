@@ -334,6 +334,7 @@ namespace SqlSugar
         public void RemoveCacheAll()
         {
             ReflectionInoHelper.RemoveAllCache();
+            InstanceFactory.RemoveCache();
         }
 
         public void RemoveCacheAll<T>()
