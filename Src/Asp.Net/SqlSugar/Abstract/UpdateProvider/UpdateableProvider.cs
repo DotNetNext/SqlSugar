@@ -31,6 +31,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
+        private Action RemoveCacheFunc { get; set; }
 
         public virtual int ExecuteCommand()
         {
@@ -318,8 +319,11 @@ namespace SqlSugar
 
         public IUpdateable<T> RemoveDataCache()
         {
-            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            this.RemoveCacheFunc = () =>
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            };
             return this;
         }
 
@@ -596,6 +600,9 @@ namespace SqlSugar
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);
+            }
+            if (this.RemoveCacheFunc != null) {
+                this.RemoveCacheFunc();
             }
         }
 

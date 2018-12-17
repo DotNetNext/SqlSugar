@@ -29,6 +29,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
+        private Action RemoveCacheFunc { get; set; }
 
 
         #region Core
@@ -214,8 +215,11 @@ namespace SqlSugar
 
         public IInsertable<T> RemoveDataCache()
         {
-            var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-            CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            this.RemoveCacheFunc = () =>
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
+            };
             return this;
         }
         public IInsertable<T> EnableDiffLogEvent(object businessData = null)
@@ -435,6 +439,9 @@ namespace SqlSugar
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);
+            }
+            if (this.RemoveCacheFunc != null) {
+                this.RemoveCacheFunc();
             }
         }
         private void Before(string sql)
