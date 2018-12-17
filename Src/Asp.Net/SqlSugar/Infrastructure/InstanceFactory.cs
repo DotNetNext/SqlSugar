@@ -11,6 +11,12 @@ namespace SqlSugar
         static Assembly assembly = Assembly.Load(UtilConstants.AssemblyName);
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 
+
+        public static void RemoveCache()
+        {
+            typeCache = new Dictionary<string, Type>();
+        }
+
         #region Queryable
         public static ISugarQueryable<T> GetQueryable<T>(ConnectionConfig currentConnectionConfig)
         {
