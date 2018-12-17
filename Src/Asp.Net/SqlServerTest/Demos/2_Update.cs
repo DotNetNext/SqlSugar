@@ -113,6 +113,8 @@ namespace OrmTest.Demo
 
             var t23= db.Updateable<Student>(new Student() { })
                 .Where(p => p.SchoolId == SqlFunc.Subqueryable<Student>().Where(s => s.SchoolId == p.Id).Select(s => s.Id)).ExecuteCommand();
+
+            var t24 = db.Updateable(new Student() { }).WhereColumns(it=>it.CreateTime).ExecuteCommand();
         }
     }
 }

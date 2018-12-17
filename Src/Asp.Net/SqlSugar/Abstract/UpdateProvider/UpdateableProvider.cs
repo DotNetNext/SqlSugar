@@ -17,6 +17,7 @@ namespace SqlSugar
         public UpdateBuilder UpdateBuilder { get; set; }
         public IAdo Ado { get { return Context.Ado; } }
         public T[] UpdateObjs { get; set; }
+        public bool UpdateParameterIsNull { get; set; }
         public bool IsMappingTable { get { return this.Context.MappingTables != null && this.Context.MappingTables.Any(); } }
         public bool IsMappingColumns { get { return this.Context.MappingColumns != null && this.Context.MappingColumns.Any(); } }
         public bool IsSingle { get { return this.UpdateObjs.Length == 1; } }
@@ -152,6 +153,7 @@ namespace SqlSugar
 
         public IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
+            Check.Exception(UpdateParameterIsNull==true, "Updateable<T>().Updateable is error,Use Updateable(obj).WhereColumns");
             var whereColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
