@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{489BB790-226C-4FAD-8D1E-51D72A7FF8E5}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionsDemo", "ExtensionsDemo\ExtensionsDemo.csproj", "{EBBA686A-C1F0-4823-85EB-32EB306ADD7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.Extensions.DataCache", "SqlSugar.Extensions.DataCache\SqlSugar.Extensions.DataCache.csproj", "{CDB72ABE-0336-4730-A195-ABF2611DEEAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetTest", "NugetTest\NugetTest.csproj", "{A7202527-A5CC-4F9B-B8F2-63520892F01D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{CDB72ABE-0336-4730-A195-ABF2611DEEAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDB72ABE-0336-4730-A195-ABF2611DEEAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDB72ABE-0336-4730-A195-ABF2611DEEAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7202527-A5CC-4F9B-B8F2-63520892F01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7202527-A5CC-4F9B-B8F2-63520892F01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7202527-A5CC-4F9B-B8F2-63520892F01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7202527-A5CC-4F9B-B8F2-63520892F01D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,5 +72,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EBBA686A-C1F0-4823-85EB-32EB306ADD7F} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
 		{CDB72ABE-0336-4730-A195-ABF2611DEEAA} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE9BE6D6-3952-4582-B65E-83E0E57FDC8A}
 	EndGlobalSection
 EndGlobal
