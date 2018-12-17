@@ -24,6 +24,7 @@ namespace SqlSugar
         public List<MappingColumn> MappingColumnList { get; set; }
         private List<string> IgnoreColumnNameList { get; set; }
         private List<string> WhereColumnList { get; set; }
+        private bool IsWhereColumns { get; set; }
         private bool IsOffIdentity { get; set; }
         private bool IsVersionValidation { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
@@ -153,6 +154,7 @@ namespace SqlSugar
 
         public IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
+            this.IsWhereColumns = true;
             Check.Exception(UpdateParameterIsNull==true, "Updateable<T>().Updateable is error,Use Updateable(obj).WhereColumns");
             var whereColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
@@ -394,6 +396,13 @@ namespace SqlSugar
         private void PreToSql()
         {
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
+            if (this.IsWhereColumns) {
+                foreach (var pkName in UpdateBuilder.PrimaryKeys)
+                {
+                    var isContains=this.UpdateBuilder.DbColumnInfoList.Select(it => it.DbColumnName.ToLower()).Contains(pkName.ToLower());
+                    Check.Exception(isContains == false, "Use UpdateColumns().WhereColumn() ,UpdateColumns need {0}", pkName);
+                }
+            }
             #region IgnoreColumns
             if (this.Context.IgnoreColumns != null && this.Context.IgnoreColumns.Any())
             {

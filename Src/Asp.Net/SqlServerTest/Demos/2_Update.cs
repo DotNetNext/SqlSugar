@@ -115,6 +115,10 @@ namespace OrmTest.Demo
                 .Where(p => p.SchoolId == SqlFunc.Subqueryable<Student>().Where(s => s.SchoolId == p.Id).Select(s => s.Id)).ExecuteCommand();
 
             var t24 = db.Updateable(new Student() { }).WhereColumns(it=>it.CreateTime).ExecuteCommand();
+
+            var t25 = db.Updateable(new Student() { }).UpdateColumns(it=> new { it.Name,it.CreateTime}).WhereColumns(it => it.CreateTime).ExecuteCommand();
+
+            var t26 = db.Updateable(new List<Student>() { new Student() { }, new Student() { } }).UpdateColumns(it => new { it.Name, it.CreateTime }).WhereColumns(it => it.CreateTime).ExecuteCommand();
         }
     }
 }
