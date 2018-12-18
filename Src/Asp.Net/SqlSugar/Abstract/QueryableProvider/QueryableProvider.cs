@@ -1313,6 +1313,7 @@ namespace SqlSugar
             asyncQueryableBuilder.PartitionByValue = this.QueryBuilder.PartitionByValue;
             asyncQueryableBuilder.JoinExpression = this.QueryBuilder.JoinExpression;
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
+            asyncQueryableBuilder.HavingInfos = this.QueryBuilder.HavingInfos;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
         }
         #endregion
