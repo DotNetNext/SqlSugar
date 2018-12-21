@@ -2,7 +2,7 @@
 
 In addition to EF, the most powerful ORM
 
-Support：MySql、SqlServer、Sqlite、Oracle
+Support：MySql、SqlServer、Sqlite、Oracle、postgresql
 
 ## Contactinfomation  
 Email:610262374@qq.com 
