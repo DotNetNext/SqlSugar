@@ -1006,9 +1006,19 @@ namespace SqlSugar
         {
             QueryBuilder.CheckExpression(expression, "OrderBy");
             var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
-            return this;
+            if ((expression as LambdaExpression).Body is NewExpression)
+            {
+                var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
+                var items = lamResult.GetResultString().Split(',').Where(it => it.HasValue()).Select(it=> it + UtilConstants.Space + type.ToString().ToUpper()).ToList();
+                OrderBy(string.Join(",",items));
+                return this;
+            }
+            else
+            {
+                var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
+                return this;
+            }
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
