@@ -106,6 +106,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectDefault.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubNotAny.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubTop.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAndIF.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWhereIF.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Subquerable.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWhere.cs" />
