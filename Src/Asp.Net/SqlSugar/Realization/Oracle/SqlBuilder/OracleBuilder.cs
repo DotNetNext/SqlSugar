@@ -34,8 +34,11 @@ namespace SqlSugar
         public override string SqlTranslationRight { get { return "\""; } }
         public override string GetTranslationTableName(string name)
         {
-            var result= base.GetTranslationTableName(name);
-            return result.ToUpper();
+            var result = base.GetTranslationTableName(name);
+            if (result.Contains("(") && result.Contains(")"))
+                return result;
+            else
+                return result.ToUpper();
         }
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {
