@@ -17,6 +17,7 @@ namespace SqlSugar
                                                     new SubWhere(){ Context=Context },
                                                     new SubWhereIF(){ Context=Context },
                                                     new SubAnd(){ Context=Context },
+                                                    new SubAndIF(){ Context=Context },
                                                     new SubAny(){ Context=Context },
                                                     new SubNotAny(){ Context=Context },
                                                     new SubBegin(){ Context=Context },

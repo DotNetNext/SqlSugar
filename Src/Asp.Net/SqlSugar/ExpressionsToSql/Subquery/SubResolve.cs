@@ -87,6 +87,16 @@ namespace SqlSugar
                  {
                      item = items.First(s => s is SubAnd);
                  }
+
+                 if (item is SubWhereIF && hasWhere == false)
+                 {
+                     hasWhere = true;
+                 }
+                 else if (item is SubWhereIF)
+                 {
+                     item = items.First(s => s is SubAndIF);
+                 }
+
                  item.Context = this.context;
                  item.Expression = exp;
                  return item;
