@@ -12,8 +12,8 @@ namespace ExtensionsDemo
     {
         public static void Init()
         {
-            //HttpRuntimeCache();
-            RedisCache();
+            HttpRuntimeCache();
+            //RedisCache();
 
         }
 

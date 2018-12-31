@@ -28,7 +28,7 @@ namespace SqlSugar
             result.IdentificationList.Add(queryBuilder.Take.ObjToString());
             result.IdentificationList.Add(queryBuilder.Skip.ObjToString());
             result.IdentificationList.Add(queryBuilder.IsCount.ObjToString());
-            result.IdentificationList.Add(queryBuilder.GetSelectValue.ObjToString().Length.ObjToString());
+            result.IdentificationList.Add(UtilMethods.GetMD5(queryBuilder.GetSelectValue.ObjToString()));
             if (queryBuilder.Parameters.HasValue())
             {
                 foreach (var item in queryBuilder.Parameters)
