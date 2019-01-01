@@ -484,7 +484,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> MergeTable()
         {
-            Check.Exception(this.MapperAction != null, "'Mapper’ needs to be written after ‘MergeTable’ ");
+            Check.Exception(this.MapperAction != null||this.MapperActionWithCache!=null, "'Mapper’ needs to be written after ‘MergeTable’ ");
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Queryable.Select Method .");
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             ToSqlBefore();
@@ -1006,9 +1006,19 @@ namespace SqlSugar
         {
             QueryBuilder.CheckExpression(expression, "OrderBy");
             var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-            OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
-            return this;
+            if ((expression as LambdaExpression).Body is NewExpression)
+            {
+                var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
+                var items = lamResult.GetResultString().Split(',').Where(it => it.HasValue()).Select(it=> it + UtilConstants.Space + type.ToString().ToUpper()).ToList();
+                OrderBy(string.Join(",",items));
+                return this;
+            }
+            else
+            {
+                var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
+                return this;
+            }
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
@@ -1313,6 +1323,7 @@ namespace SqlSugar
             asyncQueryableBuilder.PartitionByValue = this.QueryBuilder.PartitionByValue;
             asyncQueryableBuilder.JoinExpression = this.QueryBuilder.JoinExpression;
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
+            asyncQueryableBuilder.HavingInfos = this.QueryBuilder.HavingInfos;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
         }
         #endregion

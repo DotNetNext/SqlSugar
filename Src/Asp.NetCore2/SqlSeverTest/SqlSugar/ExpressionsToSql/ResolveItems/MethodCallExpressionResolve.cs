@@ -513,40 +513,6 @@ namespace SqlSugar
             return null;
         }
 
-        private static Dictionary<string, string> MethodMapping = new Dictionary<string, string>() {
-            { "ToString","ToString"},
-            { "ToInt32","ToInt32"},
-            { "ToInt16","ToInt32"},
-            { "ToInt64","ToInt64"},
-            { "ToDecimal","ToDecimal"},
-            { "ToDateTime","ToDate"},
-            { "ToBoolean","ToBool"},
-            { "ToDouble","ToDouble"},
-            { "Length","Length"},
-            { "Replace","Replace"},
-            { "Contains","Contains"},
-            { "ContainsArray","ContainsArray"},
-            { "EndsWith","EndsWith"},
-            { "StartsWith","StartsWith"},
-            { "HasValue","HasValue"},
-            { "Trim","Trim"},
-            { "Equals","Equals"},
-            { "ToLower","ToLower"},
-            { "ToUpper","ToUpper"},
-            { "Substring","Substring"},
-            { "DateAdd","DateAdd"}
-        };
-
-        private static Dictionary<string, DateType> MethodTimeMapping = new Dictionary<string, DateType>() {
-            { "AddYears",DateType.Year},
-            { "AddMonths",DateType.Month},
-            { "AddDays",DateType.Day},
-            { "AddHours",DateType.Hour},
-            { "AddMinutes",DateType.Minute},
-            { "AddSeconds",DateType.Second},
-            { "AddMilliseconds",DateType.Millisecond}
-        };
-
         private bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
         {
             return !isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains";

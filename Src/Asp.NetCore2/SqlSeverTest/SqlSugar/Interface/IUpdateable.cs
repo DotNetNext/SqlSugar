@@ -10,6 +10,8 @@ namespace SqlSugar
     public interface IUpdateable<T> where T : class, new()
     {
         UpdateBuilder UpdateBuilder { get; set; }
+        bool UpdateParameterIsNull { get; set; }
+
         int ExecuteCommand();
         bool ExecuteCommandHasChange();
         Task<int> ExecuteCommandAsync();

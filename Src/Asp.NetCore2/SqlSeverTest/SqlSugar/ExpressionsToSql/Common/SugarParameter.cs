@@ -25,14 +25,14 @@ namespace SqlSugar
             this.ParameterName = name;
             SettingDataType(type);
         }
-        public SugarParameter(string name, object value, Type type,ParameterDirection direction)
+        public SugarParameter(string name, object value, Type type, ParameterDirection direction)
         {
             this.Value = value;
             this.ParameterName = name;
             this.Direction = direction;
             SettingDataType(type);
         }
-        public SugarParameter(string name, object value, Type type, ParameterDirection direction,int size)
+        public SugarParameter(string name, object value, Type type, ParameterDirection direction, int size)
         {
             this.Value = value;
             this.ParameterName = name;
@@ -94,6 +94,10 @@ namespace SqlSugar
             else if (type == UtilConstants.DateTimeOffsetType)
             {
                 this.DbType = System.Data.DbType.DateTimeOffset;
+            }
+            else if (type == UtilConstants.TimeSpanType)
+            {
+                this.Value = this.Value.ToString();
             }
 
         }

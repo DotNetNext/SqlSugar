@@ -532,7 +532,9 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>() where T : class, new()
         {
-            return this.Context.Updateable(new T[] { new T() });
+            var result= this.Context.Updateable(new T[] { new T() });
+            result.UpdateParameterIsNull=true;
+            return result;
         }
         public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {

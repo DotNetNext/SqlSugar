@@ -280,5 +280,15 @@ namespace SqlSugar
             }
             return true;
         }
+
+        public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
+        {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            oldColumnName = this.SqlBuilder.GetTranslationColumnName(oldColumnName);
+            newColumnName = this.SqlBuilder.GetNoTranslationColumnName(newColumnName);
+            string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
     }
 }
