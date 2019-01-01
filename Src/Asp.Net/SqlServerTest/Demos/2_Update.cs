@@ -121,7 +121,7 @@ namespace OrmTest.Demo
             var t26 = db.Updateable(new List<Student>() { new Student() { }, new Student() { } }).UpdateColumns(it => new { it.Name, it.CreateTime }).WhereColumns(it => it.CreateTime).ExecuteCommand();
 
 
-            db.Updateable<Student>().UpdateColumns(it => new Student { SchoolId = GeneratePassword(2, 1), Name =it.Name+1, CreateTime = DateTime.Now.AddDays(1) }).Where(it => it.Id == 1).ExecuteCommand();
+            db.Updateable<Student>().UpdateColumns(it => new Student { SchoolId = GeneratePassword(2, 1), Name =SqlFunc.ToString(it.Name), CreateTime = DateTime.Now.AddDays(1) }).Where(it => it.Id == 1).ExecuteCommand();
         }
 
         private static int GeneratePassword(int v1, int v2)

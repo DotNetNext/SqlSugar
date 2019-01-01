@@ -60,6 +60,7 @@ namespace SqlSugar
             string fieldName = string.Empty;
             switch (parameter.Context.ResolveType)
             {
+                case ResolveExpressType.Update:
                 case ResolveExpressType.SelectSingle:
                     fieldName = GetSingleName(parameter, expression, isLeft);
                     if (isSetTempData)
