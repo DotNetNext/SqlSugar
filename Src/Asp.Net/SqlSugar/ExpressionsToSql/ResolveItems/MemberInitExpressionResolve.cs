@@ -61,7 +61,17 @@ namespace SqlSugar
                 {
                     if (item is UnaryExpression)
                         item = (item as UnaryExpression).Operand;
-                    MethodCall(parameter, memberName, item);
+                    var callMethod = item as MethodCallExpression;
+                    if (MethodTimeMapping.Any(it => it.Key == callMethod.Method.Name) || MethodMapping.Any(it=>it.Key==callMethod.Method.Name)||IsExtMethod(callMethod.Method.Name)||IsSubMethod(callMethod)|| callMethod.Method.DeclaringType.FullName.StartsWith(UtilConstants.AssemblyName+UtilConstants.Dot))
+                    {
+                        MethodCall(parameter, memberName, item);
+                    }
+                    else
+                    {
+                        var paramterValue = ExpressionTool.DynamicInvoke(item);
+                        string parameterName = AppendParameter(paramterValue);
+                        this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+                    }
                 }
                 else if (IsConst(item))
                 {
@@ -146,6 +156,20 @@ namespace SqlSugar
         private bool IsSubMethod(MethodCallExpression express)
         {
             return SubTools.SubItemsConst.Any(it =>express.Object != null && express.Object.Type.Name == "Subqueryable`1");
+        }
+        private bool IsExtMethod(string methodName)
+        {
+            if (this.Context.SqlFuncServices == null) return false;
+            return this.Context.SqlFuncServices.Select(it => it.UniqueMethodName).Contains(methodName);
+        }
+        private bool CheckMethod(MethodCallExpression expression)
+        {
+            if (IsExtMethod(expression.Method.Name))
+                return true;
+            if (expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName)
+                return false;
+            else
+                return true;
         }
     }
 }
