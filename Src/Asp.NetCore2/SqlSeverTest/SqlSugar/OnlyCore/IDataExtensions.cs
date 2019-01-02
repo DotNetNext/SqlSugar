@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         public override void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
+            this.BeforeTime = DateTime.Now;
             if (sql.HasValue() && parameters.HasValue())
             {
                 foreach (var parameter in parameters)
