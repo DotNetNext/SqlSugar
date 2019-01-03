@@ -336,6 +336,18 @@ namespace OrmTest.Demo
             var list8 = db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
             .OrderBy(st=>st.Id)
             .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1, 2);
+
+            var q1 = db.Queryable<Student>().Select(it => new Student()
+            {
+                 Id=it.Id,
+                 Name="a"
+            });
+            var q2 = db.Queryable<Student>().Select(it => new Student()
+            {
+                Id = it.Id,
+                Name = "b"
+            });
+            var unionAllList=db.Union(q1, q2).ToList();
         }
         public static void Funs()
         {

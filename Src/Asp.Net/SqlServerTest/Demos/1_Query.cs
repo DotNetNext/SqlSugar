@@ -539,6 +539,18 @@ namespace OrmTest.Demo
                 id=st1.Id,
                 name=st2.Name
             }).ToList();
+
+            var q1 = db.Queryable<Student>().Select(it => new Student()
+            {
+                Id = it.Id,
+                Name = "a"
+            });
+            var q2 = db.Queryable<Student>().Select(it => new Student()
+            {
+                Id = it.Id,
+                Name = "b"
+            });
+            var unionAllList = db.Union(q1, q2).ToList();
         }
         public static void Funs()
         {
