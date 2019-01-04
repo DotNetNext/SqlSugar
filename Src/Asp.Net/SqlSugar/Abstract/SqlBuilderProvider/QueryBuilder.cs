@@ -395,8 +395,15 @@ namespace SqlSugar
         {
             var expression = this.SelectValue as Expression;
             var result = GetExpressionValue(expression, this.SelectType).GetResultString();
-            this.SelectCacheKey = result;
-            return result;
+            if (result.Contains(".*") && this.IsSingle())
+            {
+                return "*";
+            }
+            else
+            {
+                this.SelectCacheKey = result;
+                return result;
+            }
         }
         public virtual string GetSelectValueByString()
         {

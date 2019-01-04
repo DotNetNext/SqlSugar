@@ -79,6 +79,11 @@ namespace OrmTest.BugTest
                b.Id == vb.BrandId)
 .          Where((b) => b.BrandType == 1).Select((b) => b).ToList();
 
+
+            var query = GetInstance().Queryable<Student>().Select(o => o);
+                        
+            var result = query.ToList();
+
         }
 
 
