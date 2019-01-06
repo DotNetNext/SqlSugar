@@ -48,10 +48,10 @@ namespace OrmTest.Demo
             var insertObjs = new List<Student>();
             for (int i = 0; i < 1000; i++)
             {
-                insertObjs.Add(new Student() { Name = "name" + i });
+                insertObjs.Add(new Student() { Name = "name\\'" + i });
             }
-            var t10 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
-
+            var t10 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteReturnIdentity();
+            var data = db.Queryable<Student>().OrderBy(it=>it.Id,OrderByType.Desc).ToList();
             var t11 = db.Insertable(insertObjs.ToArray()).ExecuteCommand();
         }
     }
