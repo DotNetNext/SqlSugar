@@ -11,11 +11,11 @@ QQ Group:225982985
 ## Nuget 
 
 .net Install：
-```
+```ps1
 Install-Package sqlSugar 
 ```
 .net core Install：
-```
+```ps1
 Install-Package sqlSugarCore
 ```
 
@@ -25,7 +25,7 @@ https://github.com/sunkaixuan/SqlSugar/tree/master
 
 
 # Let's look at a DEMO first
-```
+```cs
 //Create DbContext 
 public class DbContext
 {
@@ -75,12 +75,12 @@ Transaction or multi table operation use SqlSugarClient
 
 ### 1.1 Create Connection
 If you have system table permissions, use SystemTableConfig,else use AttributeConfig
-```c
+```cs
 SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
 ```
 
 ### 1.2 Introduction
-```c
+```cs
 var getAll = db.Queryable<Student>().ToList();
 var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
 var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
@@ -96,7 +96,7 @@ var group = db.Queryable<Student>().GroupBy(it => it.Id)
 ``` 
 
 ### 1.3 Page
-```c
+```cs
 var pageIndex = 1;
 var pageSize = 2;
 var totalCount = 0;
@@ -118,25 +118,25 @@ var skip5 = db.Queryable<Student>().Skip(5).ToList();
 ### 1.4 Join
 
 #### easy join 
-```c
+```cs
 //2 join
 var list5 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st,sc)=>new {st.Name,st.Id,schoolName=sc.Name}).ToList();
 ```
 
-```c
+```cs
 //3 join 
 var list6 = db.Queryable<Student, School,School>((st, sc,sc2) => st.SchoolId == sc.Id&&sc.Id==sc2.Id)
     .Select((st, sc,sc2) => new { st.Name, st.Id, schoolName = sc.Name,schoolName2=sc2.Name }).ToList();
  ```
  
- ```c
+ ```cs
 //3 join page
 var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
 .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
 ```
 
 #### left join  
-```c
+```cs
 //join  2
 var list = db.Queryable<Student, School>((st, sc) => new object[] {
 JoinType.Left,st.SchoolId==sc.Id
@@ -165,7 +165,7 @@ JoinType.Left,st.SchoolId==sc.Id
 ```
 
 ### subquery
-```c
+```cs
 var getAll = db.Queryable<Student, School>((st, sc) => new object[] {
  JoinType.Left,st.Id==sc.Id})
 .Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
@@ -178,7 +178,7 @@ SELECT `st`.`ID`,`st`.`SchoolId`,`st`.`Name`,`st`.`CreateTime`
 ```
 
 ### 1.5 SqlFunctions
-```c
+```cs
 var t1 = db.Queryable<Student>().Where(it => SqlFunc.ToLower(it.Name) == SqlFunc.ToLower("JACK")).ToList();
 //SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
 
@@ -217,7 +217,7 @@ var t1 = db.Queryable<Student>().Where(it => SqlFunc.ToLower(it.Name) == SqlFunc
 ```
 
 ### 1.6 Select
-```c
+```cs
 var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
 var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
 var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
@@ -226,7 +226,7 @@ var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = 
 ```
 
 ### 1.7  Join Sql
-```c
+```cs
 var join3 = db.Queryable("Student", "st")
                 .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
                 .Where("st.id>@id")
@@ -236,7 +236,7 @@ var join3 = db.Queryable("Student", "st")
  ```
  
  ### 1.8 ADO.NET
- ```c
+ ```cs
 var db = GetInstance();
 var t1= db.Ado.SqlQuery<string>("select 'a'");
 var t2 = db.Ado.GetInt("select 1");
@@ -246,7 +246,7 @@ var t3 = db.Ado.GetDataTable("select 1 as id");
  ```
 
 ### 1.9 Where
-```c
+```cs
 var list = db.Queryable<Student, School>((st, sc) => new object[] {
 JoinType.Left,st.SchoolId==sc.Id
 })
@@ -268,7 +268,7 @@ var list2 = db.Queryable<Student>()
 
  
 ##  2. Insert
- ```c
+ ```cs
 var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") ,SchoolId=1};
 
 //Insert reutrn Insert Count
@@ -307,7 +307,7 @@ var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }
 ```
 ##  3. Delete
 
- ```c
+ ```cs
 var t1 = db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
 
 //use lock
@@ -325,7 +325,7 @@ var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  ```
  ##  4. Update
 
- ```c
+ ```cs
 //update reutrn Update Count
 var t1= db.Updateable(updateObj).ExecuteCommand();
 
@@ -363,23 +363,23 @@ var t10 = db.Updateable<Student>()
  ##### Priority level： 
  AS>Add>Attribute
  ### 5.1 Add
- ```c
+ ```cs
 db.MappingTables.Add()
 db.MappingColumns.Add()
 db.IgnoreColumns.Add()
  ```
  ### 5.2 AS
-  ```c
+  ```cs
 db.Queryable<T>().As("tableName").ToList();
  ```
 ### 5.3 Attribute
- ```c
+ ```cs
 [SugarColumn(IsIgnore=true)]
 public int TestId { get; set; }
   ```
 
  ##  6. Use Tran
-  ```c
+  ```cs
 var result = db.Ado.UseTran(() =>
 {
           
@@ -390,8 +390,7 @@ var result = db.Ado.UseTran(() =>
 })
    ```
  ##  7. Use Store Procedure
-```c
- 
+```cs 
 var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
  
 //output
@@ -401,74 +400,73 @@ var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
 ```
 
 ## 8. DbFirst
-```c
+```cs
 var db = GetInstance();
-    //Create all class
-    db.DbFirst.CreateClassFile("c:\\Demo\\1");
+//Create all class
+db.DbFirst.CreateClassFile("c:\\Demo\\1");
 
-    //Create student calsss
-    db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\2");
-    //Where(array)
+//Create student calsss
+db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\2");
+//Where(array)
 
-    //Mapping name
-    db.MappingTables.Add("ClassStudent", "Student");
-    db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-    db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\3");
+//Mapping name
+db.MappingTables.Add("ClassStudent", "Student");
+db.MappingColumns.Add("NewId", "Id", "ClassStudent");
+db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\3");
 
-    //Remove mapping
-    db.MappingTables.Clear();
+//Remove mapping
+db.MappingTables.Clear();
 
-    //Create class with default value
-    db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\Demo\\4", "Demo.Models");
-
-
-    //Mapping and Attribute
-    db.MappingTables.Add("ClassStudent", "Student");
-    db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-    db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
+//Create class with default value
+db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\Demo\\4", "Demo.Models");
 
 
-    //Remove mapping
-    db.MappingTables.Clear();
-    db.MappingColumns.Clear();
+//Mapping and Attribute
+db.MappingTables.Add("ClassStudent", "Student");
+db.MappingColumns.Add("NewId", "Id", "ClassStudent");
+db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
 
-    //Custom format,Change old to new
-    db.DbFirst.
-        SettingClassTemplate(old =>
-        {
-            return old;
-        })
-       .SettingNamespaceTemplate(old =>
-       {
-           return old;
-       })
-       .SettingPropertyDescriptionTemplate(old =>
-       {
+//Remove mapping
+db.MappingTables.Clear();
+db.MappingColumns.Clear();
+
+//Custom format,Change old to new
+db.DbFirst
+    .SettingClassTemplate(old =>
+    {
+        return old;
+    })
+    .SettingNamespaceTemplate(old =>
+    {
+        return old;
+    })
+    .SettingPropertyDescriptionTemplate(old =>
+    {
            return @"           /// <summary>
-   /// Desc_New:{PropertyDescription}
-   /// Default_New:{DefaultValue}
-   /// Nullable_New:{IsNullable}
-   /// </summary>";
-       })
-        .SettingPropertyTemplate(old =>
-        {
-            return old;
-        })
-        .SettingConstructorTemplate(old =>
-        {
-            return old;
-        })
+           /// Desc_New:{PropertyDescription}
+           /// Default_New:{DefaultValue}
+           /// Nullable_New:{IsNullable}
+           /// </summary>";
+    })
+    .SettingPropertyTemplate(old =>
+    {
+        return old;
+    })
+    .SettingConstructorTemplate(old =>
+    {
+        return old;
+    })
     .CreateClassFile("c:\\Demo\\6");
 }
 ```
 ## 8.Code First
-```
+```cs
 db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
 db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
 ```
 
 ## 9. AOP LOG
-```
+```cs
 db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
 {
  
