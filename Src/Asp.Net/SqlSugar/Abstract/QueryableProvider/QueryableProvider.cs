@@ -1298,6 +1298,10 @@ namespace SqlSugar
             var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
+            if (this.MapperAction != null)
+                asyncQueryable.Mapper(MapperAction);
+            if (this.MapperActionWithCache != null)
+                asyncQueryable.Mapper(MapperActionWithCache);
             CopyQueryBuilder(asyncQueryable.QueryBuilder); return asyncQueryable;
         }
 
