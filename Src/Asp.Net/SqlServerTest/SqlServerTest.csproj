@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BugTest\Bug2.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="BugTest\Bug1.cs" />
     <Compile Include="Models\VendorAndBrand.cs" />

@@ -18,7 +18,11 @@ namespace OrmTest
         static void Main(string[] args)
         {
 
-            //    /***Unit Test***/
+            /***BUG repair test***/
+            new BugTest.Bug1().Init();
+            new BugTest.Bug2().Init();
+
+            /***Unit Test***/
             new SqlRemark(2).Init();
             new Select(1).Init();
             new Field(1).Init();
@@ -56,9 +60,6 @@ namespace OrmTest
             Demo.Mapper.Init();
             Demo.ExtEntity.Init();
             Demo.VersionValidation.Init();
-
-            /***BUG repair test***/
-            new BugTest.Bug1().Init();
         }
     }
 }
