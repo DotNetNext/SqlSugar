@@ -570,7 +570,16 @@ namespace SqlSugar
         }
         public virtual string ToJson()
         {
-            return this.Context.Utilities.SerializeObject(this.ToList());
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () => { return this.Context.Utilities.SerializeObject(this.ToList()); }, CacheTime, this.Context);
+                return result;
+            }
+            else
+            {
+                return this.Context.Utilities.SerializeObject(this.ToList());
+            }
         }
         public virtual string ToJsonPage(int pageIndex, int pageSize)
         {
