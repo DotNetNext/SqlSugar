@@ -586,7 +586,16 @@ namespace SqlSugar
             InitMapping();
             var sqlObj = this.ToSql();
             RestoreMapping();
-            var result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
+            DataTable result = null;
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
+            }
             return result;
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize)

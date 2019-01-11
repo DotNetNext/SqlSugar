@@ -42,9 +42,8 @@ namespace OrmTest
             new SqlSugarPerformance(100).Select();
 
             /***Demo***/
-            Demo.Query.Init();
             Demo.Insert.Init();
-            Demo.Delete.Init();
+            Demo.Query.Init();
             Demo.Update.Init();
             Demo.DbFirst.Init();
             Demo.JoinSql.Init();
@@ -60,6 +59,7 @@ namespace OrmTest
             Demo.Mapper.Init();
             Demo.ExtEntity.Init();
             Demo.VersionValidation.Init();
+            Demo.Delete.Init();
         }
     }
 }
