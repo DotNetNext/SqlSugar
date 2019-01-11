@@ -48,7 +48,7 @@ namespace OrmTest.Demo
 
             //Insert List<T>
             var insertObjs = new List<Student>();
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10; i++)
             {
                 insertObjs.Add(new Student() { Name = "name" + i });
             }

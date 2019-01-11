@@ -197,6 +197,9 @@ namespace OrmTest.Demo
             var t2 = db.Ado.GetInt("select 1  from dual");
             var t3 = db.Ado.GetDataTable("select 1 as id  from dual");
             var sqlPage = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
+            var t4 = db.Ado.GetScalar("select * from student where id in (@id) ", new { id = new List<int>() { 1, 2, 3 } });
+            var t5 = db.Ado.GetScalar("select * from student where id in (@id) ", new { id = new int[] { 1, 2, 3 } });
+            var t6 = db.Ado.GetScalar("select * from student where id in (@id) ", new SugarParameter("@id", new int[] { 1, 2, 3 }));
             db.Ado.CommitTran();
             //more
             //db.Ado.GetXXX...

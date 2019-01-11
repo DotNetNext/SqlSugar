@@ -310,6 +310,9 @@ namespace OrmTest.Demo
             var t1 = db.Ado.SqlQuery<string>("select 'a'");
             var t2 = db.Ado.GetInt("select 1");
             var t3 = db.Ado.GetDataTable("select 1 as id");
+            var t4 = db.Ado.GetScalar("select * from student where id in (@id) ", new { id = new List<int>() { 1, 2, 3 } });
+            var t5 = db.Ado.GetScalar("select * from student where id in (@id) ", new { id = new  int [] { 1, 2, 3 } });
+            var t6= db.Ado.GetScalar("select * from student where id in (@id) ",  new SugarParameter("@id", new int[] { 1, 2, 3 }));
             db.Ado.CommitTran();
             var t11 = db.Ado.SqlQuery<Student>("select * from student");
             //more

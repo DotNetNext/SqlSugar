@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -284,6 +285,7 @@ namespace SqlSugar
         {
             try
             {
+                InitParameters(ref sql, parameters);
                 if (FormatSql != null) 
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
@@ -313,6 +315,7 @@ namespace SqlSugar
         {
             try
             {
+                InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
@@ -341,6 +344,7 @@ namespace SqlSugar
         {
             try
             {
+                InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
@@ -373,6 +377,7 @@ namespace SqlSugar
         {
             try
             {
+                InitParameters(ref sql,parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
@@ -790,6 +795,37 @@ namespace SqlSugar
         private void ExecuteErrorEvent(string sql, SugarParameter[] parameters, Exception ex)
         {
             ErrorEvent(new SqlSugarException(this.Context,ex, sql, parameters));
+        }
+        private  void InitParameters(ref string sql, SugarParameter[] parameters)
+        {
+            if (parameters.HasValue())
+            {
+                foreach (var item in parameters)
+                {
+                    if (item.Value != null)
+                    {
+                        var type = item.Value.GetType();
+                        if ((type != UtilConstants.ByteArrayType && type.IsArray) || type.FullName.IsCollectionsList())
+                        {
+                            var newValues = new List<string>();
+                            foreach (var inValute in item.Value as IEnumerable)
+                            {
+                                newValues.Add(inValute.ObjToString());
+                            }
+                            if (newValues.IsNullOrEmpty())
+                            {
+                                newValues.Add("-1");
+                            }
+                            if (item.ParameterName.Substring(0, 1) == ":")
+                            {
+                                sql = sql.Replace("@"+item.ParameterName.Substring(1), newValues.ToArray().ToJoinSqlInVals());
+                            }
+                            sql = sql.Replace(item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
+                            item.Value = DBNull.Value;
+                        }
+                    }
+                }
+            }
         }
         #endregion
     }
