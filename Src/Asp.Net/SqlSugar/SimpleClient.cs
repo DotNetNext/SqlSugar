@@ -131,6 +131,39 @@ namespace SqlSugar
             this.Context = context;
         }
 
+        public ISugarQueryable<T> AsQueryable()
+        {
+            return Context.Queryable<T>();
+        }
+        public IInsertable<T> AsInsertable(T insertObj)
+        {
+            return Context.Insertable<T>(insertObj);
+        }
+        public IInsertable<T> AsInsertable(T[] insertObjs) 
+        {
+            return Context.Insertable<T>(insertObjs);
+        }
+        public IInsertable<T> AsInsertable(List<T> insertObjs)
+        {
+            return Context.Insertable<T>(insertObjs);
+        }
+        public IUpdateable<T> AsUpdateable(T updateObj)
+        {
+            return Context.Updateable<T>(updateObj);
+        }
+        public IUpdateable<T> AsUpdateable(T[] updateObjs)
+        {
+            return Context.Updateable<T>(updateObjs);
+        }
+        public IUpdateable<T> AsUpdateable(List<T> updateObjs)
+        {
+            return Context.Updateable<T>(updateObjs);
+        }
+        public IDeleteable<T> AsDeleteable()
+        {
+            return Context.Deleteable<T>();
+        }
+
         public T GetById(dynamic id)
         {
             return Context.Queryable<T>().InSingle(id);
@@ -154,7 +187,7 @@ namespace SqlSugar
             page.PageCount = count;
             return result;
         }
-        public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc) 
+        public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             int count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
@@ -168,7 +201,7 @@ namespace SqlSugar
             page.PageCount = count;
             return result;
         }
-        public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)  
+        public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             int count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
@@ -205,7 +238,7 @@ namespace SqlSugar
         {
             return this.Context.Updateable(updateObj).ExecuteCommand() > 0;
         }
-        public bool UpdateRange(T [] updateObjs)
+        public bool UpdateRange(T[] updateObjs)
         {
             return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
         }
