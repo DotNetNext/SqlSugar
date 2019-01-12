@@ -39,7 +39,7 @@ namespace OrmTest
             new DataTest(1).Init();
             new EnumTest(1).Init();
             /***Performance Test***/
-            new SqlSugarPerformance(100).Select();
+            new SqlSugarPerformance(10).Select();
 
             /***Demo***/
             Demo.Insert.Init();
