@@ -462,7 +462,7 @@ namespace SqlSugar
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = string.Empty;
             List<IConditionalModel> cons = new List<IConditionalModel>();
-            if (identity != null&&identity>0)
+            if (identity != null&&identity>0 && GetIdentityKeys().HasValue())
             {
                 var fieldName = GetIdentityKeys().Last();
                  cons.Add(new ConditionalModel() { ConditionalType=ConditionalType.Equal, FieldName= fieldName, FieldValue=identity.ToString() });

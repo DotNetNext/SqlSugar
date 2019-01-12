@@ -50,7 +50,7 @@ namespace SqlSugar
             }
             var isWhere= Convert.ToBoolean(value);
             if (!Convert.ToBoolean(isWhere)) {
-                return "";
+                return "WHERE 1=1 ";
             }
             var argExp = exp.Arguments[1];
             var result = "WHERE " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple); ;

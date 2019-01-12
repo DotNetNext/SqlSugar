@@ -78,7 +78,7 @@ namespace SqlSugar
                     //Compatible with.NET CORE parameters case
                     var name = parameter.ParameterName;
                     string newName = name +append+ addIndex;
-                    appendSql = appendSql.Replace(name, newName);
+                    appendSql =Regex.Replace(appendSql,name,newName,RegexOptions.IgnoreCase);
                     parameter.ParameterName = newName;
                 }
             }

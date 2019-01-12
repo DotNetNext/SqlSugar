@@ -20,7 +20,7 @@ namespace SqlSugar
                     var name = parameter.ParameterName;
                     if (!sql.Contains(name) && Regex.IsMatch(sql, "(" + name + "$)" + "|(" + name + @"[ ,\,])", RegexOptions.IgnoreCase))
                     {
-                        parameter.ParameterName = Regex.Match(sql, "(" + name + "$)" + "|(" + name + @"[ ,\,])", RegexOptions.IgnoreCase).Value;
+                        parameter.ParameterName = Regex.Match(sql, "(" + name + "$)" + "|(" + name + @"[ ,\,])", RegexOptions.IgnoreCase).Value.Trim();
                     }
                 }
             }

@@ -48,6 +48,8 @@ namespace SqlSugar
             var newContext = context.GetCopyContext();
             newContext.MappingColumns = context.MappingColumns;
             newContext.MappingTables = context.MappingTables;
+            newContext.InitMappingInfo = context.InitMappingInfo;
+            newContext.RefreshMapping = context.RefreshMapping;
             newContext.IgnoreComumnList = context.IgnoreComumnList;
             newContext.SqlFuncServices = context.SqlFuncServices;
             newContext.Resolve(item, type);

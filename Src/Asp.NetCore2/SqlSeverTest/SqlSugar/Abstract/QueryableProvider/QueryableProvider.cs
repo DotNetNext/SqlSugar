@@ -570,7 +570,16 @@ namespace SqlSugar
         }
         public virtual string ToJson()
         {
-            return this.Context.Utilities.SerializeObject(this.ToList());
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () => { return this.Context.Utilities.SerializeObject(this.ToList()); }, CacheTime, this.Context);
+                return result;
+            }
+            else
+            {
+                return this.Context.Utilities.SerializeObject(this.ToList());
+            }
         }
         public virtual string ToJsonPage(int pageIndex, int pageSize)
         {
@@ -586,7 +595,16 @@ namespace SqlSugar
             InitMapping();
             var sqlObj = this.ToSql();
             RestoreMapping();
-            var result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
+            DataTable result = null;
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
+            }
             return result;
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize)
@@ -1298,6 +1316,10 @@ namespace SqlSugar
             var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
+            if (this.MapperAction != null)
+                asyncQueryable.Mapper(MapperAction);
+            if (this.MapperActionWithCache != null)
+                asyncQueryable.Mapper(MapperActionWithCache);
             CopyQueryBuilder(asyncQueryable.QueryBuilder); return asyncQueryable;
         }
 

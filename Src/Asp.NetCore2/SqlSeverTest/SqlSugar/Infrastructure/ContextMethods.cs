@@ -90,7 +90,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public Dictionary<string, object> DataReaderToDictionary(IDataReader reader,Type type)
+        public Dictionary<string, object> DataReaderToDictionary(IDataReader reader, Type type)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             for (int i = 0; i < reader.FieldCount; i++)
@@ -98,7 +98,7 @@ namespace SqlSugar
                 string name = reader.GetName(i);
                 try
                 {
-                    name = this.Context.EntityMaintenance.GetPropertyName(name,type);
+                    name = this.Context.EntityMaintenance.GetPropertyName(name, type);
                     var addItem = reader.GetValue(i);
                     if (addItem == DBNull.Value)
                         addItem = null;
@@ -129,7 +129,7 @@ namespace SqlSugar
                 {
                     while (reader.Read())
                     {
-                        var readerValues = DataReaderToDictionary(reader,tType);
+                        var readerValues = DataReaderToDictionary(reader, tType);
                         var result = new Dictionary<string, object>();
                         foreach (var item in classProperties)
                         {
@@ -143,7 +143,7 @@ namespace SqlSugar
                             {
                                 if (readerValues.Any(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
                                 {
-                                    var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it=>it.Key.Equals(name,StringComparison.CurrentCultureIgnoreCase)).Value;
+                                    var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Value;
                                     if (addValue == DBNull.Value)
                                     {
                                         if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
@@ -207,13 +207,14 @@ namespace SqlSugar
                 else
                 {
                     var key = typeName + "." + name;
-                    var info = readerValues.Select(it=>it.Key).FirstOrDefault(it=>it.ToLower() == key.ToLower());
-                    if (info!=null)
+                    var info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    if (info != null)
                     {
                         var addItem = readerValues[info];
                         if (addItem == DBNull.Value)
                             addItem = null;
-                        if (prop.PropertyType == UtilConstants.IntType) {
+                        if (prop.PropertyType == UtilConstants.IntType)
+                        {
                             addItem = addItem.ObjToInt();
                         }
                         result.Add(name, addItem);
@@ -269,7 +270,7 @@ namespace SqlSugar
         public SqlSugarClient CopyContext(bool isCopyEvents = false)
         {
             var newClient = new SqlSugarClient(this.TranslateCopy(Context.CurrentConnectionConfig));
-            newClient.CurrentConnectionConfig.ConfigureExternalServices=Context.CurrentConnectionConfig.ConfigureExternalServices;
+            newClient.CurrentConnectionConfig.ConfigureExternalServices = Context.CurrentConnectionConfig.ConfigureExternalServices;
             newClient.MappingColumns = this.TranslateCopy(Context.MappingColumns);
             newClient.MappingTables = this.TranslateCopy(Context.MappingTables);
             newClient.IgnoreColumns = this.TranslateCopy(Context.IgnoreColumns);
@@ -349,7 +350,7 @@ namespace SqlSugar
         #endregion
 
         #region Query
-        public KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models,int beginIndex=0)
+        public KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models, int beginIndex = 0)
         {
             if (models.IsNullOrEmpty()) return new KeyValuePair<string, SugarParameter[]>();
             StringBuilder builder = new StringBuilder();
@@ -360,21 +361,23 @@ namespace SqlSugar
                 if (model is ConditionalModel)
                 {
                     var item = model as ConditionalModel;
-                    var index = models.IndexOf(item)+ beginIndex;
+                    var index = models.IndexOf(item) + beginIndex;
                     var type = index == 0 ? "" : "AND";
-                    if (beginIndex > 0) {
+                    if (beginIndex > 0)
+                    {
                         type = null;
                     }
                     string temp = " {0} {1} {2} {3}  ";
                     string parameterName = string.Format("{0}Conditional{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
-                    if (parameterName.Contains(".")) {
+                    if (parameterName.Contains("."))
+                    {
                         parameterName = parameterName.Replace(".", "_");
                     }
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
                             break;
                         case ConditionalType.Like:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
@@ -382,19 +385,19 @@ namespace SqlSugar
                             break;
                         case ConditionalType.GreaterThan:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
                             break;
                         case ConditionalType.GreaterThanOrEqual:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">=", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
                             break;
                         case ConditionalType.LessThan:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
                             break;
                         case ConditionalType.LessThanOrEqual:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<=", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
                             break;
                         case ConditionalType.In:
                             if (item.FieldValue == null) item.FieldValue = string.Empty;
@@ -459,8 +462,9 @@ namespace SqlSugar
                             }
                             List<IConditionalModel> conModels = new List<IConditionalModel>();
                             conModels.Add(con.Value);
-                            var childSqlInfo = ConditionalModelToSql(conModels,1000*(1+index));
-                            if (!isFirst) {
+                            var childSqlInfo = ConditionalModelToSql(conModels, 1000 * (1 + index));
+                            if (!isFirst)
+                            {
 
                                 builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
                             }
@@ -470,7 +474,8 @@ namespace SqlSugar
                             {
                                 builder.Append(" ) ");
                             }
-                            else {
+                            else
+                            {
 
                             }
                         }
@@ -478,6 +483,14 @@ namespace SqlSugar
                 }
             }
             return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
+        }
+
+        private static object GetFieldValue(ConditionalModel item)
+        {
+            if (item.FieldValueConvertFunc != null)
+                return item.FieldValueConvertFunc(item.FieldValue);
+            else
+                return item.FieldValue;
         }
         #endregion
     }
