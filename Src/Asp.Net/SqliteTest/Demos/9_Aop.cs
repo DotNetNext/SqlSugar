@@ -12,7 +12,7 @@ namespace OrmTest.Demo
 
         public static void Init()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.Sqlite, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { InitKeyType=InitKeyType.Attribute,ConnectionString = Config.ConnectionString, DbType = DbType.Sqlite, IsAutoCloseConnection = true });
 
 
             db.Aop.OnLogExecuted = (sql, pars) =>

@@ -16,7 +16,8 @@ namespace OrmTest.Models
            /// Desc:
            /// Default:
            /// Nullable:False
-           /// </summary>           
+           /// </summary>       
+           [SqlSugar.SugarColumn(IsPrimaryKey =true)]
            public Guid PK {get;set;}
 
            /// <summary>
