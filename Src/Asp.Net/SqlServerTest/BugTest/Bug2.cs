@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TCM.Manager.Models;
 
 namespace OrmTest.BugTest
 {
@@ -46,6 +47,35 @@ namespace OrmTest.BugTest
                                                         //Where(t3 => t3.UserId == t1.Id).
                                                         //WhereIF(RoleId > 0, t3 => t3.RoleId == RoleId).Any())
               .Select(t1 => new User { Id = SqlFunc.GetSelfAndAutoFill(t1.Id) }).ToSql();
+
+            var model = DB.Queryable<ClientsModel, VipAccountsModel, AccountsModel, tLogonHistoryModel, VipBenefitsModel, LevelSettingModel, JewelsModel>((a, b, c, d, e, f, g) => new object[]{
+                                     JoinType.Left,a.ClientID==b.ClientID,
+                                     JoinType.Left,a.ClientID==c.ClientID&&c.TournamentID==0,
+                                     JoinType.Left,a.ClientID==d.ClientID,
+                                     JoinType.Left,(e.MinVipCredit<=b.VipCredit&&e.MaxVipCredit>=b.VipCredit) && (e.MinConsumeAmount<=b.AccumulatedConsumeAmount&&e.MaxConsumeAmount>=b.AccumulatedConsumeAmount),
+                                     JoinType.Left,(c.ExperiencePoints>=f.MinExperiencePoints && c.ExperiencePoints<f.MaxExperiencePoints) || (c.ExperiencePoints > f.MaxExperiencePoints && f.UserLevel== 30),
+                                     JoinType.Left,g.ClientID==a.ClientID
+                                })
+                              .WhereIF(true, (a, b, c, d, e, f, g) => a.ClientID == 1)
+                              .WhereIF(!string.IsNullOrEmpty("a"), (a, b, c, d, e, f, g) => a.NickName == "a")
+                              .Select((a, b, c, d, e, f, g) => new 
+                              {
+                                  GoldAmount = SqlFunc.Subqueryable<ExposureModel>().Where(s => s.TournamentID == 0 && s.ClientID == a.ClientID).Sum(s => SqlFunc.IsNull(SqlFunc.AggregateSum(s.Exposure), 0)) ,
+                                  ClientID = a.ClientID,
+                                  NickName = a.NickName,
+                                  UserChannel = a.UserChannel,
+                                  CountryCode = d.CountryCode,
+                                  Platform = a.Platform,
+                                  Email = a.Email,
+                                  PhoneNumber = a.PhoneNumber,
+                                  RegisteredTime = a.RegisteredTime,
+                                  DiamondAmount = SqlFunc.IsNull(g.JewelCount, 0),
+                                  AccumulatedRechargeAmount = SqlFunc.IsNull(b.AccumulatedRechargeAmount, 0),
+                                  VipLevel = SqlFunc.IsNull(e.VipLevel, 0),
+                                  UserLevel = SqlFunc.IsNull(f.UserLevel, 0)
+                              })
+                              .With(SqlWith.NoLock)
+                              .ToSql();
 
         }
     }

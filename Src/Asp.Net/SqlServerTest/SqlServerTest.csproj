@@ -50,6 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BugTest\Bug2.cs" />
+    <Compile Include="BugTest\BugModels\AccountsModel.cs" />
+    <Compile Include="BugTest\BugModels\ClientsModel.cs" />
+    <Compile Include="BugTest\BugModels\ExposureModel.cs" />
+    <Compile Include="BugTest\BugModels\JewelsModel.cs" />
+    <Compile Include="BugTest\BugModels\LevelSettingModel.cs" />
+    <Compile Include="BugTest\BugModels\tLogonHistoryModel.cs" />
+    <Compile Include="BugTest\BugModels\VipAccountsModel.cs" />
+    <Compile Include="BugTest\BugModels\VipBenefitsModel.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="BugTest\Bug1.cs" />
     <Compile Include="Models\VendorAndBrand.cs" />
