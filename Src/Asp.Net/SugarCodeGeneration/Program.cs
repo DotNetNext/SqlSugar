@@ -53,6 +53,10 @@ namespace SugarCodeGeneration
             Console.ReadKey();
 
             //test bll
+            //SchoolManager sm = new SchoolManager();
+            //sm.GetList();
+            //sm.StudentDb.AsQueryable().Where(it => it.Id == 1).ToList();
+            //sm.Db.Queryable<Student>().ToList();
              
         }
 
