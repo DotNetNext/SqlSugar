@@ -22,14 +22,14 @@ namespace MyTest
 
            /// <summary>
            /// Desc:
-           /// Default:
+           /// Default:1
            /// Nullable:True
            /// </summary>           
            public int? SchoolId {get;set;}
 
            /// <summary>
            /// Desc:Student Name
-           /// Default:default name
+           /// Default:
            /// Nullable:True
            /// </summary>           
            public string Name {get;set;}
@@ -46,14 +46,21 @@ namespace MyTest
            /// Default:
            /// Nullable:True
            /// </summary>           
-           public double? float {get;set;}
+           public byte[] Timestamp {get;set;}
 
            /// <summary>
            /// Desc:
            /// Default:
-           /// Nullable:False
+           /// Nullable:True
            /// </summary>           
-           public byte[] Timestamp {get;set;}
+           public DateTimeOffset? Datetimeoffset {get;set;}
+
+           /// <summary>
+           /// Desc:
+           /// Default:
+           /// Nullable:True
+           /// </summary>           
+           public double? Float {get;set;}
 
     }
 }
