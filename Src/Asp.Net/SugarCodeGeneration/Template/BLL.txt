@@ -1,0 +1,7 @@
+﻿using MyTest;
+public class @(Model.Name)Manager : DbContext<@Model.Name>
+{
+ 
+    //我们如果有特殊需要可以重写DbContext中默认 增、删、查、改、方法
+ 
+}
