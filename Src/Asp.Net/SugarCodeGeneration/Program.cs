@@ -31,16 +31,19 @@ namespace SugarCodeGeneration
         {
             //生成实体
             GenerationClass();
+            Console.WriteLine("");
             Console.WriteLine("实体创建成功");
             Console.WriteLine("");
 
             //生成DbContext
             GenerationDContext();
+            Console.WriteLine("");
             Console.WriteLine("DbContext创建成功");
             Console.WriteLine("");
 
             //生成BLL类
             GenerationBLL();
+            Console.WriteLine("");
             Console.WriteLine("Bll创建成功");
             Console.WriteLine("");
 
