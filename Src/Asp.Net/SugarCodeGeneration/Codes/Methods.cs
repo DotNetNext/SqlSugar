@@ -40,7 +40,7 @@ namespace SugarCodeGeneration.Codes
                 FileHelper.CreateDirectory(classDirectory);
             }
             var files = Directory.GetFiles(classDirectory).ToList().Select(it=>classPath+"\\"+Path.GetFileName(it));
-            var xmlPath = GetSlnPath + @"\" + projectName + @"\SugarCodeGeneration.csproj";
+            var xmlPath = GetSlnPath + @"\" + projectName + @"\"+projectName+".csproj";
 
             var xml = File.ReadAllText(xmlPath, System.Text.Encoding.UTF8);
             var firstLine = System.IO.File.ReadLines(xmlPath, System.Text.Encoding.UTF8).First();

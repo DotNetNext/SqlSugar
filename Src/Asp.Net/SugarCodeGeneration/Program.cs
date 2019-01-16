@@ -99,7 +99,7 @@ namespace SugarCodeGeneration
 
 
             Methods.CreateDbContext(templatePath,savePath,model);
-            AddTask(contextPath, contextProjectName);
+            AddTask(contextProjectName,contextPath);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace SugarCodeGeneration
             //如果生成全部可以把Where去掉
             db.DbFirst.Where("Student", "School").IsCreateAttribute().CreateClassFile(classDirectory, classNamespace);
 
-            AddTask(classPath, classProjectName);
+            AddTask(classProjectName,classPath);
         }
 
         /// <summary>
@@ -128,6 +128,7 @@ namespace SugarCodeGeneration
             foreach (var item in CsprojList)
             {
                 item.Start();
+                item.Wait();
             }
         }
 
