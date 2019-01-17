@@ -83,6 +83,7 @@
   <ItemGroup>
     <Content Include="Template\BLL.txt" />
     <Content Include="Template\DbContext.txt" />
+    <Content Include="Template\nuget.txt" />
     <Content Include="Template\Project.txt" />
     <Content Include="Template\sln.txt" />
     <Content Include="x64\SQLite.Interop.dll">
