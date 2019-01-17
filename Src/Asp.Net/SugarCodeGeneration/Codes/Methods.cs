@@ -55,7 +55,7 @@ namespace SugarCodeGeneration.Codes
             {
                 foreach (var item in noAddFiles)
                 {
-                    var addItem = new XElement("Compile", new XAttribute("Include", item));
+                    var addItem = new XElement("Compile", new XAttribute("Include", item.TrimStart('\\')));
                     itemGroup.AddFirst(addItem);
                 }
             }
