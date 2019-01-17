@@ -25,8 +25,8 @@ namespace SugarCodeGeneration
             /***生成实体***/
 
             //配置参数
-            string classProjectName = "SugarCodeGeneration";//实体类项目名称
-            string classPath = "Models";//生成的目录
+            string classProjectName = "Entity";//实体类项目名称
+            string classPath = "DbModels";//生成的目录
             string classNamespace = "MyTest";//实体命名空间
             var classDirectory = Methods.GetSlnPath + "\\" + classProjectName + "\\" + classPath.TrimStart('\\');
             //执行生成
@@ -40,8 +40,8 @@ namespace SugarCodeGeneration
             /***生成DbContext***/
 
             //配置参数
-            var contextProjectName = "SugarCodeGeneration";//DbContext所在项目
-            var contextPath = "DbContext";//dbcontext存储目录
+            var contextProjectName = "Dal";//DbContext所在项目
+            var contextPath = "DbCore";//dbcontext存储目录
             var savePath = Methods.GetSlnPath + "\\" + contextProjectName + "\\" + contextPath + "\\DbContext.cs";//具体文件名
             var tables = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();
             //执行生成
@@ -55,8 +55,8 @@ namespace SugarCodeGeneration
             /***生成BLL***/
 
             //配置参数
-            var bllProjectName2 = "SugarCodeGeneration";//具体项目
-            var bllPath2 = "BLL";//文件目录
+            var bllProjectName2 = "BLL";//具体项目
+            var bllPath2 = "BaseBLL";//文件目录
             var savePath2 = Methods.GetSlnPath + "\\" + bllProjectName2 + "\\" + bllPath2;//保存目录
             var tables2 = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();
             //执行生成
