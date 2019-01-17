@@ -111,9 +111,8 @@ namespace SugarCodeGeneration.Codes
                     FileHelper.CreateDirectory(binDic);
                 }
                 FileHelper.CreateFile(projectPath,project,System.Text.Encoding.UTF8);
+                AppendProjectToSln(projectId, name);
             }
-
-            AppendProjectToSln(projectId,name);
         }
 
         public static void AppendProjectToSln(string projectId,string projectName) {
