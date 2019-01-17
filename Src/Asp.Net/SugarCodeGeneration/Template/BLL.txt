@@ -4,4 +4,9 @@ public class @(Model.Name)Manager : DbContext<@Model.Name>
  
     //我们如果有特殊需要可以重写DbContext中默认 增、删、查、改、方法
  
+
+	//这里面写的代码不会给覆盖,如果要重新生成请删除 @(Model.Name)Manager.cs
+
+ 
+ 
 }
