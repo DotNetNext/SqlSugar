@@ -1,0 +1,3 @@
+﻿
+Project("{@pid}") = "@name", "@name\@name.csproj", "{@sid}"
+EndProject

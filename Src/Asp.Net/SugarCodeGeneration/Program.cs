@@ -40,13 +40,12 @@ namespace SugarCodeGeneration
             /***生成DbContext***/
 
             //配置参数
-            var templatePath = Methods.GetCurrentProjectPath + "\\Template\\DbContext.txt";//dbcontexts模版文件
             var contextProjectName = "SugarCodeGeneration";//DbContext所在项目
             var contextPath = "DbContext";//dbcontext存储目录
             var savePath = Methods.GetSlnPath + "\\" + contextProjectName + "\\" + contextPath + "\\DbContext.cs";//具体文件名
             var tables = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();
             //执行生成
-            GenerationDContext(templatePath, contextProjectName, contextPath, savePath, tables);
+            GenerationDContext(contextProjectName, contextPath, savePath, tables);
             Print("DbContext创建成功");
 
             
@@ -56,13 +55,12 @@ namespace SugarCodeGeneration
             /***生成BLL***/
 
             //配置参数
-            var templatePath2 = Methods.GetCurrentProjectPath + "\\Template\\Bll.txt";//bll模版地址
             var bllProjectName2 = "SugarCodeGeneration";//具体项目
             var bllPath2 = "BLL";//文件目录
             var savePath2 = Methods.GetSlnPath + "\\" + bllProjectName2 + "\\" + bllPath2;//保存目录
             var tables2 = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();
             //执行生成
-            GenerationBLL(templatePath2,bllProjectName2,bllPath2,savePath2, tables2);
+            GenerationBLL(bllProjectName2,bllPath2,savePath2, tables2);
             Print("BLL创建成功");
 
 
@@ -85,8 +83,9 @@ namespace SugarCodeGeneration
       /// <summary>
         /// 生成BLL
         /// </summary>
-        private static void GenerationBLL(string templatePath, string bllProjectName, string bllPath, string savePath, List<string>tables)
+        private static void GenerationBLL(string bllProjectName, string bllPath, string savePath, List<string>tables)
         {
+            var templatePath = Methods.GetCurrentProjectPath + "\\Template\\Bll.txt";//bll模版地址
             //下面代码不动
             Methods.CreateBLL(templatePath, savePath, tables);
             AddTask(bllProjectName, bllPath);
@@ -97,8 +96,9 @@ namespace SugarCodeGeneration
         /// <summary>
         /// 生成DbContext
         /// </summary>
-        private static void GenerationDContext(string templatePath, string contextProjectName, string contextPath, string savePath,List<string> tables)
+        private static void GenerationDContext(string contextProjectName, string contextPath, string savePath,List<string> tables)
         {
+            var templatePath = Methods.GetCurrentProjectPath + "\\Template\\DbContext.txt";//dbcontexts模版文件
             //下面代码不动
             var model = new DbContextParameter{
                 ConnectionString = connectionString,
