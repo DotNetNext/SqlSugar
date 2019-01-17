@@ -35,7 +35,8 @@ namespace SugarCodeGeneration.Codes
 
         public static void AddCsproj(string classPath, string projectName)
         {
-            var classDirectory = Methods.GetSlnPath + "\\" + projectName + "\\" + classPath.TrimStart('\\');
+            CreateProject(projectName);
+               var classDirectory = Methods.GetSlnPath + "\\" + projectName + "\\" + classPath.TrimStart('\\');
             if (FileHelper.IsExistDirectory(classDirectory) == false)
             {
                 FileHelper.CreateDirectory(classDirectory);
@@ -90,11 +91,26 @@ namespace SugarCodeGeneration.Codes
         }
 
 
-        public static void CreateProject(string name) {
+        public static void CreateProject(string name)
+        {
             var templatePath = GetCurrentProjectPath + "/Template/Project.txt";
-            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid",Guid.NewGuid().ToString()); //从文件中读出模板内容
-            //FileHelper
+            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid", Guid.NewGuid().ToString()); //从文件中读出模板内容
+            var projectPath = GetSlnPath + "\\" + name + "\\" + name + ".csproj";
+            var projectDic = GetSlnPath + "\\" + name + "\\";
+            var binDic = GetSlnPath + "\\" + name + "\\bin";
+            if (!FileHelper.IsExistFile(projectPath))
+            {
 
+                if (!FileHelper.IsExistDirectory(projectDic))
+                {
+                    FileHelper.CreateDirectory(projectDic);
+                }
+                if (!FileHelper.IsExistDirectory(binDic))
+                {
+                    FileHelper.CreateDirectory(binDic);
+                }
+                FileHelper.CreateFile(projectPath,project,System.Text.Encoding.UTF8);
+            }
         }
     }
 }
