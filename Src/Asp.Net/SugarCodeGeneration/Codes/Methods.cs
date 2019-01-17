@@ -36,7 +36,7 @@ namespace SugarCodeGeneration.Codes
         public static void AddCsproj(string classPath, string projectName)
         {
             CreateProject(projectName);
-               var classDirectory = Methods.GetSlnPath + "\\" + projectName + "\\" + classPath.TrimStart('\\');
+            var classDirectory = Methods.GetSlnPath + "\\" + projectName + "\\" + classPath.TrimStart('\\');
             if (FileHelper.IsExistDirectory(classDirectory) == false)
             {
                 FileHelper.CreateDirectory(classDirectory);
@@ -95,7 +95,7 @@ namespace SugarCodeGeneration.Codes
         {
             var templatePath = GetCurrentProjectPath + "/Template/Project.txt";
             string projectId = Guid.NewGuid().ToString();
-            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid",projectId); //从文件中读出模板内容
+            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid", projectId); //从文件中读出模板内容
             var projectPath = GetSlnPath + "\\" + name + "\\" + name + ".csproj";
             var projectDic = GetSlnPath + "\\" + name + "\\";
             var binDic = GetSlnPath + "\\" + name + "\\bin";
@@ -110,15 +110,18 @@ namespace SugarCodeGeneration.Codes
                 {
                     FileHelper.CreateDirectory(binDic);
                 }
-                FileHelper.CreateFile(projectPath,project,System.Text.Encoding.UTF8);
+                FileHelper.CreateFile(projectPath, project, System.Text.Encoding.UTF8);
+                FileHelper.CreateFile(projectDic + "\\class1.cs", "", System.Text.Encoding.UTF8);
                 AppendProjectToSln(projectId, name);
             }
         }
 
-        public static void AppendProjectToSln(string projectId,string projectName) {
+        public static void AppendProjectToSln(string projectId, string projectName)
+        {
 
-            var slns = Directory.GetFiles(GetSlnPath).Where(it=> it.Contains(".sln"));
-            if (slns.Any()) {
+            var slns = Directory.GetFiles(GetSlnPath).Where(it => it.Contains(".sln"));
+            if (slns.Any())
+            {
                 var sln = slns.First();
                 var templatePath = GetCurrentProjectPath + "/Template/sln.txt";
                 string appendText = System.IO.File.ReadAllText(templatePath)
