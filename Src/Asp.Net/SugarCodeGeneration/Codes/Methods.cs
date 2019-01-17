@@ -94,7 +94,8 @@ namespace SugarCodeGeneration.Codes
         public static void CreateProject(string name)
         {
             var templatePath = GetCurrentProjectPath + "/Template/Project.txt";
-            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid", Guid.NewGuid().ToString()); //从文件中读出模板内容
+            string projectId = Guid.NewGuid().ToString();
+            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid",projectId); //从文件中读出模板内容
             var projectPath = GetSlnPath + "\\" + name + "\\" + name + ".csproj";
             var projectDic = GetSlnPath + "\\" + name + "\\";
             var binDic = GetSlnPath + "\\" + name + "\\bin";
@@ -111,6 +112,27 @@ namespace SugarCodeGeneration.Codes
                 }
                 FileHelper.CreateFile(projectPath,project,System.Text.Encoding.UTF8);
             }
+
+            AppendProjectToSln(projectId,name);
+        }
+
+        public static void AppendProjectToSln(string projectId,string projectName) {
+
+            var slns = Directory.GetFiles(GetSlnPath).Where(it=> it.Contains(".sln"));
+            if (slns.Any()) {
+                var sln = slns.First();
+                var templatePath = GetCurrentProjectPath + "/Template/sln.txt";
+                string appendText = System.IO.File.ReadAllText(templatePath)
+                    .Replace("@pid", projectId)
+                    .Replace("@name", projectName)
+                    .Replace("@sid", Guid.NewGuid().ToString());
+                FileStream fs = new FileStream(sln, FileMode.Append);
+                var sw = new StreamWriter(fs);
+                sw.WriteLine(appendText);
+                sw.Close();
+                fs.Close();
+            }
+
         }
     }
 }
