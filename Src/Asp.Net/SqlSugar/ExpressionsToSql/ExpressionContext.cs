@@ -122,6 +122,8 @@ namespace SqlSugar
         {
             ExpressionContext copyContext = (ExpressionContext)Activator.CreateInstance(this.GetType(), true);
             copyContext.Index = this.Index;
+            copyContext.InitMappingInfo = this.InitMappingInfo;
+            copyContext.RefreshMapping = this.RefreshMapping;
             copyContext.ParameterIndex = this.ParameterIndex;
             return copyContext;
         }
@@ -134,6 +136,8 @@ namespace SqlSugar
             copyContext.MappingTables = this.MappingTables;
             copyContext.IgnoreComumnList = this.IgnoreComumnList;
             copyContext.SqlFuncServices = this.SqlFuncServices;
+            copyContext.InitMappingInfo = this.InitMappingInfo;
+            copyContext.RefreshMapping = this.RefreshMapping;
             return copyContext;
         }
         #endregion
