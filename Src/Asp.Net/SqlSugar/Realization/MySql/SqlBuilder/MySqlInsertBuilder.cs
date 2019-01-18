@@ -27,6 +27,11 @@ namespace SqlSugar
         }
         public override object FormatValue(object value)
         {
+            var n = "N";
+            if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.MySqlDisableNarvchar)
+            {
+                n = "";
+            }
             if (value == null)
             {
                 return "NULL";
@@ -58,11 +63,11 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return "N'" + GetString(value).ToSqlFilter() + "'";
+                    return n+"'" + GetString(value).ToSqlFilter() + "'";
                 }
                 else
                 {
-                    return "N'" + GetString(value) + "'";
+                    return n+"'" + GetString(value) + "'";
                 }
             }
         }
