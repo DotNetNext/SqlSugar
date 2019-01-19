@@ -40,7 +40,8 @@ namespace SqlSugar
                 var pks = GetPrimaryKeys();
                 foreach (var item in InsertBuilder.DbColumnInfoList)
                 {
-                    if (item.IsPrimarykey==true||(pks.Any(y=>y.Equals(item.DbColumnName,StringComparison.CurrentCultureIgnoreCase)))&&item.PropertyType == UtilConstants.GuidType&&item.Value.ObjToString()==Guid.Empty.ToString()) {
+                    var isPk = pks.Any(y => y.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || item.IsPrimarykey;
+                    if (isPk && item.PropertyType == UtilConstants.GuidType&&item.Value.ObjToString()==Guid.Empty.ToString()) {
                         item.Value = Guid.NewGuid();
                     }
                 }
