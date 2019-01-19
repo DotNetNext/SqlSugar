@@ -12,7 +12,7 @@ namespace OrmTest.Demo
         public static void Init()
         {
             var db = GetInstance();
-              
+            db.CurrentConnectionConfig.InitKeyType = SqlSugar.InitKeyType.Attribute;
 
             //create tables
             db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(MyOrder),typeof(OrderItem),typeof(Person));
@@ -40,6 +40,7 @@ namespace OrmTest.Demo
                 .Mapper(it => it.masterPerson, it => it.masterPersonId)
                 .Mapper(it => it.Persons, it => it.orgId)
                 .Mapper(it => it.OrderItems, it => it.OrderItems.First().masterOrderId)
+                .Mapper(it => it.OrderItemSignle, it => it.OrderItemSignle.masterOrderId)
                 .Mapper(it => {
                     it.orderName = it.orderName + "aa";//
                 })
@@ -55,6 +56,8 @@ namespace OrmTest.Demo
             public int masterPersonId { get; set; }
             [SqlSugar.SugarColumn(IsIgnore = true)]
             public List<OrderItem> OrderItems { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public OrderItem OrderItemSignle { get; set; }
             [SqlSugar.SugarColumn(IsIgnore = true)]
             public List<Person> Persons { get; set; }
             [SqlSugar.SugarColumn(IsIgnore = true)]
