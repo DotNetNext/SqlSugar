@@ -1,4 +1,5 @@
-﻿using OrmTest.Models;
+﻿using OrmTest.Demo;
+using OrmTest.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +12,66 @@ namespace OrmTest.Demo
         public static void Init()
         {
             var db = GetInstance();
+              
+
+            //create tables
+            db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(MyOrder),typeof(OrderItem),typeof(Person));
+
+            //init test data
+            db.DbMaintenance.TruncateTable("MyOrder");
+            db.DbMaintenance.TruncateTable("OrderItem");
+            db.DbMaintenance.TruncateTable("Person");
+            db.Insertable(new MyOrder() { orderName = "no1", orgId = "org1", masterPersonId=1 }).ExecuteCommand();
+            db.Insertable(new MyOrder() { orderName = "no2", orgId = "org2",masterPersonId=2 }).ExecuteCommand();
+
+            db.Insertable(new OrderItem() { masterOrderId=1}).ExecuteCommand();
+            db.Insertable(new OrderItem() {  masterOrderId=1}).ExecuteCommand();
+            db.Insertable(new OrderItem() { masterOrderId=2 }).ExecuteCommand();
+            db.Insertable(new OrderItem() { masterOrderId=2 }).ExecuteCommand();
 
 
-            var x = db.Queryable<Student>()
-
-                   .Mapper((it, cache) =>
-                   {
-                     
-                       it.Name = "xx";
-                   }).ToListAsync();
-
-          x .Wait();
+            db.Insertable(new Person() {  orgId = "org1"}).ExecuteCommand();
+            db.Insertable(new Person() { orgId ="org1" }).ExecuteCommand();
 
 
+            //demo
+
+           var list= db.Queryable<MyOrder>()
+                .Mapper(it => it.masterPerson, it => it.masterPersonId)
+                .Mapper(it => it.Persons, it => it.orgId)
+                .Mapper(it => it.OrderItems, it => it.OrderItems.First().masterOrderId)
+                .Mapper(it => {
+                    it.orderName = it.orderName + "aa";//
+                })
+                .ToList();
+
+        }
+        public class MyOrder
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey=true,IsIdentity =true)]
+            public int orderId { get; set; }
+            public string orderName { get; set; }
+            public string orgId { get; set; }
+            public int masterPersonId { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public List<OrderItem> OrderItems { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public List<Person> Persons { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public Person masterPerson { get; set; }
+
+        }
+        public class Person
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int PersonId { get; set; }
+            public string orgId { get; set; }
+        }
+        public class OrderItem
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int itemId { get; set; }
+            public int masterOrderId { get; set; }
         }
     }
 }

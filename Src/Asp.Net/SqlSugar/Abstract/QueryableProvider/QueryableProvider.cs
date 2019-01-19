@@ -24,6 +24,7 @@ namespace SqlSugar
         public MappingTableList QueryableMappingTableList { get; set; }
         public Action<T> MapperAction { get; set; }
         public Action<T, MapperCache<T>> MapperActionWithCache { get; set; }
+        public List<Action<List<T>>> Mappers { get; set; }
         public bool IsCache { get; set; }
         public int CacheTime { get; set; }
         public bool IsAs { get; set; }
@@ -78,7 +79,8 @@ namespace SqlSugar
             return this;
         }
 
-        public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction) {
+        public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction)
+        {
             this.MapperAction = mapperAction;
             return this;
         }
@@ -87,7 +89,15 @@ namespace SqlSugar
             this.MapperActionWithCache = mapperAction;
             return this;
         }
-
+        public virtual ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mapperField)
+        {
+            return _Mapper<TObject>(mapperObject, mapperField);
+        }
+        public virtual ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mapperField)
+        {
+            return _Mapper<TObject>(mapperObject, mapperField);
+        }
+        
         public virtual ISugarQueryable<T> AddParameters(object parameters)
         {
             if (parameters != null)
@@ -197,8 +207,9 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            if (pkValues.Length == 1&& pkValues.First().GetType().FullName.IsCollectionsList()) {
-                var newValues =new List<object>();
+            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList())
+            {
+                var newValues = new List<object>();
                 foreach (var item in pkValues.First() as IEnumerable)
                 {
                     newValues.Add(item);
@@ -457,7 +468,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<TResult> Select<TResult>()
         {
-            var isJoin = this.QueryBuilder.JoinExpression!=null;
+            var isJoin = this.QueryBuilder.JoinExpression != null;
             if (isJoin)
             {
                 var selectValue = new SugarMapper(this.Context).GetSelectValue<TResult>(this.QueryBuilder);
@@ -484,7 +495,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> MergeTable()
         {
-            Check.Exception(this.MapperAction != null||this.MapperActionWithCache!=null, "'Mapper’ needs to be written after ‘MergeTable’ ");
+            Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, "'Mapper’ needs to be written after ‘MergeTable’ ");
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Queryable.Select Method .");
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             ToSqlBefore();
@@ -1004,7 +1015,7 @@ namespace SqlSugar
         }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
-            QueryBuilder.CheckExpression(expression,"Select");
+            QueryBuilder.CheckExpression(expression, "Select");
             this.Context.InitMppingInfo<TResult>();
             var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             result.Context = this.Context;
@@ -1027,8 +1038,8 @@ namespace SqlSugar
             if ((expression as LambdaExpression).Body is NewExpression)
             {
                 var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
-                var items = lamResult.GetResultString().Split(',').Where(it => it.HasValue()).Select(it=> it + UtilConstants.Space + type.ToString().ToUpper()).ToList();
-                OrderBy(string.Join(",",items));
+                var items = lamResult.GetResultString().Split(',').Where(it => it.HasValue()).Select(it => it + UtilConstants.Space + type.ToString().ToUpper()).ToList();
+                OrderBy(string.Join(",", items));
                 return this;
             }
             else
@@ -1168,6 +1179,20 @@ namespace SqlSugar
 
         protected void _Mapper<TResult>(List<TResult> result)
         {
+            if (this.Mappers.HasValue())
+            {
+                foreach (var mapper in this.Mappers)
+                {
+                    if (typeof(TResult) == typeof(T))
+                    {
+                        mapper(result.Select(it => (T)Convert.ChangeType(it, typeof(T))).ToList());
+                    }
+                    else
+                    {
+                        Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
+                    }
+                }
+            }
             if (this.MapperAction != null)
             {
                 foreach (TResult item in result)
@@ -1176,8 +1201,9 @@ namespace SqlSugar
                     {
                         this.MapperAction((T)Convert.ChangeType(item, typeof(T)));
                     }
-                    else {
-                        Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName,typeof(T).FullName);
+                    else
+                    {
+                        Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
                     }
                 }
             }
@@ -1186,16 +1212,142 @@ namespace SqlSugar
                 if (typeof(TResult) == typeof(T))
                 {
                     var list = (List<T>)Convert.ChangeType(result, typeof(List<T>));
-                    var mapperCache = new MapperCache<T>(list,this.Context);
+                    var mapperCache = new MapperCache<T>(list, this.Context);
                     foreach (T item in list)
                     {
                         this.MapperActionWithCache(item, mapperCache);
                     }
                 }
-                else {
+                else
+                {
                     Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
                 }
             }
+        }
+
+        private ISugarQueryable<T> _Mapper<TObject>(Expression mapperObject, Expression mapperField)
+        {
+            if ((mapperObject as LambdaExpression).Body is UnaryExpression)
+            {
+                mapperObject = ((mapperObject as LambdaExpression).Body as UnaryExpression).Operand;
+            }
+            else {
+                mapperObject= (mapperObject as LambdaExpression).Body;
+            }
+            if ((mapperField as LambdaExpression).Body is UnaryExpression)
+            {
+                mapperField = ((mapperField as LambdaExpression).Body as UnaryExpression).Operand;
+            }
+            else {
+                mapperField = (mapperField as LambdaExpression).Body;
+            }
+            Check.Exception(mapperObject is MemberExpression == false || mapperField is MemberExpression == false, ".Mapper() parameter error");
+            var mapperObjectExp = mapperObject as MemberExpression;
+            var mapperFieldExp = mapperField as MemberExpression;
+            Check.Exception(mapperFieldExp.Type.IsClass(), ".Mapper() parameter error");
+            var objType = mapperObjectExp.Type;
+            var filedType = mapperFieldExp.Expression.Type;
+            Check.Exception(objType != typeof(TObject)&& objType != typeof(List<TObject>), ".Mapper() parameter error");
+            if (objType == typeof(List<TObject>)){
+                objType = typeof(TObject);
+            }
+            var filedName = mapperFieldExp.Member.Name;
+            var objName = mapperObjectExp.Member.Name;
+            var filedEntity = this.Context.EntityMaintenance.GetEntityInfo(objType);
+            var objEntity = this.Context.EntityMaintenance.GetEntityInfo(filedType);
+            var isSelf = filedType == typeof(T);
+            if (Mappers == null)
+                Mappers = new List<Action<List<T>>>();
+            if (isSelf)
+            {
+                Action<List<T>> mapper = (entitys) =>
+                {
+                    if (entitys.IsNullOrEmpty()) return;
+                    var entity = entitys.First();
+                    var whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+                    }
+                    if (whereCol == null)
+                    {
+                        Check.Exception(true, ".Mapper() parameter error");
+                    }
+                    List<string> inValues = entitys.Select(it => it.GetType().GetProperty(filedName).GetValue(it, null).ObjToString()).ToList();
+                    List<IConditionalModel> wheres = new List<IConditionalModel>()
+                    {
+                       new ConditionalModel()
+                      {
+                           FieldName=whereCol.DbColumnName,
+                           ConditionalType= ConditionalType.In,
+                           FieldValue=string.Join(",",inValues.Distinct())
+                      }
+                    };
+                    var list = this.Context.Queryable<TObject>().Where(wheres).ToList();
+                    foreach (var item in entitys)
+                    {
+                        var whereValue = item.GetType().GetProperty(filedName).GetValue(item,null);
+                        var setValue = list.Where(x => x.GetType().GetProperty(whereCol.PropertyName).GetValue(x, null).ObjToString() == whereValue.ObjToString()).ToList();
+                        var setObject = item.GetType().GetProperty(objName);
+                        if (setObject.PropertyType.FullName.IsCollectionsList())
+                        {
+                            setObject.SetValue(item, setValue.ToList(), null);
+                        }
+                        else
+                        {
+                            setObject.SetValue(item, setValue.FirstOrDefault(), null);
+                        }
+                    }
+                };
+                Mappers.Add(mapper);
+            }
+            else
+            {
+                Action<List<T>> mapper = (entitys) =>
+                {
+                    if (entitys.IsNullOrEmpty()) return;
+                    var entity = entitys.First();
+                    var tEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                    var whereCol = tEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+                    }
+                    if (whereCol == null)
+                    {
+                        Check.Exception(true, ".Mapper() parameter error");
+                    }
+                    List<string> inValues = entitys.Select(it => it.GetType().GetProperty(whereCol.PropertyName).GetValue(it, null).ObjToString()).ToList();
+                    var dbColumnName = filedEntity.Columns.FirstOrDefault(it => it.PropertyName == filedName).DbColumnName;
+                    List<IConditionalModel> wheres = new List<IConditionalModel>()
+                    {
+                       new ConditionalModel()
+                      {
+                           FieldName=dbColumnName,
+                           ConditionalType= ConditionalType.In,
+                           FieldValue=string.Join(",",inValues)
+                      }
+                    };
+                    var list = this.Context.Queryable<TObject>().Where(wheres).ToList();
+                    foreach (var item in entitys)
+                    {
+                        var whereValue = item.GetType().GetProperty(whereCol.PropertyName).GetValue(item, null);
+                        var setValue = list.Where(x => x.GetType().GetProperty(filedName).GetValue(x, null).ObjToString() == whereValue.ObjToString()).ToList();
+                        var setObject = item.GetType().GetProperty(objName);
+                        if (setObject.PropertyType.FullName.IsCollectionsList())
+                        {
+                            setObject.SetValue(item, setValue.ToList(), null);
+                        }
+                        else
+                        {
+                            setObject.SetValue(item, setValue.FirstOrDefault(), null);
+                        }
+                    }
+                };
+                Mappers.Add(mapper);
+            }
+
+            return this;
         }
 
         protected int GetCount()
@@ -1330,7 +1482,7 @@ namespace SqlSugar
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;
             asyncQueryableBuilder.SelectValue = this.QueryBuilder.SelectValue;
-            asyncQueryableBuilder.WhereInfos =this.Context.Utilities.TranslateCopy(this.QueryBuilder.WhereInfos);
+            asyncQueryableBuilder.WhereInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.WhereInfos);
             asyncQueryableBuilder.EasyJoinInfos = this.QueryBuilder.EasyJoinInfos;
             asyncQueryableBuilder.JoinQueryInfos = this.QueryBuilder.JoinQueryInfos;
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
@@ -1518,7 +1670,7 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, params FieldType[] inValues)
+        public ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, T2, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -1527,7 +1679,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public  ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, List<FieldType> inValues)
+        public ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, T2, object>> expression, List<FieldType> inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -1536,7 +1688,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public  ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        public ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
@@ -1545,9 +1697,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T,T2> Clone()
+        public new ISugarQueryable<T, T2> Clone()
         {
-            var queryable = this.Context.Queryable<T,T2>((t,t2)=>new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2>((t, t2) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -1828,7 +1980,7 @@ namespace SqlSugar
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T,T2, object>> expression, params FieldType[] inValues)
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -1837,7 +1989,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T,T2, object>> expression, List<FieldType> inValues)
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2, object>> expression, List<FieldType> inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -1846,14 +1998,14 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T,T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, params FieldType[] inValues)
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2, T3, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -1862,7 +2014,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, List<FieldType> inValues)
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2, T3, object>> expression, List<FieldType> inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -1871,7 +2023,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        public ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2, T3, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
@@ -1880,9 +2032,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2,T3> Clone()
+        public new ISugarQueryable<T, T2, T3> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2,T3>((t, t2,t3) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3>((t, t2, t3) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -2195,7 +2347,7 @@ namespace SqlSugar
             return this;
         }
 
-        public  ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T,T2, object>> expression, params FieldType[] inValues)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -2204,7 +2356,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public  ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T,T2, object>> expression, List<FieldType> inValues)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, object>> expression, List<FieldType> inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -2213,14 +2365,14 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public  ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T,T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, params FieldType[] inValues)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -2229,7 +2381,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, List<FieldType> inValues)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3, object>> expression, List<FieldType> inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -2238,14 +2390,14 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
             return this;
         }
 
-        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, params FieldType[] inValues)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3, T4, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -2254,7 +2406,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, List<FieldType> inValues)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3, T4, object>> expression, List<FieldType> inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
             var isSingle = QueryBuilder.IsSingle();
@@ -2263,7 +2415,7 @@ namespace SqlSugar
             In(fieldName, inValues);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
+        public ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3, T4, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
             _InQueryable(expression, sqlObj);
@@ -2273,9 +2425,9 @@ namespace SqlSugar
 
 
         #region Other
-        public new ISugarQueryable<T, T2,T3,T4> Clone()
+        public new ISugarQueryable<T, T2, T3, T4> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2,T3,T4>((t, t2,t3,t4) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4>((t, t2, t3, t4) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -2591,9 +2743,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4,T5> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4,T5>((t, t2, t3, t4,t5) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5>((t, t2, t3, t4, t5) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -2899,9 +3051,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4, T5,T6>((t, t2, t3, t4, t5,T6) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6>((t, t2, t3, t4, t5, T6) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -3234,9 +3386,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6,T7>((t, t2, t3, t4, t5, T6,t7) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7>((t, t2, t3, t4, t5, T6, t7) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -3595,9 +3747,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7,T8>((t, t2, t3, t4, t5, T6, t7,t8) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8>((t, t2, t3, t4, t5, T6, t7, t8) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -3980,9 +4132,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8,T9>((t, t2, t3, t4, t5, T6, t7, t8,t9) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>((t, t2, t3, t4, t5, T6, t7, t8, t9) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -4389,9 +4541,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>((t, t2, t3, t4, t5, T6, t7, t8, t9,t10) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -4822,9 +4974,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>((t, t2, t3, t4, t5, T6, t7, t8, t9,t10,t11) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10, t11) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
@@ -5281,9 +5433,9 @@ namespace SqlSugar
         #endregion
 
         #region Other
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Clone()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Clone()
         {
-            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10, t11,t12) => new object[] { }).WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10, t11, t12) => new object[] { }).WithCacheIF(IsCache, CacheTime);
             base.CopyQueryBuilder(queryable.QueryBuilder);
             return queryable;
         }
