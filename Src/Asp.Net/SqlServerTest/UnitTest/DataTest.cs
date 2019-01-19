@@ -67,6 +67,8 @@ namespace OrmTest.UnitTest
             {
                 throw new Exception("DataTest Error");
             }
+
+            db.Insertable(new DataTestInfo2() { }).ExecuteCommand();
         }
     }
 }
