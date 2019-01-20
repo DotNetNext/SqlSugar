@@ -45,7 +45,7 @@ namespace SugarCodeGeneration
             var savePath = Methods.GetSlnPath + "\\" + contextProjectName + "\\" + contextPath + "\\DbContext.cs";//具体文件名
             var tables = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();
             //执行生成
-            GenerationDContext(contextProjectName, contextPath, savePath, tables);
+            GenerationDContext(contextProjectName, contextPath, savePath, tables, classNamespace);
             Print("DbContext创建成功");
 
             
@@ -96,14 +96,15 @@ namespace SugarCodeGeneration
         /// <summary>
         /// 生成DbContext
         /// </summary>
-        private static void GenerationDContext(string contextProjectName, string contextPath, string savePath,List<string> tables)
+        private static void GenerationDContext(string contextProjectName, string contextPath, string savePath,List<string> tables,string classNamespace)
         {
             var templatePath = Methods.GetCurrentProjectPath + "\\Template\\DbContext.txt";//dbcontexts模版文件
             //下面代码不动
             var model = new DbContextParameter{
                 ConnectionString = connectionString,
                 DbType = dbType,
-                Tables = tables
+                Tables = tables,
+                ClassNamespace= classNamespace
             };
             Methods.CreateDbContext(templatePath,savePath,model);
             AddTask(contextProjectName,contextPath);
