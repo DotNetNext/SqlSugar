@@ -243,6 +243,19 @@ var t2 = db.Ado.GetInt("select 1");
 var t3 = db.Ado.GetDataTable("select 1 as id");
 //more
 //db.Ado.GetXXX...
+
+//sql to queryable 
+
+var t5 = db.SqlQueryable<Student>("select * from student").Where(it=>it.id>0).ToPageList(1, 2,ref count);
+var t6 = db.SqlQueryable<dynamic>("select * from student").ToPageList(1, 2,ref count);// return List<dynamic>
+
+//Use StoredProcedure
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
+ 
+//output
+var p11 = new SugarParameter("@p1", "1");
+var p22 = new SugarParameter("@p2", null, true);//isOutput=true
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
  ```
 
 ### 1.9 Where
@@ -388,6 +401,8 @@ var result = db.Ado.UseTran(() =>
     var endCount = db.Queryable<Student>().Count();
     throw new Exception("error haha");
 })
+//result.IsSucces
+//result.XXX
    ```
  ##  7. Use Store Procedure
 ```cs 
