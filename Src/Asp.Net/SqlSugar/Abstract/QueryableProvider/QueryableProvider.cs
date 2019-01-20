@@ -1613,6 +1613,27 @@ namespace SqlSugar
             this.Where<T>(whereString, whereObj);
             return this;
         }
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+            base.WhereClass(whereClass, ignoreDefaultValue);
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            base.WhereClass(whereClassTypes, ignoreDefaultValue);
+            return this;
+        }
         #endregion
 
         #region Select
@@ -2000,6 +2021,27 @@ namespace SqlSugar
             this.Where<T>(whereString, whereObj);
             return this;
         }
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+            base.WhereClass(whereClass, ignoreDefaultValue);
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            base.WhereClass(whereClassTypes, ignoreDefaultValue);
+            return this;
+        }
         #endregion
 
         #region Aggr
@@ -2245,6 +2287,27 @@ namespace SqlSugar
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
+            return this;
+        }
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+            base.WhereClass(whereClass, ignoreDefaultValue);
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            base.WhereClass(whereClassTypes, ignoreDefaultValue);
             return this;
         }
         #endregion
@@ -2652,6 +2715,29 @@ namespace SqlSugar
             this.Where<T>(whereString, whereObj);
             return this;
         }
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+             base.WhereClass(whereClass, ignoreDefaultValue);
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            base.WhereClass(whereClassTypes, ignoreDefaultValue);
+            return this;
+        }
+
         #endregion
 
         #region Select
@@ -2980,6 +3066,28 @@ namespace SqlSugar
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
+            return this;
+        }
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+            base.WhereClass(whereClass, ignoreDefaultValue);
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            base.WhereClass(whereClassTypes, ignoreDefaultValue);
             return this;
         }
         #endregion
@@ -3342,6 +3450,27 @@ namespace SqlSugar
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
+            return this;
+        }
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+            base.WhereClass(whereClass, ignoreDefaultValue);
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            base.WhereClass(whereClassTypes, ignoreDefaultValue);
             return this;
         }
         #endregion
@@ -3736,6 +3865,27 @@ namespace SqlSugar
         {
             if (!isWhere) return this;
             this.Where<T>(whereString, whereObj);
+            return this;
+        }
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+            base.WhereClass(whereClass, ignoreDefaultValue);
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            base.WhereClass(whereClassTypes, ignoreDefaultValue);
             return this;
         }
         #endregion
