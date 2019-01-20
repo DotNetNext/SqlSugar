@@ -29,9 +29,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+    <ItemGroup>
   <Reference Include="SqlSugar">
     <HintPath>..\SugarCodeGeneration\bin\Debug\SqlSugar.dll</HintPath>
    </Reference>
+     </ItemGroup>
   <ItemGroup>
     <Reference Include="System"/>
     
