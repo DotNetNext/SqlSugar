@@ -3793,6 +3793,12 @@ namespace SqlSugar
                 _OrderBy(expression, type);
             return this;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
         #endregion
 
         #region GroupBy
