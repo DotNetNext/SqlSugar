@@ -46,7 +46,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return "ALTER TABLE {0} ADD COLUMN {1} {2}{3}";
             }
         }
         protected override string AlterColumnToTableSql
@@ -212,6 +212,7 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();

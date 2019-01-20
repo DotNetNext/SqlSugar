@@ -22,13 +22,16 @@ namespace OrmTest.Demo
         [SugarColumn(IsNullable = true,OldColumnName = "Dob")]
         public double? Dob2 { get; set; }
         [SugarColumn(Length =10)]
-        public string A { get; set; }
+        public string A1 { get; set; }
     }
     public class CodeTable2 {
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
         public int Id { get; set; }
         public string Name { get; set; }
         [SugarColumn(IsIgnore =true)]
         public string TestId { get; set; }
+        public string Test { get; set; }
+        public int Test22222x2 { get; set; }
     }
     public class CodeFirst : DemoBase
     {
@@ -46,7 +49,7 @@ namespace OrmTest.Demo
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
 
             //No backup table
-            db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
+            db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
         }
     }
 }
