@@ -39,7 +39,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        ISugarQueryable<T> WhereClass<ClassType>(List<ClassType> whereClassTypes,bool ignoreDefaultValue = false) where ClassType : class, new(); 
+        ISugarQueryable<T> WhereClass<ClassType>(List<ClassType> whereClassList,bool ignoreDefaultValue = false) where ClassType : class, new(); 
 
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object parameters = null);
