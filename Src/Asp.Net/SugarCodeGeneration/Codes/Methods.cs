@@ -14,6 +14,7 @@ namespace SugarCodeGeneration.Codes
     /// </summary>
     public class Methods
     {
+        public static Dictionary<string, string> ProjectIds = new Dictionary<string, string>();
         public static string GetCurrentProjectPath
         {
 
@@ -47,6 +48,7 @@ namespace SugarCodeGeneration.Codes
 
             XElement itemGroup = new XElement("ItemGroup");
             itemGroup.Add(new XElement("Name", refProjectName));
+            itemGroup.Add(new XElement("Project", "{" + ProjectIds[refProjectName] + "}"));
             itemGroup.Add(new XElement("ProjectReference", new XAttribute("Include", string.Format(@"..\{0}\{0}.csproj", refProjectName))));
             root.Add(itemGroup);
 
@@ -136,6 +138,7 @@ namespace SugarCodeGeneration.Codes
                 FileHelper.CreateFile(projectPath, project, System.Text.Encoding.UTF8);
                 FileHelper.CreateFile(projectDic + "\\class1.cs", "", System.Text.Encoding.UTF8);
                 //没成功File.Copy(GetCurrentProjectPath + "/Template/nuget.txt", projectDic + "packages.config");
+                ProjectIds.Add(name, projectId);
                 AppendProjectToSln(projectId, name);
             }
         }
