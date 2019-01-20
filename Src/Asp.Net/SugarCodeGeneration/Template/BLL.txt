@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class @(Model.Name)Manager : DbContext<@Model.Name>
 {
  
-    //如果要修改生成的默认增删查改方法，请修改SugarCodeGeneration项目下的BLL模版
+    //如果要修改生成的默认增删查改方法，请修改SugarCodeGeneration项目下的BLL和DbContext模版
     //我们如果有特殊需要可以重写DbContext中默认 增、删、查、改、方法
     //这里面写的代码不会给覆盖,如果要重新生成请删除 MyOrderManager.cs
 
@@ -34,7 +34,7 @@ public class @(Model.Name)Manager : DbContext<@Model.Name>
 
         //组装条件查询作为条件实现 分页查询加排序
         List<IConditionalModel> conModels = new List<IConditionalModel>();
-        conModels.Add(new ConditionalModel() { FieldName = typeof(MyOrder).GetProperties()[0].Name, ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
+        conModels.Add(new ConditionalModel() { FieldName = typeof(@Model.Name).GetProperties()[0].Name, ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
         var data7 = MyOrderDb.GetPageList(conModels, p, it => SqlFunc.GetRandom(), OrderByType.Asc);
 
         //4.9.7.5支持了转换成queryable,我们可以用queryable实现复杂功能
