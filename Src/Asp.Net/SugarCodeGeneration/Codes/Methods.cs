@@ -47,9 +47,10 @@ namespace SugarCodeGeneration.Codes
             var root = xe.Root;
 
             XElement itemGroup = new XElement("ItemGroup");
-            itemGroup.Add(new XElement("Name", refProjectName));
-            itemGroup.Add(new XElement("Project", "{" + ProjectIds[refProjectName] + "}"));
-            itemGroup.Add(new XElement("ProjectReference", new XAttribute("Include", string.Format(@"..\{0}\{0}.csproj", refProjectName))));
+            var refItem = new XElement("ProjectReference", new XAttribute("Include", string.Format(@"..\{0}\{0}.csproj", refProjectName)));
+            refItem.Add(new XElement("Name", refProjectName));
+            refItem.Add(new XElement("Project", "{" + ProjectIds[refProjectName] + "}"));
+            itemGroup.Add(refItem);
             root.Add(itemGroup);
 
             newXml = xe.ToString().Replace("xmlns=\"\"", "");
