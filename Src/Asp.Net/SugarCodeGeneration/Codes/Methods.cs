@@ -64,7 +64,7 @@ namespace SugarCodeGeneration.Codes
             xe.Save(xmlPath);
         }
 
-        public static void CreateBLL(string templatePath, string savePath, List<string> tables)
+        public static void CreateBLL(string templatePath, string savePath, List<string> tables,string classNamespace)
         {
 
             string template = System.IO.File.ReadAllText(templatePath); //从文件中读出模板内容
@@ -73,7 +73,8 @@ namespace SugarCodeGeneration.Codes
             {
                 BLLParameter model = new BLLParameter()
                 {
-                    Name = item
+                    Name = item,
+                    ClassNamespace= classNamespace
                 };
                 var result = Engine.Razor.RunCompile(template, templateKey, model.GetType(), model);
                 var cp = savePath + "\\" + item + "Manager.cs";

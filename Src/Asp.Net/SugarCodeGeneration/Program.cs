@@ -25,9 +25,9 @@ namespace SugarCodeGeneration
             /***生成实体***/
 
             //配置参数
-            string classProjectName = "Entity";//实体类项目名称
+            string classProjectName = "Sugar.Enties";//实体类项目名称
             string classPath = "DbModels";//生成的目录
-            string classNamespace = "MyTest";//实体命名空间
+            string classNamespace = "Sugar.Enties";//实体命名空间
             var classDirectory = Methods.GetSlnPath + "\\" + classProjectName + "\\" + classPath.TrimStart('\\');
             //执行生成
             GenerationClass(classProjectName, classPath, classNamespace, classDirectory);
@@ -40,7 +40,7 @@ namespace SugarCodeGeneration
             /***生成DbContext***/
 
             //配置参数
-            var contextProjectName = "BLL";//DbContext所在项目
+            var contextProjectName = "Sugar.BusinessCore";//DbContext所在项目
             var contextPath = "DbCore";//dbcontext存储目录
             var savePath = Methods.GetSlnPath + "\\" + contextProjectName + "\\" + contextPath + "\\DbContext.cs";//具体文件名
             var tables = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();
@@ -55,12 +55,12 @@ namespace SugarCodeGeneration
             /***生成BLL***/
 
             //配置参数
-            var bllProjectName2 = "BLL";//具体项目
-            var bllPath2 = "BaseBLL";//文件目录
+            var bllProjectName2 = "Sugar.BusinessCore";//具体项目
+            var bllPath2 = "BaseCore";//文件目录
             var savePath2 = Methods.GetSlnPath + "\\" + bllProjectName2 + "\\" + bllPath2;//保存目录
             var tables2 = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();
             //执行生成
-            GenerationBLL(bllProjectName2,bllPath2,savePath2, tables2);
+            GenerationBLL(bllProjectName2,bllPath2,savePath2, tables2, classNamespace);
             Print("BLL创建成功");
 
 
@@ -83,11 +83,11 @@ namespace SugarCodeGeneration
       /// <summary>
         /// 生成BLL
         /// </summary>
-        private static void GenerationBLL(string bllProjectName, string bllPath, string savePath, List<string>tables)
+        private static void GenerationBLL(string bllProjectName, string bllPath, string savePath, List<string>tables,string classNamespace)
         {
             var templatePath = Methods.GetCurrentProjectPath + "\\Template\\Bll.txt";//bll模版地址
             //下面代码不动
-            Methods.CreateBLL(templatePath, savePath, tables);
+            Methods.CreateBLL(templatePath, savePath, tables, classNamespace);
             AddTask(bllProjectName, bllPath);
         }
 

@@ -1,4 +1,4 @@
-﻿using MyTest;
+﻿using @Model.ClassNamespace;
 public class @(Model.Name)Manager : DbContext<@Model.Name>
 {
  
