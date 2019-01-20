@@ -1,4 +1,5 @@
-﻿using OrmTest.Models;
+﻿using OrmTest.Demo;
+using OrmTest.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,54 +12,69 @@ namespace OrmTest.Demo
         public static void Init()
         {
             var db = GetInstance();
+            db.CurrentConnectionConfig.InitKeyType = SqlSugar.InitKeyType.Attribute;
 
-            //auto fill ViewModelStudent3
-            var s11 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id)
-                        .Select<ViewModelStudent3>().ToList();
+            //create tables
+            db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(MyOrder),typeof(OrderItem),typeof(Person));
 
+            //init test data
+            db.DbMaintenance.TruncateTable("MyOrder");
+            db.DbMaintenance.TruncateTable("OrderItem");
+            db.DbMaintenance.TruncateTable("Person");
+            db.Insertable(new MyOrder() { orderName = "no1", orgId = "org1", masterPersonId=1 }).ExecuteCommand();
+            db.Insertable(new MyOrder() { orderName = "no2", orgId = "org2",masterPersonId=2 }).ExecuteCommand();
 
-            var s12 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select<ViewModelStudent3>()
-
-                .Mapper((it, cache) =>
-                {
-
-                    var allSchools = cache.GetListByPrimaryKeys<School>(vmodel => vmodel.SchoolId);
-                    //sql select shool where id (in（ViewModelStudent3[0].SchoolId , ViewModelStudent3[1].SchoolId...）
-
-                    //Equal to allSchools
-                    //var allSchools2= cache.Get(list =>
-                    // {
-                    //     var ids=list.Select(i => it.SchoolId).ToList(); 
-                    //     return db.Queryable<School>().In(ids).ToList();
-                    //});Complex writing metho
+            db.Insertable(new OrderItem() { masterOrderId=1}).ExecuteCommand();
+            db.Insertable(new OrderItem() {  masterOrderId=1}).ExecuteCommand();
+            db.Insertable(new OrderItem() { masterOrderId=2 }).ExecuteCommand();
+            db.Insertable(new OrderItem() { masterOrderId=2 }).ExecuteCommand();
 
 
-                    /*one to one*/
-                    //Good performance
-                    it.School = allSchools.FirstOrDefault(i => i.Id == it.SchoolId);
-
-                    //Poor performance.
-                    //it.School = db.Queryable<School>().InSingle(it.SchoolId); 
+            db.Insertable(new Person() {  orgId = "org1"}).ExecuteCommand();
+            db.Insertable(new Person() { orgId ="org1" }).ExecuteCommand();
 
 
-                    /*one to many*/
-                    it.Schools = allSchools.Where(i => i.Id == it.SchoolId).ToList();
+            //demo
 
+           var list= db.Queryable<MyOrder>()
+                .Mapper(it => it.masterPerson, it => it.masterPersonId)
+                .Mapper(it => it.Persons, it => it.orgId)
+                .Mapper(it => it.OrderItems, it => it.OrderItems.First().masterOrderId)
+                .Mapper(it => it.OrderItemSignle, it => it.OrderItemSignle.masterOrderId)
+                .Mapper(it => {
+                    it.orderName = it.orderName + "aa";//
+                })
+                .ToList();
 
-                    /*C# syntax conversion*/
-                    it.Name = it.Name == null ? "null" : it.Name;
+        }
+        public class MyOrder
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey=true,IsIdentity =true)]
+            public int orderId { get; set; }
+            public string orderName { get; set; }
+            public string orgId { get; set; }
+            public int masterPersonId { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public List<OrderItem> OrderItems { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public OrderItem OrderItemSignle { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public List<Person> Persons { get; set; }
+            [SqlSugar.SugarColumn(IsIgnore = true)]
+            public Person masterPerson { get; set; }
 
-                }).ToList();
-
-
-            var s13 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select<ViewModelStudent3>()
-
-                   .Mapper((it, cache) =>
-                   {
-                       it.Schools = db.Queryable<School>().Where(i => i.Id == it.SchoolId).ToList();
-                   }).ToList();
-
-
+        }
+        public class Person
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int PersonId { get; set; }
+            public string orgId { get; set; }
+        }
+        public class OrderItem
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int itemId { get; set; }
+            public int masterOrderId { get; set; }
         }
     }
 }
