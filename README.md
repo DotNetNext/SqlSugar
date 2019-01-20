@@ -401,6 +401,8 @@ var result = db.Ado.UseTran(() =>
     var endCount = db.Queryable<Student>().Count();
     throw new Exception("error haha");
 })
+//result.IsSucces
+//result.XXX
    ```
  ##  7. Use Store Procedure
 ```cs 
