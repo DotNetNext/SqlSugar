@@ -28,6 +28,19 @@ namespace SqlSugar
         ISugarQueryable<T> AddParameters(List<SugarParameter> parameters);
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
 
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass,bool ignoreDefaultValue=false)where ClassType: class,new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        ISugarQueryable<T> WhereClass<ClassType>(List<ClassType> whereClassTypes,bool ignoreDefaultValue = false) where ClassType : class, new(); 
+
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object parameters = null);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);

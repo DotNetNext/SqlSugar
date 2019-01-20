@@ -21,8 +21,10 @@ namespace OrmTest.Demo
             ConditionalModel();
             JoinExp();
             Clone();
+            WhereClassTest();
         }
 
+   
         private static void Clone()
         {
             var db = GetInstance();
@@ -118,6 +120,41 @@ namespace OrmTest.Demo
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private static void WhereClassTest()
+        {
+            var db = GetInstance();
+            var list=db.Queryable<Student>().WhereClass(new WhereClass() {  Id=1 }).ToList();
+            //where id=1
+            var list2 = db.Queryable<Student>().WhereClass(new WhereClass() {  Name="a"},ignoreDefaultValue:true).ToList();
+            //where name="a"
+            var list3 = db.Queryable<Student>().WhereClass(new WhereClass() { Name = "a" }).ToList();
+            //where id=0 and name="a"
+            var list4 = db.Queryable<Student>().WhereClass(new WhereClass() { SchoolId="1", Name = "a" },ignoreDefaultValue:true).ToList();
+            //school=1,name=a
+            var list5= db.Queryable<Student>().WhereClass(new WhereClass() { SchoolId = "1", Name = "a" }).ToList();
+            //school=1,name=a,id=0
+
+            var list6 = db.Queryable<Student>().WhereClass(new List<WhereClass>() {
+                                             new WhereClass(){ Name="a",SchoolId="1" },
+                                             new WhereClass(){ Id=1 }
+            },ignoreDefaultValue:true).ToList();
+            //(name=a and schoolid=1) or id=1
+
+            var list7 = db.Queryable<Student>().WhereClass(new List<WhereClass>() {
+                                             new WhereClass(){ Name="a",SchoolId="1" },
+                                             new WhereClass(){ Id=1 }
+            }).ToList();
+            //(name=a and schoolid=1 and id=0) or id=1
+        }
+
+        public class WhereClass{
+
+            public string Name { get; set; }
+            public int Id { get; set; }
+            public string SchoolId { get; set; }
+
         }
     }
 }

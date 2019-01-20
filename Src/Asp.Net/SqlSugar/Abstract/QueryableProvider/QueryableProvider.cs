@@ -97,7 +97,7 @@ namespace SqlSugar
         {
             return _Mapper<TObject>(mapperObject, mapperField);
         }
-        
+
         public virtual ISugarQueryable<T> AddParameters(object parameters)
         {
             if (parameters != null)
@@ -136,6 +136,70 @@ namespace SqlSugar
                     JoinType = type,
                     JoinWhere = joinWhere
                 });
+            return this;
+        }
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        public ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+            return WhereClass(new List<ClassType>() { whereClass },ignoreDefaultValue);
+        }
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public ISugarQueryable<T> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        {
+
+            if (whereClassTypes.HasValue())
+            {
+                var columns = this.Context.EntityMaintenance.GetEntityInfo<ClassType>().Columns.Where(it => it.IsIgnore == false).ToList();
+                List<IConditionalModel> whereModels = new List<IConditionalModel>();
+                foreach (var item in whereClassTypes)
+                {
+                    var cons = new ConditionalCollections();
+                    foreach (var column in columns)
+                    {
+
+                        var value = column.PropertyInfo.GetValue(item, null);
+                        WhereType WhereType = WhereType.And;
+                        var isNotNull = ignoreDefaultValue == false&&value != null ;
+                        var isNotNullAndDefault = ignoreDefaultValue&& value!=null && value.ObjToString() != UtilMethods.DefaultForType(column.PropertyInfo.PropertyType).ObjToString();
+                        if (isNotNull||isNotNullAndDefault)
+                        {
+                            if (cons.ConditionalList == null)
+                            {
+                                cons.ConditionalList = new List<KeyValuePair<WhereType, ConditionalModel>>();
+                                if (QueryBuilder.WhereInfos.IsNullOrEmpty() && whereModels.IsNullOrEmpty())
+                                {
+
+                                }
+                                else
+                                {
+                                    WhereType = WhereType.Or;
+                                }
+
+                            }
+                            cons.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
+                            {
+                                ConditionalType = ConditionalType.Equal,
+                                FieldName = column.DbColumnName,
+                                FieldValue = value.ObjToString()
+                            }));
+                        }
+                    }
+                    if (cons.HasValue())
+                    {
+                        whereModels.Add(cons);
+                    }
+                }
+                this.Where(whereModels);
+            }
             return this;
         }
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
@@ -1231,14 +1295,16 @@ namespace SqlSugar
             {
                 mapperObject = ((mapperObject as LambdaExpression).Body as UnaryExpression).Operand;
             }
-            else {
-                mapperObject= (mapperObject as LambdaExpression).Body;
+            else
+            {
+                mapperObject = (mapperObject as LambdaExpression).Body;
             }
             if ((mapperField as LambdaExpression).Body is UnaryExpression)
             {
                 mapperField = ((mapperField as LambdaExpression).Body as UnaryExpression).Operand;
             }
-            else {
+            else
+            {
                 mapperField = (mapperField as LambdaExpression).Body;
             }
             Check.Exception(mapperObject is MemberExpression == false || mapperField is MemberExpression == false, ".Mapper() parameter error");
@@ -1247,8 +1313,9 @@ namespace SqlSugar
             Check.Exception(mapperFieldExp.Type.IsClass(), ".Mapper() parameter error");
             var objType = mapperObjectExp.Type;
             var filedType = mapperFieldExp.Expression.Type;
-            Check.Exception(objType != typeof(TObject)&& objType != typeof(List<TObject>), ".Mapper() parameter error");
-            if (objType == typeof(List<TObject>)){
+            Check.Exception(objType != typeof(TObject) && objType != typeof(List<TObject>), ".Mapper() parameter error");
+            if (objType == typeof(List<TObject>))
+            {
                 objType = typeof(TObject);
             }
             var filedName = mapperFieldExp.Member.Name;
@@ -1286,7 +1353,7 @@ namespace SqlSugar
                     var list = this.Context.Queryable<TObject>().Where(wheres).ToList();
                     foreach (var item in entitys)
                     {
-                        var whereValue = item.GetType().GetProperty(filedName).GetValue(item,null);
+                        var whereValue = item.GetType().GetProperty(filedName).GetValue(item, null);
                         var setValue = list.Where(x => x.GetType().GetProperty(whereCol.PropertyName).GetValue(x, null).ObjToString() == whereValue.ObjToString()).ToList();
                         var setObject = item.GetType().GetProperty(objName);
                         if (setObject.PropertyType.FullName.IsCollectionsList())
@@ -2971,43 +3038,43 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, string orderFileds)
         {
             if (isOrderBy)
                 base.OrderBy(orderFileds);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5,T6, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
@@ -3380,49 +3447,49 @@ namespace SqlSugar
             _GroupBy(expression);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, string orderFileds)
         {
             if (isOrderBy)
                 base.OrderBy(orderFileds);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6,T7, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
@@ -3745,55 +3812,55 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, string orderFileds)
         {
             if (isOrderBy)
                 base.OrderBy(orderFileds);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
             return this;
         }
-        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, object>> expression, OrderByType type = OrderByType.Asc)
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc)
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
