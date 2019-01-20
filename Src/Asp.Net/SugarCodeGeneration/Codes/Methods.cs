@@ -33,6 +33,28 @@ namespace SugarCodeGeneration.Codes
             }
         }
 
+        public static void AddRef(string projectName, string refProjectName)
+        {
+
+            var xmlPath = GetSlnPath + @"\" + projectName + @"\" + projectName + ".csproj";
+
+            var xml = File.ReadAllText(xmlPath, System.Text.Encoding.UTF8);
+            if (xml.Contains(refProjectName)) return;
+            var firstLine = System.IO.File.ReadLines(xmlPath, System.Text.Encoding.UTF8).First();
+            var newXml = xml.Replace(firstLine, "").TrimStart('\r').TrimStart('\n');
+            XDocument xe = XDocument.Load(xmlPath);
+            var root = xe.Root;
+
+            XElement itemGroup = new XElement("ItemGroup");
+            itemGroup.Add(new XElement("Name", refProjectName));
+            itemGroup.Add(new XElement("ProjectReference", new XAttribute("Include", string.Format(@"..\{0}\{0}.csproj", refProjectName))));
+            root.Add(itemGroup);
+
+            newXml = xe.ToString().Replace("xmlns=\"\"", "");
+            xe = XDocument.Parse(newXml);
+            xe.Save(xmlPath);
+        }
+
         public static void AddCsproj(string classPath, string projectName)
         {
             CreateProject(projectName);
@@ -64,7 +86,7 @@ namespace SugarCodeGeneration.Codes
             xe.Save(xmlPath);
         }
 
-        public static void CreateBLL(string templatePath, string savePath, List<string> tables,string classNamespace)
+        public static void CreateBLL(string templatePath, string savePath, List<string> tables, string classNamespace)
         {
 
             string template = System.IO.File.ReadAllText(templatePath); //从文件中读出模板内容
@@ -74,7 +96,7 @@ namespace SugarCodeGeneration.Codes
                 BLLParameter model = new BLLParameter()
                 {
                     Name = item,
-                    ClassNamespace= classNamespace
+                    ClassNamespace = classNamespace
                 };
                 var result = Engine.Razor.RunCompile(template, templateKey, model.GetType(), model);
                 var cp = savePath + "\\" + item + "Manager.cs";
@@ -96,7 +118,7 @@ namespace SugarCodeGeneration.Codes
         {
             var templatePath = GetCurrentProjectPath + "/Template/Project.txt";
             string projectId = Guid.NewGuid().ToString();
-            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid", projectId).Replace("@AssemblyName",name); //从文件中读出模板内容
+            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid", projectId).Replace("@AssemblyName", name); //从文件中读出模板内容
             var projectPath = GetSlnPath + "\\" + name + "\\" + name + ".csproj";
             var projectDic = GetSlnPath + "\\" + name + "\\";
             var binDic = GetSlnPath + "\\" + name + "\\bin";

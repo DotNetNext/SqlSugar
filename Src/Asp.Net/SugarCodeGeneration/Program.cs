@@ -12,7 +12,7 @@ namespace SugarCodeGeneration
 {
     class Program
     {
-        //数据库配置
+        //如果你不需要自定义，直接配好数据库连接，F5运行项目
         const SqlSugar.DbType dbType = SqlSugar.DbType.SqlServer;
         const string connectionString = "server=.;uid=sa;pwd=@jhl85661501;database=SqlSugar4XTest";
  
@@ -70,6 +70,11 @@ namespace SugarCodeGeneration
             /***修改解决方案***/
             UpdateCsproj();
             Print("项目解决方案修改成功");
+
+
+            /***添加项目引用***/
+            Methods.AddRef(bllProjectName2,classProjectName);
+            Print("引用添加成功");
 
             //如何使用创建好的业务类（注意 SchoolManager 不能是静态的）
             //SchoolManager sm = new SchoolManager();
