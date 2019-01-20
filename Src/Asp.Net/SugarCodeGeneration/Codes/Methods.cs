@@ -95,7 +95,7 @@ namespace SugarCodeGeneration.Codes
         {
             var templatePath = GetCurrentProjectPath + "/Template/Project.txt";
             string projectId = Guid.NewGuid().ToString();
-            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid", projectId); //从文件中读出模板内容
+            string project = System.IO.File.ReadAllText(templatePath).Replace("@pid", projectId).Replace("@AssemblyName",name); //从文件中读出模板内容
             var projectPath = GetSlnPath + "\\" + name + "\\" + name + ".csproj";
             var projectDic = GetSlnPath + "\\" + name + "\\";
             var binDic = GetSlnPath + "\\" + name + "\\bin";

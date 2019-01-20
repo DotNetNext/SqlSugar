@@ -40,7 +40,7 @@ namespace SugarCodeGeneration
             /***生成DbContext***/
 
             //配置参数
-            var contextProjectName = "Dal";//DbContext所在项目
+            var contextProjectName = "BLL";//DbContext所在项目
             var contextPath = "DbCore";//dbcontext存储目录
             var savePath = Methods.GetSlnPath + "\\" + contextProjectName + "\\" + contextPath + "\\DbContext.cs";//具体文件名
             var tables = db.DbMaintenance.GetTableInfoList().Select(it => it.Name).ToList();

@@ -7,8 +7,8 @@
     <ProjectGuid>@pid</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary1</RootNamespace>
-    <AssemblyName>ClassLibrary1</AssemblyName>
+    <RootNamespace>@AssemblyName</RootNamespace>
+    <AssemblyName>@AssemblyName</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
