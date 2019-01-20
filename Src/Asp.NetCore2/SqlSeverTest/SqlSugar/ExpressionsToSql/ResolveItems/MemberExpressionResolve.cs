@@ -218,7 +218,7 @@ namespace SqlSugar
             if (this.Expression.Type == UtilConstants.DateType && this.Expression.ToString() == "DateTime.Now")
             {
                 this.Expression = expression;
-                var parameterName=base.AppendParameter(ExpressionTool.GetMemberValue(expression.Member, expression));
+                var parameterName = base.AppendParameter(ExpressionTool.GetMemberValue(expression.Member, expression));
                 base.AppendMember(parameter, isLeft, parameterName);
             }
             else
@@ -254,6 +254,14 @@ namespace SqlSugar
 
         private void ResolveLength(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
         {
+            if (parameter.Context.ResolveType == ResolveExpressType.FieldSingle)
+            {
+                parameter.Context.ResolveType = ResolveExpressType.WhereSingle;
+            }
+            if (parameter.Context.ResolveType == ResolveExpressType.FieldMultiple)
+            {
+                parameter.Context.ResolveType = ResolveExpressType.WhereMultiple;
+            }
             var oldCommonTempDate = parameter.CommonTempData;
             parameter.CommonTempData = CommonTempDataType.Result;
             this.Expression = expression.Expression;

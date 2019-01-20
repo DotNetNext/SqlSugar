@@ -396,6 +396,9 @@ namespace SqlSugar
                     }
                     this.Context.Result.Append(this.Context.GetAsString(asName, newContext.Result.GetString()));
                     this.Context.Result.CurrentParameter = null;
+                    if (this.Context.SingleTableNameSubqueryShortName.IsNullOrEmpty() && newContext.SingleTableNameSubqueryShortName.HasValue()) {
+                        this.Context.SingleTableNameSubqueryShortName = newContext.SingleTableNameSubqueryShortName;
+                    }
                 }
             }
             else if (item.Type.IsClass())

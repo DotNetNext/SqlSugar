@@ -47,7 +47,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return "ALTER TABLE {0} ADD COLUMN {1} {2}{3}";
             }
         }
         protected override string AlterColumnToTableSql

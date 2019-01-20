@@ -21,10 +21,25 @@ namespace SqlSugar
         ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
         ISugarQueryable<T> Mapper(Action<T> mapperAction);
         ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction);
+        ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mapperField);
+        ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mapperField);
         ISugarQueryable<T> AddParameters(object parameters);
         ISugarQueryable<T> AddParameters(SugarParameter[] parameters);
         ISugarQueryable<T> AddParameters(List<SugarParameter> parameters);
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass,bool ignoreDefaultValue=false)where ClassType: class,new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        ISugarQueryable<T> WhereClass<ClassType>(List<ClassType> whereClassList,bool ignoreDefaultValue = false) where ClassType : class, new(); 
 
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object parameters = null);
@@ -142,6 +157,18 @@ namespace SqlSugar
 
         new ISugarQueryable<T, T2> Where(string whereString, object whereObj = null);
         new ISugarQueryable<T, T2> WhereIF(bool isWhere, string whereString, object whereObj = null);
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T,T2> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T,T2> WhereClass<ClassType>(List<ClassType> whereClassList, bool ignoreDefaultValue = false) where ClassType : class, new();
         #endregion
 
         #region Select
@@ -210,6 +237,19 @@ namespace SqlSugar
 
         new ISugarQueryable<T, T2, T3> Where(string whereString, object parameters = null);
         new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, string whereString, object parameters = null);
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2,T3> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2,T3> WhereClass<ClassType>(List<ClassType> whereClassList, bool ignoreDefaultValue = false) where ClassType : class, new();
         #endregion
 
         #region Select
@@ -288,6 +328,19 @@ namespace SqlSugar
 
         new ISugarQueryable<T, T2, T3, T4> Where(string whereString, object parameters = null);
         new ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, string whereString, object parameters = null);
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2,T3,T4> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2,T3,T4> WhereClass<ClassType>(List<ClassType> whereClassList, bool ignoreDefaultValue = false) where ClassType : class, new();
         #endregion
 
         #region Select
@@ -378,6 +431,19 @@ namespace SqlSugar
 
         new ISugarQueryable<T, T2, T3, T4, T5> Where(string whereString, object parameters = null);
         new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, string whereString, object parameters = null);
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassList, bool ignoreDefaultValue = false) where ClassType : class, new();
         #endregion
 
         #region Select
@@ -456,6 +522,20 @@ namespace SqlSugar
 
         new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(string whereString, object parameters = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, string whereString, object parameters = null);
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereClass<ClassType>(List<ClassType> whereClassList, bool ignoreDefaultValue = false) where ClassType : class, new();
+
         #endregion
 
         #region Select
@@ -473,6 +553,13 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, string orderFileds);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5,T6, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
@@ -533,6 +620,20 @@ namespace SqlSugar
 
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(string whereString, object parameters = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereIF(bool isWhere, string whereString, object parameters = null);
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(List<ClassType> whereClassList, bool ignoreDefaultValue = false) where ClassType : class, new();
+
         #endregion
 
         #region Select
@@ -552,6 +653,14 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, string orderFileds);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6,T7, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy
@@ -615,6 +724,20 @@ namespace SqlSugar
 
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(string whereString, object parameters = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereIF(bool isWhere, string whereString, object parameters = null);
+
+        /// <summary>
+        /// if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClass"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new();
+        /// <summary>
+        ///  if a property that is not empty is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WhereClass<ClassType>(List<ClassType> whereClassList, bool ignoreDefaultValue = false) where ClassType : class, new();
+
         #endregion                              
 
         #region Select
@@ -636,6 +759,15 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, string orderFileds);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, object>> expression, OrderByType type = OrderByType.Asc);
         #endregion
 
         #region GroupBy

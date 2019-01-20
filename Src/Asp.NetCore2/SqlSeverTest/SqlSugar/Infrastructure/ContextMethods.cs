@@ -456,7 +456,11 @@ namespace SqlSugar
                             var index = item.ConditionalList.IndexOf(con);
                             var isFirst = index == 0;
                             var isLast = index == (item.ConditionalList.Count - 1);
-                            if (isFirst)
+                            if (models.IndexOf(item) == 0 &&index==0&& beginIndex == 0)
+                            {
+                                builder.AppendFormat(" ( ");
+
+                            }else if (isFirst)
                             {
                                 builder.AppendFormat(" {0} ( ", con.Key.ToString().ToUpper());
                             }

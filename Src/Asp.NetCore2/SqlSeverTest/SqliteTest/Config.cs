@@ -8,6 +8,15 @@ namespace OrmTest
 {
     public class Config
     {
-        public static string ConnectionString = @"DataSource=F:\MyOpenSource\SqlSugar4.XNew\SqlSugar\Src\Asp.NetCore2\SqlSeverTest\SqliteTest\DataBase\SqlSugar4xTest.sqlite";
+        public static string GetCurrentProjectPath
+        {
+
+            get
+            {
+                return Environment.CurrentDirectory.Replace(@"\bin\Debug", "");
+            }
+        }
+        public static string ConnectionString = @"DataSource=" + GetCurrentProjectPath + @"\DataBase\SqlSugar4xTest.sqlite";
     }
 }
+

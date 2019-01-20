@@ -35,14 +35,25 @@ namespace SqlSugar
         #region Core
         public virtual int ExecuteCommand()
         {
+            if (InsertBuilder.DbColumnInfoList.HasValue())
+            {
+                var pks = GetPrimaryKeys();
+                foreach (var item in InsertBuilder.DbColumnInfoList)
+                {
+                    var isPk = pks.Any(y => y.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || item.IsPrimarykey;
+                    if (isPk && item.PropertyType == UtilConstants.GuidType&&item.Value.ObjToString()==Guid.Empty.ToString()) {
+                        item.Value = Guid.NewGuid();
+                    }
+                }
+            }
             InsertBuilder.IsReturnIdentity = false;
             PreToSql();
             AutoRemoveDataCache();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             Before(sql);
-            var result= Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
-            After(sql,null);
+            var result = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            After(sql, null);
             return result;
         }
 
@@ -63,8 +74,8 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             Before(sql);
-            var result= Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
-            After(sql,result);
+            var result = Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            After(sql, result);
             return result;
         }
         public virtual long ExecuteReturnBigIdentity()
@@ -75,8 +86,8 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
             Before(sql);
-            var result= Convert.ToInt64( Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
-            After(sql,result);
+            var result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+            After(sql, result);
             return result;
         }
         public virtual T ExecuteReturnEntity()
@@ -92,13 +103,13 @@ namespace SqlSugar
             var idValue = ExecuteReturnBigIdentity();
             Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
             var identityKey = identityKeys.First();
-            object setValue= 0;
+            object setValue = 0;
             if (idValue > int.MaxValue)
                 setValue = idValue;
             else
                 setValue = Convert.ToInt32(idValue);
-            this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result,setValue, null);
-            return idValue>0;
+            this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
+            return idValue > 0;
         }
         public Task<int> ExecuteCommandAsync()
         {
@@ -181,7 +192,7 @@ namespace SqlSugar
         public IInsertable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
             var ignoreColumns = InsertBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Any(ig=>ig.Equals(it.PropertyName,StringComparison.CurrentCultureIgnoreCase))).ToList();
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => ignoreColumns.Any(ig => ig.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase))).ToList();
             return this;
         }
 
@@ -314,14 +325,14 @@ namespace SqlSugar
         }
         private void SetInsertItemByDic(int i, T item, List<DbColumnInfo> insertItem)
         {
-            foreach (var column in item as Dictionary<string,object>)
+            foreach (var column in item as Dictionary<string, object>)
             {
                 var columnInfo = new DbColumnInfo()
                 {
                     Value = column.Value,
                     DbColumnName = column.Key,
                     PropertyName = column.Key,
-                    PropertyType = column.Value == null? DBNull.Value.GetType(): UtilMethods.GetUnderType(column.Value.GetType()),
+                    PropertyType = column.Value == null ? DBNull.Value.GetType() : UtilMethods.GetUnderType(column.Value.GetType()),
                     TableId = i
                 };
                 if (columnInfo.PropertyType.IsEnum())
@@ -428,19 +439,20 @@ namespace SqlSugar
             return asyncInsertable;
         }
 
-        private void After(string sql,long? result)
+        private void After(string sql, long? result)
         {
             if (this.IsEnableDiffLogEvent)
             {
                 var parameters = InsertBuilder.Parameters;
                 if (parameters == null)
                     parameters = new List<SugarParameter>();
-                diffModel.AfterData = GetDiffTable(sql,result);
+                diffModel.AfterData = GetDiffTable(sql, result);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);
             }
-            if (this.RemoveCacheFunc != null) {
+            if (this.RemoveCacheFunc != null)
+            {
                 this.RemoveCacheFunc();
             }
         }
@@ -456,22 +468,24 @@ namespace SqlSugar
                 diffModel.Parameters = parameters.ToArray();
             }
         }
-        private List<DiffLogTableInfo> GetDiffTable(string sql,long? identity)
+        private List<DiffLogTableInfo> GetDiffTable(string sql, long? identity)
         {
             List<SugarParameter> parameters = new List<SugarParameter>();
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = string.Empty;
             List<IConditionalModel> cons = new List<IConditionalModel>();
-            if (identity != null&&identity>0 && GetIdentityKeys().HasValue())
+            if (identity != null && identity > 0 && GetIdentityKeys().HasValue())
             {
                 var fieldName = GetIdentityKeys().Last();
-                 cons.Add(new ConditionalModel() { ConditionalType=ConditionalType.Equal, FieldName= fieldName, FieldValue=identity.ToString() });
+                cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString() });
             }
-            else {
-                foreach(var item in this.EntityInfo.Columns.Where(it => it.IsIgnore == false&&GetPrimaryKeys().Any(pk=>pk.Equals(it.DbColumnName,StringComparison.CurrentCultureIgnoreCase)))) {
+            else
+            {
+                foreach (var item in this.EntityInfo.Columns.Where(it => it.IsIgnore == false && GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))))
+                {
                     var fielddName = item.DbColumnName;
                     var fieldValue = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null).ObjToString();
-                    cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue =fieldValue });
+                    cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue });
                 }
             }
             Check.Exception(cons.IsNullOrEmpty(), "Insertable.EnableDiffLogEvent need primary key");
@@ -499,7 +513,8 @@ namespace SqlSugar
                 }
                 return result;
             }
-            else {
+            else
+            {
                 DiffLogTableInfo diffTable = new DiffLogTableInfo();
                 diffTable.TableName = this.EntityInfo.DbTableName;
                 diffTable.TableDescription = this.EntityInfo.TableDescription;
@@ -511,7 +526,7 @@ namespace SqlSugar
                 }).ToList();
                 return new List<DiffLogTableInfo>() { diffTable };
             }
-           
+
         }
         #endregion
     }
