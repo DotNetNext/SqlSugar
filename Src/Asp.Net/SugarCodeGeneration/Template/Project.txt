@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <Reference Include="SqlSugar">
+    <HintPath>..\SugarCodeGeneration\bin\Debug\SqlSugar.dll</HintPath>
+   </Reference>
   <ItemGroup>
     <Reference Include="System"/>
     
@@ -45,6 +48,12 @@
   </ItemGroup>
   <ItemGroup>
    <Compile Include="Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\@AssemblyName\@AssemblyName.csproj">
+      <Project>{cd48342c-f572-46be-b2a5-4fecf825dd91}</Project>
+      <Name>Sugar.Enties</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
