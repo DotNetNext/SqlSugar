@@ -271,7 +271,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList())
+            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList()|| pkValues.First() is IEnumerable)
             {
                 var newValues = new List<object>();
                 foreach (var item in pkValues.First() as IEnumerable)

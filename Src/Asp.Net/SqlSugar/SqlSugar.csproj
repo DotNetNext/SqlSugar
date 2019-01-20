@@ -73,6 +73,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Abstract\SaveableProvider\SaveableProvider.cs" />
     <Compile Include="CacheScheme\CacheKeyBuider.cs" />
     <Compile Include="CacheScheme\CacheSchemeMain.cs" />
     <Compile Include="Entities\CacheKey.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="ExternalServiceInterface\ISerializeService.cs" />
     <Compile Include="Entities\DefaultServices.cs" />
     <Compile Include="Infrastructure\Mapper.cs" />
+    <Compile Include="Interface\ISaveable.cs" />
     <Compile Include="OnlyNet\PostgreSQLExpressionContext.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />

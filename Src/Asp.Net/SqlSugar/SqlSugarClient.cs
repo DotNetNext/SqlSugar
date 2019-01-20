@@ -561,6 +561,17 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Saveable
+        public ISaveable<T> Saveable<T>(List<T> saveObjects)where T:class,new()
+        {
+           return new SaveableProvider<T>(this,saveObjects);
+        }
+        public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
+        {
+            return new SaveableProvider<T>(this,saveObject);
+        }
+        #endregion
+
         #region DbFirst
         public virtual IDbFirst DbFirst
         {

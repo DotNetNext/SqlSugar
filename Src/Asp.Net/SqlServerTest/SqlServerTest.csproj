@@ -58,6 +58,7 @@
     <Compile Include="BugTest\BugModels\tLogonHistoryModel.cs" />
     <Compile Include="BugTest\BugModels\VipAccountsModel.cs" />
     <Compile Include="BugTest\BugModels\VipBenefitsModel.cs" />
+    <Compile Include="Demos\IInsertOrUpdate.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="BugTest\Bug1.cs" />
     <Compile Include="Models\VendorAndBrand.cs" />

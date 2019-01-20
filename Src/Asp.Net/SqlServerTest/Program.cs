@@ -60,6 +60,7 @@ namespace OrmTest
             Demo.ExtEntity.Init();
             Demo.VersionValidation.Init();
             Demo.Delete.Init();
+            Demo.IInsertOrUpdate.Init();
         }
     }
 }
