@@ -16,6 +16,6 @@ namespace OrmTest
                 return Environment.CurrentDirectory.Replace(@"\bin\Debug", "");
             }
         }
-        public static string ConnectionString = @"DataSource=GetCurrentProjectPath\DataBase\SqlSugar4xTest.sqlite";
+        public static string ConnectionString = @"DataSource="+ GetCurrentProjectPath + @"\DataBase\SqlSugar4xTest.sqlite";
     }
 }
