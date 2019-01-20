@@ -243,6 +243,11 @@ var t2 = db.Ado.GetInt("select 1");
 var t3 = db.Ado.GetDataTable("select 1 as id");
 //more
 //db.Ado.GetXXX...
+
+//sql to queryable 
+
+var t5 = db.SqlQueryable<Student>("select * from student").Where(it=>it.id>0).ToPageList(1, 2,ref count);
+var t6 = db.SqlQueryable<dynamic>("select * from student").ToPageList(1, 2,ref count);// return List<dynamic>
  ```
 
 ### 1.9 Where
