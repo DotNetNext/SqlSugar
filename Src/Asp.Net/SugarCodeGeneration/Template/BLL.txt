@@ -65,7 +65,7 @@ public class @(Model.Name)Manager : DbContext<@Model.Name>
         var updateArray = new Student[] { student };//测试参数
         @(Model.Name)Db.Update(updateData);//根据实体更新
         @(Model.Name)Db.UpdateRange(updateArray);//批量更新
-        //@(Model.Name)Db.Update(it => new @Model.Name() { Name = "a", CreateTime = DateTime.Now }, it => it.id==1);// 只更新Name列和CreateTime列，其它列不更新，条件id=1
+        //@(Model.Name)Db.Update(it => new @(Model.Name)() { Name = "a", CreateTime = DateTime.Now }, it => it.id==1);// 只更新Name列和CreateTime列，其它列不更新，条件id=1
         @(Model.Name).AsUpdateable(updateData).ExecuteCommand();
 
 
