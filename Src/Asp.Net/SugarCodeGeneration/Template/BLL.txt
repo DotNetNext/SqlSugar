@@ -52,7 +52,7 @@ public class @(Model.Name)Manager : DbContext<@Model.Name>
 
         /*********插入*********/
         var insertData = new @(Model.Name)() { };//测试参数
-        var insertArray = new @(Model.Name)[] { student };
+        var insertArray = new @(Model.Name)[] { insertData };
         @(Model.Name)Db.Insert(insertData);//插入
         @(Model.Name)Db.InsertRange(insertArray);//批量插入
         var id = @(Model.Name)Db.InsertReturnIdentity(insertData);//插入返回自增列
@@ -61,8 +61,8 @@ public class @(Model.Name)Manager : DbContext<@Model.Name>
 
 
 		/*********更新*********/
-	    var updateData = new Student() {  };//测试参数
-        var updateArray = new Student[] { student };//测试参数
+	    var updateData = new @(Model.Name)() {  };//测试参数
+        var updateArray = new @(Model.Name)[] { updateData };//测试参数
         @(Model.Name)Db.Update(updateData);//根据实体更新
         @(Model.Name)Db.UpdateRange(updateArray);//批量更新
         //@(Model.Name)Db.Update(it => new @(Model.Name)() { Name = "a", CreateTime = DateTime.Now }, it => it.id==1);// 只更新Name列和CreateTime列，其它列不更新，条件id=1
@@ -75,7 +75,7 @@ public class @(Model.Name)Manager : DbContext<@Model.Name>
         @(Model.Name)Db.Delete(deldata);//根据实体删除
         @(Model.Name)Db.DeleteById(1);//根据主键删除
         @(Model.Name)Db.DeleteById(new int[] { 1,2});//根据主键数组删除
-        @(Model.Name)Db.Delete(it=>1=2);//根据条件删除
+        @(Model.Name)Db.Delete(it=>1==2);//根据条件删除
         @(Model.Name)Db.AsDeleteable().Where(it=>1==2).ExecuteCommand();//转成Deleteable实现复杂的操作
     } 
     #endregion
