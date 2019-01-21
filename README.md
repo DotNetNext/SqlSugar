@@ -501,5 +501,8 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 
 ```
 
-More
+## 10. Code generator
+https://github.com/sunkaixuan/SoEasyPlatform
+
+More APi 中文文档：
 http://www.codeisbug.com/Doc/8
