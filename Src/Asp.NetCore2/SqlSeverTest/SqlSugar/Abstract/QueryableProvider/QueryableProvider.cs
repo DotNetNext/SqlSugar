@@ -146,7 +146,7 @@ namespace SqlSugar
         /// <returns></returns>
         public ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
-            return WhereClass(new List<ClassType>() { whereClass },ignoreDefaultValue);
+            return WhereClass(new List<ClassType>() { whereClass }, ignoreDefaultValue);
         }
         /// <summary>
         ///  if a property that is not empty is a condition
@@ -168,9 +168,9 @@ namespace SqlSugar
 
                         var value = column.PropertyInfo.GetValue(item, null);
                         WhereType WhereType = WhereType.And;
-                        var isNotNull = ignoreDefaultValue == false&&value != null ;
-                        var isNotNullAndDefault = ignoreDefaultValue&& value!=null && value.ObjToString() != UtilMethods.DefaultForType(column.PropertyInfo.PropertyType).ObjToString();
-                        if (isNotNull||isNotNullAndDefault)
+                        var isNotNull = ignoreDefaultValue == false && value != null;
+                        var isNotNullAndDefault = ignoreDefaultValue && value != null && value.ObjToString() != UtilMethods.DefaultForType(column.PropertyInfo.PropertyType).ObjToString();
+                        if (isNotNull || isNotNullAndDefault)
                         {
                             if (cons.ConditionalList == null)
                             {
@@ -271,7 +271,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList()|| pkValues.First() is IEnumerable)
+            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList() || (pkValues.First() is IEnumerable && pkValues.First().GetType() != UtilConstants.StringType))
             {
                 var newValues = new List<object>();
                 foreach (var item in pkValues.First() as IEnumerable)
@@ -2721,9 +2721,9 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
-             base.WhereClass(whereClass, ignoreDefaultValue);
+            base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
         }
         /// <summary>
@@ -2731,7 +2731,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
 
             base.WhereClass(whereClassTypes, ignoreDefaultValue);
@@ -3074,7 +3074,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
             base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
@@ -3457,7 +3457,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
             base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
@@ -3467,7 +3467,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
 
             base.WhereClass(whereClassTypes, ignoreDefaultValue);
