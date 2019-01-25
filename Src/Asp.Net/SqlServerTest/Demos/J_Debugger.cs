@@ -17,9 +17,9 @@ namespace OrmTest.Demo
 
             db.Queryable<Student>().ToList();
             db.Queryable<Student>().ToListAsync().Wait();
-            db.Insertable<Student>(new Student() { Name = "a" }).ExecuteCommandAsync();
-            db.Updateable<Student>(new Student() { Name = "a" }).ExecuteCommandAsync();
-            db.Deleteable<Student>(1111).ExecuteCommandAsync();
+            db.Insertable<Student>(new Student() { Name = "a" }).ExecuteCommandAsync().Wait();
+            db.Updateable<Student>(new Student() { Name = "a" }).ExecuteCommandAsync().Wait();
+            db.Deleteable<Student>(1111).ExecuteCommandAsync().Wait();
 
             var task = new Task(() =>
                                       {
