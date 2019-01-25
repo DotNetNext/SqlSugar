@@ -46,6 +46,17 @@ namespace OrmTest.Demo
                 })
                 .ToList();
 
+            var list2 = db.Queryable<MyOrder>()
+             .Mapper(it => it.masterPerson, it => it.masterPersonId)
+             .Mapper(it => it.Persons, it => it.orgId)
+             .Mapper(it => it.OrderItems, it => it.OrderItems.First().masterOrderId)
+             .Mapper(it => it.OrderItemSignle, it => it.OrderItemSignle.masterOrderId)
+             .Mapper(it => {
+                 it.orderName = it.orderName + "aa";//
+                })
+             .ToListAsync();
+            list2.Wait();
+
         }
         public class MyOrder
         {
