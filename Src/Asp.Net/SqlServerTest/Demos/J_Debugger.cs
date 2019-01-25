@@ -26,11 +26,12 @@ namespace OrmTest.Demo
                                           try
                                           {
                                               //is error 
+                                              Console.WriteLine("is error");
                                               db.Queryable<Student>().ToList();
                                           }
                                           catch (Exception ex)
                                           {
-                                              Console.WriteLine(ex.Message);
+                                             
                                           }
 
                                       });
@@ -38,15 +39,19 @@ namespace OrmTest.Demo
             task.Start();
             task.Wait();
 
-            var task2 = new Task(() =>
+            for (int i = 0; i < 10; i++)
             {
-                //is ok
-                var db2 = GetInstance();
-                db2.CurrentConnectionConfig.Debugger = new SqlSugar.SugarDebugger() { EnableThreadSecurityValidation = true };
-                db2.Queryable<Student>().ToList();
-            });
-            task2.Start();
-            task2.Wait();
+                var task2 = new Task(() =>
+                {
+                    //is ok
+                    Console.WriteLine("is ok");
+                    var db2 = GetInstance();
+                    db2.CurrentConnectionConfig.Debugger = new SqlSugar.SugarDebugger() { EnableThreadSecurityValidation = true };
+                    db2.Queryable<Student>().ToList();
+                });
+                task2.Start();
+                task2.Wait();
+            }
 
         }
 
