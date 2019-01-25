@@ -31,7 +31,7 @@ namespace OrmTest.Demo
                                           }
                                           catch (Exception ex)
                                           {
-                                             
+                                              Console.WriteLine(ex.Message);
                                           }
 
                                       });
@@ -47,6 +47,7 @@ namespace OrmTest.Demo
                     Console.WriteLine("is ok");
                     var db2 = GetInstance();
                     db2.CurrentConnectionConfig.Debugger = new SqlSugar.SugarDebugger() { EnableThreadSecurityValidation = true };
+                    db2.Queryable<Student>().ToList();
                     db2.Queryable<Student>().ToList();
                 });
                 task2.Start();
