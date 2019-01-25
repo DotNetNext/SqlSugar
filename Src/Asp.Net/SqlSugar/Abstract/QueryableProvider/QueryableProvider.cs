@@ -1346,7 +1346,7 @@ namespace SqlSugar
                     }
                     if (whereCol == null)
                     {
-                        whereCol = filedEntity.Columns.FirstOrDefault(it => (it.EntityName).Equals(it.EntityName+"id", StringComparison.CurrentCultureIgnoreCase));
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName+"id", StringComparison.CurrentCultureIgnoreCase));
                     }
                     if (whereCol == null)
                     {
@@ -1402,7 +1402,7 @@ namespace SqlSugar
                     }
                     if (whereCol == null)
                     {
-                        whereCol = tEntity.Columns.FirstOrDefault(it => (it.EntityName).Equals(it.EntityName + "id", StringComparison.CurrentCultureIgnoreCase));
+                        whereCol = tEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName + "id", StringComparison.CurrentCultureIgnoreCase));
                     }
                     if (whereCol == null)
                     {
