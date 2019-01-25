@@ -20,30 +20,34 @@ namespace OrmTest.Demo
             db.Insertable<Student>(new Student() { Name = "a" }).ExecuteCommandAsync();
             db.Updateable<Student>(new Student() { Name = "a" }).ExecuteCommandAsync();
             db.Deleteable<Student>(1111).ExecuteCommandAsync();
-            try
-            {
-                var task = new Task(() =>
+
+            var task = new Task(() =>
+                                      {
+                                          try
                                           {
+                                              //is error 
+                                              db.Queryable<Student>().ToList();
+                                          }
+                                          catch (Exception ex)
+                                          {
+                                              Console.WriteLine(ex.Message);
+                                          }
 
-                                              try
-                                              {
-                                                  //error 
-                                                  db.Queryable<Student>().ToList();
-                                              }
-                                              catch (Exception ex)
-                                              {
-                                                  Console.WriteLine(ex.Message);
+                                      });
 
-                                              }
+            task.Start();
+            task.Wait();
 
-                                          });
-                task.Start();
-                task.Wait();
-            }
-            finally
+            var task2 = new Task(() =>
             {
+                //is ok
+                var db2 = GetInstance();
+                db2.CurrentConnectionConfig.Debugger = new SqlSugar.SugarDebugger() { EnableThreadSecurityValidation = true };
+                db2.Queryable<Student>().ToList();
+            });
+            task2.Start();
+            task2.Wait();
 
-            }
         }
 
 

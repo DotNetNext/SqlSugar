@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using SqlSugar;
-using OrmTest.Models;
-using System.Data.SqlClient;
+﻿using OrmTest.PerformanceTesting;
 using OrmTest.UnitTest;
-using OrmTest.PerformanceTesting;
+using System;
 
 namespace OrmTest
 {
@@ -62,6 +53,9 @@ namespace OrmTest
             Demo.Delete.Init();
             Demo.InsertOrUpdate.Init();
             Demo.Debugger.Init();
+
+            Console.WriteLine("all successfully.");
+            Console.ReadKey();
         }
     }
 }
