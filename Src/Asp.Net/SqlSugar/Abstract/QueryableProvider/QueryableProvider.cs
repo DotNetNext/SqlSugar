@@ -1564,7 +1564,7 @@ namespace SqlSugar
                 asyncQueryable.Mapper(MapperAction);
             if (this.MapperActionWithCache != null)
                 asyncQueryable.Mapper(MapperActionWithCache);
-            if (this.Mappers != null && asyncContext is QueryableProvider<T>)
+            if (this.Mappers != null && ((asyncQueryable as QueryableProvider<T>)!=null))
             {
                 (asyncQueryable as QueryableProvider<T>).Mappers = this.Mappers;
             }
