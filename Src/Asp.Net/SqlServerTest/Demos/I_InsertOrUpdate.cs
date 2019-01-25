@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OrmTest.Demo
 {
-    public class IInsertOrUpdate : DemoBase
+    public class InsertOrUpdate : DemoBase
     {
         public static void Init()
         {

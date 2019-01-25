@@ -425,7 +425,7 @@ namespace SqlSugar
         {
             var asyncContext = this.Context.Utilities.CopyContext(true);
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-
+            asyncContext.IsAsyncMethod = true;
             var asyncInsertable = asyncContext.Insertable<T>(this.InsertObjs);
             var asyncInsertableBuilder = asyncInsertable.InsertBuilder;
             asyncInsertableBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList;

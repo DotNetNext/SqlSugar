@@ -1557,6 +1557,7 @@ namespace SqlSugar
         protected ISugarQueryable<T> CopyQueryable()
         {
             var asyncContext = this.Context.Utilities.CopyContext(true);
+            asyncContext.IsAsyncMethod = true;
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
             if (this.MapperAction != null)
