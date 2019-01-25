@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -674,6 +675,22 @@ namespace SqlSugar
         }
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
+            if (this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true) {
+
+                var processId = Process.GetCurrentProcess().Id;
+                var contextId = this.Context.ContextID.ToString();
+                var cache = new ReflectionInoCacheService();
+                if (!cache.ContainsKey<int>(contextId))
+                {
+                    cache.Add(contextId, processId);
+                }
+                else {
+                    var cacheValue = cache.Get<int>(contextId);
+                    if (processId != cacheValue) {
+                        new SqlSugarException(this.Context,ErrorMessage.GetThrowMessage("Detection of SqlSugarClient cross-threading usage,a thread needs a new one", "检测到声名的SqlSugarClient跨线程使用，请检查是否静态、是否单例、或者IOC配置错误引起的，保证一个线程new出一个对象 ，具本Sql:")+sql,parameters);
+                    }
+                }
+            }
             this.BeforeTime = DateTime.Now;
             if (this.IsEnableLogEvent)
             {
