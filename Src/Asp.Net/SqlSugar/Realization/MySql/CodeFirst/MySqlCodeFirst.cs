@@ -14,7 +14,7 @@ namespace SqlSugar
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.HasValue())
             {
-                foreach (var item in entityInfo.Columns)
+                foreach (var item in entityInfo.Columns.OrderBy(it => it.IsPrimarykey ? 0 : 1))
                 {
                     if (item.IsIgnore)
                         continue;
