@@ -44,6 +44,7 @@ namespace SqlSugar
                     if (isPk && item.PropertyType == UtilConstants.GuidType&&item.Value.ObjToString()==Guid.Empty.ToString()) {
                         item.Value = Guid.NewGuid();
                     }
+                    InsertObjs.First().GetType().GetProperties().First(it => it.Name == item.PropertyName).SetValue(InsertObjs.First(),item.Value,null);
                 }
             }
             InsertBuilder.IsReturnIdentity = false;
