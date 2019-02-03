@@ -1329,7 +1329,7 @@ namespace SqlSugar
             {
                 Action<List<T>> mapper = (entitys) =>
                 {
-                    if (entitys.IsNullOrEmpty()) return;
+                    if (entitys.IsNullOrEmpty()&&entitys.Any()) return;
                     var entity = entitys.First();
                     var whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
                     if (whereCol == null)
@@ -1384,7 +1384,7 @@ namespace SqlSugar
             {
                 Action<List<T>> mapper = (entitys) =>
                 {
-                    if (entitys.IsNullOrEmpty()) return;
+                    if (entitys.IsNullOrEmpty()&&entitys.Any()) return;
                     var entity = entitys.First();
                     var tEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
                     var whereCol = tEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
