@@ -1889,6 +1889,14 @@ namespace SqlSugar
             }
             return this;
         }
+
+        public bool Any(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
         #endregion
     }
     #endregion
@@ -2244,6 +2252,14 @@ namespace SqlSugar
                 this.CacheTime = cacheDurationInSeconds;
             }
             return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
         #endregion
     }
@@ -2659,6 +2675,14 @@ namespace SqlSugar
             }
             return this;
         }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
         #endregion
     }
     #endregion
@@ -2999,6 +3023,14 @@ namespace SqlSugar
                 this.CacheTime = cacheDurationInSeconds;
             }
             return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
         #endregion
     }
@@ -3371,6 +3403,14 @@ namespace SqlSugar
                 this.CacheTime = cacheDurationInSeconds;
             }
             return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
         #endregion
     }
@@ -3774,6 +3814,14 @@ namespace SqlSugar
                 this.CacheTime = cacheDurationInSeconds;
             }
             return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
         #endregion
     }
@@ -4210,6 +4258,14 @@ namespace SqlSugar
                 this.CacheTime = cacheDurationInSeconds;
             }
             return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
         #endregion
     }
