@@ -323,7 +323,7 @@ namespace OrmTest.Demo
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Student>().Select<object>("*").ToList();
-            var getAll2 = db.Queryable<Student>().ToList();
+            var getAll2 = db.Queryable<Student>().Select(it=>it.Name.Substring(0,4)).ToList();
             var getAll22 = db.Queryable<Student>().ToDataTable();
             var getAll222 = db.Queryable<Student>().ToJson();
             var getAll2222 = db.Queryable<Student>().OrderBy(it=>it.Name.Length).ToJson();
@@ -394,6 +394,7 @@ namespace OrmTest.Demo
             var test8 = db.Queryable<Student>().Where(it => SqlFunc.HasValue(it.SchoolId) && SqlFunc.HasValue(it.SchoolId)).ToList();
             bool? b = false;
             var test9 = db.Queryable<DataTestInfo2>().Where(it => it.Bool1 == b).ToList();
+            var test10 = db.Queryable<Student>(db.Queryable<Student>().Select(it => new Student() { Name = it.Name.Substring(0, 1) })).GroupBy(it => it.Name).ToList(); ;
         }
         public static void Page()
         {
