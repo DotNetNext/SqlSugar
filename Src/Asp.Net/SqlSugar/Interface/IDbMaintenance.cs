@@ -44,6 +44,7 @@ namespace SqlSugar
         bool AddTableRemark( string tableName, string description);
         bool DeleteTableRemark(string tableName);
         bool IsAnyTableRemark(string tableName);
+        bool RenameTable(string oldTableName,string newTableName);
         #endregion
     }
 }

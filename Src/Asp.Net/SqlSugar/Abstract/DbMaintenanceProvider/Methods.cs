@@ -281,6 +281,13 @@ namespace SqlSugar
             }
             return true;
         }
+
+        public virtual bool RenameTable(string oldTableName, string newTableName)
+        {
+            string sql = string.Format(this.RenameTableSql, oldTableName,newTableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         #endregion
 
         #region Private

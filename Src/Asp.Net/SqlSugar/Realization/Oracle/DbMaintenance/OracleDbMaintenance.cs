@@ -217,6 +217,13 @@ namespace SqlSugar
                 return "select * from user_tab_comments where Table_Name='{0}'order by Table_Name";
             }
         }
+
+        protected override string RenameTableSql {
+            get
+            {
+                return "alter table {0} rename to {1}";
+            }
+        }
         #endregion
 
         #region Methods
