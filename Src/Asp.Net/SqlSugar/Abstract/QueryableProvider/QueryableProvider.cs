@@ -573,6 +573,11 @@ namespace SqlSugar
             return mergeQueryable.AS(tableName).Select<T>("*");
         }
 
+        public ISugarQueryable<T> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         public virtual int Count()
         {
             InitMapping();
@@ -1588,6 +1593,7 @@ namespace SqlSugar
             asyncQueryableBuilder.TableShortName = this.QueryBuilder.TableShortName;
             asyncQueryableBuilder.TableWithString = this.QueryBuilder.TableWithString;
             asyncQueryableBuilder.GroupByValue = this.QueryBuilder.GroupByValue;
+            asyncQueryableBuilder.IsDistinct = this.QueryBuilder.IsDistinct;
             asyncQueryableBuilder.OrderByValue = this.QueryBuilder.OrderByValue;
             asyncQueryableBuilder.IsDisabledGobalFilter = this.QueryBuilder.IsDisabledGobalFilter;
             asyncQueryableBuilder.PartitionByValue = this.QueryBuilder.PartitionByValue;
@@ -1596,6 +1602,7 @@ namespace SqlSugar
             asyncQueryableBuilder.HavingInfos = this.QueryBuilder.HavingInfos;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
         }
+
         #endregion
     }
     #endregion
@@ -1896,6 +1903,11 @@ namespace SqlSugar
             var result = Any();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
+        }
+        public new ISugarQueryable<T,T2> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
         }
         #endregion
     }
@@ -2260,6 +2272,11 @@ namespace SqlSugar
             var result = Any();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
+        }
+        public new ISugarQueryable<T, T2,T3> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
         }
         #endregion
     }
@@ -2683,6 +2700,11 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
+        public new ISugarQueryable<T, T2, T3,T4> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         #endregion
     }
     #endregion
@@ -3031,6 +3053,11 @@ namespace SqlSugar
             var result = Any();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4,T5> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
         }
         #endregion
     }
@@ -3411,6 +3438,11 @@ namespace SqlSugar
             var result = Any();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
         }
         #endregion
     }
@@ -3822,6 +3854,11 @@ namespace SqlSugar
             var result = Any();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
         }
         #endregion
     }
@@ -4266,6 +4303,11 @@ namespace SqlSugar
             var result = Any();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
         }
         #endregion
     }

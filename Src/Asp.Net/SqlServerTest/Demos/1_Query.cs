@@ -395,6 +395,8 @@ namespace OrmTest.Demo
             bool? b = false;
             var test9 = db.Queryable<DataTestInfo2>().Where(it => it.Bool1 == b).ToList();
             var test10 = db.Queryable<Student>(db.Queryable<Student>().Select(it => new Student() { Name = it.Name.Substring(0, 1) })).GroupBy(it => it.Name).ToList(); ;
+            var test11 = db.Queryable<Student>().Distinct().ToList();
+            var test12 = db.Queryable<Student>().Distinct().Select(it=>new Student{ Name=it.Name  }).ToList();
         }
         public static void Page()
         {
