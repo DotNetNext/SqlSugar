@@ -49,6 +49,10 @@ namespace SqlSugar
             base.Expression = leftExpression;
             base.IsLeft = true;
             base.Start();
+            if (leftExpression is UnaryExpression && leftExpression.Type == UtilConstants.BoolType&&!this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
+            {
+                this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
+            }
             base.IsLeft = false;
             base.Expression = rightExpression;
             base.Start();
