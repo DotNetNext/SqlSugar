@@ -544,6 +544,10 @@ namespace SqlSugar
                 return true;
             if (IsParseMethod(expression)) 
                 return true;
+            if (expression.Method.Name == "IsNullOrEmpty"&&expression.Method.DeclaringType==UtilConstants.StringType)
+            {
+                return true;
+            }
             if (expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName)
                 return false;
             else
