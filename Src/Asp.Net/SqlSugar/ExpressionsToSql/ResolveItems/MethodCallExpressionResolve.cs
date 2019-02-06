@@ -249,6 +249,10 @@ namespace SqlSugar
                     new KeyValuePair<string, string>("End","0")
                  });
             }
+            if (parameter.Context.Index == 3 && parameter.BaseExpression == null &&this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple,ResolveExpressType.WhereSingle)&& (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
+            {
+                methodValue = methodValue + "=1 ";
+;           }
             base.AppendValue(parameter, isLeft, methodValue);
         }
 
