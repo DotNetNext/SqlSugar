@@ -402,6 +402,14 @@ namespace SqlSugar
             }
             else
             {
+                if (name == "Parse" && TempParseType.IsIn(UtilConstants.GuidType))
+                {
+                    name = "Equals";
+                }
+                else if(name== "Parse")
+                {
+                    name = "To"+TempParseType.Name;
+                }
                 switch (name)
                 {
                     case "IIF":
@@ -526,10 +534,30 @@ namespace SqlSugar
         {
             if (IsExtMethod(expression.Method.Name))
                 return true;
+            if (IsParseMethod(expression)) 
+                return true;
             if (expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName)
                 return false;
             else
                 return true;
+        }
+        private Type TempParseType;
+        public bool IsParseMethod(MethodCallExpression expression) 
+        {
+           if (expression.Method.Name == "Parse"&&expression.Method.DeclaringType.IsIn(
+                                                                                         UtilConstants.DecType,
+                                                                                         UtilConstants.DateType,
+                                                                                         UtilConstants.DobType,
+                                                                                         UtilConstants.GuidType,
+                                                                                         UtilConstants.FloatType,
+                                                                                         UtilConstants.ShortType,
+                                                                                         UtilConstants.LongType,
+                                                                                         UtilConstants.IntType))
+            {
+                TempParseType = expression.Method.DeclaringType;
+                    return true;
+            }
+            return false;
         }
     }
 }
