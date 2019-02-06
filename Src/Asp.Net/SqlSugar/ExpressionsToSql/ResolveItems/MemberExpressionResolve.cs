@@ -100,6 +100,37 @@ namespace SqlSugar
         #endregion
 
         #region Resolve Where
+        private void ResolveBoolLogic(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
+        {
+            string fieldName = string.Empty;
+            if (isSetTempData)
+            {
+                if (ExpressionTool.IsConstExpression(expression))
+                {
+                    var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+                    baseParameter.CommonTempData = value+"=1 ";
+                }
+                else
+                {
+                    fieldName = GetName(parameter, expression, null, isSingle);
+                    baseParameter.CommonTempData = fieldName+"=1 ";
+                }
+            }
+            else
+            {
+                if (ExpressionTool.IsConstExpression(expression))
+                {
+                    var value = ExpressionTool.GetMemberValue(expression.Member, expression);
+                    base.AppendValue(parameter, isLeft, value+"=1 ");
+                }
+                else
+                {
+                    fieldName = GetName(parameter, expression, isLeft, isSingle);
+                    AppendMember(parameter, isLeft, fieldName+"=1 ");
+                }
+            }
+        }
+
         private void ResolveWhereLogic(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
         {
             string fieldName = string.Empty;
@@ -137,7 +168,14 @@ namespace SqlSugar
         {
             expression = expression.Expression as MemberExpression;
             baseParameter.ChildExpression = expression;
-            ResolveWhereLogic(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            if (UtilMethods.GetUnderType(expression.Type) == UtilConstants.BoolType&&parameter.BaseExpression!=null&&ExpressionTool.IsLogicOperator(parameter.BaseExpression))
+            {
+                ResolveBoolLogic(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            }
+            else
+            {
+                ResolveWhereLogic(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            }
             return expression;
         }
 
@@ -248,7 +286,18 @@ namespace SqlSugar
                     methodParamter
                   }
             });
-            this.Context.Result.Append(result);
+            if (parameter.BaseExpression != null && ExpressionTool.IsLogicOperator(parameter.BaseExpression) && parameter.IsLeft == true)
+            {
+                if (base.Context.Result.Contains(ExpressionConst.FormatSymbol))
+                {
+                    base.Context.Result.Replace(ExpressionConst.FormatSymbol, "");
+                }
+                this.Context.Result.Append(result+" "+ExpressionTool.GetOperator(parameter.BaseExpression.NodeType)+" ");
+            }
+            else
+            {
+                this.Context.Result.Append(result);
+            }
             parameter.CommonTempData = null;
         }
 

@@ -399,6 +399,13 @@ namespace OrmTest.Demo
             var test12 = db.Queryable<Student>().Distinct().Select(it=>new Student{ Name=it.Name  }).ToList();
             var test13 = db.Queryable<Student>().Where(it=>DateTime.Parse("2014-1-1")==DateTime.Now).Where(it => Boolean.Parse("true") ==true).ToList();
             var test14 = db.Queryable<DataTestInfo2>().Where(it =>Convert.ToBoolean(it.Bool1)).ToList();
+            var test15 = db.Queryable<DataTestInfo2>().Where(it => it.Bool2.Value&&it.Bool1).ToList();
+            var test16 = db.Queryable<DataTestInfo2>().Where(it => !it.Bool2.Value && !it.Bool1).ToList();
+            var test17 = db.Queryable<DataTestInfo2>().Where(it => it.Bool1 && it.Bool1).ToList();
+            var test18 = db.Queryable<Student>().Where(it => it.SchoolId.HasValue&&it.SchoolId.HasValue).ToList();
+            var test19 = db.Queryable<Student>().Where(it => it.SchoolId.HasValue && it.SchoolId.HasValue&&it.SchoolId.HasValue).ToList();
+            var test20 = db.Queryable<Student>().Where(it => it.SchoolId.HasValue && SqlFunc.IsNullOrEmpty(it.Name)).ToList();
+            //var test24 = db.Queryable<Student>().Where(it => !it.SchoolId.HasValue && it.SchoolId.HasValue).ToList();
         }
         public static void Page()
         {
