@@ -165,7 +165,7 @@ namespace OrmTest.Demo
             var student1 = db.Queryable<Student>().InSingle(1);
 
             //get SimpleClient
-            var sdb = db.SimpleClient;
+            var sdb = db.GetSimpleClient();
             var student2 = sdb.GetById<Student>(1);
             sdb.DeleteById<Student>(1);
             sdb.Insert(new Student() { Name = "xx" });
@@ -398,6 +398,7 @@ namespace OrmTest.Demo
             var test11 = db.Queryable<Student>().Distinct().ToList();
             var test12 = db.Queryable<Student>().Distinct().Select(it=>new Student{ Name=it.Name  }).ToList();
             var test13 = db.Queryable<Student>().Where(it=>DateTime.Parse("2014-1-1")==DateTime.Now).Where(it => Boolean.Parse("true") ==true).ToList();
+            var test14 = db.Queryable<Student>().Where(it =>Convert.ToBoolean("1")).ToList();
         }
         public static void Page()
         {
