@@ -468,6 +468,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.ToInt64(model);
                     case "ToDate":
                         return this.Context.DbMehtods.ToDate(model);
+                    case "ToDateTime":
+                        return this.Context.DbMehtods.ToDate(model);
                     case "ToTime":
                         return this.Context.DbMehtods.ToTime(model);
                     case "ToString":
@@ -480,6 +482,8 @@ namespace SqlSugar
                     case "ToDouble":
                         return this.Context.DbMehtods.ToDouble(model);
                     case "ToBool":
+                        return this.Context.DbMehtods.ToBool(model);
+                    case "ToBoolean":
                         return this.Context.DbMehtods.ToBool(model);
                     case "Substring":
                         return this.Context.DbMehtods.Substring(model);
@@ -552,7 +556,8 @@ namespace SqlSugar
                                                                                          UtilConstants.FloatType,
                                                                                          UtilConstants.ShortType,
                                                                                          UtilConstants.LongType,
-                                                                                         UtilConstants.IntType))
+                                                                                         UtilConstants.IntType,
+                                                                                         UtilConstants.BoolType))
             {
                 TempParseType = expression.Method.DeclaringType;
                     return true;
