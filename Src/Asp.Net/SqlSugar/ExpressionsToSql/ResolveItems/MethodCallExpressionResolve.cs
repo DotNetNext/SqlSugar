@@ -62,6 +62,10 @@ namespace SqlSugar
             {
                 CaseWhenResolve caseResole = new CaseWhenResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = caseResole.GetSql();
+                var isRoot = contextIndex == 2&&parameter.BaseExpression==null;
+                if (isRoot||(parameter.BaseExpression!=null&&ExpressionTool.IsLogicOperator(parameter.BaseExpression))) {
+                    appendSql= appendSql+"=1 ";
+                }
                 if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle,ResolveExpressType.Update))
                 {
                     parameter.BaseParameter.CommonTempData = appendSql;
