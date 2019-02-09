@@ -129,7 +129,7 @@ namespace SqlSugar
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
                 var oppoSiteExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
-                if (parameter.CurrentExpression is MethodCallExpression)
+                if (parameter.CurrentExpression is MethodCallExpression||parameter.CurrentExpression is ConditionalExpression)
                 {
                     var appendValue = value;
                     if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
@@ -438,7 +438,7 @@ namespace SqlSugar
                     }
                 }
             }
-            else if (item is MethodCallExpression|| item is UnaryExpression)
+            else if (item is MethodCallExpression|| item is UnaryExpression||item is ConditionalExpression)
             {
                 this.Expression = item;
                 this.Start();

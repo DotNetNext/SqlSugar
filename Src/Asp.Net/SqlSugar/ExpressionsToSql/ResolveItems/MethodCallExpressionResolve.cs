@@ -12,6 +12,7 @@ namespace SqlSugar
         public MethodCallExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var express = base.Expression as MethodCallExpression;
+            if (express == null) return;
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
             var isValidNativeMethod = IsValidNativeMethod(express, methodName);
@@ -103,7 +104,7 @@ namespace SqlSugar
                 return false;
         }
 
-        private void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
+        protected void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
         {
             if (!CheckMethod(express))
             {
@@ -188,7 +189,7 @@ namespace SqlSugar
             }
         }
 
-        private void Field(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
+        protected void Field(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             if (this.Context.ResolveType == ResolveExpressType.FieldSingle)
             {
@@ -200,7 +201,7 @@ namespace SqlSugar
             }
             Where(parameter, isLeft, name, args, model);
         }
-        private void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
+        protected void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             if (name == "GetSelfAndAutoFill")
             {
@@ -227,7 +228,7 @@ namespace SqlSugar
                 parameter.BaseParameter.CommonTempData = GetMethodValue(name, model);
             }
         }
-        private void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
+        protected void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             foreach (var item in args)
             {

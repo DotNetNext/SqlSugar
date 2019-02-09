@@ -409,6 +409,19 @@ namespace OrmTest.Demo
             var test22 = db.Queryable<Student>().Where(it => !it.SchoolId.HasValue && it.SchoolId.HasValue).ToList();
             var test23 = db.Queryable<Student>().Where(it => !(it.Id==1) && it.Name=="").ToList();
             var test24 = db.Queryable<Student>().Where(it => string.IsNullOrEmpty("a")).Where(it=>string.IsNullOrEmpty(it.Name)).ToList();
+            var test25 = db.Queryable<Student>().Where(it => SqlFunc.IIF(it.Id==0,1,2)==1).ToList();
+            var test26 = db.Queryable<Student>().Where(it => (it.Name==null?2:3)==1 )
+                .ToList();
+            var test27 = db.Queryable<Student>().Select(x => new {
+                name=x.Name==null?"1":"2"
+            }).ToList();
+            var test28 = db.Queryable<Student>().Select(x => new Student{
+                Name = x.Name == null ? "1" : "2"
+            }).ToList();
+            //var test29 = db.Queryable<Student>().Select(x => new Student
+            //{
+            //    Name = x.Name??"a"
+            //}).ToList();
         }
         public static void Page()
         {
