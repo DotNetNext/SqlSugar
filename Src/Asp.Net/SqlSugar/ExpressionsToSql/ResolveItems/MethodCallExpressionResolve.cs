@@ -269,6 +269,14 @@ namespace SqlSugar
             {
                 methodValue = methodValue + "=1 ";
             }
+            if (parameter.BaseExpression != null&&ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type == UtilConstants.BoolType))
+            {
+                methodValue = methodValue + "=1 ";
+            }
+            if (parameter.BaseExpression != null && ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("IIF")) && (parameter.CurrentExpression as MethodCallExpression).Method.ReturnType == UtilConstants.BoolType)
+            {
+                methodValue = methodValue + "=1 ";
+            }
             base.AppendValue(parameter, isLeft, methodValue);
         }
 

@@ -428,6 +428,10 @@ namespace OrmTest.Demo
             var test33 = db.Queryable<Student>().Where(it => SqlFunc.IIF(it.Name==null,true ,false)).ToList();
             var test34 = db.Queryable<Student>().Where(it => SqlFunc.IIF(it.Name == null||1==1, true, false)).ToList();
             var test35 = db.Queryable<Student>().Where(it =>it.Id==1&&SqlFunc.IF(it.Id==1).Return(true).End(false)).ToList();
+            var test36 = db.Queryable<Student>().Where(it => it.Id == 1 &&it.SchoolId.HasValue).ToList();
+            var test37 = db.Queryable<Student>().Where(it => it.Id == 1 && SqlFunc.IIF(it.Id == 1, true, false)).ToList();
+            var test38 = db.Queryable<Student>().Where(it => it.Id == 1 && SqlFunc.IIF(it.Id == 1, true, false)==true).ToList();
+            var test39 = db.Queryable<Student>().Where(it => it.Id == 1 && (it.Id==1?true:false)).ToList();
         }
         public static void Page()
         {
