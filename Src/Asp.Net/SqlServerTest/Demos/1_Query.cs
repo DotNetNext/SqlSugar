@@ -418,6 +418,7 @@ namespace OrmTest.Demo
             var test28 = db.Queryable<Student>().Select(x => new Student{
                 Name = x.Name == null ? "1" : "2"
             }).ToList();
+            var test29 = db.Queryable<Student>().Where(it=>it.Id%1==0).ToList();
             //var test29 = db.Queryable<Student>().Select(x => new Student
             //{
             //    Name = x.Name??"a"
