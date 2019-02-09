@@ -44,6 +44,10 @@ namespace SqlSugar
             {
                 return new LambdaExpressionResolve(parameter);
             }
+            else if (expression is BinaryExpression && expression.NodeType == ExpressionType.Coalesce)
+            {
+                return new CoalesceResolveItems(parameter);
+            }
             else if (expression is BinaryExpression)
             {
                 return new BinaryExpressionResolve(parameter);
@@ -129,7 +133,7 @@ namespace SqlSugar
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
                 var oppoSiteExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
-                if (parameter.CurrentExpression is MethodCallExpression||parameter.CurrentExpression is ConditionalExpression)
+                if (parameter.CurrentExpression is MethodCallExpression||parameter.CurrentExpression is ConditionalExpression||parameter.CurrentExpression.NodeType==ExpressionType.Coalesce)
                 {
                     var appendValue = value;
                     if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
@@ -438,7 +442,7 @@ namespace SqlSugar
                     }
                 }
             }
-            else if (item is MethodCallExpression|| item is UnaryExpression||item is ConditionalExpression)
+            else if (item is MethodCallExpression|| item is UnaryExpression||item is ConditionalExpression|| item.NodeType==ExpressionType.Coalesce)
             {
                 this.Expression = item;
                 this.Start();
