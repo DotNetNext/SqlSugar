@@ -277,6 +277,10 @@ namespace SqlSugar
             {
                 methodValue = methodValue + "=1 ";
             }
+            if (parameter.BaseExpression != null&& ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
+            {
+                methodValue = methodValue + "=1 ";
+            }
             base.AppendValue(parameter, isLeft, methodValue);
         }
 

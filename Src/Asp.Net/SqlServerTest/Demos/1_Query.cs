@@ -432,6 +432,7 @@ namespace OrmTest.Demo
             var test37 = db.Queryable<Student>().Where(it => it.Id == 1 && SqlFunc.IIF(it.Id == 1, true, false)).ToList();
             var test38 = db.Queryable<Student>().Where(it => it.Id == 1 && SqlFunc.IIF(it.Id == 1, true, false)==true).ToList();
             var test39 = db.Queryable<Student>().Where(it => it.Id == 1 && (it.Id==1?true:false)).ToList();
+            var test40 = db.Queryable<Student>().Where(it => it.Id==1&&Convert.ToBoolean("true")).ToList();
         }
         public static void Page()
         {
