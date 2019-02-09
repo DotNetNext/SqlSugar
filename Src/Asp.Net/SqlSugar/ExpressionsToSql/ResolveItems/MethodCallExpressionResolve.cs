@@ -9,8 +9,10 @@ namespace SqlSugar
 {
     public class MethodCallExpressionResolve : BaseResolve
     {
+        int contextIndex = 0;
         public MethodCallExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
+            contextIndex = this.Context.Index;
             var express = base.Expression as MethodCallExpression;
             if (express == null) return;
             var isLeft = parameter.IsLeft;
@@ -250,10 +252,19 @@ namespace SqlSugar
                     new KeyValuePair<string, string>("End","0")
                  });
             }
-            if (parameter.Context.Index == 3 && parameter.BaseExpression == null &&this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple,ResolveExpressType.WhereSingle)&& (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
+            var isRoot = contextIndex == 2;
+            if (isRoot && parameter.BaseExpression == null &&this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple,ResolveExpressType.WhereSingle)&& (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
             {
                 methodValue = methodValue + "=1 ";
 ;           }
+            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type==UtilConstants.BoolType))
+            {
+                methodValue = methodValue + "=1 ";
+            }
+            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("IIF"))&& (parameter.CurrentExpression as MethodCallExpression).Method.ReturnType==UtilConstants.BoolType)
+            {
+                methodValue = methodValue + "=1 ";
+            }
             base.AppendValue(parameter, isLeft, methodValue);
         }
 
