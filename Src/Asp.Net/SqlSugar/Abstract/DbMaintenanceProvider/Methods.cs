@@ -140,6 +140,15 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+
+        public bool AddPrimaryKeys(string tableName, string[] columnNames)
+        {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            var columnName = string.Join(",", columnNames);
+            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(columnNames.First()), this.SqlBuilder.GetNoTranslationColumnName(columnNames.First())), columnName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public virtual bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);

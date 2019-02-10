@@ -94,7 +94,7 @@ namespace SqlSugar
         public virtual void NoExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);
-            Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
+            //Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.HasValue())
             {
@@ -110,7 +110,7 @@ namespace SqlSugar
         {
             if (entityInfo.Columns.HasValue())
             {
-                Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
+                //Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Multiple primary keys do not support modifications");
 
                 var tableName = GetTableName(entityInfo);
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);

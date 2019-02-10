@@ -282,9 +282,16 @@ namespace SqlSugar
             if (isCreatePrimaryKey)
             {
                 var pkColumns = columns.Where(it => it.IsPrimarykey).ToList();
-                foreach (var item in pkColumns)
+                if (pkColumns.Count > 1)
                 {
-                    this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                    this.Context.DbMaintenance.AddPrimaryKeys(tableName, pkColumns.Select(it=>it.DbColumnName).ToArray());
+                }
+                else
+                {
+                    foreach (var item in pkColumns)
+                    {
+                        this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                    }
                 }
             }
             return true;

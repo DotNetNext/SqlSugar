@@ -31,6 +31,15 @@ namespace OrmTest.Demo
         [SugarColumn(IsIgnore =true)]
         public string TestId { get; set; }
     }
+    public class CodeTable3
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Name { get; set; }
+        [SugarColumn(IsIgnore = true)]
+        public string TestId { get; set; }
+    }
     public class CodeFirst : DemoBase
     {
         public static void Init()
@@ -47,7 +56,7 @@ namespace OrmTest.Demo
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
 
             //No backup table
-            db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
+            db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2),typeof(CodeTable3));
         }
     }
 }
