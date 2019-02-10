@@ -185,9 +185,9 @@ namespace SqlSugar
                     }
                 }
                 if (isMultiplePrimaryKey) {
-                    var oldPkNames = dbColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).ToList();
-                    var newPkNames = entityColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).ToList();
-                    if (oldPkNames.Union(newPkNames).Count() != oldPkNames.Count) {
+                    var oldPkNames = dbColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it=>it).ToList();
+                    var newPkNames = entityColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it=>it).ToList();
+                    if (!Enumerable.SequenceEqual(oldPkNames,newPkNames)) {
                         Check.Exception(true, ErrorMessage.GetThrowMessage("Modification of multiple primary key tables is not supported. Delete tables while creating", "不支持修改多主键表，请删除表在创建"));
                     }
 
