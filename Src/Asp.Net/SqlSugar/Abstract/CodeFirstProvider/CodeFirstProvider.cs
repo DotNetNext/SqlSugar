@@ -136,6 +136,9 @@ namespace SqlSugar
                     .ToList();
 
 
+                var isMultiplePrimaryKey = dbColumns.Where(it => it.IsPrimarykey).Count() > 1|| entityColumns.Where(it => it.IsPrimarykey).Count() > 1;
+
+
                 var isChange = false;
                 foreach (var item in addColumns)
                 {
@@ -164,7 +167,7 @@ namespace SqlSugar
                     if (dbColumn == null) continue;
                     bool pkDiff, idEntityDiff;
                     KeyAction(item, dbColumn, out pkDiff, out idEntityDiff);
-                    if (dbColumn != null && pkDiff && !idEntityDiff)
+                    if (dbColumn != null && pkDiff && !idEntityDiff&& isMultiplePrimaryKey==false)
                     {
                         var isAdd = item.IsPrimarykey;
                         if (isAdd)
@@ -176,10 +179,18 @@ namespace SqlSugar
                             this.Context.DbMaintenance.DropConstraint(tableName, string.Format("PK_{0}_{1}", tableName, item.DbColumnName));
                         }
                     }
-                    else if (pkDiff || idEntityDiff)
+                    else if ((pkDiff || idEntityDiff)&& isMultiplePrimaryKey==false)
                     {
                         ChangeKey(entityInfo, tableName, item);
                     }
+                }
+                if (isMultiplePrimaryKey) {
+                    var oldPkNames = dbColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).ToList();
+                    var newPkNames = entityColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).ToList();
+                    if (oldPkNames.Union(newPkNames).Count() != oldPkNames.Count) {
+                        Check.Exception(true, ErrorMessage.GetThrowMessage("Modification of multiple primary key tables is not supported. Delete tables while creating", "不支持修改多主键表，请删除表在创建"));
+                    }
+
                 }
                 if (isChange && IsBackupTable)
                 {
