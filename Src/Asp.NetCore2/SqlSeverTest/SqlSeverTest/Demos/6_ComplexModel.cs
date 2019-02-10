@@ -13,7 +13,7 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             db.Insertable(new CMStudent() { SchoolId = 1, Name = "xx1" }).ExecuteCommand();
-            var students = db.Queryable<CMStudent>().ToList();
+            var students = db.Queryable<CMStudent>().Take(10).ToList();
             if (students != null)
             {
                 foreach (var item in students)
@@ -67,7 +67,7 @@ namespace OrmTest.Demo
         {
             get
             {
-                return base.CreateMapping<CMSchool>().Where(it => it.Id == this.SchoolId).ToList();
+                return base.CreateMapping<CMSchool>().Where(it => it.Id == this.SchoolId).Take(2).ToList();
             }
         }
     }

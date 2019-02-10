@@ -56,6 +56,7 @@ namespace OrmTest
             Demo.ExtEntity.Init();
             Demo.Mapper.Init();
             Demo.IInsertOrUpdate.Init();
+            Demo.Debugger.Init();
             /***BUG repair test***/
             new BugTest.Bug1().Init();
         }

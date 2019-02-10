@@ -57,7 +57,7 @@ namespace OrmTest.Demo
             //Update Student set Name='jack' Where Id=1
 
             //Column is null no update
-            db.Updateable(updateObj).Where(true).ExecuteCommand();
+            db.Updateable(updateObj).IgnoreColumns(ignoreAllNullColumns:true).ExecuteCommand();
 
             //sql
             db.Updateable(updateObj).Where("id=@x",new { x="1"}).ExecuteCommand();
@@ -81,7 +81,53 @@ namespace OrmTest.Demo
             dt.Add("id", 1);
             dt.Add("name", null);
             dt.Add("createTime", DateTime.Now);
-            var t66 = db.Updateable(dt).AS("student").With(SqlWith.UpdLock).ExecuteCommand();
+            var t66 = db.Updateable(dt).AS("student").WhereColumns("id").With(SqlWith.UpdLock).ExecuteCommand();
+
+
+
+            var dt2 = new Dictionary<string, object>();
+            dt2.Add("id", 2);
+            dt2.Add("name", null);
+            dt2.Add("createTime", DateTime.Now);
+            var dtList = new List<Dictionary<string, object>>();
+            dtList.Add(dt);
+            dtList.Add(dt2);
+            var t666 = db.Updateable(dtList).AS("student").WhereColumns("id").With(SqlWith.UpdLock).ExecuteCommand();
+
+
+            var t20 = db.Updateable<Student>().UpdateColumns(p => new Student()
+            {
+                SchoolId = SqlFunc.IIF(p.Id == 1, 2, 3)
+            }).Where(p => p.Id == 10000).ExecuteCommand();
+            var t21= db.Updateable<Student>().UpdateColumns(p => new Student()
+            {
+                SchoolId = SqlFunc.IF(p.Id==1).Return(1).End(p.Id)
+            }).Where(p => p.Id == 10000).ExecuteCommand();
+
+
+            var t22= db.Updateable<Student>().UpdateColumns(p => new Student()
+            {
+                SchoolId = SqlFunc.Subqueryable<Student>().Where(s=>s.SchoolId==p.Id).Select(s=>s.Id)
+            }).Where(p => p.Id == 10000).ExecuteCommand();
+
+
+            var t23= db.Updateable<Student>(new Student() { })
+                .Where(p => p.SchoolId == SqlFunc.Subqueryable<Student>().Where(s => s.SchoolId == p.Id).Select(s => s.Id)).ExecuteCommand();
+
+            var t24 = db.Updateable(new Student() { }).WhereColumns(it=>it.CreateTime).ExecuteCommand();
+
+            var t25 = db.Updateable(new Student() { }).UpdateColumns(it=> new { it.Name,it.CreateTime}).WhereColumns(it => it.CreateTime).ExecuteCommand();
+
+            var t26 = db.Updateable(new List<Student>() { new Student() { }, new Student() { } }).UpdateColumns(it => new { it.Name, it.CreateTime }).WhereColumns(it => it.CreateTime).ExecuteCommand();
+
+
+            db.Updateable<Student>().UpdateColumns(it => new Student { SchoolId = GeneratePassword(2, 1), Name =SqlFunc.ToString(it.Name), CreateTime = DateTime.Now.AddDays(1) }).Where(it => it.Id == 1).ExecuteCommand();
+        }
+
+        private static int GeneratePassword(int v1, int v2)
+        {
+            return  1;
         }
     }
+    
 }

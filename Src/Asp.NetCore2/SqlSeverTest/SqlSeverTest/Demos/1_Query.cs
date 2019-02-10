@@ -114,6 +114,31 @@ namespace OrmTest.Demo
                     name = it.Name,
                     id = SqlFunc.Subqueryable<Student>().Where(s => s.Id == it.Id).Min(s => s.Id)
                 }).ToList();
+            string name = "a";
+            var getAll6666 = db.Queryable<Student>().Select(it =>
+            new
+            {
+                name = it.Name,
+                id = SqlFunc.Subqueryable<Student>().WhereIF(!string.IsNullOrEmpty(name), s=>s.Id==1).Min(s => s.Id)
+            }).ToList();
+            name = null;
+            var getAll66666 = db.Queryable<Student>().Select(it =>
+            new
+            {
+                name = it.Name,
+                id = SqlFunc.Subqueryable<Student>().WhereIF(!string.IsNullOrEmpty(name), s => s.Id == 1).Min(s => s.Id)
+            }).ToList();
+
+            var getAll666666 = db.Queryable<Student>()
+               .Where(it => SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Any())
+              .Select(it =>
+            new
+            {
+                name = it.Name,
+                id = SqlFunc.Subqueryable<Student>().Where(s=>s.Id==SqlFunc.Subqueryable<School>().Where(y=>y.Id==s.SchoolId).Select(y=>y.Id)).Min(s => s.Id),
+                id2 = SqlFunc.Subqueryable<Student>().Where(s => s.Id == SqlFunc.Subqueryable<School>().Where(y => y.Id == s.SchoolId).Select(y => y.Id)).Min(s => s.Id)
+            }).ToList();
+
 
         }
 
@@ -140,7 +165,7 @@ namespace OrmTest.Demo
             var student1 = db.Queryable<Student>().InSingle(1);
 
             //get SimpleClient
-            var sdb = db.SimpleClient;
+            var sdb = db.GetSimpleClient();
             var student2 = sdb.GetById<Student>(1);
             sdb.DeleteById<Student>(1);
             sdb.Insert(new Student() { Name = "xx" });
@@ -285,6 +310,9 @@ namespace OrmTest.Demo
             var t1 = db.Ado.SqlQuery<string>("select 'a'");
             var t2 = db.Ado.GetInt("select 1");
             var t3 = db.Ado.GetDataTable("select 1 as id");
+            var t4 = db.Ado.GetScalar("select * from student where id in (@id) ", new { id = new List<int>() { 1, 2, 3 } });
+            var t5 = db.Ado.GetScalar("select * from student where id in (@id) ", new { id = new  int [] { 1, 2, 3 } });
+            var t6= db.Ado.GetScalar("select * from student where id in (@id) ",  new SugarParameter("@id", new int[] { 1, 2, 3 }));
             db.Ado.CommitTran();
             var t11 = db.Ado.SqlQuery<Student>("select * from student");
             //more
@@ -295,7 +323,11 @@ namespace OrmTest.Demo
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Student>().Select<object>("*").ToList();
-            var getAll2 = db.Queryable<Student>().ToList();
+            var getAll2 = db.Queryable<Student>().Select(it=>it.Name.Substring(0,4)).ToList();
+            var getAll22 = db.Queryable<Student>().ToDataTable();
+            var getAll222 = db.Queryable<Student>().ToJson();
+            var getAll2222 = db.Queryable<Student>().OrderBy(it=>it.Name.Length).ToJson();
+            var getAll3 = db.Queryable<Student>().OrderBy(it => new { it.Id, it.Name }).GroupBy(it => new { it.Id, it.Name }).Select<object>("id").ToList();
             var getRandomList = db.Queryable<Student>().OrderBy(it => SqlFunc.GetRandom()).ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getId = db.Queryable<Student>().Select(it => it.Id).ToList();
@@ -356,6 +388,52 @@ namespace OrmTest.Demo
             var test4 = db.Queryable<DataTestInfo2>().Select(it => new { b=it.Bool1 }).ToSql();
             DateTime? result = DateTime.Now;
             var test5 = db.Queryable<Student>().Where(it=>it.CreateTime> result.Value.Date).ToList();
+
+            var test6 = db.Queryable<DataTestInfo2>().Where(it => SqlFunc.HasValue(it.Bool2)==true && SqlFunc.HasValue(it.Bool2)==true).ToList();
+            var test7 = db.Queryable<DataTestInfo2>().Where(it => SqlFunc.HasValue(it.Bool1) && SqlFunc.HasValue(it.Bool1)).ToList();
+            var test8 = db.Queryable<Student>().Where(it => SqlFunc.HasValue(it.SchoolId) && SqlFunc.HasValue(it.SchoolId)).ToList();
+            bool? b = false;
+            var test9 = db.Queryable<DataTestInfo2>().Where(it => it.Bool1 == b).ToList();
+            var test10 = db.Queryable<Student>(db.Queryable<Student>().Select(it => new Student() { Name = it.Name.Substring(0, 1) })).GroupBy(it => it.Name).ToList(); ;
+            var test11 = db.Queryable<Student>().Distinct().ToList();
+            var test12 = db.Queryable<Student>().Distinct().Select(it=>new Student{ Name=it.Name  }).ToList();
+            var test13 = db.Queryable<Student>().Where(it=>DateTime.Parse("2014-1-1")==DateTime.Now).Where(it => Boolean.Parse("true") ==true).ToList();
+            var test14 = db.Queryable<DataTestInfo2>().Where(it =>Convert.ToBoolean(it.Bool1)).ToList();
+            var test15 = db.Queryable<DataTestInfo2>().Where(it => it.Bool2.Value&&it.Bool1).ToList();
+            var test16 = db.Queryable<DataTestInfo2>().Where(it => !it.Bool2.Value && !it.Bool1).ToList();
+            var test17 = db.Queryable<DataTestInfo2>().Where(it => it.Bool1 && it.Bool1).ToList();
+            var test18 = db.Queryable<Student>().Where(it => it.SchoolId.HasValue&&it.SchoolId.HasValue).ToList();
+            var test19 = db.Queryable<Student>().Where(it => it.SchoolId.HasValue && it.SchoolId.HasValue&&it.SchoolId.HasValue).ToList();
+            var test20 = db.Queryable<Student>().Where(it => it.SchoolId.HasValue && SqlFunc.IsNullOrEmpty(it.Name)).ToList();
+            var test21 = db.Queryable<Student>().Where(it => !it.SchoolId.HasValue && it.Name == "").ToList();
+            var test22 = db.Queryable<Student>().Where(it => !it.SchoolId.HasValue && it.SchoolId.HasValue).ToList();
+            var test23 = db.Queryable<Student>().Where(it => !(it.Id==1) && it.Name=="").ToList();
+            var test24 = db.Queryable<Student>().Where(it => string.IsNullOrEmpty("a")).Where(it=>string.IsNullOrEmpty(it.Name)).ToList();
+            var test25 = db.Queryable<Student>().Where(it => SqlFunc.IIF(it.Id==0,1,2)==1).ToList();
+            var test26 = db.Queryable<Student>().Where(it => (it.Name==null?2:3)==1 )
+                .ToList();
+            var test27 = db.Queryable<Student>().Select(x => new {
+                name=x.Name==null?"1":"2"
+            }).ToList();
+            var test28 = db.Queryable<Student>().Select(x => new Student{
+                Name = x.Name == null ? "1" : "2"
+            }).ToList();
+            var test29 = db.Queryable<Student>().Where(it=>it.Id%1==0).ToList();
+            var test30 = db.Queryable<Student>().Select(x => new Student
+            {
+                Name = x.Name ?? "a"
+            }).ToList();
+            var test31 = db.Queryable<Student>().Where(it=>(it.Name??"a")=="a").ToList();
+            var test32 = db.Queryable<Student>().Where(it => it.Name == null ? true : false).ToList();
+            var test33 = db.Queryable<Student>().Where(it => SqlFunc.IIF(it.Name==null,true ,false)).ToList();
+            var test34 = db.Queryable<Student>().Where(it => SqlFunc.IIF(it.Name == null||1==1, true, false)).ToList();
+            var test35 = db.Queryable<Student>().Where(it =>it.Id==1&&SqlFunc.IF(it.Id==1).Return(true).End(false)).ToList();
+            var test36 = db.Queryable<Student>().Where(it => it.Id == 1 &&it.SchoolId.HasValue).ToList();
+            var test37 = db.Queryable<Student>().Where(it => it.Id == 1 && SqlFunc.IIF(it.Id == 1, true, false)).ToList();
+            var test38 = db.Queryable<Student>().Where(it => it.Id == 1 && SqlFunc.IIF(it.Id == 1, true, false)==true).ToList();
+            var test39 = db.Queryable<Student>().Where(it => it.Id == 1 && (it.Id==1?true:false)).ToList();
+            var test40 = db.Queryable<Student>().Where(it => it.Id==1&&Convert.ToBoolean("true")).ToList();
+            var test41 = db.Queryable<Student>().Where(it => it.Id==((it.Id==1?2:3)==2?1:2)).ToList();
         }
         public static void Page()
         {
@@ -507,6 +585,18 @@ namespace OrmTest.Demo
                 id=st1.Id,
                 name=st2.Name
             }).ToList();
+
+            var q1 = db.Queryable<Student>().Select(it => new Student()
+            {
+                Id = it.Id,
+                Name = "a"
+            });
+            var q2 = db.Queryable<Student>().Select(it => new Student()
+            {
+                Id = it.Id,
+                Name = "b"
+            });
+            var unionAllList = db.Union(q1, q2).ToList();
         }
         public static void Funs()
         {

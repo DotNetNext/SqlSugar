@@ -54,6 +54,8 @@ namespace OrmTest.Demo
                 var sql = it.Sql;
                 var parameter = it.Parameters;
                 var data = it.BusinessData;
+                var type = it.DiffType;
+                var time = it.Time;
             };
 
 

@@ -39,6 +39,9 @@ namespace OrmTest.Demo
             var t5 = db.Deleteable<Student>().Where(it => it.Id > 1).Where(it => it.Id == 1).ExecuteCommand();
 
             var t6 = db.Deleteable<Student>().AS("student").Where(it => it.Id > 1).Where(it => it.Id == 1).ExecuteCommandAsync();
+
+
+            var t7 = db.Deleteable<Student>().Where(p => p.SchoolId == SqlFunc.Subqueryable<School>().Where(s => s.Id == p.SchoolId).Select(s => s.Id)).ExecuteCommand();
             t6.Wait();
         }
     }
