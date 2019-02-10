@@ -174,6 +174,8 @@ namespace OrmTest.Demo
             var list3 = db.Queryable<Student>()
                 .PartitionBy(it => new { it.Id, it.Name }).Take(1).ToList();
 
+            var list31 = db.Queryable<Student>()
+            .PartitionBy(it => new { it.Id, it.Name }).Take(1).Count();
 
             //SQL:
             //SELECT AVG([Id]) AS[idAvg], [Name] AS[name]  FROM[Student] GROUP BY[Name],[Id] HAVING(AVG([Id]) > 0 )

@@ -65,7 +65,14 @@ namespace SqlSugar
         }
         public override string ToCountSql(string sql)
         {
-            return Regex.Replace(sql,"^SELECT .+? FROM ", "SELECT COUNT(*) FROM ");
+            if (this.GroupByValue.HasValue())
+            {
+                return base.ToCountSql(sql);
+            }
+            else
+            {
+                return Regex.Replace(sql, "^SELECT .+? FROM ", "SELECT COUNT(*) FROM ");
+            }
         }
         #endregion
 
