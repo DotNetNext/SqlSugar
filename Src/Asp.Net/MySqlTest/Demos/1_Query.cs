@@ -260,6 +260,12 @@ namespace OrmTest.Demo
 
             //skip5
             var skip5 = db.Queryable<Student>().Skip(5).ToList();
+
+
+            var page2 = db.Queryable<Student>().Where(it=>it.Id>0).ToPageList(1,2,ref totalCount);
+
+
+            var page3 = db.SqlQueryable<Student>("SELECT * FROM Student").ToPageList(1, 2, ref totalCount);
         }
         public static void Where()
         {
@@ -332,9 +338,10 @@ namespace OrmTest.Demo
             .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
 
             //join 3 table page 
+            int count = 0;
             var list8 = db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
             .OrderBy(st=>st.Id)
-            .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1, 2);
+            .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1, 2,ref count);
         }
         public static void Funs()
         {

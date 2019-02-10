@@ -63,7 +63,10 @@ namespace SqlSugar
             this.OrderByValue = oldOrderValue;
             return result;
         }
-
+        public override string ToCountSql(string sql)
+        {
+            return Regex.Replace(sql,"^SELECT .+? FROM ", "SELECT COUNT(*) FROM ");
+        }
         #endregion
 
         #region Get SQL Partial
