@@ -229,9 +229,9 @@ namespace SqlSugar
                                 " FROM sys.tables A" +
                                 " LEFT JOIN sys.extended_properties C ON C.major_id = A.object_id" +
                                 " LEFT JOIN sys.columns B ON B.object_id = A.object_id AND C.minor_id = B.column_id" +
-                                " INNER JOIN sys.schemas SC ON SC.schema_id = A.schema_id AND SC.name = 'dbo'"+
+                                " INNER JOIN sys.schemas SC ON SC.schema_id = A.schema_id AND SC.name = 'dbo'" +
                                 " WHERE A.name = '{1}' and b.name = '{0}'";
- 
+
             }
         }
 
@@ -264,6 +264,14 @@ namespace SqlSugar
             }
 
         }
+
+        protected override string RenameTableSql
+        {
+            get
+            {
+                return "EXEC sp_rename '{0}','{1}'";
+            }
+        }
         #endregion
 
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
@@ -271,11 +279,19 @@ namespace SqlSugar
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = GetCreateTableSql(tableName, columns);
             this.Context.Ado.ExecuteCommand(sql);
-            if (isCreatePrimaryKey) {
+            if (isCreatePrimaryKey)
+            {
                 var pkColumns = columns.Where(it => it.IsPrimarykey).ToList();
-                foreach (var item in pkColumns)
+                if (pkColumns.Count > 1)
                 {
-                    this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                    this.Context.DbMaintenance.AddPrimaryKeys(tableName, pkColumns.Select(it=>it.DbColumnName).ToArray());
+                }
+                else
+                {
+                    foreach (var item in pkColumns)
+                    {
+                        this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+                    }
                 }
             }
             return true;

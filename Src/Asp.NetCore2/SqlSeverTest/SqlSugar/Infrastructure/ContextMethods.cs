@@ -449,7 +449,7 @@ namespace SqlSugar
                 else
                 {
                     var item = model as ConditionalCollections;
-                    if (item != null)
+                    if (item != null&& item.ConditionalList.HasValue())
                     {
                         foreach (var con in item.ConditionalList)
                         {

@@ -49,6 +49,7 @@ namespace SqlSugar
         public string GroupByValue { get; set; }
         public string PartitionByValue { get; set; }
         public int WhereIndex { get; set; }
+        public bool IsDistinct { get; set; }
         public int JoinIndex { get; set; }
         public bool IsDisabledGobalFilter { get; set; }
         public virtual List<SugarParameter> Parameters { get; set; }
@@ -363,6 +364,7 @@ namespace SqlSugar
             this._TableNameString = null;
             this.WhereInfos = null;
             this.JoinQueryInfos = null;
+            this.IsDistinct = false;
         }
         public virtual bool IsComplexModel(string sql)
         {
@@ -387,6 +389,10 @@ namespace SqlSugar
                 if (this.SelectType == ResolveExpressType.SelectMultiple)
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this._JoinQueryInfos.Select(it => it.TableName));
+                }
+                if (IsDistinct)
+                {
+                    result = " DISTINCT " + result;
                 }
                 return result;
             }

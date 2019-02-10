@@ -74,6 +74,7 @@ namespace SqlSugar
 
         ISugarQueryable<T> Skip(int index);
         ISugarQueryable<T> Take(int num);
+        ISugarQueryable<T> Distinct();
 
         T Single();
         Task<T> SingleAsync();
@@ -221,6 +222,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2> With(string withString);
         new ISugarQueryable<T, T2> WithCache(int cacheDurationInSeconds = int.MaxValue);
         new ISugarQueryable<T, T2> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T,T2> Distinct();
+        bool Any(Expression<Func<T,T2, bool>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
@@ -310,6 +313,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3> With(string withString);
         new ISugarQueryable<T, T2, T3> WithCache(int cacheDurationInSeconds = int.MaxValue);
         new ISugarQueryable<T, T2, T3> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2,T3> Distinct();
+        bool Any(Expression<Func<T, T2,T3, bool>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
@@ -410,6 +415,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4> With(string withString);
         new ISugarQueryable<T, T2, T3, T4> WithCache(int cacheDurationInSeconds = int.MaxValue);
         new ISugarQueryable<T, T2, T3, T4> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3,T4> Distinct();
+        bool Any(Expression<Func<T, T2, T3,T4, bool>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
@@ -500,6 +507,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5> WithCache(int cacheDurationInSeconds = int.MaxValue);
         new ISugarQueryable<T, T2, T3, T4, T5> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4,T5> Distinct();
+        bool Any(Expression<Func<T, T2, T3, T4,T5, bool>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
@@ -596,6 +605,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> WithCache(int cacheDurationInSeconds = int.MaxValue);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> Distinct();
+        bool Any(Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7> : ISugarQueryable<T>
@@ -698,6 +709,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WithCache(int cacheDurationInSeconds = int.MaxValue);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Distinct();
+        bool Any(Expression<Func<T, T2, T3, T4, T5, T6,T7, bool>> expression);
         #endregion
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> : ISugarQueryable<T>
@@ -806,6 +819,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> With(string withString);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WithCache(int cacheDurationInSeconds = int.MaxValue);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Distinct();
+        bool Any(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, bool>> expression);
         #endregion
     }
 

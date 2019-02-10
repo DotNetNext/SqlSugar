@@ -199,6 +199,8 @@ namespace SqlSugar
         protected override string DeleteTableRemarkSql => "comment on table {0} is ''";
 
         protected override string IsAnyTableRemarkSql => throw new NotSupportedException();
+
+        protected override string RenameTableSql => "alter table 表名 {0} to {1}";
         #endregion
 
         #region Methods

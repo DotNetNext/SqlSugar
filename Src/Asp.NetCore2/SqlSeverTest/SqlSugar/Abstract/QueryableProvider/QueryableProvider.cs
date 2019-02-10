@@ -146,7 +146,7 @@ namespace SqlSugar
         /// <returns></returns>
         public ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
-            return WhereClass(new List<ClassType>() { whereClass }, ignoreDefaultValue);
+            return WhereClass(new List<ClassType>() { whereClass },ignoreDefaultValue);
         }
         /// <summary>
         ///  if a property that is not empty is a condition
@@ -168,9 +168,9 @@ namespace SqlSugar
 
                         var value = column.PropertyInfo.GetValue(item, null);
                         WhereType WhereType = WhereType.And;
-                        var isNotNull = ignoreDefaultValue == false && value != null;
-                        var isNotNullAndDefault = ignoreDefaultValue && value != null && value.ObjToString() != UtilMethods.DefaultForType(column.PropertyInfo.PropertyType).ObjToString();
-                        if (isNotNull || isNotNullAndDefault)
+                        var isNotNull = ignoreDefaultValue == false&&value != null ;
+                        var isNotNullAndDefault = ignoreDefaultValue&& value!=null && value.ObjToString() != UtilMethods.DefaultForType(column.PropertyInfo.PropertyType).ObjToString();
+                        if (isNotNull||isNotNullAndDefault)
                         {
                             if (cons.ConditionalList == null)
                             {
@@ -271,7 +271,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList() || (pkValues.First() is IEnumerable && pkValues.First().GetType() != UtilConstants.StringType))
+            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList()|| (pkValues.First() is IEnumerable&&pkValues.First().GetType()!=UtilConstants.StringType))
             {
                 var newValues = new List<object>();
                 foreach (var item in pkValues.First() as IEnumerable)
@@ -573,6 +573,11 @@ namespace SqlSugar
             return mergeQueryable.AS(tableName).Select<T>("*");
         }
 
+        public ISugarQueryable<T> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         public virtual int Count()
         {
             InitMapping();
@@ -1329,12 +1334,24 @@ namespace SqlSugar
             {
                 Action<List<T>> mapper = (entitys) =>
                 {
-                    if (entitys.IsNullOrEmpty()) return;
+                    if (entitys.IsNullOrEmpty()&&entitys.Any()) return;
                     var entity = entitys.First();
                     var whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
                     if (whereCol == null)
                     {
                         whereCol = filedEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk=>pk.Equals(it.DbColumnName,StringComparison.CurrentCultureIgnoreCase)) );
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals("id",StringComparison.CurrentCultureIgnoreCase));
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName+"id", StringComparison.CurrentCultureIgnoreCase));
                     }
                     if (whereCol == null)
                     {
@@ -1372,13 +1389,25 @@ namespace SqlSugar
             {
                 Action<List<T>> mapper = (entitys) =>
                 {
-                    if (entitys.IsNullOrEmpty()) return;
+                    if (entitys.IsNullOrEmpty()&&entitys.Any()) return;
                     var entity = entitys.First();
                     var tEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
                     var whereCol = tEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
                     if (whereCol == null)
                     {
                         whereCol = tEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))); 
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals("id", StringComparison.CurrentCultureIgnoreCase));
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName + "id", StringComparison.CurrentCultureIgnoreCase));
                     }
                     if (whereCol == null)
                     {
@@ -1533,12 +1562,17 @@ namespace SqlSugar
         protected ISugarQueryable<T> CopyQueryable()
         {
             var asyncContext = this.Context.Utilities.CopyContext(true);
+            asyncContext.IsAsyncMethod = true;
             asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
             var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
             if (this.MapperAction != null)
                 asyncQueryable.Mapper(MapperAction);
             if (this.MapperActionWithCache != null)
                 asyncQueryable.Mapper(MapperActionWithCache);
+            if (this.Mappers != null && ((asyncQueryable as QueryableProvider<T>)!=null))
+            {
+                (asyncQueryable as QueryableProvider<T>).Mappers = this.Mappers;
+            }
             CopyQueryBuilder(asyncQueryable.QueryBuilder); return asyncQueryable;
         }
 
@@ -1559,6 +1593,7 @@ namespace SqlSugar
             asyncQueryableBuilder.TableShortName = this.QueryBuilder.TableShortName;
             asyncQueryableBuilder.TableWithString = this.QueryBuilder.TableWithString;
             asyncQueryableBuilder.GroupByValue = this.QueryBuilder.GroupByValue;
+            asyncQueryableBuilder.IsDistinct = this.QueryBuilder.IsDistinct;
             asyncQueryableBuilder.OrderByValue = this.QueryBuilder.OrderByValue;
             asyncQueryableBuilder.IsDisabledGobalFilter = this.QueryBuilder.IsDisabledGobalFilter;
             asyncQueryableBuilder.PartitionByValue = this.QueryBuilder.PartitionByValue;
@@ -1567,6 +1602,7 @@ namespace SqlSugar
             asyncQueryableBuilder.HavingInfos = this.QueryBuilder.HavingInfos;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
         }
+
         #endregion
     }
     #endregion
@@ -1858,6 +1894,19 @@ namespace SqlSugar
                 this.IsCache = true;
                 this.CacheTime = cacheDurationInSeconds;
             }
+            return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public new ISugarQueryable<T,T2> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
             return this;
         }
         #endregion
@@ -2214,6 +2263,19 @@ namespace SqlSugar
                 this.IsCache = true;
                 this.CacheTime = cacheDurationInSeconds;
             }
+            return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public new ISugarQueryable<T, T2,T3> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
             return this;
         }
         #endregion
@@ -2630,6 +2692,19 @@ namespace SqlSugar
             }
             return this;
         }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public new ISugarQueryable<T, T2, T3,T4> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         #endregion
     }
     #endregion
@@ -2721,9 +2796,9 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
-            base.WhereClass(whereClass, ignoreDefaultValue);
+             base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
         }
         /// <summary>
@@ -2731,7 +2806,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
 
             base.WhereClass(whereClassTypes, ignoreDefaultValue);
@@ -2971,6 +3046,19 @@ namespace SqlSugar
             }
             return this;
         }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4,T5> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         #endregion
     }
     #endregion
@@ -3074,7 +3162,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
             base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
@@ -3343,6 +3431,19 @@ namespace SqlSugar
             }
             return this;
         }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         #endregion
     }
     #endregion
@@ -3457,7 +3558,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
             base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
@@ -3467,7 +3568,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
 
             base.WhereClass(whereClassTypes, ignoreDefaultValue);
@@ -3744,6 +3845,19 @@ namespace SqlSugar
                 this.IsCache = true;
                 this.CacheTime = cacheDurationInSeconds;
             }
+            return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
             return this;
         }
         #endregion
@@ -4180,6 +4294,19 @@ namespace SqlSugar
                 this.IsCache = true;
                 this.CacheTime = cacheDurationInSeconds;
             }
+            return this;
+        }
+
+        public bool Any(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
             return this;
         }
         #endregion

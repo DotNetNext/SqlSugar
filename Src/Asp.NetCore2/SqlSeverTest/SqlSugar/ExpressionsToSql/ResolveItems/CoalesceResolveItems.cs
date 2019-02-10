@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+
 namespace SqlSugar
 {
-    public class ConditionalExpressionResolve: MethodCallExpressionResolve
+    public class CoalesceResolveItems : MethodCallExpressionResolve
     {
-        public  ConditionalExpressionResolve(ExpressionParameter parameter) : base(parameter)
+        public CoalesceResolveItems(ExpressionParameter parameter) : base(parameter)
         {
-
-            string name = "IIF";
-            var express = base.Expression as ConditionalExpression;
+            string name = "IsNull";
+            var express = base.Expression as BinaryExpression;
             var args = new List<Expression>() {
-                express.Test,
-                express.IfTrue,
-                express.IfFalse
+                express.Left,
+                express.Right
             };
             var isLeft = parameter.IsLeft;
             MethodCallExpressionModel model = new MethodCallExpressionModel();

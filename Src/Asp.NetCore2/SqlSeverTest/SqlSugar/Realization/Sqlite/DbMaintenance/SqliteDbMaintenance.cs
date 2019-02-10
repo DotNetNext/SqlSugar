@@ -209,6 +209,8 @@ namespace SqlSugar
                 throw new NotSupportedException();
             }
         }
+
+        protected override string RenameTableSql => throw new NotImplementedException();
         #endregion
 
         #region Methods

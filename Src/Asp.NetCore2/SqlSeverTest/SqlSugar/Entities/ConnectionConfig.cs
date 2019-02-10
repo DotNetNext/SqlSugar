@@ -44,6 +44,10 @@ namespace SqlSugar
         /// More Gobal Settings
         /// </summary>
         public ConnMoreSettings MoreSettings { get; set; }
+        /// <summary>
+        /// Used for debugging errors or BUG,Used for debugging, which has an impact on Performance
+        /// </summary>
+        public SugarDebugger Debugger { get; set; }
     }
 
     public class ConfigureExternalServices

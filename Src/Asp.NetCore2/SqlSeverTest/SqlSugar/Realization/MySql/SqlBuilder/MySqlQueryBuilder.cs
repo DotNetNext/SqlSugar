@@ -63,7 +63,17 @@ namespace SqlSugar
             this.OrderByValue = oldOrderValue;
             return result;
         }
-
+        public override string ToCountSql(string sql)
+        {
+            if (this.GroupByValue.HasValue())
+            {
+                return base.ToCountSql(sql);
+            }
+            else
+            {
+                return Regex.Replace(sql, "^SELECT .+? FROM ", "SELECT COUNT(*) FROM ");
+            }
+        }
         #endregion
 
         #region Get SQL Partial
@@ -83,6 +93,10 @@ namespace SqlSugar
                 if (this.SelectType == ResolveExpressType.SelectMultiple)
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
+                }
+                if (IsDistinct)
+                {
+                    result = " DISTINCT " + result;
                 }
                 return result;
             }

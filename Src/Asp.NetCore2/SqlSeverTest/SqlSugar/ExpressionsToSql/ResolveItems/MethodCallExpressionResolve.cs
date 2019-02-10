@@ -9,9 +9,12 @@ namespace SqlSugar
 {
     public class MethodCallExpressionResolve : BaseResolve
     {
+        int contextIndex = 0;
         public MethodCallExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
+            contextIndex = this.Context.Index;
             var express = base.Expression as MethodCallExpression;
+            if (express == null) return;
             var isLeft = parameter.IsLeft;
             string methodName = express.Method.Name;
             var isValidNativeMethod = IsValidNativeMethod(express, methodName);
@@ -59,6 +62,10 @@ namespace SqlSugar
             {
                 CaseWhenResolve caseResole = new CaseWhenResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = caseResole.GetSql();
+                var isRoot = contextIndex == 2&&parameter.BaseExpression==null;
+                if (isRoot||(parameter.BaseExpression!=null&&ExpressionTool.IsLogicOperator(parameter.BaseExpression))) {
+                    appendSql= appendSql+"=1 ";
+                }
                 if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle,ResolveExpressType.Update))
                 {
                     parameter.BaseParameter.CommonTempData = appendSql;
@@ -103,7 +110,7 @@ namespace SqlSugar
                 return false;
         }
 
-        private void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
+        protected void SqlFuncMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
         {
             if (!CheckMethod(express))
             {
@@ -188,7 +195,7 @@ namespace SqlSugar
             }
         }
 
-        private void Field(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
+        protected void Field(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             if (this.Context.ResolveType == ResolveExpressType.FieldSingle)
             {
@@ -200,7 +207,7 @@ namespace SqlSugar
             }
             Where(parameter, isLeft, name, args, model);
         }
-        private void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
+        protected void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             if (name == "GetSelfAndAutoFill")
             {
@@ -227,7 +234,7 @@ namespace SqlSugar
                 parameter.BaseParameter.CommonTempData = GetMethodValue(name, model);
             }
         }
-        private void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
+        protected void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             foreach (var item in args)
             {
@@ -248,6 +255,31 @@ namespace SqlSugar
                     new KeyValuePair<string, string>("Return","1"),
                     new KeyValuePair<string, string>("End","0")
                  });
+            }
+            var isRoot = contextIndex == 2;
+            if (isRoot && parameter.BaseExpression == null &&this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple,ResolveExpressType.WhereSingle)&& (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
+            {
+                methodValue = methodValue + "=1 ";
+;           }
+            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type==UtilConstants.BoolType))
+            {
+                methodValue = methodValue + "=1 ";
+            }
+            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("IIF"))&& (parameter.CurrentExpression as MethodCallExpression).Method.ReturnType==UtilConstants.BoolType)
+            {
+                methodValue = methodValue + "=1 ";
+            }
+            if (parameter.BaseExpression != null&&ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type == UtilConstants.BoolType))
+            {
+                methodValue = methodValue + "=1 ";
+            }
+            if (parameter.BaseExpression != null && ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("IIF")) && (parameter.CurrentExpression as MethodCallExpression).Method.ReturnType == UtilConstants.BoolType)
+            {
+                methodValue = methodValue + "=1 ";
+            }
+            if (parameter.BaseExpression != null&& ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
+            {
+                methodValue = methodValue + "=1 ";
             }
             base.AppendValue(parameter, isLeft, methodValue);
         }
@@ -402,6 +434,14 @@ namespace SqlSugar
             }
             else
             {
+                if (name == "Parse" && TempParseType.IsIn(UtilConstants.GuidType))
+                {
+                    name = "Equals";
+                }
+                else if(name== "Parse")
+                {
+                    name = "To"+TempParseType.Name;
+                }
                 switch (name)
                 {
                     case "IIF":
@@ -460,6 +500,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.ToInt64(model);
                     case "ToDate":
                         return this.Context.DbMehtods.ToDate(model);
+                    case "ToDateTime":
+                        return this.Context.DbMehtods.ToDate(model);
                     case "ToTime":
                         return this.Context.DbMehtods.ToTime(model);
                     case "ToString":
@@ -472,6 +514,8 @@ namespace SqlSugar
                     case "ToDouble":
                         return this.Context.DbMehtods.ToDouble(model);
                     case "ToBool":
+                        return this.Context.DbMehtods.ToBool(model);
+                    case "ToBoolean":
                         return this.Context.DbMehtods.ToBool(model);
                     case "Substring":
                         return this.Context.DbMehtods.Substring(model);
@@ -526,10 +570,35 @@ namespace SqlSugar
         {
             if (IsExtMethod(expression.Method.Name))
                 return true;
+            if (IsParseMethod(expression)) 
+                return true;
+            if (expression.Method.Name == "IsNullOrEmpty"&&expression.Method.DeclaringType==UtilConstants.StringType)
+            {
+                return true;
+            }
             if (expression.Method.ReflectedType().FullName != ExpressionConst.SqlFuncFullName)
                 return false;
             else
                 return true;
+        }
+        private Type TempParseType;
+        public bool IsParseMethod(MethodCallExpression expression) 
+        {
+           if (expression.Method.Name == "Parse"&&expression.Method.DeclaringType.IsIn(
+                                                                                         UtilConstants.DecType,
+                                                                                         UtilConstants.DateType,
+                                                                                         UtilConstants.DobType,
+                                                                                         UtilConstants.GuidType,
+                                                                                         UtilConstants.FloatType,
+                                                                                         UtilConstants.ShortType,
+                                                                                         UtilConstants.LongType,
+                                                                                         UtilConstants.IntType,
+                                                                                         UtilConstants.BoolType))
+            {
+                TempParseType = expression.Method.DeclaringType;
+                    return true;
+            }
+            return false;
         }
     }
 }

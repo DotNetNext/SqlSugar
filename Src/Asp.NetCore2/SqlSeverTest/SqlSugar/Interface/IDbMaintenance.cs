@@ -32,6 +32,7 @@ namespace SqlSugar
         bool AddColumn(string tableName, DbColumnInfo column);
         bool UpdateColumn(string tableName, DbColumnInfo column);
         bool AddPrimaryKey(string tableName,string columnName);
+        bool AddPrimaryKeys(string tableName, string [] columnNames);
         bool DropConstraint(string tableName, string constraintName);
         bool BackupDataBase(string databaseName,string fullFileName);
         bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue);
@@ -44,6 +45,7 @@ namespace SqlSugar
         bool AddTableRemark( string tableName, string description);
         bool DeleteTableRemark(string tableName);
         bool IsAnyTableRemark(string tableName);
+        bool RenameTable(string oldTableName,string newTableName);
         #endregion
     }
 }
