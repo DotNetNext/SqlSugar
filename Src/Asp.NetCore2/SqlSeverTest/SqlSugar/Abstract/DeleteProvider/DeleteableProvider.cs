@@ -388,6 +388,10 @@ namespace SqlSugar
             asyncDeleteBuilder.sql = this.DeleteBuilder.sql;
             asyncDeleteBuilder.WhereInfos = this.DeleteBuilder.WhereInfos;
             asyncDeleteBuilder.TableWithString = this.DeleteBuilder.TableWithString;
+            if (this.RemoveCacheFunc != null)
+            {
+                asyncDeleteable.RemoveDataCache();
+            }
             return asyncDeleteable;
         }
 
