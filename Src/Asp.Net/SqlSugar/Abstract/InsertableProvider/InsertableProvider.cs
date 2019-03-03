@@ -439,6 +439,10 @@ namespace SqlSugar
             asyncInsertableBuilder.IsReturnIdentity = this.InsertBuilder.IsReturnIdentity;
             asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
             asyncInsertableBuilder.TableWithString = this.InsertBuilder.TableWithString;
+            if (this.RemoveCacheFunc != null)
+            {
+                asyncInsertable.RemoveDataCache();
+            }
             return asyncInsertable;
         }
 
