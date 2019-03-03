@@ -58,13 +58,13 @@ namespace OrmTest.Demo
                         id = SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id)
                     })
           .ToList();
-
+            int count = 0;
             var getAll4 = db.Queryable<Student>().Select(it =>
                    new
                    {
                        name = it.Name,
                        id = SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)
-                   }).ToList();
+                   }).ToPageList(1, 2, ref count);
 
             var getAll5 = db.Queryable<Student>().Select(it =>
                       new Student
