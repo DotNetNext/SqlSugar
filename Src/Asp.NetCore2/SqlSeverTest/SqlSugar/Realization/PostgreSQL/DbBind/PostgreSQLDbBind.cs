@@ -14,9 +14,12 @@ namespace SqlSugar
             {
                 return "other";
             }
-            else if (dbTypeName == "xml" || dbTypeName == "string")
+            else if (dbTypeName == "xml" || dbTypeName == "string"|| dbTypeName == "jsonb"|| dbTypeName == "json")
             {
                 return "string";
+            }else if (dbTypeName == "bpchar")//数据库char datatype 查询出来的时候是 bpchar
+            {
+                return "char";
             }
             if (dbTypeName == "byte[]")
             {
