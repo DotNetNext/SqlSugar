@@ -140,6 +140,8 @@ namespace OrmTest.Demo
         public static void Easy()
         {
             var db = GetInstance();
+            var getAll22 = db.Queryable<Student>().ToDataTable();
+            var getAll220 = db.Ado.GetDataSetAll("select * from student");
             var getAll = db.Queryable<Student>().ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getId = db.Queryable<Student>().Select(it => it.Id).ToList();

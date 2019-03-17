@@ -356,7 +356,7 @@ namespace OrmTest.UnitTest
             expContext.Resolve(exp, ResolveExpressType.WhereSingle);
             var value = expContext.Result.GetString();
             var pars = expContext.Parameters;
-            base.Check(value, pars, "(TIMESTAMPDIFF(day,@MethodConst0,@MethodConst1)=0) ", new List<SugarParameter>() {
+            base.Check(value, pars, " (TIMESTAMPDIFF(day,date(@MethodConst0),date(@MethodConst1))=0) ", new List<SugarParameter>() {
                 new SugarParameter("@MethodConst0",x2),new SugarParameter("@MethodConst1",x2)
             }, "DateIsSameDay error");
         }

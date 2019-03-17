@@ -258,6 +258,8 @@ namespace OrmTest.Demo
         public static void Easy()
         {
             var db = GetInstance();
+            var getAll22 = db.Queryable<Student>().ToDataTable();
+            var getAll220 = db.Ado.GetDataSetAll("select 1");
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Student>().Select<object>("*").ToList();
             var getAll2 = db.Queryable<Student>().ToList();

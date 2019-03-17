@@ -205,7 +205,8 @@ namespace OrmTest.Demo
             //    if (item.Name.Length > 15)
             //        db.DbMaintenance.DropTable(item.Name);
             //}
-
+            var getAll22 = db.Queryable<Student>().ToDataTable();
+            var getAll220 = db.Ado.GetDataSetAll("select 1");
             var getAll = db.Queryable<Student>().ToList();
             var getLike = db.Queryable<Student>().Where(it => it.Name.Contains("a")).ToList();
             var getAllOrder = db.Queryable<Student>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
