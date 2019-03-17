@@ -20,7 +20,51 @@ namespace SqlSugar
                 case ResolveExpressType.SelectMultiple:
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
-                    Check.ThrowNotSupportedException("NewArrayExpression");
+                    try
+                    {
+                       var value = ExpressionTool.DynamicInvoke(expression);
+                        var isLeft = parameter.IsLeft;
+                        var baseParameter = parameter.BaseParameter;
+                        var isSetTempData = baseParameter.CommonTempData.HasValue() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
+                        if (isSetTempData)
+                        {
+                            baseParameter.CommonTempData = value;
+                        }
+                        else
+                        {
+                            var parentIsBinary = parameter.BaseParameter.CurrentExpression is BinaryExpression;
+                            var parentIsRoot = parameter.BaseParameter.CurrentExpression is LambdaExpression;
+                            var isBool = value != null && value.GetType() == UtilConstants.BoolType;
+                            if (parentIsRoot && isBool)
+                            {
+                                this.Context.Result.Append(value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False());
+                                break;
+                            }
+                            if (parentIsBinary && isBool)
+                            {
+                                var isLogicOperator =
+                                   parameter.BaseExpression.NodeType == ExpressionType.And ||
+                                   parameter.BaseExpression.NodeType == ExpressionType.AndAlso ||
+                                   parameter.BaseExpression.NodeType == ExpressionType.Or ||
+                                   parameter.BaseExpression.NodeType == ExpressionType.OrElse;
+                                if (isLogicOperator)
+                                {
+                                    AppendMember(parameter, isLeft, (value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False()));
+                                    break;
+                                }
+                            }
+                            if (value == null && parentIsBinary)
+                            {
+                                parameter.BaseParameter.ValueIsNull = true;
+                                value = this.Context.DbMehtods.Null();
+                            }
+                            AppendValue(parameter, isLeft, value);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Check.ThrowNotSupportedException("NewArrayExpression");
+                    }
                     break;
                 case ResolveExpressType.ArraySingle:
                     foreach (var item in expression.Expressions)

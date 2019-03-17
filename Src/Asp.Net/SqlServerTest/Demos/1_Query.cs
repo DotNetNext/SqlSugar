@@ -434,6 +434,8 @@ namespace OrmTest.Demo
             var test39 = db.Queryable<Student>().Where(it => it.Id == 1 && (it.Id==1?true:false)).ToList();
             var test40 = db.Queryable<Student>().Where(it => it.Id==1&&Convert.ToBoolean("true")).ToList();
             var test41 = db.Queryable<Student>().Where(it => it.Id==((it.Id==1?2:3)==2?1:2)).ToList();
+            var test42 = db.Queryable<Student>().Where(it => new int[] { 1, 2, 3 }.Contains(1)).ToList();
+            var test43 = db.Queryable<Student>().Where(it => new int[] { 1, 2, 3 }.Contains(it.Id)).ToList();
         }
         public static void Page()
         {
