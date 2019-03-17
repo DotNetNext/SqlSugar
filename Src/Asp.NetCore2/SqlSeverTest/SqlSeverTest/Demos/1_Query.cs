@@ -325,6 +325,7 @@ namespace OrmTest.Demo
             var getAll = db.Queryable<Student>().Select<object>("*").ToList();
             var getAll2 = db.Queryable<Student>().Select(it=>it.Name.Substring(0,4)).ToList();
             var getAll22 = db.Queryable<Student>().ToDataTable();
+            var getAll220 = db.Ado.GetDataSetAll("select 1");
             var getAll222 = db.Queryable<Student>().ToJson();
             var getAll2222 = db.Queryable<Student>().OrderBy(it=>it.Name.Length).ToJson();
             var getAll3 = db.Queryable<Student>().OrderBy(it => new { it.Id, it.Name }).GroupBy(it => new { it.Id, it.Name }).Select<object>("id").ToList();

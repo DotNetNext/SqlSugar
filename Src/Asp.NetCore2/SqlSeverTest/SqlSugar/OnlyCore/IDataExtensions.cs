@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Data;
+
 namespace SqlSugar
 {
     public interface IDataAdapter
