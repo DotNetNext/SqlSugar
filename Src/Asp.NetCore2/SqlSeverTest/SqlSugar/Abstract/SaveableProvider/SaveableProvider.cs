@@ -120,6 +120,20 @@ namespace SqlSugar
             return this;
         }
 
+        public ISaveable<T> EnableDiffLogEvent(object businessData = null)
+        {
+            LoadInsertable();
+            if (this.insertable != null)
+            {
+                this.insertable.EnableDiffLogEvent(businessData);
+            }
+            if (this.updateable != null)
+            {
+                this.updateable.EnableDiffLogEvent(businessData);
+            }
+            return this;
+        }
+
         public ISaveable<T> InsertIgnoreColumns(Expression<Func<T, object>> columns)
         {
             LoadInsertable();

@@ -211,6 +211,12 @@ namespace SqlSugar
             return this;
         }
 
+        public IUpdateable<T> UpdateColumns(string[] columns)
+        {
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            return this;
+        }
+
         public IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod)
         {
             List<string> primaryKeys = GetPrimaryKeys();
