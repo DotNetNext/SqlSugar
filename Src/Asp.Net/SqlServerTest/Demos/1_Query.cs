@@ -436,6 +436,14 @@ namespace OrmTest.Demo
             var test41 = db.Queryable<Student>().Where(it => it.Id==((it.Id==1?2:3)==2?1:2)).ToList();
             var test42 = db.Queryable<Student>().Where(it => new int[] { 1, 2, 3 }.Contains(1)).ToList();
             var test43 = db.Queryable<Student>().Where(it => new int[] { 1, 2, 3 }.Contains(it.Id)).ToList();
+          
+            var test44 = db.Queryable<Student>().Select(it=>new {
+                x= SqlFunc.Subqueryable<DataTestInfo>().Where(x => false).Sum(x => x.Decimal1)
+            }).ToList();
+            decimal? p = null;
+            var test45 = db.Queryable<DataTestInfo>().Select(it => new {
+                x =p
+            }).ToList();
         }
         public static void Page()
         {
