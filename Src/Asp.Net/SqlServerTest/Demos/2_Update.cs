@@ -83,7 +83,7 @@ namespace OrmTest.Demo
             dt.Add("createTime", DateTime.Now);
             var t66 = db.Updateable(dt).AS("student").WhereColumns("id").With(SqlWith.UpdLock).ExecuteCommand();
 
-
+            db.Updateable(new Student() { Id = 1 }).UpdateColumns(new string[] { "name"  }).Where(it=>it.Name=="1").ExecuteCommand();
 
             var dt2 = new Dictionary<string, object>();
             dt2.Add("id", 2);

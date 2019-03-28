@@ -214,7 +214,7 @@ namespace SqlSugar
 
         public IUpdateable<T> UpdateColumns(string[] columns)
         {
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit=>iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
             return this;
         }
 
