@@ -466,7 +466,7 @@ namespace SqlSugar
                             }
                             List<IConditionalModel> conModels = new List<IConditionalModel>();
                             conModels.Add(con.Value);
-                            var childSqlInfo = ConditionalModelToSql(conModels, 1000 * (1 + index));
+                            var childSqlInfo = ConditionalModelToSql(conModels, 1000 * (1 + index)+ models.IndexOf(item));
                             if (!isFirst)
                             {
 
