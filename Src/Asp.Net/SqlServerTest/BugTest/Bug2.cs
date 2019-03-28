@@ -77,6 +77,24 @@ namespace OrmTest.BugTest
                               .With(SqlWith.NoLock)
                               .ToSql();
 
+            var _sql = DB.Insertable(new UserInfo
+            {
+                BrandId = -1,
+                UserLevel = 1
+            }).IgnoreColumns(m => new { m.BlockingTime, m.CreditUpdatetime }).ToSql();
+
+            var _sql2 = DB.Insertable(new UserInfo
+            {
+                BrandId = -1,
+                UserLevel = 1
+            }).IgnoreColumns(m => new { m.UserId }).ToSql();
+            var _sql3 = DB.Updateable(new UserInfo
+            {
+                BrandId = -1,
+                UserLevel = 1
+            }).IgnoreColumns(m => new { m.CreditUpdatetime,m.UserId }).ToSql();
+
+
         }
     }
 
@@ -118,6 +136,37 @@ namespace OrmTest.BugTest
         public long UserId { get; set; }
 
         public int RoleId { get; set; }
+    }
+    /// <summary>
+	/// VmallUser 实体
+	/// </summary>
+	[SugarTable("vmall_user")]
+    public class UserInfo
+    {
+        #region 属性
+    
+        public int UserId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [SugarColumn(ColumnName = "brand_id")]
+        public int BrandId { get; set; }
+        /// <summary>
+        /// 用户等级1普通 2高级 0黑名单
+        /// </summary>
+        [SugarColumn(ColumnName = "user_level")]
+        public byte UserLevel { get; set; }
+        /// <summary>
+        /// 拉黑时间
+        /// </summary>
+        [SugarColumn(ColumnName = "blocking_time")]
+        public DateTime BlockingTime { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [SugarColumn(ColumnName = "credit_updatetime")]
+        public DateTime CreditUpdatetime { get; set; }
+        #endregion
     }
 }
  
