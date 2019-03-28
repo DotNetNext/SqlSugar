@@ -13,11 +13,14 @@ namespace OrmTest.Demo
 
         public static void Init()
         {
-         
+
+            Console.WriteLine("");
             for (int i = 0; i < 10; i++)
             {
                 var db = GetMasterSlaveInstance();
+               
                 var list = db.Insertable(new Student() { Name="aa" }).ExecuteCommand(); // ConnectionString2 or ConnectionString3
+                db.Queryable<Student>().First();
             }
             //db.Insertable(new Student() { Name = "masterTest" }).ExecuteCommand();// Config.ConnectionString
         }
@@ -31,7 +34,7 @@ namespace OrmTest.Demo
                 IsAutoCloseConnection = true,
                 SlaveConnectionConfigs = new List<SlaveConnectionConfig>() {
                      new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 } ,
-                       new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 }
+                       new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString3 }
                 }
             });
             db.Aop.OnLogExecuting = (sql, pars) =>

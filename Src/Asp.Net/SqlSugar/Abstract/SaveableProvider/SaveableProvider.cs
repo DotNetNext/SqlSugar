@@ -26,6 +26,8 @@ namespace SqlSugar
         {
             get
             {
+                var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
                 List<T> result = new List<T>();
                 var pks = GetPrimaryKeys();
                 Check.Exception(pks.IsNullOrEmpty(), "Need primary key");
@@ -34,6 +36,7 @@ namespace SqlSugar
                 var pkValues = saveObjects.Select(it=>it.GetType().GetProperty(pkInfo.PropertyName).GetValue(it,null));
                 if(existsObjects==null)
                     existsObjects=this.Context.Queryable<T>().In(pkValues).ToList();
+                this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
                 return saveObjects.Where(it=>!
                 existsObjects.Any(e=>
                                  e.GetType().GetProperty(pkInfo.PropertyName).GetValue(e,null).ObjToString()
@@ -45,6 +48,8 @@ namespace SqlSugar
         {
             get
             {
+                var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
                 List<T> result = new List<T>();
                 var pks = GetPrimaryKeys();
                 Check.Exception(pks.IsNullOrEmpty(), "Need primary key");
@@ -53,6 +58,7 @@ namespace SqlSugar
                 var pkValues = saveObjects.Select(it => it.GetType().GetProperty(pkInfo.PropertyName).GetValue(it, null));
                 if (existsObjects == null)
                     existsObjects = this.Context.Queryable<T>().In(pkValues).ToList();
+                this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
                 return saveObjects.Where(it => 
                 existsObjects.Any(e =>
                                  e.GetType().GetProperty(pkInfo.PropertyName).GetValue(e, null).ObjToString()
