@@ -251,7 +251,7 @@ namespace SqlSugar
                     CheckType(bind.DateThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "datetime")
                         method = isNullableType ? getConvertDateTime : getDateTime;
-                    if (bindProperyTypeName == "datetime"&&dbTypeName == "time")
+                    if (bindProperyTypeName == "datetime"&&dbTypeName.ToLower() == "time")
                         method = isNullableType ? getConvertTime : getTime;
                     break;
                 case CSharpDataType.@decimal:
