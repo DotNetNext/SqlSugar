@@ -23,6 +23,8 @@ namespace OrmTest.Demo
                 db.Queryable<Student>().First();
             }
             //db.Insertable(new Student() { Name = "masterTest" }).ExecuteCommand();// Config.ConnectionString
+            Console.WriteLine("saveable");
+            GetMasterSlaveInstance().Saveable(new Student() { Name = "a" }).ExecuteCommand();
         }
 
         public static SqlSugarClient GetMasterSlaveInstance()
