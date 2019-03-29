@@ -116,6 +116,7 @@ namespace SqlSugar
                 batchUpdateSql.AppendFormat(SqlTemplateBatch.ToString(), setValues, GetTableNameStringNoWith, TableWithString);
                 int i = 0;
                 var tableColumnList = this.Context.DbMaintenance.GetColumnInfosByTableName(GetTableNameStringNoWith);
+                
                 foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
                 {
                     var isFirst = i == 0;
@@ -123,7 +124,24 @@ namespace SqlSugar
                     {
                         updateTable.Append(SqlTemplateBatchUnion);
                     }
-                    updateTable.Append("\r\n (" + string.Join(",", columns.Select(it => string.Format("CAST({0} AS {1})", FormatValue(it.Value), tableColumnList.FirstOrDefault(x => x.DbColumnName.Equals(it.DbColumnName, StringComparison.OrdinalIgnoreCase))?.DataType))) + ")");
+                    updateTable.Append("\r\n (" + string.Join(",", columns.Select(it =>
+                    {
+                        var columnInfo = tableColumnList.FirstOrDefault(x => x.DbColumnName.Equals(it.DbColumnName, StringComparison.OrdinalIgnoreCase));
+                        var dbType = columnInfo?.DataType;
+                        if (dbType == null) {
+                            var typeName = it.PropertyType.Name.ToLower();
+                            var isAnyType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).Any();
+                            if (isAnyType)
+                            {
+                                dbType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).FirstOrDefault().Key;
+                            }
+                            else {
+                                dbType = "varchar";
+                            }
+                        }
+                        return string.Format("CAST({0} AS {1})", FormatValue(it.Value), dbType);
+
+                    })) + ")");
                     ++i;
                 }
                 pageIndex++;
