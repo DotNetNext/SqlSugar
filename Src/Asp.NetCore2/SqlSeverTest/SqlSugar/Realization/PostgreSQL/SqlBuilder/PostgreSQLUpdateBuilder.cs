@@ -134,6 +134,9 @@ namespace SqlSugar
                                 typeName = "int";
                             if (typeName == "int64")
                                 typeName = "long";
+                            if (typeName == "int16")
+                                typeName = "short";
+                 
                             var isAnyType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).Any();
                             if (isAnyType)
                             {
