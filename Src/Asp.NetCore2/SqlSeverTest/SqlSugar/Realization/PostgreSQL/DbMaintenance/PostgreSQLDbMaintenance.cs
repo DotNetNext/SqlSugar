@@ -55,7 +55,7 @@ namespace SqlSugar
             {
                 return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
                          join pg_class on pg_description.objoid = pg_class.oid
-                         where objsubid = 0 and relname = (SELECT viewname from pg_views  
+                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
                          WHERE schemaname ='public')";
             }
         }
