@@ -93,7 +93,8 @@ namespace OrmTest.BugTest
                 BrandId = -1,
                 UserLevel = 1
             }).IgnoreColumns(m => new { m.CreditUpdatetime,m.UserId }).ToSql();
-
+            DB.CodeFirst.InitTables(typeof(DataTest));
+            DB.Insertable(new DataTest()).ExecuteCommand();
 
         }
     }
@@ -167,6 +168,11 @@ namespace OrmTest.BugTest
         [SugarColumn(ColumnName = "credit_updatetime")]
         public DateTime CreditUpdatetime { get; set; }
         #endregion
+    }
+
+    public class DataTest {
+        [SugarColumn( ColumnDataType = "time",IsNullable =true)]
+         public TimeSpan? dateTime { get; set; }
     }
 }
  
