@@ -130,6 +130,10 @@ namespace SqlSugar
                         var dbType = columnInfo?.DataType;
                         if (dbType == null) {
                             var typeName = it.PropertyType.Name.ToLower();
+                            if (typeName == "int32")
+                                typeName = "int";
+                            if (typeName == "int64")
+                                typeName = "long";
                             var isAnyType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).Any();
                             if (isAnyType)
                             {
