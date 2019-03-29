@@ -23,6 +23,7 @@ namespace SqlSugar
         IDataParameterCollection DataReaderParameters { get; set; }
         CommandType CommandType { get; set; }
         bool IsEnableLogEvent { get; set; }
+        bool IsDisableMasterSlaveSeparation { get; set; }
         Action<string, SugarParameter []> LogEventStarting { get; set; }
         Action<string, SugarParameter []> LogEventCompleted { get; set; }
         Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }

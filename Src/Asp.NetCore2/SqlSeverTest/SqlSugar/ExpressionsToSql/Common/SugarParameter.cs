@@ -97,7 +97,8 @@ namespace SqlSugar
             }
             else if (type == UtilConstants.TimeSpanType)
             {
-                this.Value = this.Value.ToString();
+                if (this.Value != null)
+                    this.Value = this.Value.ToString();
             }
 
         }

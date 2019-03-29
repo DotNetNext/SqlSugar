@@ -39,6 +39,7 @@ namespace SqlSugar
         internal bool OldClearParameters { get; set; }
         public IDataParameterCollection DataReaderParameters { get; set; }
         public TimeSpan SqlExecutionTime { get { return AfterTime - BeforeTime; } }
+        public bool IsDisableMasterSlaveSeparation { get; set; }
         internal DateTime BeforeTime = DateTime.MinValue;
         internal DateTime AfterTime = DateTime.MinValue;
         public virtual IDbBind DbBind
@@ -761,7 +762,7 @@ namespace SqlSugar
         {
             get
             {
-                return this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.HasValue();
+                return this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.HasValue()&& this.IsDisableMasterSlaveSeparation==false;
             }
         }
         private void SetConnectionStart(string sql)
