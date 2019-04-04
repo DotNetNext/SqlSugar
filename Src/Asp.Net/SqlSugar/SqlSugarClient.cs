@@ -817,6 +817,7 @@ namespace SqlSugar
                             itemParameter.ParameterName = newName;
                         }
                         parsmeters.AddRange(itemParsmeters);
+                        itemSql = itemSql.TrimEnd(';')+";";
                         sqlBuilder.AppendLine(itemSql);
                         index++;
                     }
