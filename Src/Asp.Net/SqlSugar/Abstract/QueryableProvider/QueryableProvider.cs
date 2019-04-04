@@ -652,6 +652,14 @@ namespace SqlSugar
         {
             return _Avg<TResult>(expression);
         }
+        public virtual T[] ToArray() {
+
+            var result = this.ToList();
+            if (result.HasValue())
+                return result.ToArray();
+            else
+                return null;
+        }
         public virtual string ToJson()
         {
             if (IsCache)

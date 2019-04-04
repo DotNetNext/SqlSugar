@@ -119,6 +119,7 @@ namespace SqlSugar
         Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression);
 
         List<T> ToList();
+        T[] ToArray();
         Task<List<T>> ToListAsync();
 
         string ToJson();
