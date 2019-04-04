@@ -18,6 +18,11 @@ namespace SqlSugar
             var result = Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()).ObjToInt();
             return result;
         }
+        public override KeyValuePair<string, List<SugarParameter>> ToSql()
+        {
+            var result= base.ToSql();
+            return new KeyValuePair<string, List<SugarParameter>>(result.Key.Replace("$PrimaryKey", GetPrimaryKeys().FirstOrDefault()), result.Value);
+        }
 
         public override long ExecuteReturnBigIdentity()
         {

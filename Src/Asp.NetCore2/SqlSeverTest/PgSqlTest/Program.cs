@@ -30,7 +30,7 @@ namespace OrmTest
             Demo.AttributeDemo.Init();
             Demo.Mapper.Init();
             Demo.ExtEntity.Init();
-         
+            Demo.Queue.Init();
 
         }
     }
