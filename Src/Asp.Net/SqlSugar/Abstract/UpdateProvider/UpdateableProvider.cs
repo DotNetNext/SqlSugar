@@ -32,7 +32,11 @@ namespace SqlSugar
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
         private Action RemoveCacheFunc { get; set; }
-
+        public void AddQueue()
+        {
+            var sqlObj = this.ToSql();
+            this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
+        }
         public virtual int ExecuteCommand()
         {
             PreToSql();

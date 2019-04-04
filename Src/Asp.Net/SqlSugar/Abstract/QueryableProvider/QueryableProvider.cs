@@ -50,7 +50,11 @@ namespace SqlSugar
         {
             QueryBuilder.Clear();
         }
-
+        public void AddQueue()
+        {
+            var sqlObj = this.ToSql();
+            this.Context.Queues.Add(sqlObj.Key,sqlObj.Value);
+        }
         public ISugarQueryable<T> Clone()
         {
             var queryable = this.Context.Queryable<T>().WithCacheIF(IsCache, CacheTime);

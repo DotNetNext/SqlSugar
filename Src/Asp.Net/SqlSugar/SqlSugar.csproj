@@ -82,6 +82,7 @@
     <Compile Include="Entities\DiffLogModel.cs" />
     <Compile Include="Entities\DiffType.cs" />
     <Compile Include="Entities\MapperCache.cs" />
+    <Compile Include="Entities\QueueItem.cs" />
     <Compile Include="Entities\SlaveConnectionConfig.cs" />
     <Compile Include="Entities\SugarDebugger.cs" />
     <Compile Include="Enum\ConditionalType.cs" />

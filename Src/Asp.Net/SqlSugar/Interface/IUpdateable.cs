@@ -55,5 +55,6 @@ namespace SqlSugar
         IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
         IUpdateable<T> RemoveDataCache();
         KeyValuePair<string,List<SugarParameter>> ToSql();
+        void AddQueue();
     }
 }

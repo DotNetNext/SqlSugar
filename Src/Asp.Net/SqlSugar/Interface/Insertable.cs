@@ -31,5 +31,6 @@ namespace SqlSugar
         IInsertable<T> EnableDiffLogEvent(object businessData = null);
         IInsertable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
+        void AddQueue();
     }
 }

@@ -145,6 +145,7 @@ namespace SqlSugar
         ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         string ToClassString(string className);
         void Clear();
+        void AddQueue();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {

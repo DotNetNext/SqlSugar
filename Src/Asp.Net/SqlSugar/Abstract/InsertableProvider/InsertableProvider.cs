@@ -33,6 +33,11 @@ namespace SqlSugar
 
 
         #region Core
+        public void AddQueue()
+        {
+            var sqlObj = this.ToSql();
+            this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
+        }
         public virtual int ExecuteCommand()
         {
             if (InsertBuilder.DbColumnInfoList.HasValue())

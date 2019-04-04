@@ -41,7 +41,11 @@ namespace SqlSugar
             After(sql);
             return result;
         }
-
+        public void AddQueue()
+        {
+            var sqlObj = this.ToSql();
+            this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
+        }
         public bool ExecuteCommandHasChange()
         {
             return ExecuteCommand() > 0;

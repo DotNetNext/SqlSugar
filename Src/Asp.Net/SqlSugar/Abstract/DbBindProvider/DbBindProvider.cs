@@ -187,7 +187,7 @@ namespace SqlSugar
                 {
                     return GetKeyValueList<T>(type, dataReader);
                 }
-                else if (type.IsValueType() || type == UtilConstants.StringType||type== UtilConstants.ByteArrayType)
+                else if (type.IsValueType() || type == UtilConstants.StringType || type == UtilConstants.ByteArrayType)
                 {
                     return GetValueTypeList<T>(type, dataReader);
                 }
@@ -199,6 +199,25 @@ namespace SqlSugar
                 {
                     return GetEntityList<T>(Context, dataReader);
                 }
+            }
+        }
+        public virtual List<T> DataReaderToListNoUsing<T>(Type type, IDataReader dataReader)
+        {
+            if (type.Name.Contains("KeyValuePair"))
+            {
+                return GetKeyValueList<T>(type, dataReader);
+            }
+            else if (type.IsValueType() || type == UtilConstants.StringType || type == UtilConstants.ByteArrayType)
+            {
+                return GetValueTypeList<T>(type, dataReader);
+            }
+            else if (type.IsArray)
+            {
+                return GetArrayList<T>(type, dataReader);
+            }
+            else
+            {
+                return GetEntityList<T>(Context, dataReader);
             }
         }
         #endregion

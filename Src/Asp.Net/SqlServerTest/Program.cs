@@ -53,6 +53,7 @@ namespace OrmTest
             Demo.Delete.Init();
             Demo.InsertOrUpdate.Init();
             Demo.Debugger.Init();
+            Demo.Queue.Init();
 
             Console.WriteLine("all successfully.");
             Console.ReadKey();
