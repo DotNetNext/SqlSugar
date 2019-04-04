@@ -32,10 +32,7 @@ namespace OrmTest.Demo
             db.Queryable<School>().AddQueue();
             db.Queryable<School>().AddQueue();
             var result2 = db.SaveQueues<Student, School, School>();
-
-
  
-            result6.Wait();
         }
     }
 }
