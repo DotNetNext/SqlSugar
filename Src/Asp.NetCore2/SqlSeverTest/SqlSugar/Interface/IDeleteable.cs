@@ -32,5 +32,6 @@ namespace SqlSugar
         IDeleteable<T> EnableDiffLogEvent(object businessData = null);
         IDeleteable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
+        void AddQueue();
     }
 }

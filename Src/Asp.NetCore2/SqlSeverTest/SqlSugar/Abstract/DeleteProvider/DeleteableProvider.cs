@@ -41,7 +41,11 @@ namespace SqlSugar
             After(sql);
             return result;
         }
-
+        public void AddQueue()
+        {
+            var sqlObj = this.ToSql();
+            this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
+        }
         public bool ExecuteCommandHasChange()
         {
             return ExecuteCommand() > 0;
@@ -399,6 +403,8 @@ namespace SqlSugar
         {
             if (this.IsEnableDiffLogEvent)
             {
+                var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
                 var parameters = DeleteBuilder.Parameters;
                 if (parameters == null)
                     parameters = new List<SugarParameter>();
@@ -406,6 +412,7 @@ namespace SqlSugar
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);
+                this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
             if (this.RemoveCacheFunc != null) {
                 this.RemoveCacheFunc();
@@ -416,12 +423,15 @@ namespace SqlSugar
         {
             if (this.IsEnableDiffLogEvent)
             {
+                var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
                 var parameters = DeleteBuilder.Parameters;
                 if (parameters == null)
                     parameters = new List<SugarParameter>();
                 diffModel.BeforeData = GetDiffTable(sql, parameters);
                 diffModel.Sql = sql;
                 diffModel.Parameters = parameters.ToArray();
+                this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
         }
 

@@ -32,7 +32,11 @@ namespace SqlSugar
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
         private Action RemoveCacheFunc { get; set; }
-
+        public void AddQueue()
+        {
+            var sqlObj = this.ToSql();
+            this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
+        }
         public virtual int ExecuteCommand()
         {
             PreToSql();
@@ -157,7 +161,7 @@ namespace SqlSugar
         public IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
             this.IsWhereColumns = true;
-            Check.Exception(UpdateParameterIsNull==true, "Updateable<T>().Updateable is error,Use Updateable(obj).WhereColumns");
+            Check.Exception(UpdateParameterIsNull == true, "Updateable<T>().Updateable is error,Use Updateable(obj).WhereColumns");
             var whereColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
@@ -173,7 +177,7 @@ namespace SqlSugar
             return this;
         }
 
-        public IUpdateable<T> WhereColumns(string [] columnNames)
+        public IUpdateable<T> WhereColumns(string[] columnNames)
         {
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var columnName in columnNames)
@@ -214,7 +218,7 @@ namespace SqlSugar
 
         public IUpdateable<T> UpdateColumns(string[] columns)
         {
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit=>iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
             return this;
         }
 
@@ -407,10 +411,11 @@ namespace SqlSugar
         private void PreToSql()
         {
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
-            if (this.IsWhereColumns) {
+            if (this.IsWhereColumns)
+            {
                 foreach (var pkName in UpdateBuilder.PrimaryKeys)
                 {
-                    var isContains=this.UpdateBuilder.DbColumnInfoList.Select(it => it.DbColumnName.ToLower()).Contains(pkName.ToLower());
+                    var isContains = this.UpdateBuilder.DbColumnInfoList.Select(it => it.DbColumnName.ToLower()).Contains(pkName.ToLower());
                     Check.Exception(isContains == false, "Use UpdateColumns().WhereColumn() ,UpdateColumns need {0}", pkName);
                 }
             }
@@ -605,6 +610,8 @@ namespace SqlSugar
         {
             if (this.IsEnableDiffLogEvent)
             {
+                var isDisableMasterSlaveSeparation = this.Ado.IsDisableMasterSlaveSeparation;
+                this.Ado.IsDisableMasterSlaveSeparation = true;
                 var parameters = UpdateBuilder.Parameters;
                 if (parameters == null)
                     parameters = new List<SugarParameter>();
@@ -612,8 +619,10 @@ namespace SqlSugar
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);
+                this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
-            if (this.RemoveCacheFunc != null) {
+            if (this.RemoveCacheFunc != null)
+            {
                 this.RemoveCacheFunc();
             }
         }
@@ -622,12 +631,15 @@ namespace SqlSugar
         {
             if (this.IsEnableDiffLogEvent)
             {
+                var isDisableMasterSlaveSeparation = this.Ado.IsDisableMasterSlaveSeparation;
+                this.Ado.IsDisableMasterSlaveSeparation = true;
                 var parameters = UpdateBuilder.Parameters;
                 if (parameters == null)
                     parameters = new List<SugarParameter>();
                 diffModel.BeforeData = GetDiffTable(sql, parameters);
                 diffModel.Sql = sql;
                 diffModel.Parameters = parameters.ToArray();
+                this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
         }
 

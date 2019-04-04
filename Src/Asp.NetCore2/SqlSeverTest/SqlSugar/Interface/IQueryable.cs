@@ -119,6 +119,7 @@ namespace SqlSugar
         Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression);
 
         List<T> ToList();
+        T[] ToArray();
         Task<List<T>> ToListAsync();
 
         string ToJson();
@@ -145,6 +146,7 @@ namespace SqlSugar
         ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         string ToClassString(string className);
         void Clear();
+        void AddQueue();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {

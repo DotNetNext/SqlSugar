@@ -50,7 +50,11 @@ namespace SqlSugar
         {
             QueryBuilder.Clear();
         }
-
+        public void AddQueue()
+        {
+            var sqlObj = this.ToSql();
+            this.Context.Queues.Add(sqlObj.Key,sqlObj.Value);
+        }
         public ISugarQueryable<T> Clone()
         {
             var queryable = this.Context.Queryable<T>().WithCacheIF(IsCache, CacheTime);
@@ -647,6 +651,14 @@ namespace SqlSugar
         public virtual TResult Avg<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _Avg<TResult>(expression);
+        }
+        public virtual T[] ToArray() {
+
+            var result = this.ToList();
+            if (result.HasValue())
+                return result.ToArray();
+            else
+                return null;
         }
         public virtual string ToJson()
         {

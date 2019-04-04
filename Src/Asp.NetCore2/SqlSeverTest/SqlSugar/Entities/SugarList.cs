@@ -19,7 +19,7 @@ namespace SqlSugar
         }
         public new void Clear()
         {
-            this.RemoveAll(it=>true);
+            this.RemoveAll(it => true);
         }
     }
 
@@ -27,7 +27,7 @@ namespace SqlSugar
     {
         public void Add(string propertyName, string EntityName)
         {
-            this.RemoveAll(it =>it.EntityName==EntityName&&it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            this.RemoveAll(it => it.EntityName == EntityName && it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
             this.Add(new IgnoreColumn() { PropertyName = propertyName, EntityName = EntityName });
         }
 
@@ -41,8 +41,27 @@ namespace SqlSugar
     {
         public void Add(string propertyName, string dbColumnName, string entityName)
         {
-            this.RemoveAll(it =>it.EntityName==entityName &&it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            this.RemoveAll(it => it.EntityName == entityName && it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
             this.Add(new MappingColumn() { PropertyName = propertyName, DbColumnName = dbColumnName, EntityName = entityName });
+        }
+        public new void Clear()
+        {
+            this.RemoveAll(it => true);
+        }
+    }
+
+
+    public class QueueList : List<QueueItem>
+    {
+        public void Add(string sql, SugarParameter[] parameters)
+        {
+            this.Add(new QueueItem() { Sql = sql, Parameters = parameters });
+        }
+        public void Add(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+                parameters = new List<SugarParameter>();
+            this.Add(new QueueItem() { Sql = sql, Parameters = parameters.ToArray() });
         }
         public new void Clear()
         {
