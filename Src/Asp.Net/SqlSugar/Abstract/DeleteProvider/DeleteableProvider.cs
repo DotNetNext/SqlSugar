@@ -412,7 +412,7 @@ namespace SqlSugar
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
                 if (this.Context.Ado.DiffLogEvent != null)
                     this.Context.Ado.DiffLogEvent(diffModel);
-                this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
+                this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
             if (this.RemoveCacheFunc != null) {
                 this.RemoveCacheFunc();
@@ -431,7 +431,7 @@ namespace SqlSugar
                 diffModel.BeforeData = GetDiffTable(sql, parameters);
                 diffModel.Sql = sql;
                 diffModel.Parameters = parameters.ToArray();
-                this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
+                this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
         }
 
