@@ -327,6 +327,7 @@ namespace OrmTest.Demo
             var getAll22 = db.Queryable<Student>().ToDataTable();
             var getAll220 = db.Ado.GetDataSetAll("select 1");
             var getAll222 = db.Queryable<Student>().ToJson();
+            var getAll22222 = db.Queryable<Student>().Where(it=>it.Id==1).ToSql();
             var getAll2222 = db.Queryable<Student>().OrderBy(it=>it.Name.Length).ToJson();
             var getAll3 = db.Queryable<Student>().OrderBy(it => new { it.Id, it.Name }).GroupBy(it => new { it.Id, it.Name }).Select<object>("id").ToList();
             var getRandomList = db.Queryable<Student>().OrderBy(it => SqlFunc.GetRandom()).ToList();
