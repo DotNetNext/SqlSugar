@@ -811,7 +811,7 @@ namespace SqlSugar
                             item.Sql = string.Empty;
                         if (item.Parameters == null)
                             item.Parameters = new SugarParameter[] { };
-                        var itemParsmeters = item.Parameters.OrderByDescending(it => it.ParameterName).ToList();
+                        var itemParsmeters = item.Parameters.OrderByDescending(it => it.ParameterName.Length).ToList();
                         var itemSql = item.Sql;
                         foreach (var itemParameter in itemParsmeters)
                         {
