@@ -130,5 +130,44 @@ namespace SqlSugar
             return byte2String;
         }
 
+        public static string EncodeBase64(string code)
+        {
+            if (code.IsNullOrEmpty()) return code;
+            string encode = "";
+            byte[] bytes = Encoding.GetEncoding("utf-8").GetBytes(code);
+            try
+            {
+                encode = Convert.ToBase64String(bytes);
+            }
+            catch
+            {
+                encode = code;
+            }
+            return encode;
+        }
+ 
+        public static string DecodeBase64(string code)
+        {
+            try
+            {
+                if (code.IsNullOrEmpty()) return code;
+                string decode = "";
+                byte[] bytes = Convert.FromBase64String(code);
+                try
+                {
+                    decode = Encoding.GetEncoding("utf-8").GetString(bytes);
+                }
+                catch
+                {
+                    decode = code;
+                }
+                return decode;
+            }
+            catch  
+            {
+                return code;
+            }
+        }
+
     }
 }

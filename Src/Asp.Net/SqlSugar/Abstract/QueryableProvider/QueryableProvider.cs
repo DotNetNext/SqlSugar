@@ -1260,6 +1260,19 @@ namespace SqlSugar
 
         protected void _Mapper<TResult>(List<TResult> result)
         {
+            if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
+            {
+                foreach (var item in result)
+                {
+                    foreach (var column in this.EntityInfo.Columns.Where(it => it.IsTranscoding))
+                    {
+                        var value = column.PropertyInfo.GetValue(item, null);
+                        if (value != null) {
+                            column.PropertyInfo.SetValue(item,UtilMethods.DecodeBase64(value.ToString()),null);
+                        }
+                    }
+                }
+            }
             if (this.Mappers.HasValue())
             {
                 foreach (var mapper in this.Mappers)

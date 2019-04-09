@@ -46,6 +46,7 @@ namespace OrmTest
             OrmTest.Demo.CodeFirst.Init();;
             OrmTest.Demo.MasterSlave.Init(); ;
             OrmTest.Demo.Queue.Init(); ;
+            OrmTest.Demo.Encode.Init();
         }
     }
 }

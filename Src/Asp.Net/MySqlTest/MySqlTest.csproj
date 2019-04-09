@@ -60,6 +60,7 @@
     <Compile Include="Demos\A_MasterSlave.cs" />
     <Compile Include="Demos\DemoBase.cs" />
     <Compile Include="Demos\H_Queue.cs" />
+    <Compile Include="Demos\J_Encode.cs" />
     <Compile Include="Models\DataTestInfo.cs" />
     <Compile Include="Models\DataTestInfo2.cs" />
     <Compile Include="Models\Enum.cs" />

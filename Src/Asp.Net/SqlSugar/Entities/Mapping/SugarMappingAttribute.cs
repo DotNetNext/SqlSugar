@@ -120,6 +120,14 @@ namespace SqlSugar
         }
 
 
+
+        private bool _IsTranscoding;
+        public bool IsTranscoding
+        {
+            get { return _IsTranscoding; }
+            set { _IsTranscoding = value; }
+        }
+
     }
 
 }
