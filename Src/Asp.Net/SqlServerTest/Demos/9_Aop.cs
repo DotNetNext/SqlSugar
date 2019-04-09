@@ -56,6 +56,7 @@ namespace OrmTest.Demo
                 var data = it.BusinessData;
                 var type = it.DiffType;
                 var time = it.Time;
+                Console.WriteLine(it.DiffType);
             };
 
 
@@ -86,8 +87,8 @@ namespace OrmTest.Demo
             .ExecuteReturnIdentity();
 
 
-            db.Saveable(new Student() {Name="saveinsert"}).EnableDiffLogEvent().ExecuteCommand();
-            db.Saveable(new Student() { Id=id, Name = "saveinsert" }).EnableDiffLogEvent().ExecuteCommand();
+            var enrity= db.Saveable(new Student() {Name="saveinsert"}).EnableDiffLogEvent().ExecuteReturnEntity();
+            db.Saveable(new Student() { Id= enrity.Id, Name = "saveinsert" }).EnableDiffLogEvent().ExecuteCommand();
         }
     }
 }

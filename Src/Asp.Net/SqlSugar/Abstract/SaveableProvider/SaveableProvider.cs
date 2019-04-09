@@ -131,6 +131,7 @@ namespace SqlSugar
         public ISaveable<T> EnableDiffLogEvent(object businessData = null)
         {
             LoadInsertable();
+            LoadUpdateable();
             if (this.insertable != null)
             {
                 this.insertable.EnableDiffLogEvent(businessData);
