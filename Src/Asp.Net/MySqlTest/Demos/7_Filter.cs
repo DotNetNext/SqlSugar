@@ -17,7 +17,7 @@ namespace OrmTest.Demo
             //gobal filter
             var db = GetInstance1();
 
-            var sql = db.Queryable<Student>().ToSql();
+            var sql = db.Queryable<Student>().OrderBy(it=>it.Id).ToSql();
             //SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  isDelete=0 
 
             var sql2 = db.Queryable<Student, School>((f, s) => new object[] { JoinType.Left, f.SchoolId == s.Id }).ToSql();

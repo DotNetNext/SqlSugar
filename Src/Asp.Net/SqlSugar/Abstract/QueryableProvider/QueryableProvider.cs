@@ -1207,7 +1207,7 @@ namespace SqlSugar
                 foreach (var item in list)
                 {
                     var filterResult = item.FilterValue(this.Context);
-                    Where(filterResult.Sql, filterResult.Parameters);
+                    Where(filterResult.Sql+UtilConstants.Space, filterResult.Parameters);
                 }
             }
         }
