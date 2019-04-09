@@ -173,6 +173,15 @@ namespace SqlSugar
             return this;
         }
 
+        public ISaveable<T> UpdateWhereColumns(Expression<Func<T, object>> columns)
+        {
+            LoadUpdateable();
+            if (this.updateable != null)
+            {
+                this.updateable.WhereColumns(columns);
+            }
+            return this;
+        }
         protected virtual List<string> GetPrimaryKeys()
         {
             if (this.Context.IsSystemTablesConfig)
@@ -197,5 +206,6 @@ namespace SqlSugar
                 updateable = this.Context.Updateable<T>(temp);
         }
 
+       
     }
 }
