@@ -39,6 +39,7 @@ namespace MySqlTest
             OrmTest.Demo.ComplexModel.Init();
             OrmTest.Demo.CodeFirst.Init();
             OrmTest.Demo.Queue.Init();
+            OrmTest.Demo.Encode.Init();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace OrmTest
 
             get
             {
-                return Environment.CurrentDirectory.Replace(@"\bin\Debug", "");
+                return Environment.CurrentDirectory.Replace(@"\bin\Debug", "").Replace(@"\netcoreapp2.0","");
             }
         }
         public static string ConnectionString = @"DataSource=" + GetCurrentProjectPath + @"\DataBase\SqlSugar4xTest.sqlite";
