@@ -96,6 +96,14 @@ namespace OrmTest.BugTest
             DB.CodeFirst.InitTables(typeof(DataTest));
             DB.Insertable(new DataTest()).ExecuteCommand();
 
+            // 初始化实体表
+            DB.CodeFirst.SetStringDefaultLength(255).InitTables(typeof(TestA));
+
+            var testa = new TestA();
+            testa.Col1 = "2333333";
+            testa.Col3 = "444";
+
+            DB.Saveable(testa).ExecuteCommand();
         }
     }
 
@@ -114,7 +122,24 @@ namespace OrmTest.BugTest
 
         public string Name { get; set; }
     }
+    public class Base : ModelContext
+    {
 
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
+
+        [SugarColumn(IsNullable = true)]
+        public string Col3 { get; set; }
+    }
+
+    public class TestA : Base
+    {
+        public string Col1 { get; set; }
+
+        [SugarColumn(IsIgnore = true)]
+        public string Col2 { get; set; }
+    }
     public partial class UserOrganizationUnit
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
