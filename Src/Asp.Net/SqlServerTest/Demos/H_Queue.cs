@@ -30,8 +30,10 @@ namespace OrmTest.Demo
 
             db.Queryable<Student>().AddQueue();
             db.Queryable<School>().AddQueue();
-            db.AddQueue("select @id", new { id = 1 });
-            var result2 = db.SaveQueues<Student, School, int>();
+            SqlSugar.SugarParameter p = new SqlSugar.SugarParameter("@id",1);
+            db.AddQueue("select @id", p);
+            db.AddQueue("select @id", p);
+            var result2 = db.SaveQueues<Student, School, int,int>();
 
 
 

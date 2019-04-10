@@ -788,6 +788,22 @@ namespace SqlSugar
             }
             this.Queues.Add(sql,this.Context.Ado.GetParameters(parsmeters));
         }
+        public void AddQueue(string sql, SugarParameter  parsmeter)
+        {
+            if (Queues == null)
+            {
+                Queues = new QueueList();
+            }
+            this.Queues.Add(sql, new List<SugarParameter>() { parsmeter });
+        }
+        public void AddQueue(string sql, List<SugarParameter> parsmeters)
+        {
+            if (Queues == null)
+            {
+                Queues = new QueueList();
+            }
+            this.Queues.Add(sql, parsmeters);
+        }
         public QueueList Queues = new QueueList();
 
         private T SaveQueuesProvider<T>(bool isTran, Func<string, List<SugarParameter>, T> func)
@@ -812,14 +828,17 @@ namespace SqlSugar
                         if (item.Parameters == null)
                             item.Parameters = new SugarParameter[] { };
                         var itemParsmeters = item.Parameters.OrderByDescending(it => it.ParameterName.Length).ToList();
+                        List<SugarParameter> addParameters = new List<SugarParameter>();
                         var itemSql = item.Sql;
                         foreach (var itemParameter in itemParsmeters)
                         {
                             var newName = itemParameter.ParameterName + "_q_" + index;
+                            SugarParameter parameter = new SugarParameter(newName, itemParameter.Value);
+                            parameter.DbType = itemParameter.DbType;
                             itemSql = itemSql.Replace(itemParameter.ParameterName, newName);
-                            itemParameter.ParameterName = newName;
+                            addParameters.Add(parameter);
                         }
-                        parsmeters.AddRange(itemParsmeters);
+                        parsmeters.AddRange(addParameters);
                         itemSql = itemSql.TrimEnd(';')+";";
                         sqlBuilder.AppendLine(itemSql);
                         index++;
