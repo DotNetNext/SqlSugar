@@ -34,7 +34,7 @@ namespace SqlSugar
                 var pks = GetPrimaryKeys();
                 Check.Exception(pks.IsNullOrEmpty(), "Need primary key");
                 Check.Exception(pks.Count() > 1, "Multiple primary keys are not supported");
-                var pkInfo = this.EntityInfo.Columns.Where(it => it.DbColumnName.Equals(pks.First(), StringComparison.CurrentCultureIgnoreCase)).First();
+                var pkInfo = this.EntityInfo.Columns.Where(it=>it.IsIgnore==false).Where(it => it.DbColumnName.Equals(pks.First(), StringComparison.CurrentCultureIgnoreCase)).First();
                 var pkValues = saveObjects.Select(it=>it.GetType().GetProperty(pkInfo.PropertyName).GetValue(it,null));
                 if(existsObjects==null)
                     existsObjects=this.Context.Queryable<T>().In(pkValues).ToList();
@@ -56,7 +56,7 @@ namespace SqlSugar
                 var pks = GetPrimaryKeys();
                 Check.Exception(pks.IsNullOrEmpty(), "Need primary key");
                 Check.Exception(pks.Count() > 1, "Multiple primary keys are not supported");
-                var pkInfo = this.EntityInfo.Columns.Where(it => it.DbColumnName.Equals(pks.First(), StringComparison.CurrentCultureIgnoreCase)).First();
+                var pkInfo = this.EntityInfo.Columns.Where(it => it.IsIgnore == false).Where(it => it.DbColumnName.Equals(pks.First(), StringComparison.CurrentCultureIgnoreCase)).First();
                 var pkValues = saveObjects.Select(it => it.GetType().GetProperty(pkInfo.PropertyName).GetValue(it, null));
                 if (existsObjects == null)
                     existsObjects = this.Context.Queryable<T>().In(pkValues).ToList();
