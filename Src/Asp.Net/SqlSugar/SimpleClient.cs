@@ -176,10 +176,7 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().ToList();
         }
-        public int Count(Expression<Func<T, bool>> whereExpression)
-        {
-            return Context.Queryable<T>().Where(whereExpression).Count();
-        }
+
         public List<T> GetList(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().Where(whereExpression).ToList();
