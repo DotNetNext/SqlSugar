@@ -163,6 +163,7 @@ namespace SqlSugar
                         column.OracleSequenceName = sugarColumn.OracleSequenceName;
                         column.IsOnlyIgnoreInsert = sugarColumn.IsOnlyIgnoreInsert;
                         column.IsEnableUpdateVersionValidation = sugarColumn.IsEnableUpdateVersionValidation;
+                        column.IsTranscoding = sugarColumn.IsTranscoding;
                     }
                     else
                     {

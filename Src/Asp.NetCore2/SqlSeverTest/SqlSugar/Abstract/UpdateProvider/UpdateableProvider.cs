@@ -205,6 +205,7 @@ namespace SqlSugar
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, bool>> columns)
         {
+            CheckTranscodeing();
             var binaryExp = columns.Body as BinaryExpression;
             Check.Exception(!binaryExp.NodeType.IsIn(ExpressionType.Equal), "No support {0}", columns.ToString());
             Check.Exception(!(binaryExp.Left is MemberExpression) && !(binaryExp.Left is UnaryExpression), "No support {0}", columns.ToString());
@@ -250,6 +251,7 @@ namespace SqlSugar
                 }
             }
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
+            CheckTranscodeing();
             return this;
         }
 
@@ -366,6 +368,13 @@ namespace SqlSugar
                 ++i;
             }
         }
+        private void CheckTranscodeing()
+        {
+            if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsTranscoding", "UpdateColumns方式更新不支持IsTranscoding，你可以使用db.Updateable(实体)的方式更新"));
+            }
+        }
         private void SetUpdateItemByDic(int i, T item, List<DbColumnInfo> updateItem)
         {
             foreach (var column in item as Dictionary<string, object>)
@@ -402,6 +411,11 @@ namespace SqlSugar
                 if (columnInfo.PropertyType.IsEnum())
                 {
                     columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                }
+                var tranColumn = EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
+                if (tranColumn != null && columnInfo.Value.HasValue())
+                {
+                    columnInfo.Value = UtilMethods.EncodeBase64(columnInfo.Value.ToString());
                 }
                 updateItem.Add(columnInfo);
             }

@@ -285,7 +285,7 @@ namespace SqlSugar
                 foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
                 {
                     var filterResult = item.FilterValue(this.Context);
-                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql));
+                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql+UtilConstants.Space));
                     var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
                     if (filterParamters.HasValue())
                     {
