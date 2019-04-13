@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -44,8 +45,26 @@ namespace SqlSugar
                             Writable = true,
                             ValueProvider = base.CreateMemberValueProvider(p)
                         }).ToList();
-
+            foreach (var item in list)
+            {
+                if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.DateType)
+                {
+                    CreateDateProperty(type, item);
+                }
+            }
             return list;
         }
+
+        private static void CreateDateProperty(Type type, JsonProperty item)
+        {
+            var property = type.GetProperties().Where(it => it.Name == item.PropertyName).First();
+            var itemType = UtilMethods.GetUnderType(property);
+            if (property.GetCustomAttributes(true).Any(it => it is SugarColumn))
+            {
+                var sugarAttribute = (SugarColumn)property.GetCustomAttributes(true).First(it => it is SugarColumn);
+                item.Converter = new IsoDateTimeConverter() { DateTimeFormat = sugarAttribute.SerializeDateTimeFormat };
+            }
+        }
     }
+     
 }

@@ -87,6 +87,7 @@
     <Compile Include="Entities\SugarDebugger.cs" />
     <Compile Include="Enum\ConditionalType.cs" />
     <Compile Include="Enum\DbType.cs" />
+    <Compile Include="Enum\SugarDateTimeFormat.cs" />
     <Compile Include="Enum\WhereType.cs" />
     <Compile Include="ExpressionsToSql\CaseWhen\CaseWhen.cs" />
     <Compile Include="ExpressionsToSql\CaseWhen\CaseWhenResolve.cs" />

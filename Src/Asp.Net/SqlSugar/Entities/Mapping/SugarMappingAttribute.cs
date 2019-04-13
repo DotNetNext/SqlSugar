@@ -134,6 +134,13 @@ namespace SqlSugar
             get { return _NoSerialize; }
             set { _NoSerialize = value; }
         }
+
+        private string _SerializeDateTimeFormat;
+        public string SerializeDateTimeFormat
+        {
+            get { return _SerializeDateTimeFormat; }
+            set { _SerializeDateTimeFormat = value; }
+        }
     }
 
 }
