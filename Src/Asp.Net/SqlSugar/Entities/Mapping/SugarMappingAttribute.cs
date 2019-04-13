@@ -128,6 +128,12 @@ namespace SqlSugar
             set { _IsTranscoding = value; }
         }
 
+        private bool _NoSerialize;
+        public bool NoSerialize
+        {
+            get { return _NoSerialize; }
+            set { _NoSerialize = value; }
+        }
     }
 
 }
