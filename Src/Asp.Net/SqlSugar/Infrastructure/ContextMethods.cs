@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class ContextMethods : IContextMethods
+    public partial class ContextMethods : IContextMethods
     {
         public SqlSugarClient Context { get; set; }
         #region DataReader

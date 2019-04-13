@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IContextMethods
+    public partial interface IContextMethods
     {
         SqlSugarClient Context { get; set; }
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
