@@ -463,6 +463,10 @@ namespace SqlSugar
         {
             return GetInt(sql, this.GetParameters(parameters));
         }
+        public virtual long GetLong(string sql, object parameters)
+        {
+            return Convert.ToInt64(GetScalar(sql, GetParameters(parameters)));
+        }
         public virtual int GetInt(string sql, params SugarParameter[] parameters)
         {
             return GetScalar(sql, parameters).ObjToInt();
