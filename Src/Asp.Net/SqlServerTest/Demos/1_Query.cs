@@ -452,6 +452,7 @@ namespace OrmTest.Demo
             var test50 = db.Queryable<Student>().Where(it => it.CreateTime != null).Where(it => SqlFunc.ToDate(it.CreateTime).Year == SqlFunc.GetDate().Year).ToList();
             var test51 = db.Queryable<Student>().Select(it=>new { x= SqlFunc.ToDate(it.CreateTime).Year+"-" }).ToList();
             var test52 = db.Queryable<Student>().Select(it => SqlFunc.IsNull(it.CreateTime, SqlFunc.GetDate())).ToList();
+            var test53 = db.Queryable<Student>().Select(it => SqlFunc.IsNull(it.CreateTime, SqlFunc.GetDate())).First();
         }
         public static void Page()
         {
