@@ -36,6 +36,10 @@ namespace SqlSugar
             {
                 ResolveValue(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
+            else if (expression.Expression != null &&expression.Expression.Type==UtilConstants.DateType&&expression is MemberExpression && expression.Expression is MethodCallExpression)
+            {
+                ResolveDateDateByCall(parameter, isLeft, expression);
+            }
             else if (isDateDate)
             {
                 ResolveDateDate(parameter, isLeft, expression);
@@ -53,6 +57,7 @@ namespace SqlSugar
                 ResolveDefault(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
         }
+
 
         #region Resolve default
         private void ResolveDefault(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
@@ -164,6 +169,31 @@ namespace SqlSugar
         #endregion
 
         #region Resolve special member
+        private void ResolveDateDateByCall(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
+        {
+            var value = GetNewExpressionValue(expression.Expression);
+            if (expression.Member.Name == "Date")
+            {
+                AppendMember(parameter, isLeft, GetToDate(this.Context.DbMehtods.MergeString(
+                                  this.GetDateValue(value, DateType.Year),
+                                  "'-'",
+                                  this.GetDateValue(value, DateType.Month),
+                                  "'-'",
+                                  this.GetDateValue(value, DateType.Day))));
+            }
+            else
+            {
+                foreach (int myCode in Enum.GetValues(typeof(DateType)))
+                {
+                    string strName = Enum.GetName(typeof(DateType), myCode);//获取名称
+                    if (expression.Member.Name == strName)
+                    {
+                        AppendMember(parameter, isLeft, this.Context.DbMehtods.MergeString(this.GetDateValue(value, (DateType)(myCode))));
+                    }
+                }
+            }
+        }
+
         private MemberExpression ResolveValue(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
         {
             expression = expression.Expression as MemberExpression;
