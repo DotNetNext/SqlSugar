@@ -445,6 +445,8 @@ namespace OrmTest.Demo
             var test45 = db.Queryable<DataTestInfo>().Select(it => new {
                 x =p
             }).ToList();
+            var test46 = db.Queryable<Student>().Where(it => it.CreateTime > SqlFunc.ToDate(DateTime.Now.Date)).ToList();
+            //var test47 = db.Queryable<Student>().Where(it =>string.IsNullOrEmpty(it.Name)==true).ToList();
         }
         public static void Page()
         {

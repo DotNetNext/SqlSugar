@@ -386,7 +386,13 @@ namespace SqlSugar
         {
             parameter.CommonTempData = CommonTempDataType.Result;
             base.Expression = item;
-            base.Start();
+            if (item.Type == UtilConstants.DateType && parameter.CommonTempData.ObjToString() == CommonTempDataType.Result.ToString() && item.ToString() == "DateTime.Now.Date")
+            {
+                parameter.CommonTempData = DateTime.Now.Date;
+            }
+            else {
+                base.Start();
+            }
             var methodCallExpressionArgs = new MethodCallExpressionArgs()
             {
                 IsMember = parameter.ChildExpression is MemberExpression && !ExpressionTool.IsConstExpression(parameter.ChildExpression as MemberExpression),
