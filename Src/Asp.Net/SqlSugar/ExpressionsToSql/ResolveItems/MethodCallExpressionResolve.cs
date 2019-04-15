@@ -422,7 +422,13 @@ namespace SqlSugar
                     methodCallExpressionArgs.IsMember = false;
                 }
             }
-            if (methodCallExpressionArgs.IsMember == false)
+            if (methodCallExpressionArgs.IsMember == false&&(item is MethodCallExpression&&item.ToString()== "GetDate()") || (item is UnaryExpression && ((UnaryExpression)item).Operand.ToString() == "GetDate()")) {
+                var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
+                this.Context.ParameterIndex++;
+                methodCallExpressionArgs.MemberName = value;
+                methodCallExpressionArgs.MemberValue = null;
+            }
+            else if (methodCallExpressionArgs.IsMember == false)
             {
                 var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
