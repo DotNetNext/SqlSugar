@@ -57,7 +57,7 @@ namespace SqlSugar
         int GetInt(string sql, object pars);
         int GetInt(string sql, params SugarParameter[] parameters);
         int GetInt(string sql, List<SugarParameter> parameters);
-        int GetLong(string sql, object pars);
+        long GetLong(string sql, object pars);
         Double GetDouble(string sql, object parameters);
         Double GetDouble(string sql, params SugarParameter[] parameters);
         Double GetDouble(string sql, List<SugarParameter> parameters);
