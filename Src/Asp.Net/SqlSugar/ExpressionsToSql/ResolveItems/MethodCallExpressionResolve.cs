@@ -249,12 +249,13 @@ namespace SqlSugar
                 model.Args.AddRange(appendArgs);
             }
             var methodValue = GetMethodValue(name, model);
-            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue"&&!(parameter.OppsiteExpression is BinaryExpression)&& !(parameter.OppsiteExpression is MethodCallExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType)) {
-                methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
-                    new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
-                    new KeyValuePair<string, string>("Return","1"),
-                    new KeyValuePair<string, string>("End","0")
-                 });
+            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue"&&!(parameter.OppsiteExpression is BinaryExpression)&& !(parameter.OppsiteExpression is MethodCallExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType))
+            {
+                methodValue = packIfElse(methodValue);
+            }
+            if (parameter.OppsiteExpression != null&&name == "IsNullOrEmpty" && parameter.OppsiteExpression.Type == UtilConstants.BoolType&& parameter.OppsiteExpression is ConstantExpression)
+            {
+                methodValue = packIfElse(methodValue);
             }
             var isRoot = contextIndex == 2;
             if (isRoot && parameter.BaseExpression == null &&this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple,ResolveExpressType.WhereSingle)&& (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
@@ -282,6 +283,16 @@ namespace SqlSugar
                 methodValue = methodValue + "=1 ";
             }
             base.AppendValue(parameter, isLeft, methodValue);
+        }
+
+        private object packIfElse(object methodValue)
+        {
+            methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
+                    new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
+                    new KeyValuePair<string, string>("Return","1"),
+                    new KeyValuePair<string, string>("End","0")
+                 });
+            return methodValue;
         }
 
         private void AppendItem(ExpressionParameter parameter, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, Expression item)
