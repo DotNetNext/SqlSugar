@@ -40,6 +40,10 @@ namespace SqlSugar
         }
         public virtual int ExecuteCommand()
         {
+            if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
+            {
+                return 0;
+            }
             if (InsertBuilder.DbColumnInfoList.HasValue())
             {
                 var pks = GetPrimaryKeys();
@@ -76,6 +80,10 @@ namespace SqlSugar
         }
         public virtual int ExecuteReturnIdentity()
         {
+            if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
+            {
+                return 0;
+            }
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             AutoRemoveDataCache();
@@ -88,6 +96,10 @@ namespace SqlSugar
         }
         public virtual long ExecuteReturnBigIdentity()
         {
+            if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
+            {
+                return 0;
+            }
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             AutoRemoveDataCache();
@@ -353,6 +365,10 @@ namespace SqlSugar
         }
         private void SetInsertItemByEntity(int i, T item, List<DbColumnInfo> insertItem)
         {
+            if (item == null)
+            {
+                return;
+            }
             foreach (var column in EntityInfo.Columns)
             {
                 if (column.IsIgnore || column.IsOnlyIgnoreInsert) continue;

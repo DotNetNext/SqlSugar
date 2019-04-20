@@ -450,7 +450,11 @@ namespace SqlSugar
         }
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
-            Check.ArgumentNullException(insertObjs, "Insertable.insertObjs can't be null");
+            if (insertObjs == null|| insertObjs.IsNullOrEmpty())
+            {
+                insertObjs = new List<T>();
+                insertObjs.Add(default(T));
+            }
             return this.Context.Insertable(insertObjs.ToArray());
         }
         public virtual IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
