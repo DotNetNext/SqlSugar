@@ -32,11 +32,15 @@ namespace SqlSugar
             {
                 ResolveValueBool(parameter, baseParameter, expression, isLeft, isSingle);
             }
+            else if (isValue && expression.Expression != null && expression.Expression is MethodCallExpression)
+            {
+                ResolveCallValue(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            }
             else if (isValue)
             {
                 ResolveValue(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
-            else if (expression.Expression != null &&expression.Expression.Type==UtilConstants.DateType&&expression is MemberExpression && expression.Expression is MethodCallExpression)
+            else if (expression.Expression != null && expression.Expression.Type == UtilConstants.DateType && expression is MemberExpression && expression.Expression is MethodCallExpression)
             {
                 ResolveDateDateByCall(parameter, isLeft, expression);
             }
@@ -191,6 +195,28 @@ namespace SqlSugar
                         AppendMember(parameter, isLeft, this.Context.DbMehtods.MergeString(this.GetDateValue(value, (DateType)(myCode))));
                     }
                 }
+            }
+        }
+        private void ResolveCallValue(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
+        {
+            try
+            {
+                baseParameter.ChildExpression = expression;
+                string fieldName = string.Empty;
+                if (isSetTempData)
+                {
+                    var value = ExpressionTool.DynamicInvoke(expression);
+                    baseParameter.CommonTempData = value;
+                }
+                else
+                {
+                    var value = ExpressionTool.DynamicInvoke(expression);
+                    base.AppendValue(parameter, isLeft, value);
+                }
+            }
+            catch 
+            {
+                Check.Exception(true, "Not Support {0}",expression.ToString());
             }
         }
 
