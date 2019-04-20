@@ -104,9 +104,54 @@ namespace OrmTest.BugTest
             testa.Col3 = "444";
 
             DB.Saveable(testa).ExecuteCommand();
+
+
+            Guid newCarTypePictureId = Guid.Empty;
+            Guid carTypePictureId = Guid.Empty;
+            DB.CodeFirst.InitTables(typeof(Picture));
+            DB.Updateable<Picture>()
+                        .UpdateColumns(p => p.Value == SqlFunc.Subqueryable<Picture>()
+                                                .Where(pp => pp.ID == newCarTypePictureId)
+                                                .Select(pp => pp.Value))
+                        .Where(p => p.ID == carTypePictureId)
+                        .ExecuteCommand();
+            DB.Updateable<Picture>()
+                     .UpdateColumns(p => p.Value == SqlFunc.Subqueryable<Picture>()
+                                             .Select(pp => pp.Value))
+
+                      .Where(p => p.ID == carTypePictureId).ExecuteCommand();
         }
     }
+    public partial class Picture
+    {
+        public Picture()
+        {
 
+
+        }
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        [SugarColumn(IsPrimaryKey = true)]
+        public Guid ID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public byte Type { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Value { get; set; }
+
+    }
     ///<summary>
     ///用户信息表
     ///</summary>
