@@ -185,7 +185,7 @@ namespace SqlSugar
         #endregion
 
         #region Use
-        public DbResult<bool> UseTran(Action action)
+        public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack=null)
         {
             var result = new DbResult<bool>();
             try
@@ -202,21 +202,25 @@ namespace SqlSugar
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
                 this.RollbackTran();
+                if (errorCallBack != null)
+                {
+                    errorCallBack(ex);
+                }
             }
             return result;
         }
 
-        public Task<DbResult<bool>> UseTranAsync(Action action)
+        public Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null)
         {
             Task<DbResult<bool>> result = new Task<DbResult<bool>>(() =>
             {
-                return UseTran(action);
+                return UseTran(action,errorCallBack);
             });
             TaskStart(result);
             return result;
         }
 
-        public DbResult<T> UseTran<T>(Func<T> action)
+        public DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null)
         {
             var result = new DbResult<T>();
             try
@@ -233,15 +237,19 @@ namespace SqlSugar
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
                 this.RollbackTran();
+                if (errorCallBack != null)
+                {
+                    errorCallBack(ex);
+                }
             }
             return result;
         }
 
-        public Task<DbResult<T>> UseTranAsync<T>(Func<T> action)
+        public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
         {
             Task<DbResult<T>> result = new Task<DbResult<T>>(() =>
             {
-                return UseTran(action);
+                return UseTran(action,errorCallBack);
             });
             TaskStart(result);
             return result;

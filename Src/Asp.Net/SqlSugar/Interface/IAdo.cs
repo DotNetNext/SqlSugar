@@ -95,10 +95,10 @@ namespace SqlSugar
         void RollbackTran();
         void CommitTran();
 
-        DbResult<bool> UseTran(Action action);
-        DbResult<T> UseTran<T>(Func<T> action);
-        Task<DbResult<bool>> UseTranAsync(Action action);
-        Task<DbResult<T>> UseTranAsync<T>(Func<T> action);
+        DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null);
+        DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null);
+        Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null);
+        Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null);
 
         void UseStoredProcedure(Action action);
         T UseStoredProcedure<T>(Func<T> action);
