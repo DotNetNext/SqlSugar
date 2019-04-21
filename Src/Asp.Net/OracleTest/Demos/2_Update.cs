@@ -66,6 +66,12 @@ namespace OrmTest.Demo
             db.Updateable(updateObj).Where(true).ExecuteCommand();
 
             db.Updateable(new Student[] { new Student() { Id=2, Name="a2" }, new Student() { Id = 1, Name = "a1" } }).ExecuteCommand();
+
+            db.Updateable(new Student[] { new Student() { Id = 2, Name = "a2" }, new Student() { Id = 1, Name = "a1" } })
+         .UpdateColumns(it => new { it.Name, it.Id, it.SchoolId })
+         .WhereColumns(it => it.Name)
+        .Where(it => it.Id == 1)
+        .ExecuteCommand();
         }
     }
 }

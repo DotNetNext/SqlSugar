@@ -58,6 +58,13 @@ namespace OrmTest.Demo
 
             //Column is null no update
             db.Updateable(updateObj).Where(true).ExecuteCommand();
+
+
+            db.Updateable(new Student[] { new Student() { Id = 2, Name = "a2" }, new Student() { Id = 1, Name = "a1" } })
+                 .UpdateColumns(it => new { it.Name, it.Id, it.SchoolId })
+                 .WhereColumns(it=>new { it.SchoolId})
+                 .Where(it => it.Id == 1)
+                .ExecuteCommand();
         }
     }
 }
