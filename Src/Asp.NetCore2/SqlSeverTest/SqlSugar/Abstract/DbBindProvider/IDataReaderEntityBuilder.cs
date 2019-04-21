@@ -198,6 +198,10 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getConvertInt32 : getInt32;
                 }
+                else if (bindPropertyType == UtilConstants.ByteType)
+                {
+                    method = isNullableType ? getConvertByte : getByte;
+                }
                 else if (bindPropertyType == UtilConstants.StringType)
                 {
                     method = getString;

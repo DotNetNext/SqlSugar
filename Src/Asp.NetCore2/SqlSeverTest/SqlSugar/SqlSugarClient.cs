@@ -118,6 +118,7 @@ namespace SqlSugar
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>(string shortName)
         {
+            Check.Exception(shortName.HasValue() && shortName.Length > 20, ErrorMessage.GetThrowMessage("shortName参数长度不能超过20，你可能是想用这个方法 db.SqlQueryable(sql)而不是db.Queryable(shortName)", "Queryable.shortName max length 20"));
             var queryable = Queryable<T>();
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
@@ -450,7 +451,11 @@ namespace SqlSugar
         }
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
-            Check.ArgumentNullException(insertObjs, "Insertable.insertObjs can't be null");
+            if (insertObjs == null|| insertObjs.IsNullOrEmpty())
+            {
+                insertObjs = new List<T>();
+                insertObjs.Add(default(T));
+            }
             return this.Context.Insertable(insertObjs.ToArray());
         }
         public virtual IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
@@ -836,10 +841,7 @@ namespace SqlSugar
                             var newName = itemParameter.ParameterName + "_q_" + index;
                             SugarParameter parameter = new SugarParameter(newName, itemParameter.Value);
                             parameter.DbType = itemParameter.DbType;
-                            itemSql = Regex.Replace(itemSql,string.Format(@"{0} ","\\"+itemParameter.ParameterName), newName+" ");
-                            itemSql = Regex.Replace(itemSql, string.Format(@"{0}\)", "\\" + itemParameter.ParameterName), newName+")");
-                            itemSql = Regex.Replace(itemSql, string.Format(@"{0}\,", "\\" + itemParameter.ParameterName), newName+",");
-                            itemSql = Regex.Replace(itemSql, string.Format(@"{0}$", "\\" + itemParameter.ParameterName), newName);
+                            itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
                             addParameters.Add(parameter);
                         }
                         parsmeters.AddRange(addParameters);

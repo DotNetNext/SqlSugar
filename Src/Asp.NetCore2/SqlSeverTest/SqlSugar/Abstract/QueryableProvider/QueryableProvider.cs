@@ -554,6 +554,10 @@ namespace SqlSugar
             result.Context = this.Context;
             result.SqlBuilder = this.SqlBuilder;
             QueryBuilder.SelectValue = selectValue;
+            if (this.IsAs)
+            {
+                ((QueryableProvider<TResult>)result).IsAs = true;
+            }
             return result;
         }
         public virtual ISugarQueryable<T> Select(string selectValue)

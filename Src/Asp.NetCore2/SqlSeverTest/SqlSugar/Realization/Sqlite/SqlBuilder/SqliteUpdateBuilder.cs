@@ -19,7 +19,7 @@ namespace SqlSugar
                 foreach (var item in pkList)
                 {
                     var isFirst = pkList.First() == item;
-                    var whereString = isFirst ? " " : " AND ";
+                    var whereString = "";
                     whereString += GetOracleUpdateColums(item);
                     whereList.Add(whereString);
                 }
