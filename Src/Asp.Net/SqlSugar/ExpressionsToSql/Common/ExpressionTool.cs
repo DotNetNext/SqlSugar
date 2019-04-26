@@ -255,5 +255,10 @@ namespace SqlSugar
         {
             return !IsEntity(type);
         }
+
+        public static bool IsUnConvertExpress(Expression item)
+        {
+            return item is UnaryExpression && item.NodeType == ExpressionType.Convert;
+        }
     }
 }

@@ -297,6 +297,10 @@ namespace SqlSugar
 
         private void AppendItem(ExpressionParameter parameter, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, Expression item)
         {
+            if (ExpressionTool.IsUnConvertExpress(item))
+            {
+                item = (item as UnaryExpression).Operand;
+            }
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
             var isIIF = name == "IIF";
@@ -343,6 +347,8 @@ namespace SqlSugar
                 AppendModel(parameter, model, item);
             }
         }
+
+
         private void AppendModelByIIFMember(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
             parameter.CommonTempData = CommonTempDataType.Result;
