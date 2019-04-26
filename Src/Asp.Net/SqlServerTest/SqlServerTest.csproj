@@ -58,6 +58,9 @@
     <Compile Include="BugTest\BugModels\tLogonHistoryModel.cs" />
     <Compile Include="BugTest\BugModels\VipAccountsModel.cs" />
     <Compile Include="BugTest\BugModels\VipBenefitsModel.cs" />
+    <Compile Include="BugTest\BugModels\TStock.cs" />
+    <Compile Include="BugTest\BugModels\TTempStock.cs" />
+    <Compile Include="BugTest\BugModels\VMaterialInfo.cs" />
     <Compile Include="Demos\H_Queue.cs" />
     <Compile Include="Demos\I_InsertOrUpdate.cs" />
     <Compile Include="Demos\J_Debugger.cs" />

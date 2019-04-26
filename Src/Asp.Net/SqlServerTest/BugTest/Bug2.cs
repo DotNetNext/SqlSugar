@@ -137,6 +137,16 @@ namespace OrmTest.BugTest
                 s.HeatNo,
                 s.CmdNo
             }).ExecuteCommand();
+            DB.CodeFirst.InitTables(typeof(VMaterialInfo),typeof(TStock),typeof(TTempStock));
+            var GoodsList = DB.Queryable<VMaterialInfo, TStock>((vmg, ts) => new object[] {
+                JoinType.Left,vmg.FMICode==ts.FMICode
+            })
+            .Select((vmg, ts) => new
+            {
+              
+                AbleQty = SqlFunc.ToInt32(ts.FQty - SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store =="")
+               .Select(s => SqlFunc.AggregateSum(s.FKCSL)))
+            }).ToList();
         }
     }
     /// <summary>
