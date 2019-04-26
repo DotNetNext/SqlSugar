@@ -227,6 +227,50 @@ namespace SqlSugar
         }
     }
 
+    public class Expressionable<T, T2, T3, T4, T5, T6> where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new()
+    {
+        Expression<Func<T, T2, T3, T4, T5, T6, bool>> _exp = null;
+
+        public Expressionable<T, T2, T3, T4, T5, T6> And(Expression<Func<T, T2, T3, T4, T5, T6, bool>> exp)
+        {
+            if (_exp == null)
+                _exp = exp;
+            else
+                _exp = Expression.Lambda<Func<T, T2, T3, T4, T5, T6, bool>>(Expression.AndAlso(_exp.Body, exp.Body), _exp.Parameters);
+            return this;
+        }
+
+        public Expressionable<T, T2, T3, T4, T5, T6> AndIF(bool isAnd, Expression<Func<T, T2, T3, T4, T5, T6, bool>> exp)
+        {
+            if (isAnd)
+                And(exp);
+            return this;
+        }
+
+        public Expressionable<T, T2, T3, T4, T5, T6> Or(Expression<Func<T, T2, T3, T4, T5, T6, bool>> exp)
+        {
+            if (_exp == null)
+                _exp = exp;
+            else
+                _exp = Expression.Lambda<Func<T, T2, T3, T4, T5, T6, bool>>(Expression.OrElse(_exp.Body, exp.Body), _exp.Parameters);
+            return this;
+        }
+
+        public Expressionable<T, T2, T3, T4, T5, T6> OrIF(bool isOr, Expression<Func<T, T2, T3, T4, T5, T6, bool>> exp)
+        {
+            if (isOr)
+                Or(exp);
+            return this;
+        }
+
+
+        public Expression<Func<T, T2, T3, T4, T5, T6, bool>> ToExpression()
+        {
+            if (_exp == null)
+                _exp = (it, t2, t3, t4, T5, t6) => true;
+            return _exp;
+        }
+    }
     public class Expressionable
     {
         public static Expressionable<T> Create<T>() where T : class, new()
@@ -248,6 +292,10 @@ namespace SqlSugar
         public static Expressionable<T, T2, T3, T4, T5> Create<T, T2, T3, T4, T5>() where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new()
         {
             return new Expressionable<T, T2, T3, T4, T5>();
+        }
+        public static Expressionable<T, T2, T3, T4, T5, T6> Create<T, T2, T3, T4, T5, T6>() where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new()
+        {
+            return new Expressionable<T, T2, T3, T4, T5, T6>();
         }
     }
 }
