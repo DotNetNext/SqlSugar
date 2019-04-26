@@ -530,36 +530,36 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             //join  2
-            var list = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            })
+            ))
             .Where(st => st.Name == "jack").ToList();
 
             //join  3
-            var list2 = db.Queryable<Student, School, Student>((st, sc, st2) => new object[] {
+            var list2 = db.Queryable<Student, School, Student>((st, sc, st2) => new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id,
               JoinType.Left,st.SchoolId==st2.Id
-            })
+            ))
             .Where((st, sc, st2) => st2.Id == 1 || sc.Id == 1 || st.Id == 1).With(SqlWith.NoLock).ToList();
 
             //join return List<ViewModelStudent>
-            var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list3 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            }).Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
+            )).Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 
             //join Order By (order by st.id desc,sc.id desc)
-            var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list4 = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos (
               JoinType.Left,st.SchoolId==sc.Id
-            })
+            ))
             .OrderBy(st => st.Id, OrderByType.Desc)
             .OrderBy((st, sc) => sc.Id, OrderByType.Desc)
             .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 
 
             //join  2
-            var list4_1 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list4_1 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id&& st.Name == "jack"
-            }).ToList();
+            )).ToList();
 
 
             //The simple use of Join 2 table
