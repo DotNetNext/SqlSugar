@@ -147,6 +147,34 @@ namespace OrmTest.BugTest
                 AbleQty = SqlFunc.ToInt32(ts.FQty - SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store =="")
                .Select(s => SqlFunc.AggregateSum(s.FKCSL)))
             }).ToList();
+
+            var GoodsList2 = DB.Queryable<VMaterialInfo, TStock>((vmg, ts) => new object[] {
+                JoinType.Left,vmg.FMICode==ts.FMICode
+            })
+       .Where((vmg, ts) => ts.FK_Store == "" && vmg.FMICode == vmg.FMICode)
+       .Select((vmg, ts) => new
+       {
+           PKID = vmg.PKID,
+           FMICode = vmg.FMICode,
+           FMIName = vmg.FMIName,
+           FGauge = vmg.FGauge,
+           FBIName = vmg.FBIName,
+           FK_FOrigin = vmg.FK_FOrigin,
+           FOEM = vmg.FOEM,
+           FSIName = vmg.FSIName,
+           FUIName = vmg.FUIName,
+           OutFQty = SqlFunc.ToInt32(ts.FQty)
+           ,
+           InFQty = SqlFunc.Subqueryable<TStock>().Where(s => s.FMICode == ts.FMICode && s.FK_Store == "").Select(s => SqlFunc.ToInt32(SqlFunc.IsNull(s.FQty, 0)))
+           ,
+           TempQty = SqlFunc.IsNull(SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store == "")
+          .GroupBy(s => new { s.FMICode, s.FK_Store })
+          .OrderBy(s=>s.PKID)
+          .Select(s => SqlFunc.AggregateSum(SqlFunc.ToInt32(s.FKCSL))), 0)
+          ,
+           AbleQty = ts.FQty - SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store == "")
+          .Select(s => SqlFunc.AggregateSum(s.FKCSL))
+       }).ToList();
         }
     }
     /// <summary>

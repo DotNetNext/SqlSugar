@@ -40,7 +40,12 @@ namespace SqlSugar
         {
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
-            var result = "GROUP BY " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);
+            var type = ResolveExpressType.FieldSingle;
+            if ((argExp as LambdaExpression).Body is NewExpression) {
+                type = ResolveExpressType.ArraySingle;
+            }
+            var result = "GROUP BY " + SubTools.GetMethodValue(this.Context, argExp,type);
+            result = result.TrimEnd(',');
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
