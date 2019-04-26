@@ -169,7 +169,6 @@ namespace OrmTest.BugTest
            ,
            TempQty = SqlFunc.IsNull(SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store == "")
           .GroupBy(s => new { s.FMICode, s.FK_Store })
-          .OrderBy(s=>s.PKID)
           .Select(s => SqlFunc.AggregateSum(SqlFunc.ToInt32(s.FKCSL))), 0)
           ,
            AbleQty = ts.FQty - SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store == "")

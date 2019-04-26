@@ -10,8 +10,8 @@ namespace OrmTest
         {
 
             /***BUG repair test***/
-            //new BugTest.Bug1().Init();
-            //new BugTest.Bug2().Init();
+            new BugTest.Bug1().Init();
+            new BugTest.Bug2().Init();
 
             /***Unit Test***/
             new SqlRemark(2).Init();
