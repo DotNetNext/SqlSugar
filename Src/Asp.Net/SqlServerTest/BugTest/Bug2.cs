@@ -21,6 +21,11 @@ namespace OrmTest.BugTest
                     DbType = DbType.SqlServer,
                     IsAutoCloseConnection = true
                 });
+                db.Aop.OnLogExecuting = (sql, pars) =>
+                {
+                    Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                    Console.WriteLine();
+                };
                 return db;
             }
         }
@@ -39,13 +44,13 @@ namespace OrmTest.BugTest
             var RoleId = 0;
             var sql = DB.Queryable<User>().//一对多的子查询
                WhereIF(!string.IsNullOrWhiteSpace(UserNameOrName), t1 => t1.Name.Contains(UserNameOrName)).
-               Where(t1 => 
+               Where(t1 =>
                            SqlFunc.Subqueryable<UserOrganizationUnit>().
                                                         Where(t2 => t2.UserId == t1.Id).
                                                         WhereIF(OrganizationUnitId > 0, t2 => t2.OrganizationUnitId == OrganizationUnitId).Any())
-                                                        // Where(t1 => SqlFunc.Subqueryable<UserRole>().
-                                                        //Where(t3 => t3.UserId == t1.Id).
-                                                        //WhereIF(RoleId > 0, t3 => t3.RoleId == RoleId).Any())
+              // Where(t1 => SqlFunc.Subqueryable<UserRole>().
+              //Where(t3 => t3.UserId == t1.Id).
+              //WhereIF(RoleId > 0, t3 => t3.RoleId == RoleId).Any())
               .Select(t1 => new User { Id = SqlFunc.GetSelfAndAutoFill(t1.Id) }).ToSql();
 
             var model = DB.Queryable<ClientsModel, VipAccountsModel, AccountsModel, tLogonHistoryModel, VipBenefitsModel, LevelSettingModel, JewelsModel>((a, b, c, d, e, f, g) => new object[]{
@@ -58,9 +63,9 @@ namespace OrmTest.BugTest
                                 })
                               .WhereIF(true, (a, b, c, d, e, f, g) => a.ClientID == 1)
                               .WhereIF(!string.IsNullOrEmpty("a"), (a, b, c, d, e, f, g) => a.NickName == "a")
-                              .Select((a, b, c, d, e, f, g) => new 
+                              .Select((a, b, c, d, e, f, g) => new
                               {
-                                  GoldAmount = SqlFunc.Subqueryable<ExposureModel>().Where(s => s.TournamentID == 0 && s.ClientID == a.ClientID).Sum(s => SqlFunc.IsNull(SqlFunc.AggregateSum(s.Exposure), 0)) ,
+                                  GoldAmount = SqlFunc.Subqueryable<ExposureModel>().Where(s => s.TournamentID == 0 && s.ClientID == a.ClientID).Sum(s => SqlFunc.IsNull(SqlFunc.AggregateSum(s.Exposure), 0)),
                                   ClientID = a.ClientID,
                                   NickName = a.NickName,
                                   UserChannel = a.UserChannel,
@@ -92,7 +97,7 @@ namespace OrmTest.BugTest
             {
                 BrandId = -1,
                 UserLevel = 1
-            }).IgnoreColumns(m => new { m.CreditUpdatetime,m.UserId }).ToSql();
+            }).IgnoreColumns(m => new { m.CreditUpdatetime, m.UserId }).ToSql();
             DB.CodeFirst.InitTables(typeof(DataTest));
             DB.Insertable(new DataTest()).ExecuteCommand();
 
@@ -104,9 +109,124 @@ namespace OrmTest.BugTest
             testa.Col3 = "444";
 
             DB.Saveable(testa).ExecuteCommand();
+
+
+            Guid newCarTypePictureId = Guid.Empty;
+            Guid carTypePictureId = Guid.Empty;
+            DB.CodeFirst.InitTables(typeof(Picture),typeof(JobPlan));
+            DB.Updateable<Picture>()
+                        .UpdateColumns(p => p.Value == SqlFunc.Subqueryable<Picture>()
+                                                .Where(pp => pp.ID == newCarTypePictureId)
+                                                .Select(pp => pp.Value))
+                        .Where(p => p.ID == carTypePictureId)
+                        .ExecuteCommand();
+            DB.Updateable<Picture>()
+                     .UpdateColumns(p => p.Value == SqlFunc.Subqueryable<Picture>()
+                                             .Select(pp => pp.Value))
+
+                      .Where(p => p.ID == carTypePictureId).ExecuteCommand();
+            var list = new List<JobPlan>()
+            {
+                new JobPlan() { },
+                 new JobPlan() { }
+            };
+            DB.Updateable(new JobPlan() { })
+            .WhereColumns(s => new { s.CmdNo })
+            .UpdateColumns(s => new
+            {
+                s.HeatNo,
+                s.CmdNo
+            }).ExecuteCommand();
+            DB.CodeFirst.InitTables(typeof(VMaterialInfo),typeof(TStock),typeof(TTempStock));
+            var GoodsList = DB.Queryable<VMaterialInfo, TStock>((vmg, ts) => new object[] {
+                JoinType.Left,vmg.FMICode==ts.FMICode
+            })
+            .Select((vmg, ts) => new
+            {
+              
+                AbleQty = SqlFunc.ToInt32(ts.FQty - SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store =="")
+               .Select(s => SqlFunc.AggregateSum(s.FKCSL)))
+            }).ToList();
+
+            var GoodsList2 = DB.Queryable<VMaterialInfo, TStock>((vmg, ts) => new object[] {
+                JoinType.Left,vmg.FMICode==ts.FMICode
+            })
+       .Where((vmg, ts) => ts.FK_Store == "" && vmg.FMICode == vmg.FMICode)
+       .Select((vmg, ts) => new
+       {
+           PKID = vmg.PKID,
+           FMICode = vmg.FMICode,
+           FMIName = vmg.FMIName,
+           FGauge = vmg.FGauge,
+           FBIName = vmg.FBIName,
+           FK_FOrigin = vmg.FK_FOrigin,
+           FOEM = vmg.FOEM,
+           FSIName = vmg.FSIName,
+           FUIName = vmg.FUIName,
+           OutFQty = SqlFunc.ToInt32(ts.FQty)
+           ,
+           InFQty = SqlFunc.Subqueryable<TStock>().Where(s => s.FMICode == ts.FMICode && s.FK_Store == "").Select(s => SqlFunc.ToInt32(SqlFunc.IsNull(s.FQty, 0)))
+           ,
+           TempQty = SqlFunc.IsNull(SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store == "")
+          .GroupBy(s => new { s.FMICode, s.FK_Store })
+          .OrderBy(s=>s.PKID)
+          .Select(s => SqlFunc.AggregateSum(SqlFunc.ToInt32(s.FKCSL))), 0)
+          ,
+           AbleQty = ts.FQty - SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store == "")
+          .Select(s => SqlFunc.AggregateSum(s.FKCSL))
+       }).ToList();
         }
     }
+    /// <summary>
+    /// 表示作业计划表，保存用户确认的作业计划。
+    /// </summary>
+    [SugarTable("PL_JOB_PLAN")]
+    public class JobPlan
+    {
+        public long Id { get; set; }
 
+        /// <summary>
+        /// 获取或设置炉次号。
+        /// </summary>
+        public string HeatNo { get; set; }
+
+
+        /// <summary>
+        /// 获取或设置制造命令号。
+        /// </summary>
+        [SugarColumn(ColumnName = "PONO")]
+        public string CmdNo { get; set; }
+    }
+    public partial class Picture
+    {
+        public Picture()
+        {
+
+
+        }
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        [SugarColumn(IsPrimaryKey = true)]
+        public Guid ID { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public byte Type { get; set; }
+
+        /// <summary>
+        /// Desc:
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string Value { get; set; }
+
+    }
     ///<summary>
     ///用户信息表
     ///</summary>

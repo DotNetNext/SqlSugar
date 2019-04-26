@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -70,10 +71,10 @@ namespace SqlSugar
                     {
                         var isFirst = whereString == null;
                         whereString += (isFirst ? null : " AND ");
-                        whereString += item;
+                        whereString += Regex.Replace(item, " \\" + this.Builder.SqlTranslationLeft, "T." + this.Builder.SqlTranslationLeft);
                     }
                 }
-                else if (PrimaryKeys.HasValue())
+                if (PrimaryKeys.HasValue())
                 {
                     foreach (var item in PrimaryKeys)
                     {

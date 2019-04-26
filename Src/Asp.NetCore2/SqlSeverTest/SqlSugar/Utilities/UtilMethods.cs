@@ -17,7 +17,14 @@ namespace SqlSugar
             Type type = Nullable.GetUnderlyingType(oldType);
             return type == null ? oldType : type;
         }
-
+        public static string ReplaceSqlParameter(string itemSql, SugarParameter itemParameter, string newName)
+        {
+            itemSql = Regex.Replace(itemSql, string.Format(@"{0} ", "\\" + itemParameter.ParameterName), newName + " ", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"{0}\)", "\\" + itemParameter.ParameterName), newName + ")", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"{0}\,", "\\" + itemParameter.ParameterName), newName + ",", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"{0}$", "\\" + itemParameter.ParameterName), newName, RegexOptions.IgnoreCase);
+            return itemSql;
+        }
         internal static Type GetRootBaseType(Type entityType)
         {
             var baseType = entityType.BaseType;
@@ -78,7 +85,7 @@ namespace SqlSugar
                     //Compatible with.NET CORE parameters case
                     var name = parameter.ParameterName;
                     string newName = name +append+ addIndex;
-                    appendSql =Regex.Replace(appendSql,name,newName,RegexOptions.IgnoreCase);
+                    appendSql = ReplaceSqlParameter(appendSql, parameter, newName);
                     parameter.ParameterName = newName;
                 }
             }

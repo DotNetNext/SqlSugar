@@ -8,6 +8,6 @@ namespace OrmTest
 {
     public class Config
     {
-        public static string ConnectionString = "Database=SqlSugar4xTest;Data Source=127.0.0.1;User Id=root;Password=haosql;pooling=false;CharSet=utf8;port=3306";
+        public static string ConnectionString = "Database=SqlSugar4xTest;Data Source=127.0.0.1;User Id=root;Password=root;pooling=false;CharSet=utf8;port=3306";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
@@ -144,7 +145,7 @@ namespace SqlSugar
                                 if (readerValues.Any(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
                                 {
                                     var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Value;
-                                    if (addValue == DBNull.Value||addValue==null)
+                                    if (addValue == DBNull.Value || addValue == null)
                                     {
                                         if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
                                         {
@@ -449,24 +450,25 @@ namespace SqlSugar
                 else
                 {
                     var item = model as ConditionalCollections;
-                    if (item != null&& item.ConditionalList.HasValue())
+                    if (item != null && item.ConditionalList.HasValue())
                     {
                         foreach (var con in item.ConditionalList)
                         {
                             var index = item.ConditionalList.IndexOf(con);
                             var isFirst = index == 0;
                             var isLast = index == (item.ConditionalList.Count - 1);
-                            if (models.IndexOf(item) == 0 &&index==0&& beginIndex == 0)
+                            if (models.IndexOf(item) == 0 && index == 0 && beginIndex == 0)
                             {
                                 builder.AppendFormat(" ( ");
 
-                            }else if (isFirst)
+                            }
+                            else if (isFirst)
                             {
                                 builder.AppendFormat(" {0} ( ", con.Key.ToString().ToUpper());
                             }
                             List<IConditionalModel> conModels = new List<IConditionalModel>();
                             conModels.Add(con.Value);
-                            var childSqlInfo = ConditionalModelToSql(conModels, 1000 * (1 + index)+ models.IndexOf(item));
+                            var childSqlInfo = ConditionalModelToSql(conModels, 1000 * (1 + index) + models.IndexOf(item));
                             if (!isFirst)
                             {
 
@@ -495,6 +497,22 @@ namespace SqlSugar
                 return item.FieldValueConvertFunc(item.FieldValue);
             else
                 return item.FieldValue;
+        }
+        #endregion
+
+        #region
+        public void PageEach<T>(IEnumerable<T> pageItems,int pageSize, Action<List<T>> action)
+        {
+            if (pageItems != null&& pageItems.Any())
+            {
+                int totalRecord = pageItems.Count();
+                int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                for (int i = 1; i <= pageCount; i++)
+                {
+                    var list = pageItems.Skip((i - 1) * pageSize).Take(pageSize).ToList();
+                    action(list);
+                }
+            }
         }
         #endregion
     }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IContextMethods
+    public partial interface IContextMethods
     {
         SqlSugarClient Context { get; set; }
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
@@ -25,6 +25,7 @@ namespace SqlSugar
         void RemoveCacheAll<T>();
         void RemoveCache<T>(string key);
         KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models,int beginIndex=0);
+        void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action);
 
     }
 }

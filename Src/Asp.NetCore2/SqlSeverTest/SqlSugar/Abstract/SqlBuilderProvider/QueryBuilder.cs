@@ -407,6 +407,10 @@ namespace SqlSugar
             }
             else
             {
+                if (expression is LambdaExpression && (expression as LambdaExpression).Body is MethodCallExpression&&this.Context.CurrentConnectionConfig.DbType==DbType.SqlServer&&this.OrderByValue.HasValue())
+                {
+                    result = result + " AS columnName";
+                }
                 this.SelectCacheKey = result;
                 return result;
             }
