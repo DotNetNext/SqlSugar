@@ -63,15 +63,15 @@ namespace OrmTest.Demo
 
             var getAll1 = db.Queryable<Student>().Where(it => it.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == it.Id).Select(s => s.Id)).ToList();
 
-            var getAll2 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var getAll2 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
                 JoinType.Left,st.Id==sc.Id
-            })
+            ))
           .Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
           .ToList();
 
-            var getAll3 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var getAll3 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos (
                 JoinType.Left,st.Id==sc.Id
-            })
+            ))
            .Select(st =>
                     new
                     {
@@ -466,9 +466,9 @@ namespace OrmTest.Demo
             var page = db.Queryable<Student>().OrderBy(it => it.Id).ToPageList(pageIndex, pageSize, ref totalCount);
 
             //page join
-            var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
+            var pageJoin = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            }).ToPageList(pageIndex, pageSize, ref totalCount);
+            )).ToPageList(pageIndex, pageSize, ref totalCount);
 
             //top 5
             var top5 = db.Queryable<Student>().Take(5).ToList();
@@ -480,9 +480,9 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             //join 
-            var list = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            })
+            ))
             .Where((st, sc) => sc.Id == 1)
             .Where((st, sc) => st.Id == 1)
             .Where((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
@@ -502,28 +502,28 @@ namespace OrmTest.Demo
 
 
             //join 
-            var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list3 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            })
+            ))
             .WhereIF(false, (st, sc) => sc.Id == 1)
             .WhereIF(false, (st, sc) => st.Id == 1).ToList();
 
 
-            var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list4 = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            })
+            ))
             .Select((st, sc) => new { id = st.Id, school = sc }).ToList();
 
 
-            var list5 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list5 = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            }).AS<Student>("STUDENT").AS<School>("SCHOOL")
+            )).AS<Student>("STUDENT").AS<School>("SCHOOL")
 .Select((st, sc) => new { id = st.Id, school = sc }).ToList();
 
 
-            var list6 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var list6 = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            }).With(SqlWith.NoLock).AS<Student>("STUDENT").AS<School>("SCHOOL")
+            )).With(SqlWith.NoLock).AS<Student>("STUDENT").AS<School>("SCHOOL")
 .Select((st, sc) => new { id = st.Id, school = sc }).ToList();
         }
         public static void Join()
@@ -678,13 +678,13 @@ namespace OrmTest.Demo
          .Select((st, sc) => new { Name = st.Name, SchoolId = sc.Id }).ToList();
 
 
-            var s7 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var s7 = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos (
               JoinType.Left,st.SchoolId==sc.Id
-            }).Select((st, sc) => sc).ToList();
+            )).Select((st, sc) => sc).ToList();
 
-            var s8 = db.Queryable<Student, School>((st, sc) => new object[] {
+            var s8 = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
               JoinType.Left,st.SchoolId==sc.Id
-            })
+            ))
             .OrderBy((st, sc) => st.SchoolId)
             .Select((st, sc) => sc)
             .Take(1).ToList();
