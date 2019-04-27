@@ -454,6 +454,12 @@ namespace OrmTest.Demo
             var test52 = db.Queryable<Student>().Select(it => SqlFunc.IsNull(it.CreateTime, SqlFunc.GetDate())).ToList();
             var test53 = db.Queryable<Student>().Select(it => SqlFunc.IsNull(it.CreateTime, SqlFunc.GetDate())).First();
             var test54 = db.Queryable<Student>().Where(it => it.CreateTime == test52.First().Value).ToList();
+            var test55 = db.Queryable<Student>().Select(it => new {
+                isAny = SqlFunc.Subqueryable<School>().Any()?1:2
+            }).ToList();
+            var test56= db.Queryable<Student>().Select(it=> new {
+                isAny=SqlFunc.Subqueryable<School>().Any()
+            }).ToList();
         }
  
         public static void Page()
