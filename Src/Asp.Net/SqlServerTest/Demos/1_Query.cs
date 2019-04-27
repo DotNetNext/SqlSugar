@@ -458,7 +458,8 @@ namespace OrmTest.Demo
                 isAny = SqlFunc.Subqueryable<School>().Any()?1:2
             }).ToList();
             var test56= db.Queryable<Student>().Select(it=> new {
-                isAny=SqlFunc.Subqueryable<School>().Any()
+                isAny=SqlFunc.Subqueryable<Student>().Any(),
+                isAny2 = SqlFunc.Subqueryable<Student>().Where(s=>false).Any()
             }).ToList();
         }
  

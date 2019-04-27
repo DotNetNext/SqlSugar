@@ -342,7 +342,7 @@ namespace SqlSugar
                 {
                     var expression = ((UnaryExpression)item).Operand as MemberExpression;
                     var isDateTimeNow = ((UnaryExpression)item).Operand.ToString() == "DateTime.Now";
-                    if (expression.Expression == null&&!isDateTimeNow)
+                    if (expression.Expression == null && !isDateTimeNow)
                     {
                         this.Context.Result.CurrentParameter = parameter;
                         this.Context.Result.IsLockCurrentParameter = true;
@@ -353,7 +353,7 @@ namespace SqlSugar
                         this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
                         this.Context.Result.CurrentParameter = null;
                     }
-                    else if (expression.Expression is ConstantExpression||isDateTimeNow)
+                    else if (expression.Expression is ConstantExpression || isDateTimeNow)
                     {
                         string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
                         this.Context.ParameterIndex++;
@@ -400,7 +400,8 @@ namespace SqlSugar
                     }
                     this.Context.Result.Append(this.Context.GetAsString(asName, newContext.Result.GetString()));
                     this.Context.Result.CurrentParameter = null;
-                    if (this.Context.SingleTableNameSubqueryShortName.IsNullOrEmpty() && newContext.SingleTableNameSubqueryShortName.HasValue()) {
+                    if (this.Context.SingleTableNameSubqueryShortName.IsNullOrEmpty() && newContext.SingleTableNameSubqueryShortName.HasValue())
+                    {
                         this.Context.SingleTableNameSubqueryShortName = newContext.SingleTableNameSubqueryShortName;
                     }
                 }
@@ -427,7 +428,8 @@ namespace SqlSugar
                         var propertyName = property.Name;
                         var dbColumnName = propertyName;
                         var mappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == item.Type.Name && it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-                        if (mappingInfo.HasValue()) {
+                        if (mappingInfo.HasValue())
+                        {
                             dbColumnName = mappingInfo.DbColumnName;
                         }
                         asName = this.Context.GetTranslationText(item.Type.Name + "." + propertyName);
@@ -442,7 +444,30 @@ namespace SqlSugar
                     }
                 }
             }
-            else if (item is MethodCallExpression|| item is UnaryExpression||item is ConditionalExpression|| item.NodeType==ExpressionType.Coalesce)
+            else if (item.Type == UtilConstants.BoolType && item is MethodCallExpression && (item as MethodCallExpression).Method.Name == "Any"&&IsSubMethod(item as MethodCallExpression))
+            {
+                this.Expression = item;
+                this.Start();
+                var sql= this.Context.DbMehtods.IIF(new MethodCallExpressionModel()
+                {
+                     Args=new List<MethodCallExpressionArgs>() {
+                          new MethodCallExpressionArgs() {
+                               IsMember=true,
+                               MemberName=parameter.CommonTempData.ObjToString()
+                          },
+                             new MethodCallExpressionArgs() {
+                                IsMember=true,
+                                MemberName=1
+                          },
+                          new MethodCallExpressionArgs() {
+                               IsMember=true,
+                               MemberName=0
+                          }
+                     }
+                });
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, sql));
+            }
+            else if (item is MethodCallExpression || item is UnaryExpression || item is ConditionalExpression || item.NodeType == ExpressionType.Coalesce)
             {
                 this.Expression = item;
                 this.Start();
@@ -452,6 +477,11 @@ namespace SqlSugar
             {
                 Check.ThrowNotSupportedException(item.GetType().Name);
             }
+        }
+
+        protected bool IsSubMethod(MethodCallExpression express)
+        {
+            return SubTools.SubItemsConst.Any(it => express.Object != null && express.Object.Type.Name == "Subqueryable`1");
         }
         protected static Dictionary<string, string> MethodMapping = new Dictionary<string, string>() {
             { "ToString","ToString"},
