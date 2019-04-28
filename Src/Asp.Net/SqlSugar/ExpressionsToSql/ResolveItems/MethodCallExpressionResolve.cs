@@ -172,6 +172,7 @@ namespace SqlSugar
             var method = express.Method;
             var args = express.Arguments.Cast<Expression>().ToList();
             MethodCallExpressionModel model = new MethodCallExpressionModel();
+            model.Name = name;
             model.Args = new List<MethodCallExpressionArgs>();
             switch (this.Context.ResolveType)
             {
@@ -407,7 +408,12 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = DateTime.Now.Date;
             }
-            else {
+            else if (model.Name == "ToString"&&item is ConstantExpression&&(item as ConstantExpression).Type.IsEnum())
+            {
+                parameter.CommonTempData = item.ToString();
+            }
+            else
+            {
                 base.Start();
             }
             var methodCallExpressionArgs = new MethodCallExpressionArgs()

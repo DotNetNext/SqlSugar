@@ -716,6 +716,7 @@ namespace OrmTest.Demo
         {
             var db = GetInstance();
             var list = db.Queryable<StudentEnum>().AS("Student").Where(it => it.SchoolId == SchoolEnum.HarvardUniversity).ToList();
+            var list2 = db.Queryable<StudentEnum>().AS("Student").Where(it => it.Name == SchoolEnum.HarvardUniversity.ToString()).ToList();
         }
     }
 }

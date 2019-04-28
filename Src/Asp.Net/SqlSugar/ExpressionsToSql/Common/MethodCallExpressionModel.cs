@@ -9,6 +9,7 @@ namespace SqlSugar
     public class MethodCallExpressionModel
     {
       public List<MethodCallExpressionArgs> Args { get; set; }
+        public string Name { get; internal set; }
     }
 
     public class MethodCallExpressionArgs
