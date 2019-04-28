@@ -727,6 +727,12 @@ namespace SqlSugar
             var result = ToDataTablePage(pageIndex, pageSize);
             return result;
         }
+        public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber,ref int totalPage)
+        {
+            var result = ToDataTablePage(pageIndex, pageSize, ref totalNumber);
+            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            return result;
+        }
 
         public virtual List<T> ToList()
         {
@@ -765,6 +771,12 @@ namespace SqlSugar
 
             });
             totalNumber = count;
+            return result;
+        }
+        public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber, ref int totalPage)
+        {
+            var result = ToPageList(pageIndex, pageSize, ref totalNumber);
+            totalPage = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
 

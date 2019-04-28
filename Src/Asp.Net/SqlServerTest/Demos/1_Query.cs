@@ -461,6 +461,9 @@ namespace OrmTest.Demo
                 isAny=SqlFunc.Subqueryable<Student>().Any(),
                 isAny2 = SqlFunc.Subqueryable<Student>().Where(s=>false).Any()
             }).ToList();
+            var totalPage = 0;
+            var total = 0;
+            db.Queryable<Student>().ToPageList(1, 2, ref total, ref totalPage);
         }
  
         public static void Page()
