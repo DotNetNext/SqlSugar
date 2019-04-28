@@ -48,7 +48,7 @@ namespace SqlSugar
             this.ParameterName = name;
             this.DbType = type;
         }
-        public SugarParameter(string name, DataTable value,string SqlServerTypeName)
+        public SugarParameter(string name, DataTable value, string SqlServerTypeName)
         {
             this.Value = value;
             this.ParameterName = name;
@@ -128,6 +128,10 @@ namespace SqlSugar
             {
                 if (this.Value != null)
                     this.Value = this.Value.ToString();
+            }
+            else if (type.IsEnum())
+            {
+                this.DbType = System.Data.DbType.Int64;
             }
 
         }
