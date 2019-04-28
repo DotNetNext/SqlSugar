@@ -66,8 +66,8 @@ namespace SqlSugar
             }
             if (parameters.HasValue())
             {
-                IDataParameter[] ipars = ToIDbDataParameter(parameters);
-                sqlCommand.Parameters.AddRange((SqlParameter[])ipars);
+                SqlParameter[] ipars = GetSqlParameter(parameters);
+                sqlCommand.Parameters.AddRange(ipars);
             }
             CheckConnection();
             return sqlCommand;
@@ -99,6 +99,43 @@ namespace SqlSugar
                 sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
                 if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue))
+                {
+                    if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
+                    this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
+                    this.OutputParameters.Add(sqlParameter);
+                }
+                ++index;
+            }
+            return result;
+        }
+        /// <summary>
+        /// if mysql return MySqlParameter[] pars
+        /// if sqlerver return SqlParameter[] pars ...
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public SqlParameter[] GetSqlParameter(params SugarParameter[] parameters)
+        {
+            if (parameters == null || parameters.Length == 0) return null;
+            SqlParameter[] result = new SqlParameter[parameters.Length];
+            int index = 0;
+            foreach (var parameter in parameters)
+            {
+                if (parameter.Value == null) parameter.Value = DBNull.Value;
+                var sqlParameter = new SqlParameter();
+                sqlParameter.ParameterName = parameter.ParameterName;
+                //sqlParameter.UdtTypeName = parameter.UdtTypeName;
+                sqlParameter.Size = parameter.Size;
+                sqlParameter.Value = parameter.Value;
+                sqlParameter.DbType = parameter.DbType;
+                sqlParameter.Direction = parameter.Direction;
+                result[index] = sqlParameter;
+                if (parameter.TypeName.HasValue()) {
+                    sqlParameter.TypeName = parameter.TypeName;
+                    sqlParameter.SqlDbType = SqlDbType.Structured;
+                    sqlParameter.DbType = System.Data.DbType.Object;
+                }
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
                 {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);

@@ -172,6 +172,7 @@ namespace SqlSugar
             var method = express.Method;
             var args = express.Arguments.Cast<Expression>().ToList();
             MethodCallExpressionModel model = new MethodCallExpressionModel();
+            model.Name = name;
             model.Args = new List<MethodCallExpressionArgs>();
             switch (this.Context.ResolveType)
             {
@@ -297,6 +298,10 @@ namespace SqlSugar
 
         private void AppendItem(ExpressionParameter parameter, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, Expression item)
         {
+            if (ExpressionTool.IsUnConvertExpress(item))
+            {
+                item = (item as UnaryExpression).Operand;
+            }
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
             var isIIF = name == "IIF";
@@ -343,6 +348,8 @@ namespace SqlSugar
                 AppendModel(parameter, model, item);
             }
         }
+
+
         private void AppendModelByIIFMember(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
             parameter.CommonTempData = CommonTempDataType.Result;
@@ -401,7 +408,12 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = DateTime.Now.Date;
             }
-            else {
+            else if (model.Name == "ToString"&&item is ConstantExpression&&(item as ConstantExpression).Type.IsEnum())
+            {
+                parameter.CommonTempData = item.ToString();
+            }
+            else
+            {
                 base.Start();
             }
             var methodCallExpressionArgs = new MethodCallExpressionArgs()

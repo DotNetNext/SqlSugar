@@ -128,6 +128,19 @@ namespace SqlSugar
             set { _IsTranscoding = value; }
         }
 
+        private bool _NoSerialize;
+        public bool NoSerialize
+        {
+            get { return _NoSerialize; }
+            set { _NoSerialize = value; }
+        }
+
+        private string _SerializeDateTimeFormat;
+        public string SerializeDateTimeFormat
+        {
+            get { return _SerializeDateTimeFormat; }
+            set { _SerializeDateTimeFormat = value; }
+        }
     }
 
 }

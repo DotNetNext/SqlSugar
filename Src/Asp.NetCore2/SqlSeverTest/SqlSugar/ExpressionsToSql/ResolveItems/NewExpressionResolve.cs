@@ -23,7 +23,7 @@ namespace SqlSugar
                     Check.ThrowNotSupportedException(expression.ToString());
                     break;
                 case ResolveExpressType.SelectSingle:
-                    Check.Exception(expression.Type == UtilConstants.DateType, "ThrowNotSupportedException {0} ",expression.ToString());
+                    Check.Exception(expression.Type == UtilConstants.DateType, "ThrowNotSupportedException {0} ", expression.ToString());
                     Select(expression, parameter, true);
                     break;
                 case ResolveExpressType.SelectMultiple:
@@ -40,6 +40,30 @@ namespace SqlSugar
                     {
                         base.Expression = item;
                         base.Start();
+                    }
+                    break;
+                case ResolveExpressType.Join:
+                    base.Context.ResolveType = ResolveExpressType.WhereMultiple;
+                    int i = 0;
+                    foreach (var item in expression.Arguments)
+                    {
+                        if (item.Type!=typeof(JoinType))
+                        {
+                            base.Expression = item;
+                            base.Start();
+                        }
+                        if (item.Type == typeof(JoinType))
+                        {
+                            if (i > 0)
+                            {
+                                base.Context.Result.Append("," + item.ToString()+ ",");
+                            }
+                            else
+                            {
+                                base.Context.Result.Append(item.ToString() + ",");
+                            }
+                            ++i;
+                        }
                     }
                     break;
                 default:

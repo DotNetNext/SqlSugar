@@ -365,6 +365,9 @@ namespace SqlSugar
             var convertString = GetProertypeDefaultValue(item);
             if (convertString == "DateTime.Now" || convertString == null)
                 return convertString;
+            if (convertString.ObjToString() == "newid()") {
+                return "Guid.NewGuid()";
+            }
             if (item.DataType == "bit")
                 return (convertString == "1" || convertString.Equals("true",StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
             string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";

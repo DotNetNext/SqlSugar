@@ -41,6 +41,35 @@ namespace SqlSugar
             SettingDataType(type);
         }
 
+
+        public SugarParameter(string name, object value, System.Data.DbType type)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            this.DbType = type;
+        }
+        public SugarParameter(string name, DataTable value,string SqlServerTypeName)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            this.TypeName = SqlServerTypeName;
+        }
+        public SugarParameter(string name, object value, System.Data.DbType type, ParameterDirection direction)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            this.Direction = direction;
+            this.DbType = type;
+        }
+        public SugarParameter(string name, object value, System.Data.DbType type, ParameterDirection direction, int size)
+        {
+            this.Value = value;
+            this.ParameterName = name;
+            this.Direction = direction;
+            this.Size = size;
+            this.DbType = type;
+        }
+
         private void SettingDataType(Type type)
         {
             if (type == UtilConstants.ByteArrayType)
@@ -197,5 +226,8 @@ namespace SqlSugar
         {
             this.DbType = System.Data.DbType.String;
         }
+
+
+        public string TypeName { get; set; }
     }
 }

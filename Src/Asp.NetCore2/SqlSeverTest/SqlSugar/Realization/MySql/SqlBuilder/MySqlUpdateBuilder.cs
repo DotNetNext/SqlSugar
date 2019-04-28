@@ -71,7 +71,7 @@ namespace SqlSugar
                     {
                         var isFirst = whereString == null;
                         whereString += (isFirst ? null : " AND ");
-                        whereString += Regex.Replace(item, " \\" + this.Builder.SqlTranslationLeft, "T." + this.Builder.SqlTranslationLeft);
+                        whereString += Regex.Replace(item, " \\" + this.Builder.SqlTranslationLeft, "S." + this.Builder.SqlTranslationLeft);
                     }
                 }
                 if (PrimaryKeys.HasValue())

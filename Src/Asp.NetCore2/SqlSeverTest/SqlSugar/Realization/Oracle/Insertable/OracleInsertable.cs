@@ -26,8 +26,11 @@ namespace SqlSugar
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
+            var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
+            this.Context.Ado.IsDisableMasterSlaveSeparation = true;
             var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : GetSeqValue(GetSeqName()).ObjToInt();
+            this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             return result;
         }
 
@@ -37,8 +40,11 @@ namespace SqlSugar
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
             RestoreMapping();
+            var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
+            this.Context.Ado.IsDisableMasterSlaveSeparation = true;
             var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 :Convert.ToInt64(GetSeqValue(GetSeqName()));
+            this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             return result;
         }
 
