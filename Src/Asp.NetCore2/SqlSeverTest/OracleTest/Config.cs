@@ -8,6 +8,6 @@ namespace OrmTest
 {
     public class Config
     {
-        public static string ConnectionString = "Data Source=localhost/orcl;User ID=system;Password=jhl85661501;";
+        public static string ConnectionString = "Data Source=localhost/orcl;User ID=system;Password=jhl856615011;";
     }
 }
