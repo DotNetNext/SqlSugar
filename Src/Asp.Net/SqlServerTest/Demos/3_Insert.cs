@@ -13,6 +13,8 @@ namespace OrmTest.Demo
         public static void Init()
         {
             var db = GetInstance();
+            db.DbMaintenance.TruncateTable("student");
+
             db.IgnoreColumns.Add("TestId", "Student");
 
             var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1"), SchoolId = 1 };
