@@ -15,7 +15,7 @@ namespace SqlSugar
     /// ** date：2017/1/2
     /// ** email:610262374@qq.com
     /// </summary>
-    public partial class SqlSugarClient : IDisposable
+    public partial class SqlSugarClient : IDisposable, ISqlSugarClient
     {
 
         #region Constructor

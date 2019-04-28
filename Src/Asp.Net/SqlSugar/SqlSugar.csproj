@@ -122,6 +122,7 @@
     <Compile Include="Entities\DefaultServices.cs" />
     <Compile Include="Infrastructure\Mapper.cs" />
     <Compile Include="Interface\ISaveable.cs" />
+    <Compile Include="Interface\ISqlSugarClient.cs" />
     <Compile Include="OnlyNet\PostgreSQLExpressionContext.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
