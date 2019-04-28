@@ -566,6 +566,11 @@ namespace SqlSugar
             asyncUpdateableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
             asyncUpdateableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
             asyncUpdateableBuilder.SetValues = this.UpdateBuilder.SetValues;
+            if (this.IsWhereColumns)
+            {
+                (asyncUpdateable as UpdateableProvider<T>).WhereColumnList = this.WhereColumnList;
+                (asyncUpdateable as UpdateableProvider<T>).IsWhereColumns = this.IsWhereColumns;
+            }
             if (this.RemoveCacheFunc != null)
             {
                 asyncUpdateable.RemoveDataCache();
