@@ -210,7 +210,7 @@ for (int i = 0; i < 1000; i++)
 }
 var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
 ```
-##  3. Deleteable
+##  4. Deleteable
 We use it to Delete
 
  ```cs
@@ -231,7 +231,14 @@ var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  ```
 
 
- ##  5. Table structure is different from entity
+ ##  5. SqlQueryable
+```cs
+var list = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
+var list2 = db.SqlQueryable<Student>("select * from student").Where(it=>it.Id==1).ToPageList(1, 2);
+var list3= db.SqlQueryable<Student>("select * from student").Where("id=@id",new { id=1}).ToPageList(1, 2);
+```cs
+ 
+ 
  ##### Priority level： 
  AS>Add>Attribute
  ### 5.1 Add
