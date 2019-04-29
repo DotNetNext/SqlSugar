@@ -105,7 +105,7 @@ JoinType.Left,st.SchoolId==sc.Id
 .Select<ViewModelStudent>().ToList();
 
 ```
-[More](https://github.com/sunkaixuan/SqlSugar/wiki/1.Queryable)  
+[查看更多 View more ](https://github.com/sunkaixuan/SqlSugar/wiki/1.Queryable)  
  
 
  ##  2. SqlSugarClient.Updateable
