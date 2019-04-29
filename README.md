@@ -297,7 +297,32 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 };
 
 ```
+  ```cs
   ##  12.SqlSugarClient.QueryFilter
+        public static void Init()
+        {
+
+            //gobal filter
+            var db = GetInstance1();
+
+            var sql = db.Queryable<Student>().ToSql();
+            //SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  isDelete=0 
+ 
+        }
+
+        public static SqlSugarClient GetInstance1()
+        {
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+            db.QueryFilter.Add(new SqlFilterItem()
+             {
+                 FilterValue = filterDb =>
+                 {
+                     return new SqlFilterResult() { Sql = " isDelete=0" };
+                 }
+             });
+            return db;
+        }
+          ```
   ##  13.SqlSugarClient.DbFirst
   ```cs
 var db = GetInstance();
