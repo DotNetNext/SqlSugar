@@ -311,7 +311,8 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 };
 
 ```
-  ##  12.Db First
+  ##  12.Gobal Filter
+  ##  13.Db First
   ```cs
 var db = GetInstance();
 //Create all class
@@ -340,17 +341,17 @@ db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
 
 
 ```
-  ##  13.Code First
+  ##  14.Code First
 ```cs
 db.CodeFirst.SetStringDefaultLength(100).BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
 db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(CodeTable2));
 ```
-  ##  14.Utilities
+  ##  15.Utilities
   ```cs
 var list = db.Utilities.DataTableToList(datatable);
   ```
-  ##  15.Gobal Filter
-  ##  16.Gobal Filter
+
+  ##  16.SimpleClient
   
 
 # Code generator
