@@ -182,12 +182,7 @@ var insertObj2 = new Student() { Name = null, CreateTime = Convert.ToDateTime("2
 var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ExecuteCommand();
 
 //Insert List<T>
-var insertObjs = new List<Student>();
-for (int i = 0; i < 1000; i++)
-{
- insertObjs.Add(new Student() { Name = "name" + i });
-}
-var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
+var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteCommand();
 ```
 ##  4. Deleteable
 We use it to Delete
