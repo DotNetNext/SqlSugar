@@ -16,7 +16,7 @@ namespace OrmTest.Models
         public int? SchoolId { get; set; }
         public string Name { get; set; }
         public DateTime? CreateTime { get; set; }
-        [SugarColumn(IsIgnore=true)]
+        [SugarColumn(IsIgnore=true,NoSerialize =true)]
         public int TestId { get; set; }
     }
 
