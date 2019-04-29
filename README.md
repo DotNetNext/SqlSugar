@@ -360,6 +360,15 @@ var list = db.Utilities.DataTableToList(datatable);
   ```
 
   ##  16.SqlSugarClient.SimpleClient
+    ```cs
+var db = GetInstance();
+var sdb = db.GetSimpleClient<Student>();
+sdb.GetById(1);
+sdb.GetList();
+sdb.DeleteById(1);
+sdb.Update(obj);
+//sdb.xxx ..
+ ```
   
 
 # Code generator
