@@ -29,7 +29,7 @@ There are 16 methods under SqlSugarClient
 ## Create SqlSugarClient
 All operations are based on SqlSugarClient
 ```cs
- public  List<Student> GetStudentList()
+public  List<Student> GetStudentList()
 {
     var db= GetInstance();
     var list= db.Queryable<Student>().ToList();//Search
