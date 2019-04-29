@@ -67,6 +67,7 @@ public class Student
 }
 ```
  
+ 
 
 ##  1. SqlSugarClient.Queryable
 We use it to query
@@ -107,6 +108,7 @@ JoinType.Left,st.SchoolId==sc.Id
 ```
 [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/1.Queryable) 
  
+
 
  ##  2. SqlSugarClient.Updateable
 We use it to Update
