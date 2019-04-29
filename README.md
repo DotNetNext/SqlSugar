@@ -286,7 +286,16 @@ db.Saveable<Student>(new Student() { Name = "" })
 ```
  
   ##  9.EntityMain
+  ```cs
+var entityInfo=db.EntityMaintenance.GetEntityInfo<Student>();
+foreach (var column in entityInfo.Columns)
+{
+    Console.WriteLine(column.ColumnDescription);
+}
+```
   ##  10.DbMain
+  
+
   ##  11.AOP
   ```cs
 db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
