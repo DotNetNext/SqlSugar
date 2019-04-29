@@ -285,50 +285,30 @@ db.Saveable<Student>(new Student() { Name = "" })
 
 ```
  
- 
- ##### Priority level： 
- AS>Add>Attribute
- ### 5.1 Add
- ```cs
-db.MappingTables.Add()
-db.MappingColumns.Add()
-db.IgnoreColumns.Add()
- ```
- ### 5.2 AS
+  ##  9.EntityMain
+  ##  10.DbMain
+  ##  11.AOP
   ```cs
-db.Queryable<T>().As("tableName").ToList();
- ```
-### 5.3 Attribute
- ```cs
-[SugarColumn(IsIgnore=true)]
-public int TestId { get; set; }
-  ```
-
- ##  6. Use Tran
-  ```cs
-var result = db.Ado.UseTran(() =>
+db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
 {
-          
-    var beginCount = db.Queryable<Student>().ToList();
-    db.Ado.ExecuteCommand("delete student");
-    var endCount = db.Queryable<Student>().Count();
-    throw new Exception("error haha");
-})
-//result.IsSucces
-//result.XXX
-   ```
- ##  7. Use Store Procedure
-```cs 
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
- 
-//output
-var p11 = new SugarParameter("@p1", "1");
-var p22 = new SugarParameter("@p2", null, true);//isOutput=true
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
-```
+ 
+};
+db.Aop.OnLogExecuting = (sql, pars) => //SQL executing event (pre-execution)
+{
+ 
+};
+db.Aop.OnError = (exp) =>//SQL execution error event
+{
+                 
+};
+db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-execution,SQL script can be modified)
+{
+    return new KeyValuePair<string, SugarParameter[]>(sql,pars);
+};
 
-## 8. DbFirst
-```cs
+```
+  ##  12.Db First
+  ```cs
 var db = GetInstance();
 //Create all class
 db.DbFirst.CreateClassFile("c:\\Demo\\1");
@@ -387,32 +367,15 @@ db.DbFirst
     .CreateClassFile("c:\\Demo\\6");
 }
 ```
-## 8.Code First
+  ##  13.Code First
 ```cs
-db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
-db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
+db.CodeFirst.SetStringDefaultLength(100).BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
+db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(CodeTable2));
 ```
-
-## 9. AOP LOG
-```cs
-db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
-{
- 
-};
-db.Aop.OnLogExecuting = (sql, pars) => //SQL executing event (pre-execution)
-{
- 
-};
-db.Aop.OnError = (exp) =>//SQL execution error event
-{
-                 
-};
-db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-execution,SQL script can be modified)
-{
-    return new KeyValuePair<string, SugarParameter[]>(sql,pars);
-};
-
-```
+  ##  14.Utilities
+  ##  15.Gobal Filter
+  ##  16.Gobal Filter
+  
 
 ## 10. Code generator
 https://github.com/sunkaixuan/SoEasyPlatform
