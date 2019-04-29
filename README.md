@@ -389,12 +389,15 @@ db.CodeFirst.SetStringDefaultLength(100).BackupTable().InitTables(typeof(CodeTab
 db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(CodeTable2));
 ```
   ##  14.Utilities
+  ```cs
+var list = db.Utilities.DataTableToList(datatable);
+  ```
   ##  15.Gobal Filter
   ##  16.Gobal Filter
   
 
-## 10. Code generator
+# Code generator
 https://github.com/sunkaixuan/SoEasyPlatform
 
-## 11. More APi 中文文档：
+# More APi 中文文档：
 http://www.codeisbug.com/Doc/8
