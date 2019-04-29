@@ -86,10 +86,6 @@ var group = db.Queryable<Student>().GroupBy(it => it.Id)
 .Select(it =>new { id = SqlFunc.AggregateCount(it.Id) }).ToList();p
 
 //Page
-var pageIndex = 1;
-var pageSize = 2;
-var totalCount = 0;
-//page
 var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 
 //page join
@@ -112,8 +108,9 @@ var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
  JoinType.Left,st.Id==sc.Id))
 .Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
 .ToList();
-      
 ```
+More https://github.com/sunkaixuan/SqlSugar/wiki/1.Queryable
+
  ##  2. SqlSugarClient.Updateable
 We use it to Update
  ```cs
