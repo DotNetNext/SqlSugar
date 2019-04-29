@@ -18,6 +18,46 @@ Install-Package sqlSugar
 ```ps1
 Install-Package sqlSugarCore
 ```
+## Create SqlSugarClient
+All operations are based on SqlSugarClient
+```cs
+ public  List<Student> GetStudentList()
+        {
+            var db= GetInstance();
+            var list= db.Queryable<Student>().ToList();//Search
+            return list;
+        }
+
+        /// <summary>
+        /// Create SqlSugarClient
+        /// </summary>
+        /// <returns></returns>
+        private SqlSugarClient GetInstance()
+        {
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
+                {
+                    ConnectionString = "Server=.xxxxx",
+                    DbType = DbType.SqlServer,
+                    IsAutoCloseConnection = true,
+                    InitKeyType = InitKeyType.Attribute
+                });
+            //Print sql
+            db.Aop.OnLogExecuting = (sql, pars) =>
+            {
+                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                Console.WriteLine();
+            };
+            return db;
+        }
+
+        public class Student
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true]
+            public int Id { get; set; }
+            public int? SchoolId { get; set; }
+            public string Name { get; set; }
+        }
+```
  
 ## SqlSugar's 16 Functions
 
