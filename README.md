@@ -238,6 +238,25 @@ var list2 = db.SqlQueryable<Student>("select * from student").Where(it=>it.Id==1
 var list3= db.SqlQueryable<Student>("select * from student").Where("id=@id",new { id=1}).ToPageList(1, 2);
 ``` 
  
+  ##  5. Queue
+  Perform multiple operations together with transactions
+```cs
+var db = GetInstance();
+db.Insertable<Student>(new Student() { Name = "a" }).AddQueue();
+db.Insertable<Student>(new Student() { Name = "b" }).AddQueue();
+db.SaveQueues(); 
+
+db.Insertable<Student>(new Student() { Name = "a" }).AddQueue();
+db.Insertable<Student>(new Student() { Name = "b" }).AddQueue();
+db.Insertable<Student>(new Student() { Name = "c" }).AddQueue();
+db.Insertable<Student>(new Student() { Name = "d" }).AddQueue();
+var ar = db.SaveQueuesAsync(); 
+
+db.Queryable<Student>().AddQueue();
+db.Queryable<School>().AddQueue();
+db.AddQueue("select * from student where id=@id", new { id = 1 }); 
+var result2 = db.SaveQueues<Student, School, Student>();  
+```
  
  ##### Priority level： 
  AS>Add>Attribute
