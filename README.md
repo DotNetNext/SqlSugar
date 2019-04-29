@@ -20,7 +20,7 @@ Install-Package sqlSugarCore
 ```
  
 ## SqlSugar's 16 Functions
- 
+db.Queryable, db.Insertable, etc.
 
 ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190429/6369214497126656989458119.jpg "")
 
