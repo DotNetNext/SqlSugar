@@ -119,31 +119,15 @@ var t1= db.Updateable(updateObj).ExecuteCommand();
 //Only  update  Name 
 var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
 
-
 //Ignore  Name and TestId
 var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteCommand();
-
-//Ignore  Name and TestId
-var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ExecuteCommand();
-
-
-//Use Lock
-var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
 
 //update List<T>
 var t7 = db.Updateable(updateObjs).ExecuteCommand();
 
-//Re Set Value
-var t8 = db.Updateable(updateObj)
- .ReSetValue(it => it.Name == (it.Name + 1)).ExecuteCommand();
-
 //Where By Expression
 var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
 
-//Update By Expression  Where By Expression
-var t10 = db.Updateable<Student>()
- .UpdateColumns(it => new Student() { Name="a",CreateTime=DateTime.Now })
- .Where(it => it.Id == 11).ExecuteCommand();
  ```
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/2.Updateable) 
 
