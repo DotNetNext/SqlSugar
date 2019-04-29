@@ -138,7 +138,6 @@ JoinType.Left,st.SchoolId==sc.Id
 .OrderBy(st=>st.Id,OrderByType.Desc)
 .OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
 .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
-```
 
 var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
  JoinType.Left,st.Id==sc.Id))
