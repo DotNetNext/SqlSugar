@@ -98,22 +98,13 @@ JoinType.Left,st.SchoolId==sc.Id
 //top 5
 var top5 = db.Queryable<Student>().Take(5).ToList();
 
-//skip5
-var skip5 = db.Queryable<Student>().Skip(5).ToList();
-
-
-//join return List<ViewModelStudent>
-var list3 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
-JoinType.Left,st.SchoolId==sc.Id
-)).Select<ViewModelStudent>().ToList();
-
 //join Order By (order by st.id desc,sc.id desc)
 var list4 = db.Queryable<Student, School>((st, sc) =>new  JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id
 ))
 .OrderBy(st=>st.Id,OrderByType.Desc)
 .OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
-.Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
+.Select<ViewModelStudent>().ToList();
 
 var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
  JoinType.Left,st.Id==sc.Id))
