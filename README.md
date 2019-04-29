@@ -297,22 +297,20 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 };
 
 ```
-  ```cs
+
   ##  12.SqlSugarClient.QueryFilter
-        public static void Init()
-        {
+    ```cs
 
-            //gobal filter
-            var db = GetInstance1();
 
-            var sql = db.Queryable<Student>().ToSql();
-            //SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  isDelete=0 
- 
-        }
+ //gobal filter
+var db = GetInstance();
+var sql = db.Queryable<Student>().ToSql();
+//SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  isDelete=0 
 
-        public static SqlSugarClient GetInstance1()
-        {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+
+public static SqlSugarClient GetInstance()
+{
+    SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() {xxx);
             db.QueryFilter.Add(new SqlFilterItem()
              {
                  FilterValue = filterDb =>
@@ -321,7 +319,7 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
                  }
              });
             return db;
-        }
+}
           ```
   ##  13.SqlSugarClient.DbFirst
   ```cs
