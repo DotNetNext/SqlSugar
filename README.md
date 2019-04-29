@@ -299,8 +299,7 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 ```
 
   ##  12.SqlSugarClient.QueryFilter
-    ```cs
-
+  ```cs
 
  //gobal filter
 var db = GetInstance();
@@ -320,7 +319,7 @@ public static SqlSugarClient GetInstance()
              });
             return db;
 }
-          ```
+ ```
   ##  13.SqlSugarClient.DbFirst
   ```cs
 var db = GetInstance();
