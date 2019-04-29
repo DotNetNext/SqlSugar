@@ -19,11 +19,6 @@ Install-Package sqlSugar
 Install-Package sqlSugarCore
 ```
 
-## Here's the history version
-https://github.com/sunkaixuan/SqlSugar/tree/master
-
-
-
 # Let's look at a DEMO first
 ```cs
 //Create DbContext 
