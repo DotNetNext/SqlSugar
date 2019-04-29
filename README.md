@@ -66,7 +66,7 @@ There are 16 methods under SqlSugarClient
 
  
 
-##  1. Query
+##  1. Queryable
 
  
 ```cs
@@ -113,23 +113,11 @@ var list6 = db.Queryable<Student, School,School>((st, sc,sc2) => st.SchoolId == 
 var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
 .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
  
-//join  2
-var list = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
-JoinType.Left,st.SchoolId==sc.Id
-))
-.Where(st=>st.Name=="jack").ToList();
-
-//join  3
-var list2 = db.Queryable<Student, School,Student>((st, sc,st2) => new JoinQueryInfos(
-JoinType.Left,st.SchoolId==sc.Id,
-JoinType.Left,st.SchoolId==st2.Id
-))
-.Where((st, sc, st2)=> st2.Id==1||sc.Id==1||st.Id==1).ToList();
 
 //join return List<ViewModelStudent>
 var list3 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id
-)).Select((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
+)).Select<ViewModelStudent>().ToList();
 
 //join Order By (order by st.id desc,sc.id desc)
 var list4 = db.Queryable<Student, School>((st, sc) =>new  JoinQueryInfos(
@@ -144,10 +132,6 @@ var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
 .Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
 .ToList();
       
-//sql
-SELECT `st`.`ID`,`st`.`SchoolId`,`st`.`Name`,`st`.`CreateTime` 
-     FROM `STudent` st Left JOIN `School` sc ON ( `st`.`ID` = `sc`.`Id` )  
-      WHERE ( `st`.`ID` =(SELECT `Id` FROM `School` WHERE ( `Id` = `st`.`ID` ) limit 0,1))
 ```
 
  
