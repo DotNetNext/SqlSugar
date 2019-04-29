@@ -135,38 +135,23 @@ var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
 ##  3. Insertable
 We use it to Insert
  ```cs
-var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") ,SchoolId=1};
-
 //Insert reutrn Insert Count
 var t2 = db.Insertable(insertObj).ExecuteCommand();
 
 //Insert reutrn Identity Value
 var t3 = db.Insertable(insertObj).ExecuteReutrnIdentity();
 
-
 //Only  insert  Name 
 var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name,it.SchoolId }).ExecuteReutrnIdentity();
 
-
 //Ignore TestId
 var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReutrnIdentity();
-
-
-//Ignore   TestId
-var t6 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReutrnIdentity();
-
-
-//Use Lock
-var t8 = db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
-
-
-var insertObj2 = new Student() { Name = null, CreateTime = Convert.ToDateTime("2010-1-1") };
-var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off identity*/).ExecuteCommand();
 
 //Insert List<T>
 var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteCommand();
 ```
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/3.Insertable) 
+ 
 ##  4. Deleteable
 We use it to Delete
 
