@@ -76,31 +76,25 @@ We use it to query
 var getAll = db.Queryable<Student>().ToList();
 var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
 var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
-var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
-var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
 var sum = db.Queryable<Student>().Sum(it=>it.Id);
 var isAny = db.Queryable<Student>().Where(it=>it.Id==-1).Any();
 var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
 var getListByRename = db.Queryable<School>().AS("Student").ToList();
-var group = db.Queryable<Student>().GroupBy(it => it.Id)
-.Having(it => SqlFunc.AggregateCount(it.Id) > 10)
-.Select(it =>new { id = SqlFunc.AggregateCount(it.Id) }).ToList();
+var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
+var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
+var group = db.Queryable<Student>().GroupBy(it => it.Id).Select(it =>new { id = SqlFunc.AggregateCount(it.Id) }).ToList();
 
 //Page
 var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 
 //page join
-var pageJoin = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
-JoinType.Left,st.SchoolId==sc.Id
-)).ToPageList(pageIndex, pageSize, ref totalCount);
+var pageJoin = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(JoinType.Left,st.SchoolId==sc.Id)).ToPageList(pageIndex, pageSize, ref totalCount);
 
 //top 5
 var top5 = db.Queryable<Student>().Take(5).ToList();
 
 //join Order By (order by st.id desc,sc.id desc)
-var list4 = db.Queryable<Student, School>((st, sc) =>new  JoinQueryInfos(
-JoinType.Left,st.SchoolId==sc.Id
-))
+var list4 = db.Queryable<Student, School>((st, sc) =>new  JoinQueryInfos(JoinType.Left,st.SchoolId==sc.Id))
 .OrderBy(st=>st.Id,OrderByType.Desc)
 .OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
 .Select<ViewModelStudent>().ToList();
