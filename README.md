@@ -133,11 +133,45 @@ var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
 .ToList();
       
 ```
+ ##  2. Updateable
 
+ ```cs
+//update reutrn Update Count
+var t1= db.Updateable(updateObj).ExecuteCommand();
+
+//Only  update  Name 
+var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
+
+
+//Ignore  Name and TestId
+var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteCommand();
+
+//Ignore  Name and TestId
+var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ExecuteCommand();
+
+
+//Use Lock
+var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
+
+//update List<T>
+var t7 = db.Updateable(updateObjs).ExecuteCommand();
+
+//Re Set Value
+var t8 = db.Updateable(updateObj)
+ .ReSetValue(it => it.Name == (it.Name + 1)).ExecuteCommand();
+
+//Where By Expression
+var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
+
+//Update By Expression  Where By Expression
+var t10 = db.Updateable<Student>()
+ .UpdateColumns(it => new Student() { Name="a",CreateTime=DateTime.Now })
+ .Where(it => it.Id == 11).ExecuteCommand();
+ ```
  
 
  
-##  2. Insert
+##  3. Insertable
  ```cs
 var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") ,SchoolId=1};
 
@@ -193,41 +227,7 @@ var t4 = db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
 //by expression
 var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  ```
- ##  4. Update
 
- ```cs
-//update reutrn Update Count
-var t1= db.Updateable(updateObj).ExecuteCommand();
-
-//Only  update  Name 
-var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
-
-
-//Ignore  Name and TestId
-var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteCommand();
-
-//Ignore  Name and TestId
-var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ExecuteCommand();
-
-
-//Use Lock
-var t6 = db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
-
-//update List<T>
-var t7 = db.Updateable(updateObjs).ExecuteCommand();
-
-//Re Set Value
-var t8 = db.Updateable(updateObj)
- .ReSetValue(it => it.Name == (it.Name + 1)).ExecuteCommand();
-
-//Where By Expression
-var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
-
-//Update By Expression  Where By Expression
-var t10 = db.Updateable<Student>()
- .UpdateColumns(it => new Student() { Name="a",CreateTime=DateTime.Now })
- .Where(it => it.Id == 11).ExecuteCommand();
- ```
 
  ##  5. Table structure is different from entity
  ##### Priority level： 
