@@ -22,7 +22,7 @@ Install-Package sqlSugarCore
 ## SqlSugar's 16 Functions
  
 
-![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190429/6369214497126656989458119.jpg "在这里输入图片标题")
+![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190429/6369214497126656989458119.jpg "")
 
 # Let's look at a DEMO first
 ```cs
