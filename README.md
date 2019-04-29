@@ -102,18 +102,6 @@ var top5 = db.Queryable<Student>().Take(5).ToList();
 var skip5 = db.Queryable<Student>().Skip(5).ToList();
 
 
-//2 join
-var list5 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st,sc)=>new {st.Name,st.Id,schoolName=sc.Name}).ToList();
- 
-//3 join 
-var list6 = db.Queryable<Student, School,School>((st, sc,sc2) => st.SchoolId == sc.Id&&sc.Id==sc2.Id)
-    .Select((st, sc,sc2) => new { st.Name, st.Id, schoolName = sc.Name,schoolName2=sc2.Name }).ToList();
- 
-//3 join page
-var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
-.Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
- 
-
 //join return List<ViewModelStudent>
 var list3 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id
@@ -350,38 +338,7 @@ db.MappingTables.Add("ClassStudent", "Student");
 db.MappingColumns.Add("NewId", "Id", "ClassStudent");
 db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
 
-//Remove mapping
-db.MappingTables.Clear();
-db.MappingColumns.Clear();
 
-//Custom format,Change old to new
-db.DbFirst
-    .SettingClassTemplate(old =>
-    {
-        return old;
-    })
-    .SettingNamespaceTemplate(old =>
-    {
-        return old;
-    })
-    .SettingPropertyDescriptionTemplate(old =>
-    {
-           return @"           /// <summary>
-           /// Desc_New:{PropertyDescription}
-           /// Default_New:{DefaultValue}
-           /// Nullable_New:{IsNullable}
-           /// </summary>";
-    })
-    .SettingPropertyTemplate(old =>
-    {
-        return old;
-    })
-    .SettingConstructorTemplate(old =>
-    {
-        return old;
-    })
-    .CreateClassFile("c:\\Demo\\6");
-}
 ```
   ##  13.Code First
 ```cs
