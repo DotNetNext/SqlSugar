@@ -294,6 +294,13 @@ foreach (var column in entityInfo.Columns)
 }
 ```
   ##  10.DbMain
+   ```cs
+  var tables = db.DbMaintenance.GetTableInfoList();
+  foreach (var table in tables)
+  {
+        Console.WriteLine(table.Description);
+  }
+  ```
   
 
   ##  11.AOP
