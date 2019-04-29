@@ -67,7 +67,7 @@ There are 16 methods under SqlSugarClient
  
 
 ##  1. Queryable
-
+We use it to query
  
 ```cs
 var getAll = db.Queryable<Student>().ToList();
@@ -134,7 +134,7 @@ var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
       
 ```
  ##  2. Updateable
-
+We use it to Update
  ```cs
 //update reutrn Update Count
 var t1= db.Updateable(updateObj).ExecuteCommand();
@@ -172,6 +172,7 @@ var t10 = db.Updateable<Student>()
 
  
 ##  3. Insertable
+We use it to Insert
  ```cs
 var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") ,SchoolId=1};
 
@@ -209,7 +210,8 @@ for (int i = 0; i < 1000; i++)
 }
 var s9 = db.Insertable(insertObjs.ToArray()).InsertColumns(it => new { it.Name }).ExecuteCommand();
 ```
-##  3. Delete
+##  3. Deleteable
+We use it to Delete
 
  ```cs
 var t1 = db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
