@@ -73,6 +73,7 @@ public class Student
 We use it to query
  
 ```cs
+//easy
 var getAll = db.Queryable<Student>().ToList();
 var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
 var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
@@ -88,7 +89,8 @@ var group = db.Queryable<Student>().GroupBy(it => it.Id).Select(it =>new { id = 
 var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 
 //page join
-var pageJoin = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(JoinType.Left,st.SchoolId==sc.Id)).ToPageList(pageIndex, pageSize, ref totalCount);
+var pageJoin = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(JoinType.Left,st.SchoolId==sc.Id))
+.ToPageList(pageIndex, pageSize, ref totalCount);
 
 //top 5
 var top5 = db.Queryable<Student>().Take(5).ToList();
