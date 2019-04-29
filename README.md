@@ -257,6 +257,22 @@ db.Queryable<School>().AddQueue();
 db.AddQueue("select * from student where id=@id", new { id = 1 }); 
 var result2 = db.SaveQueues<Student, School, Student>();  
 ```
+
+##  6.ADO
+db.Ado.MethodName，Look at the following example
+```cs
+var dt=db.Ado.GetDataTable("select * from table where id=@id and name=@name",new List<SugarParameter>(){
+  new SugarParameter("@id",1),
+  new SugarParameter("@name",2)
+});
+var dt=db.Ado.GetDataTable("select * from table where id=@id and name=@name",new{id=1,name=2});
+
+//Use Stored Procedure
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{name="张三",age=0});//  GetInt SqlQuery<T>  等等都可以用
+var nameP= new SugarParameter("@name", "张三");
+var ageP= new SugarParameter("@age", null, true);//isOutput=true
+var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",nameP,ageP);
+```
  
  ##### Priority level： 
  AS>Add>Attribute
