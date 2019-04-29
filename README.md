@@ -91,9 +91,9 @@ var totalCount = 0;
 var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 
 //page join
-var pageJoin = db.Queryable<Student, School>((st, sc) => new object[] {
+var pageJoin = db.Queryable<Student, School>((st, sc) =>new JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id
-}).ToPageList(pageIndex, pageSize, ref totalCount);
+)).ToPageList(pageIndex, pageSize, ref totalCount);
 
 //top 5
 var top5 = db.Queryable<Student>().Take(5).ToList();
@@ -114,36 +114,34 @@ var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId ==
 .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
  
 //join  2
-var list = db.Queryable<Student, School>((st, sc) => new object[] {
+var list = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id
-})
+))
 .Where(st=>st.Name=="jack").ToList();
 
 //join  3
-var list2 = db.Queryable<Student, School,Student>((st, sc,st2) => new object[] {
+var list2 = db.Queryable<Student, School,Student>((st, sc,st2) => new JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id,
 JoinType.Left,st.SchoolId==st2.Id
-})
+))
 .Where((st, sc, st2)=> st2.Id==1||sc.Id==1||st.Id==1).ToList();
 
 //join return List<ViewModelStudent>
-var list3 = db.Queryable<Student, School>((st, sc) => new object[] {
+var list3 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id
-}).Select((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
+)).Select((st,sc)=>new ViewModelStudent { Name= st.Name,SchoolId=sc.Id }).ToList();
 
 //join Order By (order by st.id desc,sc.id desc)
-var list4 = db.Queryable<Student, School>((st, sc) => new object[] {
+var list4 = db.Queryable<Student, School>((st, sc) =>new  JoinQueryInfos(
 JoinType.Left,st.SchoolId==sc.Id
-})
+))
 .OrderBy(st=>st.Id,OrderByType.Desc)
 .OrderBy((st,sc)=>sc.Id,OrderByType.Desc)
 .Select((st, sc) => new ViewModelStudent { Name = st.Name, SchoolId = sc.Id }).ToList();
 ```
 
-### subquery
-```cs
-var getAll = db.Queryable<Student, School>((st, sc) => new object[] {
- JoinType.Left,st.Id==sc.Id})
+var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
+ JoinType.Left,st.Id==sc.Id))
 .Where(st => st.Id == SqlFunc.Subqueryable<School>().Where(s => s.Id == st.Id).Select(s => s.Id))
 .ToList();
       
