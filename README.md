@@ -66,7 +66,7 @@ There are 16 methods under SqlSugarClient
 
  
 
-##  1. Queryable
+##  1. SqlSugarClient.Queryable
 We use it to query
  
 ```cs
@@ -112,7 +112,7 @@ var getAll = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(
 .ToList();
       
 ```
- ##  2. Updateable
+ ##  2. SqlSugarClient.Updateable
 We use it to Update
  ```cs
 //update reutrn Update Count
@@ -150,7 +150,7 @@ var t10 = db.Updateable<Student>()
  
 
  
-##  3. Insertable
+##  3. SqlSugarClient.Insertable
 We use it to Insert
  ```cs
 var insertObj = new Student() { Name = "jack", CreateTime = Convert.ToDateTime("2010-1-1") ,SchoolId=1};
@@ -184,7 +184,7 @@ var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off ide
 //Insert List<T>
 var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteCommand();
 ```
-##  4. Deleteable
+##  4. SqlSugarClient.Deleteable
 We use it to Delete
 
  ```cs
@@ -205,14 +205,14 @@ var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  ```
 
 
- ##  5. SqlQueryable
+ ##  5. SqlSugarClient.SqlQueryable
 ```cs
 var list = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
 var list2 = db.SqlQueryable<Student>("select * from student").Where(it=>it.Id==1).ToPageList(1, 2);
 var list3= db.SqlQueryable<Student>("select * from student").Where("id=@id",new { id=1}).ToPageList(1, 2);
 ``` 
  
-  ##  6. Queue
+  ##  6. SqlSugarClient.SaveQueues
   Perform multiple operations together with transactions
 ```cs
 var db = GetInstance();
@@ -232,7 +232,7 @@ db.AddQueue("select * from student where id=@id", new { id = 1 });
 var result2 = db.SaveQueues<Student, School, Student>();  
 ```
 
-##  7.ADO
+##  7.SqlSugarClient.Ado
 db.Ado.MethodName，Look at the following example
 ```cs
 var dt=db.Ado.GetDataTable("select * from table where id=@id and name=@name",new List<SugarParameter>(){
@@ -248,7 +248,7 @@ var ageP= new SugarParameter("@age", null, true);//isOutput=true
 var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",nameP,ageP);
 ```
  
- ##  8.Saveable
+ ##  8.SqlSugarClient.Saveable
  Insert or Update
 ```cs
 db.Saveable<Student>(entity).ExecuteReturnEntity();
@@ -259,7 +259,7 @@ db.Saveable<Student>(new Student() { Name = "" })
 
 ```
  
-  ##  9.EntityMain
+  ##  9.SqlSugarClient.EntityMain
   ```cs
 var entityInfo=db.EntityMaintenance.GetEntityInfo<Student>();
 foreach (var column in entityInfo.Columns)
@@ -267,7 +267,7 @@ foreach (var column in entityInfo.Columns)
     Console.WriteLine(column.ColumnDescription);
 }
 ```
-  ##  10.DbMain
+  ##  10.SqlSugarClient.DbMain
    ```cs
   var tables = db.DbMaintenance.GetTableInfoList();
   foreach (var table in tables)
@@ -277,7 +277,7 @@ foreach (var column in entityInfo.Columns)
   ```
   
 
-  ##  11.AOP
+  ##  11.SqlSugarClient.Aop
   ```cs
 db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
 {
@@ -297,8 +297,8 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 };
 
 ```
-  ##  12.Gobal Filter
-  ##  13.Db First
+  ##  12.SqlSugarClient.QueryFilter
+  ##  13.SqlSugarClient.DbFirst
   ```cs
 var db = GetInstance();
 //Create all class
@@ -327,17 +327,17 @@ db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
 
 
 ```
-  ##  14.Code First
+  ##  14.SqlSugarClient.CodeFirst
 ```cs
 db.CodeFirst.SetStringDefaultLength(100).BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
 db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(CodeTable2));
 ```
-  ##  15.Utilities
+  ##  15.SqlSugarClient.Utilities
   ```cs
 var list = db.Utilities.DataTableToList(datatable);
   ```
 
-  ##  16.SimpleClient
+  ##  16.SqlSugarClient.SimpleClient
   
 
 # Code generator
