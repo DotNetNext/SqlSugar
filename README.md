@@ -236,7 +236,7 @@ var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
 var list = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
 var list2 = db.SqlQueryable<Student>("select * from student").Where(it=>it.Id==1).ToPageList(1, 2);
 var list3= db.SqlQueryable<Student>("select * from student").Where("id=@id",new { id=1}).ToPageList(1, 2);
-```cs
+``` 
  
  
  ##### Priority level： 
