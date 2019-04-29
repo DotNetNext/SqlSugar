@@ -112,10 +112,7 @@ var list6 = db.Queryable<Student, School,School>((st, sc,sc2) => st.SchoolId == 
 //3 join page
 var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
 .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
-```
-
-#### left join  
-```cs
+ 
 //join  2
 var list = db.Queryable<Student, School>((st, sc) => new object[] {
 JoinType.Left,st.SchoolId==sc.Id
