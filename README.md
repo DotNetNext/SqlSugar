@@ -367,7 +367,6 @@ sdb.GetById(1);
 sdb.GetList();
 sdb.DeleteById(1);
 sdb.Update(obj);
-//sdb.xxx ..
  ```
   
 
