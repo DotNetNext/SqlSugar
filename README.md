@@ -274,6 +274,18 @@ var ageP= new SugarParameter("@age", null, true);//isOutput=true
 var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",nameP,ageP);
 ```
  
+ ##  7.Saveable
+ Insert or Update
+```cs
+db.Saveable<Student>(entity).ExecuteReturnEntity();
+db.Saveable<Student>(new Student() { Name = "" })
+                  .InsertColumns(it=>it.Name)
+                  .UpdateColumns(it=>new { it.Name,it.CreateTime }
+                  .ExecuteReturnEntity();
+
+```
+ 
+ 
  ##### Priority level： 
  AS>Add>Attribute
  ### 5.1 Add
