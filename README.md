@@ -64,62 +64,11 @@ There are 16 methods under SqlSugarClient
 
 ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190429/6369214497126656989458119.jpg "")
 
-# Let's look at a DEMO first
-```cs
-//Create DbContext 
-public class DbContext
-{
-    public DbContext()
-    {
-        db = new SqlSugarClient(new ConnectionConfig()
-        {
-            ConnectionString = Config.ConnectionString,
-            DbType = DbType.Oracle,
-            IsAutoCloseConnection = true
-        });
-    }
-    public SqlSugarClient Db;
-    public SimpleClient<Student> StudentDb { get { return new SimpleClient<Student>(Db); } }
-    public SimpleClient<School> SchoolDb { get { return new SimpleClient<School>(Db); } }
-}
-public class Business : DbContext
-{
-    //use DbContext
-    public void GetAll()
-    {
-
-        //use Db get student list
-        List<Student> list= Db.Queryable<Student>().ToList();
-
-        //use  StudentDb get student list
-        List<Student> list2=StudentDb.GetList();
-        //StudentDb.GetById
-        //StudentDb.Delete
-        //StudentDb.Update
-        //StudentDb.Insert
-        //StudentDb.GetPageList
-        //....
-        //SchoolDb.GetById
-        //....
-
-    }
-}
-```
-SimpleClient encapsulates common operations
-
-Transaction or multi table operation use SqlSugarClient
-
-# Detailed usage introduction
+ 
 
 ##  1. Query
 
-### 1.1 Create Connection
-If you have system table permissions, use SystemTableConfig,else use AttributeConfig
-```cs
-SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
-```
-
-### 1.2 Introduction
+ 
 ```cs
 var getAll = db.Queryable<Student>().ToList();
 var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
@@ -132,11 +81,9 @@ var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
 var getListByRename = db.Queryable<School>().AS("Student").ToList();
 var group = db.Queryable<Student>().GroupBy(it => it.Id)
 .Having(it => SqlFunc.AggregateCount(it.Id) > 10)
-.Select(it =>new { id = SqlFunc.AggregateCount(it.Id) }).ToList();
-``` 
+.Select(it =>new { id = SqlFunc.AggregateCount(it.Id) }).ToList();p
 
-### 1.3 Page
-```cs
+//Page
 var pageIndex = 1;
 var pageSize = 2;
 var totalCount = 0;
@@ -153,23 +100,15 @@ var top5 = db.Queryable<Student>().Take(5).ToList();
 
 //skip5
 var skip5 = db.Queryable<Student>().Skip(5).ToList();
-``` 
 
-### 1.4 Join
 
-#### easy join 
-```cs
 //2 join
 var list5 = db.Queryable<Student, School>((st, sc) => st.SchoolId == sc.Id).Select((st,sc)=>new {st.Name,st.Id,schoolName=sc.Name}).ToList();
-```
-
-```cs
+ 
 //3 join 
 var list6 = db.Queryable<Student, School,School>((st, sc,sc2) => st.SchoolId == sc.Id&&sc.Id==sc2.Id)
     .Select((st, sc,sc2) => new { st.Name, st.Id, schoolName = sc.Name,schoolName2=sc2.Name }).ToList();
- ```
  
- ```cs
 //3 join page
 var list7= db.Queryable<Student, School, School>((st, sc, sc2) => st.SchoolId == sc.Id && sc.Id == sc2.Id)
 .Select((st, sc, sc2) => new { st.Name, st.Id, schoolName = sc.Name, schoolName2 = sc2.Name }).ToPageList(1,2);
@@ -217,107 +156,7 @@ SELECT `st`.`ID`,`st`.`SchoolId`,`st`.`Name`,`st`.`CreateTime`
       WHERE ( `st`.`ID` =(SELECT `Id` FROM `School` WHERE ( `Id` = `st`.`ID` ) limit 0,1))
 ```
 
-### 1.5 SqlFunctions
-```cs
-var t1 = db.Queryable<Student>().Where(it => SqlFunc.ToLower(it.Name) == SqlFunc.ToLower("JACK")).ToList();
-//SELECT [Id],[SchoolId],[Name],[CreateTime] FROM [Student]  WHERE ((LOWER([Name])) = (LOWER(@MethodConst0)) )
-
-/***More Functions***/
-//SqlFunc.IsNullOrEmpty(object thisValue)
-//SqlFunc.ToLower(object thisValue) 
-//SqlFunc.string ToUpper(object thisValue) 
-//SqlFunc.string Trim(object thisValue) 
-//SqlFunc.bool Contains(string thisValue, string parameterValue) 
-//SqlFunc.ContainsArray(object[] thisValue, string parameterValue) 
-//SqlFunc.StartsWith(object thisValue, string parameterValue) 
-//SqlFunc.EndsWith(object thisValue, string parameterValue)
-//SqlFunc.Equals(object thisValue, object parameterValue) 
-//SqlFunc.DateIsSame(DateTime date1, DateTime date2)
-//SqlFunc.DateIsSame(DateTime date1, DateTime date2, DateType dataType) 
-//SqlFunc.DateAdd(DateTime date, int addValue, DateType millisecond) 
-//SqlFunc.DateAdd(DateTime date, int addValue) 
-//SqlFunc.DateValue(DateTime date, DateType dataType) 
-//SqlFunc.Between(object value, object start, object end) 
-//SqlFunc.ToInt32(object value) 
-//SqlFunc.ToInt64(object value)
-//SqlFunc.ToDate(object value) 
-//SqlFunc.ToString(object value) 
-//SqlFunc.ToDecimal(object value) 
-//SqlFunc.ToGuid(object value) 
-//SqlFunc.ToDouble(object value) 
-//SqlFunc.ToBool(object value) 
-//SqlFunc.Substring(object value, int index, int length)
-//SqlFunc.Replace(object value, string oldChar, string newChar)
-//SqlFunc.Length(object value) { throw new NotImplementedException(); }
-//SqlFunc.AggregateSum(object thisValue) 
-//SqlFunc.AggregateAvg<TResult>(TResult thisValue)
-//SqlFunc.AggregateMin(object thisValue) 
-//SqlFunc.AggregateMax(object thisValue) 
-//SqlFunc.AggregateCount(object thisValue) 
-```
-
-### 1.6 Select
-```cs
-var s1 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Name = it.Name, Student = it }).ToList();
-var s2 = db.Queryable<Student>().Select(it => new { id = it.Id, w = new { x = it } }).ToList();
-var s3 = db.Queryable<Student>().Select(it => new { newid = it.Id }).ToList();
-var s4 = db.Queryable<Student>().Select(it => new { newid = it.Id, obj = it }).ToList();
-var s5 = db.Queryable<Student>().Select(it => new ViewModelStudent2 { Student = it, Name = it.Name }).ToList();
-```
-
-### 1.7  Join Sql
-```cs
-var join3 = db.Queryable("Student", "st")
-                .AddJoinInfo("School", "sh", "sh.id=st.schoolid")
-                .Where("st.id>@id")
-                .AddParameters(new { id = 1 })
-                .Select("st.*").ToList();
- //SELECT st.* FROM [Student] st Left JOIN School sh ON sh.id=st.schoolid   WHERE st.id>@id 
- ```
  
- ### 1.8 ADO.NET
- ```cs
-var db = GetInstance();
-var t1= db.Ado.SqlQuery<string>("select 'a'");
-var t2 = db.Ado.GetInt("select 1");
-var t3 = db.Ado.GetDataTable("select 1 as id");
-//more
-//db.Ado.GetXXX...
-
-//sql to queryable 
-
-var t5 = db.SqlQueryable<Student>("select * from student").Where(it=>it.id>0).ToPageList(1, 2,ref count);
-var t6 = db.SqlQueryable<dynamic>("select * from student").ToPageList(1, 2,ref count);// return List<dynamic>
-
-//Use StoredProcedure
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",new{p1=1,p2=null});
- 
-//output
-var p11 = new SugarParameter("@p1", "1");
-var p22 = new SugarParameter("@p2", null, true);//isOutput=true
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",p11,p22);
- ```
-
-### 1.9 Where
-```cs
-var list = db.Queryable<Student, School>((st, sc) => new object[] {
-JoinType.Left,st.SchoolId==sc.Id
-})
-.Where((st,sc)=> sc.Id == 1)
-.Where((st,sc) => st.Id == 1)
-.Where((st, sc) => st.Id == 1 && sc.Id == 2).ToList();
-
-//SELECT [st].[Id],[st].[SchoolId],[st].[Name],[st].[CreateTime] FROM [Student] st 
-//Left JOIN School sc ON ( [st].[SchoolId] = [sc].[Id] )   
-//WHERE ( [sc].[Id] = @Id0 )  AND ( [st].[Id] = @Id1 )  AND (( [st].[Id] = @Id2 ) AND ( [sc].[Id] = @Id3 ))
-
-//Where If
-string name = null;
-string name2 = "sunkaixuan";
-var list2 = db.Queryable<Student>()
-.WhereIF(!string.IsNullOrEmpty(name), it => it.Name == name)
-.WhereIF(!string.IsNullOrEmpty(name2), it => it.Name == name2).ToList();
-```
 
  
 ##  2. Insert
