@@ -145,7 +145,7 @@ var t10 = db.Updateable<Student>()
  .UpdateColumns(it => new Student() { Name="a",CreateTime=DateTime.Now })
  .Where(it => it.Id == 11).ExecuteCommand();
  ```
- 
+ [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/2.Updateable) 
 
  
 ##  3. Insertable
@@ -182,6 +182,7 @@ var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, true/*off ide
 //Insert List<T>
 var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteCommand();
 ```
+ [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/3.Insertable) 
 ##  4. Deleteable
 We use it to Delete
 
