@@ -238,7 +238,7 @@ var list2 = db.SqlQueryable<Student>("select * from student").Where(it=>it.Id==1
 var list3= db.SqlQueryable<Student>("select * from student").Where("id=@id",new { id=1}).ToPageList(1, 2);
 ``` 
  
-  ##  5. Queue
+  ##  6. Queue
   Perform multiple operations together with transactions
 ```cs
 var db = GetInstance();
@@ -258,7 +258,7 @@ db.AddQueue("select * from student where id=@id", new { id = 1 });
 var result2 = db.SaveQueues<Student, School, Student>();  
 ```
 
-##  6.ADO
+##  7.ADO
 db.Ado.MethodName，Look at the following example
 ```cs
 var dt=db.Ado.GetDataTable("select * from table where id=@id and name=@name",new List<SugarParameter>(){
@@ -274,7 +274,7 @@ var ageP= new SugarParameter("@age", null, true);//isOutput=true
 var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",nameP,ageP);
 ```
  
- ##  7.Saveable
+ ##  8.Saveable
  Insert or Update
 ```cs
 db.Saveable<Student>(entity).ExecuteReturnEntity();
