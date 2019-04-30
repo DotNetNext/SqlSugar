@@ -53,8 +53,10 @@
     <Compile Include="BugTest\BugModels\AccountsModel.cs" />
     <Compile Include="BugTest\BugModels\ClientsModel.cs" />
     <Compile Include="BugTest\BugModels\ExposureModel.cs" />
+    <Compile Include="BugTest\BugModels\h5linkpassloginfo.cs" />
     <Compile Include="BugTest\BugModels\JewelsModel.cs" />
     <Compile Include="BugTest\BugModels\LevelSettingModel.cs" />
+    <Compile Include="BugTest\BugModels\logtype.cs" />
     <Compile Include="BugTest\BugModels\tLogonHistoryModel.cs" />
     <Compile Include="BugTest\BugModels\VipAccountsModel.cs" />
     <Compile Include="BugTest\BugModels\VipBenefitsModel.cs" />

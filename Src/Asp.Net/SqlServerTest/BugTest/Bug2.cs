@@ -1,5 +1,6 @@
 ﻿using OrmTest.Models;
 using SqlSugar;
+using sugarentity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -174,6 +175,13 @@ namespace OrmTest.BugTest
            AbleQty = ts.FQty - SqlFunc.Subqueryable<TTempStock>().Where(s => s.FMICode == vmg.FMICode && s.FK_Store == "")
           .Select(s => SqlFunc.AggregateSum(s.FKCSL))
        }).ToList();
+            DB.CodeFirst.InitTables<h5linkpassloginfo, logtype>();
+            DB.Updateable<h5linkpassloginfo>().UpdateColumns(it =>
+            new h5linkpassloginfo()
+            {
+                LogKeyId = SqlFunc.Subqueryable<logtype>().Where(s => s.LogKey == "openpage").Select(s => s.Id),
+                StrVal = "sdsdsdsd"
+            }).Where(it => it.Id == 1).ExecuteCommand();
         }
     }
     /// <summary>
