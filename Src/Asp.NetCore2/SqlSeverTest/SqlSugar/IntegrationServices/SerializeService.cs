@@ -26,7 +26,7 @@ namespace SqlSugar
     }
     public class MyContractResolver : Newtonsoft.Json.Serialization.DefaultContractResolver
     {
- 
+
 
         public MyContractResolver()
         {
@@ -35,24 +35,31 @@ namespace SqlSugar
 
         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {
-            var list = type.GetProperties()
-                        .Where(x => !x.GetCustomAttributes(true).Any(a => (a is SugarColumn) && ((SugarColumn)a).NoSerialize == true))
-                        .Select(p => new JsonProperty()
-                        {
-                            PropertyName = p.Name,
-                            PropertyType = p.PropertyType,
-                            Readable = true,
-                            Writable = true,
-                            ValueProvider = base.CreateMemberValueProvider(p)
-                        }).ToList();
-            foreach (var item in list)
+            if (type.IsAnonymousType()||type==UtilConstants.ObjType|| type.Namespace=="SqlSugar"|| type.IsClass()==false)
             {
-                if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.DateType)
-                {
-                    CreateDateProperty(type, item);
-                }
+                return base.CreateProperties(type, memberSerialization);
             }
-            return list;
+            else
+            {
+                var list = type.GetProperties()
+                            .Where(x => !x.GetCustomAttributes(true).Any(a => (a is SugarColumn) && ((SugarColumn)a).NoSerialize == true))
+                            .Select(p => new JsonProperty()
+                            {
+                                PropertyName = p.Name,
+                                PropertyType = p.PropertyType,
+                                Readable = true,
+                                Writable = true,
+                                ValueProvider = base.CreateMemberValueProvider(p)
+                            }).ToList();
+                foreach (var item in list)
+                {
+                    if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.DateType)
+                    {
+                        CreateDateProperty(type, item);
+                    }
+                }
+                return list;
+            }
         }
 
         private static void CreateDateProperty(Type type, JsonProperty item)
@@ -66,5 +73,5 @@ namespace SqlSugar
             }
         }
     }
-     
+
 }
