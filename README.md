@@ -22,7 +22,7 @@ Install-Package sqlSugarCore
 ## SqlSugar's 16 Functions
 There are 16 methods under SqlSugarClient
 
-![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190429/6369214497126656989458119.jpg "")
+![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190430/6369223946377830541921551.jpg "")
 
  
 
