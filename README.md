@@ -65,7 +65,7 @@ public class Student
     public string Name { get; set; }
 }
 ```
- 
+  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/0.SqlSugarClient) 
  
 
 ##  1. Queryable
