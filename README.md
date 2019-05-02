@@ -72,7 +72,9 @@ public class Student
 
 ##  1. Queryable
 We use it to query
+ ![输入图片说明](http://www.codeisbug.com//_theme/ueditor/utf8-net/net/upload/image/20190502/6369238766540525626385866.png "Queryable")
  
+##### Here are some examples
 ```cs
 //easy
 var getAll = db.Queryable<Student>().ToList();
