@@ -340,7 +340,9 @@ db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(Co
   ```cs
 var list = db.Utilities.DataTableToList(datatable);
   ```
-    [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities ) 
+  
+[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities ) 
+
 
   ##  16.SimpleClient
 ```cs
@@ -351,7 +353,9 @@ sdb.GetList();
 sdb.DeleteById(1);
 sdb.Update(obj);
  ```
-     [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.Utilities ) 
+ 
+ 
+ [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.Utilities ) 
   
 
 # Code generator
