@@ -27,14 +27,13 @@ namespace OrmTest.Demo
 
             //Only  update  Name 
             var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
-            var t3_1 = db.Updateable(updateObj).UpdateColumns(it => it == "Name").ExecuteCommand();
+            var t3_1 = db.Updateable(updateObj).UpdateColumns("Name").ExecuteCommand();
 
 
             //Ignore  Name and TestId
             var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteCommand();
-
             //Ignore  Name and TestId
-            var t5 = db.Updateable(updateObj).IgnoreColumns(it => it == "Name" || it == "TestId").With(SqlWith.UpdLock).ExecuteCommand();
+            var t5 = db.Updateable(updateObj).IgnoreColumns("Name","TestId").ExecuteCommand();
 
 
             //Use Lock
@@ -46,6 +45,12 @@ namespace OrmTest.Demo
             //Re Set Value
             var t8 = db.Updateable(updateObj)
                 .ReSetValue(it => it.Name == (it.Name + 1)).ExecuteCommand();
+            var t88 = db.Updateable(updateObj)
+            .SetColumns(it => it.Name == (it.Name + 1)).ExecuteCommand();
+
+            var t888 = db.Updateable(updateObj).SetColumns(it =>new Student() {  Name="", CreateTime=DateTime.Now }).ExecuteCommand();
+
+            var t8888 = db.Updateable(updateObj).SetColumns(it => new Student() { Name = "", CreateTime = DateTime.Now }).Where(it=>it.Id==1).ExecuteCommand();
 
             //Where By Expression
             var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();

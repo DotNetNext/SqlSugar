@@ -638,13 +638,13 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>(Expression<Func<T, T>> columns) where T : class, new()
         {
-            var result = this.Context.Updateable<T>().UpdateColumns(columns);
+            var result = this.Context.Updateable<T>().SetColumns(columns);
             result.UpdateParameterIsNull = true;
             return result;
         }
         public virtual IUpdateable<T> Updateable<T>(Expression<Func<T, bool>> columns) where T : class, new()
         {
-            var result = this.Context.Updateable<T>().UpdateColumns(columns);
+            var result = this.Context.Updateable<T>().SetColumns(columns);
             result.UpdateParameterIsNull = true;
             return result;
         }
@@ -656,7 +656,7 @@ namespace SqlSugar
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Updateable.columnDictionary can't be null");
             var updateObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
-            return this.Context.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+            return this.Context.Updateable(updateObject).UpdateColumns(columns.ToArray()); ;
         }
         public virtual IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
         {
@@ -670,7 +670,7 @@ namespace SqlSugar
                 var columns = ((object)updateDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
                 Check.Exception(columns.IsNullOrEmpty(), "Updateable.updateDynamicObject can't be null");
                 T updateObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(updateDynamicObject));
-                return this.Context.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+                return this.Context.Updateable(updateObject).UpdateColumns(columns.ToArray()); ;
             }
         }
         #endregion
