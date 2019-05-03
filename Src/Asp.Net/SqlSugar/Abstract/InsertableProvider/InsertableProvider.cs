@@ -204,9 +204,11 @@ namespace SqlSugar
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Any(ig => ig.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))).ToList();
             return this;
         }
-        public IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
+        public IInsertable<T> IgnoreColumns(params string[] columns)
         {
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
+            if (columns == null)
+                columns = new string[] { };
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !columns.Any(ig => ig.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase))).ToList();
             return this;
         }
 
@@ -223,25 +225,17 @@ namespace SqlSugar
             return this;
         }
 
-        public IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod)
-        {
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => insertColumMethod(it.PropertyName)).ToList();
-            return this;
-        }
-
         public IInsertable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 this.InsertBuilder.TableWithString = lockString;
             return this;
         }
-
-        public IInsertable<T> Where(bool isNoInsertNull, bool isOffIdentity = false)
-        {
+        public IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false) {
             this.IsOffIdentity = isOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
-            this.InsertBuilder.IsNoInsertNull = isNoInsertNull;
+            this.InsertBuilder.IsNoInsertNull = ignoreNullColumn;
             return this;
         }
 
@@ -566,6 +560,26 @@ namespace SqlSugar
                 return new List<DiffLogTableInfo>() { diffTable };
             }
 
+        }
+        #endregion
+
+        #region Obsolete
+        [Obsolete]
+        public IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod)
+        {
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => insertColumMethod(it.PropertyName)).ToList();
+            return this;
+        }
+        [Obsolete]
+        public IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
+        {
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
+            return this;
+        }
+        [Obsolete]
+        public IInsertable<T> Where(bool ignoreNullColumn, bool isOffIdentity = false)
+        {
+            return IgnoreColumns(ignoreNullColumn, isOffIdentity);
         }
         #endregion
     }

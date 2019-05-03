@@ -30,7 +30,7 @@ namespace OrmTest.Demo
 
             //Only  insert  Name and SchoolId
             var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.SchoolId }).ExecuteReturnIdentity();
-            var t4_1 = db.Insertable(insertObj).InsertColumns(it => it=="Name"||it== "SchoolId").ExecuteReturnIdentity();
+            var t4_1 = db.Insertable(insertObj).InsertColumns("Name","SchoolId").ExecuteReturnIdentity();
 
 
             //Ignore TestId
@@ -38,7 +38,7 @@ namespace OrmTest.Demo
 
 
             //Ignore   TestId
-            var t6 = db.Insertable(insertObj).IgnoreColumns(it => it == "Name" || it == "TestId").ExecuteReturnIdentity();
+            var t6 = db.Insertable(insertObj).IgnoreColumns( "Name","TestId").ExecuteReturnIdentity();
 
 
             //Use Lock
@@ -46,7 +46,7 @@ namespace OrmTest.Demo
 
 
             var insertObj2 = new Student() { Name = null, CreateTime = Convert.ToDateTime("2010-1-1") };
-            var t9 = db.Insertable(insertObj2).Where(true/* Is insert null */, false/*off identity*/).ExecuteCommand();
+            var t9 = db.Insertable(insertObj2).IgnoreColumns(ignoreNullColumn:true).ExecuteCommand();
 
             //Insert List<T>
             var insertObjs = new List<Student>();

@@ -23,14 +23,26 @@ namespace SqlSugar
         IInsertable<T> AS(string tableName);
         IInsertable<T> With(string lockString);
         IInsertable<T> InsertColumns(Expression<Func<T, object>> columns);
-        IInsertable<T> InsertColumns(string[] columns);
-        IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod);
+        IInsertable<T> InsertColumns(params string[] columns);
+
         IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);
-        IInsertable<T> IgnoreColumns(Func<string,bool> ignoreColumMethod);
-        IInsertable<T> Where(bool isInsertNull, bool isOffIdentity = false);
+        IInsertable<T> IgnoreColumns(params string[]columns);
+        IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false);
+
+
         IInsertable<T> EnableDiffLogEvent(object businessData = null);
         IInsertable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
         void AddQueue();
+
+        #region Obsolete
+        [Obsolete("use IgnoreColumns(string[] columns")]
+
+        IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
+        [Obsolete("use InsertColumns(string[] columns")]
+        IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod); 
+        [Obsolete("use IgnoreColumns(bool isNoInsertNull, bool isOffIdentity = false)")]
+        IInsertable<T> Where(bool ignoreNullColumn, bool isOffIdentity = false);
+        #endregion
     }
 }
