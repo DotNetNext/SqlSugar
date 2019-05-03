@@ -355,7 +355,7 @@ sdb.Update(obj);
  ```
  
  
- [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.Utilities ) 
+ [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.SimpleClient ) 
   
 
 # Code generator
