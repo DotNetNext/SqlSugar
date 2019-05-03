@@ -125,7 +125,7 @@ var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }
 var t7 = db.Updateable(updateObjs).ExecuteCommand();
 
 //Where By Expression
-var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
+var t9 = db.Updateable(it=>new class() { name="a",createtime=p }).Where(it => it.Id == 1).ExecuteCommand();
 
  ```
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/2.Updateable) 
