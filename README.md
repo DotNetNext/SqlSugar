@@ -155,20 +155,17 @@ var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteC
 We use it to Delete
 
  ```cs
-var t1 = db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
-
-//use lock
-var t2 = db.Deleteable<Student>().With(SqlWith.RowLock).ExecuteCommand();
-
+ //by entity
+db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
 
 //by primary key
-var t3 = db.Deleteable<Student>().In(1).ExecuteCommand();
+db.Deleteable<Student>().In(1).ExecuteCommand();
 
 //by primary key array
-var t4 = db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
+db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
 
 //by expression
-var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
+db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
 
  ```
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/4.Deleteable ) 
