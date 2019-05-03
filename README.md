@@ -27,6 +27,8 @@ There are 16 methods under SqlSugarClient
 
 ## Create SqlSugarClient
 All operations are based on SqlSugarClient
+
+SqlSugarClient parameter and only one ConnectionConfig
 ```cs
 public  List<Student> GetStudentList()
 {
@@ -65,12 +67,14 @@ public class Student
     public string Name { get; set; }
 }
 ```
- 
+  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/0.SqlSugarClient) 
  
 
 ##  1. Queryable
 We use it to query
+ ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=1 "Queryable")
  
+##### Here are some examples
 ```cs
 //easy
 var getAll = db.Queryable<Student>().ToList();
