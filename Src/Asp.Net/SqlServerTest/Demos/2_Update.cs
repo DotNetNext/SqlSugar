@@ -21,6 +21,9 @@ namespace OrmTest.Demo
 
             //update reutrn Update Count
             var t1 = db.Updateable(updateObj).ExecuteCommand();
+            var t11 = db.Updateable<Student>(it => new Student() { Name = "a", CreateTime = DateTime.Now }).Where(it => it.Id == 11).ExecuteCommand();
+            var t111= db.Updateable<Student>(it => it.Name == "Name").Where(it => it.Id == 1).ExecuteCommand();
+
 
             //Only  update  Name 
             var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();

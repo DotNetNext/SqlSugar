@@ -636,6 +636,20 @@ namespace SqlSugar
             result.UpdateParameterIsNull = true;
             return result;
         }
+        public virtual IUpdateable<T> Updateable<T>(Expression<Func<T, T>> columns) where T : class, new()
+        {
+            var result = this.Context.Updateable<T>().UpdateColumns(columns);
+            result.UpdateParameterIsNull = true;
+            return result;
+        }
+        public virtual IUpdateable<T> Updateable<T>(Expression<Func<T, bool>> columns) where T : class, new()
+        {
+            var result = this.Context.Updateable<T>().UpdateColumns(columns);
+            result.UpdateParameterIsNull = true;
+            return result;
+        }
+  
+
         public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             InitMppingInfo<T>();
