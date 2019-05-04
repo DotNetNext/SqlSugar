@@ -556,7 +556,7 @@ namespace SqlSugar
             Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Insertable.columnDictionary can't be null");
             var insertObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(columnDictionary));
             var columns = columnDictionary.Select(it => it.Key).ToList();
-            return this.Context.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+            return this.Context.Insertable(insertObject).InsertColumns(columns.ToArray()); ;
         }
         public virtual IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
@@ -570,7 +570,7 @@ namespace SqlSugar
                 var columns = ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
                 Check.Exception(columns.IsNullOrEmpty(), "Insertable.updateDynamicObject can't be null");
                 T insertObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(insertDynamicObject));
-                return this.Context.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase)));
+                return this.Context.Insertable(insertObject).InsertColumns(columns.ToArray());
             }
         }
         #endregion
