@@ -102,7 +102,7 @@ namespace SqlSugar
         }
         public bool Update<T>(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression) where T : class, new()
         {
-            return this.Context.Updateable<T>().UpdateColumns(columns).Where(whereExpression).ExecuteCommand() > 0;
+            return this.Context.Updateable<T>(columns).Where(whereExpression).ExecuteCommand() > 0;
         }
         public bool Delete<T>(T deleteObj) where T : class, new()
         {
