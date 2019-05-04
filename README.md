@@ -1,5 +1,7 @@
 # SqlSugar 4.X  API
 
+Using SqlSugar is very simple.
+one object,one parameter,16 functions
 In addition to EF, the most powerful ORM
 
 Support：MySql、SqlServer、Sqlite、Oracle、postgresql
