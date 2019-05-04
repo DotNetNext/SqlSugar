@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -11,52 +12,72 @@ namespace SqlSugar
     public class SqlSugarClient : ISqlSugarClient
     {
         private ISqlSugarClient _Context = null;
+        private string ThreadId;
+        private ConnectionConfig _CurrentConnectionConfig;
+        private List<SugarTerant> _allClients;
 
-        public ISqlSugarClient Context { get => _Context; set => _Context = value; }
+        public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
 
         public SqlSugarClient(ConnectionConfig config)
         {
-            _Context = new SqlSugarContext(config);
-            Init();
+            Check.Exception(config == null, "ConnectionConfig config is null");
+            InitContext(config);
         }
 
-        //public SqlSugarClient(List<ConnectionConfig> config)
-        //{
+        public SqlSugarClient(List<ConnectionConfig> configs)
+        {
+            Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null");
+            InitConfigs(configs);
+            var config = configs.First();
+            InitContext(config);
+            _allClients = configs.Select(it => new SugarTerant() { ConnectionConfig = it }).ToList(); ;
+            _allClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
+        }
 
-        //}
 
+        public void ChangeDatabase(string configId)
+        {
+            Check.Exception(!_allClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
+            InitTerant(_allClients.First(it => it.ConnectionConfig.ConfigId == configId));
+        }
+        public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
+        {
+            var allConfigs = _allClients.Select(it => it.ConnectionConfig);
+            Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
+            InitContext(allConfigs.First(changeExpression));
+        }
 
-        public IAdo Ado =>this.Context.Ado;
+        public IAdo Ado => this.Context.Ado;
 
         public AopProvider Aop => this.Context.Aop;
 
         public ICodeFirst CodeFirst => this.Context.CodeFirst;
 
         public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
-        public ConnectionConfig CurrentConnectionConfig { get => this.Context.CurrentConnectionConfig; set => this.Context.CurrentConnectionConfig=value; }
+        public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
 
         public IDbFirst DbFirst => this.Context.DbFirst;
 
-        public IDbMaintenance DbMaintenance =>this.Context.DbMaintenance;
+        public IDbMaintenance DbMaintenance => this.Context.DbMaintenance;
 
-        public EntityMaintenance EntityMaintenance { get =>this.Context.EntityMaintenance; set =>this.Context.EntityMaintenance=value; }
+        public EntityMaintenance EntityMaintenance { get => this.Context.EntityMaintenance; set => this.Context.EntityMaintenance = value; }
         [Obsolete]
-        public EntityMaintenance EntityProvider { get =>this.Context.EntityProvider ; set =>this.Context.EntityProvider=value; }
+        public EntityMaintenance EntityProvider { get => this.Context.EntityProvider; set => this.Context.EntityProvider = value; }
 
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
 
         public QueryFilterProvider QueryFilter { get => this.Context.QueryFilter; set => this.Context.QueryFilter = value; }
         [Obsolete]
-        public IContextMethods RewritableMethods { get => this.Context.RewritableMethods; set =>this.Context.RewritableMethods=value; }
+        public IContextMethods RewritableMethods { get => this.Context.RewritableMethods; set => this.Context.RewritableMethods = value; }
         [Obsolete]
         public SimpleClient SimpleClient => this.Context.SimpleClient;
 
-        public Dictionary<string, object> TempItems { get => this.Context.TempItems; set =>this.Context.TempItems=value; }
+        public Dictionary<string, object> TempItems { get => this.Context.TempItems; set => this.Context.TempItems = value; }
         public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
-        public MappingTableList MappingTables { get =>this.Context.MappingTables ; set => this.Context.MappingTables = value; }
+        public MappingTableList MappingTables { get => this.Context.MappingTables; set => this.Context.MappingTables = value; }
         public MappingColumnList MappingColumns { get => this.Context.MappingColumns; set => this.Context.MappingColumns = value; }
         public IgnoreColumnList IgnoreColumns { get => this.Context.IgnoreColumns; set => this.Context.IgnoreColumns = value; }
-        public IgnoreColumnList IgnoreInsertColumns { get =>this.Context.IgnoreInsertColumns; set => this.Context.IgnoreInsertColumns=value; }
+        public IgnoreColumnList IgnoreInsertColumns { get => this.Context.IgnoreInsertColumns; set => this.Context.IgnoreInsertColumns = value; }
         public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
 
         public void AddQueue(string sql, object parsmeters = null)
@@ -343,14 +364,14 @@ namespace SqlSugar
             where T : class, new()
             where T2 : class, new()
         {
-            return this.Context.Queryable(joinQueryable1,joinQueryable2,joinExpression);
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinExpression);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression)
             where T : class, new()
             where T2 : class, new()
         {
-            return this.Context.Queryable(joinQueryable1, joinQueryable2,joinType, joinExpression);
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinType, joinExpression);
         }
 
         public ISugarQueryable<T> Queryable<T>()
@@ -375,7 +396,7 @@ namespace SqlSugar
 
         public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
         {
-            return  this.Context.Saveable(saveObject);
+            return this.Context.Saveable(saveObject);
         }
 
         public int SaveQueues(bool isTran = true)
@@ -440,7 +461,7 @@ namespace SqlSugar
 
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
         {
-            return this.Context.SaveQueuesAsync < T, T2, T3, T4 > (isTran);
+            return this.Context.SaveQueuesAsync<T, T2, T3, T4>(isTran);
         }
 
         public Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
@@ -522,8 +543,46 @@ namespace SqlSugar
         {
             return this.Context.Updateable<T>(UpdateObjs);
         }
-        private void Init()
+
+
+        private ISqlSugarClient GetContext()
         {
+            if (CurrentConnectionConfig.IsShardSameThread)
+            {
+                var result = _Context;
+                if (CallContext.ContextList.Value.IsNullOrEmpty())
+                {
+                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
+                    CallContext.ContextList.Value.Add(_Context);
+                }
+                else
+                {
+                    var cacheContext = CallContext.ContextList.Value.FirstOrDefault(it =>
+                     it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString &&
+                     it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType &&
+                     it.CurrentConnectionConfig.IsAutoCloseConnection == _Context.CurrentConnectionConfig.IsAutoCloseConnection &&
+                     it.CurrentConnectionConfig.IsShardSameThread == _Context.CurrentConnectionConfig.IsShardSameThread);
+                    if (cacheContext != null)
+                    {
+                        return cacheContext;
+                    }
+                }
+                return result;
+            }
+            else if (ThreadId == Thread.CurrentThread.ManagedThreadId.ToString())
+            {
+                return _Context;
+            }
+            else
+            {
+                return new SqlSugarClient(this.CurrentConnectionConfig);
+            }
+        }
+        private void InitContext(ConnectionConfig config)
+        {
+            _Context = new SqlSugarContext(config);
+            this.CurrentConnectionConfig = config;
+            ThreadId = Thread.CurrentThread.ManagedThreadId.ToString();
             if (this.MappingTables == null)
             {
                 this.MappingTables = new MappingTableList();
@@ -544,6 +603,25 @@ namespace SqlSugar
             {
                 this.Queues = new QueueList();
             }
+        }
+        private void InitConfigs(List<ConnectionConfig> configs)
+        {
+            foreach (var item in configs)
+            {
+                if (item.ConfigId == null)
+                {
+                    item.ConfigId = Guid.NewGuid().ToString();
+                }
+            }
+        }
+        private void InitTerant(SugarTerant terant)
+        {
+            if (terant.Context == null)
+            {
+                terant.Context = new SqlSugarClient(terant.ConnectionConfig);
+            }
+            _Context = terant.Context;
+            this.CurrentConnectionConfig = terant.ConnectionConfig;
         }
     }
 }

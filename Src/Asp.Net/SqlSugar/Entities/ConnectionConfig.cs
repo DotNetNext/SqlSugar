@@ -10,6 +10,10 @@ namespace SqlSugar
     public class ConnectionConfig
     {
         /// <summary>
+        /// 
+        /// </summary>
+        public string ConfigId { get; set; }
+        /// <summary>
         ///DbType.SqlServer Or Other
         /// </summary>
         public DbType DbType { get; set; }
