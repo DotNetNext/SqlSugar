@@ -6,7 +6,7 @@ namespace SqlSugar
 {
     public partial interface IDbMaintenance
     {
-        SqlSugarClient Context { get; set; }
+        SqlSugarContext Context { get; set; }
 
         #region DML
         List<DbTableInfo> GetViewInfoList(bool isCache=true);

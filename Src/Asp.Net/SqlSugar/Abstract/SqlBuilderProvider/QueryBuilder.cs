@@ -27,7 +27,7 @@ namespace SqlSugar
 
         #region Service object
         public StringBuilder sql { get; set; }
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarContext Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public ISqlBuilder Builder { get; set; }
         #endregion

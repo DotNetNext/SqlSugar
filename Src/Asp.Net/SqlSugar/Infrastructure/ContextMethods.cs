@@ -11,7 +11,7 @@ namespace SqlSugar
 {
     public partial class ContextMethods : IContextMethods
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarContext Context { get; set; }
         #region DataReader
 
         /// <summary>
@@ -268,9 +268,9 @@ namespace SqlSugar
                 return DeserializeObject<T>(jsonString);
             }
         }
-        public SqlSugarClient CopyContext(bool isCopyEvents = false)
+        public SqlSugarContext CopyContext(bool isCopyEvents = false)
         {
-            var newClient = new SqlSugarClient(this.TranslateCopy(Context.CurrentConnectionConfig));
+            var newClient = new SqlSugarContext(this.TranslateCopy(Context.CurrentConnectionConfig));
             newClient.CurrentConnectionConfig.ConfigureExternalServices = Context.CurrentConnectionConfig.ConfigureExternalServices;
             newClient.MappingColumns = this.TranslateCopy(Context.MappingColumns);
             newClient.MappingTables = this.TranslateCopy(Context.MappingTables);

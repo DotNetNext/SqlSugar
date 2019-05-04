@@ -128,6 +128,7 @@
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
     <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
     <Compile Include="IntegrationServices\SerializeService.cs" />
+    <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
@@ -275,7 +276,7 @@
     <Compile Include="Interface\IUpdateable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infrastructure\SqlSugarAccessory.cs" />
-    <Compile Include="SqlSugarClient.cs" />
+    <Compile Include="SqlSugarContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="References\MySql.Data.dll" />

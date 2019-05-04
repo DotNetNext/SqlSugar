@@ -8,14 +8,14 @@ namespace SqlSugar
 {
     public partial class SimpleClient
     {
-        protected SqlSugarClient Context { get; set; }
-        public SqlSugarClient FullClient { get { return this.Context; } }
+        protected SqlSugarContext Context { get; set; }
+        public SqlSugarContext FullClient { get { return this.Context; } }
 
         private SimpleClient()
         {
 
         }
-        public SimpleClient(SqlSugarClient context)
+        public SimpleClient(SqlSugarContext context)
         {
             this.Context = context;
         }
@@ -123,14 +123,14 @@ namespace SqlSugar
     }
     public partial class SimpleClient<T> where T : class, new()
     {
-        protected SqlSugarClient Context { get; set; }
-        public SqlSugarClient FullClient { get { return this.Context; } }
+        protected SqlSugarContext Context { get; set; }
+        public SqlSugarContext FullClient { get { return this.Context; } }
 
         private SimpleClient()
         {
 
         }
-        public SimpleClient(SqlSugarClient context)
+        public SimpleClient(SqlSugarContext context)
         {
             this.Context = context;
         }

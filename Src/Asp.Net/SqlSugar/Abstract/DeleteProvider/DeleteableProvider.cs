@@ -12,7 +12,7 @@ namespace SqlSugar
 {
     public class DeleteableProvider<T> : IDeleteable<T> where T : class, new()
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarContext Context { get; set; }
         public IAdo Db { get { return Context.Ado; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }

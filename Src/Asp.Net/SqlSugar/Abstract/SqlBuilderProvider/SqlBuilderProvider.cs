@@ -10,7 +10,7 @@ namespace SqlSugar
     public abstract partial class SqlBuilderProvider : SqlBuilderAccessory, ISqlBuilder
     {
         #region Properties
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarContext Context { get; set; }
         public CommandType CommandType { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }
         public InsertBuilder InsertBuilder { get; set; }

@@ -6,7 +6,7 @@ namespace SqlSugar
 {
     public partial interface IDbFirst
     {
-        SqlSugarClient Context { get; set; }
+        SqlSugarContext Context { get; set; }
         IDbFirst SettingClassTemplate(Func<string, string> func);
         IDbFirst SettingClassDescriptionTemplate(Func<string, string> func);
         IDbFirst SettingPropertyTemplate(Func<string, string> func);

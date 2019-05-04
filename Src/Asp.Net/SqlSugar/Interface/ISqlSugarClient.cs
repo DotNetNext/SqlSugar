@@ -11,7 +11,7 @@ namespace SqlSugar
         IAdo Ado { get; }
         AopProvider Aop { get; }
         ICodeFirst CodeFirst { get; }
-        SqlSugarClient Context { get; set; }
+        ISqlSugarClient Context { get; set; }
         Guid ContextID { get; set; }
         ConnectionConfig CurrentConnectionConfig { get; set; }
         IDbFirst DbFirst { get; }

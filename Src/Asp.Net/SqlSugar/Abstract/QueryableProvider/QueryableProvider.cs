@@ -16,7 +16,7 @@ namespace SqlSugar
     #region T1
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarContext Context { get; set; }
         public IAdo Db { get { return Context.Ado; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
@@ -1597,7 +1597,7 @@ namespace SqlSugar
                     foreach (var item in result)
                     {
                         var contextProperty = item.GetType().GetProperty("Context");
-                        SqlSugarClient newClient = this.Context.Utilities.CopyContext();
+                        SqlSugarContext newClient = this.Context.Utilities.CopyContext();
                         contextProperty.SetValue(item, newClient, null);
                     }
                 }

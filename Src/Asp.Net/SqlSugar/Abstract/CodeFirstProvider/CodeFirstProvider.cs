@@ -8,7 +8,7 @@ namespace SqlSugar
     public partial class CodeFirstProvider : ICodeFirst
     {
         #region Properties
-        public virtual SqlSugarClient Context { get; set; }
+        public virtual SqlSugarContext Context { get; set; }
         protected bool IsBackupTable { get; set; }
         protected int MaxBackupDataRows { get; set; }
         protected virtual int DefultLength { get; set; }

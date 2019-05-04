@@ -9,7 +9,7 @@ namespace SqlSugar
 {
     public abstract partial class DbFirstProvider : IDbFirst
     {
-        public virtual SqlSugarClient Context { get; set; }
+        public virtual SqlSugarContext Context { get; set; }
         private string ClassTemplate { get; set; }
         private string ClassDescriptionTemplate { get; set; }
         private string PropertyTemplate { get; set; }

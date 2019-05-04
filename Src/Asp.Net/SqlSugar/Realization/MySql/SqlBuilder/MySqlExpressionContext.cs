@@ -4,7 +4,7 @@ namespace SqlSugar
 {
     public class MySqlExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarContext Context { get; set; }
         public MySqlExpressionContext()
         {
             base.DbMehtods = new MySqlMethod();

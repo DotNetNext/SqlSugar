@@ -9,11 +9,11 @@ namespace SqlSugar
     {
         private Dictionary<string, object> caches = new Dictionary<string, object>();
         private List<T> _list { get; set; }
-        private SqlSugarClient _context { get; set; }
+        private SqlSugarContext _context { get; set; }
         private MapperCache()
         {
         }
-        public MapperCache(List<T> list, SqlSugarClient context)
+        public MapperCache(List<T> list, SqlSugarContext context)
         {
             _list = list;
             _context = context;

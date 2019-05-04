@@ -10,7 +10,7 @@ namespace SqlSugar
 {
     public partial interface ISqlBuilder
     {
-        SqlSugarClient Context { get; set; }
+        SqlSugarContext Context { get; set; }
         CommandType CommandType { get; set; }
         String AppendWhereOrAnd(bool isWhere, string sqlString);
         string AppendHaving(string sqlString);

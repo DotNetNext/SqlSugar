@@ -22,7 +22,7 @@ namespace SqlSugar
         #endregion
 
         #region Fields
-        private SqlSugarClient Context = null;
+        private SqlSugarContext Context = null;
         private IDataReaderEntityBuilder<T> DynamicBuilder;
         private IDataRecord DataRecord;
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
@@ -65,7 +65,7 @@ namespace SqlSugar
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
         private static readonly MethodInfo getSqliteTypeNull = typeof(IDataRecordExtensions).GetMethod("GetSqliteTypeNull");
         private static readonly MethodInfo getSqliteType = typeof(IDataRecordExtensions).GetMethod("GetSqliteType");
-        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarClient) });
+        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarContext) });
 
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
@@ -77,7 +77,7 @@ namespace SqlSugar
 
         }
 
-        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord,List<string> fieldNames)
+        public IDataReaderEntityBuilder(SqlSugarContext context, IDataRecord dataRecord,List<string> fieldNames)
         {
             this.Context = context;
             this.DataRecord = dataRecord;

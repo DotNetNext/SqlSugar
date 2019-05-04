@@ -42,6 +42,6 @@ namespace SqlSugar
         internal static Type DicArraySS = typeof(Dictionary<string, string>);
         internal static Type DicArraySO = typeof(Dictionary<string, object>);
 
-        public static Type SugarType = typeof(SqlSugarClient);
+        public static Type SugarType = typeof(SqlSugarContext);
     }
 }

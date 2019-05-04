@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public partial class SqlSugarClient
+    public partial class SqlSugarContext
     {
         #region Properties
-        public SqlSugarClient Context
+        public SqlSugarContext Context
         {
             get
             {
@@ -19,7 +19,7 @@ namespace SqlSugar
                 {
                     if (CallContext.ContextList.Value.IsNullOrEmpty())
                     {
-                        CallContext.ContextList.Value = new List<SqlSugarClient>();
+                        CallContext.ContextList.Value = new List<SqlSugarContext>();
                         CallContext.ContextList.Value.Add(_Context);
                     }
                     else
@@ -55,7 +55,7 @@ namespace SqlSugar
 
         #region Fields
         protected ISqlBuilder _SqlBuilder;
-        protected SqlSugarClient _Context { get; set; }
+        protected SqlSugarContext _Context { get; set; }
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
