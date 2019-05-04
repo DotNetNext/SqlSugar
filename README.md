@@ -1,10 +1,9 @@
 # SqlSugar 4.X  API
 
-Using SqlSugar is very simple.
-one object,one parameter,16 functions
+Using SqlSugar is very simple ,And it's powerful.
+SqlSugar=One object+One parameter=16 functions,
 
-Support：MySql、SqlServer、Sqlite、Oracle and postgresql,In addition to EF, the most powerful ORM
-
+Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 
 ## Contactinfomation  
 Email:610262374@qq.com 
 QQ Group:225982985
