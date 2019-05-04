@@ -125,7 +125,7 @@ var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }
 var t7 = db.Updateable(updateObjs).ExecuteCommand();
 
 //Where By Expression
-var t9 = db.Updateable(updateObj).Where(it => it.Id == 1).ExecuteCommand();
+var t9 = db.Updateable(it=>new class() { name="a",createtime=p }).Where(it => it.Id == 1).ExecuteCommand();
 
  ```
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/2.Updateable) 
@@ -155,21 +155,20 @@ var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteC
 We use it to Delete
 
  ```cs
-var t1 = db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
-
-//use lock
-var t2 = db.Deleteable<Student>().With(SqlWith.RowLock).ExecuteCommand();
-
+ //by entity
+db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
 
 //by primary key
-var t3 = db.Deleteable<Student>().In(1).ExecuteCommand();
+db.Deleteable<Student>().In(1).ExecuteCommand();
 
 //by primary key array
-var t4 = db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
+db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
 
 //by expression
-var t5 = db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
+db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
+
  ```
+ [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/4.Deleteable ) 
 
 
  ##  5. SqlQueryable
@@ -178,6 +177,7 @@ var list = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
 var list2 = db.SqlQueryable<Student>("select * from student").Where(it=>it.Id==1).ToPageList(1, 2);
 var list3= db.SqlQueryable<Student>("select * from student").Where("id=@id",new { id=1}).ToPageList(1, 2);
 ``` 
+[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/5.SqlQueryable ) 
  
   ##  6. SaveQueues
   Perform multiple operations together with transactions
@@ -198,6 +198,8 @@ db.Queryable<School>().AddQueue();
 db.AddQueue("select * from student where id=@id", new { id = 1 }); 
 var result2 = db.SaveQueues<Student, School, Student>();  
 ```
+[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/6.queue ) 
+
 
 ##  7.Ado
 db.Ado.MethodName，Look at the following example
@@ -214,6 +216,7 @@ var nameP= new SugarParameter("@name", "张三");
 var ageP= new SugarParameter("@age", null, true);//isOutput=true
 var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",nameP,ageP);
 ```
+ [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/7.ado ) 
  
  ##  8.Saveable
  Insert or Update
@@ -225,6 +228,7 @@ db.Saveable<Student>(new Student() { Name = "" })
                   .ExecuteReturnEntity();
 
 ```
+[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/8.saveable ) 
  
   ##  9.EntityMain
   ```cs
@@ -234,6 +238,8 @@ foreach (var column in entityInfo.Columns)
     Console.WriteLine(column.ColumnDescription);
 }
 ```
+[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/9.entityMain ) 
+
   ##  10.DbMain
    ```cs
   var tables = db.DbMaintenance.GetTableInfoList();
@@ -242,6 +248,7 @@ foreach (var column in entityInfo.Columns)
         Console.WriteLine(table.Description);
   }
   ```
+  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/a.DbMain ) 
   
 
   ##  11.Aop
@@ -264,6 +271,7 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 };
 
 ```
+  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/b.aop ) 
 
   ##  12.QueryFilter
   ```cs
@@ -287,6 +295,8 @@ public static SqlSugarClient GetInstance()
             return db;
 }
  ```
+   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/c.GobalFilter ) 
+ 
   ##  13.DbFirst
   ```cs
 var db = GetInstance();
@@ -316,15 +326,23 @@ db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
 
 
 ```
+   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/d.DbFirst ) 
+
+
   ##  14.CodeFirst
 ```cs
 db.CodeFirst.SetStringDefaultLength(100).BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
 db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(CodeTable2));
 ```
+   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/e.CodeFirst ) 
+
   ##  15.Utilities
   ```cs
 var list = db.Utilities.DataTableToList(datatable);
   ```
+  
+[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities ) 
+
 
   ##  16.SimpleClient
 ```cs
@@ -335,6 +353,9 @@ sdb.GetList();
 sdb.DeleteById(1);
 sdb.Update(obj);
  ```
+ 
+ 
+ [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.SimpleClient ) 
   
 
 # Code generator
