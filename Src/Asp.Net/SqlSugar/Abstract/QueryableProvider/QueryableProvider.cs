@@ -16,7 +16,7 @@ namespace SqlSugar
     #region T1
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
-        public SqlSugarContext Context { get; set; }
+        public ISqlSugarClient Context { get; set; }
         public IAdo Db { get { return Context.Ado; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
@@ -1116,7 +1116,7 @@ namespace SqlSugar
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Select");
-            this.Context.InitMppingInfo<TResult>();
+            this.Context.InitMppingInfo(typeof(TResult));
             var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             result.Context = this.Context;
             result.SqlBuilder = this.SqlBuilder;

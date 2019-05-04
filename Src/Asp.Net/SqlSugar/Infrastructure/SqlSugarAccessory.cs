@@ -10,32 +10,12 @@ namespace SqlSugar
     public partial class SqlSugarContext
     {
         #region Properties
-        public SqlSugarContext Context
+        public ISqlSugarClient Context
         {
             get
             {
-                var result = _Context; ;
-                if (CurrentConnectionConfig.IsShardSameThread)
-                {
-                    if (CallContext.ContextList.Value.IsNullOrEmpty())
-                    {
-                        CallContext.ContextList.Value = new List<SqlSugarContext>();
-                        CallContext.ContextList.Value.Add(_Context);
-                    }
-                    else
-                    {
-                        var cacheContext = CallContext.ContextList.Value.FirstOrDefault(it =>
-                         it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString &&
-                         it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType &&
-                         it.CurrentConnectionConfig.IsAutoCloseConnection == _Context.CurrentConnectionConfig.IsAutoCloseConnection &&
-                         it.CurrentConnectionConfig.IsShardSameThread == _Context.CurrentConnectionConfig.IsShardSameThread);
-                        if (cacheContext != null)
-                        {
-                            return cacheContext;
-                        }
-                    }
-                }
-                return result;
+                _Context = this;
+                return _Context;
             }
             set
             {
@@ -47,15 +27,15 @@ namespace SqlSugar
         public bool IsSystemTablesConfig { get { return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable; } }
         public Guid ContextID { get; set; }
         internal bool IsAsyncMethod { get; set; }
-        public MappingTableList MappingTables = new MappingTableList();
-        public MappingColumnList MappingColumns = new MappingColumnList();
-        public IgnoreColumnList IgnoreColumns = new IgnoreColumnList();
-        public IgnoreColumnList IgnoreInsertColumns = new IgnoreColumnList();
+        public MappingTableList MappingTables { get; set; }
+        public MappingColumnList MappingColumns { get; set; }
+        public IgnoreColumnList IgnoreColumns { get; set; }
+        public IgnoreColumnList IgnoreInsertColumns { get; set; }
         #endregion
 
         #region Fields
         protected ISqlBuilder _SqlBuilder;
-        protected SqlSugarContext _Context { get; set; }
+        protected ISqlSugarClient _Context { get; set; }
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
@@ -67,22 +47,22 @@ namespace SqlSugar
         {
             get
             {
-                return this.Context._Ado;
+                return this._Ado;
             }
             set
             {
-                this.Context._Ado = value;
+                this._Ado = value;
             }
         }
         protected IContextMethods ContextRewritableMethods
         {
             get
             {
-                return this.Context._RewritableMethods;
+                return this._RewritableMethods;
             }
             set
             {
-                this.Context._RewritableMethods = value;
+                this._RewritableMethods = value;
             }
         }
         #endregion
@@ -206,42 +186,42 @@ namespace SqlSugar
 
         private void InitMppingInfo(EntityInfo entityInfo)
         {
-            if (this.Context.MappingTables == null)
-                this.Context.MappingTables = new MappingTableList();
-            if (this.Context.MappingColumns == null)
-                this.Context.MappingColumns = new MappingColumnList();
-            if (this.Context.IgnoreColumns == null)
-                this.Context.IgnoreColumns = new IgnoreColumnList();
-            if (this.Context.IgnoreInsertColumns == null)
-                this.Context.IgnoreInsertColumns = new IgnoreColumnList();
-            if (!this.Context.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
+            if (this.MappingTables == null)
+                this.MappingTables = new MappingTableList();
+            if (this.MappingColumns == null)
+                this.MappingColumns = new MappingColumnList();
+            if (this.IgnoreColumns == null)
+                this.IgnoreColumns = new IgnoreColumnList();
+            if (this.IgnoreInsertColumns == null)
+                this.IgnoreInsertColumns = new IgnoreColumnList();
+            if (!this.MappingTables.Any(it => it.EntityName == entityInfo.EntityName))
             {
                 if (entityInfo.DbTableName != entityInfo.EntityName && entityInfo.DbTableName.HasValue())
                 {
-                    this.Context.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
+                    this.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
                 }
             }
             if (entityInfo.Columns.Any(it => it.EntityName == entityInfo.EntityName))
             {
-                var mappingColumnInfos = this.Context.MappingColumns.Where(it => it.EntityName == entityInfo.EntityName);
+                var mappingColumnInfos = this.MappingColumns.Where(it => it.EntityName == entityInfo.EntityName);
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore == false))
                 {
                     if (!mappingColumnInfos.Any(it => it.PropertyName == item.PropertyName))
                         if (item.PropertyName != item.DbColumnName && item.DbColumnName.HasValue())
-                            this.Context.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
+                            this.MappingColumns.Add(item.PropertyName, item.DbColumnName, item.EntityName);
                 }
-                var ignoreInfos = this.Context.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
+                var ignoreInfos = this.IgnoreColumns.Where(it => it.EntityName == entityInfo.EntityName);
                 foreach (var item in entityInfo.Columns.Where(it => it.IsIgnore))
                 {
                     if (!ignoreInfos.Any(it => it.PropertyName == item.PropertyName))
-                        this.Context.IgnoreColumns.Add(item.PropertyName, item.EntityName);
+                        this.IgnoreColumns.Add(item.PropertyName, item.EntityName);
                 }
 
-                var ignoreInsertInfos = this.Context.IgnoreInsertColumns.Where(it => it.EntityName == entityInfo.EntityName);
+                var ignoreInsertInfos = this.IgnoreInsertColumns.Where(it => it.EntityName == entityInfo.EntityName);
                 foreach (var item in entityInfo.Columns.Where(it => it.IsOnlyIgnoreInsert))
                 {
                     if (!ignoreInsertInfos.Any(it => it.PropertyName == item.PropertyName))
-                        this.Context.IgnoreInsertColumns.Add(item.PropertyName, item.EntityName);
+                        this.IgnoreInsertColumns.Add(item.PropertyName, item.EntityName);
                 }
             }
         }
@@ -261,7 +241,7 @@ namespace SqlSugar
             result.SqlBuilder = sqlBuilder;
             result.SqlBuilder.QueryBuilder = InstanceFactory.GetQueryBuilder(CurrentConnectionConfig);
             result.SqlBuilder.QueryBuilder.Builder = sqlBuilder;
-            result.SqlBuilder.Context = result.SqlBuilder.QueryBuilder.Context = this.Context;
+            result.SqlBuilder.Context = result.SqlBuilder.QueryBuilder.Context = this;
             result.SqlBuilder.QueryBuilder.EntityType = typeof(T);
             result.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
             result.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(CurrentConnectionConfig);
@@ -271,14 +251,14 @@ namespace SqlSugar
         {
             var result = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
-            result.Context = this.Context;
+            result.Context = this;
             result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             result.SqlBuilder = sqlBuilder;
             result.InsertObjs = insertObjs;
             sqlBuilder.InsertBuilder = result.InsertBuilder = InstanceFactory.GetInsertBuilder(this.CurrentConnectionConfig);
             sqlBuilder.InsertBuilder.Builder = sqlBuilder;
             sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
-            sqlBuilder.Context = result.SqlBuilder.InsertBuilder.Context = this.Context;
+            sqlBuilder.Context = result.SqlBuilder.InsertBuilder.Context = this;
             result.Init();
             return result;
         }
@@ -286,26 +266,26 @@ namespace SqlSugar
         {
             var result = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
-            result.Context = this.Context;
+            result.Context = this;
             result.SqlBuilder = sqlBuilder;
             sqlBuilder.DeleteBuilder = result.DeleteBuilder = InstanceFactory.GetDeleteBuilder(this.CurrentConnectionConfig);
             sqlBuilder.DeleteBuilder.Builder = sqlBuilder;
             sqlBuilder.DeleteBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
-            sqlBuilder.Context = result.SqlBuilder.DeleteBuilder.Context = this.Context;
+            sqlBuilder.Context = result.SqlBuilder.DeleteBuilder.Context = this;
             return result;
         }
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
         {
             var result = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
-            result.Context = this.Context;
+            result.Context = this;
             result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             result.SqlBuilder = sqlBuilder;
             result.UpdateObjs = UpdateObjs;
             sqlBuilder.UpdateBuilder = result.UpdateBuilder = InstanceFactory.GetUpdateBuilder(this.CurrentConnectionConfig);
             sqlBuilder.UpdateBuilder.Builder = sqlBuilder;
             sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
-            sqlBuilder.Context = result.SqlBuilder.UpdateBuilder.Context = this.Context;
+            sqlBuilder.Context = result.SqlBuilder.UpdateBuilder.Context = this;
             result.Init();
             return result;
         }
@@ -339,8 +319,8 @@ namespace SqlSugar
             List<JoinQueryInfo> result = new List<JoinQueryInfo>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
             ILambdaExpressions expressionContext = sqlBuilder.QueryBuilder.LambdaExpressions;
-            expressionContext.MappingColumns = this.Context.MappingColumns;
-            expressionContext.MappingTables = this.Context.MappingTables;
+            expressionContext.MappingColumns = this.MappingColumns;
+            expressionContext.MappingTables = this.MappingTables;
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null)
                 expressionContext.SqlFuncServices = this.Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             expressionContext.Resolve(joinExpression, ResolveExpressType.Join);

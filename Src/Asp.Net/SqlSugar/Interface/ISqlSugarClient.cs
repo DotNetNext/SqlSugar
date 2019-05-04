@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface ISqlSugarClient
+    public interface ISqlSugarClient: IDisposable
     {
+        MappingTableList MappingTables { get; set; }
+        MappingColumnList MappingColumns { get; set; }
+        IgnoreColumnList IgnoreColumns { get; set; }
+        IgnoreColumnList IgnoreInsertColumns { get; set; }
+        QueueList Queues { get; set; }
         IAdo Ado { get; }
         AopProvider Aop { get; }
         ICodeFirst CodeFirst { get; }
         ISqlSugarClient Context { get; set; }
         Guid ContextID { get; set; }
+
         ConnectionConfig CurrentConnectionConfig { get; set; }
         IDbFirst DbFirst { get; }
         IDbMaintenance DbMaintenance { get; }

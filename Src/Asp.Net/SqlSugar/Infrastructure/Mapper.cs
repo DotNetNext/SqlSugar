@@ -8,8 +8,8 @@ namespace SqlSugar
 {
     public class SugarMapper
     {
-        private SqlSugarContext _context;
-        public SugarMapper(SqlSugarContext context)
+        private ISqlSugarClient _context;
+        public SugarMapper(ISqlSugarClient context)
         {
             _context = context;
         }

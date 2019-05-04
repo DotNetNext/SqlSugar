@@ -15,7 +15,7 @@ namespace SqlSugar
     /// ** date：2017/1/2
     /// ** email:610262374@qq.com
     /// </summary>
-    public partial class SqlSugarContext : IDisposable, ISqlSugarClient
+    public partial class SqlSugarContext: ISqlSugarClient
     {
 
         #region Constructor
@@ -59,16 +59,16 @@ namespace SqlSugar
                 {
                     var result = InstanceFactory.GetAdo(this.Context.CurrentConnectionConfig);
                     this.ContextAdo = result;
-                    result.Context = this.Context;
+                    result.Context = this;
                     return result;
                 }
-                return this.Context._Ado;
+                return this._Ado;
             }
         }
         #endregion
 
         #region Aop Log Methods
-        public virtual AopProvider Aop { get { return new AopProvider(this.Context); } }
+        public virtual AopProvider Aop { get { return new AopProvider(this); } }
         #endregion
 
         #region Util Methods
@@ -85,7 +85,7 @@ namespace SqlSugar
                 if (ContextRewritableMethods == null)
                 {
                     ContextRewritableMethods = new ContextMethods();
-                    ContextRewritableMethods.Context = this.Context;
+                    ContextRewritableMethods.Context = this;
                 }
                 return ContextRewritableMethods;
             }
@@ -430,7 +430,7 @@ namespace SqlSugar
 
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
 
-            sqlBuilder.Context = this.Context;
+            sqlBuilder.Context = this;
             InitMppingInfo<T, T2>();
             var types = new Type[] { typeof(T2) };
             var queryable = InstanceFactory.GetQueryable<T, T2>(this.CurrentConnectionConfig);
@@ -439,7 +439,7 @@ namespace SqlSugar
             queryable.QueryBuilder = InstanceFactory.GetQueryBuilder(this.CurrentConnectionConfig);
             queryable.QueryBuilder.JoinQueryInfos = new List<JoinQueryInfo>();
             queryable.QueryBuilder.Builder = sqlBuilder;
-            queryable.QueryBuilder.Context = this.Context;
+            queryable.QueryBuilder.Context = this;
             queryable.QueryBuilder.EntityType = typeof(T);
             queryable.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
 
@@ -705,7 +705,7 @@ namespace SqlSugar
             get
             {
                 ICodeFirst codeFirst = InstanceFactory.GetCodeFirst(this.Context.CurrentConnectionConfig);
-                codeFirst.Context = this.Context;
+                codeFirst.Context = this;
                 return codeFirst;
             }
         }
@@ -716,13 +716,13 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context._DbMaintenance == null)
+                if (this._DbMaintenance == null)
                 {
                     IDbMaintenance maintenance = InstanceFactory.GetDbMaintenance(this.Context.CurrentConnectionConfig);
-                    this.Context._DbMaintenance = maintenance;
-                    maintenance.Context = this.Context;
+                    this._DbMaintenance = maintenance;
+                    maintenance.Context = this;
                 }
-                return this.Context._DbMaintenance;
+                return this._DbMaintenance;
             }
         }
         #endregion
@@ -738,14 +738,14 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context._EntityProvider == null)
+                if (this._EntityProvider == null)
                 {
-                    this.Context._EntityProvider = new EntityMaintenance();
-                    this.Context._EntityProvider.Context = this.Context;
+                    this._EntityProvider = new EntityMaintenance();
+                    this._EntityProvider.Context = this;
                 }
-                return this.Context._EntityProvider;
+                return this._EntityProvider;
             }
-            set { this.Context._EntityProvider = value; }
+            set { this._EntityProvider = value; }
         }
         #endregion
 
@@ -754,14 +754,14 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context._QueryFilterProvider == null)
+                if (this._QueryFilterProvider == null)
                 {
-                    this.Context._QueryFilterProvider = new QueryFilterProvider();
-                    this.Context._QueryFilterProvider.Context = this.Context;
+                    this._QueryFilterProvider = new QueryFilterProvider();
+                    this._QueryFilterProvider.Context = this;
                 }
-                return this.Context._QueryFilterProvider;
+                return this._QueryFilterProvider;
             }
-            set { this.Context._QueryFilterProvider = value; }
+            set { this._QueryFilterProvider = value; }
         }
         #endregion
 
@@ -771,20 +771,20 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context._SimpleClient == null)
-                    this.Context._SimpleClient = new SimpleClient(this.Context);
-                return this.Context._SimpleClient;
+                if (this._SimpleClient == null)
+                    this._SimpleClient = new SimpleClient(this);
+                return this._SimpleClient;
             }
         }
         public virtual SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
-            return new SimpleClient<T>(this.Context);
+            return new SimpleClient<T>(this);
         }
         public virtual SimpleClient GetSimpleClient()
         {
-            if (this.Context._SimpleClient == null)
-                this.Context._SimpleClient = new SimpleClient(this.Context);
-            return this.Context._SimpleClient;
+            if (this._SimpleClient == null)
+                this._SimpleClient = new SimpleClient(this);
+            return this._SimpleClient;
         }
         #endregion
 
@@ -912,7 +912,7 @@ namespace SqlSugar
             }
             this.Queues.Add(sql, parsmeters);
         }
-        public QueueList Queues = new QueueList();
+        public QueueList Queues { get; set; }
 
         private T SaveQueuesProvider<T>(bool isTran, Func<string, List<SugarParameter>, T> func)
         {

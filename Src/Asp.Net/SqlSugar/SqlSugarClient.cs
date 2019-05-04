@@ -11,23 +11,26 @@ namespace SqlSugar
     public class SqlSugarClient : ISqlSugarClient
     {
         private ISqlSugarClient _Context = null;
+
         public ISqlSugarClient Context { get => _Context; set => _Context = value; }
 
         public SqlSugarClient(ConnectionConfig config)
         {
             _Context = new SqlSugarContext(config);
+            Init();
         }
+
         //public SqlSugarClient(List<ConnectionConfig> config)
         //{
 
         //}
 
 
-        public IAdo Ado => Context.Ado;
+        public IAdo Ado =>this.Context.Ado;
 
-        public AopProvider Aop => Context.Aop;
+        public AopProvider Aop => this.Context.Aop;
 
-        public ICodeFirst CodeFirst => Context.CodeFirst;
+        public ICodeFirst CodeFirst => this.Context.CodeFirst;
 
         public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
         public ConnectionConfig CurrentConnectionConfig { get => this.Context.CurrentConnectionConfig; set => this.Context.CurrentConnectionConfig=value; }
@@ -36,9 +39,9 @@ namespace SqlSugar
 
         public IDbMaintenance DbMaintenance =>this.Context.DbMaintenance;
 
-        public EntityMaintenance EntityMaintenance { get =>this.EntityMaintenance; set =>this.EntityMaintenance=value; }
+        public EntityMaintenance EntityMaintenance { get =>this.Context.EntityMaintenance; set =>this.Context.EntityMaintenance=value; }
         [Obsolete]
-        public EntityMaintenance EntityProvider { get =>this.EntityProvider ; set =>this.EntityProvider=value; }
+        public EntityMaintenance EntityProvider { get =>this.Context.EntityProvider ; set =>this.Context.EntityProvider=value; }
 
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
 
@@ -50,6 +53,11 @@ namespace SqlSugar
 
         public Dictionary<string, object> TempItems { get => this.Context.TempItems; set =>this.Context.TempItems=value; }
         public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
+        public MappingTableList MappingTables { get =>this.Context.MappingTables ; set => this.Context.MappingTables = value; }
+        public MappingColumnList MappingColumns { get => this.Context.MappingColumns; set => this.Context.MappingColumns = value; }
+        public IgnoreColumnList IgnoreColumns { get => this.Context.IgnoreColumns; set => this.Context.IgnoreColumns = value; }
+        public IgnoreColumnList IgnoreInsertColumns { get =>this.Context.IgnoreInsertColumns; set => this.Context.IgnoreInsertColumns=value; }
+        public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
 
         public void AddQueue(string sql, object parsmeters = null)
         {
@@ -78,7 +86,7 @@ namespace SqlSugar
 
         public IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
         {
-            return this.Deleteable<T>(primaryKeyValue);
+            return this.Context.Deleteable<T>(primaryKeyValue);
         }
 
         public IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
@@ -143,12 +151,12 @@ namespace SqlSugar
 
         public IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
-            return this.Insertable<T>(insertObjs);
+            return this.Context.Insertable<T>(insertObjs);
         }
 
         public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
-            return this.Insertable<T>(insertObj);
+            return this.Context.Insertable<T>(insertObj);
         }
 
         public IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
@@ -513,6 +521,29 @@ namespace SqlSugar
         public IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             return this.Context.Updateable<T>(UpdateObjs);
+        }
+        private void Init()
+        {
+            if (this.MappingTables == null)
+            {
+                this.MappingTables = new MappingTableList();
+            }
+            if (this.MappingColumns == null)
+            {
+                this.MappingColumns = new MappingColumnList();
+            }
+            if (this.IgnoreColumns == null)
+            {
+                this.IgnoreColumns = new IgnoreColumnList();
+            }
+            if (this.IgnoreInsertColumns == null)
+            {
+                this.IgnoreInsertColumns = new IgnoreColumnList();
+            }
+            if (this.Queues == null)
+            {
+                this.Queues = new QueueList();
+            }
         }
     }
 }
