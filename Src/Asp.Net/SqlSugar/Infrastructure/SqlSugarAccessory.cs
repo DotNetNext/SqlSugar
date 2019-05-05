@@ -22,6 +22,8 @@ namespace SqlSugar
                 _Context = value;
             }
         }
+
+        public bool IsEnableLogEvent { get; set; }
         public ConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get; set; }
         public bool IsSystemTablesConfig { get { return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable; } }

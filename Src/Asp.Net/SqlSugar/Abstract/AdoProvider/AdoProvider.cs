@@ -57,7 +57,7 @@ namespace SqlSugar
         }
         public virtual int CommandTimeOut { get; set; }
         public virtual CommandType CommandType { get; set; }
-        public virtual bool IsEnableLogEvent { get; set; }
+        public virtual bool IsEnableLogEvent { get => this.Context.IsEnableLogEvent; set => this.Context.IsEnableLogEvent = value; }
         public virtual bool IsClearParameters { get; set; }
         public virtual Action<string, SugarParameter[]> LogEventStarting=> this.Context.LogEventStarting;
         public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.LogEventCompleted;

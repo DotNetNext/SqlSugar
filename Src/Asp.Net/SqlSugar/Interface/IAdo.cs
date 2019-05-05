@@ -22,7 +22,7 @@ namespace SqlSugar
 
         IDataParameterCollection DataReaderParameters { get; set; }
         CommandType CommandType { get; set; }
-        bool IsEnableLogEvent { get; set; }
+
         bool IsDisableMasterSlaveSeparation { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
