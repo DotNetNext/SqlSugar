@@ -51,9 +51,9 @@ namespace SqlSugar
         /// Used for debugging errors or BUG,Used for debugging, which has an impact on Performance
         /// </summary>
         public SugarDebugger Debugger { get; set; }
-  
+
         [JsonIgnore]
-        public AopEvents AopEvents = new AopEvents();
+        public AopEvents AopEvents { get;set; }
     }
     public class AopEvents
     {

@@ -24,7 +24,7 @@ namespace SqlSugar
         }
 
         public ConnectionConfig CurrentConnectionConfig { get; set; }
-        public Dictionary<string, object> TempItems { get; set; }
+        public Dictionary<string, object> TempItems { get { if (_TempItems == null) { _TempItems = new Dictionary<string, object>(); }  return _TempItems; } set=>_TempItems=value; }
         public bool IsSystemTablesConfig { get { return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable; } }
         public Guid ContextID { get; set; }
         internal bool IsAsyncMethod { get; set; }
@@ -36,7 +36,8 @@ namespace SqlSugar
 
         #endregion
 
-        #region Fields        
+        #region Fields       
+        public Dictionary<string, object> _TempItems;
         public QueueList _Queues;
         protected ISqlBuilder _SqlBuilder;
         protected ISqlSugarClient _Context { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using SqlSugar;
 namespace OrmTest
 {
@@ -10,8 +11,49 @@ namespace OrmTest
 
         public static void Init()
         {
-            DistributedTransactionExample();
+            SingletonPattern();//单例
+            DistributedTransactionExample();//分布式事务
         }
+
+        private static void SingletonPattern()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### Singleton Pattern Start ####");
+            Console.WriteLine("Db_Id:" + singleDb.ContextID);
+            Console.WriteLine("Db_Id:" + singleDb.ContextID);
+            var task = new Task(() =>
+            {
+                Console.WriteLine("Task DbId:" + singleDb.ContextID);
+                new Task(() =>
+                {
+                    Console.WriteLine("_Task_Task DbId:" + singleDb.ContextID);
+                    Console.WriteLine("_Task_Task DbId:" + singleDb.ContextID);
+
+                }).Start();
+                Console.WriteLine("Task DbId:" + singleDb.ContextID);
+            });
+            task.Start();
+            task.Wait();
+            System.Threading.Thread.Sleep(500);
+            Console.WriteLine(string.Join(",", singleDb.TempItems.Keys));
+
+            Console.WriteLine("#### Singleton Pattern end ####");
+        }
+
+        static SqlSugarClient singleDb = new SqlSugarClient(
+            new ConnectionConfig()
+            {
+                ConfigId = 1,
+                DbType = DbType.SqlServer,
+                ConnectionString = Config.ConnectionString,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection=true,
+                AopEvents = new AopEvents()
+                {
+                    OnLogExecuting = (sql, p) => { Console.WriteLine(sql); }
+                }
+            });
+
 
         private static void DistributedTransactionExample()
         {
@@ -68,5 +110,8 @@ namespace OrmTest
 
             Console.WriteLine("#### Distributed TransactionExample End ####");
         }
+
+
+
     }
 }

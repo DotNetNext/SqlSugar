@@ -71,7 +71,7 @@ namespace SqlSugar
 
         public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
 
-        public Dictionary<string, object> TempItems { get => this.Context.TempItems??new Dictionary<string, object>(); set => this.Context.TempItems = value; }
+        public Dictionary<string, object> TempItems { get => this.Context.TempItems; set => this.Context.TempItems = value; }
         public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
         public IAdo Ado => this.Context.Ado;
 
@@ -672,7 +672,14 @@ namespace SqlSugar
 
         private void InitContext(ConnectionConfig config)
         {
+            var aopIsNull = config.AopEvents == null;
+            if (aopIsNull)
+            {
+                config.AopEvents = new AopEvents();
+            }
             _Context = new SqlSugarContext(config);
+            if (!aopIsNull)
+                _Context.Ado.IsEnableLogEvent = true;
             this.CurrentConnectionConfig = config;
             _ThreadId = Thread.CurrentThread.ManagedThreadId.ToString();
             if (_MappingColumns == null)
