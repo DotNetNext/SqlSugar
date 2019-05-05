@@ -57,14 +57,14 @@ namespace SqlSugar
         }
         public virtual int CommandTimeOut { get; set; }
         public virtual CommandType CommandType { get; set; }
-        public virtual bool IsEnableLogEvent { get => this.Context.IsEnableLogEvent; set => this.Context.IsEnableLogEvent = value; }
+        public virtual bool IsEnableLogEvent {get;set;}
         public virtual bool IsClearParameters { get; set; }
-        public virtual Action<string, SugarParameter[]> LogEventStarting=> this.Context.LogEventStarting;
-        public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.LogEventCompleted;
-        public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => this.Context.ProcessingEventStartingSQL;
+        public virtual Action<string, SugarParameter[]> LogEventStarting=> this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuting;
+        public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuted;
+        public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => this.Context.CurrentConnectionConfig.AopEvents.OnExecutingChangeSql;
         protected virtual Func<string,string> FormatSql { get; set; }
-        public virtual Action<SqlSugarException> ErrorEvent => this.Context.ErrorEvent;
-        public virtual Action<DiffLogModel> DiffLogEvent => this.Context.DiffLogEvent;
+        public virtual Action<SqlSugarException> ErrorEvent => this.Context.CurrentConnectionConfig.AopEvents.OnError;
+        public virtual Action<DiffLogModel> DiffLogEvent => this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent;
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
         #endregion

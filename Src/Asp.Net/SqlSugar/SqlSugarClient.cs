@@ -21,11 +21,7 @@ namespace SqlSugar
         private MappingColumnList _MappingColumns;
         private IgnoreColumnList _IgnoreColumns;
         private IgnoreColumnList _IgnoreInsertColumns;
-        private Action<string, SugarParameter[]> _LogEventStarting;
-        private Action<string, SugarParameter[]> _LogEventCompleted;
-        private Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> _ProcessingEventStartingSQL;
-        private Action<SqlSugarException> _ErrorEvent;
-        private Action<DiffLogModel> _DiffLogEvent;
+
         #endregion
 
         #region Api
@@ -67,11 +63,7 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get => _MappingColumns; set => _MappingColumns = value; }
         public IgnoreColumnList IgnoreColumns { get => _IgnoreColumns; set => _IgnoreColumns = value; }
         public IgnoreColumnList IgnoreInsertColumns { get => _IgnoreInsertColumns; set => _IgnoreInsertColumns = value; }
-        public Action<string, SugarParameter[]> LogEventStarting { get => _LogEventStarting; set => _LogEventStarting = value; }
-        public Action<string, SugarParameter[]> LogEventCompleted { get => _LogEventCompleted; set => _LogEventCompleted = value; }
-        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get => _ProcessingEventStartingSQL; set => _ProcessingEventStartingSQL = value; }
-        public Action<SqlSugarException> ErrorEvent { get => _ErrorEvent; set => _ErrorEvent = value; }
-        public Action<DiffLogModel> DiffLogEvent { get => _DiffLogEvent; set => _DiffLogEvent = value; }
+
         public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
 
 
@@ -637,11 +629,6 @@ namespace SqlSugar
                 _Context.MappingTables = _MappingTables;
                 _Context.IgnoreColumns = _IgnoreColumns;
                 _Context.IgnoreInsertColumns = _IgnoreInsertColumns;
-                _Context.DiffLogEvent = _DiffLogEvent;
-                _Context.LogEventCompleted = _LogEventCompleted;
-                _Context.LogEventStarting = _LogEventStarting;
-                _Context.ErrorEvent = _ErrorEvent;
-                _Context.ProcessingEventStartingSQL = _ProcessingEventStartingSQL;
                 return _Context;
             }
             else
@@ -670,11 +657,7 @@ namespace SqlSugar
             result.MappingTables = _MappingTables;
             result.IgnoreColumns = _IgnoreColumns;
             result.IgnoreInsertColumns = _IgnoreInsertColumns;
-            result.DiffLogEvent = _DiffLogEvent;
-            result.LogEventCompleted = _LogEventCompleted;
-            result.LogEventStarting = _LogEventStarting;
-            result.ErrorEvent = _ErrorEvent;
-            result.ProcessingEventStartingSQL = _ProcessingEventStartingSQL;
+ 
             return result;
         }
 

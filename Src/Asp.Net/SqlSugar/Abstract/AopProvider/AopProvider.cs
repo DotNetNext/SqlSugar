@@ -11,13 +11,13 @@ namespace SqlSugar
         public AopProvider(SqlSugarContext context)
         {
             this.Context = context;
-            this.Context.IsEnableLogEvent = true;
+            this.Context.Ado.IsEnableLogEvent = true;
         }
         private SqlSugarContext Context { get; set; }
-        public Action<DiffLogModel> OnDiffLogEvent { set { this.Context.DiffLogEvent = value; } }
-        public Action<SqlSugarException> OnError { set { this.Context.ErrorEvent = value; } }
-        public Action<string, SugarParameter[]> OnLogExecuting { set { this.Context.LogEventStarting = value; } }
-        public Action<string, SugarParameter[]> OnLogExecuted { set { this.Context.LogEventCompleted = value; } }
-        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> OnExecutingChangeSql { set { this.Context.ProcessingEventStartingSQL = value; } }
+        public Action<DiffLogModel> OnDiffLogEvent { set { this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent = value; } }
+        public Action<SqlSugarException> OnError { set { this.Context.CurrentConnectionConfig.AopEvents.OnError = value; } }
+        public Action<string, SugarParameter[]> OnLogExecuting { set { this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuting= value; } }
+        public Action<string, SugarParameter[]> OnLogExecuted { set { this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuted = value; } }
+        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> OnExecutingChangeSql { set { this.Context.CurrentConnectionConfig.AopEvents.OnExecutingChangeSql = value; } }
     }
 }

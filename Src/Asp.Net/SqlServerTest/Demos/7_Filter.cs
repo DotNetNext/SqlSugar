@@ -69,7 +69,7 @@ namespace OrmTest.Demo
             });
 
             //Processing prior to execution of SQL
-            db.ProcessingEventStartingSQL = (sql, par) =>
+            db.CurrentConnectionConfig.AopEvents.OnExecutingChangeSql = (sql, par) =>
             {
                 if (sql.Contains("{0}"))
                 {

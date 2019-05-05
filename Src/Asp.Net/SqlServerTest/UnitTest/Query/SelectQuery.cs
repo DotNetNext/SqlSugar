@@ -30,7 +30,7 @@ namespace OrmTest.UnitTest
             using (var db = GetInstance())
             {
                 //db.Database.IsEnableLogEvent = true;
-                db.LogEventStarting = (sql, pars) =>
+                db.Aop.OnLogExecuting = (sql, pars) =>
                 {
                     Console.WriteLine(sql + " " + pars);
                 };
@@ -80,9 +80,8 @@ namespace OrmTest.UnitTest
                         new SugarParameter("@Id0",0)
                     }, t3.Key, t3.Value, "select t3 Error");
 
-
-                db.Ado.IsEnableLogEvent = true;
-                db.LogEventStarting = (sql, pars) =>
+ 
+                db.Aop.OnLogExecuting = (sql, pars) =>
                 {
                     base.Check(" SELECT COUNT(1) FROM (SELECT [st].[ID] FROM [STudent] st Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )  Left JOIN [School] sc2 ON ( [sc2].[Id] = [sc].[Id] )  GROUP BY [st].[ID] ) CountTable ",
                   null, sql, null, "select t4 Error");

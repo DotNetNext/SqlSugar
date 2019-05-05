@@ -23,7 +23,6 @@ namespace SqlSugar
             }
         }
 
-        public bool IsEnableLogEvent { get; set; }
         public ConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get; set; }
         public bool IsSystemTablesConfig { get { return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable; } }
@@ -33,15 +32,12 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public IgnoreColumnList IgnoreColumns { get; set; }
         public IgnoreColumnList IgnoreInsertColumns { get; set; }
-        public Action<string, SugarParameter[]> LogEventStarting { get; set; }
-        public Action<string, SugarParameter[]> LogEventCompleted { get; set; }
-        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
-        public Action<SqlSugarException> ErrorEvent { get; set; }
-        public Action<DiffLogModel> DiffLogEvent { get; set; }
-        public QueueList _Queues = new QueueList();
+
+
         #endregion
 
-        #region Fields
+        #region Fields        
+        public QueueList _Queues;
         protected ISqlBuilder _SqlBuilder;
         protected ISqlSugarClient _Context { get; set; }
         protected EntityMaintenance _EntityProvider;

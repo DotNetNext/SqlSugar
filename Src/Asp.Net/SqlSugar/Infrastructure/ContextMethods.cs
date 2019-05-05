@@ -277,10 +277,6 @@ namespace SqlSugar
             newClient.IgnoreColumns = this.TranslateCopy(Context.IgnoreColumns);
             if (isCopyEvents)
             {
-                newClient.Ado.IsEnableLogEvent = Context.Ado.IsEnableLogEvent;
-                newClient.LogEventStarting = Context.LogEventStarting;
-                newClient.LogEventCompleted = Context.LogEventCompleted;
-                newClient.ProcessingEventStartingSQL = Context.ProcessingEventStartingSQL;
                 newClient.QueryFilter = Context.QueryFilter;
             }
             return newClient;

@@ -37,8 +37,7 @@ namespace SqlSugar
         /// Configure External Services replace default services,For example, Redis storage
         /// </summary>
         [JsonIgnore]
-        public ConfigureExternalServices ConfigureExternalServices = _DefaultServices;
-        private static ConfigureExternalServices _DefaultServices = new ConfigureExternalServices();
+        public ConfigureExternalServices ConfigureExternalServices = new ConfigureExternalServices();
         /// <summary>
         /// If SlaveConnectionStrings has value,ConnectionString is write operation, SlaveConnectionStrings is read operation.
         /// All operations within a transaction is ConnectionString
@@ -52,8 +51,18 @@ namespace SqlSugar
         /// Used for debugging errors or BUG,Used for debugging, which has an impact on Performance
         /// </summary>
         public SugarDebugger Debugger { get; set; }
+  
+        [JsonIgnore]
+        public AopEvents AopEvents = new AopEvents();
     }
-
+    public class AopEvents
+    {
+        public Action<DiffLogModel> OnDiffLogEvent { get; set; }
+        public Action<SqlSugarException> OnError { get; set; }
+        public Action<string, SugarParameter[]> OnLogExecuting { get; set; }
+        public Action<string, SugarParameter[]> OnLogExecuted { get; set; }
+        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> OnExecutingChangeSql { get; set; }
+    }
     public class ConfigureExternalServices
     {
 

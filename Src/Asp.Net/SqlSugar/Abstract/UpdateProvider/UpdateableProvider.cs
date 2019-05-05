@@ -278,13 +278,13 @@ namespace SqlSugar
         public IUpdateable<T> SetColumnsIF(bool isUpdateColumns, Expression<Func<T, bool>> columns)
         {
             if (isUpdateColumns)
-                UpdateColumns(columns);
+                SetColumns(columns);
             return this;
         }
         public IUpdateable<T> SetColumnsIF(bool isUpdateColumns, Expression<Func<T, T>> columns)
         {
             if (isUpdateColumns)
-                UpdateColumns(columns);
+                SetColumns(columns);
             return this;
         }
 
@@ -690,8 +690,8 @@ namespace SqlSugar
                     parameters = new List<SugarParameter>();
                 diffModel.AfterData = GetDiffTable(sql, parameters);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
-                if (this.Context.DiffLogEvent != null)
-                    this.Context.DiffLogEvent(diffModel);
+                if (this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent != null)
+                    this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(diffModel);
                 this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
             if (this.RemoveCacheFunc != null)
