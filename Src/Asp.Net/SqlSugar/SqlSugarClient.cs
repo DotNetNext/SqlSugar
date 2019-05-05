@@ -53,7 +53,7 @@ namespace SqlSugar
         {
             var allConfigs = _AllClients.Select(it => it.ConnectionConfig);
             Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
-            InitContext(allConfigs.First(changeExpression));
+            InitTerant(_AllClients.First(it=>it.ConnectionConfig==allConfigs.First(changeExpression)));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
         }

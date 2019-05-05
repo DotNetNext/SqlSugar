@@ -57,12 +57,12 @@ namespace SqlSugar
         }
         public virtual int CommandTimeOut { get; set; }
         public virtual CommandType CommandType { get; set; }
-        public virtual bool IsEnableLogEvent {get;set;}
+        public virtual bool IsEnableLogEvent { get; set; }
         public virtual bool IsClearParameters { get; set; }
-        public virtual Action<string, SugarParameter[]> LogEventStarting=> this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuting;
+        public virtual Action<string, SugarParameter[]> LogEventStarting => this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuting;
         public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuted;
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => this.Context.CurrentConnectionConfig.AopEvents.OnExecutingChangeSql;
-        protected virtual Func<string,string> FormatSql { get; set; }
+        protected virtual Func<string, string> FormatSql { get; set; }
         public virtual Action<SqlSugarException> ErrorEvent => this.Context.CurrentConnectionConfig.AopEvents.OnError;
         public virtual Action<DiffLogModel> DiffLogEvent => this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent;
         public virtual List<IDbConnection> SlaveConnections { get; set; }
@@ -147,12 +147,14 @@ namespace SqlSugar
         public virtual void BeginTran()
         {
             CheckConnection();
-            this.Transaction = this.Connection.BeginTransaction();
+            if (this.Transaction == null)
+                this.Transaction = this.Connection.BeginTransaction();
         }
         public virtual void BeginTran(IsolationLevel iso)
         {
             CheckConnection();
-            this.Transaction = this.Connection.BeginTransaction(iso);
+            if (this.Transaction == null)
+                this.Transaction = this.Connection.BeginTransaction(iso);
         }
         public virtual void RollbackTran()
         {
@@ -185,7 +187,7 @@ namespace SqlSugar
         #endregion
 
         #region Use
-        public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack=null)
+        public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
         {
             var result = new DbResult<bool>();
             try
@@ -214,7 +216,7 @@ namespace SqlSugar
         {
             Task<DbResult<bool>> result = new Task<DbResult<bool>>(() =>
             {
-                return UseTran(action,errorCallBack);
+                return UseTran(action, errorCallBack);
             });
             TaskStart(result);
             return result;
@@ -249,7 +251,7 @@ namespace SqlSugar
         {
             Task<DbResult<T>> result = new Task<DbResult<T>>(() =>
             {
-                return UseTran(action,errorCallBack);
+                return UseTran(action, errorCallBack);
             });
             TaskStart(result);
             return result;
@@ -297,7 +299,7 @@ namespace SqlSugar
             try
             {
                 InitParameters(ref sql, parameters);
-                if (FormatSql != null) 
+                if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
@@ -421,7 +423,7 @@ namespace SqlSugar
         {
             try
             {
-                InitParameters(ref sql,parameters);
+                InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
@@ -440,7 +442,7 @@ namespace SqlSugar
             {
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
-                    ExecuteErrorEvent(sql,parameters,ex);
+                    ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
             }
             finally
@@ -943,19 +945,22 @@ namespace SqlSugar
         }
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
-            if (this.Context.IsAsyncMethod==false&&this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true) {
+            if (this.Context.IsAsyncMethod == false && this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true)
+            {
 
-                var contextId =this.Context.ContextID.ToString();
+                var contextId = this.Context.ContextID.ToString();
                 var processId = Thread.CurrentThread.ManagedThreadId.ToString();
                 var cache = new ReflectionInoCacheService();
                 if (!cache.ContainsKey<string>(contextId))
                 {
                     cache.Add(contextId, processId);
                 }
-                else {
+                else
+                {
                     var cacheValue = cache.Get<string>(contextId);
-                    if (processId != cacheValue) {
-                       throw new SqlSugarException(this.Context,ErrorMessage.GetThrowMessage("Detection of SqlSugarClient cross-threading usage,a thread needs a new one", "检测到声名的SqlSugarClient跨线程使用，请检查是否静态、是否单例、或者IOC配置错误引起的，保证一个线程new出一个对象 ，具本Sql:")+sql,parameters);
+                    if (processId != cacheValue)
+                    {
+                        throw new SqlSugarException(this.Context, ErrorMessage.GetThrowMessage("Detection of SqlSugarClient cross-threading usage,a thread needs a new one", "检测到声名的SqlSugarClient跨线程使用，请检查是否静态、是否单例、或者IOC配置错误引起的，保证一个线程new出一个对象 ，具本Sql:") + sql, parameters);
                     }
                 }
             }
@@ -982,11 +987,12 @@ namespace SqlSugar
             var hasParameter = parameters.HasValue();
             if (hasParameter)
             {
-                foreach (var outputParameter in parameters.Where(it => it.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue)))
+                foreach (var outputParameter in parameters.Where(it => it.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue)))
                 {
                     var gobalOutputParamter = this.OutputParameters.FirstOrDefault(it => it.ParameterName == outputParameter.ParameterName);
-                    if (gobalOutputParamter == null) {//Oracle bug
-                        gobalOutputParamter=this.OutputParameters.FirstOrDefault(it => it.ParameterName == outputParameter.ParameterName.TrimStart(outputParameter.ParameterName.First()));
+                    if (gobalOutputParamter == null)
+                    {//Oracle bug
+                        gobalOutputParamter = this.OutputParameters.FirstOrDefault(it => it.ParameterName == outputParameter.ParameterName.TrimStart(outputParameter.ParameterName.First()));
                     }
                     outputParameter.Value = gobalOutputParamter.Value;
                     this.OutputParameters.Remove(gobalOutputParamter);
@@ -1028,12 +1034,12 @@ namespace SqlSugar
         {
             get
             {
-                return this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.HasValue()&& this.IsDisableMasterSlaveSeparation==false;
+                return this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.HasValue() && this.IsDisableMasterSlaveSeparation == false;
             }
         }
         private void SetConnectionStart(string sql)
         {
-            if (this.Transaction==null&&this.IsMasterSlaveSeparation && IsRead(sql))
+            if (this.Transaction == null && this.IsMasterSlaveSeparation && IsRead(sql))
             {
                 if (this.MasterConnection == null)
                 {
@@ -1063,7 +1069,7 @@ namespace SqlSugar
 
         private void SetConnectionEnd(string sql)
         {
-            if (this.IsMasterSlaveSeparation && IsRead(sql)&&this.Transaction==null)
+            if (this.IsMasterSlaveSeparation && IsRead(sql) && this.Transaction == null)
             {
                 this.Connection = this.MasterConnection;
                 this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnection.ConnectionString;
@@ -1079,9 +1085,9 @@ namespace SqlSugar
 
         private void ExecuteErrorEvent(string sql, SugarParameter[] parameters, Exception ex)
         {
-            ErrorEvent(new SqlSugarException(this.Context,ex, sql, parameters));
+            ErrorEvent(new SqlSugarException(this.Context, ex, sql, parameters));
         }
-        private  void InitParameters(ref string sql, SugarParameter[] parameters)
+        private void InitParameters(ref string sql, SugarParameter[] parameters)
         {
             if (parameters.HasValue())
             {
@@ -1103,7 +1109,7 @@ namespace SqlSugar
                             }
                             if (item.ParameterName.Substring(0, 1) == ":")
                             {
-                                sql = sql.Replace("@"+item.ParameterName.Substring(1), newValues.ToArray().ToJoinSqlInVals());
+                                sql = sql.Replace("@" + item.ParameterName.Substring(1), newValues.ToArray().ToJoinSqlInVals());
                             }
                             sql = sql.Replace(item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
                             item.Value = DBNull.Value;

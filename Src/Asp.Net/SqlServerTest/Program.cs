@@ -10,6 +10,8 @@ namespace OrmTest
         {
             //OldTestMain.Init();
 
+            Demo1_SqlSugarClient.Init();
+
             Console.WriteLine("all successfully.");
             Console.ReadKey();
         }

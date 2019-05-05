@@ -12,6 +12,13 @@ namespace SqlSugar
         protected bool IsBackupTable { get; set; }
         protected int MaxBackupDataRows { get; set; }
         protected virtual int DefultLength { get; set; }
+        public CodeFirstProvider()
+        {
+            if (DefultLength == 0)
+            {
+                DefultLength = 255;
+            }
+        }
         #endregion
 
         #region Public methods
@@ -50,15 +57,15 @@ namespace SqlSugar
         }
         public void InitTables<T, T2>()
         {
-            InitTables(typeof(T),typeof(T2));
+            InitTables(typeof(T), typeof(T2));
         }
         public void InitTables<T, T2, T3>()
         {
-            InitTables(typeof(T), typeof(T2),typeof(T3));
+            InitTables(typeof(T), typeof(T2), typeof(T3));
         }
         public void InitTables<T, T2, T3, T4>()
         {
-            InitTables(typeof(T), typeof(T2), typeof(T3),typeof(T4));
+            InitTables(typeof(T), typeof(T2), typeof(T3), typeof(T4));
         }
         public virtual void InitTables(params Type[] entityTypes)
         {

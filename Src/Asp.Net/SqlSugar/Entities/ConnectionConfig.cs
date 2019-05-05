@@ -12,7 +12,7 @@ namespace SqlSugar
         /// <summary>
         /// 
         /// </summary>
-        public string ConfigId { get; set; }
+        public dynamic ConfigId { get; set; }
         /// <summary>
         ///DbType.SqlServer Or Other
         /// </summary>

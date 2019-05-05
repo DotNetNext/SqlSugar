@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Demo\Demo1_SqlSugarClient.cs" />
     <Compile Include="OldTest\BugTest\Bug2.cs" />
     <Compile Include="OldTest\BugTest\BugModels\AccountsModel.cs" />
     <Compile Include="OldTest\BugTest\BugModels\ClientsModel.cs" />
@@ -100,9 +103,9 @@
     <Compile Include="OldTest\PerformanceTesting\SqlSugarPerformance.cs" />
     <Compile Include="OldTest\T4\SugarTemplate1.cs" />
     <Compile Include="OldTest\T4\SugarTemplate2.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>SugarTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="OldTest\UnitTest\DataTest.cs" />
     <Compile Include="OldTest\UnitTest\Delete.cs" />
@@ -145,6 +148,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

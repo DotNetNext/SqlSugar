@@ -237,7 +237,7 @@ namespace SqlSugar
         }
         public virtual bool AddTableRemark(string tableName, string description)
         {
-            string sql = string.Format(this.AddTableRemarkSql, tableName, description);
+            string sql = string.Format(this.AddTableRemarkSql,this.SqlBuilder.GetTranslationTableName(tableName), description);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
