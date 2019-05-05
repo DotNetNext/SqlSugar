@@ -30,7 +30,7 @@ namespace OrmTest.UnitTest
             using (var db = GetInstance())
             {
                 //db.Database.IsEnableLogEvent = true;
-                db.Ado.LogEventStarting = (sql, pars) =>
+                db.LogEventStarting = (sql, pars) =>
                 {
                     Console.WriteLine(sql + " " + pars);
                 };
@@ -82,7 +82,7 @@ namespace OrmTest.UnitTest
 
 
                 db.Ado.IsEnableLogEvent = true;
-                db.Ado.LogEventStarting = (sql, pars) =>
+                db.LogEventStarting = (sql, pars) =>
                 {
                     base.Check(" SELECT COUNT(1) FROM (SELECT [st].[ID] FROM [STudent] st Left JOIN [School] sc ON ( [st].[SchoolId] = [sc].[Id] )  Left JOIN [School] sc2 ON ( [sc2].[Id] = [sc].[Id] )  GROUP BY [st].[ID] ) CountTable ",
                   null, sql, null, "select t4 Error");

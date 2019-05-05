@@ -12,6 +12,11 @@ namespace SqlSugar
         MappingColumnList MappingColumns { get; set; }
         IgnoreColumnList IgnoreColumns { get; set; }
         IgnoreColumnList IgnoreInsertColumns { get; set; }
+        Action<string, SugarParameter[]> LogEventStarting { get; set; }
+        Action<string, SugarParameter[]> LogEventCompleted { get; set; }
+        Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
+        Action<SqlSugarException> ErrorEvent { get; set; }
+        Action<DiffLogModel> DiffLogEvent { get; set; }
         QueueList Queues { get; set; }
         IAdo Ado { get; }
         AopProvider Aop { get; }
@@ -47,6 +52,7 @@ namespace SqlSugar
         SimpleClient GetSimpleClient();
         SimpleClient<T> GetSimpleClient<T>() where T : class, new();
         void InitMppingInfo(Type type);
+        void InitMppingInfo<T>();
         IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new();
         IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new();
         IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new();

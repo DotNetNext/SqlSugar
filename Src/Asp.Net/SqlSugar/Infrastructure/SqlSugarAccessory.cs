@@ -31,6 +31,12 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public IgnoreColumnList IgnoreColumns { get; set; }
         public IgnoreColumnList IgnoreInsertColumns { get; set; }
+        public Action<string, SugarParameter[]> LogEventStarting { get; set; }
+        public Action<string, SugarParameter[]> LogEventCompleted { get; set; }
+        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
+        public Action<SqlSugarException> ErrorEvent { get; set; }
+        public Action<DiffLogModel> DiffLogEvent { get; set; }
+        public QueueList _Queues = new QueueList();
         #endregion
 
         #region Fields
@@ -127,7 +133,7 @@ namespace SqlSugar
         }
         #endregion
 
-        internal void InitMppingInfo<T>()
+        public void InitMppingInfo<T>()
         {
             InitMppingInfo(typeof(T));
         }

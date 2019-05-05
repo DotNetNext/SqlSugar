@@ -690,8 +690,8 @@ namespace SqlSugar
                     parameters = new List<SugarParameter>();
                 diffModel.AfterData = GetDiffTable(sql, parameters);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
-                if (this.Context.Ado.DiffLogEvent != null)
-                    this.Context.Ado.DiffLogEvent(diffModel);
+                if (this.Context.DiffLogEvent != null)
+                    this.Context.DiffLogEvent(diffModel);
                 this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
             if (this.RemoveCacheFunc != null)

@@ -66,6 +66,7 @@
     <Compile Include="Demos\H_Queue.cs" />
     <Compile Include="Demos\I_InsertOrUpdate.cs" />
     <Compile Include="Demos\J_Debugger.cs" />
+    <Compile Include="Demos\K_MultiClient.cs" />
     <Compile Include="Models\Brand.cs" />
     <Compile Include="BugTest\Bug1.cs" />
     <Compile Include="Models\VendorAndBrand.cs" />

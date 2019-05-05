@@ -11,13 +11,25 @@ namespace SqlSugar
 {
     public class SqlSugarClient : ISqlSugarClient
     {
+        #region Gobal Property
         private ISqlSugarClient _Context = null;
-        private string ThreadId;
+        private string _ThreadId;
         private ConnectionConfig _CurrentConnectionConfig;
-        private List<SugarTerant> _allClients;
+        private List<SugarTerant> _AllClients;
+        private bool _IsAllTran = false;
+        private MappingTableList _MappingTables;
+        private MappingColumnList _MappingColumns;
+        private IgnoreColumnList _IgnoreColumns;
+        private IgnoreColumnList _IgnoreInsertColumns;
+        private Action<string, SugarParameter[]> _LogEventStarting;
+        private Action<string, SugarParameter[]> _LogEventCompleted;
+        private Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> _ProcessingEventStartingSQL;
+        private Action<SqlSugarException> _ErrorEvent;
+        private Action<DiffLogModel> _DiffLogEvent;
+        #endregion
 
+        #region Api
         public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
-
         public SqlSugarClient(ConnectionConfig config)
         {
             Check.Exception(config == null, "ConnectionConfig config is null");
@@ -30,23 +42,45 @@ namespace SqlSugar
             InitConfigs(configs);
             var config = configs.First();
             InitContext(config);
-            _allClients = configs.Select(it => new SugarTerant() { ConnectionConfig = it }).ToList(); ;
-            _allClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
+            _AllClients = configs.Select(it => new SugarTerant() { ConnectionConfig = it }).ToList(); ;
+            _AllClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
         }
-
 
         public void ChangeDatabase(string configId)
         {
-            Check.Exception(!_allClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
-            InitTerant(_allClients.First(it => it.ConnectionConfig.ConfigId == configId));
+            Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
+            InitTerant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
+            if (this._IsAllTran)
+                this.Ado.BeginTran();
         }
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
         {
-            var allConfigs = _allClients.Select(it => it.ConnectionConfig);
+            var allConfigs = _AllClients.Select(it => it.ConnectionConfig);
             Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
             InitContext(allConfigs.First(changeExpression));
+            if (this._IsAllTran)
+                this.Ado.BeginTran();
         }
 
+
+        public MappingTableList MappingTables { get => _MappingTables; set => _MappingTables = value; }
+        public MappingColumnList MappingColumns { get => _MappingColumns; set => _MappingColumns = value; }
+        public IgnoreColumnList IgnoreColumns { get => _IgnoreColumns; set => _IgnoreColumns = value; }
+        public IgnoreColumnList IgnoreInsertColumns { get => _IgnoreInsertColumns; set => _IgnoreInsertColumns = value; }
+        public Action<string, SugarParameter[]> LogEventStarting { get => _LogEventStarting; set => _LogEventStarting = value; }
+        public Action<string, SugarParameter[]> LogEventCompleted { get => _LogEventCompleted; set => _LogEventCompleted = value; }
+        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get => _ProcessingEventStartingSQL; set => _ProcessingEventStartingSQL = value; }
+        public Action<SqlSugarException> ErrorEvent { get => _ErrorEvent; set => _ErrorEvent = value; }
+        public Action<DiffLogModel> DiffLogEvent { get => _DiffLogEvent; set => _DiffLogEvent = value; }
+        public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
+
+
+
+
+        public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
+
+        public Dictionary<string, object> TempItems { get => this.Context.TempItems??new Dictionary<string, object>(); set => this.Context.TempItems = value; }
+        public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
         public IAdo Ado => this.Context.Ado;
 
         public AopProvider Aop => this.Context.Aop;
@@ -54,7 +88,7 @@ namespace SqlSugar
         public ICodeFirst CodeFirst => this.Context.CodeFirst;
 
         public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
-        public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
+
 
         public IDbFirst DbFirst => this.Context.DbFirst;
 
@@ -71,14 +105,6 @@ namespace SqlSugar
         public IContextMethods RewritableMethods { get => this.Context.RewritableMethods; set => this.Context.RewritableMethods = value; }
         [Obsolete]
         public SimpleClient SimpleClient => this.Context.SimpleClient;
-
-        public Dictionary<string, object> TempItems { get => this.Context.TempItems; set => this.Context.TempItems = value; }
-        public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
-        public MappingTableList MappingTables { get => this.Context.MappingTables; set => this.Context.MappingTables = value; }
-        public MappingColumnList MappingColumns { get => this.Context.MappingColumns; set => this.Context.MappingColumns = value; }
-        public IgnoreColumnList IgnoreColumns { get => this.Context.IgnoreColumns; set => this.Context.IgnoreColumns = value; }
-        public IgnoreColumnList IgnoreInsertColumns { get => this.Context.IgnoreInsertColumns; set => this.Context.IgnoreInsertColumns = value; }
-        public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
 
         public void AddQueue(string sql, object parsmeters = null)
         {
@@ -158,6 +184,10 @@ namespace SqlSugar
         public void InitMppingInfo(Type type)
         {
             this.Context.InitMppingInfo(type);
+        }
+        public void InitMppingInfo<T>()
+        {
+            this.Context.InitMppingInfo(typeof(T));
         }
 
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
@@ -544,66 +574,134 @@ namespace SqlSugar
             return this.Context.Updateable<T>(UpdateObjs);
         }
 
+        public void BeginAllTran()
+        {
+            _IsAllTran = true;
+            this.Context.Ado.BeginTran();
+        }
+        public void CommitAllTran()
+        {
+            if (_AllClients.HasValue())
+            {
+                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                {
+                    item.Context.Ado.CommitTran();
+                }
+            }
+            _IsAllTran = false;
+        }
 
+        public void RollbackAllTran()
+        {
+            if (_AllClients.HasValue())
+            {
+                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                {
+                    item.Context.Ado.RollbackTran();
+                }
+            }
+            _IsAllTran = false;
+        }
+        #endregion
+
+        #region Helper
         private ISqlSugarClient GetContext()
         {
             if (CurrentConnectionConfig.IsShardSameThread)
             {
-                var result = _Context;
+                ISqlSugarClient result = _Context;
                 if (CallContext.ContextList.Value.IsNullOrEmpty())
                 {
+
                     CallContext.ContextList.Value = new List<ISqlSugarClient>();
                     CallContext.ContextList.Value.Add(_Context);
                 }
                 else
                 {
-                    var cacheContext = CallContext.ContextList.Value.FirstOrDefault(it =>
-                     it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString &&
-                     it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType &&
-                     it.CurrentConnectionConfig.IsAutoCloseConnection == _Context.CurrentConnectionConfig.IsAutoCloseConnection &&
-                     it.CurrentConnectionConfig.IsShardSameThread == _Context.CurrentConnectionConfig.IsShardSameThread);
+                    ISqlSugarClient cacheContext = GetCallContext();
                     if (cacheContext != null)
                     {
-                        return cacheContext;
+                        result = cacheContext;
+                    }
+                    else
+                    {
+                        result = CopyClient();
+                        CallContext.ContextList.Value.Add(result);
                     }
                 }
                 return result;
             }
-            else if (ThreadId == Thread.CurrentThread.ManagedThreadId.ToString())
+            else if (_ThreadId == Thread.CurrentThread.ManagedThreadId.ToString())
             {
+                _Context.MappingColumns = _MappingColumns;
+                _Context.MappingTables = _MappingTables;
+                _Context.IgnoreColumns = _IgnoreColumns;
+                _Context.IgnoreInsertColumns = _IgnoreInsertColumns;
+                _Context.DiffLogEvent = _DiffLogEvent;
+                _Context.LogEventCompleted = _LogEventCompleted;
+                _Context.LogEventStarting = _LogEventStarting;
+                _Context.ErrorEvent = _ErrorEvent;
+                _Context.ProcessingEventStartingSQL = _ProcessingEventStartingSQL;
                 return _Context;
             }
             else
             {
-                return new SqlSugarClient(this.CurrentConnectionConfig);
+                if (CallContext.ContextList.Value == null)
+                {
+                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
+                }
+                if (CallContext.ContextList.Value.IsNullOrEmpty() || GetCallContext() == null)
+                {
+                    var context = CopyClient();
+                    CallContext.ContextList.Value.Add(context);
+                    return context;
+                }
+                else
+                {
+                    return GetCallContext();
+                }
             }
         }
+
+        private SqlSugarClient CopyClient()
+        {
+            var result = new SqlSugarClient(this.CurrentConnectionConfig);
+            result.MappingColumns = _MappingColumns;
+            result.MappingTables = _MappingTables;
+            result.IgnoreColumns = _IgnoreColumns;
+            result.IgnoreInsertColumns = _IgnoreInsertColumns;
+            result.DiffLogEvent = _DiffLogEvent;
+            result.LogEventCompleted = _LogEventCompleted;
+            result.LogEventStarting = _LogEventStarting;
+            result.ErrorEvent = _ErrorEvent;
+            result.ProcessingEventStartingSQL = _ProcessingEventStartingSQL;
+            return result;
+        }
+
+        private ISqlSugarClient GetCallContext()
+        {
+            return CallContext.ContextList.Value.FirstOrDefault(it => 
+                it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType&&
+                it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString&&
+                it.CurrentConnectionConfig.InitKeyType==_Context.CurrentConnectionConfig.InitKeyType
+            );
+        }
+
         private void InitContext(ConnectionConfig config)
         {
             _Context = new SqlSugarContext(config);
             this.CurrentConnectionConfig = config;
-            ThreadId = Thread.CurrentThread.ManagedThreadId.ToString();
-            if (this.MappingTables == null)
-            {
+            _ThreadId = Thread.CurrentThread.ManagedThreadId.ToString();
+            if (_MappingColumns == null)
                 this.MappingTables = new MappingTableList();
-            }
             if (this.MappingColumns == null)
-            {
                 this.MappingColumns = new MappingColumnList();
-            }
             if (this.IgnoreColumns == null)
-            {
                 this.IgnoreColumns = new IgnoreColumnList();
-            }
             if (this.IgnoreInsertColumns == null)
-            {
                 this.IgnoreInsertColumns = new IgnoreColumnList();
-            }
-            if (this.Queues == null)
-            {
-                this.Queues = new QueueList();
-            }
         }
+
         private void InitConfigs(List<ConnectionConfig> configs)
         {
             foreach (var item in configs)
@@ -614,6 +712,7 @@ namespace SqlSugar
                 }
             }
         }
+
         private void InitTerant(SugarTerant terant)
         {
             if (terant.Context == null)
@@ -622,6 +721,7 @@ namespace SqlSugar
             }
             _Context = terant.Context;
             this.CurrentConnectionConfig = terant.ConnectionConfig;
-        }
+        } 
+        #endregion
     }
 }

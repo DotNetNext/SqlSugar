@@ -278,9 +278,9 @@ namespace SqlSugar
             if (isCopyEvents)
             {
                 newClient.Ado.IsEnableLogEvent = Context.Ado.IsEnableLogEvent;
-                newClient.Ado.LogEventStarting = Context.Ado.LogEventStarting;
-                newClient.Ado.LogEventCompleted = Context.Ado.LogEventCompleted;
-                newClient.Ado.ProcessingEventStartingSQL = Context.Ado.ProcessingEventStartingSQL;
+                newClient.LogEventStarting = Context.LogEventStarting;
+                newClient.LogEventCompleted = Context.LogEventCompleted;
+                newClient.ProcessingEventStartingSQL = Context.ProcessingEventStartingSQL;
                 newClient.QueryFilter = Context.QueryFilter;
             }
             return newClient;

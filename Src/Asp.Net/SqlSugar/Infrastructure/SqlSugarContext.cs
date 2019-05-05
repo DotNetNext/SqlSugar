@@ -912,7 +912,7 @@ namespace SqlSugar
             }
             this.Queues.Add(sql, parsmeters);
         }
-        public QueueList Queues { get; set; }
+        public QueueList Queues { get =>_Queues; set => _Queues = value; }
 
         private T SaveQueuesProvider<T>(bool isTran, Func<string, List<SugarParameter>, T> func)
         {

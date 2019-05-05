@@ -14,10 +14,10 @@ namespace SqlSugar
             this.Context.Ado.IsEnableLogEvent = true;
         }
         private SqlSugarContext Context { get; set; }
-        public Action<DiffLogModel> OnDiffLogEvent { set { this.Context.Ado.DiffLogEvent = value; } }
-        public Action<SqlSugarException> OnError { set { this.Context.Ado.ErrorEvent = value; } }
-        public Action<string, SugarParameter[]> OnLogExecuting { set { this.Context.Ado.LogEventStarting = value; } }
-        public Action<string, SugarParameter[]> OnLogExecuted { set { this.Context.Ado.LogEventCompleted = value; } }
-        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> OnExecutingChangeSql { set { this.Context.Ado.ProcessingEventStartingSQL = value; } }
+        public Action<DiffLogModel> OnDiffLogEvent { set { this.Context.DiffLogEvent = value; } }
+        public Action<SqlSugarException> OnError { set { this.Context.ErrorEvent = value; } }
+        public Action<string, SugarParameter[]> OnLogExecuting { set { this.Context.LogEventStarting = value; } }
+        public Action<string, SugarParameter[]> OnLogExecuted { set { this.Context.LogEventCompleted = value; } }
+        public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> OnExecutingChangeSql { set { this.Context.ProcessingEventStartingSQL = value; } }
     }
 }

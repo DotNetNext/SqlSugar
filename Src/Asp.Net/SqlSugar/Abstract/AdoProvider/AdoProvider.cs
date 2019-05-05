@@ -59,12 +59,12 @@ namespace SqlSugar
         public virtual CommandType CommandType { get; set; }
         public virtual bool IsEnableLogEvent { get; set; }
         public virtual bool IsClearParameters { get; set; }
-        public virtual Action<string, SugarParameter[]> LogEventStarting { get; set; }
-        public virtual Action<string, SugarParameter[]> LogEventCompleted { get; set; }
-        public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
+        public virtual Action<string, SugarParameter[]> LogEventStarting=> this.Context.LogEventStarting;
+        public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.LogEventCompleted;
+        public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => this.Context.ProcessingEventStartingSQL;
         protected virtual Func<string,string> FormatSql { get; set; }
-        public virtual Action<SqlSugarException> ErrorEvent { get; set; }
-        public virtual Action<DiffLogModel> DiffLogEvent { get; set; }
+        public virtual Action<SqlSugarException> ErrorEvent => this.Context.ErrorEvent;
+        public virtual Action<DiffLogModel> DiffLogEvent => this.Context.DiffLogEvent;
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
         #endregion

@@ -10,7 +10,7 @@ namespace SqlSugar
 {
     public class InsertableProvider<T> : IInsertable<T> where T : class, new()
     {
-        public ISqlSugarClient Context { get; set; }
+        public SqlSugarContext Context { get; set; }
         public IAdo Ado { get { return Context.Ado; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public InsertBuilder InsertBuilder { get; set; }
@@ -477,8 +477,8 @@ namespace SqlSugar
                     parameters = new List<SugarParameter>();
                 diffModel.AfterData = GetDiffTable(sql, result);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
-                if (this.Context.Ado.DiffLogEvent != null)
-                    this.Context.Ado.DiffLogEvent(diffModel);
+                if (this.Context.DiffLogEvent != null)
+                    this.Context.DiffLogEvent(diffModel);
                 this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
             if (this.RemoveCacheFunc != null)

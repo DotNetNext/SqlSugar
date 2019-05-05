@@ -69,7 +69,7 @@ namespace OrmTest.Demo
             });
 
             //Processing prior to execution of SQL
-            db.Ado.ProcessingEventStartingSQL = (sql, par) =>
+            db.ProcessingEventStartingSQL = (sql, par) =>
             {
                 if (sql.Contains("{0}"))
                 {
