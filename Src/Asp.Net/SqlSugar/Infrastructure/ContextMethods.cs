@@ -275,9 +275,11 @@ namespace SqlSugar
             newClient.MappingColumns = this.TranslateCopy(Context.MappingColumns);
             newClient.MappingTables = this.TranslateCopy(Context.MappingTables);
             newClient.IgnoreColumns = this.TranslateCopy(Context.IgnoreColumns);
+            newClient.IgnoreInsertColumns = this.TranslateCopy(Context.IgnoreInsertColumns);
             if (isCopyEvents)
             {
                 newClient.QueryFilter = Context.QueryFilter;
+                newClient.CurrentConnectionConfig.AopEvents = Context.CurrentConnectionConfig.AopEvents;
             }
             return newClient;
         }
