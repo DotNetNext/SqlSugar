@@ -5,7 +5,12 @@ using System.Text;
 
 namespace OrmTest.Demo
 {
-    class Demo2_Queryable
+    public class Demo2_Queryable
     {
+
+        public static void Init()
+        {
+
+        }
     }
 }

@@ -8,9 +8,10 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            OldTestMain.Init();
+            //OldTestMain.Init();
 
             Demo1_SqlSugarClient.Init();
+            Democ_GobalFilter.Init();
 
             Console.WriteLine("all successfully.");
             Console.ReadKey();
