@@ -49,6 +49,19 @@ namespace OrmTest
                         .SettingPropertyTemplate(old =>{return old;})
                         .SettingConstructorTemplate(old =>{return old; })
                    .CreateClassFile("c:\\Demo\\7");
+
+
+
+            foreach (var item in db.DbMaintenance.GetTableInfoList())
+            {
+                string entityName = item.Name.ToUpper();/*Format class name*/
+                db.MappingTables.Add(entityName , item.Name);
+                foreach (var col in db.DbMaintenance.GetColumnInfosByTableName(item.Name))
+                {
+                    db.MappingColumns.Add(col.DbColumnName.ToUpper() /*Format class property name*/, col.DbColumnName, entityName);
+                }
+            }
+            db.DbFirst.IsCreateAttribute().CreateClassFile("c:\\Demo\\8", "Models");
         }
     }
 }
