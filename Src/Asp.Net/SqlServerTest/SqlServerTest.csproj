@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Demo\Democ_GobalFilter.cs" />
     <Compile Include="Demo\Demo2_Queryable.cs" />
+    <Compile Include="Demo\DemoD_DbFirst.cs" />
     <Compile Include="Models\MyCustomAttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />

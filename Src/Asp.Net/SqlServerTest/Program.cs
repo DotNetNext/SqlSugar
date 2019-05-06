@@ -12,6 +12,7 @@ namespace OrmTest
 
             Demo1_SqlSugarClient.Init();
             Democ_GobalFilter.Init();
+            DemoD_DbFirst.Init();
 
             Console.WriteLine("all successfully.");
             Console.ReadKey();
