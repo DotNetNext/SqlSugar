@@ -22,6 +22,26 @@ namespace OrmTest
 
         private static void SqlSugarClient()
         {
+            //Create db
+            Console.WriteLine("#### SqlSugarClient Start ####");
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
+            {
+                DbType = DbType.SqlServer,
+                ConnectionString = Config.ConnectionString,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection = true,
+                AopEvents = new AopEvents
+                {
+                    OnLogExecuting = (sql, p) =>
+                    {
+                        Console.WriteLine(sql);
+                    }
+                }
+            });
+
+            //Use db
+            var dt = db.Ado.GetDataTable("select 1");
+            Console.WriteLine("#### SqlSugarClient End ####");
 
         }
 
@@ -75,7 +95,7 @@ namespace OrmTest
 
             //Use Inherit DbContext
             OrderDal dal = new OrderDal();
-            var data=dal.GetById(1);
+            var data = dal.GetById(1);
             var list = dal.GetList();
 
             Console.WriteLine("#### DbContext End ####");
@@ -259,7 +279,7 @@ namespace OrmTest
 
     public class OrderDal : DbContext<Order>
     {
-   
+
     }
     /// <summary>
     /// DbContext  Example 2
