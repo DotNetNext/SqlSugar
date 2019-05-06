@@ -1598,6 +1598,8 @@ namespace SqlSugar
                     {
                         var contextProperty = item.GetType().GetProperty("Context");
                         SqlSugarContext newClient = this.Context.Utilities.CopyContext();
+                        if (newClient.CurrentConnectionConfig.AopEvents == null)
+                            newClient.CurrentConnectionConfig.AopEvents = new AopEvents();
                         contextProperty.SetValue(item, newClient, null);
                     }
                 }
