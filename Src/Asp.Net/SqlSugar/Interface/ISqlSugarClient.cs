@@ -43,7 +43,6 @@ namespace SqlSugar
         IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new();
         IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new();
         IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new();
-        void Dispose();
         DateTime GetDate();
         SimpleClient GetSimpleClient();
         SimpleClient<T> GetSimpleClient<T>() where T : class, new();

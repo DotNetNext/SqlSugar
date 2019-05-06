@@ -234,6 +234,12 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            string sql = string.Format(this.AddTableRemarkSql, this.SqlBuilder.GetTranslationTableName(tableName), description);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
