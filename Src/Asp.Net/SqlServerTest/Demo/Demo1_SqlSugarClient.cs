@@ -27,7 +27,8 @@ namespace OrmTest
 
         private static void DbContext()
         {
-
+            Console.WriteLine("");
+            Console.WriteLine("#### DbContext Start ####");
             var insertObj = new Order { Name = "jack", CreateTime=DateTime.Now };
             var InsertObjs = new Order[] { insertObj };
 
@@ -71,6 +72,7 @@ namespace OrmTest
             orderDb.UpdateRange(InsertObjs); 
             orderDb.Update(it => new Order() { Name = "a", }, it => it.Id == 1);
             orderDb.AsUpdateable(insertObj).UpdateColumns(it=>new { it.Name }).ExecuteCommand();
+            Console.WriteLine("#### DbContext End ####");
         }
 
         private static void CustomAttribute()
