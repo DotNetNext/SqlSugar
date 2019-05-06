@@ -72,13 +72,13 @@ namespace OrmTest
             orderDb.UpdateRange(InsertObjs);
             orderDb.Update(it => new Order() { Name = "a", }, it => it.Id == 1);
             orderDb.AsUpdateable(insertObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
-            Console.WriteLine("#### DbContext End ####");
-
 
             //Use Inherit DbContext
             OrderDal dal = new OrderDal();
             var data=dal.GetById(1);
             var list = dal.GetList();
+
+            Console.WriteLine("#### DbContext End ####");
         }
 
         private static void CustomAttribute()
