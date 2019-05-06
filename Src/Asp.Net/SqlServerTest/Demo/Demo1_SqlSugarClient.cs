@@ -13,9 +13,64 @@ namespace OrmTest
 
         public static void Init()
         {
+            SqlSugarClient();
+            DbContext();//使用DbContext美化代码
             SingletonPattern();//单例
             DistributedTransactionExample();//分布式事务
             CustomAttribute();//自定义特性
+        }
+
+        private static void SqlSugarClient()
+        {
+ 
+        }
+
+        private static void DbContext()
+        {
+
+            var insertObj = new Order { Name = "jack", CreateTime=DateTime.Now };
+            var InsertObjs = new Order[] { insertObj };
+
+            DbContext context = new DbContext();
+
+            context.Db.CodeFirst.InitTables<Order, OrderItem>();//Create Tables
+         ;
+            var orderDb = context.OrderDb;
+
+            //Select
+            var data1 = orderDb.GetById(1);
+            var data2 = orderDb.GetList();
+            var data3 = orderDb.GetList(it => it.Id == 1); 
+            var data4 = orderDb.GetSingle(it => it.Id == 1);
+            var p = new PageModel() { PageIndex = 1, PageSize = 2 };
+            var data5 = orderDb.GetPageList(it => it.Name == "xx", p);
+            Console.Write(p.PageCount);
+            var data6 = orderDb.GetPageList(it => it.Name == "xx", p, it => it.Name, OrderByType.Asc);
+            Console.Write(p.PageCount);
+            List<IConditionalModel> conModels = new List<IConditionalModel>();
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
+            var data7 = orderDb.GetPageList(conModels, p, it => it.Name, OrderByType.Asc);
+            orderDb.AsQueryable().Where(x => x.Id == 1).ToList();
+
+            //Insert
+            orderDb.Insert(insertObj);
+            orderDb.InsertRange(InsertObjs);
+            var id = orderDb.InsertReturnIdentity(insertObj);
+            orderDb.AsInsertable(insertObj).ExecuteCommand();
+
+
+            //Delete
+            orderDb.Delete(insertObj);
+            orderDb.DeleteById(1);
+            orderDb.DeleteById(new int[] { 1, 2 });
+            orderDb.Delete(it => it.Id == 1);
+            orderDb.AsDeleteable().Where(it => it.Id == 1).ExecuteCommand();
+
+            //Update
+            orderDb.Update(insertObj); 
+            orderDb.UpdateRange(InsertObjs); 
+            orderDb.Update(it => new Order() { Name = "a", }, it => it.Id == 1);
+            orderDb.AsUpdateable(insertObj).UpdateColumns(it=>new { it.Name }).ExecuteCommand();
         }
 
         private static void CustomAttribute()
@@ -91,7 +146,7 @@ namespace OrmTest
                 DbType = DbType.SqlServer,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
-                IsAutoCloseConnection=true,
+                IsAutoCloseConnection = true,
                 AopEvents = new AopEvents()
                 {
                     OnLogExecuting = (sql, p) => { Console.WriteLine(sql); }
@@ -164,4 +219,30 @@ namespace OrmTest
 
 
     }
+
+    public class DbContext
+    {
+
+        public SqlSugarClient Db;
+        public DbContext()
+        {
+            Db = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = Config.ConnectionString,
+                DbType = DbType.SqlServer,
+                IsAutoCloseConnection = true,
+                InitKeyType = InitKeyType.Attribute,
+                AopEvents = new AopEvents()
+                {
+                    OnLogExecuting = (sql, p) =>
+                    {
+                        Console.WriteLine(sql);
+                    }
+                }
+            });
+        }
+        public SimpleClient<Order> OrderDb => new SimpleClient<Order>(Db);
+        public SimpleClient<OrderItem> OrderItemDb => new SimpleClient<OrderItem>(Db);
+    }
+
 }
