@@ -49,13 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Demo\Democ_GobalFilter.cs" />
-    <Compile Include="Demo\Demo2_Queryable.cs" />
+    <Compile Include="Demo\DemoC_GobalFilter.cs" />
+    <Compile Include="Demo\Demo1_Queryable.cs" />
     <Compile Include="Demo\DemoD_DbFirst.cs" />
     <Compile Include="Models\MyCustomAttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
-    <Compile Include="Demo\Demo1_SqlSugarClient.cs" />
+    <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="OldTest\BugTest\Bug2.cs" />
     <Compile Include="OldTest\BugTest\BugModels\AccountsModel.cs" />
     <Compile Include="OldTest\BugTest\BugModels\ClientsModel.cs" />
