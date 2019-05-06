@@ -22,26 +22,26 @@ namespace OrmTest
 
         private static void SqlSugarClient()
         {
- 
+
         }
 
         private static void DbContext()
         {
             Console.WriteLine("");
             Console.WriteLine("#### DbContext Start ####");
-            var insertObj = new Order { Name = "jack", CreateTime=DateTime.Now };
+            var insertObj = new Order { Name = "jack", CreateTime = DateTime.Now };
             var InsertObjs = new Order[] { insertObj };
 
             DbContext context = new DbContext();
 
             context.Db.CodeFirst.InitTables<Order, OrderItem>();//Create Tables
-         ;
+            ;
             var orderDb = context.OrderDb;
 
             //Select
             var data1 = orderDb.GetById(1);
             var data2 = orderDb.GetList();
-            var data3 = orderDb.GetList(it => it.Id == 1); 
+            var data3 = orderDb.GetList(it => it.Id == 1);
             var data4 = orderDb.GetSingle(it => it.Id == 1);
             var p = new PageModel() { PageIndex = 1, PageSize = 2 };
             var data5 = orderDb.GetPageList(it => it.Name == "xx", p);
@@ -68,11 +68,17 @@ namespace OrmTest
             orderDb.AsDeleteable().Where(it => it.Id == 1).ExecuteCommand();
 
             //Update
-            orderDb.Update(insertObj); 
-            orderDb.UpdateRange(InsertObjs); 
+            orderDb.Update(insertObj);
+            orderDb.UpdateRange(InsertObjs);
             orderDb.Update(it => new Order() { Name = "a", }, it => it.Id == 1);
-            orderDb.AsUpdateable(insertObj).UpdateColumns(it=>new { it.Name }).ExecuteCommand();
+            orderDb.AsUpdateable(insertObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
             Console.WriteLine("#### DbContext End ####");
+
+
+            //Use Inherit DbContext
+            OrderDal dal = new OrderDal();
+            var data=dal.GetById(1);
+            var list = dal.GetList();
         }
 
         private static void CustomAttribute()
@@ -222,6 +228,9 @@ namespace OrmTest
 
     }
 
+    /// <summary>
+    /// DbContext Example 1
+    /// </summary>
     public class DbContext
     {
 
@@ -245,6 +254,51 @@ namespace OrmTest
         }
         public SimpleClient<Order> OrderDb => new SimpleClient<Order>(Db);
         public SimpleClient<OrderItem> OrderItemDb => new SimpleClient<OrderItem>(Db);
+    }
+
+
+    public class OrderDal : DbContext<Order>
+    {
+   
+    }
+    /// <summary>
+    /// DbContext  Example 2
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class DbContext<T> where T : class, new()
+    {
+
+        public SqlSugarClient Db;
+        public DbContext()
+        {
+            Db = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = Config.ConnectionString,
+                DbType = DbType.SqlServer,
+                IsAutoCloseConnection = true,
+                InitKeyType = InitKeyType.Attribute,
+                AopEvents = new AopEvents()
+                {
+                    OnLogExecuting = (sql, p) =>
+                    {
+                        Console.WriteLine(sql);
+                    }
+                }
+            });
+        }
+        public SimpleClient<T> CurrentDb => new SimpleClient<T>(Db);
+        public virtual T GetById(int id)
+        {
+            return CurrentDb.GetById(id);
+        }
+        public virtual List<T> GetList()
+        {
+            return CurrentDb.GetList();
+        }
+        public virtual bool Delete(int id)
+        {
+            return CurrentDb.DeleteById(id);
+        }
     }
 
 }
