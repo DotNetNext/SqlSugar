@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +15,49 @@ namespace OrmTest
         {
             SingletonPattern();//单例
             DistributedTransactionExample();//分布式事务
+            CustomAttribute();//自定义特性
         }
+
+        private static void CustomAttribute()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### Custom Attribute Start ####");
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = Config.ConnectionString,
+                DbType = DbType.SqlServer,
+                IsAutoCloseConnection = true,
+                InitKeyType = InitKeyType.Attribute,
+                ConfigureExternalServices = new ConfigureExternalServices()
+                {
+                    EntityService = (property, column) =>
+                    {
+
+                        var attributes = property.GetCustomAttributes(true);//get all attributes 
+
+                        if (attributes.Any(it => it is KeyAttribute))// by attribute set primarykey
+                        {
+                            column.IsPrimarykey = true;
+                        }
+                    },
+                    EntityNameService = (type, entity) =>
+                    {
+                        var attributes = type.GetCustomAttributes(true);
+                        if (attributes.Any(it => it is TableAttribute))
+                        {
+                            entity.DbTableName = (attributes.First(it => it is TableAttribute) as TableAttribute).Name;
+                        }
+                    }
+                }
+            });
+            db.CodeFirst.InitTables<MyCustomAttributeTable>();//Create Table
+
+            db.Insertable(new MyCustomAttributeTable() { Id = Guid.NewGuid().ToString(), Name = "Name" }).ExecuteCommand();
+            var list = db.Queryable<MyCustomAttributeTable>().ToList();
+
+            Console.WriteLine("#### Custom Attribute End ####");
+        }
+
 
         private static void SingletonPattern()
         {
@@ -64,6 +108,12 @@ namespace OrmTest
                 new ConnectionConfig(){ ConfigId=1, DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
                 new ConnectionConfig(){ ConfigId=2, DbType=DbType.MySql, ConnectionString=Config.ConnectionString4 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
             });
+
+            db.MappingTables.Add(typeof(Order).Name, typeof(Order).Name + "2018");
+            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order));
+
+            db.MappingTables.Add(typeof(Order).Name, typeof(Order).Name + "2019");
+            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order));//
 
             //use first(SqlServer)
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
