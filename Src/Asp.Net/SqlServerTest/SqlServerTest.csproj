@@ -52,6 +52,7 @@
     <Compile Include="Demo\DemoC_GobalFilter.cs" />
     <Compile Include="Demo\Demo1_Queryable.cs" />
     <Compile Include="Demo\DemoD_DbFirst.cs" />
+    <Compile Include="Demo\DemoE_CodeFirst.cs" />
     <Compile Include="Models\MyCustomAttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
