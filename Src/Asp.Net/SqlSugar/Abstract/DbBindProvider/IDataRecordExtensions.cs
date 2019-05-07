@@ -243,7 +243,7 @@ namespace SqlSugar
             return t;
         }
 
-        public static object GetEntity(this IDataReader dr, SqlSugarContext context)
+        public static object GetEntity(this IDataReader dr, SqlSugarEngine context)
         {
             return null;
         }

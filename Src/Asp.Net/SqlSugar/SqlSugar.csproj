@@ -277,8 +277,8 @@
     <Compile Include="Interface\IContextMethods.cs" />
     <Compile Include="Interface\IUpdateable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Infrastructure\SqlSugarAccessory.cs" />
-    <Compile Include="Infrastructure\SqlSugarContext.cs" />
+    <Compile Include="Infrastructure\SqlSugarEngine_Part2.cs" />
+    <Compile Include="Infrastructure\SqlSugarEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="References\MySql.Data.dll" />

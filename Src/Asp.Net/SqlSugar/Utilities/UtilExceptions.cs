@@ -18,18 +18,18 @@ namespace SqlSugar
         public SqlSugarException(string message)
             : base(message){}
 
-        public SqlSugarException(SqlSugarContext context,string message, string sql)
+        public SqlSugarException(SqlSugarEngine context,string message, string sql)
             : base(message) {
             this.Sql = sql;
         }
 
-        public SqlSugarException(SqlSugarContext context, string message, string sql, object pars)
+        public SqlSugarException(SqlSugarEngine context, string message, string sql, object pars)
             : base(message) {
             this.Sql = sql;
             this.Parametres = pars;
         }
 
-        public SqlSugarException(SqlSugarContext context, Exception ex, string sql, object pars)
+        public SqlSugarException(SqlSugarEngine context, Exception ex, string sql, object pars)
             : base(ex.Message)
         {
             this.Sql = sql;
@@ -40,7 +40,7 @@ namespace SqlSugar
             this.Source = ex.Source;
         }
 
-        public SqlSugarException(SqlSugarContext context, string message, object pars)
+        public SqlSugarException(SqlSugarEngine context, string message, object pars)
             : base(message) {
             this.Parametres = pars;
         }

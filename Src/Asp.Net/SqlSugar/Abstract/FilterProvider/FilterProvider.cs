@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public class QueryFilterProvider : IFilter
     {
-        internal SqlSugarContext Context { get; set; }
+        internal SqlSugarEngine Context { get; set; }
         private List<SqlFilterItem> _Filters { get; set; }
 
         public IFilter Add(SqlFilterItem filter)

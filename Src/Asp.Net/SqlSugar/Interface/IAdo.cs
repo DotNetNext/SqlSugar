@@ -16,7 +16,7 @@ namespace SqlSugar
         IDbTransaction Transaction { get; set; }
         IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
         SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null);
-        SqlSugarContext Context { get; set; }
+        SqlSugarEngine Context { get; set; }
         void ExecuteBefore(string sql, SugarParameter[] pars);
         void ExecuteAfter(string sql, SugarParameter[] pars);
         bool IsEnableLogEvent{get;set;}

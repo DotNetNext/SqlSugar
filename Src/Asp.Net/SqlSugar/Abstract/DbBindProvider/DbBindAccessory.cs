@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public partial class DbBindAccessory
     {
-        protected List<T> GetEntityList<T>(SqlSugarContext context, IDataReader dataReader)
+        protected List<T> GetEntityList<T>(SqlSugarEngine context, IDataReader dataReader)
         {
             Type type = typeof(T);
             var fieldNames = GetDataReaderNames(dataReader);

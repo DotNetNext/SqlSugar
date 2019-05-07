@@ -15,7 +15,7 @@ namespace SqlSugar
 
         List<JoinQueryInfo> JoinQueryInfos { get; set; }
         bool IsSingle { get; set; }
-        SqlSugarContext Context { get; set; }
+        SqlSugarEngine Context { get; set; }
         IDbMethods DbMehtods { get; set; }
         Expression Expression { get; set; }
         int Index { get; set; }

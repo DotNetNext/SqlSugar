@@ -15,11 +15,11 @@ namespace SqlSugar
     /// ** date：2017/1/2
     /// ** email:610262374@qq.com
     /// </summary>
-    public partial class SqlSugarContext: ISqlSugarClient
+    public partial class SqlSugarEngine: ISqlSugarClient
     {
 
         #region Constructor
-        public SqlSugarContext(ConnectionConfig config)
+        public SqlSugarEngine(ConnectionConfig config)
         {
             this.Context = this;
             this.CurrentConnectionConfig = config;

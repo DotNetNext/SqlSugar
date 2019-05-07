@@ -10,7 +10,7 @@ namespace SqlSugar
     public abstract partial class DbBindProvider : DbBindAccessory, IDbBind
     {
         #region Properties
-        public virtual SqlSugarContext Context { get; set; }
+        public virtual SqlSugarEngine Context { get; set; }
         public abstract List<KeyValuePair<string, CSharpDataType>> MappingTypes { get; }
         #endregion
 

@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         string SqlTemplate { get; }
         List<SugarParameter> Parameters { get; set; }
-        SqlSugarContext  Context { get; set; }
+        SqlSugarEngine  Context { get; set; }
         StringBuilder sql { get; set; }
         string ToSqlString();
         void Clear();

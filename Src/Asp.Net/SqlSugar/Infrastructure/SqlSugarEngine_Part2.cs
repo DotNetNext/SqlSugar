@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public partial class SqlSugarContext
+    public partial class SqlSugarEngine
     {
         #region Properties
         public ISqlSugarClient Context

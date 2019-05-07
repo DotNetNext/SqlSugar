@@ -17,7 +17,7 @@ namespace SqlSugar
         #endregion
 
         #region Properties
-        public SqlSugarContext Context { get; set; }
+        public SqlSugarEngine Context { get; set; }
         public string Fields
         {
             get

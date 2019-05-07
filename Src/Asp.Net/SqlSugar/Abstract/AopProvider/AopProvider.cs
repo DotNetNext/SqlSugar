@@ -8,12 +8,12 @@ namespace SqlSugar
     public class AopProvider
     {
         private AopProvider() { }
-        public AopProvider(SqlSugarContext context)
+        public AopProvider(SqlSugarEngine context)
         {
             this.Context = context;
             this.Context.Ado.IsEnableLogEvent = true;
         }
-        private SqlSugarContext Context { get; set; }
+        private SqlSugarEngine Context { get; set; }
         public Action<DiffLogModel> OnDiffLogEvent { set { this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent = value; } }
         public Action<SqlSugarException> OnError { set { this.Context.CurrentConnectionConfig.AopEvents.OnError = value; } }
         public Action<string, SugarParameter[]> OnLogExecuting { set { this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuting= value; } }
