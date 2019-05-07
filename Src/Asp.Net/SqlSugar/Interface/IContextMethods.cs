@@ -24,7 +24,6 @@ namespace SqlSugar
         void RemoveCacheAll();
         void RemoveCacheAll<T>();
         void RemoveCache<T>(string key);
-        KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models,int beginIndex=0);
         void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action);
 
     }

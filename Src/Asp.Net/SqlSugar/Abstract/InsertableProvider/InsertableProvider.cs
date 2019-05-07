@@ -522,7 +522,7 @@ namespace SqlSugar
                 }
             }
             Check.Exception(cons.IsNullOrEmpty(), "Insertable.EnableDiffLogEvent need primary key");
-            var sqlable = this.Context.Utilities.ConditionalModelToSql(cons);
+            var sqlable = this.SqlBuilder.ConditionalModelToSql(cons);
             whereSql = sqlable.Key;
             parameters.AddRange(sqlable.Value);
             var dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
