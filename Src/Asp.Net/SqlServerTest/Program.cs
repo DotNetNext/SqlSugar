@@ -10,9 +10,13 @@ namespace OrmTest
         {
             //OldTestMain.Init();
 
+            //Demo
             Demo1_SqlSugarClient.Init();
             Democ_GobalFilter.Init();
             DemoD_DbFirst.Init();
+
+            //Unit test
+            NewUnitTest.Init();
 
             Console.WriteLine("all successfully.");
             Console.ReadKey();
