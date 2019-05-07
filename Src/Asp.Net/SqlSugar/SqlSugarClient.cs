@@ -15,7 +15,7 @@ namespace SqlSugar
         private ISqlSugarClient _Context = null;
         private string _ThreadId;
         private ConnectionConfig _CurrentConnectionConfig;
-        private List<SugarTerant> _AllClients;
+        private List<SugarTenant> _AllClients;
         private bool _IsAllTran = false;
         private MappingTableList _MappingTables;
         private MappingColumnList _MappingColumns;
@@ -38,14 +38,14 @@ namespace SqlSugar
             InitConfigs(configs);
             var config = configs.First();
             InitContext(config);
-            _AllClients = configs.Select(it => new SugarTerant() { ConnectionConfig = it }).ToList(); ;
+            _AllClients = configs.Select(it => new SugarTenant() { ConnectionConfig = it }).ToList(); ;
             _AllClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
         }
 
         public void ChangeDatabase(string configId)
         {
             Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
-            InitTerant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
+            InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
         }
@@ -53,7 +53,7 @@ namespace SqlSugar
         {
             var allConfigs = _AllClients.Select(it => it.ConnectionConfig);
             Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
-            InitTerant(_AllClients.First(it=>it.ConnectionConfig==allConfigs.First(changeExpression)));
+            InitTenant(_AllClients.First(it=>it.ConnectionConfig==allConfigs.First(changeExpression)));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
         }
@@ -699,14 +699,14 @@ namespace SqlSugar
             }
         }
 
-        private void InitTerant(SugarTerant terant)
+        private void InitTenant(SugarTenant Tenant)
         {
-            if (terant.Context == null)
+            if (Tenant.Context == null)
             {
-                terant.Context = new SqlSugarClient(terant.ConnectionConfig);
+                Tenant.Context = new SqlSugarClient(Tenant.ConnectionConfig);
             }
-            _Context = terant.Context;
-            this.CurrentConnectionConfig = terant.ConnectionConfig;
+            _Context = Tenant.Context;
+            this.CurrentConnectionConfig = Tenant.ConnectionConfig;
         }
         #endregion
 

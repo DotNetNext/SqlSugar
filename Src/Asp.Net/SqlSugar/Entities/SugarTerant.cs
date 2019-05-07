@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SugarTerant
+    public class SugarTenant
     {
         public ISqlSugarClient Context { get; set; }
         public ConnectionConfig ConnectionConfig { get; set; }
