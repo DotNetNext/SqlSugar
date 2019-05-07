@@ -17,6 +17,7 @@ namespace SqlSugar
         private ConnectionConfig _CurrentConnectionConfig;
         private List<SugarTenant> _AllClients;
         private bool _IsAllTran = false;
+        private bool _IsOpen = false;
         private MappingTableList _MappingTables;
         private MappingColumnList _MappingColumns;
         private IgnoreColumnList _IgnoreColumns;
@@ -481,15 +482,6 @@ namespace SqlSugar
         #region Ado
         public IAdo Ado => this.Context.Ado;
 
-        public void Close()
-        {
-            this.Context.Close();
-        }
-        public void Open()
-        {
-            this.Context.Open();
-        }
-
         #endregion
 
         #region Deleteable
@@ -541,13 +533,15 @@ namespace SqlSugar
         public QueryFilterProvider QueryFilter { get => this.Context.QueryFilter; set => this.Context.QueryFilter = value; }
         #endregion
 
-        #region ITenant
+        #region TenantManager
         public void ChangeDatabase(string configId)
         {
             Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
             InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
+            if (this._IsOpen) 
+                this.Open();
         }
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
         {
@@ -556,41 +550,115 @@ namespace SqlSugar
             InitTenant(_AllClients.First(it => it.ConnectionConfig == allConfigs.First(changeExpression)));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
+            if (this._IsOpen)
+                this.Open();
         }
-        public void BeginAllTran()
+        public void BeginTran()
         {
             _IsAllTran = true;
             this.Context.Ado.BeginTran();
         }
-        public void CommitAllTran()
+        public void CommitTran()
         {
-            if (_AllClients.HasValue())
+            this.Context.Ado.CommitTran();
+            AllClientEach(it => it.Ado.CommitTran());
+            _IsAllTran = false;
+        }
+        public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
+        {
+            var result = new DbResult<bool>();
+            try
             {
-                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                this.BeginTran();
+                if (action != null)
+                    action();
+                this.CommitTran();
+                result.Data = result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+                if (errorCallBack != null)
                 {
-                    item.Context.Ado.CommitTran();
+                    errorCallBack(ex);
                 }
             }
-            _IsAllTran = false;
+            return result;
         }
 
-        public void RollbackAllTran()
+        public Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null)
         {
-            if (_AllClients.HasValue())
+            Task<DbResult<bool>> result = new Task<DbResult<bool>>(() =>
             {
-                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                return UseTran(action, errorCallBack);
+            });
+            TaskStart(result);
+            return result;
+        }
+
+        public DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null)
+        {
+            var result = new DbResult<T>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    result.Data = action();
+                this.CommitTran();
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+                if (errorCallBack != null)
                 {
-                    item.Context.Ado.RollbackTran();
+                    errorCallBack(ex);
                 }
             }
+            return result;
+        }
+
+        public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
+        {
+            Task<DbResult<T>> result = new Task<DbResult<T>>(() =>
+            {
+                return UseTran(action, errorCallBack);
+            });
+            TaskStart(result);
+            return result;
+        }
+
+        public void RollbackTran()
+        {
+            this.Context.Ado.RollbackTran();
+            AllClientEach(it=>it.Ado.RollbackTran());
             _IsAllTran = false;
         }
+        public void Close()
+        {
+            this.Context.Close();
+            AllClientEach(it => it.Close());
+            _IsOpen = false;
+        }
+        public void Open()
+        {
+            this.Context.Open();
+            _IsOpen = true;
+        }
+
         #endregion
 
         #region IDispose
         public void Dispose()
         {
             this.Context.Dispose();
+            AllClientEach(it => it.Ado.RollbackTran());
         }
 
         #endregion
@@ -716,6 +784,16 @@ namespace SqlSugar
                 }
             }
         }
+        private void AllClientEach(Action<ISqlSugarClient> action)
+        {
+            if (_AllClients.HasValue())
+            {
+                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                {
+                    action(item.Context);
+                }
+            }
+        }
 
         private void InitTenant(SugarTenant Tenant)
         {
@@ -725,6 +803,14 @@ namespace SqlSugar
             }
             _Context = Tenant.Context;
             this.CurrentConnectionConfig = Tenant.ConnectionConfig;
+        }
+        private void TaskStart<Type>(Task<Type> result)
+        {
+            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+            {
+                Check.Exception(true, "IsShardSameThread=true can't be used async method");
+            }
+            result.Start();
         }
         #endregion
 

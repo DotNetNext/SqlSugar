@@ -213,7 +213,7 @@ namespace OrmTest
             db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
             try
             {
-                db.BeginAllTran();
+                db.BeginTran();
 
                 db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
                 db.Deleteable<Order>().ExecuteCommand();
@@ -226,11 +226,11 @@ namespace OrmTest
                 Console.WriteLine(db.Queryable<Order>().Count());
 
                 throw new Exception();
-                db.CommitAllTran();
+                db.CommitTran();
             }
             catch
             {
-                db.RollbackAllTran();
+                db.RollbackTran();
                 Console.WriteLine("---Roll back");
                 db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
@@ -243,9 +243,6 @@ namespace OrmTest
 
             Console.WriteLine("#### Distributed TransactionExample End ####");
         }
-
-
-
     }
 
     /// <summary>
