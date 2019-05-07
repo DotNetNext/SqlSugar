@@ -10,6 +10,8 @@ namespace OrmTest
     {
         public static void Init()
         {
+            Console.WriteLine("");
+            Console.WriteLine("#### CodeFirst Start ####");
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.SqlServer,
@@ -19,6 +21,7 @@ namespace OrmTest
             });
 
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
+            Console.WriteLine("#### CodeFirst end ####");
         }
     }
 
