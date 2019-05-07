@@ -24,7 +24,7 @@ namespace SqlSugar
 
         #endregion
 
-        #region Api
+  
         public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
         public SqlSugarClient(ConnectionConfig config)
         {
@@ -149,10 +149,6 @@ namespace SqlSugar
             return this.Context.Deleteable<T>(deleteObj);
         }
 
-        public void Dispose()
-        {
-            this.Context.Dispose();
-        }
 
         public DateTime GetDate()
         {
@@ -178,6 +174,7 @@ namespace SqlSugar
             this.Context.InitMppingInfo(typeof(T));
         }
 
+        #region Insertable
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             return this.Context.Insertable<T>(columnDictionary);
@@ -203,11 +200,17 @@ namespace SqlSugar
             return this.Context.Insertable<T>(insertObjs);
         }
 
+        #endregion
         public void Open()
         {
             this.Context.Open();
         }
 
+        #region Queryable
+        public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
+        {
+            return this.Context.SqlQueryable<T>(sql);
+        }
         public ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
             return this.Context.Queryable(tableName, shortName);
@@ -407,6 +410,9 @@ namespace SqlSugar
             return this.Context.Queryable<T>(shortName);
         }
 
+        #endregion
+
+        #region Saveable
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
             return this.Context.Saveable<T>(saveObjects);
@@ -416,7 +422,9 @@ namespace SqlSugar
         {
             return this.Context.Saveable(saveObject);
         }
+        #endregion
 
+        #region Queue
         public int SaveQueues(bool isTran = true)
         {
             return this.Context.SaveQueues(isTran);
@@ -495,13 +503,10 @@ namespace SqlSugar
         public Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
         {
             return this.Context.SaveQueuesAsync<T>(isTran);
-        }
+        } 
+        #endregion
 
-        public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
-        {
-            return this.Context.SqlQueryable<T>(sql);
-        }
-
+        #region Union
         public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
             return this.Context.Union(queryables);
@@ -520,8 +525,10 @@ namespace SqlSugar
         public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
             return this.Context.UnionAll(queryables);
-        }
+        } 
+        #endregion
 
+        #region Updateable
         public IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return this.Context.Updateable<T>();
@@ -562,6 +569,9 @@ namespace SqlSugar
             return this.Context.Updateable<T>(UpdateObjs);
         }
 
+        #endregion
+
+        #region ITenant
         public void BeginAllTran()
         {
             _IsAllTran = true;
@@ -590,6 +600,14 @@ namespace SqlSugar
             }
             _IsAllTran = false;
         }
+        #endregion
+
+        #region IDispose
+        public void Dispose()
+        {
+            this.Context.Dispose();
+        }
+
         #endregion
 
         #region Helper
