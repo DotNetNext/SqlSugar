@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class SqlSugarClient : ISqlSugarClient
+    public class SqlSugarClient : ISqlSugarClient, ITenant
     {
         #region Gobal Property
         private ISqlSugarClient _Context = null;
