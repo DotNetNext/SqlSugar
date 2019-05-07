@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class SqlSugarClient : ISqlSugarClient, ITenant
+    public partial class SqlSugarClient : ISqlSugarClient, ITenant
     {
         #region Gobal Property
         private ISqlSugarClient _Context = null;
@@ -24,8 +24,7 @@ namespace SqlSugar
 
         #endregion
 
-  
-        public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
+        #region Constructor
         public SqlSugarClient(ConnectionConfig config)
         {
             Check.Exception(config == null, "ConnectionConfig config is null");
@@ -42,119 +41,23 @@ namespace SqlSugar
             _AllClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
         }
 
-        public void ChangeDatabase(string configId)
-        {
-            Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
-            InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
-            if (this._IsAllTran)
-                this.Ado.BeginTran();
-        }
-        public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
-        {
-            var allConfigs = _AllClients.Select(it => it.ConnectionConfig);
-            Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
-            InitTenant(_AllClients.First(it=>it.ConnectionConfig==allConfigs.First(changeExpression)));
-            if (this._IsAllTran)
-                this.Ado.BeginTran();
-        }
+        #endregion
+
+        #region Global variable
+        public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
+        public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
+        public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
+        public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
 
 
         public MappingTableList MappingTables { get => _MappingTables; set => _MappingTables = value; }
         public MappingColumnList MappingColumns { get => _MappingColumns; set => _MappingColumns = value; }
         public IgnoreColumnList IgnoreColumns { get => _IgnoreColumns; set => _IgnoreColumns = value; }
         public IgnoreColumnList IgnoreInsertColumns { get => _IgnoreInsertColumns; set => _IgnoreInsertColumns = value; }
-
-        public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
-
-
-
-
-        public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
-
         public Dictionary<string, object> TempItems { get => this.Context.TempItems; set => this.Context.TempItems = value; }
-        public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
-        public IAdo Ado => this.Context.Ado;
+        #endregion
 
-        public AopProvider Aop => this.Context.Aop;
-
-        public ICodeFirst CodeFirst => this.Context.CodeFirst;
-
-        public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
-
-
-        public IDbFirst DbFirst => this.Context.DbFirst;
-
-        public IDbMaintenance DbMaintenance => this.Context.DbMaintenance;
-
-        public EntityMaintenance EntityMaintenance { get => this.Context.EntityMaintenance; set => this.Context.EntityMaintenance = value; }
-     
-
-        public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
-
-        public QueryFilterProvider QueryFilter { get => this.Context.QueryFilter; set => this.Context.QueryFilter = value; }
-
-
-        public void AddQueue(string sql, object parsmeters = null)
-        {
-            this.Context.AddQueue(sql, parsmeters);
-        }
-
-        public void AddQueue(string sql, List<SugarParameter> parsmeters)
-        {
-            this.Context.AddQueue(sql, parsmeters);
-        }
-
-        public void AddQueue(string sql, SugarParameter parsmeter)
-        {
-            this.Context.AddQueue(sql, parsmeter);
-        }
-
-        public void Close()
-        {
-            this.Context.Close();
-        }
-
-        public IDeleteable<T> Deleteable<T>() where T : class, new()
-        {
-            return this.Context.Deleteable<T>();
-        }
-
-        public IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
-        {
-            return this.Context.Deleteable<T>(primaryKeyValue);
-        }
-
-        public IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
-        {
-            return this.Context.Deleteable<T>(primaryKeyValues);
-        }
-
-        public IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
-        {
-            return this.Context.Deleteable(expression);
-        }
-
-        public IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
-        {
-            return this.Context.Deleteable<T>(pkValue);
-        }
-
-        public IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
-        {
-            return this.Context.Deleteable<T>(deleteObjs);
-        }
-
-        public IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
-        {
-            return this.Context.Deleteable<T>(deleteObj);
-        }
-
-
-        public DateTime GetDate()
-        {
-            return this.Context.GetDate();
-        }
-
+        #region SimpleClient
         public SimpleClient GetSimpleClient()
         {
             return this.Context.GetSimpleClient();
@@ -164,15 +67,7 @@ namespace SqlSugar
         {
             return this.Context.GetSimpleClient<T>();
         }
-
-        public void InitMppingInfo(Type type)
-        {
-            this.Context.InitMppingInfo(type);
-        }
-        public void InitMppingInfo<T>()
-        {
-            this.Context.InitMppingInfo(typeof(T));
-        }
+        #endregion
 
         #region Insertable
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
@@ -201,12 +96,31 @@ namespace SqlSugar
         }
 
         #endregion
-        public void Open()
-        {
-            this.Context.Open();
-        }
 
         #region Queryable
+
+        #region Union
+        public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        {
+            return this.Context.Union(queryables);
+        }
+
+        public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        {
+            return this.Context.Union(queryables);
+        }
+
+        public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        {
+            return this.Context.UnionAll(queryables);
+        }
+
+        public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        {
+            return this.Context.UnionAll(queryables);
+        }
+        #endregion
+
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
             return this.Context.SqlQueryable<T>(sql);
@@ -425,6 +339,21 @@ namespace SqlSugar
         #endregion
 
         #region Queue
+        public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
+        public void AddQueue(string sql, object parsmeters = null)
+        {
+            this.Context.AddQueue(sql, parsmeters);
+        }
+
+        public void AddQueue(string sql, List<SugarParameter> parsmeters)
+        {
+            this.Context.AddQueue(sql, parsmeters);
+        }
+
+        public void AddQueue(string sql, SugarParameter parsmeter)
+        {
+            this.Context.AddQueue(sql, parsmeter);
+        }
         public int SaveQueues(bool isTran = true)
         {
             return this.Context.SaveQueues(isTran);
@@ -503,29 +432,7 @@ namespace SqlSugar
         public Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
         {
             return this.Context.SaveQueuesAsync<T>(isTran);
-        } 
-        #endregion
-
-        #region Union
-        public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
-        {
-            return this.Context.Union(queryables);
         }
-
-        public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
-        {
-            return this.Context.Union(queryables);
-        }
-
-        public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
-        {
-            return this.Context.UnionAll(queryables);
-        }
-
-        public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
-        {
-            return this.Context.UnionAll(queryables);
-        } 
         #endregion
 
         #region Updateable
@@ -571,7 +478,85 @@ namespace SqlSugar
 
         #endregion
 
+        #region Ado
+        public IAdo Ado => this.Context.Ado;
+
+        public void Close()
+        {
+            this.Context.Close();
+        }
+        public void Open()
+        {
+            this.Context.Open();
+        }
+
+        #endregion
+
+        #region Deleteable
+        public IDeleteable<T> Deleteable<T>() where T : class, new()
+        {
+            return this.Context.Deleteable<T>();
+        }
+
+        public IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(primaryKeyValue);
+        }
+
+        public IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(primaryKeyValues);
+        }
+
+        public IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
+        {
+            return this.Context.Deleteable(expression);
+        }
+
+        public IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(pkValue);
+        }
+
+        public IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(deleteObjs);
+        }
+
+        public IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(deleteObj);
+        }
+
+
+        #endregion
+
+        #region More api
+        public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
+        public AopProvider Aop => this.Context.Aop;
+        public ICodeFirst CodeFirst => this.Context.CodeFirst;
+        public IDbFirst DbFirst => this.Context.DbFirst;
+        public IDbMaintenance DbMaintenance => this.Context.DbMaintenance;
+        public EntityMaintenance EntityMaintenance { get => this.Context.EntityMaintenance; set => this.Context.EntityMaintenance = value; }
+        public QueryFilterProvider QueryFilter { get => this.Context.QueryFilter; set => this.Context.QueryFilter = value; }
+        #endregion
+
         #region ITenant
+        public void ChangeDatabase(string configId)
+        {
+            Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
+            InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
+            if (this._IsAllTran)
+                this.Ado.BeginTran();
+        }
+        public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
+        {
+            var allConfigs = _AllClients.Select(it => it.ConnectionConfig);
+            Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
+            InitTenant(_AllClients.First(it => it.ConnectionConfig == allConfigs.First(changeExpression)));
+            if (this._IsAllTran)
+                this.Ado.BeginTran();
+        }
         public void BeginAllTran()
         {
             _IsAllTran = true;
@@ -608,6 +593,21 @@ namespace SqlSugar
             this.Context.Dispose();
         }
 
+        #endregion
+
+        #region Other method
+        public DateTime GetDate()
+        {
+            return this.Context.GetDate();
+        }
+        public void InitMppingInfo(Type type)
+        {
+            this.Context.InitMppingInfo(type);
+        }
+        public void InitMppingInfo<T>()
+        {
+            this.Context.InitMppingInfo(typeof(T));
+        }
         #endregion
 
         #region Helper
@@ -736,5 +736,6 @@ namespace SqlSugar
         [Obsolete]
         public SimpleClient SimpleClient => this.Context.SimpleClient;
         #endregion
+
     }
 }

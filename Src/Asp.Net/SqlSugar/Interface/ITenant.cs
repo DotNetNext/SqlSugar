@@ -10,5 +10,7 @@ namespace SqlSugar
         void BeginAllTran();
         void CommitAllTran();
         void RollbackAllTran();
+        void ChangeDatabase(string configId);
+        void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression);
     }
 }
