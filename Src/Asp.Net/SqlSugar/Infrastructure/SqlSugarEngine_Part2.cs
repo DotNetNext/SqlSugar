@@ -319,6 +319,28 @@ namespace SqlSugar
         #endregion
 
         #region Private methods
+        private static void CheckDbDependency(ConnectionConfig config)
+        {
+            switch (config.DbType)
+            {
+                case DbType.MySql:
+                    DependencyManagement.TryMySqlData();
+                    break;
+                case DbType.SqlServer:
+                    break;
+                case DbType.Sqlite:
+                    DependencyManagement.TrySqlite();
+                    break;
+                case DbType.Oracle:
+                    DependencyManagement.TryOracle();
+                    break;
+                case DbType.PostgreSQL:
+                    DependencyManagement.TryPostgreSQL();
+                    break;
+                default:
+                    throw new Exception("ConnectionConfig.DbType is null");
+            }
+        }
         protected List<JoinQueryInfo> GetJoinInfos(ISqlBuilder sqlBuilder, Expression joinExpression, ref List<SugarParameter> parameters, ref string shortName, params Type[] entityTypeArray)
         {
             List<JoinQueryInfo> result = new List<JoinQueryInfo>();

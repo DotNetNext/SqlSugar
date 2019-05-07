@@ -25,25 +25,7 @@ namespace SqlSugar
             this.CurrentConnectionConfig = config;
             this.ContextID = Guid.NewGuid();
             Check.ArgumentNullException(config, "config is null");
-            switch (config.DbType)
-            {
-                case DbType.MySql:
-                    DependencyManagement.TryMySqlData();
-                    break;
-                case DbType.SqlServer:
-                    break;
-                case DbType.Sqlite:
-                    DependencyManagement.TrySqlite();
-                    break;
-                case DbType.Oracle:
-                    DependencyManagement.TryOracle();
-                    break;
-                case DbType.PostgreSQL:
-                    DependencyManagement.TryPostgreSQL();
-                    break;
-                default:
-                    throw new Exception("ConnectionConfig.DbType is null");
-            }
+            CheckDbDependency(config);
         }
         #endregion
 
