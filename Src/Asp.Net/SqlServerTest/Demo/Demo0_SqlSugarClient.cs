@@ -13,11 +13,11 @@ namespace OrmTest
 
         public static void Init()
         {
-            SqlSugarClient();
-            DbContext();//使用DbContext美化代码
-            SingletonPattern();//单例
-            DistributedTransactionExample();//分布式事务
-            CustomAttribute();//自定义特性
+            SqlSugarClient();//Create db
+            DbContext();//Optimizing SqlSugarClient usage
+            SingletonPattern();//Singleten Pattern
+            DistributedTransactionExample(); 
+            CustomAttribute(); 
         }
 
         private static void SqlSugarClient()
