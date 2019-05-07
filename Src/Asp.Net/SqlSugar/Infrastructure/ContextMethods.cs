@@ -323,6 +323,11 @@ namespace SqlSugar
             }
             return this.DeserializeObject<List<T>>(this.SerializeObject(deserializeObject));
         }
+        public Dictionary<string, object> DataTableToDictionary(DataTable table)
+        {
+           return table.Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1]);
+        }
+
         #endregion
 
         #region Cache
