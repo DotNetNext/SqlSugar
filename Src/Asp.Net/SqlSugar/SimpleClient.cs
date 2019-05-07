@@ -10,8 +10,7 @@ namespace SqlSugar
     public partial class SimpleClient<T> where T : class, new()
     {
         protected ISqlSugarClient Context { get; set; }
-        [Obsolete("Use AsSugarClient()")]
-        public ISqlSugarClient FullClient { get { return this.Context; } }
+
         public ISqlSugarClient AsSugarClient()
         {
             return this.Context;
@@ -144,7 +143,7 @@ namespace SqlSugar
         }
         public bool Update(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
         {
-            return this.Context.Updateable<T>().UpdateColumns(columns).Where(whereExpression).ExecuteCommand() > 0;
+            return this.Context.Updateable<T>().SetColumns(columns).Where(whereExpression).ExecuteCommand() > 0;
         }
         public bool Delete(T deleteObj)
         {
@@ -162,14 +161,16 @@ namespace SqlSugar
         {
             return this.Context.Deleteable<T>().In(ids).ExecuteCommand() > 0;
         }
+
+        [Obsolete("Use AsSugarClient()")]
+        public ISqlSugarClient FullClient { get { return this.Context; } }
     }
 
 
     public partial class SimpleClient
     {
         protected ISqlSugarClient Context { get; set; }
-        [Obsolete("Use AsSugarClient()")]
-        public ISqlSugarClient FullClient { get { return this.Context; } }
+
         public ISqlSugarClient AsSugarClient()
         {
             return this.Context;
@@ -284,6 +285,7 @@ namespace SqlSugar
         {
             return this.Context.Deleteable<T>().In(ids).ExecuteCommand() > 0;
         }
+        [Obsolete("Use AsSugarClient()")]
+        public ISqlSugarClient FullClient { get { return this.Context; } }
     }
-
 }

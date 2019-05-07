@@ -87,16 +87,12 @@ namespace SqlSugar
         public IDbMaintenance DbMaintenance => this.Context.DbMaintenance;
 
         public EntityMaintenance EntityMaintenance { get => this.Context.EntityMaintenance; set => this.Context.EntityMaintenance = value; }
-        [Obsolete]
-        public EntityMaintenance EntityProvider { get => this.Context.EntityProvider; set => this.Context.EntityProvider = value; }
+     
 
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
 
         public QueryFilterProvider QueryFilter { get => this.Context.QueryFilter; set => this.Context.QueryFilter = value; }
-        [Obsolete]
-        public IContextMethods RewritableMethods { get => this.Context.RewritableMethods; set => this.Context.RewritableMethods = value; }
-        [Obsolete]
-        public SimpleClient SimpleClient => this.Context.SimpleClient;
+
 
         public void AddQueue(string sql, object parsmeters = null)
         {
@@ -711,7 +707,16 @@ namespace SqlSugar
             }
             _Context = terant.Context;
             this.CurrentConnectionConfig = terant.ConnectionConfig;
-        } 
+        }
+        #endregion
+
+        #region Obsolete
+        [Obsolete]
+        public EntityMaintenance EntityProvider { get => this.Context.EntityProvider; set => this.Context.EntityProvider = value; }
+        [Obsolete]
+        public IContextMethods RewritableMethods { get => this.Context.RewritableMethods; set => this.Context.RewritableMethods = value; }
+        [Obsolete]
+        public SimpleClient SimpleClient => this.Context.SimpleClient;
         #endregion
     }
 }

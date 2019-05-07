@@ -12,30 +12,27 @@ namespace SqlSugar
         MappingColumnList MappingColumns { get; set; }
         IgnoreColumnList IgnoreColumns { get; set; }
         IgnoreColumnList IgnoreInsertColumns { get; set; }
+        Dictionary<string, object> TempItems { get; set; }
 
-        QueueList Queues { get; set; }
+
+        bool IsSystemTablesConfig { get; }
+        Guid ContextID { get; set; }
+        ConnectionConfig CurrentConnectionConfig { get; set; }
+
+
         IAdo Ado { get; }
         AopProvider Aop { get; }
         ICodeFirst CodeFirst { get; }
         ISqlSugarClient Context { get; set; }
-        Guid ContextID { get; set; }
-
-        ConnectionConfig CurrentConnectionConfig { get; set; }
+ 
         IDbFirst DbFirst { get; }
         IDbMaintenance DbMaintenance { get; }
         EntityMaintenance EntityMaintenance { get; set; }
-        EntityMaintenance EntityProvider { get; set; }
-        bool IsSystemTablesConfig { get; }
         QueryFilterProvider QueryFilter { get; set; }
-        IContextMethods RewritableMethods { get; set; }
-        SimpleClient SimpleClient { get; }
-        Dictionary<string, object> TempItems { get; set; }
         IContextMethods Utilities { get; set; }
 
-        void AddQueue(string sql, object parsmeters = null);
-        void AddQueue(string sql, List<SugarParameter> parsmeters);
-        void AddQueue(string sql, SugarParameter parsmeter);
-        void Close();
+
+        #region Deleteable
         IDeleteable<T> Deleteable<T>() where T : class, new();
         IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new();
         IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new();
@@ -43,17 +40,28 @@ namespace SqlSugar
         IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new();
         IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new();
         IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new();
+        #endregion
+
+        #region Other methods
         DateTime GetDate();
         SimpleClient GetSimpleClient();
         SimpleClient<T> GetSimpleClient<T>() where T : class, new();
         void InitMppingInfo(Type type);
         void InitMppingInfo<T>();
+        void Open();
+        void Close(); 
+        #endregion
+
+        #region Insertable
         IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new();
         IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new();
         IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new();
         IInsertable<T> Insertable<T>(T insertObj) where T : class, new();
         IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new();
-        void Open();
+        #endregion
+
+        #region Queryable
+        ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new();
         ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new();
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, JoinQueryInfos>> joinExpression);
@@ -97,8 +105,18 @@ namespace SqlSugar
         ISugarQueryable<T> Queryable<T>();
         ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new();
         ISugarQueryable<T> Queryable<T>(string shortName);
+        #endregion
+
+        #region Saveable
         ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new();
         ISaveable<T> Saveable<T>(T saveObject) where T : class, new();
+        #endregion
+
+        #region Queue
+        QueueList Queues { get; set; }
+        void AddQueue(string sql, object parsmeters = null);
+        void AddQueue(string sql, List<SugarParameter> parsmeters);
+        void AddQueue(string sql, SugarParameter parsmeter);
         int SaveQueues(bool isTran = true);
         Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true);
         Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SaveQueues<T, T2, T3, T4, T5, T6>(bool isTran = true);
@@ -114,12 +132,17 @@ namespace SqlSugar
         Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true);
         Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true);
         Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true);
-        Task<List<T>> SaveQueuesAsync<T>(bool isTran = true);
-        ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new();
+        Task<List<T>> SaveQueuesAsync<T>(bool isTran = true); 
+        #endregion
+
+        #region Union 
         ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new();
         ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new();
         ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new();
         ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new();
+        #endregion
+
+        #region Updateable
         IUpdateable<T> Updateable<T>() where T : class, new();
         IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new();
         IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new();
@@ -127,6 +150,16 @@ namespace SqlSugar
         IUpdateable<T> Updateable<T>(Expression<Func<T, T>> columns) where T : class, new();
         IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new();
         IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new();
-        IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new();
+        IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new(); 
+        #endregion
+
+        #region Obsolete
+        [Obsolete("use Utilities")]
+        IContextMethods RewritableMethods { get; set; }
+        [Obsolete("use GetSimpleClient()")]
+        SimpleClient SimpleClient { get; }
+        [Obsolete("use EntityMaintenance")]
+        EntityMaintenance EntityProvider { get; set; }
+        #endregion
     }
 }
