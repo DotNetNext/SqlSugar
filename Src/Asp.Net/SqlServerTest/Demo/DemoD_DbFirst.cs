@@ -10,6 +10,8 @@ namespace OrmTest
     {
         public static void Init()
         {
+            Console.WriteLine();
+            Console.WriteLine("#### DbFirst Start ####");
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.SqlServer,
@@ -62,6 +64,8 @@ namespace OrmTest
                 }
             }
             db.DbFirst.IsCreateAttribute().CreateClassFile("c:\\Demo\\8", "Models");
+
+            Console.WriteLine("#### DbFirst End ####");
         }
     }
 }

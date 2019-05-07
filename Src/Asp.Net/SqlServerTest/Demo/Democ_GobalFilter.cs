@@ -10,6 +10,8 @@ namespace OrmTest
     {
         public static void Init()
         {
+            Console.WriteLine("");
+            Console.WriteLine("#### Filter Start ####");
             var db = GetInstance();
 
 
@@ -30,6 +32,7 @@ namespace OrmTest
             var sql4 = db.Queryable<Order>().Filter("Myfilter",isDisabledGobalFilter:true).ToSql();//only Myfilter
             //SELECT [Id],[Name],[Price],[CreateTime] FROM [Order]  WHERE Name='jack'  
             Console.WriteLine(sql4);
+            Console.WriteLine("#### Filter End ####");
         }
     
  
