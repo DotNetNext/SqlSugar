@@ -278,35 +278,35 @@ namespace OrmTest
             // Example 3
             Console.WriteLine("Example 3");
 
-            var result2 = db.UseTranAsync(() =>
-            {
+            //var result2 = db.UseTranAsync(() =>
+            //{
 
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
+            //    db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+            //    db.Deleteable<Order>().ExecuteCommand();
+            //    Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-                throw new Exception("");
+            //    db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+            //    db.Deleteable<Order>().ExecuteCommand();
+            //    Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
+            //    throw new Exception("");
 
-            });
-            result2.Wait();
-            if (result.IsSuccess == false)
-            {
-                Console.WriteLine("---Roll back");
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
+            //});
+            //result2.Wait();
+            //if (result.IsSuccess == false)
+            //{
+            //    Console.WriteLine("---Roll back");
+            //    db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+            //    Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-            }
+            //    db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+            //    Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
+            //}
 
-            Console.WriteLine("#### Distributed TransactionExample End ####");
+            //Console.WriteLine("#### Distributed TransactionExample End ####");
         }
     }
 

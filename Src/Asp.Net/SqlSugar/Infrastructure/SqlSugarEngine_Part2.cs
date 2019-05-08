@@ -22,18 +22,6 @@ namespace SqlSugar
                 _Context = value;
             }
         }
-        internal SqlSugarEngine ContextAsync
-        {
-            get
-            {
-                _ContextAsync = this;
-                return _ContextAsync;
-            }
-            set
-            {
-                _ContextAsync = value;
-            }
-        }
 
         public ConnectionConfig CurrentConnectionConfig { get; set; }
         public Dictionary<string, object> TempItems { get { if (_TempItems == null) { _TempItems = new Dictionary<string, object>(); }  return _TempItems; } set=>_TempItems=value; }
@@ -53,7 +41,6 @@ namespace SqlSugar
         public QueueList _Queues;
         protected ISqlBuilder _SqlBuilder;
         protected ISqlSugarClient _Context { get; set; }
-        protected SqlSugarEngine _ContextAsync { get; set; }
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;
