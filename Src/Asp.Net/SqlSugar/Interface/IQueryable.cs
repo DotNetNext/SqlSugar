@@ -11,7 +11,7 @@ namespace SqlSugar
 {
     public partial interface ISugarQueryable<T>
     {
-        SqlSugarEngine Context { get; set; }
+        ISqlSugarClient Context { get; set; }
         ISqlBuilder SqlBuilder { get; set; }
         QueryBuilder QueryBuilder { get; set; }
         ISugarQueryable<T> Clone();
