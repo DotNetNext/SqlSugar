@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -56,7 +57,7 @@ namespace SqlSugar
         {
             return new MySqlDataAdapter();
         }
-        public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
+        public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             MySqlCommand sqlCommand = new MySqlCommand(sql, (MySqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
@@ -73,7 +74,7 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-        public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
+        public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((MySqlDataAdapter)dataAdapter).SelectCommand = (MySqlCommand)command;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -29,9 +30,9 @@ namespace SqlSugar
         int CommandTimeOut { get; set; }
         TimeSpan SqlExecutionTime { get; }
         IDbBind DbBind { get; }
-        void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
+        void SetCommandToAdapter(IDataAdapter adapter, DbCommand command);
         IDataAdapter GetAdapter();
-        IDbCommand GetCommand(string sql, SugarParameter[] parameters);
+        DbCommand GetCommand(string sql, SugarParameter[] parameters);
         DataTable GetDataTable(string sql, object parameters);
         DataTable GetDataTable(string sql, params SugarParameter[] parameters);
         DataTable GetDataTable(string sql, List<SugarParameter> parameters);

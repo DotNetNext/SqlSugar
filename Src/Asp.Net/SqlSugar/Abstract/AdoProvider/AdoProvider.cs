@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -178,9 +179,9 @@ namespace SqlSugar
 
         #region abstract
         public abstract IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
-        public abstract void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
+        public abstract void SetCommandToAdapter(IDataAdapter adapter, DbCommand command);
         public abstract IDataAdapter GetAdapter();
-        public abstract IDbCommand GetCommand(string sql, SugarParameter[] pars);
+        public abstract DbCommand GetCommand(string sql, SugarParameter[] pars);
         public abstract IDbConnection Connection { get; set; }
         public abstract void BeginTran(string transactionName);//Only SqlServer
         public abstract void BeginTran(IsolationLevel iso, string transactionName);//Only SqlServer 
@@ -397,7 +398,7 @@ namespace SqlSugar
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
                 IDataAdapter dataAdapter = this.GetAdapter();
-                IDbCommand sqlCommand = GetCommand(sql, parameters);
+                DbCommand sqlCommand = GetCommand(sql, parameters);
                 this.SetCommandToAdapter(dataAdapter, sqlCommand);
                 DataSet ds = new DataSet();
                 dataAdapter.Fill(ds);

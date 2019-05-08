@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace SqlSugar
         {
             return new SQLiteDataAdapter();
         }
-        public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
+        public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             SQLiteCommand sqlCommand = new SQLiteCommand(sql, (SQLiteConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
@@ -69,7 +70,7 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-        public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
+        public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((SQLiteDataAdapter)dataAdapter).SelectCommand = (SQLiteCommand)command;
         }
