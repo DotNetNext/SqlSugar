@@ -27,7 +27,6 @@ namespace SqlSugar
         public Dictionary<string, object> TempItems { get { if (_TempItems == null) { _TempItems = new Dictionary<string, object>(); }  return _TempItems; } set=>_TempItems=value; }
         public bool IsSystemTablesConfig { get { return this.CurrentConnectionConfig.InitKeyType == InitKeyType.SystemTable; } }
         public Guid ContextID { get; set; }
-        internal bool IsAsyncMethod { get; set; }
         public MappingTableList MappingTables { get; set; }
         public MappingColumnList MappingColumns { get; set; }
         public IgnoreColumnList IgnoreColumns { get; set; }

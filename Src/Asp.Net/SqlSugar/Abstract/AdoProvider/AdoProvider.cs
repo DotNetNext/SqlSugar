@@ -936,7 +936,7 @@ namespace SqlSugar
         }
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
-            if (this.Context.IsAsyncMethod == false && this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true)
+            if (this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true)
             {
 
                 var contextId = this.Context.ContextID.ToString();
