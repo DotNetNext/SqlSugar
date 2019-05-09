@@ -591,12 +591,7 @@ namespace SqlSugar
 
         public Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null)
         {
-            Task<DbResult<bool>> result = new Task<DbResult<bool>>(() =>
-            {
-                return UseTran(action, errorCallBack);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(UseTran(action, errorCallBack));
         }
 
         public DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null)
@@ -626,12 +621,7 @@ namespace SqlSugar
 
         public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
         {
-            Task<DbResult<T>> result = new Task<DbResult<T>>(() =>
-            {
-                return UseTran(action, errorCallBack);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(UseTran(action, errorCallBack));
         }
 
         public void RollbackTran()
