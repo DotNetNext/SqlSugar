@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,6 +26,7 @@ namespace SqlSugar
                 return InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             }
         }
+        private string TableUser { get; set; }
         private List<DbTableInfo> TableInfoList { get; set; }
 
         public DbFirstProvider()
@@ -45,6 +46,7 @@ namespace SqlSugar
             {
                 Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
             }
+            TableUser = GetCuruser();
             this.TableInfoList = this.Context.Utilities.TranslateCopy(this.Context.DbMaintenance.GetTableInfoList());
             var viewList = this.Context.Utilities.TranslateCopy(this.Context.DbMaintenance.GetViewInfoList());
             if (viewList.HasValue())
@@ -132,7 +134,7 @@ namespace SqlSugar
         public Dictionary<string, string> ToClassStringList(string nameSpace = "Models")
         {
             this.Namespace = nameSpace;
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            Dictionary<string, string> result = new Dictionary<string, string>(); 
             if (this.TableInfoList.HasValue())
             {
                 foreach (var tableInfo in this.TableInfoList)
@@ -153,11 +155,23 @@ namespace SqlSugar
             }
             return result;
         }
-
+        /// <summary>
+        /// 获取连接字符串用户
+        /// </summary>
+        /// <returns></returns>
+        public string GetCuruser() {
+            Dictionary<string, string> dictionary = Context.CurrentConnectionConfig.ConnectionString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToDictionary(x => x.Split('=')[0].ToUpper(), x => x.Split('=')[1].ToUpper());
+            if (Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+            {
+                if (dictionary.ContainsKey("USER ID"))
+                    return dictionary["USER ID"];
+            }
+            return "";
+        }
         internal string GetClassString(DbTableInfo tableInfo, ref string className)
         {
             string classText;
-            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
+            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(!string.IsNullOrEmpty(TableUser)?string.Format("{0}.{1}",TableUser,tableInfo.Name): tableInfo.Name);
             if (this.Context.IgnoreColumns.HasValue())
             {
                 var entityName = this.Context.EntityMaintenance.GetEntityName(tableInfo.Name);
@@ -183,7 +197,9 @@ namespace SqlSugar
             classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
             classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + UtilConstants.AssemblyName + ";\r\n") : this.UsingTemplate);
             classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
-            classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
+            classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable,
+                TableUser == "" ? tableInfo.Name : string.Format("{0}.{1}", TableUser, tableInfo.Name)
+                ) : null);
             if (columns.HasValue())
             {
                 foreach (var item in columns)
