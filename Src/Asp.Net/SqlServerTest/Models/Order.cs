@@ -13,7 +13,9 @@ namespace OrmTest
 
         public string Name { get; set; }
         public decimal Price { get; set; }
-        [SqlSugar.SugarColumn(IsNullable =true)]
+        [SqlSugar.SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }
+        [SqlSugar.SugarColumn(IsNullable =true)]
+        public int CustomId { get; set; }
     }
 }

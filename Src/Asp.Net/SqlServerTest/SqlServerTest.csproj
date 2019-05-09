@@ -55,10 +55,12 @@
     <Compile Include="Demo\Demo1_Queryable.cs" />
     <Compile Include="Demo\DemoD_DbFirst.cs" />
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
+    <Compile Include="Models\Custom.cs" />
     <Compile Include="Models\MyCustomAttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
+    <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="OldTest\BugTest\Bug2.cs" />
     <Compile Include="OldTest\BugTest\BugModels\AccountsModel.cs" />
     <Compile Include="OldTest\BugTest\BugModels\ClientsModel.cs" />

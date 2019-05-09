@@ -54,7 +54,7 @@ namespace OrmTest
 
             DbContext context = new DbContext();
 
-            context.Db.CodeFirst.InitTables<Order, OrderItem>();//Create Tables
+            context.Db.CodeFirst.InitTables<Order, OrderItem,Custom>();//Create Tables
             ;
             var orderDb = context.OrderDb;
 

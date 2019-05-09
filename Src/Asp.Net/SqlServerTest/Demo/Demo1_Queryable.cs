@@ -12,7 +12,38 @@ namespace OrmTest
         public static void Init()
         {
             ConditionScreening();
+            JoinTable();
             Async();
+        }
+
+        private static void JoinTable()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### Join Table Start ####");
+            var db = GetInstance();
+
+            //Simple join
+            var list = db.Queryable<Order, OrderItem, Custom>((o, i, c) => o.Id == i.OrderId&&c.Id == o.CustomId)
+                         .Select<ViewOrder>()
+                         .ToList();
+
+            //Join table
+            var list2 = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+             JoinType.Left, o.Id == i.OrderId,
+             JoinType.Left, c.Id == o.CustomId
+            ))
+           .Select<ViewOrder>().ToList();
+
+            //Join queryable
+            var query1 = db.Queryable<Order, OrderItem>((o, i) => new object[] {
+              JoinType.Left, o.Id == i.OrderId,
+            })
+            .Where(o => o.Name == "jack");
+
+            var query2 = db.Queryable<Custom>();
+            var list3=db.Queryable(query1, query2,JoinType.Left, (p1, p2) => p1.CustomId == p2.Id).Select<ViewOrder>().ToList();
+
+            Console.WriteLine("#### Join Table End ####");
         }
 
         private static void ConditionScreening()
@@ -42,7 +73,7 @@ namespace OrmTest
             //id=@id
             var list4 = db.Queryable<Order>().Where("id=@id", new { id = 1 }).ToList();
             //id=@id or name like '%'+@name+'%'
-            var list5 = db.Queryable<Order>().Where("id=@id or name like '%'+@name+'%' ",new { id=1,name="jack"}).ToList();
+            var list5 = db.Queryable<Order>().Where("id=@id or name like '%'+@name+'%' ", new { id = 1, name = "jack" }).ToList();
 
 
 
@@ -78,7 +109,7 @@ namespace OrmTest
 
             // use whereif
             string name = "";
-            int id =1;
+            int id = 1;
             var query = db.Queryable<Order>()
                             .WhereIF(!string.IsNullOrEmpty(name), it => it.Name.Contains(name))
                             .WhereIF(id > 0, it => it.Id == id).ToList();
