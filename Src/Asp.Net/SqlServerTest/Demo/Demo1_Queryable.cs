@@ -47,6 +47,7 @@ namespace OrmTest
 
 
             /*** By dynamic***/
+
             //id=1
             var conModels = new List<IConditionalModel>();
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
@@ -66,14 +67,30 @@ namespace OrmTest
             {
                 ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()//  (id=1 or id=2 and id=1)
             {
-                new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
+                //new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
                 new  KeyValuePair<WhereType, ConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" }),
                 new  KeyValuePair<WhereType, ConditionalModel> ( WhereType.And,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" })
             }
             });
             var list6 = db.Queryable<Order>().Where(conModels).ToList();
 
+            /*** Conditional builder ***/
+
+            // use whereif
+            string name = "";
+            int id =1;
+            var query = db.Queryable<Order>()
+                            .WhereIF(!string.IsNullOrEmpty(name), it => it.Name.Contains(name))
+                            .WhereIF(id > 0, it => it.Id == id).ToList();
+            //clone new Queryable
+            var query2 = db.Queryable<Order>().Where(it => it.Id == 1);
+            var list7 = query2.Clone().Where(it => it.Name == "jack").ToList();//id=1 and name = jack
+            var list8 = query2.Clone().Where(it => it.Name == "tom").ToList();//id=1 and name = tom
+
             Console.WriteLine("#### Condition Screening End ####");
+
+
+
         }
 
         private static void Async()
