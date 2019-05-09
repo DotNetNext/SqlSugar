@@ -21,6 +21,9 @@ namespace OrmTest
             Console.WriteLine("#### Condition Screening Start ####");
 
             SqlSugarClient db = GetInstance();
+
+            /*** By expression***/
+
             //id=@id
             var list = db.Queryable<Order>().Where(it => it.Id == 1).ToList();
             //id=@id or name like '%'+@name+'%'
@@ -32,6 +35,43 @@ namespace OrmTest
                             .And(it => it.Id == 1)
                             .Or(it => it.Name.Contains("jack")).ToExpression();
             var list3 = db.Queryable<Order>().Where(exp).ToList();
+
+
+            /*** By sql***/
+
+            //id=@id
+            var list4 = db.Queryable<Order>().Where("id=@id", new { id = 1 }).ToList();
+            //id=@id or name like '%'+@name+'%'
+            var list5 = db.Queryable<Order>().Where("id=@id or name like '%'+@name+'%' ",new { id=1,name="jack"}).ToList();
+
+
+
+            /*** By dynamic***/
+            //id=1
+            var conModels = new List<IConditionalModel>();
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
+            var student = db.Queryable<Order>().Where(conModels).ToList();
+
+            //Complex use case
+            List<IConditionalModel> Order = new List<IConditionalModel>();
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });// id like '%1%'
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNullOrEmpty });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.In, FieldValue = "1,2,3" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NotIn, FieldValue = "1,2,3" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1,2,3" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNot, FieldValue = null });// id is not null
+
+            conModels.Add(new ConditionalCollections()
+            {
+                ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()//  (id=1 or id=2 and id=1)
+            {
+                new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
+                new  KeyValuePair<WhereType, ConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" }),
+                new  KeyValuePair<WhereType, ConditionalModel> ( WhereType.And,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" })
+            }
+            });
+            var list6 = db.Queryable<Order>().Where(conModels).ToList();
 
             Console.WriteLine("#### Condition Screening End ####");
         }
