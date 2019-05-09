@@ -11,7 +11,7 @@ namespace OrmTest
 
         public static void Init()
         {
-            ConditionScreening();
+            QueryConditions();
             JoinTable();
             Async();
         }
@@ -46,10 +46,10 @@ namespace OrmTest
             Console.WriteLine("#### Join Table End ####");
         }
 
-        private static void ConditionScreening()
+        private static void QueryConditions()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### Condition Screening Start ####");
+            Console.WriteLine("#### Query Conditions Start ####");
 
             SqlSugarClient db = GetInstance();
 
