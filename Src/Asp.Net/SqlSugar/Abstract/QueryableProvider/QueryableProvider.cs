@@ -1156,7 +1156,7 @@ namespace SqlSugar
                 {
                     if (typeof(TResult) == typeof(T))
                     {
-                        this.MapperAction((T)Convert.ChangeType(item, typeof(T)));
+                        this.MapperAction((T)(item as object));
                     }
                     else
                     {
