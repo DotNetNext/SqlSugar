@@ -11,11 +11,21 @@ namespace SqlSugar
         private SugarTable() { }
         public string TableName { get; set; }
         public string TableDescription { get; set; }
+        /// <summary>
+        /// 所属用户
+        /// </summary>
+        public string TableUser { get; set; }
         public SugarTable(string tableName) {
             this.TableName = tableName;
         }
         public SugarTable(string tableName,string tableDescription)
         {
+            this.TableName = tableName;
+            this.TableDescription = tableDescription;
+        }
+        public SugarTable(string tableUser,string tableName, string tableDescription)
+        {
+            this.TableUser = tableUser;
             this.TableName = tableName;
             this.TableDescription = tableDescription;
         }

@@ -29,6 +29,7 @@ namespace SqlSugar
         bool DropTable(string tableName);
         bool TruncateTable(string tableName);
         bool CreateTable(string tableName, List<DbColumnInfo> columns,bool isCreatePrimaryKey=true);
+        bool CreateTable(SugarTable table, List<DbColumnInfo> columns,bool isCreatePrimaryKey=true);
         bool AddColumn(string tableName, DbColumnInfo column);
         bool UpdateColumn(string tableName, DbColumnInfo column);
         bool AddPrimaryKey(string tableName,string columnName);

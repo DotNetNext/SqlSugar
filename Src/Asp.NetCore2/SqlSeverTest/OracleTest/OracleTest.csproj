@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\SMESCore.Demo\SMESCore.Model\SMESCore.Model.csproj" />
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 

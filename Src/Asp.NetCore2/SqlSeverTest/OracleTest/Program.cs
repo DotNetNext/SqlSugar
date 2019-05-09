@@ -17,14 +17,16 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
- 
-            //    /***Unit Test***/
-            new Select(1).Init();
-            new Field(1).Init();
-       
 
-            /***Demo***/
+
+            //    /***Unit Test***/
+            //new Select(1).Init();
+            //new Field(1).Init();
+
+
+            ///***Demo***/
             OrmTest.Demo.Query.Init();
+            OrmTest.Demo.CodeFirst.Init();
             OrmTest.Demo.Insert.Init();
             OrmTest.Demo.Delete.Init();
             OrmTest.Demo.Update.Init();
@@ -32,7 +34,6 @@ namespace OrmTest
             OrmTest.Demo.JoinSql.Init();
             OrmTest.Demo.Filter.Init();
             OrmTest.Demo.ComplexModel.Init();
-            OrmTest.Demo.CodeFirst.Init();
         }
     }
 }

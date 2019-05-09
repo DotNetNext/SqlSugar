@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28902.138
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSeverTest", "SqlSeverTest\SqlSeverTest.csproj", "{B44F2513-E55B-480F-A41C-685DDD083355}"
 EndProject
@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OracleTest", "OracleTest\Or
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NugetTest", "NugetTest\NugetTest.csproj", "{E76C6F9B-BA90-4A5A-94D9-D3D48CBB6AA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgSqlTest", "PgSqlTest\PgSqlTest.csproj", "{B9005A73-5307-48FB-90EA-CC18FE6926E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgSqlTest", "PgSqlTest\PgSqlTest.csproj", "{B9005A73-5307-48FB-90EA-CC18FE6926E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SMESCore.Model", "..\..\..\..\SMESCore.Demo\SMESCore.Model\SMESCore.Model.csproj", "{64B98061-5C8F-47EF-AF48-3F8793720CFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{B9005A73-5307-48FB-90EA-CC18FE6926E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9005A73-5307-48FB-90EA-CC18FE6926E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9005A73-5307-48FB-90EA-CC18FE6926E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64B98061-5C8F-47EF-AF48-3F8793720CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64B98061-5C8F-47EF-AF48-3F8793720CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64B98061-5C8F-47EF-AF48-3F8793720CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64B98061-5C8F-47EF-AF48-3F8793720CFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

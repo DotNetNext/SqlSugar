@@ -381,6 +381,11 @@ namespace SqlSugar
             }
             return dataSize;
         }
+
+        public bool CreateTable(SugarTable table, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

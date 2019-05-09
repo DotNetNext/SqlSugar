@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using OrmTest.Models;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace OrmTest.Demo
         [SugarColumn(IsIgnore = true)]
         public string TestId { get; set; }
     }
+    [SugarTable("aps", "GuidTable", "测试描述")]
     public class GuidTable
     {
         public Guid Name { get; set; }
@@ -54,7 +56,7 @@ namespace OrmTest.Demo
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
 
             //No backup table
-            db.CodeFirst.InitTables(typeof(GuidTable), typeof(CodeTable), typeof(CodeTable2));
+            db.CodeFirst.InitTables(typeof(Student), typeof(School), typeof(CodeTable2));
         }
 
     }

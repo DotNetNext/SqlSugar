@@ -1,4 +1,5 @@
 ﻿using OrmTest.Models;
+using SMESCore.Model;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -13,19 +14,34 @@ namespace OrmTest.Demo
 
         public static void Init()
         {
-            Easy();
-            Page();
-            Where();
-            Join();
-            Funs();
-            Select();
-            Ado();
-            Group();
-            Sqlable();
-            Tran();
-            //StoredProcedure();
-            Enum();
-            Simple();
+            mytest();
+            myordreby();
+            //Easy();
+            //Page();
+            //Where();
+            //Join();
+            //Funs();
+            //Select();
+            //Ado();
+            //Group();
+            //Sqlable();
+            //Tran();
+            ////StoredProcedure();
+            //Enum();
+            //Simple();
+        }
+
+        private static void myordreby()
+        {
+            var db = GetInstance();
+            db.Ado.LogEventStarting = (sql, pars) =>
+            {
+                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                Console.WriteLine();
+            };
+            var join = db.Queryable<EquWorkHours, EquWorkHoursVer>((e,e1)=>new object[] { JoinType.Inner, e.EquWorkHoursVerId==e1.EquWorkHoursVerId}).ToList();
+            var joinorder = db.Queryable<EquWorkHours, EquWorkHoursVer>((e, e1) => new object[] { JoinType.Inner, e.EquWorkHoursVerId == e1.EquWorkHoursVerId })
+                .OrderBy((e, e1) => e1.Vername, OrderByType.Asc).ToDataTable();
         }
 
         private static void Simple()
@@ -136,6 +152,11 @@ namespace OrmTest.Demo
             db.Ado.CommitTran();
             //more
             //db.Ado.GetXXX...
+        }
+        public static void mytest() {
+            var db = GetInstance();
+            var getequhouts = db.Queryable<EquWorkHours>().ToDataTable();
+            var getver = db.Queryable<EquWorkHoursVer>().ToDataTable();
         }
         public static void Easy()
         {

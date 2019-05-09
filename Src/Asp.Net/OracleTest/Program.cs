@@ -19,19 +19,20 @@ namespace OrmTest
         {
 
             /***Unit Test***/
+            OrmTest.Demo.CodeFirst.Init();
+            OrmTest.Demo.Insert.Init();
+            new SelectQuery(1).Init();
             new Select(1).Init();
             new Field(1).Init();
 
             /***Demo***/
             OrmTest.Demo.Query.Init();
-            OrmTest.Demo.Insert.Init();
             //OrmTest.Demo.Delete.Init();
             OrmTest.Demo.Update.Init();
             OrmTest.Demo.DbFirst.Init();
             OrmTest.Demo.JoinSql.Init();
             OrmTest.Demo.Filter.Init();
             OrmTest.Demo.ComplexModel.Init();
-            OrmTest.Demo.CodeFirst.Init();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using SMESCore.Model;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,8 @@ namespace OrmTest.Demo
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));
 
             //No backup table
-            db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
+            db.CodeFirst.InitTables(typeof(EquWorkHours));
+            //db.CodeFirst.InitTables(typeof(CodeTable),typeof(CodeTable2));
         }
     }
 }
