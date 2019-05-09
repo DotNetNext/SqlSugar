@@ -133,53 +133,23 @@ namespace SqlSugar
         }
         public Task<int> ExecuteCommandAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteCommand();
-            });
-            TaskStart(result);
-            return result;
+           return Task.FromResult(ExecuteCommand());
         }
         public Task<int> ExecuteReturnIdentityAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnIdentity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteReturnIdentity());
         }
         public Task<T> ExecuteReturnEntityAsync()
         {
-            Task<T> result = new Task<T>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnEntity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteReturnEntity());
         }
         public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
         {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteCommandIdentityIntoEntity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommandIdentityIntoEntity());
         }
         public Task<long> ExecuteReturnBigIdentityAsync()
         {
-            Task<long> result = new Task<long>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnBigIdentity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteReturnBigIdentity());
         }
         #endregion
 
@@ -444,27 +414,27 @@ namespace SqlSugar
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
-        protected IInsertable<T> CopyInsertable()
-        {
-            var asyncContext = this.Context.Utilities.CopyContext(true);
-            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.IsAsyncMethod = true;
-            var asyncInsertable = asyncContext.Insertable<T>(this.InsertObjs);
-            var asyncInsertableBuilder = asyncInsertable.InsertBuilder;
-            asyncInsertableBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList;
-            asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
-            asyncInsertableBuilder.Parameters = this.InsertBuilder.Parameters;
-            asyncInsertableBuilder.sql = this.InsertBuilder.sql;
-            asyncInsertableBuilder.IsNoInsertNull = this.InsertBuilder.IsNoInsertNull;
-            asyncInsertableBuilder.IsReturnIdentity = this.InsertBuilder.IsReturnIdentity;
-            asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
-            asyncInsertableBuilder.TableWithString = this.InsertBuilder.TableWithString;
-            if (this.RemoveCacheFunc != null)
-            {
-                asyncInsertable.RemoveDataCache();
-            }
-            return asyncInsertable;
-        }
+        //protected IInsertable<T> CopyInsertable()
+        //{
+        //    var asyncContext = this.Context.Utilities.CopyContext(true);
+        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+        //    asyncContext.IsAsyncMethod = true;
+        //    var asyncInsertable = asyncContext.Insertable<T>(this.InsertObjs);
+        //    var asyncInsertableBuilder = asyncInsertable.InsertBuilder;
+        //    asyncInsertableBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList;
+        //    asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
+        //    asyncInsertableBuilder.Parameters = this.InsertBuilder.Parameters;
+        //    asyncInsertableBuilder.sql = this.InsertBuilder.sql;
+        //    asyncInsertableBuilder.IsNoInsertNull = this.InsertBuilder.IsNoInsertNull;
+        //    asyncInsertableBuilder.IsReturnIdentity = this.InsertBuilder.IsReturnIdentity;
+        //    asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
+        //    asyncInsertableBuilder.TableWithString = this.InsertBuilder.TableWithString;
+        //    if (this.RemoveCacheFunc != null)
+        //    {
+        //        asyncInsertable.RemoveDataCache();
+        //    }
+        //    return asyncInsertable;
+        //}
 
         private void After(string sql, long? result)
         {

@@ -69,23 +69,11 @@ namespace SqlSugar
         }
         public Task<int> ExecuteCommandAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                IUpdateable<T> asyncUpdateable = CopyUpdateable();
-                return asyncUpdateable.ExecuteCommand();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommand());
         }
         public Task<bool> ExecuteCommandHasChangeAsync()
         {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                IUpdateable<T> asyncUpdateable = CopyUpdateable();
-                return asyncUpdateable.ExecuteCommand() > 0;
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommandHasChange());
         }
         #endregion
 
@@ -602,35 +590,35 @@ namespace SqlSugar
             }
             result.Start();
         }
-        private IUpdateable<T> CopyUpdateable()
-        {
-            var asyncContext = this.Context.Utilities.CopyContext(true);
-            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.IsAsyncMethod = true;
+        //private IUpdateable<T> CopyUpdateable()
+        //{
+        //    var asyncContext = this.Context.Utilities.CopyContext(true);
+        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+        //    asyncContext.IsAsyncMethod = true;
 
-            var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
-            var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;
-            asyncUpdateableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
-            asyncUpdateableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
-            asyncUpdateableBuilder.Parameters = this.UpdateBuilder.Parameters;
-            asyncUpdateableBuilder.sql = this.UpdateBuilder.sql;
-            asyncUpdateableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
-            asyncUpdateableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
-            asyncUpdateableBuilder.TableName = this.UpdateBuilder.TableName;
-            asyncUpdateableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
-            asyncUpdateableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
-            asyncUpdateableBuilder.SetValues = this.UpdateBuilder.SetValues;
-            if (this.IsWhereColumns)
-            {
-                (asyncUpdateable as UpdateableProvider<T>).WhereColumnList = this.WhereColumnList;
-                (asyncUpdateable as UpdateableProvider<T>).IsWhereColumns = this.IsWhereColumns;
-            }
-            if (this.RemoveCacheFunc != null)
-            {
-                asyncUpdateable.RemoveDataCache();
-            }
-            return asyncUpdateable;
-        }
+        //    var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
+        //    var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;
+        //    asyncUpdateableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
+        //    asyncUpdateableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
+        //    asyncUpdateableBuilder.Parameters = this.UpdateBuilder.Parameters;
+        //    asyncUpdateableBuilder.sql = this.UpdateBuilder.sql;
+        //    asyncUpdateableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
+        //    asyncUpdateableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
+        //    asyncUpdateableBuilder.TableName = this.UpdateBuilder.TableName;
+        //    asyncUpdateableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
+        //    asyncUpdateableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
+        //    asyncUpdateableBuilder.SetValues = this.UpdateBuilder.SetValues;
+        //    if (this.IsWhereColumns)
+        //    {
+        //        (asyncUpdateable as UpdateableProvider<T>).WhereColumnList = this.WhereColumnList;
+        //        (asyncUpdateable as UpdateableProvider<T>).IsWhereColumns = this.IsWhereColumns;
+        //    }
+        //    if (this.RemoveCacheFunc != null)
+        //    {
+        //        asyncUpdateable.RemoveDataCache();
+        //    }
+        //    return asyncUpdateable;
+        //}
 
         private void ValidateVersion()
         {

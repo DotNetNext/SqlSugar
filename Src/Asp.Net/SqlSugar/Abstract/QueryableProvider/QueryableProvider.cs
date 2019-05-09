@@ -826,281 +826,125 @@ namespace SqlSugar
         #region Async methods
         public Task<T> SingleAsync()
         {
-            Task<T> result = new Task<T>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Single();
-            });
-            TaskStart(result);
-            return result;
+             return Task.FromResult(Single());
         }
 
         public Task<T> SingleAsync(Expression<Func<T, bool>> expression)
         {
-            Task<T> result = new Task<T>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Single(expression);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Single(expression));
         }
 
         public Task<T> FirstAsync()
         {
-            Task<T> result = new Task<T>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.First();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(First());
         }
 
         public Task<T> FirstAsync(Expression<Func<T, bool>> expression)
         {
-            Task<T> result = new Task<T>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.First(expression);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(First(expression));
         }
 
         public Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Any(expression);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Any(expression));
         }
 
         public Task<bool> AnyAsync()
         {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Any();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Any());
         }
 
         public Task<int> CountAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Count();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Count());
         }
         public Task<int> CountAsync(Expression<Func<T, bool>> expression)
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Count(expression);
-            });
-            TaskStart(result); ;
-            return result;
+            return Task.FromResult(Count(expression));
         }
         public Task<TResult> MaxAsync<TResult>(string maxField)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Max<TResult>(maxField);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Max<TResult>(maxField));
         }
 
         public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Max<TResult>(expression);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Max<TResult>(expression));
         }
 
         public Task<TResult> MinAsync<TResult>(string minField)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Min<TResult>(minField);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Min<TResult>(minField));
         }
 
         public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Min<TResult>(expression);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Min<TResult>(expression));
         }
 
         public Task<TResult> SumAsync<TResult>(string sumField)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Sum<TResult>(sumField);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Sum<TResult>(sumField));
         }
 
         public Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Sum<TResult>(expression);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Sum<TResult>(expression));
         }
 
         public Task<TResult> AvgAsync<TResult>(string avgField)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Avg<TResult>(avgField);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Avg<TResult>(avgField));
         }
 
         public Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            Task<TResult> result = new Task<TResult>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.Avg<TResult>(expression);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(Avg<TResult>(expression));
         }
 
         public Task<List<T>> ToListAsync()
         {
-            Task<List<T>> result = new Task<List<T>>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.ToList();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToList());
         }
 
         public Task<string> ToJsonAsync()
         {
-            Task<string> result = new Task<string>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.ToJson();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToJson());
         }
 
         public Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
         {
-            Task<string> result = new Task<string>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.ToJsonPage(pageIndex, pageSize);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToJsonPage(pageIndex,pageSize));
         }
 
-        public Task<KeyValuePair<string, int>> ToJsonPageAsync(int pageIndex, int pageSize, int totalNumber)
+        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize,ref  int totalNumber)
         {
-            Task<KeyValuePair<string, int>> result = new Task<KeyValuePair<string, int>>(() =>
-            {
-                int totalNumberAsync = 0;
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                var list = asyncQueryable.ToJsonPage(pageIndex, pageSize, ref totalNumberAsync);
-                return new KeyValuePair<string, int>(list, totalNumberAsync);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToJsonPage(pageIndex, pageSize,ref totalNumber));
         }
 
         public Task<DataTable> ToDataTableAsync()
         {
-            Task<DataTable> result = new Task<DataTable>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.ToDataTable();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToDataTable());
         }
 
         public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize)
         {
-            Task<DataTable> result = new Task<DataTable>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.ToDataTablePage(pageIndex, pageSize);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToDataTablePage(pageIndex,pageSize));
         }
 
-        public Task<KeyValuePair<DataTable, int>> ToDataTablePageAsync(int pageIndex, int pageSize, int totalNumber)
+        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize,ref  int totalNumber)
         {
-            Task<KeyValuePair<DataTable, int>> result = new Task<KeyValuePair<DataTable, int>>(() =>
-            {
-                int totalNumberAsync = 0;
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                var list = asyncQueryable.ToDataTablePage(pageIndex, pageSize, ref totalNumberAsync);
-                return new KeyValuePair<DataTable, int>(list, totalNumberAsync);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToDataTablePage(pageIndex, pageSize,ref totalNumber));
         }
 
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
-            Task<List<T>> result = new Task<List<T>>(() =>
-            {
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                return asyncQueryable.ToPageList(pageIndex, pageSize);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToPageList(pageIndex,pageSize));
         }
 
-        public Task<KeyValuePair<List<T>, int>> ToPageListAsync(int pageIndex, int pageSize, int totalNumber)
+        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
         {
-            Task<KeyValuePair<List<T>, int>> result = new Task<KeyValuePair<List<T>, int>>(() =>
-            {
-                int totalNumberAsync = 0;
-                ISugarQueryable<T> asyncQueryable = CopyQueryable();
-                var list = asyncQueryable.ToPageList(pageIndex, pageSize, ref totalNumberAsync);
-                return new KeyValuePair<List<T>, int>(list, totalNumberAsync);
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ToPageList(pageIndex, pageSize,ref totalNumber));
         }
         #endregion
 
@@ -1605,22 +1449,22 @@ namespace SqlSugar
                 }
             }
         }
-        protected ISugarQueryable<T> CopyQueryable()
-        {
-            var asyncContext = this.Context.Utilities.CopyContext(true);
-            asyncContext.IsAsyncMethod = true;
-            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
-            if (this.MapperAction != null)
-                asyncQueryable.Mapper(MapperAction);
-            if (this.MapperActionWithCache != null)
-                asyncQueryable.Mapper(MapperActionWithCache);
-            if (this.Mappers != null && ((asyncQueryable as QueryableProvider<T>)!=null))
-            {
-                (asyncQueryable as QueryableProvider<T>).Mappers = this.Mappers;
-            }
-            CopyQueryBuilder(asyncQueryable.QueryBuilder); return asyncQueryable;
-        }
+        //protected ISugarQueryable<T> CopyQueryable()
+        //{
+        //    var asyncContext = this.Context.Utilities.CopyContext(true);
+        //    asyncContext.IsAsyncMethod = true;
+        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+        //    var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
+        //    if (this.MapperAction != null)
+        //        asyncQueryable.Mapper(MapperAction);
+        //    if (this.MapperActionWithCache != null)
+        //        asyncQueryable.Mapper(MapperActionWithCache);
+        //    if (this.Mappers != null && ((asyncQueryable as QueryableProvider<T>)!=null))
+        //    {
+        //        (asyncQueryable as QueryableProvider<T>).Mappers = this.Mappers;
+        //    }
+        //    CopyQueryBuilder(asyncQueryable.QueryBuilder); return asyncQueryable;
+        //}
 
         protected void CopyQueryBuilder(QueryBuilder asyncQueryableBuilder)
         {

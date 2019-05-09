@@ -52,24 +52,12 @@ namespace SqlSugar
         }
         public Task<int> ExecuteCommandAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                IDeleteable<T> asyncDeleteable = CopyDeleteable();
-                return asyncDeleteable.ExecuteCommand();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommand());
         }
 
         public Task<bool> ExecuteCommandHasChangeAsync()
         {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                IDeleteable<T> asyncDeleteable = CopyDeleteable();
-                return asyncDeleteable.ExecuteCommand() > 0;
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommandHasChange());
         }
         public IDeleteable<T> AS(string tableName)
         {
@@ -377,27 +365,6 @@ namespace SqlSugar
             }
         }
 
-
-        private IDeleteable<T> CopyDeleteable()
-        {
-            var asyncContext = this.Context.Utilities.CopyContext(true);
-            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.IsAsyncMethod = true;
-
-            var asyncDeleteable = asyncContext.Deleteable<T>();
-            var asyncDeleteBuilder = asyncDeleteable.DeleteBuilder;
-            asyncDeleteBuilder.BigDataFiled = this.DeleteBuilder.BigDataFiled;
-            asyncDeleteBuilder.BigDataInValues = this.DeleteBuilder.BigDataInValues;
-            asyncDeleteBuilder.Parameters = this.DeleteBuilder.Parameters;
-            asyncDeleteBuilder.sql = this.DeleteBuilder.sql;
-            asyncDeleteBuilder.WhereInfos = this.DeleteBuilder.WhereInfos;
-            asyncDeleteBuilder.TableWithString = this.DeleteBuilder.TableWithString;
-            if (this.RemoveCacheFunc != null)
-            {
-                asyncDeleteable.RemoveDataCache();
-            }
-            return asyncDeleteable;
-        }
 
         private void After(string sql)
         {
