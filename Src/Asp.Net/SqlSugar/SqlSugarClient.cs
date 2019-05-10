@@ -805,11 +805,11 @@ namespace SqlSugar
         #endregion
 
         #region Obsolete
-        [Obsolete]
+        [Obsolete("Use EntityMaintenance")]
         public EntityMaintenance EntityProvider { get => this.Context.EntityProvider; set => this.Context.EntityProvider = value; }
-        [Obsolete]
+        [Obsolete("Use Utilities")]
         public IContextMethods RewritableMethods { get => this.Context.RewritableMethods; set => this.Context.RewritableMethods = value; }
-        [Obsolete]
+        [Obsolete("Use GetSimpleClient")]
         public SimpleClient SimpleClient => this.Context.SimpleClient;
         #endregion
 
