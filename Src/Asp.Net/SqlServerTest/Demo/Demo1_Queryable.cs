@@ -33,7 +33,7 @@ namespace OrmTest
             db.Insertable(new Tree() { Id = 22, Name = "child3", ParentId = 2 }).ExecuteCommand();
 
             var list=db.Queryable<Tree>()
-                                     //parent=(select * from parent where id=it.parent)
+                                     //parent=(select * from parent where id=it.parentid)
                                      .Mapper(it=>it.Parent,it=>it.ParentId, it=>it.Parent.Id)
                                      //Child=(select * from parent where ParentId=it.id)
                                      .Mapper(it => it.Child, it => it.Id, it => it.Parent.ParentId)
