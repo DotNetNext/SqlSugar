@@ -39,6 +39,7 @@ namespace SqlSugar
 
         public static string UsingTemplate =   "using System;\r\n" +
                                                "using System.Linq;\r\n" +
+                                               "using SqlSugar;\r\n" +
                                                "using System.Text;" + "\r\n";
         #endregion
 
