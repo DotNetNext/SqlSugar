@@ -283,10 +283,10 @@ namespace SqlSugar
             {
                 foreach (var item in columns)
                 {
-                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        item.Length = 20;
-                    }
+                    //if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase))
+                    //{
+                    //    item.Length = 20;
+                    //}
                     if (item.IsIdentity && !item.IsPrimarykey)
                     {
                         item.IsPrimarykey = true;
