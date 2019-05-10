@@ -97,7 +97,8 @@ namespace SqlSugar
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
             var columns = GetColumnInfosByTableName(tableName);
             if (columns.IsNullOrEmpty()) return false;
-            return columns.Any(it => it.IsPrimarykey = true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
+            var result=columns.Any(it => it.IsPrimarykey == true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
+            return result;
         }
         public virtual bool IsIdentity(string tableName, string columnName)
         {
