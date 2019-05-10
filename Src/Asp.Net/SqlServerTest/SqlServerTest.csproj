@@ -56,6 +56,7 @@
     <Compile Include="Demo\DemoD_DbFirst.cs" />
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
     <Compile Include="Models\Custom.cs" />
+    <Compile Include="Models\Mappers.cs" />
     <Compile Include="Models\MyCustomAttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />

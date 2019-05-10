@@ -21,6 +21,8 @@ namespace SqlSugar
         ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
         ISugarQueryable<T> Mapper(Action<T> mapperAction);
         ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction);
+        ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField);
+        ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField);
         ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mapperField);
         ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mapperField);
         ISugarQueryable<T> AddParameters(object parameters);

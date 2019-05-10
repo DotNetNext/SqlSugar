@@ -93,6 +93,14 @@ namespace SqlSugar
             this.MapperActionWithCache = mapperAction;
             return this;
         }
+        public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
+        {
+            return _Mapper<TObject>(mapperObject,mainField,childField);
+        }
+        public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
+        {
+           return _Mapper<TObject>(mapperObject, mainField, childField);
+        }
         public virtual ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mapperField)
         {
             return _Mapper<TObject>(mapperObject, mapperField);
@@ -1334,6 +1342,168 @@ namespace SqlSugar
             return this;
         }
 
+        private ISugarQueryable<T> _Mapper<TObject>(Expression mapperObject, Expression mainField, Expression childField)
+        {
+            if ((mapperObject as LambdaExpression).Body is UnaryExpression)
+            {
+                mapperObject = ((mapperObject as LambdaExpression).Body as UnaryExpression).Operand;
+            }
+            else
+            {
+                mapperObject = (mapperObject as LambdaExpression).Body;
+            }
+            if ((mainField as LambdaExpression).Body is UnaryExpression)
+            {
+                mainField = ((mainField as LambdaExpression).Body as UnaryExpression).Operand;
+            }
+            else
+            {
+                mainField = (mainField as LambdaExpression).Body;
+            }
+            if ((childField as LambdaExpression).Body is UnaryExpression)
+            {
+                childField = ((childField as LambdaExpression).Body as UnaryExpression).Operand;
+            }
+            else
+            {
+                childField = (childField as LambdaExpression).Body;
+            }
+            Check.Exception(mapperObject is MemberExpression == false || mainField is MemberExpression == false, ".Mapper() parameter error");
+            var mapperObjectExp = mapperObject as MemberExpression;
+            var mainFieldExp = mainField as MemberExpression;
+            var childFieldExp = childField as MemberExpression;
+            Check.Exception(mainFieldExp.Type.IsClass(), ".Mapper() parameter error");
+            Check.Exception(childFieldExp.Type.IsClass(), ".Mapper() parameter error");
+            var objType = mapperObjectExp.Type;
+            var filedType = mainFieldExp.Expression.Type;
+            Check.Exception(objType != typeof(TObject) && objType != typeof(List<TObject>), ".Mapper() parameter error");
+            if (objType == typeof(List<TObject>))
+            {
+                objType = typeof(TObject);
+            }
+            var mainFiledName = mainFieldExp.Member.Name;
+            var childFiledName = childFieldExp.Member.Name;
+            var objName = mapperObjectExp.Member.Name;
+            var filedEntity = this.Context.EntityMaintenance.GetEntityInfo(objType);
+            var objEntity = this.Context.EntityMaintenance.GetEntityInfo(filedType);
+            var isSelf = filedType == typeof(T);
+            if (Mappers == null)
+                Mappers = new List<Action<List<T>>>();
+            if (isSelf)
+            {
+                Action<List<T>> mapper = (entitys) =>
+                {
+                    if (entitys.IsNullOrEmpty() || !entitys.Any()) return;
+                    var entity = entitys.First();
+                    var whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(childFiledName, StringComparison.CurrentCultureIgnoreCase));
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase)));
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals("id", StringComparison.CurrentCultureIgnoreCase));
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName + "id", StringComparison.CurrentCultureIgnoreCase));
+                    }
+                    if (whereCol == null)
+                    {
+                        Check.Exception(true, ".Mapper() parameter error");
+                    }
+                    List<string> inValues = entitys.Select(it => it.GetType().GetProperty(mainFiledName).GetValue(it, null).ObjToString()).ToList();
+                    List<IConditionalModel> wheres = new List<IConditionalModel>()
+                    {
+                       new ConditionalModel()
+                      {
+                           FieldName=whereCol.DbColumnName,
+                           ConditionalType= ConditionalType.In,
+                           FieldValue=string.Join(",",inValues.Distinct())
+                      }
+                    };
+                    var list = this.Context.Queryable<TObject>().Where(wheres).ToList();
+                    foreach (var item in entitys)
+                    {
+                        var whereValue = item.GetType().GetProperty(mainFiledName).GetValue(item, null);
+                        var setValue = list.Where(x => x.GetType().GetProperty(whereCol.PropertyName).GetValue(x, null).ObjToString() == whereValue.ObjToString()).ToList();
+                        var setObject = item.GetType().GetProperty(objName);
+                        if (setObject.PropertyType.FullName.IsCollectionsList())
+                        {
+                            setObject.SetValue(item, setValue.ToList(), null);
+                        }
+                        else
+                        {
+                            setObject.SetValue(item, setValue.FirstOrDefault(), null);
+                        }
+                    }
+                };
+                Mappers.Add(mapper);
+            }
+            else
+            {
+                Action<List<T>> mapper = (entitys) =>
+                {
+                    if (entitys.IsNullOrEmpty() || !entitys.Any()) return;
+                    var entity = entitys.First();
+                    var tEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                    var whereCol = tEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(childFiledName, StringComparison.CurrentCultureIgnoreCase));
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase)));
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals("id", StringComparison.CurrentCultureIgnoreCase));
+                    }
+                    if (whereCol == null)
+                    {
+                        whereCol = tEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName + "id", StringComparison.CurrentCultureIgnoreCase));
+                    }
+                    if (whereCol == null)
+                    {
+                        Check.Exception(true, ".Mapper() parameter error");
+                    }
+                    List<string> inValues = entitys.Select(it => it.GetType().GetProperty(whereCol.PropertyName).GetValue(it, null).ObjToString()).ToList();
+                    var dbColumnName = filedEntity.Columns.FirstOrDefault(it => it.PropertyName == mainFiledName).DbColumnName;
+                    List<IConditionalModel> wheres = new List<IConditionalModel>()
+                    {
+                       new ConditionalModel()
+                      {
+                           FieldName=dbColumnName,
+                           ConditionalType= ConditionalType.In,
+                           FieldValue=string.Join(",",inValues)
+                      }
+                    };
+                    var list = this.Context.Queryable<TObject>().Where(wheres).ToList();
+                    foreach (var item in entitys)
+                    {
+                        var whereValue = item.GetType().GetProperty(whereCol.PropertyName).GetValue(item, null);
+                        var setValue = list.Where(x => x.GetType().GetProperty(mainFiledName).GetValue(x, null).ObjToString() == whereValue.ObjToString()).ToList();
+                        var setObject = item.GetType().GetProperty(objName);
+                        if (setObject.PropertyType.FullName.IsCollectionsList())
+                        {
+                            setObject.SetValue(item, setValue.ToList(), null);
+                        }
+                        else
+                        {
+                            setObject.SetValue(item, setValue.FirstOrDefault(), null);
+                        }
+                    }
+                };
+                Mappers.Add(mapper);
+            }
+
+            return this;
+        }
         protected int GetCount()
         {
             var sql = string.Empty;
