@@ -77,7 +77,7 @@ namespace SqlSugar
 
 
 
-        IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);
+        IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false, bool ignoreAllDefaultValue = false);
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> IgnoreColumns(params string[] columns);
 

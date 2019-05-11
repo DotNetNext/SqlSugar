@@ -122,12 +122,13 @@ namespace SqlSugar
 
 
 
-        public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false)
+        public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false,bool ignoreAllDefaultValue = false)
         {
             UpdateBuilder.IsOffIdentity = isOffIdentity;
             if (this.UpdateBuilder.LambdaExpressions == null)
                 this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
             this.UpdateBuilder.IsNoUpdateNull = ignoreAllNullColumns;
+            this.UpdateBuilder.IsNoUpdateDefaultValue = ignoreAllDefaultValue;
             return this;
         }
         public IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns)
