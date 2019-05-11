@@ -794,14 +794,14 @@ namespace SqlSugar
             _Context = Tenant.Context;
             this.CurrentConnectionConfig = Tenant.ConnectionConfig;
         }
-        private void TaskStart<Type>(Task<Type> result)
-        {
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-            {
-                Check.Exception(true, "IsShardSameThread=true can't be used async method");
-            }
-            result.Start();
-        }
+        //private void TaskStart<Type>(Task<Type> result)
+        //{
+        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+        //    {
+        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
+        //    }
+        //    result.Start();
+        //}
         #endregion
 
         #region Obsolete

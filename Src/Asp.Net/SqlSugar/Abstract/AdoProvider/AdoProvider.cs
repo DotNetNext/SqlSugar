@@ -920,14 +920,14 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
-        private void TaskStart<Type>(Task<Type> result)
-        {
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-            {
-                Check.Exception(true, "IsShardSameThread=true can't be used async method");
-            }
-            result.Start();
-        }
+        //private void TaskStart<Type>(Task<Type> result)
+        //{
+        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+        //    {
+        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
+        //    }
+        //    result.Start();
+        //}
         private void ExecuteProcessingSQL(ref string sql, SugarParameter[] parameters)
         {
             var result = this.ProcessingEventStartingSQL(sql, parameters);

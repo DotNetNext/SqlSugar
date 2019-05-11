@@ -583,14 +583,14 @@ namespace SqlSugar
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
-        private void TaskStart<Type>(Task<Type> result)
-        {
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-            {
-                Check.Exception(true, "IsShardSameThread=true can't be used async method");
-            }
-            result.Start();
-        }
+        //private void TaskStart<Type>(Task<Type> result)
+        //{
+        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+        //    {
+        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
+        //    }
+        //    result.Start();
+        //}
         //private IUpdateable<T> CopyUpdateable()
         //{
         //    var asyncContext = this.Context.Utilities.CopyContext(true);

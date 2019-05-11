@@ -957,14 +957,14 @@ namespace SqlSugar
         #endregion
 
         #region Private Methods
-        private void TaskStart<Type>(Task<Type> result)
-        {
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-            {
-                Check.Exception(true, "IsShardSameThread=true can't be used async method");
-            }
-            result.Start();
-        }
+        //private void TaskStart<Type>(Task<Type> result)
+        //{
+        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+        //    {
+        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
+        //    }
+        //    result.Start();
+        //}
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Select");
