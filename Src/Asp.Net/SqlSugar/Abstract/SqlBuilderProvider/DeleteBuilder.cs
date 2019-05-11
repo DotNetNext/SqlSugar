@@ -13,7 +13,7 @@ namespace SqlSugar
 
         #region Common Properties
         public EntityInfo EntityInfo { get; set; }
-        public SqlSugarEngine Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public List<SugarParameter> Parameters { get; set; }
         public StringBuilder sql { get; set; }

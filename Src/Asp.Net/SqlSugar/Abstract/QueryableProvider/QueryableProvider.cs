@@ -1611,7 +1611,7 @@ namespace SqlSugar
                     foreach (var item in result)
                     {
                         var contextProperty = item.GetType().GetProperty("Context");
-                        SqlSugarEngine newClient = this.Context.Utilities.CopyContext();
+                        SqlSugarProvider newClient = this.Context.Utilities.CopyContext();
                         if (newClient.CurrentConnectionConfig.AopEvents == null)
                             newClient.CurrentConnectionConfig.AopEvents = new AopEvents();
                         contextProperty.SetValue(item, newClient, null);

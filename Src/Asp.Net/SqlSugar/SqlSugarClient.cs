@@ -749,7 +749,7 @@ namespace SqlSugar
             {
                 config.AopEvents = new AopEvents();
             }
-            _Context = new SqlSugarEngine(config);
+            _Context = new SqlSugarProvider(config);
             if (!aopIsNull)
                 _Context.Ado.IsEnableLogEvent = true;
             this.CurrentConnectionConfig = config;

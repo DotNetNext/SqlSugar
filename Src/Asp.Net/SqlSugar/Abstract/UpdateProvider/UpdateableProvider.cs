@@ -12,7 +12,7 @@ namespace SqlSugar
     public class UpdateableProvider<T> : IUpdateable<T> where T : class, new()
     {
         #region Property
-        public SqlSugarEngine Context { get; internal set; }
+        public SqlSugarProvider Context { get; internal set; }
         public EntityInfo EntityInfo { get; internal set; }
         public ISqlBuilder SqlBuilder { get; internal set; }
         public UpdateBuilder UpdateBuilder { get; set; }

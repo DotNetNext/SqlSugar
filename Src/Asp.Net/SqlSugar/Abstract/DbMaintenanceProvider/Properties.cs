@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         #region Context
         private ISqlBuilder _SqlBuilder;
-        public SqlSugarEngine Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ISqlBuilder SqlBuilder
         {
             get

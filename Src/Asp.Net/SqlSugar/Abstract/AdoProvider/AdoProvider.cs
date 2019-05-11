@@ -35,7 +35,7 @@ namespace SqlSugar
         protected List<IDataParameter> OutputParameters { get; set; }
         public virtual string SqlParameterKeyWord { get { return "@"; } }
         public IDbTransaction Transaction { get; set; }
-        public virtual SqlSugarEngine Context { get; set; }
+        public virtual SqlSugarProvider Context { get; set; }
         internal CommandType OldCommandType { get; set; }
         internal bool OldClearParameters { get; set; }
         public IDataParameterCollection DataReaderParameters { get; set; }

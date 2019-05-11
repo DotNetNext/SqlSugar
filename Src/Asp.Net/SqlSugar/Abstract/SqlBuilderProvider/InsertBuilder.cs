@@ -18,7 +18,7 @@ namespace SqlSugar
         #endregion
 
         #region Common Properties
-        public SqlSugarEngine Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public ISqlBuilder Builder { get; set; }
         public StringBuilder sql { get; set; }

@@ -9,19 +9,19 @@ namespace SqlSugar
 {
     public partial class SaveableProvider<T> : ISaveable<T> where T : class, new()
     {
-        internal SaveableProvider(SqlSugarEngine context,List<T> saveObjects)
+        internal SaveableProvider(SqlSugarProvider context,List<T> saveObjects)
         {
             this.saveObjects = saveObjects;
             this.Context = context;
             this.Context.InitMppingInfo<T>();
         }
-        internal SaveableProvider(SqlSugarEngine context, T saveObject)
+        internal SaveableProvider(SqlSugarProvider context, T saveObject)
         {
             this.saveObjects = new List<T>() { saveObject };
             this.Context = context;
             this.Context.InitMppingInfo<T>();
         }
-        public SqlSugarEngine Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public List<T> saveObjects = new List<T>();
         public List<T> existsObjects = null;
         public List<T> insertObjects

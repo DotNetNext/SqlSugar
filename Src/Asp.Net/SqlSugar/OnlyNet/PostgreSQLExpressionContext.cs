@@ -10,7 +10,7 @@ namespace SqlSugar
     }
     internal class PostgreSQLExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarEngine Context
+        public SqlSugarProvider Context
         {
             get
             {

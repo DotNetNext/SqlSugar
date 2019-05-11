@@ -11,7 +11,7 @@ namespace SqlSugar
 {
     public partial class OracleExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarEngine Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public OracleExpressionContext()
         {
             base.DbMehtods = new OracleMethod();

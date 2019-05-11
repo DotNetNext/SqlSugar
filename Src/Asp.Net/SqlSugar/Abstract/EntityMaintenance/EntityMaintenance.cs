@@ -9,7 +9,7 @@ namespace SqlSugar
 {
     public class EntityMaintenance
     {
-        public SqlSugarEngine Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
 
         public EntityInfo GetEntityInfo<T>()
         {

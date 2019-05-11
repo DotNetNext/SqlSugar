@@ -10,14 +10,14 @@ namespace SqlSugar
 {
     public partial interface IContextMethods
     {
-        SqlSugarEngine Context { get; set; }
+        SqlSugarProvider Context { get; set; }
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
         List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
         List<T> DataReaderToList<T>(IDataReader reader);
         string SerializeObject(object value);
         T DeserializeObject<T>(string value);
         T TranslateCopy<T>(T sourceObject);
-        SqlSugarEngine CopyContext(bool isCopyEvents = false);
+        SqlSugarProvider CopyContext(bool isCopyEvents = false);
         dynamic DataTableToDynamic(DataTable table);
         List<T> DataTableToList<T>(DataTable table);
         Dictionary<string, object> DataTableToDictionary(DataTable table);

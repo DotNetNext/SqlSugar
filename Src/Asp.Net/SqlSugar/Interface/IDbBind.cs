@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public partial interface IDbBind
     {
-        SqlSugarEngine Context { get; set; }
+        SqlSugarProvider Context { get; set; }
         List<string> GuidThrow { get; }
         List<string> IntThrow { get; }
         List<string> StringThrow { get; }

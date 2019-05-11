@@ -4,7 +4,7 @@ namespace SqlSugar
 {
     public class SqliteExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarEngine Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public SqliteExpressionContext()
         {
             base.DbMehtods = new SqliteMethod();
