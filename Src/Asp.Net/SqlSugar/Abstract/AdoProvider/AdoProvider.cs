@@ -27,7 +27,7 @@ namespace SqlSugar
             this.IsEnableLogEvent = false;
             this.CommandType = CommandType.Text;
             this.IsClearParameters = true;
-            this.CommandTimeOut = 30000;
+            this.CommandTimeOut = 300;
         }
         #endregion
 
