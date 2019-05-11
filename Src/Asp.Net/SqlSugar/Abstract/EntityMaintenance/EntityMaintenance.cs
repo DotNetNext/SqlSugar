@@ -30,6 +30,10 @@ namespace SqlSugar
                     result.TableDescription = sugarTable.TableDescription;
                 }
                 if (this.Context.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null) {
+                    if (result.DbTableName == null)
+                    {
+                        result.DbTableName = type.Name;
+                    }
                     this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService(type,result);
                 }
                 result.Type = type;
