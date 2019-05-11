@@ -805,8 +805,7 @@ namespace SqlSugar
         }
         public Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
         {
-            var result = new Task<List<T>>(() => { return SaveQueues<T>(); });
-            result.Start();
+            var result = Task.FromResult(SaveQueues<T>(isTran));
             return result;
         }
         public Tuple<List<T>, List<T2>> SaveQueues<T, T2>(bool isTran = true)
@@ -815,8 +814,7 @@ namespace SqlSugar
         }
         public Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true)
         {
-            var result = new Task<Tuple<List<T>, List<T2>>>(() => { return SaveQueues<T, T2>(isTran); });
-            result.Start();
+            var result = Task.FromResult(SaveQueues<T,T2>(isTran));
             return result;
         }
         public Tuple<List<T>, List<T2>, List<T3>> SaveQueues<T, T2, T3>(bool isTran = true)
@@ -825,8 +823,7 @@ namespace SqlSugar
         }
         public Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
         {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>>>(() => { return SaveQueues<T, T2, T3>(isTran); });
-            result.Start();
+            var result = Task.FromResult(SaveQueues<T, T2,T3>(isTran));
             return result;
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>> SaveQueues<T, T2, T3, T4>(bool isTran = true)
@@ -835,8 +832,7 @@ namespace SqlSugar
         }
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
         {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>>(() => { return SaveQueues<T, T2, T3, T4>(isTran); });
-            result.Start();
+            var result = Task.FromResult(SaveQueues<T, T2, T3,T4>(isTran));
             return result;
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>> SaveQueues<T, T2, T3, T4, T5>(bool isTran = true)
@@ -845,8 +841,7 @@ namespace SqlSugar
         }
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SaveQueuesAsync<T, T2, T3, T4, T5>(bool isTran = true)
         {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>>(() => { return SaveQueues<T, T2, T3, T4, T5>(isTran); });
-            result.Start();
+            var result = Task.FromResult(SaveQueues<T, T2, T3, T4,T5>(isTran));
             return result;
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SaveQueues<T, T2, T3, T4, T5, T6>(bool isTran = true)
@@ -855,8 +850,7 @@ namespace SqlSugar
         }
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>>(() => { return SaveQueues<T, T2, T3, T4, T5, T6>(isTran); });
-            result.Start();
+            var result = Task.FromResult(SaveQueues<T, T2, T3, T4, T5,T6>(isTran));
             return result;
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
@@ -865,8 +859,7 @@ namespace SqlSugar
         }
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>>(() => { return SaveQueues<T, T2, T3, T4, T5, T6, T7>(isTran); });
-            result.Start();
+            var result = Task.FromResult(SaveQueues<T, T2, T3, T4, T5, T6,T7>(isTran));
             return result;
         }
         public void AddQueue(string sql, object parsmeters=null)
