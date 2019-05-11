@@ -796,8 +796,7 @@ namespace SqlSugar
 
         public Task<int> SaveQueuesAsync(bool isTran = true)
         {
-            var result = new Task<int>(() => { return SaveQueues(isTran); });
-            result.Start();
+            var result =Task.FromResult(SaveQueues(isTran));
             return result;
         }
         public List<T> SaveQueues<T>(bool isTran = true)
