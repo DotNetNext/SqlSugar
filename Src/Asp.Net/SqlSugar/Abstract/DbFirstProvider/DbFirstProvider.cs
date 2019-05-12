@@ -89,6 +89,11 @@ namespace SqlSugar
             this.PropertyTemplate = func(this.PropertyTemplate);
             return this;
         }
+        public DbRazor SettingTemplate(string templatePath)
+        {
+            Check.Exception(true, ErrorMessage.GetThrowMessage("Use db.DbFirst.LoadTemplate('c:\\1.txt').CreateClassFile(classPath)  Nuget Install SqlSugar.DbFirstRazor  ", "当前方法已经过期，请使用 db.DbFirst.LoadTemplate('c:\\1.txt').CreateClassFile(classPath)  Nuget 安装 SqlSugar.DbFirstRazor "));
+            return null;
+        }
         #endregion
 
         #region Setting Content

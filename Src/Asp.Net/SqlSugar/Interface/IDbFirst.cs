@@ -13,6 +13,7 @@ namespace SqlSugar
         IDbFirst SettingPropertyDescriptionTemplate(Func<string, string> func);
         IDbFirst SettingConstructorTemplate(Func<string, string> func);
         IDbFirst SettingNamespaceTemplate(Func<string, string> func);
+        DbRazor SettingTemplate(string Path);
         IDbFirst IsCreateAttribute(bool isCreateAttribute = true);
         IDbFirst IsCreateDefaultValue(bool isCreateDefaultValue=true);
         IDbFirst Where(params string[] objectNames);
