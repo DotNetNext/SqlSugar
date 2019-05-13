@@ -11,6 +11,7 @@ namespace ExtensionsDemo
         static void Main(string[] args)
         {
             CacheDemo.Init();
+            DbFirstDemo.Init();
         }
     }
 }

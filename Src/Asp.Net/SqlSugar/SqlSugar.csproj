@@ -121,6 +121,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWhere.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubResolve.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
+    <Compile Include="ExternalServiceInterface\IRazorService.cs" />
     <Compile Include="Infrastructure\DependencyManagement.cs" />
     <Compile Include="ExternalServiceInterface\ISerializeService.cs" />
     <Compile Include="Entities\DefaultServices.cs" />

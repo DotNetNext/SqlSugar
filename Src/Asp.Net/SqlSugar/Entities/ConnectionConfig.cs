@@ -69,6 +69,19 @@ namespace SqlSugar
         private ISerializeService _SerializeService;
         private ICacheService _ReflectionInoCache;
         private ICacheService _DataInfoCache;
+        private IRazorService _RazorService;
+
+        public IRazorService RazorService
+        {
+            get
+            {
+                if (_RazorService == null)
+                    return _RazorService;
+                else
+                    return _RazorService;
+            }
+            set { _RazorService = value; }
+        }
 
         public ISerializeService SerializeService
         {
