@@ -17,6 +17,22 @@ namespace OrmTest
             NoEntity();
             Mapper();
             SqlFuncTest();
+            Subquery();
+        }
+
+        private static void Subquery()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### Subquery Start ####");
+            var db = GetInstance();
+
+            var list = db.Queryable<Order>().Take(10).Select(it => new
+            {
+                customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s=>s.Name),
+                customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
+            }).ToList();
+
+            Console.WriteLine("#### Subquery End ####");
         }
 
         private static void SqlFuncTest()
@@ -26,7 +42,7 @@ namespace OrmTest
             var db = GetInstance();
             var index= db.Queryable<Order>().Select(it => SqlFunc.CharIndex("a", "cccacc")).First();
 
-            Console.WriteLine("#### End Start ####");
+            Console.WriteLine("#### SqlFunc  End ####");
         }
 
         private static void Mapper()
