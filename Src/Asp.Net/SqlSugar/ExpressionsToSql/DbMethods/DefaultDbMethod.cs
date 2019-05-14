@@ -353,5 +353,9 @@ namespace SqlSugar
             }
             return reslut.ToString();
         }
+        public virtual string CharIndex(MethodCallExpressionModel model)
+        {
+            return string.Format("CHARINDEX ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
     }
 }

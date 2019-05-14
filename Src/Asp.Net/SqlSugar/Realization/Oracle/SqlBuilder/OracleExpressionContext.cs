@@ -185,5 +185,10 @@ namespace SqlSugar
         {
             return "dbms_random.value";
         }
+
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            return string.Format("instr ({0},{1},1,1) ", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
     }
 }

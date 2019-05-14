@@ -60,5 +60,6 @@ namespace SqlSugar
         string Null();
         string GetDate();
         string GetRandom();
+        string CharIndex(MethodCallExpressionModel model);
     }
 }

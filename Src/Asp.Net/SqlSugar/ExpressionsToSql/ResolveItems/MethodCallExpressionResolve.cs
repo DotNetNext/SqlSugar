@@ -585,6 +585,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.GetDate();
                     case "GetRandom":
                         return this.Context.DbMehtods.GetRandom();
+                    case "CharIndex":
+                        return this.Context.DbMehtods.CharIndex(model);
                     default:
                         break;
                 }

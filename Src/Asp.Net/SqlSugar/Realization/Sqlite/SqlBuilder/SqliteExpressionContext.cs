@@ -221,5 +221,10 @@ namespace SqlSugar
         {
             return "RANDOM()";
         }
+
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            throw new NotSupportedException("Slqite Not Supported CharIndex");
+        }
     }
 }

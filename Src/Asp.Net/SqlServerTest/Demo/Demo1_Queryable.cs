@@ -16,6 +16,17 @@ namespace OrmTest
             Async();
             NoEntity();
             Mapper();
+            SqlFuncTest();
+        }
+
+        private static void SqlFuncTest()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### SqlFunc Start ####");
+            var db = GetInstance();
+            var index= db.Queryable<Order>().Select(it => SqlFunc.CharIndex("a", "cccacc")).First();
+
+            Console.WriteLine("#### End Start ####");
         }
 
         private static void Mapper()

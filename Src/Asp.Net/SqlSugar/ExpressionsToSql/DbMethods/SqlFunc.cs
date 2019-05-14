@@ -118,5 +118,6 @@ namespace SqlSugar
         /// <returns></returns>
         public static Subqueryable<T> Subqueryable<T>() where T:class,new(){ throw new NotSupportedException("Can only be used in expressions");}
         public static CaseThen  IF(bool condition) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int CharIndex(string findChar,string searchValue) { throw new NotSupportedException("Can only be used in expressions"); }
     }
 }
