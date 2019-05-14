@@ -85,9 +85,9 @@ namespace OrmTest
            .Select<ViewOrder>().ToList();
 
             //Join queryable
-            var query1 = db.Queryable<Order, OrderItem>((o, i) => new object[] {
-              JoinType.Left, o.Id == i.OrderId,
-            })
+            var query1 = db.Queryable<Order, OrderItem>((o, i) => new JoinQueryInfos(
+              JoinType.Left, o.Id == i.OrderId
+            ))
             .Where(o => o.Name == "jack");
 
             var query2 = db.Queryable<Custom>();
