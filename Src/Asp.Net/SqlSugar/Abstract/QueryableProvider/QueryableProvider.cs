@@ -678,21 +678,24 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () => { return this.Context.Utilities.SerializeObject(this.ToList()); }, CacheTime, this.Context);
+                var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () =>
+                {
+                    return this.Context.Utilities.SerializeObject(this.ToList(),typeof(T));
+                }, CacheTime, this.Context);
                 return result;
             }
             else
             {
-                return this.Context.Utilities.SerializeObject(this.ToList());
+                return this.Context.Utilities.SerializeObject(this.ToList(), typeof(T));
             }
         }
         public virtual string ToJsonPage(int pageIndex, int pageSize)
         {
-            return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize));
+            return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize), typeof(T));
         }
         public virtual string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
-            return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber));
+            return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber), typeof(T));
         }
 
         public virtual DataTable ToDataTable()

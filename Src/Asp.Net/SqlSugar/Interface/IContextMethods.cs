@@ -15,6 +15,7 @@ namespace SqlSugar
         List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
         List<T> DataReaderToList<T>(IDataReader reader);
         string SerializeObject(object value);
+        string SerializeObject(object value, Type type);
         T DeserializeObject<T>(string value);
         T TranslateCopy<T>(T sourceObject);
         SqlSugarProvider CopyContext(bool isCopyEvents = false);

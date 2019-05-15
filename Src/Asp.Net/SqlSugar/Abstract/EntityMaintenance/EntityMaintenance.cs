@@ -168,6 +168,7 @@ namespace SqlSugar
                         column.IsOnlyIgnoreInsert = sugarColumn.IsOnlyIgnoreInsert;
                         column.IsEnableUpdateVersionValidation = sugarColumn.IsEnableUpdateVersionValidation;
                         column.IsTranscoding = sugarColumn.IsTranscoding;
+                        column.SerializeDateTimeFormat = sugarColumn.SerializeDateTimeFormat;
                     }
                     else
                     {
