@@ -558,7 +558,15 @@ namespace SqlSugar
             if (parameters != null && parameters.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parameters);
             var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray());
-            List<T> result = this.DbBind.DataReaderToList<T>(typeof(T), dataReader);
+            List<T> result = null;
+            if (typeof(T) == UtilConstants.ObjType)
+            {
+                result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader).Select(it => ((T)(object)it)).ToList();
+            }
+            else
+            {
+                result=this.DbBind.DataReaderToList<T>(typeof(T), dataReader);
+            }
             builder.SqlQueryBuilder.Clear();
             if (this.Context.Ado.DataReaderParameters != null)
             {
