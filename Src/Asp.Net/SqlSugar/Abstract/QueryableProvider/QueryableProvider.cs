@@ -53,7 +53,7 @@ namespace SqlSugar
         public void AddQueue()
         {
             var sqlObj = this.ToSql();
-            this.Context.Queues.Add(sqlObj.Key,sqlObj.Value);
+            this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
         }
         public ISugarQueryable<T> Clone()
         {
@@ -95,11 +95,11 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
         {
-            return _Mapper<TObject>(mapperObject,mainField,childField);
+            return _Mapper<TObject>(mapperObject, mainField, childField);
         }
         public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
         {
-           return _Mapper<TObject>(mapperObject, mainField, childField);
+            return _Mapper<TObject>(mapperObject, mainField, childField);
         }
         public virtual ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mapperField)
         {
@@ -158,7 +158,7 @@ namespace SqlSugar
         /// <returns></returns>
         public ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
-            return WhereClass(new List<ClassType>() { whereClass },ignoreDefaultValue);
+            return WhereClass(new List<ClassType>() { whereClass }, ignoreDefaultValue);
         }
         /// <summary>
         ///  if a property that is not empty is a condition
@@ -180,9 +180,9 @@ namespace SqlSugar
 
                         var value = column.PropertyInfo.GetValue(item, null);
                         WhereType WhereType = WhereType.And;
-                        var isNotNull = ignoreDefaultValue == false&&value != null ;
-                        var isNotNullAndDefault = ignoreDefaultValue&& value!=null && value.ObjToString() != UtilMethods.DefaultForType(column.PropertyInfo.PropertyType).ObjToString();
-                        if (isNotNull||isNotNullAndDefault)
+                        var isNotNull = ignoreDefaultValue == false && value != null;
+                        var isNotNullAndDefault = ignoreDefaultValue && value != null && value.ObjToString() != UtilMethods.DefaultForType(column.PropertyInfo.PropertyType).ObjToString();
+                        if (isNotNull || isNotNullAndDefault)
                         {
                             if (cons.ConditionalList == null)
                             {
@@ -283,7 +283,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
-            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList()|| (pkValues.First() is IEnumerable&&pkValues.First().GetType()!=UtilConstants.StringType))
+            if (pkValues.Length == 1 && pkValues.First().GetType().FullName.IsCollectionsList() || (pkValues.First() is IEnumerable && pkValues.First().GetType() != UtilConstants.StringType))
             {
                 var newValues = new List<object>();
                 foreach (var item in pkValues.First() as IEnumerable)
@@ -664,7 +664,8 @@ namespace SqlSugar
         {
             return _Avg<TResult>(expression);
         }
-        public virtual T[] ToArray() {
+        public virtual T[] ToArray()
+        {
 
             var result = this.ToList();
             if (result.HasValue())
@@ -735,7 +736,7 @@ namespace SqlSugar
             var result = ToDataTablePage(pageIndex, pageSize);
             return result;
         }
-        public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber,ref int totalPage)
+        public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber, ref int totalPage)
         {
             var result = ToDataTablePage(pageIndex, pageSize, ref totalNumber);
             totalPage = (totalNumber + pageSize - 1) / pageSize;
@@ -834,7 +835,7 @@ namespace SqlSugar
         #region Async methods
         public Task<T> SingleAsync()
         {
-             return Task.FromResult(Single());
+            return Task.FromResult(Single());
         }
 
         public Task<T> SingleAsync(Expression<Func<T, bool>> expression)
@@ -922,12 +923,12 @@ namespace SqlSugar
 
         public Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
         {
-            return Task.FromResult(ToJsonPage(pageIndex,pageSize));
+            return Task.FromResult(ToJsonPage(pageIndex, pageSize));
         }
 
-        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize,ref  int totalNumber)
+        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize, ref int totalNumber)
         {
-            return Task.FromResult(ToJsonPage(pageIndex, pageSize,ref totalNumber));
+            return Task.FromResult(ToJsonPage(pageIndex, pageSize, ref totalNumber));
         }
 
         public Task<DataTable> ToDataTableAsync()
@@ -937,22 +938,22 @@ namespace SqlSugar
 
         public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize)
         {
-            return Task.FromResult(ToDataTablePage(pageIndex,pageSize));
+            return Task.FromResult(ToDataTablePage(pageIndex, pageSize));
         }
 
-        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize,ref  int totalNumber)
+        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, ref int totalNumber)
         {
-            return Task.FromResult(ToDataTablePage(pageIndex, pageSize,ref totalNumber));
+            return Task.FromResult(ToDataTablePage(pageIndex, pageSize, ref totalNumber));
         }
 
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
-            return Task.FromResult(ToPageList(pageIndex,pageSize));
+            return Task.FromResult(ToPageList(pageIndex, pageSize));
         }
 
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
         {
-            return Task.FromResult(ToPageList(pageIndex, pageSize,ref totalNumber));
+            return Task.FromResult(ToPageList(pageIndex, pageSize, ref totalNumber));
         }
         #endregion
 
@@ -1078,7 +1079,7 @@ namespace SqlSugar
                 foreach (var item in list)
                 {
                     var filterResult = item.FilterValue(this.Context);
-                    Where(filterResult.Sql+UtilConstants.Space, filterResult.Parameters);
+                    Where(filterResult.Sql + UtilConstants.Space, filterResult.Parameters);
                 }
             }
         }
@@ -1138,8 +1139,9 @@ namespace SqlSugar
                     foreach (var column in this.EntityInfo.Columns.Where(it => it.IsTranscoding))
                     {
                         var value = column.PropertyInfo.GetValue(item, null);
-                        if (value != null) {
-                            column.PropertyInfo.SetValue(item,UtilMethods.DecodeBase64(value.ToString()),null);
+                        if (value != null)
+                        {
+                            column.PropertyInfo.SetValue(item, UtilMethods.DecodeBase64(value.ToString()), null);
                         }
                     }
                 }
@@ -1230,7 +1232,7 @@ namespace SqlSugar
             {
                 Action<List<T>> mapper = (entitys) =>
                 {
-                    if (entitys.IsNullOrEmpty()||!entitys.Any()) return;
+                    if (entitys.IsNullOrEmpty() || !entitys.Any()) return;
                     var entity = entitys.First();
                     var whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
                     if (whereCol == null)
@@ -1239,15 +1241,15 @@ namespace SqlSugar
                     }
                     if (whereCol == null)
                     {
-                        whereCol = filedEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk=>pk.Equals(it.DbColumnName,StringComparison.CurrentCultureIgnoreCase)) );
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase)));
                     }
                     if (whereCol == null)
                     {
-                        whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals("id",StringComparison.CurrentCultureIgnoreCase));
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals("id", StringComparison.CurrentCultureIgnoreCase));
                     }
                     if (whereCol == null)
                     {
-                        whereCol = filedEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName+"id", StringComparison.CurrentCultureIgnoreCase));
+                        whereCol = filedEntity.Columns.FirstOrDefault(it => (it.PropertyName).Equals(it.EntityName + "id", StringComparison.CurrentCultureIgnoreCase));
                     }
                     if (whereCol == null)
                     {
@@ -1285,7 +1287,7 @@ namespace SqlSugar
             {
                 Action<List<T>> mapper = (entitys) =>
                 {
-                    if (entitys.IsNullOrEmpty()||!entitys.Any()) return;
+                    if (entitys.IsNullOrEmpty() || !entitys.Any()) return;
                     var entity = entitys.First();
                     var tEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
                     var whereCol = tEntity.Columns.FirstOrDefault(it => it.PropertyName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
@@ -1295,7 +1297,7 @@ namespace SqlSugar
                     }
                     if (whereCol == null)
                     {
-                        whereCol = tEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))); 
+                        whereCol = tEntity.Columns.FirstOrDefault(it => GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase)));
                     }
                     if (whereCol == null)
                     {
@@ -1975,7 +1977,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public new ISugarQueryable<T,T2> Distinct()
+        public new ISugarQueryable<T, T2> Distinct()
         {
             QueryBuilder.IsDistinct = true;
             return this;
@@ -2346,7 +2348,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public new ISugarQueryable<T, T2,T3> Distinct()
+        public new ISugarQueryable<T, T2, T3> Distinct()
         {
             QueryBuilder.IsDistinct = true;
             return this;
@@ -2775,7 +2777,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public new ISugarQueryable<T, T2, T3,T4> Distinct()
+        public new ISugarQueryable<T, T2, T3, T4> Distinct()
         {
             QueryBuilder.IsDistinct = true;
             return this;
@@ -2871,9 +2873,9 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
-             base.WhereClass(whereClass, ignoreDefaultValue);
+            base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
         }
         /// <summary>
@@ -2881,7 +2883,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T,T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
 
             base.WhereClass(whereClassTypes, ignoreDefaultValue);
@@ -3131,7 +3133,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public new ISugarQueryable<T, T2, T3, T4,T5> Distinct()
+        public new ISugarQueryable<T, T2, T3, T4, T5> Distinct()
         {
             QueryBuilder.IsDistinct = true;
             return this;
@@ -3239,7 +3241,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
             base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
@@ -3518,7 +3520,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Distinct()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Distinct()
         {
             QueryBuilder.IsDistinct = true;
             return this;
@@ -3637,7 +3639,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
             base.WhereClass(whereClass, ignoreDefaultValue);
             return this;
@@ -3647,7 +3649,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> WhereClass<ClassType>(List<ClassType> whereClassTypes, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
 
             base.WhereClass(whereClassTypes, ignoreDefaultValue);
@@ -3936,7 +3938,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Distinct()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Distinct()
         {
             QueryBuilder.IsDistinct = true;
             return this;
@@ -4387,7 +4389,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Distinct()
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Distinct()
         {
             QueryBuilder.IsDistinct = true;
             return this;
