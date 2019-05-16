@@ -121,7 +121,7 @@ namespace SqlSugar
         }
         public override string MergeString(params string[] strings)
         {
-            return " concat("+string.Join(",", strings).Replace("+", "") + ") ";
+            return " concat("+string.Join(",", strings) + ") ";
         }
         public override string IsNull(MethodCallExpressionModel model)
         {
