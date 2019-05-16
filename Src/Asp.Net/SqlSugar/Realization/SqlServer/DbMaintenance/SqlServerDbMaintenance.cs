@@ -128,7 +128,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT TOP {0} *　INTO {1} FROM  {2}";
+                return "SELECT TOP {0} * INTO {1} FROM  {2}";
             }
         }
         protected override string DropTableSql
