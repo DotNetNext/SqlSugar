@@ -401,6 +401,10 @@ namespace SqlSugar
         {
             var expression = this.SelectValue as Expression;
             var result = GetExpressionValue(expression, this.SelectType).GetResultString();
+            if (result == null)
+            {
+                return "*";
+            }
             if (result.Contains(".*") && this.IsSingle())
             {
                 return "*";

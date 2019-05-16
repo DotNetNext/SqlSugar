@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 
 namespace SqlSugar
@@ -34,10 +33,6 @@ namespace SqlSugar
                 caches.Add(key, result);
                 return result;
             }
-        }
-        private static Expression<Func<List<T>, Result>> FuncToExpression<Result>(Func<List<T>, Result> f)
-        {
-            return x => f(x);
         }
         public List<Result> GetListByPrimaryKeys<Result>(Func<T, double?> action) where Result : class, new()
         {
