@@ -173,7 +173,7 @@ namespace SqlSugar
 
         public override string MergeString(params string[] strings)
         {
-            return string.Join("||", strings).Replace("+", "");
+            return string.Join("||", strings);
         }
 
         public override string GetDate()
