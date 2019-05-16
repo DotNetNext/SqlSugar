@@ -114,6 +114,19 @@ namespace SqlSugar
                         throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
                     }
                 }
+                else if (item is NewExpression)
+                {
+                    try
+                    {
+                        var value = ExpressionTool.DynamicInvoke(item);
+                        var parameterName = AppendParameter(value);
+                        parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
+                    }
+                }
             }
         }
 
