@@ -110,5 +110,25 @@ namespace SqlSugar
                 }
             }
         }
+
+        public static void TryDB2()
+        {
+            if (!IsTryOracle)
+            {
+                try
+                {
+                    DB2Provider db = new DB2Provider();
+                    var conn = db.GetAdapter();
+                    IsTryOracle = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to Oracle.ManagedDataAccess.Core",
+                     "你需要引用 Oracle.ManagedDataAccess.Core");
+                    throw new Exception(message);
+                }
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace OrmTest
 
 
             //    /***Unit Test***/
-            //new Select(1).Init();
+            new Select(1).Init();
             //new Field(1).Init();
 
 

@@ -1,4 +1,4 @@
-﻿using SMESCore.Model;
+﻿using SMESCore.Model.BaseEntity;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -41,8 +41,11 @@ namespace OrmTest.Demo
                 ConnectionString = Config.ConnectionString,
                 DbType = DbType.Oracle,
                 IsAutoCloseConnection = true,
-                InitKeyType = InitKeyType.Attribute 
-            });
+                InitKeyType = InitKeyType.Attribute,
+                ConfigureExternalServices = new ConfigureExternalServices() {
+                    EntityNameService = (p, n) => { n.DbTableName = "aps." + p.Name; }
+                }
+            }) ;
 
             //Backup table
             //db.CodeFirst.BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2));

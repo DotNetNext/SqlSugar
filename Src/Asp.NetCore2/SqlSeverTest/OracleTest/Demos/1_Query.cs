@@ -1,15 +1,18 @@
-﻿using OrmTest.Models;
+﻿using Oracle.ManagedDataAccess.Client;
+using OrmTest.Models;
 using SMESCore.Model;
+using SMESCore.Model.BaseEntity;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OrmTest.Demo
 {
-    public class Query : DemoBase
+    public class Query :DemoBase
     {
 
         public static void Init()
@@ -29,6 +32,27 @@ namespace OrmTest.Demo
             ////StoredProcedure();
             //Enum();
             //Simple();
+        }
+        public static void mytest()
+        {
+            var db = GetInstance();
+            UnitTest.UnitTestBase testBase = new UnitTest.UnitTestBase();
+            testBase.Begin();
+            var connec = new OracleConnection(Config.ConnectionString);
+            var cmd = new OracleCommand("SELECT t.* FROM aps.equ_work_hours_bak t join aps.equ_work_hours_ver_bak t1 on t1.equ_work_hours_ver_id=t.equ_work_hours_ver_id",connec);
+            var adp = new OracleDataAdapter(cmd);
+            var dt = new DataTable();
+            var dataset = adp.Fill(dt);
+            testBase.End("joinadonettable");
+            testBase.Begin();
+            var joinado = db.Ado.GetDataTable("SELECT t.* FROM aps.equ_work_hours_bak t join aps.equ_work_hours_ver_bak t1 on t1.equ_work_hours_ver_id=t.equ_work_hours_ver_id");
+            testBase.End("joinadotable");
+            testBase.Begin();
+            var join = db.Queryable<EquWorkHours, EquWorkHoursVer>((e,e1)=>new object[] { JoinType.Inner,e.EquWorkHoursVerId==e1.EquWorkHoursVerId})
+                .Select((e,e1)=>new EquWorkhoursViewModel{ EquWorkHours=e,Factoryname=e1.Factoryid.ToString(),Vername=e1.Vername}).ToDataTable();
+            testBase. End("jointable");
+            var getequhouts = db.Queryable<EquWorkHours>().ToDataTable();
+            var getver = db.Queryable<EquWorkHoursVer>().ToDataTable();
         }
 
         private static void myordreby()
@@ -152,11 +176,6 @@ namespace OrmTest.Demo
             db.Ado.CommitTran();
             //more
             //db.Ado.GetXXX...
-        }
-        public static void mytest() {
-            var db = GetInstance();
-            var getequhouts = db.Queryable<EquWorkHours>().ToDataTable();
-            var getver = db.Queryable<EquWorkHoursVer>().ToDataTable();
         }
         public static void Easy()
         {

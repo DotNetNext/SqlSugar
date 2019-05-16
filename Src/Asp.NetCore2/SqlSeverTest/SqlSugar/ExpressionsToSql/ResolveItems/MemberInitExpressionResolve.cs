@@ -124,20 +124,9 @@ namespace SqlSugar
                     base.Expression = item;
                     base.Start();
                     var subSql = base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString());
-                    if (subSql.Contains(",")) {
-                        subSql = subSql.Replace(",", UtilConstants.ReplaceCommaKey);
-                    }
                     if (ResolveExpressType.Update == this.Context.ResolveType)
                     {
-                        string name = this.Context.GetTranslationTableName(parameter.CurrentExpression.Type.Name, true);
-                        if (name.Contains("."))
-                        {
-
-                        }
-                        else
-                        {
-                            subSql = Regex.Replace(subSql, @" \[\w+?\]\.| ""\w+?""\.| \`\w+?\`\.", name + ".");
-                        }
+                        subSql = Regex.Replace(subSql, @" \[\w+?\]\.| ""\w+?""\.| \`\w+?\`\.", this.Context.GetTranslationTableName(parameter.CurrentExpression.Type.Name,true) +".");
                     }
                     parameter.Context.Result.Append(subSql);
                 });        

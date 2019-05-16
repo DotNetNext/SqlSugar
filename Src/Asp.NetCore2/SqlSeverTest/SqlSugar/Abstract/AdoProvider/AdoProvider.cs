@@ -312,7 +312,6 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
@@ -347,7 +346,6 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
@@ -377,7 +375,6 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
@@ -406,7 +403,6 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
                 throw ex;
@@ -438,7 +434,6 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql,parameters,ex);
                 throw ex;

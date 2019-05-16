@@ -5,13 +5,8 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public enum DbType
+    public class DB2DbFirst : DbFirstProvider
     {
-        MySql ,
-        SqlServer,
-        Sqlite,
-        Oracle,
-        PostgreSQL,
-        DB2
+
     }
 }

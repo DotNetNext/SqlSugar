@@ -50,7 +50,7 @@ namespace SqlSugar
                 this.Context.InitMappingInfo(entityType);
                 this.Context.RefreshMapping();
             }
-            var result= "FROM "+this.Context.GetTranslationTableName(name,true);
+            var result= "FROM "+this.Context.GetTranslationTableName(name, true);
             if (this.Context.SubQueryIndex > 0) {
                 result += " subTableIndex"+this.Context.SubQueryIndex;
             }

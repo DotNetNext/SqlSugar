@@ -22,8 +22,7 @@ namespace SqlSugar
             return this;
         }
 
-        public virtual ICodeFirst SetStringDefaultLength(int length)
-        {
+        public virtual ICodeFirst SetStringDefaultLength(int length) {
             DefultLength = length;
             return this;
         }
@@ -44,23 +43,7 @@ namespace SqlSugar
             });
             Check.Exception(!executeResult.IsSuccess, executeResult.ErrorMessage);
         }
-        public void InitTables<T>()
-        {
-            InitTables(typeof(T));
-        }
-        public void InitTables<T, T2>()
-        {
-            InitTables(typeof(T),typeof(T2));
-        }
-        public void InitTables<T, T2, T3>()
-        {
-            InitTables(typeof(T), typeof(T2),typeof(T3));
-        }
-        public void InitTables<T, T2, T3, T4>()
-        {
-            InitTables(typeof(T), typeof(T2), typeof(T3),typeof(T4));
-        }
-        public virtual void InitTables(params Type[] entityTypes)
+        public virtual void InitTables(Type[] entityTypes)
         {
             if (entityTypes.HasValue())
             {
@@ -91,12 +74,10 @@ namespace SqlSugar
         protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType);
-            if (this.DefultLength > 0)
-            {
+            if (this.DefultLength > 0) {
                 foreach (var item in entityInfo.Columns)
                 {
-                    if (item.PropertyInfo.PropertyType == UtilConstants.StringType && item.DataType.IsNullOrEmpty() && item.Length == 0)
-                    {
+                    if (item.PropertyInfo.PropertyType == UtilConstants.StringType && item.DataType.IsNullOrEmpty()&& item.Length==0) {
                         item.Length = DefultLength;
                     }
                 }
@@ -117,13 +98,13 @@ namespace SqlSugar
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.HasValue())
             {
-                foreach (var item in entityInfo.Columns.OrderBy(it => it.IsPrimarykey ? 0 : 1).Where(it => it.IsIgnore == false))
+                foreach (var item in entityInfo.Columns.OrderBy(it=>it.IsPrimarykey?0:1).Where(it => it.IsIgnore == false))
                 {
                     DbColumnInfo dbColumnInfo = EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
             }
-            this.Context.DbMaintenance.CreateTable(tableName, columns, true);
+            this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
         public virtual void ExistLogic(EntityInfo entityInfo)
         {
@@ -155,7 +136,7 @@ namespace SqlSugar
                     .ToList();
 
 
-                var isMultiplePrimaryKey = dbColumns.Where(it => it.IsPrimarykey).Count() > 1 || entityColumns.Where(it => it.IsPrimarykey).Count() > 1;
+                var isMultiplePrimaryKey = dbColumns.Where(it => it.IsPrimarykey).Count() > 1|| entityColumns.Where(it => it.IsPrimarykey).Count() > 1;
 
 
                 var isChange = false;
@@ -186,7 +167,7 @@ namespace SqlSugar
                     if (dbColumn == null) continue;
                     bool pkDiff, idEntityDiff;
                     KeyAction(item, dbColumn, out pkDiff, out idEntityDiff);
-                    if (dbColumn != null && pkDiff && !idEntityDiff && isMultiplePrimaryKey == false)
+                    if (dbColumn != null && pkDiff && !idEntityDiff&& isMultiplePrimaryKey==false)
                     {
                         var isAdd = item.IsPrimarykey;
                         if (isAdd)
@@ -198,17 +179,15 @@ namespace SqlSugar
                             this.Context.DbMaintenance.DropConstraint(tableName, string.Format("PK_{0}_{1}", tableName, item.DbColumnName));
                         }
                     }
-                    else if ((pkDiff || idEntityDiff) && isMultiplePrimaryKey == false)
+                    else if ((pkDiff || idEntityDiff)&& isMultiplePrimaryKey==false)
                     {
                         ChangeKey(entityInfo, tableName, item);
                     }
                 }
-                if (isMultiplePrimaryKey)
-                {
-                    var oldPkNames = dbColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it => it).ToList();
-                    var newPkNames = entityColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it => it).ToList();
-                    if (!Enumerable.SequenceEqual(oldPkNames, newPkNames))
-                    {
+                if (isMultiplePrimaryKey) {
+                    var oldPkNames = dbColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it=>it).ToList();
+                    var newPkNames = entityColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it=>it).ToList();
+                    if (!Enumerable.SequenceEqual(oldPkNames,newPkNames)) {
                         Check.Exception(true, ErrorMessage.GetThrowMessage("Modification of multiple primary key tables is not supported. Delete tables while creating", "不支持修改多主键表，请删除表在创建"));
                     }
 

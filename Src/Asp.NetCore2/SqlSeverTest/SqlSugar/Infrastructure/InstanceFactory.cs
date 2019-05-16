@@ -189,6 +189,10 @@ namespace SqlSugar
             {
                 return new OracleUpdateable<T>();
             }
+            else if (currentConnectionConfig.DbType == DbType.DB2)
+            {
+                return new DB2Updateable<T>();
+            }
             else
             {
                 return new UpdateableProvider<T>();
@@ -200,6 +204,9 @@ namespace SqlSugar
             if (currentConnectionConfig.DbType == DbType.Oracle)
             {
                 return new OracleDeleteable<T>();
+            } else if (currentConnectionConfig.DbType == DbType.DB2)
+            {
+                return new DB2Deleteable<T>();
             }
             else
             {
@@ -216,6 +223,10 @@ namespace SqlSugar
             else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 return new PostgreSQLInserttable<T>();
+            }
+            else if (currentConnectionConfig.DbType == DbType.DB2)
+            {
+                return new DB2Insertable<T>();
             }
             else
             {

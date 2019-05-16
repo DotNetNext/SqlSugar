@@ -162,15 +162,7 @@ namespace SqlSugar
             else if (isMapping)
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                var name = (mappingInfo == null ? entityName : mappingInfo.DbTableName);
-                if (name.Contains("."))
-                {
-                    return string.Join(".", name.Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
-                }
-                else
-                {
-                    return SqlTranslationLeft + name + SqlTranslationRight;
-                }
+                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName) + SqlTranslationRight;
             }
             else if (isComplex)
             {
