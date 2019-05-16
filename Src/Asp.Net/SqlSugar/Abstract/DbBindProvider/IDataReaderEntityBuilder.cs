@@ -63,6 +63,7 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertdatetimeoffsetDate = typeof(IDataRecordExtensions).GetMethod("GetConvertdatetimeoffsetDate");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
+        private static readonly MethodInfo getJson = typeof(IDataRecordExtensions).GetMethod("GetJson");
         private static readonly MethodInfo getSqliteTypeNull = typeof(IDataRecordExtensions).GetMethod("GetSqliteTypeNull");
         private static readonly MethodInfo getSqliteType = typeof(IDataRecordExtensions).GetMethod("GetSqliteType");
         private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarProvider) });
@@ -140,7 +141,7 @@ namespace SqlSugar
         {
             if (columnInfo.IsJson)
             {
-                MethodInfo method = null;
+                MethodInfo jsonMethod = getJson.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
                 int i = DataRecord.GetOrdinal(fieldName);
                 Label endIfLabel = generator.DefineLabel();
                 generator.Emit(OpCodes.Ldarg_0);
@@ -150,7 +151,7 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Ldloc, result);
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldc_I4, i);
-                generator.Emit(OpCodes.Call, method);
+                generator.Emit(OpCodes.Call, jsonMethod);
                 generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod());
                 generator.MarkLabel(endIfLabel);
             }

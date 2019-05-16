@@ -225,6 +225,15 @@ namespace SqlSugar
             return (T)Convert.ChangeType(dr.GetValue(i), typeof(T));
         }
 
+        public static T GetJson<T>(this IDataReader dr, int i)
+        {
+            var obj = dr.GetValue(i);
+            if (obj == null)
+                return default(T);
+            var value = obj.ObjToString();
+            return new SerializeService().DeserializeObject<T>(value);
+        }
+
         public static Nullable<T> GetConvertEnum_Null<T>(this IDataReader dr, int i) where T : struct
         {
             if (dr.IsDBNull(i))
@@ -303,7 +312,7 @@ namespace SqlSugar
             {
                 return (T)Convert.ChangeType((dr.GetString(i)), type);
             }
-        } 
+        }
         #endregion
     }
 }

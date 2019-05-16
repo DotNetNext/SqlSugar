@@ -455,6 +455,10 @@ namespace SqlSugar
                 {
                     columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                 }
+                if (column.IsJson)
+                {
+                    columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
+                }
                 var tranColumn = EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
                 if (tranColumn != null && columnInfo.Value.HasValue())
                 {

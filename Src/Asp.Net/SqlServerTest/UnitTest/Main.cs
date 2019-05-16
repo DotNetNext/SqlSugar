@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +8,23 @@ namespace OrmTest
 {
     public partial class NewUnitTest
     {
+       public static  SqlSugarClient Db=> new SqlSugarClient(new ConnectionConfig()
+        {
+            DbType = DbType.SqlServer,
+            ConnectionString = Config.ConnectionString,
+            InitKeyType = InitKeyType.Attribute,
+            IsAutoCloseConnection = true,
+            AopEvents = new AopEvents
+            {
+                OnLogExecuting = (sql, p) =>
+                {
+                    Console.WriteLine(sql);
+                }
+            }
+        });
         public static void Init()
         {
-
+            Json();
         }
     }
 }
