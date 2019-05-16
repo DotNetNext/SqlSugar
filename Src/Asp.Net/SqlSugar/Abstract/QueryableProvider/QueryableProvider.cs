@@ -1185,6 +1185,7 @@ namespace SqlSugar
                     var mapperCache = new MapperCache<T>(list, this.Context);
                     foreach (T item in list)
                     {
+                        mapperCache.GetIndex = 0;
                         this.MapperActionWithCache(item, mapperCache);
                     }
                 }
