@@ -171,6 +171,12 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
             return true;
         }
+
+        public virtual bool TruncateTable<T>()
+        {
+            this.Context.InitMppingInfo<T>();
+            return this.TruncateTable(this.Context.EntityMaintenance.GetEntityInfo<T>().DbTableName);
+        }
         public virtual bool DropColumn(string tableName, string columnName)
         {
             columnName = this.SqlBuilder.GetTranslationColumnName(columnName);

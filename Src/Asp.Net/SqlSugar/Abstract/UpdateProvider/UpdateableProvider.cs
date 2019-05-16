@@ -415,7 +415,11 @@ namespace SqlSugar
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
             {
-                Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsTranscoding", "UpdateColumns方式更新不支持IsTranscoding，你可以使用db.Updateable(实体)的方式更新"));
+                Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsTranscoding", "SetColumns方式更新不支持IsTranscoding，你可以使用db.Updateable(实体)的方式更新"));
+            }
+            if (this.EntityInfo.Columns.Any(it => it.IsJson))
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsJson", "SetColumns方式更新不支持IsJson，你可以使用db.Updateable(实体)的方式更新"));
             }
         }
         private void SetUpdateItemByDic(int i, T item, List<DbColumnInfo> updateItem)
