@@ -142,9 +142,9 @@ namespace SqlSugar
         {
 
         }
-        private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
+        private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fieldName)
         {
-            int i = DataRecord.GetOrdinal(fileName);
+            int i = DataRecord.GetOrdinal(fieldName);
             Label endIfLabel = generator.DefineLabel();
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
