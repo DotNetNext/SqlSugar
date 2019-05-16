@@ -113,7 +113,10 @@ namespace SqlSugar
                 {
                     if (columnInfo.PropertyInfo.PropertyType.IsClass() && columnInfo.PropertyInfo.PropertyType != UtilConstants.ByteArrayType && columnInfo.PropertyInfo.PropertyType != UtilConstants.ObjType)
                     {
-                        BindClass(generator, result, columnInfo.PropertyInfo);
+                        if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            BindClass(generator, result, columnInfo,ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
+                        }
                     }
                     else
                     {
@@ -133,14 +136,24 @@ namespace SqlSugar
         #endregion
 
         #region Private methods
-        private bool IsIgnore(Type type, PropertyInfo propertyInfo)
+        private void BindClass(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
-            return Context.IgnoreColumns != null && Context.IgnoreColumns.Any(it => it.PropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
-                                     && it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
-        }
-        private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
-        {
-
+            if (columnInfo.IsJson)
+            {
+                MethodInfo method = null;
+                int i = DataRecord.GetOrdinal(fieldName);
+                Label endIfLabel = generator.DefineLabel();
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldc_I4, i);
+                generator.Emit(OpCodes.Callvirt, isDBNullMethod);
+                generator.Emit(OpCodes.Brtrue, endIfLabel);
+                generator.Emit(OpCodes.Ldloc, result);
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldc_I4, i);
+                generator.Emit(OpCodes.Call, method);
+                generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod());
+                generator.MarkLabel(endIfLabel);
+            }
         }
         private void BindField(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {

@@ -141,6 +141,13 @@ namespace SqlSugar
             get { return _SerializeDateTimeFormat; }
             set { _SerializeDateTimeFormat = value; }
         }
+
+        private bool _IsJson;
+        public bool IsJson
+        {
+            get { return _IsJson; }
+            set { _IsJson = value; }
+        }
     }
 
 }

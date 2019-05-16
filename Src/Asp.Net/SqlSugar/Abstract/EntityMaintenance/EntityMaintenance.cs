@@ -169,6 +169,7 @@ namespace SqlSugar
                         column.IsEnableUpdateVersionValidation = sugarColumn.IsEnableUpdateVersionValidation;
                         column.IsTranscoding = sugarColumn.IsTranscoding;
                         column.SerializeDateTimeFormat = sugarColumn.SerializeDateTimeFormat;
+                        column.IsJson = sugarColumn.IsJson;
                     }
                     else
                     {
