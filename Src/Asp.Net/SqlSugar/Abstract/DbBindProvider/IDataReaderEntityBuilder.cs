@@ -100,41 +100,26 @@ namespace SqlSugar
             LocalBuilder result = generator.DeclareLocal(type);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
             generator.Emit(OpCodes.Stloc, result);
-            var mappingColumns = Context.MappingColumns.Where(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase)).ToList();
-            var properties = type.GetProperties();
-            foreach (var propertyInfo in properties)
+            this.Context.InitMppingInfo(type);
+            var columnInfos = this.Context.EntityMaintenance.GetEntityInfo(type).Columns;
+            foreach (var columnInfo in columnInfos)
             {
-                string fileName = propertyInfo.Name;
-                if (mappingColumns != null)
-                {
-                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName == type.Name && it.PropertyName.Equals(propertyInfo.Name));
-                    if (mappInfo != null)
-                    {
-                        if (!ReaderKeys.Contains(mappInfo.DbColumnName))
-                        {
-                            fileName = ReaderKeys.FirstOrDefault(it => it.Equals(mappInfo.DbColumnName, StringComparison.CurrentCultureIgnoreCase)|| it.Equals(mappInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase));
-                        }
-                        else
-                        {
-                            fileName = mappInfo.DbColumnName;
-                        }
-                    }
-                }
-                if (IsIgnore(type, propertyInfo)&&!this.ReaderKeys.Any(it=>it==fileName))
+                string fileName = columnInfo.DbColumnName ?? columnInfo.PropertyName;
+                if (columnInfo.IsIgnore)
                 {
                     continue;
                 }
-                if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
+                if (columnInfo != null && columnInfo.PropertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType && propertyInfo.PropertyType != UtilConstants.ObjType)
+                    if (columnInfo.PropertyInfo.PropertyType.IsClass() && columnInfo.PropertyInfo.PropertyType != UtilConstants.ByteArrayType && columnInfo.PropertyInfo.PropertyType != UtilConstants.ObjType)
                     {
-                        BindClass(generator, result, propertyInfo);
+                        BindClass(generator, result, columnInfo.PropertyInfo);
                     }
                     else
                     {
                         if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                         {
-                            BindField(generator, result, propertyInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
+                            BindField(generator, result, columnInfo.PropertyInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
                     }
                 }
