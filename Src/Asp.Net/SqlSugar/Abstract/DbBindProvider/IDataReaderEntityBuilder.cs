@@ -119,7 +119,7 @@ namespace SqlSugar
                     {
                         if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                         {
-                            BindField(generator, result, columnInfo.PropertyInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
+                            BindField(generator, result, columnInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
                     }
                 }
@@ -142,7 +142,7 @@ namespace SqlSugar
         {
 
         }
-        private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fieldName)
+        private void BindField(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
             int i = DataRecord.GetOrdinal(fieldName);
             Label endIfLabel = generator.DefineLabel();
@@ -153,21 +153,21 @@ namespace SqlSugar
             generator.Emit(OpCodes.Ldloc, result);
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
-            BindMethod(generator, propertyInfo, i);
-            generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
+            BindMethod(generator, columnInfo, i);
+            generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod());
             generator.MarkLabel(endIfLabel);
         }
-        private void BindMethod(ILGenerator generator, PropertyInfo bindProperty, int ordinal)
+        private void BindMethod(ILGenerator generator, EntityColumnInfo columnInfo, int ordinal)
         {
             IDbBind bind = Context.Ado.DbBind;
             bool isNullableType = false;
             MethodInfo method = null;
-            Type bindPropertyType = UtilMethods.GetUnderType(bindProperty, ref isNullableType);
+            Type bindPropertyType = UtilMethods.GetUnderType(columnInfo.PropertyInfo, ref isNullableType);
             string dbTypeName = UtilMethods.GetParenthesesValue(DataRecord.GetDataTypeName(ordinal));
             if (dbTypeName.IsNullOrEmpty()) {
                 dbTypeName = bindPropertyType.Name;
             }
-            string propertyName = bindProperty.Name;
+            string propertyName = columnInfo.PropertyName;
             string validPropertyName = bind.GetPropertyTypeName(dbTypeName);
             validPropertyName = validPropertyName == "byte[]" ? "byteArray" : validPropertyName;
             CSharpDataType validPropertyType = (CSharpDataType)Enum.Parse(typeof(CSharpDataType), validPropertyName);
@@ -195,7 +195,7 @@ namespace SqlSugar
                 {
                     method = getValueMethod;
                     generator.Emit(OpCodes.Call, method);
-                    generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
+                    generator.Emit(OpCodes.Unbox_Any, columnInfo.PropertyInfo.PropertyType);
                     return;
                 }
                 else
@@ -302,7 +302,7 @@ namespace SqlSugar
             generator.Emit(OpCodes.Call, method);
             if (method == getValueMethod)
             {
-                generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
+                generator.Emit(OpCodes.Unbox_Any, columnInfo.PropertyInfo.PropertyType);
             }
             #endregion
         }
