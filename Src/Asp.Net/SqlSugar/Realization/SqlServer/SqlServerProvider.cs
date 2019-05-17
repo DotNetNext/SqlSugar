@@ -129,6 +129,14 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
+                if (sqlParameter.Value!=null&&sqlParameter.DbType == System.Data.DbType.DateTime)
+                {
+                    var date = Convert.ToDateTime(sqlParameter.Value);
+                    if (date==DateTime.MinValue)
+                    {
+                        sqlParameter.Value = Convert.ToDateTime("1753/01/01");
+                    }
+                }
                 sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
                 if (parameter.TypeName.HasValue()) {
