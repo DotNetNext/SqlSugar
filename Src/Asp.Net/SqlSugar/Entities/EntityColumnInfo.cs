@@ -28,5 +28,6 @@ namespace SqlSugar
         public string OracleSequenceName { get; set; }
         public bool IsOnlyIgnoreInsert { get; set; }
         public bool IsTranscoding { get; set; }
+        public string SerializeDateTimeFormat { get;  set; }
     }
 }

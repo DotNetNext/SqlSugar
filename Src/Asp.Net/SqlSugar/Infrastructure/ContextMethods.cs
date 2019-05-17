@@ -250,6 +250,26 @@ namespace SqlSugar
             DependencyManagement.TryJsonNet();
             return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.DeserializeObject<T>(value);
         }
+        public string SerializeObject(object value, Type type)
+        {
+            DependencyManagement.TryJsonNet();
+            if (type.IsAnonymousType())
+            {
+                return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SerializeObject(value);
+            }
+            else
+            {
+                var isSugar = this.Context.EntityMaintenance.GetEntityInfo(type).Columns.Any(it => it.SerializeDateTimeFormat.HasValue());
+                if (isSugar)
+                {
+                    return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SugarSerializeObject(value);
+                }
+                else
+                {
+                    return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SerializeObject(value);
+                }
+            }
+        }
         #endregion
 
         #region Copy Object

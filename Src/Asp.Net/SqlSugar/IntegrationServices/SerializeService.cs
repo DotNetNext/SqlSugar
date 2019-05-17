@@ -12,6 +12,11 @@ namespace SqlSugar
     {
         public string SerializeObject(object value)
         {
+            return JsonConvert.SerializeObject(value);
+        }
+
+        public string SugarSerializeObject(object value)
+        {
             return JsonConvert.SerializeObject(value, new JsonSerializerSettings()
             {
                 ContractResolver = new MyContractResolver()
@@ -20,7 +25,7 @@ namespace SqlSugar
 
         public T DeserializeObject<T>(string value)
         {
-            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ContractResolver = new MyContractResolver() };
+            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             return JsonConvert.DeserializeObject<T>(value, jSetting);
         }
     }
@@ -35,7 +40,7 @@ namespace SqlSugar
 
         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {
-            if (type.IsAnonymousType()||type==UtilConstants.ObjType|| type.Namespace=="SqlSugar"|| type.IsClass()==false)
+            if (type.IsAnonymousType() || type == UtilConstants.ObjType || type.Namespace == "SqlSugar" || type.IsClass() == false)
             {
                 return base.CreateProperties(type, memberSerialization);
             }
