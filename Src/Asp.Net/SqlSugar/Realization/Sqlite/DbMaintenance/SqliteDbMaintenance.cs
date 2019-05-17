@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -15,7 +16,7 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                throw new NotSupportedException();
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -234,7 +235,17 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-
+        /// <summary>
+        ///by current connection string
+        /// </summary>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
+        {
+            this.Context.Ado.Connection.Open();
+            this.Context.Ado.Connection.Close();
+            return true;
+        }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
