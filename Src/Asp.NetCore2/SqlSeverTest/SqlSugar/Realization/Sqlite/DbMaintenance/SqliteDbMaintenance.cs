@@ -250,50 +250,60 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
-            if (!isCache)
+            if (isCache)
+            {
+                return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<List<DbColumnInfo>>(cacheKey, () =>
+                {
+                    return GetColumnInfosByTableName(tableName);
+
+                });
+            }
+            else
             {
                 return GetColumnInfosByTableName(tableName);
             }
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-            () =>
-                 {
-                     return GetColumnsByTableName(tableName);
+        }
 
-                 });
-        }
-        public override bool AddRemark(EntityInfo entity)
+        private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
-            return true;
-        }
-        private List<DbColumnInfo> GetColumnsByTableName(string tableName)
-        {
-            string sql = "select * from " + tableName + " limit 0,1";
+            string sql = "PRAGMA table_info(" + tableName + ")";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
-            using (DbDataReader reader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
+            using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
             {
-                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 List<DbColumnInfo> result = new List<DbColumnInfo>();
-                var schemaTable = reader.GetSchemaTable();
-                foreach (DataRow row in schemaTable.Rows)
+                while (dataReader.Read())
                 {
+                    var type = dataReader.GetValue(2).ObjToString();
+                    var length = 0;
+                    if (type.Contains("("))
+                    {
+                        type = type.Split('(').First();
+                        length = type.Split('(').Last().TrimEnd(')').ObjToInt();
+                    }
                     DbColumnInfo column = new DbColumnInfo()
                     {
                         TableName = tableName,
-                        DataType = row["DataTypeName"].ToString().Trim(),
-                        IsNullable = (bool)row["AllowDBNull"],
-                        IsIdentity = (bool)row["IsAutoIncrement"],
+                        DataType = type,
+                        IsNullable = !dataReader.GetBoolean(3),
+                        IsIdentity = dataReader.GetBoolean(3) && dataReader.GetBoolean(5).ObjToBool() && (type.IsIn("integer", "int", "int32", "int64", "long")),
                         ColumnDescription = null,
-                        DbColumnName = row["ColumnName"].ToString(),
-                        DefaultValue = row["defaultValue"].ToString(),
-                        IsPrimarykey = (bool)row["IsKey"],
-                        Length = Convert.ToInt32(row["ColumnSize"])
+                        DbColumnName = dataReader.GetString(1),
+                        DefaultValue = dataReader.GetValue(4).ObjToString(),
+                        IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
+                        Length = length
                     };
                     result.Add(column);
                 }
                 return result;
             }
         }
+        public override bool AddRemark(EntityInfo entity)
+        {
+            return true;
+        }
+  
+
         public override bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue)
         {
             oldTableName = this.SqlBuilder.GetTranslationTableName(oldTableName);
