@@ -39,7 +39,7 @@ namespace SqlSugar
         {
 
             this.Context.Utilities.RemoveCacheAll();
-            this.Context.InitMppingInfo(entityType);
+            this.Context.InitMappingInfo(entityType);
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {
                 Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");

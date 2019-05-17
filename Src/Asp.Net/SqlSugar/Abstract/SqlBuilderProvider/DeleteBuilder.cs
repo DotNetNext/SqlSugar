@@ -149,7 +149,7 @@ namespace SqlSugar
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
             resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
-            resolveExpress.InitMappingInfo = Context.InitMppingInfo;
+            resolveExpress.InitMappingInfo = Context.InitMappingInfo;
             resolveExpress.RefreshMapping = () =>
             {
                 resolveExpress.MappingColumns = Context.MappingColumns;

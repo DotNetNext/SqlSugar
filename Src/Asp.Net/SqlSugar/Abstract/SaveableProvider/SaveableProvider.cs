@@ -13,13 +13,13 @@ namespace SqlSugar
         {
             this.saveObjects = saveObjects;
             this.Context = context;
-            this.Context.InitMppingInfo<T>();
+            this.Context.InitMappingInfo<T>();
         }
         internal SaveableProvider(SqlSugarProvider context, T saveObject)
         {
             this.saveObjects = new List<T>() { saveObject };
             this.Context = context;
-            this.Context.InitMppingInfo<T>();
+            this.Context.InitMappingInfo<T>();
         }
         public SqlSugarProvider Context { get; set; }
         public List<T> saveObjects = new List<T>();

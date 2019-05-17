@@ -972,7 +972,7 @@ namespace SqlSugar
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Select");
-            this.Context.InitMppingInfo(typeof(TResult));
+            this.Context.InitMappingInfo(typeof(TResult));
             var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             result.Context = this.Context;
             result.SqlBuilder = this.SqlBuilder;

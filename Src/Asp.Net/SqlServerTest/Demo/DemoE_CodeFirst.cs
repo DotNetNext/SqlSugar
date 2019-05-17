@@ -15,11 +15,11 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.SqlServer,
-                ConnectionString = Config.ConnectionString,
+                ConnectionString = "server=.;uid=sa;pwd=haosql;database=MyDbBaseTest",
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-
+            db.DbMaintenance.CreateDatabase();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             Console.WriteLine("#### CodeFirst end ####");
         }

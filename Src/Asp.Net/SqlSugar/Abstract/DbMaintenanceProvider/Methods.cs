@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -8,6 +9,10 @@ namespace SqlSugar
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
         #region DML
+        public virtual List<string> GetDataBaseList(SqlSugarClient db)
+        {
+            return db.Ado.SqlQuery<string>(this.GetDataBaseSql);
+        }
         public virtual List<DbTableInfo> GetViewInfoList(bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetViewInfoList";
@@ -133,6 +138,37 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        /// <summary>
+        ///by current connection string
+        /// </summary>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        public virtual bool CreateDatabase(string databaseDirectory = null)
+        {
+            var seChar = Path.DirectorySeparatorChar.ToString();
+            if (databaseDirectory == null)
+            {
+                databaseDirectory = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\').TrimEnd('/') +seChar+ "database";
+            }
+            else
+            {
+                databaseDirectory = databaseDirectory.TrimEnd('\\').TrimEnd('/');
+            }
+            var databaseName= this.Context.Ado.Connection.Database;
+            return CreateDatabase(databaseName,databaseDirectory);
+        }
+        /// <summary>
+        /// by databaseName
+        /// </summary>
+        /// <param name="databaseName"></param>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        public virtual bool CreateDatabase(string databaseName, string databaseDirectory = null)
+        {
+            this.Context.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, databaseName, databaseDirectory));
+            return true;
+        }
+
         public virtual bool AddPrimaryKey(string tableName, string columnName)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
@@ -174,7 +210,7 @@ namespace SqlSugar
 
         public virtual bool TruncateTable<T>()
         {
-            this.Context.InitMppingInfo<T>();
+            this.Context.InitMappingInfo<T>();
             return this.TruncateTable(this.Context.EntityMaintenance.GetEntityInfo<T>().DbTableName);
         }
         public virtual bool DropColumn(string tableName, string columnName)

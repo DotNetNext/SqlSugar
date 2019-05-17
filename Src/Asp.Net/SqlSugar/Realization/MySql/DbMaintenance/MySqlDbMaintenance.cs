@@ -8,6 +8,13 @@ namespace SqlSugar
     public class MySqlDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+        protected override string GetDataBaseSql
+        {
+            get
+            {
+                return "SELECT NAME FROM MASTER.DBO.SYSDATABASES ORDER BY NAME";
+            }
+        }
         protected override string GetColumnInfosByTableNameSql
         {
             get
@@ -50,6 +57,13 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string CreateDataBaseSql
+        {
+            get
+            {
+                return "CREATE DATABASE {0}";
+            }
+        }
         protected override string AddPrimaryKeySql
         {
             get

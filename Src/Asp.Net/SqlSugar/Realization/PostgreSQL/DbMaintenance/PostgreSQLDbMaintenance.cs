@@ -8,6 +8,13 @@ namespace SqlSugar
     public class PostgreSQLDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+        protected override string GetDataBaseSql
+        {
+            get
+            {
+                return "";
+            }
+        }
         protected override string GetColumnInfosByTableNameSql
         {
             get
@@ -62,6 +69,13 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string CreateDataBaseSql
+        {
+            get
+            {
+                return "CREATE DATABASE {0}";
+            }
+        }
         protected override string AddPrimaryKeySql
         {
             get
@@ -201,6 +215,7 @@ namespace SqlSugar
         protected override string IsAnyTableRemarkSql => throw new NotSupportedException();
 
         protected override string RenameTableSql => "alter table 表名 {0} to {1}";
+
         #endregion
 
         #region Methods

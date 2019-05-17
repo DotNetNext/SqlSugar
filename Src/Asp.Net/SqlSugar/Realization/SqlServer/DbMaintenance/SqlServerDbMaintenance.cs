@@ -8,6 +8,13 @@ namespace SqlSugar
     public class SqlServerDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+        protected override string GetDataBaseSql
+        {
+            get
+            {
+                return "SELECT NAME FROM MASTER.DBO.SYSDATABASES ORDER BY NAME";
+            }
+        }
         protected override string GetColumnInfosByTableNameSql
         {
             get
@@ -75,6 +82,37 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string CreateDataBaseSql
+        {
+            get
+            {
+                return @"
+create database {0}  
+on primary 
+(
+    name = N'{0}',
+    filename=N'{1}\{0}.mdf',
+    size=10mb,
+    maxsize=100mb,
+    filegrowth=1mb
+),
+(
+    name=N'{0}_ndf',   
+    filename=N'{1}\{0}.ndf',
+    size=10mb,
+    maxsize=100mb,
+     filegrowth=10%
+)
+log on  --逻辑文件
+(
+    name=N'{0}_log',  
+    filename=N'{1}\{0}.ldf', 
+    size=100mb,
+    maxsize=1gb,
+    filegrowth=10mb
+);";
+            }
+        }
         protected override string AddPrimaryKeySql
         {
             get
@@ -272,8 +310,36 @@ namespace SqlSugar
                 return "EXEC sp_rename '{0}','{1}'";
             }
         }
-        #endregion
 
+        #endregion
+        /// <summary>
+        ///by current connection string
+        /// </summary>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
+        {
+            if (databaseDirectory != null)
+            {
+                if (!FileHelper.IsExistDirectory(databaseDirectory))
+                {
+                    FileHelper.CreateDirectory(databaseDirectory);
+                }
+            }
+            var oldDatabaseName = this.Context.Ado.Connection.Database;
+            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
+            connection = connection.Replace(oldDatabaseName, "master");
+            var newDb = new SqlSugarClient(new ConnectionConfig() {
+                DbType = this.Context.CurrentConnectionConfig.DbType,
+                IsAutoCloseConnection = true,
+                ConnectionString = connection
+            });
+            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, databaseName, databaseDirectory));
+            }
+            return true;
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);

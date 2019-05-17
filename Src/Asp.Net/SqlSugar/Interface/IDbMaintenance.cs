@@ -47,6 +47,20 @@ namespace SqlSugar
         bool DeleteTableRemark(string tableName);
         bool IsAnyTableRemark(string tableName);
         bool RenameTable(string oldTableName,string newTableName);
+        /// <summary>
+        ///by current connection string
+        /// </summary>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        bool CreateDatabase(string databaseDirectory = null);
+        /// <summary>
+        /// by databaseName
+        /// </summary>
+        /// <param name="databaseName"></param>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        bool CreateDatabase(string databaseName,string databaseDirectory = null);
+        List<string> GetDataBaseList(SqlSugarClient db);
         #endregion
     }
 }

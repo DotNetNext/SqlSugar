@@ -10,6 +10,13 @@ namespace SqlSugar
     public class OracleDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+        protected override string GetDataBaseSql
+        {
+            get
+            {
+                return "";
+            }
+        }
         protected override string GetColumnInfosByTableNameSql
         {
             get
@@ -44,6 +51,13 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string CreateDataBaseSql
+        {
+            get
+            {
+                return "CREATE DATABASE {0}";
+            }
+        }
         protected override string AddPrimaryKeySql
         {
             get

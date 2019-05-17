@@ -101,7 +101,7 @@ namespace SqlSugar
             LocalBuilder result = generator.DeclareLocal(type);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
             generator.Emit(OpCodes.Stloc, result);
-            this.Context.InitMppingInfo(type);
+            this.Context.InitMappingInfo(type);
             var columnInfos = this.Context.EntityMaintenance.GetEntityInfo(type).Columns;
             foreach (var columnInfo in columnInfos)
             {

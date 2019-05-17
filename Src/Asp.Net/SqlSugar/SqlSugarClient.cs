@@ -658,13 +658,13 @@ namespace SqlSugar
         {
             return this.Context.GetDate();
         }
-        public void InitMppingInfo(Type type)
+        public void InitMappingInfo(Type type)
         {
-            this.Context.InitMppingInfo(type);
+            this.Context.InitMappingInfo(type);
         }
-        public void InitMppingInfo<T>()
+        public void InitMappingInfo<T>()
         {
-            this.Context.InitMppingInfo(typeof(T));
+            this.Context.InitMappingInfo(typeof(T));
         }
         #endregion
 

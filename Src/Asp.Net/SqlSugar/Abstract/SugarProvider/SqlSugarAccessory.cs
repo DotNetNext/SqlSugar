@@ -71,71 +71,71 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Init mppingInfo
-        protected void InitMppingInfo<T, T2>()
+        #region Init mappingInfo
+        protected void InitMappingInfo<T, T2>()
         {
-            InitMppingInfo<T>();
-            InitMppingInfo<T2>();
+            InitMappingInfo<T>();
+            InitMappingInfo<T2>();
         }
-        protected void InitMppingInfo<T, T2, T3>()
+        protected void InitMappingInfo<T, T2, T3>()
         {
-            InitMppingInfo<T, T2>();
-            InitMppingInfo<T3>();
+            InitMappingInfo<T, T2>();
+            InitMappingInfo<T3>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4>()
+        protected void InitMappingInfo<T, T2, T3, T4>()
         {
-            InitMppingInfo<T, T2, T3>();
-            InitMppingInfo<T4>();
+            InitMappingInfo<T, T2, T3>();
+            InitMappingInfo<T4>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5>()
         {
-            InitMppingInfo<T, T2, T3, T4>();
-            InitMppingInfo<T5>();
+            InitMappingInfo<T, T2, T3, T4>();
+            InitMappingInfo<T5>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5, T6>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5>();
-            InitMppingInfo<T6>();
+            InitMappingInfo<T, T2, T3, T4, T5>();
+            InitMappingInfo<T6>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5, T6, T7>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6>();
-            InitMppingInfo<T7>();
+            InitMappingInfo<T, T2, T3, T4, T5, T6>();
+            InitMappingInfo<T7>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
-            InitMppingInfo<T8>();
+            InitMappingInfo<T, T2, T3, T4, T5, T6, T7>();
+            InitMappingInfo<T8>();
         }
 
         #region 9-12
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
-            InitMppingInfo<T9>();
+            InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
+            InitMappingInfo<T9>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>();
-            InitMppingInfo<T10>();
+            InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>();
+            InitMappingInfo<T10>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
-            InitMppingInfo<T11>();
+            InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
+            InitMappingInfo<T11>();
         }
-        protected void InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>()
+        protected void InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
-            InitMppingInfo<T12>();
+            InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
+            InitMappingInfo<T12>();
         }
         #endregion
 
-        public void InitMppingInfo<T>()
+        public void InitMappingInfo<T>()
         {
-            InitMppingInfo(typeof(T));
+            InitMappingInfo(typeof(T));
         }
-        public void InitMppingInfo(Type type)
+        public void InitMappingInfo(Type type)
         {
             string cacheKey = "Context.InitAttributeMappingTables" + type.FullName;
             var entityInfo = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<EntityInfo>(cacheKey,
@@ -145,7 +145,7 @@ namespace SqlSugar
                   return result;
               });
             var copyObj = CopyEntityInfo(entityInfo);
-            InitMppingInfo(copyObj);
+            InitMappingInfo(copyObj);
         }
 
         private EntityInfo CopyEntityInfo(EntityInfo entityInfo)
@@ -188,7 +188,7 @@ namespace SqlSugar
             return result;
         }
 
-        private void InitMppingInfo(EntityInfo entityInfo)
+        private void InitMappingInfo(EntityInfo entityInfo)
         {
             if (this.MappingTables == null)
                 this.MappingTables = new MappingTableList();
