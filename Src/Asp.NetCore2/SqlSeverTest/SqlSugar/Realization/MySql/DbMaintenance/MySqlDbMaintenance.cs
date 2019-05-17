@@ -8,6 +8,13 @@ namespace SqlSugar
     public class MySqlDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+        protected override string GetDataBaseSql
+        {
+            get
+            {
+                return "SHOW DATABASES";
+            }
+        }
         protected override string GetColumnInfosByTableNameSql
         {
             get
@@ -50,6 +57,13 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string CreateDataBaseSql
+        {
+            get
+            {
+                return "CREATE DATABASE {0}";
+            }
+        }
         protected override string AddPrimaryKeySql
         {
             get
@@ -234,6 +248,41 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        /// <summary>
+        ///by current connection string
+        /// </summary>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
+        {
+            if (databaseDirectory != null)
+            {
+                if (!FileHelper.IsExistDirectory(databaseDirectory))
+                {
+                    FileHelper.CreateDirectory(databaseDirectory);
+                }
+            }
+            var oldDatabaseName = this.Context.Ado.Connection.Database;
+            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
+            connection = connection.Replace(oldDatabaseName, "sys");
+            var newDb = new SqlSugarClient(new ConnectionConfig()
+            {
+                DbType = this.Context.CurrentConnectionConfig.DbType,
+                IsAutoCloseConnection = true,
+                ConnectionString = connection
+            });
+            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, databaseName, databaseDirectory));
+            }
+            return true;
+        }
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            string sql = string.Format(this.AddTableRemarkSql, this.SqlBuilder.GetTranslationTableName(tableName), description);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())

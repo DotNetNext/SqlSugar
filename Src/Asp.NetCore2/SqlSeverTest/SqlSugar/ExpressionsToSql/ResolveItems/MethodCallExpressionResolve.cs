@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public class MethodCallExpressionResolve : BaseResolve
@@ -48,7 +50,7 @@ namespace SqlSugar
                 //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
                 SubResolve subResolve = new SubResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = subResolve.GetSql();
-                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle)||(parameter.BaseParameter!=null&&parameter.BaseParameter.CommonTempData!=null&&parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Result)))
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle) || (parameter.BaseParameter != null && parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Result)))
                 {
                     parameter.BaseParameter.CommonTempData = appendSql;
                 }
@@ -62,11 +64,12 @@ namespace SqlSugar
             {
                 CaseWhenResolve caseResole = new CaseWhenResolve(express, this.Context, parameter.OppsiteExpression);
                 var appendSql = caseResole.GetSql();
-                var isRoot = contextIndex == 2&&parameter.BaseExpression==null;
-                if (isRoot||(parameter.BaseExpression!=null&&ExpressionTool.IsLogicOperator(parameter.BaseExpression))) {
-                    appendSql= appendSql+"=1 ";
+                var isRoot = contextIndex == 2 && parameter.BaseExpression == null;
+                if (isRoot || (parameter.BaseExpression != null && ExpressionTool.IsLogicOperator(parameter.BaseExpression)))
+                {
+                    appendSql = appendSql + "=1 ";
                 }
-                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle,ResolveExpressType.Update))
+                if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle, ResolveExpressType.Update))
                 {
                     parameter.BaseParameter.CommonTempData = appendSql;
                 }
@@ -91,7 +94,7 @@ namespace SqlSugar
             }
         }
 
-        private  bool IsValidNativeMethod(MethodCallExpression express, string methodName)
+        private bool IsValidNativeMethod(MethodCallExpression express, string methodName)
         {
             return MethodMapping.ContainsKey(methodName) && express.Method.DeclaringType.Namespace == ("System");
         }
@@ -104,7 +107,7 @@ namespace SqlSugar
 
         private bool IsIfElse(MethodCallExpression express, string methodName)
         {
-            if (methodName == "End"&& express.Object.Type==typeof(CaseWhen))
+            if (methodName == "End" && express.Object.Type == typeof(CaseWhen))
                 return true;
             else
                 return false;
@@ -240,7 +243,8 @@ namespace SqlSugar
             foreach (var item in args)
             {
                 var expItem = item;
-                if (item is UnaryExpression) {
+                if (item is UnaryExpression)
+                {
                     expItem = (item as UnaryExpression).Operand;
                 }
                 AppendItem(parameter, name, args, model, expItem);
@@ -250,28 +254,29 @@ namespace SqlSugar
                 model.Args.AddRange(appendArgs);
             }
             var methodValue = GetMethodValue(name, model);
-            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType&&name=="HasValue"&&!(parameter.OppsiteExpression is BinaryExpression)&& !(parameter.OppsiteExpression is MethodCallExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType))
+            if (parameter.BaseExpression is BinaryExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType && name == "HasValue" && !(parameter.OppsiteExpression is BinaryExpression) && !(parameter.OppsiteExpression is MethodCallExpression && parameter.OppsiteExpression.Type == UtilConstants.BoolType))
             {
                 methodValue = packIfElse(methodValue);
             }
-            if (parameter.OppsiteExpression != null&&name == "IsNullOrEmpty" && parameter.OppsiteExpression.Type == UtilConstants.BoolType&& parameter.OppsiteExpression is ConstantExpression)
+            if (parameter.OppsiteExpression != null && name == "IsNullOrEmpty" && parameter.OppsiteExpression.Type == UtilConstants.BoolType && parameter.OppsiteExpression is ConstantExpression)
             {
                 methodValue = packIfElse(methodValue);
             }
             var isRoot = contextIndex == 2;
-            if (isRoot && parameter.BaseExpression == null &&this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple,ResolveExpressType.WhereSingle)&& (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
+            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
             {
                 methodValue = methodValue + "=1 ";
-;           }
-            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type==UtilConstants.BoolType))
+                ;
+            }
+            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type == UtilConstants.BoolType))
             {
                 methodValue = methodValue + "=1 ";
             }
-            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("IIF"))&& (parameter.CurrentExpression as MethodCallExpression).Method.ReturnType==UtilConstants.BoolType)
+            if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("IIF")) && (parameter.CurrentExpression as MethodCallExpression).Method.ReturnType == UtilConstants.BoolType)
             {
                 methodValue = methodValue + "=1 ";
             }
-            if (parameter.BaseExpression != null&&ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type == UtilConstants.BoolType))
+            if (parameter.BaseExpression != null && ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type == UtilConstants.BoolType))
             {
                 methodValue = methodValue + "=1 ";
             }
@@ -279,7 +284,7 @@ namespace SqlSugar
             {
                 methodValue = methodValue + "=1 ";
             }
-            if (parameter.BaseExpression != null&& ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
+            if (parameter.BaseExpression != null && ExpressionTool.IsLogicOperator(parameter.BaseExpression) && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("ToBool", "ToBoolean")))
             {
                 methodValue = methodValue + "=1 ";
             }
@@ -408,7 +413,7 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = DateTime.Now.Date;
             }
-            else if (model.Name == "ToString"&&item is ConstantExpression&&(item as ConstantExpression).Type.IsEnum())
+            else if (model.Name == "ToString" && item is ConstantExpression && (item as ConstantExpression).Type.IsEnum())
             {
                 parameter.CommonTempData = item.ToString();
             }
@@ -434,7 +439,8 @@ namespace SqlSugar
                     methodCallExpressionArgs.IsMember = false;
                 }
             }
-            if (methodCallExpressionArgs.IsMember == false&&(item is MethodCallExpression&&item.ToString()== "GetDate()") || (item is UnaryExpression && ((UnaryExpression)item).Operand.ToString() == "GetDate()")) {
+            if (methodCallExpressionArgs.IsMember == false && (item is MethodCallExpression && item.ToString() == "GetDate()") || (item is UnaryExpression && ((UnaryExpression)item).Operand.ToString() == "GetDate()"))
+            {
                 var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
                 methodCallExpressionArgs.MemberName = value;
@@ -463,9 +469,9 @@ namespace SqlSugar
                     type = DbType.MySql;
                 else if (this.Context is SqliteExpressionContext)
                     type = DbType.Sqlite;
-                else if(this.Context is OracleExpressionContext)
+                else if (this.Context is OracleExpressionContext)
                     type = DbType.Oracle;
-                return this.Context.SqlFuncServices.First(it => it.UniqueMethodName == name).MethodValue(model,type,this.Context);
+                return this.Context.SqlFuncServices.First(it => it.UniqueMethodName == name).MethodValue(model, type, this.Context);
             }
             else
             {
@@ -473,9 +479,9 @@ namespace SqlSugar
                 {
                     name = "Equals";
                 }
-                else if(name== "Parse")
+                else if (name == "Parse")
                 {
-                    name = "To"+TempParseType.Name;
+                    name = "To" + TempParseType.Name;
                 }
                 switch (name)
                 {
@@ -540,6 +546,10 @@ namespace SqlSugar
                     case "ToTime":
                         return this.Context.DbMehtods.ToTime(model);
                     case "ToString":
+                        if (model.Args.Count > 1 && model.Args.Last().MemberValue.ObjToString().IsContainsIn("-", "/", ":", "yy", "ms", "hh"))
+                        {
+                            return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
+                        }
                         Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
                         return this.Context.DbMehtods.ToString(model);
                     case "ToDecimal":
@@ -585,6 +595,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.GetDate();
                     case "GetRandom":
                         return this.Context.DbMehtods.GetRandom();
+                    case "CharIndex":
+                        return this.Context.DbMehtods.CharIndex(model);
                     default:
                         break;
                 }
@@ -605,9 +617,9 @@ namespace SqlSugar
         {
             if (IsExtMethod(expression.Method.Name))
                 return true;
-            if (IsParseMethod(expression)) 
+            if (IsParseMethod(expression))
                 return true;
-            if (expression.Method.Name == "IsNullOrEmpty"&&expression.Method.DeclaringType==UtilConstants.StringType)
+            if (expression.Method.Name == "IsNullOrEmpty" && expression.Method.DeclaringType == UtilConstants.StringType)
             {
                 return true;
             }
@@ -617,23 +629,88 @@ namespace SqlSugar
                 return true;
         }
         private Type TempParseType;
-        public bool IsParseMethod(MethodCallExpression expression) 
+        public bool IsParseMethod(MethodCallExpression expression)
         {
-           if (expression.Method.Name == "Parse"&&expression.Method.DeclaringType.IsIn(
-                                                                                         UtilConstants.DecType,
-                                                                                         UtilConstants.DateType,
-                                                                                         UtilConstants.DobType,
-                                                                                         UtilConstants.GuidType,
-                                                                                         UtilConstants.FloatType,
-                                                                                         UtilConstants.ShortType,
-                                                                                         UtilConstants.LongType,
-                                                                                         UtilConstants.IntType,
-                                                                                         UtilConstants.BoolType))
+            if (expression.Method.Name == "Parse" && expression.Method.DeclaringType.IsIn(
+                                                                                          UtilConstants.DecType,
+                                                                                          UtilConstants.DateType,
+                                                                                          UtilConstants.DobType,
+                                                                                          UtilConstants.GuidType,
+                                                                                          UtilConstants.FloatType,
+                                                                                          UtilConstants.ShortType,
+                                                                                          UtilConstants.LongType,
+                                                                                          UtilConstants.IntType,
+                                                                                          UtilConstants.BoolType))
             {
                 TempParseType = expression.Method.DeclaringType;
-                    return true;
+                return true;
             }
             return false;
+        }
+
+
+        public string GeDateFormat(string formatString, string value)
+        {
+            var parameter = new MethodCallExpressionArgs() { IsMember = true, MemberValue = DateType.Year };
+            var parameter2 = new MethodCallExpressionArgs() { IsMember = true, MemberName = value };
+            var parameters = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() { parameter2, parameter } };
+            var begin = @"^";
+            var end = @"$";
+            formatString = formatString.Replace("yyyy", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            formatString = formatString.Replace("yy", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+
+            parameters.Args.Last().MemberValue = DateType.Month;
+            formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            formatString = formatString.Replace("M", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+
+            parameters.Args.Last().MemberValue = DateType.Day;
+            formatString = formatString.Replace("dd", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            formatString = formatString.Replace("d", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+
+            parameters.Args.Last().MemberValue = DateType.Hour;
+            formatString = Regex.Replace(formatString, "hh", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end, RegexOptions.IgnoreCase);
+            formatString = Regex.Replace(formatString, "h", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end, RegexOptions.IgnoreCase);
+
+            parameters.Args.Last().MemberValue = DateType.Minute;
+            formatString = formatString.Replace("mm", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            formatString = formatString.Replace("m", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+
+            parameters.Args.Last().MemberValue = DateType.Second;
+            formatString = formatString.Replace("ss", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            formatString = formatString.Replace("s", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+
+            parameters.Args.Last().MemberValue = DateType.Millisecond;
+            formatString = formatString.Replace("ms", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            var items = Regex.Matches(formatString, @"\^\d+\$").Cast<Match>().ToList();
+            foreach (var item in items)
+            {
+                formatString = formatString.Replace(item.Value, "$@" + UtilMethods.ConvertNumbersToString(item.Value.TrimStart('^').TrimEnd('$')) + "$");
+            }
+            var strings = formatString.TrimStart('$').TrimEnd('$').Split('$');
+            var joinStringParameter = new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>()
+            };
+            foreach (var r in strings)
+            {
+                if (r.Substring(0, 1) == "@")
+                {
+                    joinStringParameter.Args.Add(new MethodCallExpressionArgs()
+                    {
+                         MemberName=r.TrimStart('@')
+                    });
+                }
+                else
+                {
+
+                    var name = base.AppendParameter(r);
+                    joinStringParameter.Args.Add(new MethodCallExpressionArgs()
+                    {
+                         MemberName= name
+                    });
+                }
+            }
+            return this.GetMethodValue("MergeString", joinStringParameter).ObjToString();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SqlSugar
 {
     public class EntityMaintenance
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
 
         public EntityInfo GetEntityInfo<T>()
         {
@@ -30,6 +30,10 @@ namespace SqlSugar
                     result.TableDescription = sugarTable.TableDescription;
                 }
                 if (this.Context.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null) {
+                    if (result.DbTableName == null)
+                    {
+                        result.DbTableName = type.Name;
+                    }
                     this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService(type,result);
                 }
                 result.Type = type;
@@ -164,10 +168,14 @@ namespace SqlSugar
                         column.IsOnlyIgnoreInsert = sugarColumn.IsOnlyIgnoreInsert;
                         column.IsEnableUpdateVersionValidation = sugarColumn.IsEnableUpdateVersionValidation;
                         column.IsTranscoding = sugarColumn.IsTranscoding;
+                        column.SerializeDateTimeFormat = sugarColumn.SerializeDateTimeFormat;
+                        column.IsJson = sugarColumn.IsJson;
+                        column.NoSerialize = sugarColumn.NoSerialize;
                     }
                     else
                     {
                         column.IsIgnore = true;
+                        column.NoSerialize = sugarColumn.NoSerialize;
                     }
                 }
                 if (this.Context.MappingColumns.HasValue())

@@ -13,7 +13,7 @@ namespace SqlSugar
 
         #region Common Properties
         public EntityInfo EntityInfo { get; set; }
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public List<SugarParameter> Parameters { get; set; }
         public StringBuilder sql { get; set; }
@@ -149,7 +149,7 @@ namespace SqlSugar
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
             resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
-            resolveExpress.InitMappingInfo = Context.InitMppingInfo;
+            resolveExpress.InitMappingInfo = Context.InitMappingInfo;
             resolveExpress.RefreshMapping = () =>
             {
                 resolveExpress.MappingColumns = Context.MappingColumns;

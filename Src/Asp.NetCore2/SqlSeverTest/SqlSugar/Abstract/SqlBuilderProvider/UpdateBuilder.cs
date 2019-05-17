@@ -17,7 +17,7 @@ namespace SqlSugar
             this.WhereValues = new List<string>();
             this.Parameters = new List<SugarParameter>();
         }
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public ISqlBuilder Builder { get; set; }
         public StringBuilder sql { get; set; }
@@ -28,6 +28,7 @@ namespace SqlSugar
         public List<string> WhereValues { get; set; }
         public List<KeyValuePair<string, string>> SetValues { get; set; }
         public bool IsNoUpdateNull { get; set; }
+        public bool IsNoUpdateDefaultValue { get; set; }
         public List<string> PrimaryKeys { get; set; }
         public bool IsOffIdentity { get; set; }
 
@@ -121,7 +122,7 @@ namespace SqlSugar
                 resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
                 resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             }
-            resolveExpress.InitMappingInfo = Context.InitMppingInfo;
+            resolveExpress.InitMappingInfo = Context.InitMappingInfo;
             resolveExpress.RefreshMapping = () =>
             {
                 resolveExpress.MappingColumns = Context.MappingColumns;
@@ -139,6 +140,10 @@ namespace SqlSugar
             if (IsNoUpdateNull)
             {
                 DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
+            }
+            if (IsNoUpdateDefaultValue)
+            {
+                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value.ObjToString() !=UtilMethods.DefaultForType(it.PropertyType).ObjToString()).ToList();
             }
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;

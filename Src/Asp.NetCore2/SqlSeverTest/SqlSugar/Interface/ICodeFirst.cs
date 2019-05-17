@@ -6,7 +6,7 @@ namespace SqlSugar
 {
     public partial interface ICodeFirst
     {
-        SqlSugarClient Context { get; set; }
+        SqlSugarProvider Context { get; set; }
         ICodeFirst BackupTable(int maxBackupDataRows = int.MaxValue);
         ICodeFirst SetStringDefaultLength(int length);
         void InitTables(string entitiesNamespace);

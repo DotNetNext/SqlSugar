@@ -22,7 +22,7 @@ namespace SqlSugar
         #endregion
 
         #region Fields
-        private SqlSugarClient Context = null;
+        private SqlSugarProvider Context = null;
         private IDataReaderEntityBuilder<T> DynamicBuilder;
         private IDataRecord DataRecord;
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
@@ -63,9 +63,10 @@ namespace SqlSugar
         private static readonly MethodInfo getConvertdatetimeoffsetDate = typeof(IDataRecordExtensions).GetMethod("GetConvertdatetimeoffsetDate");
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
+        private static readonly MethodInfo getJson = typeof(IDataRecordExtensions).GetMethod("GetJson");
         private static readonly MethodInfo getSqliteTypeNull = typeof(IDataRecordExtensions).GetMethod("GetSqliteTypeNull");
         private static readonly MethodInfo getSqliteType = typeof(IDataRecordExtensions).GetMethod("GetSqliteType");
-        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarClient) });
+        private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarProvider) });
 
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
@@ -77,7 +78,7 @@ namespace SqlSugar
 
         }
 
-        public IDataReaderEntityBuilder(SqlSugarClient context, IDataRecord dataRecord,List<string> fieldNames)
+        public IDataReaderEntityBuilder(SqlSugarProvider context, IDataRecord dataRecord,List<string> fieldNames)
         {
             this.Context = context;
             this.DataRecord = dataRecord;
@@ -100,41 +101,29 @@ namespace SqlSugar
             LocalBuilder result = generator.DeclareLocal(type);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
             generator.Emit(OpCodes.Stloc, result);
-            var mappingColumns = Context.MappingColumns.Where(it => it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase)).ToList();
-            var properties = type.GetProperties();
-            foreach (var propertyInfo in properties)
+            this.Context.InitMappingInfo(type);
+            var columnInfos = this.Context.EntityMaintenance.GetEntityInfo(type).Columns;
+            foreach (var columnInfo in columnInfos)
             {
-                string fileName = propertyInfo.Name;
-                if (mappingColumns != null)
-                {
-                    var mappInfo = mappingColumns.SingleOrDefault(it => it.EntityName == type.Name && it.PropertyName.Equals(propertyInfo.Name));
-                    if (mappInfo != null)
-                    {
-                        if (!ReaderKeys.Contains(mappInfo.DbColumnName))
-                        {
-                            fileName = ReaderKeys.FirstOrDefault(it => it.Equals(mappInfo.DbColumnName, StringComparison.CurrentCultureIgnoreCase)|| it.Equals(mappInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase));
-                        }
-                        else
-                        {
-                            fileName = mappInfo.DbColumnName;
-                        }
-                    }
-                }
-                if (IsIgnore(type, propertyInfo)&&!this.ReaderKeys.Any(it=>it==fileName))
+                string fileName = columnInfo.DbColumnName ?? columnInfo.PropertyName;
+                if (columnInfo.IsIgnore)
                 {
                     continue;
                 }
-                if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
+                if (columnInfo != null && columnInfo.PropertyInfo.GetSetMethod() != null)
                 {
-                    if (propertyInfo.PropertyType.IsClass() && propertyInfo.PropertyType != UtilConstants.ByteArrayType && propertyInfo.PropertyType != UtilConstants.ObjType)
+                    if (columnInfo.PropertyInfo.PropertyType.IsClass() && columnInfo.PropertyInfo.PropertyType != UtilConstants.ByteArrayType && columnInfo.PropertyInfo.PropertyType != UtilConstants.ObjType)
                     {
-                        BindClass(generator, result, propertyInfo);
+                        if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            BindClass(generator, result, columnInfo,ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
+                        }
                     }
                     else
                     {
                         if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                         {
-                            BindField(generator, result, propertyInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
+                            BindField(generator, result, columnInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
                     }
                 }
@@ -148,18 +137,28 @@ namespace SqlSugar
         #endregion
 
         #region Private methods
-        private bool IsIgnore(Type type, PropertyInfo propertyInfo)
+        private void BindClass(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
-            return Context.IgnoreColumns != null && Context.IgnoreColumns.Any(it => it.PropertyName.Equals(propertyInfo.Name, StringComparison.CurrentCultureIgnoreCase)
-                                     && it.EntityName.Equals(type.Name, StringComparison.CurrentCultureIgnoreCase));
+            if (columnInfo.IsJson)
+            {
+                MethodInfo jsonMethod = getJson.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                int i = DataRecord.GetOrdinal(fieldName);
+                Label endIfLabel = generator.DefineLabel();
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldc_I4, i);
+                generator.Emit(OpCodes.Callvirt, isDBNullMethod);
+                generator.Emit(OpCodes.Brtrue, endIfLabel);
+                generator.Emit(OpCodes.Ldloc, result);
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldc_I4, i);
+                generator.Emit(OpCodes.Call, jsonMethod);
+                generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod());
+                generator.MarkLabel(endIfLabel);
+            }
         }
-        private void BindClass(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo)
+        private void BindField(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
-
-        }
-        private void BindField(ILGenerator generator, LocalBuilder result, PropertyInfo propertyInfo, string fileName)
-        {
-            int i = DataRecord.GetOrdinal(fileName);
+            int i = DataRecord.GetOrdinal(fieldName);
             Label endIfLabel = generator.DefineLabel();
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
@@ -168,21 +167,21 @@ namespace SqlSugar
             generator.Emit(OpCodes.Ldloc, result);
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
-            BindMethod(generator, propertyInfo, i);
-            generator.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod());
+            BindMethod(generator, columnInfo, i);
+            generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod());
             generator.MarkLabel(endIfLabel);
         }
-        private void BindMethod(ILGenerator generator, PropertyInfo bindProperty, int ordinal)
+        private void BindMethod(ILGenerator generator, EntityColumnInfo columnInfo, int ordinal)
         {
             IDbBind bind = Context.Ado.DbBind;
             bool isNullableType = false;
             MethodInfo method = null;
-            Type bindPropertyType = UtilMethods.GetUnderType(bindProperty, ref isNullableType);
+            Type bindPropertyType = UtilMethods.GetUnderType(columnInfo.PropertyInfo, ref isNullableType);
             string dbTypeName = UtilMethods.GetParenthesesValue(DataRecord.GetDataTypeName(ordinal));
             if (dbTypeName.IsNullOrEmpty()) {
                 dbTypeName = bindPropertyType.Name;
             }
-            string propertyName = bindProperty.Name;
+            string propertyName = columnInfo.PropertyName;
             string validPropertyName = bind.GetPropertyTypeName(dbTypeName);
             validPropertyName = validPropertyName == "byte[]" ? "byteArray" : validPropertyName;
             CSharpDataType validPropertyType = (CSharpDataType)Enum.Parse(typeof(CSharpDataType), validPropertyName);
@@ -210,7 +209,7 @@ namespace SqlSugar
                 {
                     method = getValueMethod;
                     generator.Emit(OpCodes.Call, method);
-                    generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
+                    generator.Emit(OpCodes.Unbox_Any, columnInfo.PropertyInfo.PropertyType);
                     return;
                 }
                 else
@@ -317,7 +316,7 @@ namespace SqlSugar
             generator.Emit(OpCodes.Call, method);
             if (method == getValueMethod)
             {
-                generator.Emit(OpCodes.Unbox_Any, bindProperty.PropertyType);
+                generator.Emit(OpCodes.Unbox_Any, columnInfo.PropertyInfo.PropertyType);
             }
             #endregion
         }

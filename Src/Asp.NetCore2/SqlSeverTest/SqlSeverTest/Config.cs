@@ -8,8 +8,9 @@ namespace OrmTest
 {
     public class Config
     {
-        public static string ConnectionString = "server=.;uid=sa;pwd=@jhl85661501;database=SqlSugar4XTest";
-        public static string ConnectionString2 = "server=.;uid=sa;pwd=@jhl85661501;database=SQLSUGAR4XTEST";
-        public static string ConnectionString3 = "server=.;uid=sa;pwd=@jhl85661501;database=sqlsugar4xtest";
+        public static string ConnectionString = "server=.;uid=sa;pwd=haosql;database=SQLSUGAR4XTEST";
+        public static string ConnectionString2 = "server=.;uid=sa;pwd=haosql;database=sqlsugar4xtest";
+        public static string ConnectionString3 = "server=.;uid=sa;pwd=haosql;database=sqlsugar4xtesT";
+        public static string ConnectionString4 = "server=localhost;Database=SqlSugar4xTest;Uid=root;Pwd=haosql";
     }
 }

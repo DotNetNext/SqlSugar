@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -16,26 +17,22 @@ namespace SqlSugar
         IDbTransaction Transaction { get; set; }
         IDataParameter[] ToIDbDataParameter(params SugarParameter[] pars);
         SugarParameter[] GetParameters(object obj, PropertyInfo[] propertyInfo = null);
-        SqlSugarClient Context { get; set; }
+        SqlSugarProvider Context { get; set; }
         void ExecuteBefore(string sql, SugarParameter[] pars);
         void ExecuteAfter(string sql, SugarParameter[] pars);
+        bool IsEnableLogEvent{get;set;}
 
         IDataParameterCollection DataReaderParameters { get; set; }
         CommandType CommandType { get; set; }
-        bool IsEnableLogEvent { get; set; }
+
         bool IsDisableMasterSlaveSeparation { get; set; }
-        Action<string, SugarParameter []> LogEventStarting { get; set; }
-        Action<string, SugarParameter []> LogEventCompleted { get; set; }
-        Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL { get; set; }
-        Action<SqlSugarException> ErrorEvent { get; set; }
-        Action<DiffLogModel> DiffLogEvent { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
         TimeSpan SqlExecutionTime { get; }
         IDbBind DbBind { get; }
-        void SetCommandToAdapter(IDataAdapter adapter, IDbCommand command);
+        void SetCommandToAdapter(IDataAdapter adapter, DbCommand command);
         IDataAdapter GetAdapter();
-        IDbCommand GetCommand(string sql, SugarParameter[] parameters);
+        DbCommand GetCommand(string sql, SugarParameter[] parameters);
         DataTable GetDataTable(string sql, object parameters);
         DataTable GetDataTable(string sql, params SugarParameter[] parameters);
         DataTable GetDataTable(string sql, List<SugarParameter> parameters);

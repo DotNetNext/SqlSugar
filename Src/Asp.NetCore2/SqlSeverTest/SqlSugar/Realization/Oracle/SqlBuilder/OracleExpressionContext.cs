@@ -11,7 +11,7 @@ namespace SqlSugar
 {
     public partial class OracleExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public OracleExpressionContext()
         {
             base.DbMehtods = new OracleMethod();
@@ -173,7 +173,7 @@ namespace SqlSugar
 
         public override string MergeString(params string[] strings)
         {
-            return string.Join("||", strings).Replace("+", "");
+            return string.Join("||", strings);
         }
 
         public override string GetDate()
@@ -184,6 +184,11 @@ namespace SqlSugar
         public override string GetRandom()
         {
             return "dbms_random.value";
+        }
+
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            return string.Format("instr ({0},{1},1,1) ", model.Args[0].MemberName, model.Args[1].MemberName);
         }
     }
 }

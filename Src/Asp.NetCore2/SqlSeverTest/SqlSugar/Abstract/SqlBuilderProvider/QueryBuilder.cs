@@ -27,7 +27,7 @@ namespace SqlSugar
 
         #region Service object
         public StringBuilder sql { get; set; }
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ILambdaExpressions LambdaExpressions { get; set; }
         public ISqlBuilder Builder { get; set; }
         #endregion
@@ -225,7 +225,7 @@ namespace SqlSugar
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
             resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
-            resolveExpress.InitMappingInfo = this.Context.InitMppingInfo;
+            resolveExpress.InitMappingInfo = this.Context.InitMappingInfo;
             resolveExpress.RefreshMapping = () =>
             {
                 resolveExpress.MappingColumns = Context.MappingColumns;
@@ -401,6 +401,10 @@ namespace SqlSugar
         {
             var expression = this.SelectValue as Expression;
             var result = GetExpressionValue(expression, this.SelectType).GetResultString();
+            if (result == null)
+            {
+                return "*";
+            }
             if (result.Contains(".*") && this.IsSingle())
             {
                 return "*";

@@ -8,10 +8,17 @@ namespace SqlSugar
     public partial class CodeFirstProvider : ICodeFirst
     {
         #region Properties
-        public virtual SqlSugarClient Context { get; set; }
+        public virtual SqlSugarProvider Context { get; set; }
         protected bool IsBackupTable { get; set; }
         protected int MaxBackupDataRows { get; set; }
         protected virtual int DefultLength { get; set; }
+        public CodeFirstProvider()
+        {
+            if (DefultLength == 0)
+            {
+                DefultLength = 255;
+            }
+        }
         #endregion
 
         #region Public methods
@@ -32,7 +39,7 @@ namespace SqlSugar
         {
 
             this.Context.Utilities.RemoveCacheAll();
-            this.Context.InitMppingInfo(entityType);
+            this.Context.InitMappingInfo(entityType);
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {
                 Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
@@ -50,15 +57,15 @@ namespace SqlSugar
         }
         public void InitTables<T, T2>()
         {
-            InitTables(typeof(T),typeof(T2));
+            InitTables(typeof(T), typeof(T2));
         }
         public void InitTables<T, T2, T3>()
         {
-            InitTables(typeof(T), typeof(T2),typeof(T3));
+            InitTables(typeof(T), typeof(T2), typeof(T3));
         }
         public void InitTables<T, T2, T3, T4>()
         {
-            InitTables(typeof(T), typeof(T2), typeof(T3),typeof(T4));
+            InitTables(typeof(T), typeof(T2), typeof(T3), typeof(T4));
         }
         public virtual void InitTables(params Type[] entityTypes)
         {

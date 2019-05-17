@@ -4,7 +4,7 @@ namespace SqlSugar
 {
     public class MySqlExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public MySqlExpressionContext()
         {
             base.DbMehtods = new MySqlMethod();
@@ -121,7 +121,7 @@ namespace SqlSugar
         }
         public override string MergeString(params string[] strings)
         {
-            return " concat("+string.Join(",", strings).Replace("+", "") + ") ";
+            return " concat("+string.Join(",", strings) + ") ";
         }
         public override string IsNull(MethodCallExpressionModel model)
         {
@@ -137,6 +137,11 @@ namespace SqlSugar
         public override string GetRandom()
         {
             return "rand()";
+        }
+
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            return string.Format("instr ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
         }
     }
 }

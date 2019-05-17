@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SqlSugar
 {
     public partial interface ISaveable<T> where T : class, new()
     {
+        Task<int> ExecuteCommandAsync();
+        Task<T> ExecuteReturnEntityAsync();
+
+        Task<List<T>> ExecuteReturnListAsync();
         int ExecuteCommand();
         T ExecuteReturnEntity();
         List<T> ExecuteReturnList();

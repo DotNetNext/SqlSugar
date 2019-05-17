@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
-using System.Data.Sqlite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,17 +16,17 @@ namespace SqlSugar
         {
             get
             {
-                try
+                if (base._DbConnection == null)
                 {
-                    if (base._DbConnection == null)
+                    try
                     {
-                        var SqliteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                        base._DbConnection = new SqliteConnection(SqliteConnectionString);
+                        var SQLiteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                        base._DbConnection = new SqliteConnection(SQLiteConnectionString);
                     }
-                }
-                catch (Exception ex)
-                {
-                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                    catch (Exception ex)
+                    {
+                        Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                    }
                 }
                 return base._DbConnection;
             }
@@ -53,7 +53,7 @@ namespace SqlSugar
         {
             return new SqliteDataAdapter();
         }
-        public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
+        public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             SqliteCommand sqlCommand = new SqliteCommand(sql, (SqliteConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
@@ -70,12 +70,12 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-        public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
+        public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((SqliteDataAdapter)dataAdapter).SelectCommand = (SqliteCommand)command;
         }
         /// <summary>
-        /// if Sqlite return SqliteParameter[] pars
+        /// if SQLite return SQLiteParameter[] pars
         /// if sqlerver return SqlParameter[] pars ...
         /// </summary>
         /// <param name="parameters"></param>
@@ -88,14 +88,17 @@ namespace SqlSugar
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
+                if (parameter.Value.GetType() == UtilConstants.GuidType)
+                {
+                    parameter.Value = parameter.Value.ToString();
+                }
                 var sqlParameter = new SqliteParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue))
-                {
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue)) { 
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
@@ -104,6 +107,7 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.String;
                     sqlParameter.Value = sqlParameter.Value.ObjToString();
                 }
+
                 ++index;
             }
             return result;

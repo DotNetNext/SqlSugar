@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace SqlSugar
             this.FormatSql = sql =>
             {
                 if (sql.HasValue()&&sql.Contains("@")) {
-                    var exceptionalCaseInfo = Regex.Matches(sql,@"\'.*?\@.*?\'| \w+\@\w+ ");
+                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'.*?\@.*?\'| [\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+");
                     if (exceptionalCaseInfo != null) {
                         foreach (var item in exceptionalCaseInfo.Cast<Match>())
                         {
@@ -80,7 +81,7 @@ namespace SqlSugar
         {
             return new MyOracleDataAdapter();
         }
-        public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
+        public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             OracleCommand sqlCommand = new OracleCommand(sql, (OracleConnection)this.Connection);
             sqlCommand.BindByName = true;
@@ -98,7 +99,7 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-        public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
+        public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((MyOracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
         }

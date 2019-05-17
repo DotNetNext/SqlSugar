@@ -10,6 +10,13 @@ namespace SqlSugar
     public class OracleDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+        protected override string GetDataBaseSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
         protected override string GetColumnInfosByTableNameSql
         {
             get
@@ -44,6 +51,13 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string CreateDataBaseSql
+        {
+            get
+            {
+                return "CREATE DATABASE {0}";
+            }
+        }
         protected override string AddPrimaryKeySql
         {
             get
@@ -227,6 +241,14 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool CreateDatabase(string databaseDirectory = null)
+        {
+            throw new NotSupportedException();
+        }
+        public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
+        {
+            throw new NotSupportedException();
+        }
         public override bool AddRemark(EntityInfo entity)
         {
             var db = this.Context;

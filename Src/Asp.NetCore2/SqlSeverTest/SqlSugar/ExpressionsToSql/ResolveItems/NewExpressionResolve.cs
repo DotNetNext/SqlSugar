@@ -13,7 +13,11 @@ namespace SqlSugar
         public NewExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var expression = base.Expression as NewExpression;
-            Check.Exception(expression.Type == UtilConstants.GuidType, "Not Support new Guid(), Use Guid.New()");
+            if (expression.Type.IsIn(UtilConstants.DateType,UtilConstants.GuidType))
+            {
+                NewValueType(parameter, expression);
+                return;
+            }
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.WhereSingle:
@@ -68,6 +72,27 @@ namespace SqlSugar
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void NewValueType(ExpressionParameter parameter, NewExpression expression)
+        {
+            try
+            {
+                var value = ExpressionTool.DynamicInvoke(expression);
+                var isSetTempData = parameter.CommonTempData.HasValue() && parameter.CommonTempData.Equals(CommonTempDataType.Result);
+                if (isSetTempData)
+                {
+                    parameter.CommonTempData = value;
+                }
+                else
+                {
+                    AppendValue(parameter, parameter.IsLeft, value);
+                }
+            }
+            catch (Exception ex)
+            {
+                Check.Exception(expression.Type == UtilConstants.DateType, "ThrowNotSupportedException {0} ", ex.ToString());
             }
         }
 

@@ -96,6 +96,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("photo",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("picture",CSharpDataType.byteArray),
 
+                    new KeyValuePair<string, CSharpDataType>("uniqueidentifier",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("guid",CSharpDataType.Guid)
          };

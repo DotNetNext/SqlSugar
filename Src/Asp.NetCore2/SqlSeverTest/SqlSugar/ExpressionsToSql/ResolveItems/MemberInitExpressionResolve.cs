@@ -101,6 +101,32 @@ namespace SqlSugar
                     var result = GetNewExpressionValue(item);
                     this.Context.Result.Append(base.Context.GetEqString(memberName, result));
                 }
+                else if (item is MemberInitExpression)
+                {
+                    try
+                    {
+                        var value =ExpressionTool.DynamicInvoke(item);
+                        var parameterName = AppendParameter(value);
+                        parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
+                    }
+                }
+                else if (item is NewExpression)
+                {
+                    try
+                    {
+                        var value = ExpressionTool.DynamicInvoke(item);
+                        var parameterName = AppendParameter(value);
+                        parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
+                    }
+                }
             }
         }
 
@@ -165,10 +191,10 @@ namespace SqlSugar
             }
         }
 
-        private bool IsSubMethod(MethodCallExpression express)
-        {
-            return SubTools.SubItemsConst.Any(it =>express.Object != null && express.Object.Type.Name == "Subqueryable`1");
-        }
+        //private bool IsSubMethod(MethodCallExpression express)
+        //{
+        //    return SubTools.SubItemsConst.Any(it =>express.Object != null && express.Object.Type.Name == "Subqueryable`1");
+        //}
         private bool IsExtMethod(string methodName)
         {
             if (this.Context.SqlFuncServices == null) return false;

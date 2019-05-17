@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         #region Context
         private ISqlBuilder _SqlBuilder;
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ISqlBuilder SqlBuilder
         {
             get
@@ -26,11 +26,13 @@ namespace SqlSugar
 
         #region DML
         protected abstract string GetViewInfoListSql { get; }
+        protected abstract string GetDataBaseSql { get; }
         protected abstract string GetTableInfoListSql { get; }
         protected abstract string GetColumnInfosByTableNameSql { get; }
         #endregion
 
         #region DDL
+        protected abstract string CreateDataBaseSql { get; }
         protected abstract string AddColumnToTableSql { get; }
         protected abstract string AlterColumnToTableSql { get; }
         protected abstract string BackupDataBaseSql { get; }

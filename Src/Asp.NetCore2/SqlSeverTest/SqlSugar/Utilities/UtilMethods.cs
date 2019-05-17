@@ -152,7 +152,29 @@ namespace SqlSugar
             }
             return encode;
         }
- 
+        public static string ConvertNumbersToString(string value)
+        {
+            string[] splitInt = value.Split(new char[] { '9' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var splitChars = splitInt.Select(s => Convert.ToChar(
+                                              Convert.ToInt32(s, 8)
+                                            ).ToString());
+
+            return string.Join("", splitChars);
+        }
+        public static string ConvertStringToNumbers(string value)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char c in value)
+            {
+                int cAscil = (int)c;
+                sb.Append(Convert.ToString(c, 8) + "9");
+            }
+
+            return sb.ToString();
+        }
+
         public static string DecodeBase64(string code)
         {
             try

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,7 @@ namespace SqlSugar
                     }
                     catch (Exception ex)
                     {
-                        Check.Exception(true,ex.Message);
+                        Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
                     }
                 }
                 return base._DbConnection;
@@ -36,20 +37,6 @@ namespace SqlSugar
             set
             {
                 base._DbConnection = value;
-            }
-        }
-        public override void CheckConnection()
-        {
-            if (this.Connection.State != ConnectionState.Open)
-            {
-                try
-                {
-                    this.Connection.Open();
-                }
-                catch (Exception ex)
-                {
-                    Check.Exception(true,ex.Message);
-                }
             }
         }
 
@@ -70,7 +57,7 @@ namespace SqlSugar
         {
             return new MySqlDataAdapter();
         }
-        public override IDbCommand GetCommand(string sql, SugarParameter[] parameters)
+        public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             MySqlCommand sqlCommand = new MySqlCommand(sql, (MySqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
@@ -87,7 +74,7 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-        public override void SetCommandToAdapter(IDataAdapter dataAdapter, IDbCommand command)
+        public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((MySqlDataAdapter)dataAdapter).SelectCommand = (MySqlCommand)command;
         }
@@ -116,7 +103,7 @@ namespace SqlSugar
                     sqlParameter.Direction = ParameterDirection.Input;
                 }
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue))
                 {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);

@@ -9,19 +9,19 @@ namespace SqlSugar
 {
     public partial class SaveableProvider<T> : ISaveable<T> where T : class, new()
     {
-        internal SaveableProvider(SqlSugarClient context,List<T> saveObjects)
+        internal SaveableProvider(SqlSugarProvider context,List<T> saveObjects)
         {
             this.saveObjects = saveObjects;
             this.Context = context;
-            this.Context.InitMppingInfo<T>();
+            this.Context.InitMappingInfo<T>();
         }
-        internal SaveableProvider(SqlSugarClient context, T saveObject)
+        internal SaveableProvider(SqlSugarProvider context, T saveObject)
         {
             this.saveObjects = new List<T>() { saveObject };
             this.Context = context;
-            this.Context.InitMppingInfo<T>();
+            this.Context.InitMappingInfo<T>();
         }
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public List<T> saveObjects = new List<T>();
         public List<T> existsObjects = null;
         public List<T> insertObjects
@@ -80,6 +80,7 @@ namespace SqlSugar
             }
         }
 
+        #region Core
         public int ExecuteCommand()
         {
             LoadInsertable();
@@ -118,6 +119,23 @@ namespace SqlSugar
                 updateable.ExecuteCommand();
             return saveObjects;
         }
+        #endregion
+        #region Core Async
+        public Task<int> ExecuteCommandAsync()
+        {
+            return Task.FromResult(ExecuteCommand());
+        }
+
+        public Task<T> ExecuteReturnEntityAsync()
+        {
+            return Task.FromResult(ExecuteReturnEntity());
+        }
+
+        public Task<List<T>> ExecuteReturnListAsync()
+        {
+            return Task.FromResult(ExecuteReturnList());
+        }
+        #endregion
         public ISaveable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
             LoadInsertable();

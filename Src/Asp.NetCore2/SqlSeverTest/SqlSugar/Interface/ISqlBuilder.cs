@@ -10,7 +10,7 @@ namespace SqlSugar
 {
     public partial interface ISqlBuilder
     {
-        SqlSugarClient Context { get; set; }
+        SqlSugarProvider Context { get; set; }
         CommandType CommandType { get; set; }
         String AppendWhereOrAnd(bool isWhere, string sqlString);
         string AppendHaving(string sqlString);
@@ -40,5 +40,6 @@ namespace SqlSugar
         string GetUnionAllSql(List<string> sqlList);
         string GetUnionSql(List<string> sqlList);
         void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex);
+        KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models, int beginIndex = 0);
     }
 }

@@ -12,7 +12,7 @@ namespace SqlSugar
 {
     public class DeleteableProvider<T> : IDeleteable<T> where T : class, new()
     {
-        public SqlSugarClient Context { get; set; }
+        public ISqlSugarClient Context { get; set; }
         public IAdo Db { get { return Context.Ado; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }
@@ -52,24 +52,12 @@ namespace SqlSugar
         }
         public Task<int> ExecuteCommandAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                IDeleteable<T> asyncDeleteable = CopyDeleteable();
-                return asyncDeleteable.ExecuteCommand();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommand());
         }
 
         public Task<bool> ExecuteCommandHasChangeAsync()
         {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                IDeleteable<T> asyncDeleteable = CopyDeleteable();
-                return asyncDeleteable.ExecuteCommand() > 0;
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommandHasChange());
         }
         public IDeleteable<T> AS(string tableName)
         {
@@ -358,14 +346,14 @@ namespace SqlSugar
             }
         }
 
-        private void TaskStart<Type>(Task<Type> result)
-        {
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-            {
-                Check.Exception(true, "IsShardSameThread=true can't be used async method");
-            }
-            result.Start();
-        }
+        //private void TaskStart<Type>(Task<Type> result)
+        //{
+        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+        //    {
+        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
+        //    }
+        //    result.Start();
+        //}
 
         private void AutoRemoveDataCache()
         {
@@ -378,27 +366,6 @@ namespace SqlSugar
         }
 
 
-        private IDeleteable<T> CopyDeleteable()
-        {
-            var asyncContext = this.Context.Utilities.CopyContext(true);
-            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.IsAsyncMethod = true;
-
-            var asyncDeleteable = asyncContext.Deleteable<T>();
-            var asyncDeleteBuilder = asyncDeleteable.DeleteBuilder;
-            asyncDeleteBuilder.BigDataFiled = this.DeleteBuilder.BigDataFiled;
-            asyncDeleteBuilder.BigDataInValues = this.DeleteBuilder.BigDataInValues;
-            asyncDeleteBuilder.Parameters = this.DeleteBuilder.Parameters;
-            asyncDeleteBuilder.sql = this.DeleteBuilder.sql;
-            asyncDeleteBuilder.WhereInfos = this.DeleteBuilder.WhereInfos;
-            asyncDeleteBuilder.TableWithString = this.DeleteBuilder.TableWithString;
-            if (this.RemoveCacheFunc != null)
-            {
-                asyncDeleteable.RemoveDataCache();
-            }
-            return asyncDeleteable;
-        }
-
         private void After(string sql)
         {
             if (this.IsEnableDiffLogEvent)
@@ -410,8 +377,8 @@ namespace SqlSugar
                     parameters = new List<SugarParameter>();
                 diffModel.AfterData = null;
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
-                if (this.Context.Ado.DiffLogEvent != null)
-                    this.Context.Ado.DiffLogEvent(diffModel);
+                if (this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent != null)
+                    this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(diffModel);
                 this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
             if (this.RemoveCacheFunc != null) {

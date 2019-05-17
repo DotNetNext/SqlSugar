@@ -11,7 +11,7 @@ namespace SqlSugar
         /// Equal to NULL representing global
         /// </summary>
         public string FilterName { get; set; }
-        public Func<SqlSugarClient,SqlFilterResult> FilterValue { get; set; }
+        public Func<ISqlSugarClient,SqlFilterResult> FilterValue { get; set; }
         /// <summary>
         /// Is it a multiple table query?
         /// </summary>

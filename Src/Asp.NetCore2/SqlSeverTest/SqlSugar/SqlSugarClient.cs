@@ -1,955 +1,817 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+
 namespace SqlSugar
 {
-    ///<summary>
-    /// ** description：Create datathis.access object
-    /// ** author：sunkaixuan
-    /// ** date：2017/1/2
-    /// ** email:610262374@qq.com
-    /// </summary>
-    public partial class SqlSugarClient : IDisposable, ISqlSugarClient
+    public partial class SqlSugarClient : ISqlSugarClient, ITenant
     {
+        #region Gobal Property
+        private ISqlSugarClient _Context = null;
+        private string _ThreadId;
+        private ConnectionConfig _CurrentConnectionConfig;
+        private List<SugarTenant> _AllClients;
+        private bool _IsAllTran = false;
+        private bool _IsOpen = false;
+        private MappingTableList _MappingTables;
+        private MappingColumnList _MappingColumns;
+        private IgnoreColumnList _IgnoreColumns;
+        private IgnoreColumnList _IgnoreInsertColumns;
+
+        #endregion
 
         #region Constructor
         public SqlSugarClient(ConnectionConfig config)
         {
-            this.Context = this;
-            this.CurrentConnectionConfig = config;
-            this.ContextID = Guid.NewGuid();
-            Check.ArgumentNullException(config, "config is null");
-            switch (config.DbType)
-            {
-                case DbType.MySql:
-                    DependencyManagement.TryMySqlData();
-                    break;
-                case DbType.SqlServer:
-                    break;
-                case DbType.Sqlite:
-                    DependencyManagement.TrySqlite();
-                    break;
-                case DbType.Oracle:
-                    DependencyManagement.TryOracle();
-                    break;
-                case DbType.PostgreSQL:
-                    DependencyManagement.TryPostgreSQL();
-                    break;
-                default:
-                    throw new Exception("ConnectionConfig.DbType is null");
-            }
+            Check.Exception(config == null, "ConnectionConfig config is null");
+            InitContext(config);
         }
+
+        public SqlSugarClient(List<ConnectionConfig> configs)
+        {
+            Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null");
+            InitConfigs(configs);
+            var config = configs.First();
+            InitContext(config);
+            _AllClients = configs.Select(it => new SugarTenant() { ConnectionConfig = it }).ToList(); ;
+            _AllClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
+        }
+
         #endregion
 
-        #region  ADO Methods
-        /// <summary>
-        ///Datathis.operation
-        /// </summary>
-        public virtual IAdo Ado
-        {
-            get
-            {
-                if (this.ContextAdo == null)
-                {
-                    var result = InstanceFactory.GetAdo(this.Context.CurrentConnectionConfig);
-                    this.ContextAdo = result;
-                    result.Context = this.Context;
-                    return result;
-                }
-                return this.Context._Ado;
-            }
-        }
+        #region Global variable
+        public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
+        public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
+        public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
+        public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
+
+
+        public MappingTableList MappingTables { get => _MappingTables; set => _MappingTables = value; }
+        public MappingColumnList MappingColumns { get => _MappingColumns; set => _MappingColumns = value; }
+        public IgnoreColumnList IgnoreColumns { get => _IgnoreColumns; set => _IgnoreColumns = value; }
+        public IgnoreColumnList IgnoreInsertColumns { get => _IgnoreInsertColumns; set => _IgnoreInsertColumns = value; }
+        public Dictionary<string, object> TempItems { get => this.Context.TempItems; set => this.Context.TempItems = value; }
         #endregion
 
-        #region Aop Log Methods
-        public virtual AopProvider Aop { get { return new AopProvider(this.Context); } }
-        #endregion
-
-        #region Util Methods
-        [Obsolete("Use SqlSugarClient.Utilities")]
-        public virtual IContextMethods RewritableMethods
+        #region SimpleClient
+        public SimpleClient GetSimpleClient()
         {
-            get { return this.Context.Utilities; }
-            set { this.Context.Utilities = value; }
-        }
-        public virtual IContextMethods Utilities
-        {
-            get
-            {
-                if (ContextRewritableMethods == null)
-                {
-                    ContextRewritableMethods = new ContextMethods();
-                    ContextRewritableMethods.Context = this.Context;
-                }
-                return ContextRewritableMethods;
-            }
-            set { ContextRewritableMethods = value; }
-        }
-        #endregion
-
-        #region Queryable
-        /// <summary>
-        /// Get datebase time
-        /// </summary>
-        /// <returns></returns>
-        public DateTime GetDate()
-        {
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            return this.Ado.GetDateTime(sqlBuilder.FullSqlDateNow);
-        }
-        /// <summary>
-        /// Lambda Query operation
-        /// </summary>
-        public virtual ISugarQueryable<T> Queryable<T>()
-        {
-
-            InitMppingInfo<T>();
-            var result = this.CreateQueryable<T>();
-            return result;
-        }
-        /// <summary>
-        /// Lambda Query operation
-        /// </summary>
-        public virtual ISugarQueryable<T> Queryable<T>(string shortName)
-        {
-            Check.Exception(shortName.HasValue() && shortName.Length > 20, ErrorMessage.GetThrowMessage("shortName参数长度不能超过20，你可能是想用这个方法 db.SqlQueryable(sql)而不是db.Queryable(shortName)", "Queryable.shortName max length 20"));
-            var queryable = Queryable<T>();
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            return queryable;
-        }
-        /// <summary>
-        /// Lambda Query operation
-        /// </summary>
-        public virtual ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
-        {
-            var queryable = Queryable<ExpandoObject>();
-            queryable.SqlBuilder.QueryBuilder.EntityName = tableName;
-            queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2>();
-            var types = new Type[] { typeof(T2) };
-            var queryable = InstanceFactory.GetQueryable<T, T2>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2>();
-            var types = new Type[] { typeof(T2) };
-            var queryable = InstanceFactory.GetQueryable<T, T2>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3>();
-            var types = new Type[] { typeof(T2), typeof(T3) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3,JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3>();
-            var types = new Type[] { typeof(T2), typeof(T3) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4,JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5,JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        #region  9-12
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object[]>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, JoinQueryInfos>> joinExpression)
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.CurrentConnectionConfig);
-            this.CreateQueryJoin(joinExpression, types, queryable);
-            return queryable;
-        }
-        #endregion
-        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2>();
-            var types = new Type[] { typeof(T2) };
-            var queryable = InstanceFactory.GetQueryable<T, T2>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3>();
-            var types = new Type[] { typeof(T2), typeof(T3) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
+            return this.Context.GetSimpleClient();
         }
 
-        #region 9-12
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression) where T : class, new()
+        public SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new()
-        {
-            InitMppingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>();
-            var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12) };
-            var queryable = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.CurrentConnectionConfig);
-            this.CreateEasyQueryJoin(joinExpression, types, queryable);
-            queryable.Where(joinExpression);
-            return queryable;
-        }
-        public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
-        {
-            var sqlobj = queryable.ToSql();
-            return this.SqlQueryable<T>(sqlobj.Key).AddParameters(sqlobj.Value);
-        }
-        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
-     ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
-        {
-            return Queryable(joinQueryable1, joinQueryable2, JoinType.Inner, joinExpression);
-        }
-        public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
-             ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
-        {
-            Check.Exception(joinQueryable1.QueryBuilder.Take != null || joinQueryable1.QueryBuilder.Skip != null || joinQueryable1.QueryBuilder.OrderByValue.HasValue(), "joinQueryable1 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
-            Check.Exception(joinQueryable2.QueryBuilder.Take != null || joinQueryable2.QueryBuilder.Skip != null || joinQueryable2.QueryBuilder.OrderByValue.HasValue(), "joinQueryable2 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
-
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-
-            sqlBuilder.Context = this.Context;
-            InitMppingInfo<T, T2>();
-            var types = new Type[] { typeof(T2) };
-            var queryable = InstanceFactory.GetQueryable<T, T2>(this.CurrentConnectionConfig);
-            queryable.Context = this.Context;
-            queryable.SqlBuilder = sqlBuilder;
-            queryable.QueryBuilder = InstanceFactory.GetQueryBuilder(this.CurrentConnectionConfig);
-            queryable.QueryBuilder.JoinQueryInfos = new List<JoinQueryInfo>();
-            queryable.QueryBuilder.Builder = sqlBuilder;
-            queryable.QueryBuilder.Context = this.Context;
-            queryable.QueryBuilder.EntityType = typeof(T);
-            queryable.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
-
-            //master
-            var shortName1 = joinExpression.Parameters[0].Name;
-            var sqlObj1 = joinQueryable1.ToSql();
-            string sql1 = sqlObj1.Key;
-            UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0, "Join");
-            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, shortName1); ;
-            queryable.QueryBuilder.Parameters.AddRange(sqlObj1.Value);
-
-            //join table 1
-            var shortName2 = joinExpression.Parameters[1].Name;
-            var sqlObj2 = joinQueryable2.ToSql();
-            string sql2 = sqlObj2.Key;
-            UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1, "Join");
-            queryable.QueryBuilder.Parameters.AddRange(sqlObj2.Value);
-            var exp = queryable.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
-            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2, shortName2) });
-
-            return queryable;
-        }
-        #endregion
-
-        public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
-        {
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
-            int i = 1;
-            List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
-            foreach (var item in queryables)
-            {
-                var sqlObj = item.ToSql();
-                string sql = sqlObj.Key;
-                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "UnionAll");
-                if (sqlObj.Value.HasValue())
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
-                else
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
-                i++;
-            }
-            var allSql = sqlBuilder.GetUnionAllSql(allItems.Select(it => it.Key).ToList());
-            var allParameters = allItems.SelectMany(it => it.Value).ToArray();
-            var resulut = this.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable")).With(SqlWith.Null);
-            resulut.AddParameters(allParameters);
-            return resulut.Select<T>(sqlBuilder.SqlSelectAll);
-        }
-        public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
-        {
-            Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
-            return UnionAll(queryables.ToArray());
-        }
-        public virtual ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
-        {
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
-            int i = 1;
-            List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
-            foreach (var item in queryables)
-            {
-                var sqlObj = item.ToSql();
-                string sql = sqlObj.Key;
-                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");
-                if (sqlObj.Value.HasValue())
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
-                else
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
-                i++;
-            }
-            var allSql = sqlBuilder.GetUnionSql(allItems.Select(it => it.Key).ToList());
-            var allParameters = allItems.SelectMany(it => it.Value).ToArray();
-            var resulut = this.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable")).With(SqlWith.Null);
-            resulut.AddParameters(allParameters);
-            return resulut.Select<T>(sqlBuilder.SqlSelectAll);
-        }
-        public virtual ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
-        {
-            Check.Exception(queryables.IsNullOrEmpty(), "Union.queryables is null ");
-            return Union(queryables.ToArray());
-        }
-        #endregion
-
-        #region SqlQueryable
-        public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
-        {
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            return this.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).With(SqlWith.Null).Select(sqlBuilder.GetDefaultShortName() + ".*");
+            return this.Context.GetSimpleClient<T>();
         }
         #endregion
 
         #region Insertable
-        public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
+        public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
-            InitMppingInfo<T>();
-            InsertableProvider<T> result = this.CreateInsertable(insertObjs);
-            return result;
+            return this.Context.Insertable<T>(columnDictionary);
         }
-        public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
+
+        public IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
-            if (insertObjs == null|| insertObjs.IsNullOrEmpty())
-            {
-                insertObjs = new List<T>();
-                insertObjs.Add(default(T));
-            }
-            return this.Context.Insertable(insertObjs.ToArray());
+            return this.Context.Insertable<T>(insertDynamicObject);
         }
-        public virtual IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
+
+        public IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
-            return this.Context.Insertable(new T[] { insertObj });
+            return this.Context.Insertable<T>(insertObjs);
         }
-        public virtual IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
+
+        public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
-            InitMppingInfo<T>();
-            Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Insertable.columnDictionary can't be null");
-            var insertObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(columnDictionary));
-            var columns = columnDictionary.Select(it => it.Key).ToList();
-            return this.Context.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+            return this.Context.Insertable<T>(insertObj);
         }
-        public virtual IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
+
+        public IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
-            InitMppingInfo<T>();
-            if (insertDynamicObject is T)
-            {
-                return this.Context.Insertable((T)insertDynamicObject);
-            }
-            else
-            {
-                var columns = ((object)insertDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
-                Check.Exception(columns.IsNullOrEmpty(), "Insertable.updateDynamicObject can't be null");
-                T insertObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(insertDynamicObject));
-                return this.Context.Insertable(insertObject).InsertColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase)));
-            }
+            return this.Context.Insertable<T>(insertObjs);
+        }
+
+        #endregion
+
+        #region Queryable
+
+        #region Union
+        public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        {
+            return this.Context.Union(queryables);
+        }
+
+        public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        {
+            return this.Context.Union(queryables);
+        }
+
+        public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        {
+            return this.Context.UnionAll(queryables);
+        }
+
+        public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        {
+            return this.Context.UnionAll(queryables);
         }
         #endregion
 
-        #region Deleteable
-        public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
+        public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
-            InitMppingInfo<T>();
-            DeleteableProvider<T> result = this.CreateDeleteable<T>();
-            return result;
+            return this.Context.SqlQueryable<T>(sql);
         }
-        public virtual IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
+        public ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
-            InitMppingInfo<T>();
-            return this.Context.Deleteable<T>().Where(expression);
+            return this.Context.Queryable(tableName, shortName);
         }
-        public virtual IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
-        {
-            InitMppingInfo<T>();
-            return this.Context.Deleteable<T>().In(primaryKeyValue);
-        }
-        public virtual IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
-        {
-            InitMppingInfo<T>();
-            return this.Context.Deleteable<T>().In(primaryKeyValues);
-        }
-        public virtual IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
-        {
-            InitMppingInfo<T>();
-            return this.Context.Deleteable<T>().In(pkValue);
-        }
-        public virtual IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
-        {
-            InitMppingInfo<T>();
-            return this.Context.Deleteable<T>().Where(deleteObj);
-        }
-        public virtual IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
-        {
-            InitMppingInfo<T>();
-            return this.Context.Deleteable<T>().Where(deleteObjs);
-        }
-        #endregion
 
-        #region Updateable
-        public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new()
         {
-            InitMppingInfo<T>();
-            UpdateableProvider<T> result = this.CreateUpdateable(UpdateObjs);
-            return result;
+            return this.Context.Queryable(joinExpression);
         }
-        public virtual IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new()
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, JoinQueryInfos>> joinExpression)
         {
-            Check.ArgumentNullException(UpdateObjs, "Updateable.UpdateObjs can't be null");
-            return Updateable(UpdateObjs.ToArray());
+            return this.Context.Queryable(joinExpression);
         }
-        public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object[]>> joinExpression)
         {
-            return this.Context.Updateable(new T[] { UpdateObj });
+            return this.Context.Queryable(joinExpression);
         }
-        public virtual IUpdateable<T> Updateable<T>() where T : class, new()
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression) where T : class, new()
         {
-            var result = this.Context.Updateable(new T[] { new T() });
-            result.UpdateParameterIsNull = true;
-            return result;
+            return this.Context.Queryable(joinExpression);
         }
-        public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, JoinQueryInfos>> joinExpression)
         {
-            InitMppingInfo<T>();
-            Check.Exception(columnDictionary == null || columnDictionary.Count == 0, "Updateable.columnDictionary can't be null");
-            var updateObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(columnDictionary));
-            var columns = columnDictionary.Select(it => it.Key).ToList();
-            return this.Context.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
+            return this.Context.Queryable(joinExpression);
         }
-        public virtual IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object[]>> joinExpression)
         {
-            InitMppingInfo<T>();
-            if (updateDynamicObject is T)
-            {
-                return this.Context.Updateable((T)updateDynamicObject);
-            }
-            else
-            {
-                var columns = ((object)updateDynamicObject).GetType().GetProperties().Select(it => it.Name).ToList();
-                Check.Exception(columns.IsNullOrEmpty(), "Updateable.updateDynamicObject can't be null");
-                T updateObject = this.Context.Utilities.DeserializeObject<T>(this.Context.Utilities.SerializeObject(updateDynamicObject));
-                return this.Context.Updateable(updateObject).UpdateColumns(it => columns.Any(c => it.Equals(c, StringComparison.CurrentCultureIgnoreCase))); ;
-            }
+            return this.Context.Queryable(joinExpression);
         }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, JoinQueryInfos>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression)
+        {
+            return this.Context.Queryable(joinExpression);
+        }
+
+        public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression)
+            where T : class, new()
+            where T2 : class, new()
+        {
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinExpression);
+        }
+
+        public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression)
+            where T : class, new()
+            where T2 : class, new()
+        {
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinType, joinExpression);
+        }
+
+        public ISugarQueryable<T> Queryable<T>()
+        {
+            return this.Context.Queryable<T>();
+        }
+
+        public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
+        {
+            return this.Context.Queryable<T>(queryable);
+        }
+
+        public ISugarQueryable<T> Queryable<T>(string shortName)
+        {
+            return this.Context.Queryable<T>(shortName);
+        }
+
         #endregion
 
         #region Saveable
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
-            return new SaveableProvider<T>(this, saveObjects);
+            return this.Context.Saveable<T>(saveObjects);
         }
+
         public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
         {
-            return new SaveableProvider<T>(this, saveObject);
+            return this.Context.Saveable(saveObject);
         }
         #endregion
 
-        #region DbFirst
-        public virtual IDbFirst DbFirst
+        #region Queue
+        public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
+        public void AddQueue(string sql, object parsmeters = null)
         {
-            get
-            {
-                IDbFirst dbFirst = InstanceFactory.GetDbFirst(this.Context.CurrentConnectionConfig);
-                dbFirst.Context = this.Context;
-                dbFirst.Init();
-                return dbFirst;
-            }
+            this.Context.AddQueue(sql, parsmeters);
         }
-        #endregion
 
-        #region CodeFirst
-        public virtual ICodeFirst CodeFirst
+        public void AddQueue(string sql, List<SugarParameter> parsmeters)
         {
-            get
-            {
-                ICodeFirst codeFirst = InstanceFactory.GetCodeFirst(this.Context.CurrentConnectionConfig);
-                codeFirst.Context = this.Context;
-                return codeFirst;
-            }
+            this.Context.AddQueue(sql, parsmeters);
         }
-        #endregion
 
-        #region Db Maintenance
-        public virtual IDbMaintenance DbMaintenance
+        public void AddQueue(string sql, SugarParameter parsmeter)
         {
-            get
-            {
-                if (this.Context._DbMaintenance == null)
-                {
-                    IDbMaintenance maintenance = InstanceFactory.GetDbMaintenance(this.Context.CurrentConnectionConfig);
-                    this.Context._DbMaintenance = maintenance;
-                    maintenance.Context = this.Context;
-                }
-                return this.Context._DbMaintenance;
-            }
+            this.Context.AddQueue(sql, parsmeter);
         }
-        #endregion
-
-        #region Entity Maintenance
-        [Obsolete("Use SqlSugarClient.EntityMaintenance")]
-        public virtual EntityMaintenance EntityProvider
-        {
-            get { return this.Context.EntityMaintenance; }
-            set { this.Context.EntityMaintenance = value; }
-        }
-        public virtual EntityMaintenance EntityMaintenance
-        {
-            get
-            {
-                if (this.Context._EntityProvider == null)
-                {
-                    this.Context._EntityProvider = new EntityMaintenance();
-                    this.Context._EntityProvider.Context = this.Context;
-                }
-                return this.Context._EntityProvider;
-            }
-            set { this.Context._EntityProvider = value; }
-        }
-        #endregion
-
-        #region Gobal Filter
-        public virtual QueryFilterProvider QueryFilter
-        {
-            get
-            {
-                if (this.Context._QueryFilterProvider == null)
-                {
-                    this.Context._QueryFilterProvider = new QueryFilterProvider();
-                    this.Context._QueryFilterProvider.Context = this.Context;
-                }
-                return this.Context._QueryFilterProvider;
-            }
-            set { this.Context._QueryFilterProvider = value; }
-        }
-        #endregion
-
-        #region SimpleClient
-        [Obsolete("Use SqlSugarClient.GetSimpleClient() Or SqlSugarClient.GetSimpleClient<T>() ")]
-        public virtual SimpleClient SimpleClient
-        {
-            get
-            {
-                if (this.Context._SimpleClient == null)
-                    this.Context._SimpleClient = new SimpleClient(this.Context);
-                return this.Context._SimpleClient;
-            }
-        }
-        public virtual SimpleClient<T> GetSimpleClient<T>() where T : class, new()
-        {
-            return new SimpleClient<T>(this.Context);
-        }
-        public virtual SimpleClient GetSimpleClient()
-        {
-            if (this.Context._SimpleClient == null)
-                this.Context._SimpleClient = new SimpleClient(this.Context);
-            return this.Context._SimpleClient;
-        }
-        #endregion
-
-        #region Dispose OR Close
-        public virtual void Close()
-        {
-            if (this.Context.Ado != null)
-                this.Context.Ado.Close();
-        }
-        public virtual void Open()
-        {
-            if (this.Context.Ado != null)
-                this.Context.Ado.Open();
-        }
-        public virtual void Dispose()
-        {
-            if (this.Context.Ado != null)
-                this.Context.Ado.Dispose();
-        }
-        #endregion
-
-        #region   Queue
         public int SaveQueues(bool isTran = true)
         {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.ExecuteCommand(sql, parameters); });
+            return this.Context.SaveQueues(isTran);
+        }
+
+        public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
+        {
+            return this.Context.SaveQueues<T, T2, T3, T4, T5, T6, T7>(isTran);
+        }
+
+        public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SaveQueues<T, T2, T3, T4, T5, T6>(bool isTran = true)
+        {
+            return this.Context.SaveQueues<T, T2, T3, T4, T5, T6>(isTran);
+        }
+
+        public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>> SaveQueues<T, T2, T3, T4, T5>(bool isTran = true)
+        {
+            return this.Context.SaveQueues<T, T2, T3, T4, T5>(isTran);
+        }
+
+        public Tuple<List<T>, List<T2>, List<T3>, List<T4>> SaveQueues<T, T2, T3, T4>(bool isTran = true)
+        {
+            return this.Context.SaveQueues<T, T2, T3, T4>(isTran);
+        }
+
+        public Tuple<List<T>, List<T2>, List<T3>> SaveQueues<T, T2, T3>(bool isTran = true)
+        {
+            return this.Context.SaveQueues<T, T2, T3>(isTran);
+        }
+
+        public Tuple<List<T>, List<T2>> SaveQueues<T, T2>(bool isTran = true)
+        {
+            return this.Context.SaveQueues<T, T2>(isTran);
+        }
+
+        public List<T> SaveQueues<T>(bool isTran = true)
+        {
+            return this.Context.SaveQueues<T>(isTran);
         }
 
         public Task<int> SaveQueuesAsync(bool isTran = true)
         {
-            var result = new Task<int>(() => { return SaveQueues(isTran); });
-            result.Start();
-            return result;
+            return this.Context.SaveQueuesAsync(isTran);
         }
-        public List<T> SaveQueues<T>(bool isTran = true)
-        {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T>(sql, parameters); });
-        }
-        public Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
-        {
-            var result = new Task<List<T>>(() => { return SaveQueues<T>(); });
-            result.Start();
-            return result;
-        }
-        public Tuple<List<T>, List<T2>> SaveQueues<T, T2>(bool isTran = true)
-        {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2>(sql, parameters); });
-        }
-        public Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true)
-        {
-            var result = new Task<Tuple<List<T>, List<T2>>>(() => { return SaveQueues<T, T2>(isTran); });
-            result.Start();
-            return result;
-        }
-        public Tuple<List<T>, List<T2>, List<T3>> SaveQueues<T, T2, T3>(bool isTran = true)
-        {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3>(sql, parameters); });
-        }
-        public Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
-        {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>>>(() => { return SaveQueues<T, T2, T3>(isTran); });
-            result.Start();
-            return result;
-        }
-        public Tuple<List<T>, List<T2>, List<T3>, List<T4>> SaveQueues<T, T2, T3, T4>(bool isTran = true)
-        {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4>(sql, parameters); });
-        }
-        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
-        {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>>(() => { return SaveQueues<T, T2, T3, T4>(isTran); });
-            result.Start();
-            return result;
-        }
-        public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>> SaveQueues<T, T2, T3, T4, T5>(bool isTran = true)
-        {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4, T5>(sql, parameters); });
-        }
-        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SaveQueuesAsync<T, T2, T3, T4, T5>(bool isTran = true)
-        {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>>(() => { return SaveQueues<T, T2, T3, T4, T5>(isTran); });
-            result.Start();
-            return result;
-        }
-        public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SaveQueues<T, T2, T3, T4, T5, T6>(bool isTran = true)
-        {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4, T5, T6>(sql, parameters); });
-        }
-        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6>(bool isTran = true)
-        {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>>(() => { return SaveQueues<T, T2, T3, T4, T5, T6>(isTran); });
-            result.Start();
-            return result;
-        }
-        public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
-        {
-            return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4, T5, T6, T7>(sql, parameters); });
-        }
+
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
-            var result = new Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>>(() => { return SaveQueues<T, T2, T3, T4, T5, T6, T7>(isTran); });
-            result.Start();
-            return result;
+            return this.Context.SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(isTran);
         }
-        public void AddQueue(string sql, object parsmeters=null)
-        {
-            if (Queues == null)
-            {
-                Queues = new QueueList();
-            }
-            this.Queues.Add(sql,this.Context.Ado.GetParameters(parsmeters));
-        }
-        public void AddQueue(string sql, SugarParameter  parsmeter)
-        {
-            if (Queues == null)
-            {
-                Queues = new QueueList();
-            }
-            this.Queues.Add(sql, new List<SugarParameter>() { parsmeter });
-        }
-        public void AddQueue(string sql, List<SugarParameter> parsmeters)
-        {
-            if (Queues == null)
-            {
-                Queues = new QueueList();
-            }
-            this.Queues.Add(sql, parsmeters);
-        }
-        public QueueList Queues = new QueueList();
 
-        private T SaveQueuesProvider<T>(bool isTran, Func<string, List<SugarParameter>, T> func)
+        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
-            try
-            {
-                if (this.CurrentConnectionConfig.DbType == DbType.Oracle) {
-                    throw new Exception("Oracle no support SaveQueues");
-                }
-                if (this.Queues == null || this.Queues.Count == 0) return default(T);
-                isTran = isTran && this.Ado.Transaction == null;
-                if (isTran) this.Ado.BeginTran();
-                StringBuilder sqlBuilder = new StringBuilder();
-                var parsmeters = new List<SugarParameter>();
-                var index = 1;
-                if (this.Queues.HasValue())
-                {
-                    foreach (var item in Queues)
-                    {
-                        if (item.Sql == null)
-                            item.Sql = string.Empty;
-                        if (item.Parameters == null)
-                            item.Parameters = new SugarParameter[] { };
-                        var itemParsmeters = item.Parameters.OrderByDescending(it => it.ParameterName.Length).ToList();
-                        List<SugarParameter> addParameters = new List<SugarParameter>();
-                        var itemSql = item.Sql;
-                        foreach (var itemParameter in itemParsmeters)
-                        {
-                            var newName = itemParameter.ParameterName + "_q_" + index;
-                            SugarParameter parameter = new SugarParameter(newName, itemParameter.Value);
-                            parameter.DbType = itemParameter.DbType;
-                            itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
-                            addParameters.Add(parameter);
-                        }
-                        parsmeters.AddRange(addParameters);
-                        itemSql = itemSql.TrimEnd(';')+";";
-                        sqlBuilder.AppendLine(itemSql);
-                        index++;
-                    }
-                }
-                this.Queues.Clear();
-                var result = func(sqlBuilder.ToString(), parsmeters);
-                if (isTran) this.Ado.CommitTran();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                if (isTran) this.Ado.RollbackTran();
-                throw ex;
-            }
+            return this.Context.SaveQueuesAsync<T, T2, T3, T4, T5, T6>(isTran);
+        }
+
+        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SaveQueuesAsync<T, T2, T3, T4, T5>(bool isTran = true)
+        {
+            return this.Context.SaveQueuesAsync<T, T2, T3, T4, T5>(isTran);
+        }
+
+        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
+        {
+            return this.Context.SaveQueuesAsync<T, T2, T3, T4>(isTran);
+        }
+
+        public Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
+        {
+            return this.Context.SaveQueuesAsync<T, T2, T3>(isTran);
+        }
+
+        public Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true)
+        {
+            return this.Context.SaveQueuesAsync<T, T2>(isTran);
+        }
+
+        public Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
+        {
+            return this.Context.SaveQueuesAsync<T>(isTran);
+        }
+        #endregion
+
+        #region Updateable
+        public IUpdateable<T> Updateable<T>() where T : class, new()
+        {
+            return this.Context.Updateable<T>();
+        }
+
+        public IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
+        {
+            return this.Context.Updateable<T>(columnDictionary);
+        }
+
+        public IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
+        {
+            return this.Context.Updateable<T>(updateDynamicObject);
+        }
+
+        public IUpdateable<T> Updateable<T>(Expression<Func<T, bool>> columns) where T : class, new()
+        {
+            return this.Context.Updateable<T>(columns);
+        }
+
+        public IUpdateable<T> Updateable<T>(Expression<Func<T, T>> columns) where T : class, new()
+        {
+            return this.Context.Updateable<T>(columns);
+        }
+
+        public IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new()
+        {
+            return this.Context.Updateable<T>(UpdateObjs);
+        }
+
+        public IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
+        {
+            return this.Context.Updateable<T>(UpdateObj);
+        }
+
+        public IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
+        {
+            return this.Context.Updateable<T>(UpdateObjs);
         }
 
         #endregion
+
+        #region Ado
+        public IAdo Ado => this.Context.Ado;
+
+        #endregion
+
+        #region Deleteable
+        public IDeleteable<T> Deleteable<T>() where T : class, new()
+        {
+            return this.Context.Deleteable<T>();
+        }
+
+        public IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(primaryKeyValue);
+        }
+
+        public IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(primaryKeyValues);
+        }
+
+        public IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
+        {
+            return this.Context.Deleteable(expression);
+        }
+
+        public IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(pkValue);
+        }
+
+        public IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(deleteObjs);
+        }
+
+        public IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
+        {
+            return this.Context.Deleteable<T>(deleteObj);
+        }
+
+
+        #endregion
+
+        #region More api
+        public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
+        public AopProvider Aop => this.Context.Aop;
+        public ICodeFirst CodeFirst => this.Context.CodeFirst;
+        public IDbFirst DbFirst => this.Context.DbFirst;
+        public IDbMaintenance DbMaintenance => this.Context.DbMaintenance;
+        public EntityMaintenance EntityMaintenance { get => this.Context.EntityMaintenance; set => this.Context.EntityMaintenance = value; }
+        public QueryFilterProvider QueryFilter { get => this.Context.QueryFilter; set => this.Context.QueryFilter = value; }
+        #endregion
+
+        #region TenantManager
+        public void ChangeDatabase(string configId)
+        {
+            Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
+            InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
+            if (this._IsAllTran)
+                this.Ado.BeginTran();
+            if (this._IsOpen) 
+                this.Open();
+        }
+        public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
+        {
+            var allConfigs = _AllClients.Select(it => it.ConnectionConfig);
+            Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
+            InitTenant(_AllClients.First(it => it.ConnectionConfig == allConfigs.First(changeExpression)));
+            if (this._IsAllTran)
+                this.Ado.BeginTran();
+            if (this._IsOpen)
+                this.Open();
+        }
+        public void BeginTran()
+        {
+            _IsAllTran = true;
+            this.Context.Ado.BeginTran();
+        }
+        public void CommitTran()
+        {
+            this.Context.Ado.CommitTran();
+            AllClientEach(it => it.Ado.CommitTran());
+            _IsAllTran = false;
+        }
+        public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
+        {
+            var result = new DbResult<bool>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    action();
+                this.CommitTran();
+                result.Data = result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+                if (errorCallBack != null)
+                {
+                    errorCallBack(ex);
+                }
+            }
+            return result;
+        }
+
+        public Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null)
+        {
+            return Task.FromResult(UseTran(action, errorCallBack));
+        }
+
+        public DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null)
+        {
+            var result = new DbResult<T>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    result.Data = action();
+                this.CommitTran();
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+                if (errorCallBack != null)
+                {
+                    errorCallBack(ex);
+                }
+            }
+            return result;
+        }
+
+        public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
+        {
+            return Task.FromResult(UseTran(action, errorCallBack));
+        }
+
+        public void RollbackTran()
+        {
+            this.Context.Ado.RollbackTran();
+            AllClientEach(it=>it.Ado.RollbackTran());
+            _IsAllTran = false;
+        }
+        public void Close()
+        {
+            this.Context.Close();
+            AllClientEach(it => it.Close());
+            _IsOpen = false;
+        }
+        public void Open()
+        {
+            this.Context.Open();
+            _IsOpen = true;
+        }
+
+        #endregion
+
+        #region IDispose
+        public void Dispose()
+        {
+            this.Context.Dispose();
+            AllClientEach(it => it.Ado.RollbackTran());
+        }
+
+        #endregion
+
+        #region Other method
+        public DateTime GetDate()
+        {
+            return this.Context.GetDate();
+        }
+        public void InitMappingInfo(Type type)
+        {
+            this.Context.InitMappingInfo(type);
+        }
+        public void InitMappingInfo<T>()
+        {
+            this.Context.InitMappingInfo(typeof(T));
+        }
+        #endregion
+
+        #region Helper
+        private ISqlSugarClient GetContext()
+        {
+            if (CurrentConnectionConfig.IsShardSameThread)
+            {
+                ISqlSugarClient result = _Context;
+                if (CallContext.ContextList.Value.IsNullOrEmpty())
+                {
+
+                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
+                    CallContext.ContextList.Value.Add(_Context);
+                }
+                else
+                {
+                    ISqlSugarClient cacheContext = GetCallContext();
+                    if (cacheContext != null)
+                    {
+                        result = cacheContext;
+                    }
+                    else
+                    {
+                        result = CopyClient();
+                        CallContext.ContextList.Value.Add(result);
+                    }
+                }
+                return result;
+            }
+            else if (_ThreadId == Thread.CurrentThread.ManagedThreadId.ToString())
+            {
+                _Context.MappingColumns = _MappingColumns;
+                _Context.MappingTables = _MappingTables;
+                _Context.IgnoreColumns = _IgnoreColumns;
+                _Context.IgnoreInsertColumns = _IgnoreInsertColumns;
+                return _Context;
+            }
+            else
+            {
+                if (CallContext.ContextList.Value == null)
+                {
+                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
+                }
+                if (CallContext.ContextList.Value.IsNullOrEmpty() || GetCallContext() == null)
+                {
+                    var context = CopyClient();
+                    CallContext.ContextList.Value.Add(context);
+                    return context;
+                }
+                else
+                {
+                    return GetCallContext();
+                }
+            }
+        }
+
+        private SqlSugarClient CopyClient()
+        {
+            var result = new SqlSugarClient(this.CurrentConnectionConfig);
+            result.MappingColumns = _MappingColumns;
+            result.MappingTables = _MappingTables;
+            result.IgnoreColumns = _IgnoreColumns;
+            result.IgnoreInsertColumns = _IgnoreInsertColumns;
+ 
+            return result;
+        }
+
+        private ISqlSugarClient GetCallContext()
+        {
+            return CallContext.ContextList.Value.FirstOrDefault(it => 
+                it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType&&
+                it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString&&
+                it.CurrentConnectionConfig.InitKeyType==_Context.CurrentConnectionConfig.InitKeyType
+            );
+        }
+
+        private void InitContext(ConnectionConfig config)
+        {
+            var aopIsNull = config.AopEvents == null;
+            if (aopIsNull)
+            {
+                config.AopEvents = new AopEvents();
+            }
+            _Context = new SqlSugarProvider(config);
+            if (!aopIsNull)
+                _Context.Ado.IsEnableLogEvent = true;
+            this.CurrentConnectionConfig = config;
+            _ThreadId = Thread.CurrentThread.ManagedThreadId.ToString();
+            if (_MappingColumns == null)
+                this.MappingTables = new MappingTableList();
+            if (this.MappingColumns == null)
+                this.MappingColumns = new MappingColumnList();
+            if (this.IgnoreColumns == null)
+                this.IgnoreColumns = new IgnoreColumnList();
+            if (this.IgnoreInsertColumns == null)
+                this.IgnoreInsertColumns = new IgnoreColumnList();
+        }
+
+        private void InitConfigs(List<ConnectionConfig> configs)
+        {
+            foreach (var item in configs)
+            {
+                if (item.ConfigId == null)
+                {
+                    item.ConfigId = Guid.NewGuid().ToString();
+                }
+            }
+        }
+        private void AllClientEach(Action<ISqlSugarClient> action)
+        {
+            if (_AllClients.HasValue())
+            {
+                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                {
+                    action(item.Context);
+                }
+            }
+        }
+
+        private void InitTenant(SugarTenant Tenant)
+        {
+            if (Tenant.Context == null)
+            {
+                Tenant.Context = new SqlSugarClient(Tenant.ConnectionConfig);
+            }
+            _Context = Tenant.Context;
+            this.CurrentConnectionConfig = Tenant.ConnectionConfig;
+        }
+        //private void TaskStart<Type>(Task<Type> result)
+        //{
+        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+        //    {
+        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
+        //    }
+        //    result.Start();
+        //}
+        #endregion
+
+        #region Obsolete
+        [Obsolete("Use EntityMaintenance")]
+        public EntityMaintenance EntityProvider { get => this.Context.EntityProvider; set => this.Context.EntityProvider = value; }
+        [Obsolete("Use Utilities")]
+        public IContextMethods RewritableMethods { get => this.Context.RewritableMethods; set => this.Context.RewritableMethods = value; }
+        [Obsolete("Use GetSimpleClient")]
+        public SimpleClient SimpleClient => this.Context.SimpleClient;
+        #endregion
+
     }
 }

@@ -9,7 +9,7 @@ namespace SqlSugar
 {
     public abstract partial class DbFirstProvider : IDbFirst
     {
-        public virtual SqlSugarClient Context { get; set; }
+        public virtual ISqlSugarClient Context { get; set; }
         private string ClassTemplate { get; set; }
         private string ClassDescriptionTemplate { get; set; }
         private string PropertyTemplate { get; set; }
@@ -89,6 +89,55 @@ namespace SqlSugar
             this.PropertyTemplate = func(this.PropertyTemplate);
             return this;
         }
+        public RazorFirst UseRazorAnalysis(string razorClassTemplate,string classNamespace="Models" )
+        {
+            if (razorClassTemplate == null)
+            {
+                razorClassTemplate = "";
+            }
+            razorClassTemplate=razorClassTemplate.Replace("@Model.Namespace", classNamespace);
+            var result = new RazorFirst();
+            if (this.Context.CurrentConnectionConfig.ConfigureExternalServices?.RazorService != null)
+            {
+                List<RazorTableInfo> razorList = new List<RazorTableInfo>();
+                var tables = this.Context.DbMaintenance.GetTableInfoList(false);
+                if (tables.HasValue())
+                {
+                    foreach (var item in tables)
+                    {
+                        var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(item.Name, false);
+                        RazorTableInfo table = new RazorTableInfo()
+                        {
+                            Columns = columns.Select(it => new RazorColumnInfo()
+                            {
+                                ColumnDescription = it.ColumnDescription,
+                                DataType = it.DataType,
+                                DbColumnName = it.DbColumnName,
+                                DefaultValue = it.DefaultValue,
+                                IsIdentity = it.IsIdentity,
+                                IsNullable = it.IsNullable,
+                                IsPrimarykey = it.IsPrimarykey,
+                                Length = it.Length
+                            }).ToList(),
+                            Description = item.Description,
+                            DbTableName = item.Name
+                        };
+                        foreach (var col in table.Columns)
+                        {
+                            col.DataType = GetPropertyTypeName(columns.First(it=>it.DbColumnName==col.DbColumnName));
+                        }
+                        razorList.Add(table);
+                    }
+                }
+                result.ClassStringList = this.Context.CurrentConnectionConfig.ConfigureExternalServices.RazorService.GetClassStringList(razorClassTemplate, razorList);
+            }
+            else
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage("Need to achieve ConnectionConfig.ConfigureExternal Services.RazorService", "需要实现 ConnectionConfig.ConfigureExternal Services.RazorService接口"));
+            }
+            this.Context.Utilities.RemoveCacheAll();
+            return result;
+        }
         #endregion
 
         #region Setting Content
@@ -122,7 +171,7 @@ namespace SqlSugar
         {
             if (objectNames.HasValue())
             {
-                this.TableInfoList = this.TableInfoList.Where(it => objectNames.Select(x=>x.ToLower()).Contains(it.Name.ToLower())).ToList();
+                this.TableInfoList = this.TableInfoList.Where(it => objectNames.Select(x => x.ToLower()).Contains(it.Name.ToLower())).ToList();
             }
             return this;
         }
@@ -221,7 +270,7 @@ namespace SqlSugar
             classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
             classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
             classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + UtilConstants.AssemblyName + ";\r\n") : this.UsingTemplate);
-            classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription,"\r\n"));
+            classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, "\r\n"));
             classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, className) : null);
             if (columns.HasValue())
             {
@@ -232,7 +281,7 @@ namespace SqlSugar
                     string PropertyText = this.PropertyTemplate;
                     string PropertyDescriptionText = this.PropertyDescriptionTemplate;
                     string propertyName = GetPropertyName(item);
-                    string propertyTypeName =item.PropertyName;
+                    string propertyTypeName = item.PropertyName;
                     PropertyText = GetPropertyText(item, PropertyText);
                     PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                     PropertyText = PropertyDescriptionText + PropertyText;
@@ -255,7 +304,7 @@ namespace SqlSugar
         }
         public void CreateClassFile(string directoryPath, string nameSpace = "Models")
         {
-            var seChar= Path.DirectorySeparatorChar.ToString();
+            var seChar = Path.DirectorySeparatorChar.ToString();
             Check.ArgumentNullException(directoryPath, "directoryPath can't null");
             var classStringList = ToClassStringList(nameSpace);
             if (classStringList.IsValuable())
@@ -291,7 +340,7 @@ namespace SqlSugar
                 result = "DateTime.Now";
             }
             result = result.Replace("\r", "\t").Replace("\n", "\t");
-            result = result.IsIn("''","\"\"") ? string.Empty : result;
+            result = result.IsIn("''", "\"\"") ? string.Empty : result;
             return result;
         }
         private string GetPropertyText(DbColumnInfo item, string PropertyText)
@@ -346,12 +395,13 @@ namespace SqlSugar
         }
         private string GetPropertyTypeName(DbColumnInfo item)
         {
-            string result =item.PropertyType!=null?item.PropertyType.Name:this.Context.Ado.DbBind.GetPropertyTypeName(item.DataType);
+            string result = item.PropertyType != null ? item.PropertyType.Name : this.Context.Ado.DbBind.GetPropertyTypeName(item.DataType);
             if (result != "string" && result != "byte[]" && result != "object" && item.IsNullable)
             {
                 result += "?";
             }
-            if (result == "Int32") {
+            if (result == "Int32")
+            {
                 result = "int";
             }
             if (result == "String")
@@ -365,11 +415,12 @@ namespace SqlSugar
             var convertString = GetProertypeDefaultValue(item);
             if (convertString == "DateTime.Now" || convertString == null)
                 return convertString;
-            if (convertString.ObjToString() == "newid()") {
+            if (convertString.ObjToString() == "newid()")
+            {
                 return "Guid.NewGuid()";
             }
             if (item.DataType == "bit")
-                return (convertString == "1" || convertString.Equals("true",StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
+                return (convertString == "1" || convertString.Equals("true", StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
             string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";
             return result;
         }

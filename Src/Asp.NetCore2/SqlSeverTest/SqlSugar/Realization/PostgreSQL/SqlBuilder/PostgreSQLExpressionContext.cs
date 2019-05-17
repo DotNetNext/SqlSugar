@@ -4,7 +4,7 @@ namespace SqlSugar
 {
     public class PostgreSQLExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public PostgreSQLExpressionContext()
         {
             base.DbMehtods = new PostgreSQLMethod();

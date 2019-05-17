@@ -10,7 +10,7 @@ namespace SqlSugar
 {
     public class InsertableProvider<T> : IInsertable<T> where T : class, new()
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public IAdo Ado { get { return Context.Ado; } }
         public ISqlBuilder SqlBuilder { get; set; }
         public InsertBuilder InsertBuilder { get; set; }
@@ -133,53 +133,23 @@ namespace SqlSugar
         }
         public Task<int> ExecuteCommandAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteCommand();
-            });
-            TaskStart(result);
-            return result;
+           return Task.FromResult(ExecuteCommand());
         }
         public Task<int> ExecuteReturnIdentityAsync()
         {
-            Task<int> result = new Task<int>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnIdentity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteReturnIdentity());
         }
         public Task<T> ExecuteReturnEntityAsync()
         {
-            Task<T> result = new Task<T>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnEntity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteReturnEntity());
         }
         public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
         {
-            Task<bool> result = new Task<bool>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteCommandIdentityIntoEntity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteCommandIdentityIntoEntity());
         }
         public Task<long> ExecuteReturnBigIdentityAsync()
         {
-            Task<long> result = new Task<long>(() =>
-            {
-                IInsertable<T> asyncInsertable = CopyInsertable();
-                return asyncInsertable.ExecuteReturnBigIdentity();
-            });
-            TaskStart(result);
-            return result;
+            return Task.FromResult(ExecuteReturnBigIdentity());
         }
         #endregion
 
@@ -204,9 +174,11 @@ namespace SqlSugar
             this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Any(ig => ig.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))).ToList();
             return this;
         }
-        public IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
+        public IInsertable<T> IgnoreColumns(params string[] columns)
         {
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
+            if (columns == null)
+                columns = new string[] { };
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !columns.Any(ig => ig.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase))).ToList();
             return this;
         }
 
@@ -223,25 +195,17 @@ namespace SqlSugar
             return this;
         }
 
-        public IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod)
-        {
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => insertColumMethod(it.PropertyName)).ToList();
-            return this;
-        }
-
         public IInsertable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 this.InsertBuilder.TableWithString = lockString;
             return this;
         }
-
-        public IInsertable<T> Where(bool isNoInsertNull, bool isOffIdentity = false)
-        {
+        public IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false) {
             this.IsOffIdentity = isOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
-            this.InsertBuilder.IsNoInsertNull = isNoInsertNull;
+            this.InsertBuilder.IsNoInsertNull = ignoreNullColumn;
             return this;
         }
 
@@ -384,6 +348,10 @@ namespace SqlSugar
                 {
                     columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                 }
+                if (column.IsJson&& columnInfo.Value!=null)
+                {
+                    columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
+                }
                 var tranColumn=EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
                 if (tranColumn!=null&&columnInfo.Value.HasValue()) {
                     columnInfo.Value = UtilMethods.EncodeBase64(columnInfo.Value.ToString());
@@ -435,14 +403,14 @@ namespace SqlSugar
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
-        private void TaskStart<Type>(Task<Type> result)
-        {
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-            {
-                Check.Exception(true, "IsShardSameThread=true can't be used async method");
-            }
-            result.Start();
-        }
+        //private void TaskStart<Type>(Task<Type> result)
+        //{
+        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+        //    {
+        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
+        //    }
+        //    result.Start();
+        //}
         protected void RestoreMapping()
         {
             if (IsAs)
@@ -450,27 +418,27 @@ namespace SqlSugar
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
-        protected IInsertable<T> CopyInsertable()
-        {
-            var asyncContext = this.Context.Utilities.CopyContext(true);
-            asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-            asyncContext.IsAsyncMethod = true;
-            var asyncInsertable = asyncContext.Insertable<T>(this.InsertObjs);
-            var asyncInsertableBuilder = asyncInsertable.InsertBuilder;
-            asyncInsertableBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList;
-            asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
-            asyncInsertableBuilder.Parameters = this.InsertBuilder.Parameters;
-            asyncInsertableBuilder.sql = this.InsertBuilder.sql;
-            asyncInsertableBuilder.IsNoInsertNull = this.InsertBuilder.IsNoInsertNull;
-            asyncInsertableBuilder.IsReturnIdentity = this.InsertBuilder.IsReturnIdentity;
-            asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
-            asyncInsertableBuilder.TableWithString = this.InsertBuilder.TableWithString;
-            if (this.RemoveCacheFunc != null)
-            {
-                asyncInsertable.RemoveDataCache();
-            }
-            return asyncInsertable;
-        }
+        //protected IInsertable<T> CopyInsertable()
+        //{
+        //    var asyncContext = this.Context.Utilities.CopyContext(true);
+        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
+        //    asyncContext.IsAsyncMethod = true;
+        //    var asyncInsertable = asyncContext.Insertable<T>(this.InsertObjs);
+        //    var asyncInsertableBuilder = asyncInsertable.InsertBuilder;
+        //    asyncInsertableBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList;
+        //    asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
+        //    asyncInsertableBuilder.Parameters = this.InsertBuilder.Parameters;
+        //    asyncInsertableBuilder.sql = this.InsertBuilder.sql;
+        //    asyncInsertableBuilder.IsNoInsertNull = this.InsertBuilder.IsNoInsertNull;
+        //    asyncInsertableBuilder.IsReturnIdentity = this.InsertBuilder.IsReturnIdentity;
+        //    asyncInsertableBuilder.EntityInfo = this.InsertBuilder.EntityInfo;
+        //    asyncInsertableBuilder.TableWithString = this.InsertBuilder.TableWithString;
+        //    if (this.RemoveCacheFunc != null)
+        //    {
+        //        asyncInsertable.RemoveDataCache();
+        //    }
+        //    return asyncInsertable;
+        //}
 
         private void After(string sql, long? result)
         {
@@ -483,8 +451,8 @@ namespace SqlSugar
                     parameters = new List<SugarParameter>();
                 diffModel.AfterData = GetDiffTable(sql, result);
                 diffModel.Time = this.Context.Ado.SqlExecutionTime;
-                if (this.Context.Ado.DiffLogEvent != null)
-                    this.Context.Ado.DiffLogEvent(diffModel);
+                if (this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent != null)
+                    this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(diffModel);
                 this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
             if (this.RemoveCacheFunc != null)
@@ -528,7 +496,7 @@ namespace SqlSugar
                 }
             }
             Check.Exception(cons.IsNullOrEmpty(), "Insertable.EnableDiffLogEvent need primary key");
-            var sqlable = this.Context.Utilities.ConditionalModelToSql(cons);
+            var sqlable = this.SqlBuilder.ConditionalModelToSql(cons);
             whereSql = sqlable.Key;
             parameters.AddRange(sqlable.Value);
             var dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
@@ -566,6 +534,26 @@ namespace SqlSugar
                 return new List<DiffLogTableInfo>() { diffTable };
             }
 
+        }
+        #endregion
+
+        #region Obsolete
+        [Obsolete]
+        public IInsertable<T> InsertColumns(Func<string, bool> insertColumMethod)
+        {
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => insertColumMethod(it.PropertyName)).ToList();
+            return this;
+        }
+        [Obsolete]
+        public IInsertable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
+        {
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
+            return this;
+        }
+        [Obsolete]
+        public IInsertable<T> Where(bool ignoreNullColumn, bool isOffIdentity = false)
+        {
+            return IgnoreColumns(ignoreNullColumn, isOffIdentity);
         }
         #endregion
     }

@@ -11,11 +11,11 @@ using System.Linq;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
- 
+
     /// <summary>
     /// 数据填充器
     /// </summary>
-    public class SqlDataAdapter: IDataAdapter
+    public class SqlDataAdapter : IDataAdapter
     {
         private SqlCommand command;
         private string sql;
@@ -59,7 +59,8 @@ namespace SqlSugar
                 }
                 return this.command;
             }
-            set {
+            set
+            {
                 this.command = value;
             }
         }
@@ -90,7 +91,7 @@ namespace SqlSugar
                     DataRow daRow = dt.NewRow();
                     for (int i = 0; i < columns.Count; i++)
                     {
-                            daRow[columns[i].ColumnName]=dr.GetValue(i);
+                        daRow[columns[i].ColumnName] = dr.GetValue(i);
                     }
                     dt.Rows.Add(daRow);
                 }
@@ -127,7 +128,7 @@ namespace SqlSugar
                         DataRow daRow = dt.NewRow();
                         for (int i = 0; i < columns.Count; i++)
                         {
-                            daRow[columns[i].ColumnName]=dr.GetValue(i);
+                            daRow[columns[i].ColumnName] = dr.GetValue(i);
                         }
                         dt.Rows.Add(daRow);
                     }

@@ -12,15 +12,20 @@ namespace SqlSugar
     {
         public string SerializeObject(object value)
         {
+            return JsonConvert.SerializeObject(value);
+        }
+
+        public string SugarSerializeObject(object value)
+        {
             return JsonConvert.SerializeObject(value, new JsonSerializerSettings()
             {
                 ContractResolver = new MyContractResolver()
             });
         }
-
+ 
         public T DeserializeObject<T>(string value)
         {
-            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ContractResolver = new MyContractResolver() };
+            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             return JsonConvert.DeserializeObject<T>(value, jSetting);
         }
     }

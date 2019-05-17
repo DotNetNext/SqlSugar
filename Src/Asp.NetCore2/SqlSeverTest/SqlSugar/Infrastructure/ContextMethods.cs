@@ -11,7 +11,7 @@ namespace SqlSugar
 {
     public partial class ContextMethods : IContextMethods
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         #region DataReader
 
         /// <summary>
@@ -237,7 +237,26 @@ namespace SqlSugar
             DependencyManagement.TryJsonNet();
             return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SerializeObject(value);
         }
-
+        public string SerializeObject(object value, Type type)
+        {
+            DependencyManagement.TryJsonNet();
+            if (type.IsAnonymousType())
+            {
+                return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SerializeObject(value);
+            }
+            else
+            {
+                var isSugar = this.Context.EntityMaintenance.GetEntityInfo(type).Columns.Any(it=>it.NoSerialize || it.SerializeDateTimeFormat.HasValue());
+                if (isSugar)
+                {
+                    return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SugarSerializeObject(value);
+                }
+                else
+                {
+                    return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SerializeObject(value);
+                }
+            }
+        }
 
 
         /// <summary>
@@ -268,20 +287,18 @@ namespace SqlSugar
                 return DeserializeObject<T>(jsonString);
             }
         }
-        public SqlSugarClient CopyContext(bool isCopyEvents = false)
+        public SqlSugarProvider CopyContext(bool isCopyEvents = false)
         {
-            var newClient = new SqlSugarClient(this.TranslateCopy(Context.CurrentConnectionConfig));
+            var newClient = new SqlSugarProvider(this.TranslateCopy(Context.CurrentConnectionConfig));
             newClient.CurrentConnectionConfig.ConfigureExternalServices = Context.CurrentConnectionConfig.ConfigureExternalServices;
             newClient.MappingColumns = this.TranslateCopy(Context.MappingColumns);
             newClient.MappingTables = this.TranslateCopy(Context.MappingTables);
             newClient.IgnoreColumns = this.TranslateCopy(Context.IgnoreColumns);
+            newClient.IgnoreInsertColumns = this.TranslateCopy(Context.IgnoreInsertColumns);
             if (isCopyEvents)
             {
-                newClient.Ado.IsEnableLogEvent = Context.Ado.IsEnableLogEvent;
-                newClient.Ado.LogEventStarting = Context.Ado.LogEventStarting;
-                newClient.Ado.LogEventCompleted = Context.Ado.LogEventCompleted;
-                newClient.Ado.ProcessingEventStartingSQL = Context.Ado.ProcessingEventStartingSQL;
                 newClient.QueryFilter = Context.QueryFilter;
+                newClient.CurrentConnectionConfig.AopEvents = Context.CurrentConnectionConfig.AopEvents;
             }
             return newClient;
         }
@@ -325,6 +342,11 @@ namespace SqlSugar
             }
             return this.DeserializeObject<List<T>>(this.SerializeObject(deserializeObject));
         }
+        public Dictionary<string, object> DataTableToDictionary(DataTable table)
+        {
+           return table.Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1]);
+        }
+
         #endregion
 
         #region Cache
@@ -347,156 +369,6 @@ namespace SqlSugar
         public void RemoveCache<T>(string key)
         {
             ReflectionInoCore<T>.GetInstance().Remove(key);
-        }
-        #endregion
-
-        #region Query
-        public KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models, int beginIndex = 0)
-        {
-            if (models.IsNullOrEmpty()) return new KeyValuePair<string, SugarParameter[]>();
-            StringBuilder builder = new StringBuilder();
-            List<SugarParameter> parameters = new List<SugarParameter>();
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            foreach (var model in models)
-            {
-                if (model is ConditionalModel)
-                {
-                    var item = model as ConditionalModel;
-                    var index = models.IndexOf(item) + beginIndex;
-                    var type = index == 0 ? "" : "AND";
-                    if (beginIndex > 0)
-                    {
-                        type = null;
-                    }
-                    string temp = " {0} {1} {2} {3}  ";
-                    string parameterName = string.Format("{0}Conditional{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
-                    if (parameterName.Contains("."))
-                    {
-                        parameterName = parameterName.Replace(".", "_");
-                    }
-                    switch (item.ConditionalType)
-                    {
-                        case ConditionalType.Equal:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
-                            break;
-                        case ConditionalType.Like:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue + "%"));
-                            break;
-                        case ConditionalType.GreaterThan:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
-                            break;
-                        case ConditionalType.GreaterThanOrEqual:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), ">=", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
-                            break;
-                        case ConditionalType.LessThan:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
-                            break;
-                        case ConditionalType.LessThanOrEqual:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<=", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
-                            break;
-                        case ConditionalType.In:
-                            if (item.FieldValue == null) item.FieldValue = string.Empty;
-                            var inValue1 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                            break;
-                        case ConditionalType.NotIn:
-                            if (item.FieldValue == null) item.FieldValue = string.Empty;
-                            var inValue2 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "NOT IN", inValue2);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                            break;
-                        case ConditionalType.LikeLeft:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue + "%"));
-                            break;
-                        case ConditionalType.NoLike:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), " NOT LIKE", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue + "%"));
-                            break;
-                        case ConditionalType.LikeRight:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue));
-                            break;
-                        case ConditionalType.NoEqual:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                            break;
-                        case ConditionalType.IsNullOrEmpty:
-                            builder.AppendFormat("{0} ({1}) OR ({2}) ", type, item.FieldName.ToSqlFilter() + " IS NULL ", item.FieldName.ToSqlFilter() + " = '' ");
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                            break;
-                        case ConditionalType.IsNot:
-                            if (item.FieldValue == null)
-                            {
-                                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), " IS NOT ", "NULL");
-                            }
-                            else
-                            {
-                                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
-                                parameters.Add(new SugarParameter(parameterName, item.FieldValue));
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                else
-                {
-                    var item = model as ConditionalCollections;
-                    if (item != null && item.ConditionalList.HasValue())
-                    {
-                        foreach (var con in item.ConditionalList)
-                        {
-                            var index = item.ConditionalList.IndexOf(con);
-                            var isFirst = index == 0;
-                            var isLast = index == (item.ConditionalList.Count - 1);
-                            if (models.IndexOf(item) == 0 && index == 0 && beginIndex == 0)
-                            {
-                                builder.AppendFormat(" ( ");
-
-                            }
-                            else if (isFirst)
-                            {
-                                builder.AppendFormat(" {0} ( ", con.Key.ToString().ToUpper());
-                            }
-                            List<IConditionalModel> conModels = new List<IConditionalModel>();
-                            conModels.Add(con.Value);
-                            var childSqlInfo = ConditionalModelToSql(conModels, 1000 * (1 + index) + models.IndexOf(item));
-                            if (!isFirst)
-                            {
-
-                                builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
-                            }
-                            builder.Append(childSqlInfo.Key);
-                            parameters.AddRange(childSqlInfo.Value);
-                            if (isLast)
-                            {
-                                builder.Append(" ) ");
-                            }
-                            else
-                            {
-
-                            }
-                        }
-                    }
-                }
-            }
-            return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
-        }
-
-        private static object GetFieldValue(ConditionalModel item)
-        {
-            if (item.FieldValueConvertFunc != null)
-                return item.FieldValueConvertFunc(item.FieldValue);
-            else
-                return item.FieldValue;
         }
         #endregion
 

@@ -6,7 +6,7 @@ namespace SqlSugar
 {
     public partial interface IDbMaintenance
     {
-        SqlSugarClient Context { get; set; }
+        SqlSugarProvider Context { get; set; }
 
         #region DML
         List<DbTableInfo> GetViewInfoList(bool isCache=true);
@@ -28,6 +28,7 @@ namespace SqlSugar
         #region DDL
         bool DropTable(string tableName);
         bool TruncateTable(string tableName);
+        bool TruncateTable<T>();
         bool CreateTable(string tableName, List<DbColumnInfo> columns,bool isCreatePrimaryKey=true);
         bool AddColumn(string tableName, DbColumnInfo column);
         bool UpdateColumn(string tableName, DbColumnInfo column);
@@ -46,6 +47,20 @@ namespace SqlSugar
         bool DeleteTableRemark(string tableName);
         bool IsAnyTableRemark(string tableName);
         bool RenameTable(string oldTableName,string newTableName);
+        /// <summary>
+        ///by current connection string
+        /// </summary>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        bool CreateDatabase(string databaseDirectory = null);
+        /// <summary>
+        /// by databaseName
+        /// </summary>
+        /// <param name="databaseName"></param>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        bool CreateDatabase(string databaseName,string databaseDirectory = null);
+        List<string> GetDataBaseList(SqlSugarClient db);
         #endregion
     }
 }

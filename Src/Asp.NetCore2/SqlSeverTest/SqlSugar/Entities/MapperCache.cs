@@ -9,18 +9,20 @@ namespace SqlSugar
     {
         private Dictionary<string, object> caches = new Dictionary<string, object>();
         private List<T> _list { get; set; }
-        private SqlSugarClient _context { get; set; }
+        private ISqlSugarClient _context { get; set; }
+        public int GetIndex { get; set; }
         private MapperCache()
         {
         }
-        public MapperCache(List<T> list, SqlSugarClient context)
+        public MapperCache(List<T> list, ISqlSugarClient context)
         {
             _list = list;
             _context = context;
         }
         public Result Get<Result>(Func<List<T>, Result> action)
         {
-            string key = "Get" + typeof(Result) + action.GetHashCode().ToString();
+            GetIndex++;
+            string key = "Get" + GetIndex;
             if (caches.ContainsKey(key))
             {
                 return (Result)caches[key];

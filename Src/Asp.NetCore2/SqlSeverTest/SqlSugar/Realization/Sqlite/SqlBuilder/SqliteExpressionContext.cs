@@ -4,7 +4,7 @@ namespace SqlSugar
 {
     public class SqliteExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public SqliteExpressionContext()
         {
             base.DbMehtods = new SqliteMethod();
@@ -220,6 +220,11 @@ namespace SqlSugar
         public override string GetRandom()
         {
             return "RANDOM()";
+        }
+
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            throw new NotSupportedException("Slqite Not Supported CharIndex");
         }
     }
 }
