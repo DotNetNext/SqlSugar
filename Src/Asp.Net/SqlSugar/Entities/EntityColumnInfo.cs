@@ -29,5 +29,6 @@ namespace SqlSugar
         public bool IsOnlyIgnoreInsert { get; set; }
         public bool IsTranscoding { get; set; }
         public string SerializeDateTimeFormat { get;  set; }
+        public bool NoSerialize { get;  set; }
     }
 }

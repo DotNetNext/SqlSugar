@@ -165,10 +165,12 @@ namespace SqlSugar
                         column.IsEnableUpdateVersionValidation = sugarColumn.IsEnableUpdateVersionValidation;
                         column.IsTranscoding = sugarColumn.IsTranscoding;
                         column.SerializeDateTimeFormat = sugarColumn.SerializeDateTimeFormat;
+                        column.NoSerialize = sugarColumn.NoSerialize;
                     }
                     else
                     {
                         column.IsIgnore = true;
+                        column.NoSerialize = sugarColumn.NoSerialize;
                     }
                 }
                 if (this.Context.MappingColumns.HasValue())
