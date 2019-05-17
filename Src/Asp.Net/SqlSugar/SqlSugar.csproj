@@ -41,6 +41,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Npgsql, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Npgsql.dll</HintPath>
+    </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.121.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\Oracle.ManagedDataAccess.dll</HintPath>
@@ -129,11 +133,23 @@
     <Compile Include="Interface\ISaveable.cs" />
     <Compile Include="Interface\ISqlSugarClient.cs" />
     <Compile Include="Interface\ITenant.cs" />
-    <Compile Include="OnlyNet\PostgreSQLExpressionContext.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
     <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
     <Compile Include="IntegrationServices\SerializeService.cs" />
+    <Compile Include="Realization\PostgreSQL\CodeFirst\PostgreSQLCodeFirst.cs" />
+    <Compile Include="Realization\PostgreSQL\DbBind\PostgreSQLDbBind.cs" />
+    <Compile Include="Realization\PostgreSQL\DbFirst\PostgreSQLDbFirst.cs" />
+    <Compile Include="Realization\PostgreSQL\DbMaintenance\PostgreSQLDbMaintenance.cs" />
+    <Compile Include="Realization\PostgreSQL\Insertable\PostgreSQLInserttable.cs" />
+    <Compile Include="Realization\PostgreSQL\PostgreSQLProvider.cs" />
+    <Compile Include="Realization\PostgreSQL\Queryable\PostgreSqlQueryable.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLDeleteBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLExpressionContext.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLInsertBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLQueryBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLUpdateBuilder.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
