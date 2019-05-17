@@ -14,7 +14,7 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                throw new NotSupportedException();
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -241,6 +241,14 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool CreateDatabase(string databaseDirectory = null)
+        {
+            throw new NotSupportedException();
+        }
+        public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
+        {
+            throw new NotSupportedException();
+        }
         public override bool AddRemark(EntityInfo entity)
         {
             var db = this.Context;
