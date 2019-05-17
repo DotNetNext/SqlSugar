@@ -16,8 +16,8 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            Demo.DbFirst.Init();
             Demo.CodeFirst.Init();
+            Demo.DbFirst.Init();
             Demo.Aop.Init();
             Demo.Query.Init();
             Demo.Insert.Init();
