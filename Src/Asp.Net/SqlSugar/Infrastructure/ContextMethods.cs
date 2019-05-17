@@ -246,7 +246,7 @@ namespace SqlSugar
             }
             else
             {
-                var isSugar = this.Context.EntityMaintenance.GetEntityInfo(type).Columns.Any(it=>it.SerializeDateTimeFormat.HasValue());
+                var isSugar = this.Context.EntityMaintenance.GetEntityInfo(type).Columns.Any(it=>it.NoSerialize || it.SerializeDateTimeFormat.HasValue());
                 if (isSugar)
                 {
                     return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SugarSerializeObject(value);

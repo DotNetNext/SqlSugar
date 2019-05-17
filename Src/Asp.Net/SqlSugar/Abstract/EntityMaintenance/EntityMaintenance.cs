@@ -170,10 +170,12 @@ namespace SqlSugar
                         column.IsTranscoding = sugarColumn.IsTranscoding;
                         column.SerializeDateTimeFormat = sugarColumn.SerializeDateTimeFormat;
                         column.IsJson = sugarColumn.IsJson;
+                        column.NoSerialize = sugarColumn.NoSerialize;
                     }
                     else
                     {
                         column.IsIgnore = true;
+                        column.NoSerialize = sugarColumn.NoSerialize;
                     }
                 }
                 if (this.Context.MappingColumns.HasValue())
