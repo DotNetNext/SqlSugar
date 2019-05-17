@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return "SELECT datname FROM pg_database";
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -219,6 +219,35 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        /// <summary>
+        ///by current connection string
+        /// </summary>
+        /// <param name="databaseDirectory"></param>
+        /// <returns></returns>
+        public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
+        {
+            if (databaseDirectory != null)
+            {
+                if (!FileHelper.IsExistDirectory(databaseDirectory))
+                {
+                    FileHelper.CreateDirectory(databaseDirectory);
+                }
+            }
+            var oldDatabaseName = this.Context.Ado.Connection.Database;
+            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
+            connection = connection.Replace(oldDatabaseName, "postgres");
+            var newDb = new SqlSugarClient(new ConnectionConfig()
+            {
+                DbType = this.Context.CurrentConnectionConfig.DbType,
+                IsAutoCloseConnection = true,
+                ConnectionString = connection
+            });
+            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
+            }
+            return true;
+        }
         public override bool AddRemark(EntityInfo entity)
         {
             var db = this.Context;
