@@ -12,6 +12,7 @@ namespace SqlSugar
         private static bool IsTryMySqlData = false;
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
+        private static bool IsTryPgSql = false;
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
@@ -50,12 +51,24 @@ namespace SqlSugar
             }
         }
 
-        internal static void TryPostgreSQL()
+        public static void TryPostgreSQL()
         {
-            var message = ErrorMessage.GetThrowMessage(
-                    "SqlSugar PostGreSQL only support.NET CORE",
-                    "SqlSugar使用 PostGreSQL只支持.NET CORE");
-            throw new Exception(message);
+            if (!IsTryPgSql)
+            {
+                try
+                {
+                    PostgreSQLProvider db = new PostgreSQLProvider();
+                    var conn = db.GetAdapter();
+                    IsTryPgSql = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to Npgsql.dll",
+                     "需要引用Npgsql.dll，请在Nuget安装最新稳定版本,如果有版本兼容问题请先删除原有引用");
+                    throw new Exception(message);
+                }
+            }
         }
 
         internal static void TryOracle()
