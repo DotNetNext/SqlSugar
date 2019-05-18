@@ -78,6 +78,10 @@ namespace OrmTest
             IsShardSameThread();
             Single();
             SingleAndIsShardSameThread();
+            SimpleAsync();
+            IsShardSameThreadAsync();
+            SingleAsync();
+            SingleAndIsShardSameThreadAsync();
 
         }
 
@@ -214,6 +218,152 @@ namespace OrmTest
                 for (int i = 0; i < 100; i++)
                 {
                     Db.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommand();
+                    System.Threading.Thread.Sleep(6);
+                }
+
+            });
+            t1.Start();
+            t2.Start();
+            t3.Start();
+
+            Task.WaitAll(t1, t2, t3);
+        }
+
+
+
+        private static void SimpleAsync()
+        {
+            var t1 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb0.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(1);
+                }
+
+            });
+            var t2 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb0.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait(); ;
+                    System.Threading.Thread.Sleep(10);
+                }
+
+            });
+            var t3 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb0.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(6);
+                }
+
+            });
+            t1.Start();
+            t2.Start();
+            t3.Start();
+
+            Task.WaitAll(t1, t2, t3);
+        }
+
+        private static void SingleAndIsShardSameThreadAsync()
+        {
+            var t1 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb3.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(1);
+                }
+
+            });
+            var t2 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb3.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(10);
+                }
+
+            });
+            var t3 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb3.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(6);
+                }
+
+            });
+            t1.Start();
+            t2.Start();
+            t3.Start();
+
+            Task.WaitAll(t1, t2, t3);
+        }
+
+        private static void SingleAsync()
+        {
+            var t1 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb2.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(1);
+                }
+
+            });
+            var t2 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb2.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(10);
+                }
+
+            });
+            var t3 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    tdb2.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(6);
+                }
+
+            });
+            t1.Start();
+            t2.Start();
+            t3.Start();
+
+            Task.WaitAll(t1, t2, t3);
+        }
+
+        private static void IsShardSameThreadAsync()
+        {
+            var t1 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    Db.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(1);
+                }
+
+            });
+            var t2 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    Db.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    System.Threading.Thread.Sleep(10);
+                }
+
+            });
+            var t3 = new Task(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    Db.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
                     System.Threading.Thread.Sleep(6);
                 }
 
