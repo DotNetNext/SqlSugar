@@ -753,18 +753,7 @@ namespace SqlSugar
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize)
         {
-            if (pageIndex == 0)
-                pageIndex = 1;
-            if (QueryBuilder.PartitionByValue.HasValue())
-            {
-                QueryBuilder.ExternalPageIndex = pageIndex;
-                QueryBuilder.ExternalPageSize = pageSize;
-            }
-            else
-            {
-                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-                QueryBuilder.Take = pageSize;
-            }
+            pageIndex = _PageList(pageIndex, pageSize);
             return ToList();
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
@@ -1003,14 +992,26 @@ namespace SqlSugar
             return _ToListAsync<T>();
         }
 
-        public Task<string> ToJsonAsync()
+        public async Task<string> ToJsonAsync()
         {
-            return Task.FromResult(ToJson());
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () =>
+                {
+                    return this.Context.Utilities.SerializeObject(this.ToList(), typeof(T));
+                }, CacheTime, this.Context);
+                return result;
+            }
+            else
+            {
+                return  this.Context.Utilities.SerializeObject(await this.ToListAsync(), typeof(T));
+            }
         }
 
-        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
+        public async Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
         {
-            return Task.FromResult(ToJsonPage(pageIndex, pageSize));
+            return this.Context.Utilities.SerializeObject(await this.ToPageListAsync(pageIndex, pageSize), typeof(T));
         }
 
         public Task<string> ToJsonPageAsync(int pageIndex, int pageSize, ref int totalNumber)
@@ -1035,7 +1036,8 @@ namespace SqlSugar
 
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
-            return Task.FromResult(ToPageList(pageIndex, pageSize));
+            pageIndex = _PageList(pageIndex, pageSize);
+            return ToListAsync();
         }
 
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
@@ -1088,6 +1090,23 @@ namespace SqlSugar
                 OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
                 return this;
             }
+        }
+        private int _PageList(int pageIndex, int pageSize)
+        {
+            if (pageIndex == 0)
+                pageIndex = 1;
+            if (QueryBuilder.PartitionByValue.HasValue())
+            {
+                QueryBuilder.ExternalPageIndex = pageIndex;
+                QueryBuilder.ExternalPageSize = pageSize;
+            }
+            else
+            {
+                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+                QueryBuilder.Take = pageSize;
+            }
+
+            return pageIndex;
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
