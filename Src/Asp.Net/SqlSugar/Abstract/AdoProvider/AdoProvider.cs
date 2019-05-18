@@ -603,6 +603,11 @@ namespace SqlSugar
         {
             return GetScalar(sql, parameters).ObjToInt();
         }
+        public virtual async Task<int> GetIntAsync(string sql, params SugarParameter[] parameters)
+        {
+            var list = await GetScalarAsync(sql, parameters);
+            return list.ObjToInt();
+        }
         public virtual int GetInt(string sql, List<SugarParameter> parameters)
         {
             if (parameters == null)

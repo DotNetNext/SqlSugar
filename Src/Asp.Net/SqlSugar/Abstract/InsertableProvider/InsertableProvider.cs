@@ -44,31 +44,11 @@ namespace SqlSugar
             {
                 return 0;
             }
-            if (InsertBuilder.DbColumnInfoList.HasValue())
-            {
-                var pks = GetPrimaryKeys();
-                foreach (var item in InsertBuilder.DbColumnInfoList)
-                {
-                    var isPk = pks.Any(y => y.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || item.IsPrimarykey;
-                    if (isPk && item.PropertyType == UtilConstants.GuidType && item.Value.ObjToString() == Guid.Empty.ToString())
-                    {
-                        item.Value = Guid.NewGuid();
-                        if (InsertObjs.First().GetType().GetProperties().Any(it => it.Name == item.PropertyName))
-                            InsertObjs.First().GetType().GetProperties().First(it => it.Name == item.PropertyName).SetValue(InsertObjs.First(), item.Value, null);
-                    }
-                }
-            }
-            InsertBuilder.IsReturnIdentity = false;
-            PreToSql();
-            AutoRemoveDataCache();
-            string sql = InsertBuilder.ToSqlString();
-            RestoreMapping();
-            Before(sql);
+            string sql = _ExecuteCommand();
             var result = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, null);
             return result;
         }
-
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             InsertBuilder.IsReturnIdentity = true;
@@ -84,32 +64,26 @@ namespace SqlSugar
             {
                 return 0;
             }
-            InsertBuilder.IsReturnIdentity = true;
-            PreToSql();
-            AutoRemoveDataCache();
-            string sql = InsertBuilder.ToSqlString();
-            RestoreMapping();
-            Before(sql);
+            string sql = _ExecuteReturnIdentity();
             var result = Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, result);
             return result;
         }
+
         public virtual long ExecuteReturnBigIdentity()
         {
             if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
             {
                 return 0;
             }
-            InsertBuilder.IsReturnIdentity = true;
-            PreToSql();
-            AutoRemoveDataCache();
-            string sql = InsertBuilder.ToSqlString();
-            RestoreMapping();
-            Before(sql);
+            string sql = _ExecuteReturnBigIdentity();
             var result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
             After(sql, result);
             return result;
         }
+
+
+
         public virtual T ExecuteReturnEntity()
         {
             ExecuteCommandIdentityIntoEntity();
@@ -131,25 +105,60 @@ namespace SqlSugar
             this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
             return idValue > 0;
         }
-        public Task<int> ExecuteCommandAsync()
+
+        public async Task<int> ExecuteCommandAsync()
         {
-           return Task.FromResult(ExecuteCommand());
+            if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
+            {
+                return 0;
+            }
+            string sql = _ExecuteCommand();
+            var result =await Ado.ExecuteCommandAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            After(sql, null);
+            return result;
         }
-        public Task<int> ExecuteReturnIdentityAsync()
+        public async Task<int> ExecuteReturnIdentityAsync()
         {
-            return Task.FromResult(ExecuteReturnIdentity());
+            if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
+            {
+                return 0;
+            }
+            string sql = _ExecuteReturnIdentity();
+            var result =await Ado.GetIntAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            After(sql, result);
+            return result;
         }
-        public Task<T> ExecuteReturnEntityAsync()
+        public async Task<T> ExecuteReturnEntityAsync()
         {
-            return Task.FromResult(ExecuteReturnEntity());
+            await ExecuteCommandIdentityIntoEntityAsync();
+            return InsertObjs.First();
         }
-        public Task<bool> ExecuteCommandIdentityIntoEntityAsync()
+        public async Task<bool> ExecuteCommandIdentityIntoEntityAsync()
         {
-            return Task.FromResult(ExecuteCommandIdentityIntoEntity());
+            var result = InsertObjs.First();
+            var identityKeys = GetIdentityKeys();
+            if (identityKeys.Count == 0) { return await this.ExecuteCommandAsync() > 0; }
+            var idValue =await ExecuteReturnBigIdentityAsync();
+            Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
+            var identityKey = identityKeys.First();
+            object setValue = 0;
+            if (idValue > int.MaxValue)
+                setValue = idValue;
+            else
+                setValue = Convert.ToInt32(idValue);
+            this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
+            return idValue > 0;
         }
-        public Task<long> ExecuteReturnBigIdentityAsync()
+        public async Task<long> ExecuteReturnBigIdentityAsync()
         {
-            return Task.FromResult(ExecuteReturnBigIdentity());
+            if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
+            {
+                return 0;
+            }
+            string sql = _ExecuteReturnBigIdentity();
+            var result = Convert.ToInt64(await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+            After(sql, result);
+            return result;
         }
         #endregion
 
@@ -230,6 +239,51 @@ namespace SqlSugar
         #endregion
 
         #region Protected Methods
+        private string _ExecuteReturnBigIdentity()
+        {
+            InsertBuilder.IsReturnIdentity = true;
+            PreToSql();
+            AutoRemoveDataCache();
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            Before(sql);
+            return sql;
+        }
+        private string _ExecuteReturnIdentity()
+        {
+            InsertBuilder.IsReturnIdentity = true;
+            PreToSql();
+            AutoRemoveDataCache();
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            Before(sql);
+            return sql;
+        }
+
+        private string _ExecuteCommand()
+        {
+            if (InsertBuilder.DbColumnInfoList.HasValue())
+            {
+                var pks = GetPrimaryKeys();
+                foreach (var item in InsertBuilder.DbColumnInfoList)
+                {
+                    var isPk = pks.Any(y => y.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || item.IsPrimarykey;
+                    if (isPk && item.PropertyType == UtilConstants.GuidType && item.Value.ObjToString() == Guid.Empty.ToString())
+                    {
+                        item.Value = Guid.NewGuid();
+                        if (InsertObjs.First().GetType().GetProperties().Any(it => it.Name == item.PropertyName))
+                            InsertObjs.First().GetType().GetProperties().First(it => it.Name == item.PropertyName).SetValue(InsertObjs.First(), item.Value, null);
+                    }
+                }
+            }
+            InsertBuilder.IsReturnIdentity = false;
+            PreToSql();
+            AutoRemoveDataCache();
+            string sql = InsertBuilder.ToSqlString();
+            RestoreMapping();
+            Before(sql);
+            return sql;
+        }
         private void AutoRemoveDataCache()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;

@@ -56,6 +56,7 @@ namespace SqlSugar
         string GetString(string sql, params SugarParameter[] parameters);
         string GetString(string sql, List<SugarParameter> parameters);
         int GetInt(string sql, object pars);
+        Task<int> GetIntAsync(string sql, params SugarParameter[] parameters);
         int GetInt(string sql, params SugarParameter[] parameters);
         int GetInt(string sql, List<SugarParameter> parameters);
         long GetLong(string sql, object pars);
