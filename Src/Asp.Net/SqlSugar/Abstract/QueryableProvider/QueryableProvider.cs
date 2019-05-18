@@ -836,39 +836,107 @@ namespace SqlSugar
             return result;
         }
         #region Async methods
-        public Task<T> SingleAsync()
+        public async Task<T> SingleAsync()
         {
-            return Task.FromResult(Single());
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+            }
+            var oldSkip = QueryBuilder.Skip;
+            var oldTake = QueryBuilder.Take;
+            var oldOrderBy = QueryBuilder.OrderByValue;
+            QueryBuilder.Skip = null;
+            QueryBuilder.Take = null;
+            QueryBuilder.OrderByValue = null;
+            var result =await this.ToListAsync();
+            QueryBuilder.Skip = oldSkip;
+            QueryBuilder.Take = oldTake;
+            QueryBuilder.OrderByValue = oldOrderBy;
+            if (result == null || result.Count == 0)
+            {
+                return default(T);
+            }
+            else if (result.Count == 2)
+            {
+                Check.Exception(true, ".Single()  result must not exceed one . You can use.First()");
+                return default(T);
+            }
+            else
+            {
+                return result.SingleOrDefault();
+            }
         }
 
-        public Task<T> SingleAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> SingleAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(Single(expression));
+            _Where(expression);
+            var result =await SingleAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
-        public Task<T> FirstAsync()
+        public async Task<T> FirstAsync()
         {
-            return Task.FromResult(First());
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+            }
+            if (QueryBuilder.Skip.HasValue)
+            {
+                QueryBuilder.Take = 1;
+                var list = await this.ToListAsync();
+                return list.FirstOrDefault();
+            }
+            else
+            {
+                QueryBuilder.Skip = 0;
+                QueryBuilder.Take = 1;
+                var result =await this.ToListAsync();
+                if (result.HasValue())
+                    return result.FirstOrDefault();
+                else
+                    return default(T);
+            }
         }
 
-        public Task<T> FirstAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> FirstAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(First(expression));
+            _Where(expression);
+            var result = await FirstAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
-        public Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(Any(expression));
+            _Where(expression);
+            var result =await AnyAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
-        public Task<bool> AnyAsync()
+        public async Task<bool> AnyAsync()
         {
-            return Task.FromResult(Any());
+            return await this.CountAsync() > 0;
         }
 
-        public Task<int> CountAsync()
+        public async Task<int> CountAsync()
         {
-            return Task.FromResult(Count());
+            InitMapping();
+            QueryBuilder.IsCount = true;
+            int result = 0;
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<int>(cacheService, this.QueryBuilder, () => { return GetCount(); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result =await GetCountAsync();
+            }
+            RestoreMapping();
+            QueryBuilder.IsCount = false;
+            return result;
         }
         public Task<int> CountAsync(Expression<Func<T, bool>> expression)
         {
@@ -1535,6 +1603,15 @@ namespace SqlSugar
             sql = QueryBuilder.ToSqlString();
             sql = QueryBuilder.ToCountSql(sql);
             var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
+            return result;
+        }
+        protected async Task<int> GetCountAsync()
+        {
+            var sql = string.Empty;
+            ToSqlBefore();
+            sql = QueryBuilder.ToSqlString();
+            sql = QueryBuilder.ToCountSql(sql);
+            var result =Convert.ToInt32(await Context.Ado.GetScalarAsync(sql, QueryBuilder.Parameters.ToArray()));
             return result;
         }
 
