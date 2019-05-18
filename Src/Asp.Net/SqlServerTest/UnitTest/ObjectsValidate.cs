@@ -8,11 +8,11 @@ namespace OrmTest
 {
     public class ObjectsValidate
     {
-        public static void Check(object a ,object b,object name)
+        public static void Check(object a, object b, object name)
         {
             if (a?.ToString() != b?.ToString())
             {
-                new Exception(name+" error");
+                throw new Exception(name + " error");
             }
         }
     }

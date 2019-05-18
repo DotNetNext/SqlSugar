@@ -26,6 +26,7 @@ namespace OrmTest
         public static void Init()
         {
             Json();
+            Thread();
         }
     }
 }

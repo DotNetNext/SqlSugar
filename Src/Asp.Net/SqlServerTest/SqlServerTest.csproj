@@ -143,6 +143,7 @@
     <Compile Include="UnitTest\ObjectsValidate.cs" />
     <Compile Include="UnitTest\UJson.cs" />
     <Compile Include="UnitTest\Main.cs" />
+    <Compile Include="UnitTest\UThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
