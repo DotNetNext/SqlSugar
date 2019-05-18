@@ -140,6 +140,7 @@
     <Compile Include="OldTest\UnitTest\Setting\MapColumn.cs" />
     <Compile Include="OldTest\UnitTest\Setting\MapTable.cs" />
     <Compile Include="OldTest\UnitTest\Update.cs" />
+    <Compile Include="UnitTest\ObjectsValidate.cs" />
     <Compile Include="UnitTest\UJson.cs" />
     <Compile Include="UnitTest\Main.cs" />
   </ItemGroup>
