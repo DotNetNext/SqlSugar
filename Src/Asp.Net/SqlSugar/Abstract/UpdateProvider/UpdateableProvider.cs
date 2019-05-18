@@ -51,29 +51,25 @@ namespace SqlSugar
         }
         public virtual int ExecuteCommand()
         {
-            PreToSql();
-            AutoRemoveDataCache();
-            Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
-            string sql = UpdateBuilder.ToSqlString();
-            ValidateVersion();
-            RestoreMapping();
-            Before(sql);
+            string sql = _ExecuteCommand();
             var result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             After(sql);
             return result;
         }
-
         public bool ExecuteCommandHasChange()
         {
             return this.ExecuteCommand() > 0;
         }
-        public Task<int> ExecuteCommandAsync()
+        public async Task<int> ExecuteCommandAsync()
         {
-            return Task.FromResult(ExecuteCommand());
+            string sql = _ExecuteCommand();
+            var result =await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            After(sql);
+            return result;
         }
-        public Task<bool> ExecuteCommandHasChangeAsync()
+        public async Task<bool> ExecuteCommandHasChangeAsync()
         {
-            return Task.FromResult(ExecuteCommandHasChange());
+            return await this.ExecuteCommandAsync() > 0;
         }
         #endregion
 
@@ -374,6 +370,17 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        private string _ExecuteCommand()
+        {
+            PreToSql();
+            AutoRemoveDataCache();
+            Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
+            string sql = UpdateBuilder.ToSqlString();
+            ValidateVersion();
+            RestoreMapping();
+            Before(sql);
+            return sql;
+        }
         private void AutoRemoveDataCache()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
