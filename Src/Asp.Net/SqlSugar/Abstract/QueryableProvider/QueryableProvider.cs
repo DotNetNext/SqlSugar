@@ -1535,6 +1535,22 @@ namespace SqlSugar
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
             var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
+            result = GetData<TResult>(isComplexModel, entityType, dataReader);
+            return result;
+        }
+        protected async Task<List<TResult>> GetDataAsync<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
+        {
+            List<TResult> result;
+            var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
+            var entityType = typeof(TResult);
+            var dataReader = await this.Db.GetDataReaderAsync(sqlObj.Key, sqlObj.Value.ToArray());
+            result = GetData<TResult>(isComplexModel, entityType, dataReader);
+            return result;
+        }
+
+        private List<TResult> GetData<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
+        {
+            List<TResult> result;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
