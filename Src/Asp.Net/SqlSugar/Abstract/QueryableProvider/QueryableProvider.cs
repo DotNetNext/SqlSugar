@@ -938,48 +938,63 @@ namespace SqlSugar
             QueryBuilder.IsCount = false;
             return result;
         }
-        public Task<int> CountAsync(Expression<Func<T, bool>> expression)
+        public async Task<int> CountAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(Count(expression));
+            _Where(expression);
+            var result =await CountAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
-        public Task<TResult> MaxAsync<TResult>(string maxField)
+        public  async Task<TResult> MaxAsync<TResult>(string maxField)
         {
-            return Task.FromResult(Max<TResult>(maxField));
+            this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
+            var list = await this._ToListAsync<TResult>();
+            var result =list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Max<TResult>(expression));
+            return _MaxAsync<TResult>(expression);
         }
 
-        public Task<TResult> MinAsync<TResult>(string minField)
+        public async Task<TResult> MinAsync<TResult>(string minField)
         {
-            return Task.FromResult(Min<TResult>(minField));
+            this.Select(string.Format(QueryBuilder.MinTemplate, minField));
+            var list = await this._ToListAsync<TResult>();
+            var result = list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Min<TResult>(expression));
+            return _MinAsync<TResult>(expression);
         }
 
-        public Task<TResult> SumAsync<TResult>(string sumField)
+        public async Task<TResult> SumAsync<TResult>(string sumField)
         {
-            return Task.FromResult(Sum<TResult>(sumField));
+            this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
+            var list = await this._ToListAsync<TResult>();
+            var result = list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Sum<TResult>(expression));
+            return _SumAsync<TResult>(expression);
         }
 
-        public Task<TResult> AvgAsync<TResult>(string avgField)
+        public async Task<TResult> AvgAsync<TResult>(string avgField)
         {
-            return Task.FromResult(Avg<TResult>(avgField));
+            this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
+            var list = await this._ToListAsync<TResult>();
+            var result = list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Avg<TResult>(expression));
+            return _AvgAsync<TResult>(expression);
         }
 
         public Task<List<T>> ToListAsync()
@@ -1104,12 +1119,28 @@ namespace SqlSugar
             QueryBuilder.SelectValue = null;
             return result;
         }
+        protected async Task<TResult> _MinAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Main");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var result = await MinAsync<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return result;
+        }
         protected TResult _Avg<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Avg");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Avg<TResult>(lamResult.GetResultString());
+        }
+        protected async Task<TResult> _AvgAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Avg");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return  await AvgAsync<TResult>(lamResult.GetResultString());
         }
         protected TResult _Max<TResult>(Expression expression)
         {
@@ -1120,12 +1151,30 @@ namespace SqlSugar
             QueryBuilder.SelectValue = null;
             return reslut;
         }
+        protected async Task<TResult> _MaxAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Max");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var reslut =await MaxAsync<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
+        }
         protected TResult _Sum<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Sum");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var reslut = Sum<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
+        }
+        protected async Task<TResult> _SumAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Sum");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var reslut =await SumAsync<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return reslut;
         }
