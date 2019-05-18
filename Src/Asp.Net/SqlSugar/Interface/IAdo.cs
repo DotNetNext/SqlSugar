@@ -33,6 +33,10 @@ namespace SqlSugar
         void SetCommandToAdapter(IDataAdapter adapter, DbCommand command);
         IDataAdapter GetAdapter();
         DbCommand GetCommand(string sql, SugarParameter[] parameters);
+        Task<int> ExecuteCommandAsync(string sql, params SugarParameter[] parameters);
+        Task<IDataReader> GetDataReaderAsync(string sql, params SugarParameter[] parameters);
+        Task<IDataReader> GetDataReaderNoCloseAsync(string sql, params SugarParameter[] parameters);
+        Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters);
         DataTable GetDataTable(string sql, object parameters);
         DataTable GetDataTable(string sql, params SugarParameter[] parameters);
         DataTable GetDataTable(string sql, List<SugarParameter> parameters);

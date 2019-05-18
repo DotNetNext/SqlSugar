@@ -444,6 +444,132 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Core Async
+        public  virtual async Task<int> ExecuteCommandAsync(string sql, params SugarParameter[] parameters)
+        {
+            try
+            {
+                InitParameters(ref sql, parameters);
+                if (FormatSql != null)
+                    sql = FormatSql(sql);
+                SetConnectionStart(sql);
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                var sqlCommand = GetCommand(sql, parameters);
+                int count =await sqlCommand.ExecuteNonQueryAsync();
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                return count;
+            }
+            catch (Exception ex)
+            {
+                CommandType = CommandType.Text;
+                if (ErrorEvent != null)
+                    ExecuteErrorEvent(sql, parameters, ex);
+                throw ex;
+            }
+            finally
+            {
+                if (this.IsAutoClose()) this.Close();
+                SetConnectionEnd(sql);
+            }
+        }
+        public virtual async Task<IDataReader> GetDataReaderAsync(string sql, params SugarParameter[] parameters)
+        {
+            try
+            {
+                InitParameters(ref sql, parameters);
+                if (FormatSql != null)
+                    sql = FormatSql(sql);
+                SetConnectionStart(sql);
+                var isSp = this.CommandType == CommandType.StoredProcedure;
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                var sqlCommand = GetCommand(sql, parameters);
+                var sqlDataReader =await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+                if (isSp)
+                    DataReaderParameters = sqlCommand.Parameters;
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                SetConnectionEnd(sql);
+                return sqlDataReader;
+            }
+            catch (Exception ex)
+            {
+                CommandType = CommandType.Text;
+                if (ErrorEvent != null)
+                    ExecuteErrorEvent(sql, parameters, ex);
+                throw ex;
+            }
+        }
+        public virtual async Task<IDataReader> GetDataReaderNoCloseAsync(string sql, params SugarParameter[] parameters)
+        {
+            try
+            {
+                InitParameters(ref sql, parameters);
+                if (FormatSql != null)
+                    sql = FormatSql(sql);
+                SetConnectionStart(sql);
+                var isSp = this.CommandType == CommandType.StoredProcedure;
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                var sqlCommand = GetCommand(sql, parameters);
+                var sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+                if (isSp)
+                    DataReaderParameters = sqlCommand.Parameters;
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                SetConnectionEnd(sql);
+                return sqlDataReader;
+            }
+            catch (Exception ex)
+            {
+                CommandType = CommandType.Text;
+                if (ErrorEvent != null)
+                    ExecuteErrorEvent(sql, parameters, ex);
+                throw ex;
+            }
+        }
+        public virtual async Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters)
+        {
+            try
+            {
+                InitParameters(ref sql, parameters);
+                if (FormatSql != null)
+                    sql = FormatSql(sql);
+                SetConnectionStart(sql);
+                if (this.ProcessingEventStartingSQL != null)
+                    ExecuteProcessingSQL(ref sql, parameters);
+                ExecuteBefore(sql, parameters);
+                var sqlCommand = GetCommand(sql, parameters);
+                var scalar =await sqlCommand.ExecuteScalarAsync();
+                //scalar = (scalar == null ? 0 : scalar);
+                if (this.IsClearParameters)
+                    sqlCommand.Parameters.Clear();
+                ExecuteAfter(sql, parameters);
+                return scalar;
+            }
+            catch (Exception ex)
+            {
+                CommandType = CommandType.Text;
+                if (ErrorEvent != null)
+                    ExecuteErrorEvent(sql, parameters, ex);
+                throw ex;
+            }
+            finally
+            {
+                if (this.IsAutoClose()) this.Close();
+                SetConnectionEnd(sql);
+            }
+        }
+        #endregion
+
         #region Methods
 
         public virtual string GetString(string sql, object parameters)
