@@ -13,6 +13,7 @@ namespace SqlSugar
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
         private static bool IsTryPgSql = false;
+
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
@@ -26,11 +27,12 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                         " SqlSugar Some functions are used in newtonsoft ,Nuget references Newtonsoft.Json 9.0.0.1 + .",
-                        " SqlSugar 部分功能用到Newtonsoft.Json.dll，需要在Nuget上安装 Newtonsoft.Json 9.0.0.1及以上版本。如果有版本兼容问题请先删除原有引用（注意：所有项目类库）,全部重新从NUGET下载,如果还不明白，请查看详细教程 http://www.codeisbug.com/Doc/8/1154");
+                        " SqlSugar 部分功能用到Newtonsoft.Json.dll，需要在Nuget上安装 Newtonsoft.Json 9.0.0.1及以上版本，如果有版本兼容问题请先删除原有引用");
                     throw new Exception(message);
                 }
             }
         }
+
         public static void TryMySqlData()
         {
             if (!IsTryMySqlData)
@@ -64,14 +66,14 @@ namespace SqlSugar
                 catch
                 {
                     var message = ErrorMessage.GetThrowMessage(
-                     "You need to refer to Npgsql.dll",
-                     "需要引用Npgsql.dll，请在Nuget安装最新稳定版本,如果有版本兼容问题请先删除原有引用");
+                     "You need to refer to Npgsql 3.2.7",
+                     "你需要引用 Npgsql 3.2.7及以上版本");
                     throw new Exception(message);
                 }
             }
         }
 
-        internal static void TryOracle()
+        public static void TryOracle()
         {
             if (!IsTryOracle)
             {
@@ -84,8 +86,8 @@ namespace SqlSugar
                 catch
                 {
                     var message = ErrorMessage.GetThrowMessage(
-                     "You need to refer to Oracle.ManagedDataAccess.dll",
-                     "需要引用ManagedDataAccess.dll，请在Nuget安装最新稳定版本,如果有版本兼容问题请先删除原有引用");
+                     "You need to refer to Oracle.ManagedDataAccess.Core",
+                     "你需要引用 Oracle.ManagedDataAccess.Core");
                     throw new Exception(message);
                 }
             }
@@ -104,8 +106,8 @@ namespace SqlSugar
                 catch (Exception ex)
                 {
                     var message = ErrorMessage.GetThrowMessage(
-                     "You need to refer to System.Data.SQLite.dll." + ex.Message,
-                    "你需要引用System.Data.SQLite.dll,如果有版本兼容问题请先删除原有引用");
+                     "You need to refer to Microsoft.Data.Sqlite." + ex.Message,
+                    "你需要引用Microsoft.Data.Sqlite,如果有版本兼容问题请先删除原有引用");
                     throw new Exception(message);
                 }
             }

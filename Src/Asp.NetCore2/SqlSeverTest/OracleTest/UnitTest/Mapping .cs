@@ -57,8 +57,7 @@ namespace OrmTest.UnitTest
         public  SqlSugarClient GetInstance2()
         {
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { InitKeyType = InitKeyType.Attribute, ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
-            db.Ado.IsEnableLogEvent = true;
-            db.Ado.LogEventStarting = (sql, pars) =>
+            db.Aop.OnLogExecuting = (sql, pars) =>
             {
                 Console.WriteLine(sql + "\r\n" + db.RewritableMethods.SerializeObject(pars));
                 Console.WriteLine();
