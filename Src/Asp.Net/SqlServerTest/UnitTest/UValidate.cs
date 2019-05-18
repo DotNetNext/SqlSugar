@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    public class ObjectsValidate
+    public class UValidate
     {
         public static void Check(object a, object b, object name)
         {
