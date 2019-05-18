@@ -916,7 +916,8 @@ namespace SqlSugar
 
         public Task<List<T>> ToListAsync()
         {
-            return Task.FromResult(ToList());
+            InitMapping();
+            return _ToListAsync<T>();
         }
 
         public Task<string> ToJsonAsync()
@@ -1127,6 +1128,23 @@ namespace SqlSugar
             else
             {
                 result = GetData<TResult>(sqlObj);
+            }
+            RestoreMapping();
+            _Mapper(result);
+            return result;
+        }
+        protected async Task<List<TResult>> _ToListAsync<TResult>()
+        {
+            List<TResult> result = null;
+            var sqlObj = this.ToSql();
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result =await GetDataAsync<TResult>(sqlObj);
             }
             RestoreMapping();
             _Mapper(result);
@@ -1544,7 +1562,7 @@ namespace SqlSugar
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
             var dataReader = await this.Db.GetDataReaderAsync(sqlObj.Key, sqlObj.Value.ToArray());
-            result = GetData<TResult>(isComplexModel, entityType, dataReader);
+            result =await GetDataAsync<TResult>(isComplexModel, entityType, dataReader);
             return result;
         }
 
@@ -1566,6 +1584,29 @@ namespace SqlSugar
             else
             {
                 result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);
+            }
+            SetContextModel(result, entityType);
+            return result;
+        }
+        private async Task<List<TResult>> GetDataAsync<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
+        {
+            List<TResult> result;
+            if (entityType == UtilConstants.DynamicType)
+            {
+                result =await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader) as List<TResult>;
+            }
+            else if (entityType == UtilConstants.ObjType)
+            {
+                var expObj = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader);
+                result = expObj.Select(it => ((TResult)(object)it)).ToList();
+            }
+            else if (entityType.IsAnonymousType() || isComplexModel)
+            {
+                result =await this.Context.Utilities.DataReaderToListAsync<TResult>(dataReader);
+            }
+            else
+            {
+                result =await this.Bind.DataReaderToListAsync<TResult>(entityType, dataReader);
             }
             SetContextModel(result, entityType);
             return result;

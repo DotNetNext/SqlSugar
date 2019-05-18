@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
+
 namespace SqlSugar
 {
     public abstract partial class DbBindProvider : DbBindAccessory, IDbBind
@@ -198,6 +200,28 @@ namespace SqlSugar
                 else
                 {
                     return GetEntityList<T>(Context, dataReader);
+                }
+            }
+        }
+        public virtual async Task<List<T>> DataReaderToListAsync<T>(Type type, IDataReader dataReader)
+        {
+            using (dataReader)
+            {
+                if (type.Name.Contains("KeyValuePair"))
+                {
+                    return await GetKeyValueListAsync<T>(type, dataReader);
+                }
+                else if (type.IsValueType() || type == UtilConstants.StringType || type == UtilConstants.ByteArrayType)
+                {
+                    return await GetValueTypeListAsync<T>(type, dataReader);
+                }
+                else if (type.IsArray)
+                {
+                    return await GetArrayListAsync<T>(type, dataReader);
+                }
+                else
+                {
+                    return await GetEntityListAsync<T>(Context, dataReader);
                 }
             }
         }
