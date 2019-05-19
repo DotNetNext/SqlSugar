@@ -442,10 +442,8 @@ namespace SqlSugar
                 SetConnectionEnd(sql);
             }
         }
-        #endregion
 
-        #region Core Async
-        public  virtual async Task<int> ExecuteCommandAsync(string sql, params SugarParameter[] parameters)
+        public virtual async Task<int> ExecuteCommandAsync(string sql, params SugarParameter[] parameters)
         {
             try
             {
@@ -457,7 +455,7 @@ namespace SqlSugar
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
-                int count =await sqlCommand.ExecuteNonQueryAsync();
+                int count = await sqlCommand.ExecuteNonQueryAsync();
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
@@ -489,7 +487,7 @@ namespace SqlSugar
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
-                var sqlDataReader =await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+                var sqlDataReader = await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
                 if (isSp)
                     DataReaderParameters = sqlCommand.Parameters;
                 if (this.IsClearParameters)
@@ -548,7 +546,7 @@ namespace SqlSugar
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
-                var scalar =await sqlCommand.ExecuteScalarAsync();
+                var scalar = await sqlCommand.ExecuteScalarAsync();
                 //scalar = (scalar == null ? 0 : scalar);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
@@ -567,6 +565,11 @@ namespace SqlSugar
                 if (this.IsAutoClose()) this.Close();
                 SetConnectionEnd(sql);
             }
+        }
+        public virtual Task<DataSet> GetDataSetAllAsync(string sql, params SugarParameter[] parameters)
+        {
+            //False asynchrony . No Support DataSet
+            return Task.FromResult(GetDataSetAll(sql,parameters));
         }
         #endregion
 
@@ -591,22 +594,43 @@ namespace SqlSugar
                 return GetString(sql, parameters.ToArray());
             }
         }
-        public virtual int GetInt(string sql, object parameters)
+
+
+        public virtual Task<string> GetStringAsync(string sql, object parameters)
         {
-            return GetInt(sql, this.GetParameters(parameters));
+            return GetStringAsync(sql, this.GetParameters(parameters));
         }
+        public virtual async Task<string> GetStringAsync(string sql, params SugarParameter[] parameters)
+        {
+            return Convert.ToString(await GetScalarAsync(sql, parameters));
+        }
+        public virtual Task<string> GetStringAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetStringAsync(sql);
+            }
+            else
+            {
+                return GetStringAsync(sql, parameters.ToArray());
+            }
+        }
+
+
+
         public virtual long GetLong(string sql, object parameters)
         {
             return Convert.ToInt64(GetScalar(sql, GetParameters(parameters)));
         }
-        public virtual int GetInt(string sql, params SugarParameter[] parameters)
+        public virtual async Task<long> GetLongAsync(string sql, object parameters)
         {
-            return GetScalar(sql, parameters).ObjToInt();
+            return Convert.ToInt64(await GetScalarAsync(sql, GetParameters(parameters)));
         }
-        public virtual async Task<int> GetIntAsync(string sql, params SugarParameter[] parameters)
+
+
+        public virtual int GetInt(string sql, object parameters)
         {
-            var list = await GetScalarAsync(sql, parameters);
-            return list.ObjToInt();
+            return GetInt(sql, this.GetParameters(parameters));
         }
         public virtual int GetInt(string sql, List<SugarParameter> parameters)
         {
@@ -619,6 +643,32 @@ namespace SqlSugar
                 return GetInt(sql, parameters.ToArray());
             }
         }
+        public virtual int GetInt(string sql, params SugarParameter[] parameters)
+        {
+            return GetScalar(sql, parameters).ObjToInt();
+        }
+
+        public virtual Task<int> GetIntAsync(string sql, object parameters)
+        {
+            return GetIntAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual Task<int> GetIntAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetIntAsync(sql);
+            }
+            else
+            {
+                return GetIntAsync(sql, parameters.ToArray());
+            }
+        }
+        public virtual async Task<int> GetIntAsync(string sql, params SugarParameter[] parameters)
+        {
+            var list = await GetScalarAsync(sql, parameters);
+            return list.ObjToInt();
+        }
+
         public virtual Double GetDouble(string sql, object parameters)
         {
             return GetDouble(sql, this.GetParameters(parameters));
@@ -638,6 +688,29 @@ namespace SqlSugar
                 return GetDouble(sql, parameters.ToArray());
             }
         }
+
+        public virtual Task<Double> GetDoubleAsync(string sql, object parameters)
+        {
+            return GetDoubleAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual async Task<Double> GetDoubleAsync(string sql, params SugarParameter[] parameters)
+        {
+            var result = await GetScalarAsync(sql, parameters);
+            return result.ObjToMoney();
+        }
+        public virtual Task<Double> GetDoubleAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetDoubleAsync(sql);
+            }
+            else
+            {
+                return GetDoubleAsync(sql, parameters.ToArray());
+            }
+        }
+
+
         public virtual decimal GetDecimal(string sql, object parameters)
         {
             return GetDecimal(sql, this.GetParameters(parameters));
@@ -657,6 +730,31 @@ namespace SqlSugar
                 return GetDecimal(sql, parameters.ToArray());
             }
         }
+
+
+        public virtual Task<decimal> GetDecimalAsync(string sql, object parameters)
+        {
+            return GetDecimalAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual async Task<decimal> GetDecimalAsync(string sql, params SugarParameter[] parameters)
+        {
+            var result =await GetScalarAsync(sql, parameters);
+            return result.ObjToDecimal();
+        }
+        public virtual Task<decimal> GetDecimalAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetDecimalAsync(sql);
+            }
+            else
+            {
+                return GetDecimalAsync(sql, parameters.ToArray());
+            }
+        }
+
+
+
         public virtual DateTime GetDateTime(string sql, object parameters)
         {
             return GetDateTime(sql, this.GetParameters(parameters));
@@ -676,6 +774,32 @@ namespace SqlSugar
                 return GetDateTime(sql, parameters.ToArray());
             }
         }
+
+
+
+
+        public virtual Task<DateTime> GetDateTimeAsync(string sql, object parameters)
+        {
+            return GetDateTimeAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual async Task<DateTime> GetDateTimeAsync(string sql, params SugarParameter[] parameters)
+        {
+            var list = await GetScalarAsync(sql, parameters);
+            return list.ObjToDate();
+        }
+        public virtual Task<DateTime> GetDateTimeAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetDateTimeAsync(sql);
+            }
+            else
+            {
+                return GetDateTimeAsync(sql, parameters.ToArray());
+            }
+        }
+
+
         public virtual List<T> SqlQuery<T>(string sql, object parameters = null)
         {
             var sugarParameters = this.GetParameters(parameters);
@@ -713,7 +837,6 @@ namespace SqlSugar
             }
             return result;
         }
-
         public virtual List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters)
         {
             if (parameters != null)
@@ -725,6 +848,7 @@ namespace SqlSugar
                 return SqlQuery<T>(sql);
             }
         }
+
         public virtual Task<List<T>> SqlQueryAsync<T>(string sql, object parameters = null)
         {
             var sugarParameters = this.GetParameters(parameters);
@@ -774,6 +898,7 @@ namespace SqlSugar
                 return SqlQueryAsync<T>(sql);
             }
         }
+
         public Tuple<List<T>, List<T2>> SqlQuery<T, T2>(string sql, object parameters = null)
         {
             var parsmeterArray = this.GetParameters(parameters);
@@ -1199,21 +1324,26 @@ namespace SqlSugar
             var result = SqlQuery<T>(sql, parameters);
             return result == null ? default(T) : result.FirstOrDefault();
         }
-        public virtual dynamic SqlQueryDynamic(string sql, object parameters = null)
+
+
+        public virtual async Task<T> SqlQuerySingleAsync<T>(string sql, object parameters = null)
         {
-            var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
+            var result =await SqlQueryAsync<T>(sql, parameters);
+            return result == null ? default(T) : result.FirstOrDefault();
         }
-        public virtual dynamic SqlQueryDynamic(string sql, params SugarParameter[] parameters)
+        public virtual async Task<T> SqlQuerySingleAsync<T>(string sql, params SugarParameter[] parameters)
         {
-            var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
+            var result =await SqlQueryAsync<T>(sql, parameters);
+            return result == null ? default(T) : result.FirstOrDefault();
         }
-        public dynamic SqlQueryDynamic(string sql, List<SugarParameter> parameters)
+        public virtual async Task<T> SqlQuerySingleAsync<T>(string sql, List<SugarParameter> parameters)
         {
-            var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
+            var result =await SqlQueryAsync<T>(sql, parameters);
+            return result == null ? default(T) : result.FirstOrDefault();
         }
+
+
+
         public virtual DataTable GetDataTable(string sql, params SugarParameter[] parameters)
         {
             var ds = GetDataSetAll(sql, parameters);
@@ -1235,6 +1365,31 @@ namespace SqlSugar
                 return GetDataTable(sql, parameters.ToArray());
             }
         }
+
+
+        public virtual async Task<DataTable> GetDataTableAsync(string sql, params SugarParameter[] parameters)
+        {
+            var ds =await GetDataSetAllAsync(sql, parameters);
+            if (ds.Tables.Count != 0 && ds.Tables.Count > 0) return ds.Tables[0];
+            return new DataTable();
+        }
+        public virtual Task<DataTable> GetDataTableAsync(string sql, object parameters)
+        {
+            return GetDataTableAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual Task<DataTable> GetDataTableAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetDataTableAsync(sql);
+            }
+            else
+            {
+                return GetDataTableAsync(sql, parameters.ToArray());
+            }
+        }
+
+
         public virtual DataSet GetDataSetAll(string sql, object parameters)
         {
             return GetDataSetAll(sql, this.GetParameters(parameters));
@@ -1250,6 +1405,26 @@ namespace SqlSugar
                 return GetDataSetAll(sql, parameters.ToArray());
             }
         }
+
+        public virtual Task<DataSet> GetDataSetAllAsync(string sql, object parameters)
+        {
+            return GetDataSetAllAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual Task<DataSet> GetDataSetAllAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetDataSetAllAsync(sql);
+            }
+            else
+            {
+                return GetDataSetAllAsync(sql, parameters.ToArray());
+            }
+        }
+
+
+
+
         public virtual IDataReader GetDataReader(string sql, object parameters)
         {
             return GetDataReader(sql, this.GetParameters(parameters));
@@ -1534,6 +1709,27 @@ namespace SqlSugar
                     }
                 }
             }
+        }
+        #endregion
+
+        #region Obsolete
+        [Obsolete]
+        public virtual dynamic SqlQueryDynamic(string sql, object parameters = null)
+        {
+            var dt = this.GetDataTable(sql, parameters);
+            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
+        }
+        [Obsolete]
+        public virtual dynamic SqlQueryDynamic(string sql, params SugarParameter[] parameters)
+        {
+            var dt = this.GetDataTable(sql, parameters);
+            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
+        }
+        [Obsolete]
+        public dynamic SqlQueryDynamic(string sql, List<SugarParameter> parameters)
+        {
+            var dt = this.GetDataTable(sql, parameters);
+            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
         }
         #endregion
     }
