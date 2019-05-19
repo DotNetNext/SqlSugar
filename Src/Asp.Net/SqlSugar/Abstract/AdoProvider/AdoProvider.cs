@@ -839,36 +839,42 @@ namespace SqlSugar
                 List<T2> result2 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T2>();
                     NextResult(dataReader);
                     result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
                 }
                 List<T3> result3 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T3>();
                     NextResult(dataReader);
                     result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
                 }
                 List<T4> result4 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T4>();
                     NextResult(dataReader);
                     result4 = this.DbBind.DataReaderToListNoUsing<T4>(typeof(T4), dataReader);
                 }
                 List<T5> result5 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T5>();
                     NextResult(dataReader);
                     result5 = this.DbBind.DataReaderToListNoUsing<T5>(typeof(T5), dataReader);
                 }
                 List<T6> result6 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T6>();
                     NextResult(dataReader);
                     result6 = this.DbBind.DataReaderToListNoUsing<T6>(typeof(T6), dataReader);
                 }
                 List<T7> result7 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T7>();
                     NextResult(dataReader);
                     result7 = this.DbBind.DataReaderToListNoUsing<T7>(typeof(T7), dataReader);
                 }
@@ -954,36 +960,42 @@ namespace SqlSugar
                 List<T2> result2 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T2>();
                     NextResult(dataReader);
                     result2 = await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
                 }
                 List<T3> result3 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T3>();
                     NextResult(dataReader);
                     result3 = await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
                 }
                 List<T4> result4 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T4>();
                     NextResult(dataReader);
                     result4 = await this.DbBind.DataReaderToListNoUsingAsync<T4>(typeof(T4), dataReader);
                 }
                 List<T5> result5 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T5>();
                     NextResult(dataReader);
                     result5 = await this.DbBind.DataReaderToListNoUsingAsync<T5>(typeof(T5), dataReader);
                 }
                 List<T6> result6 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T6>();
                     NextResult(dataReader);
                     result6 = await this.DbBind.DataReaderToListNoUsingAsync<T6>(typeof(T6), dataReader);
                 }
                 List<T7> result7 = null;
                 if (DbReader.HasRows)
                 {
+                    this.Context.InitMappingInfo<T7>();
                     NextResult(dataReader);
                     result7 = await this.DbBind.DataReaderToListNoUsingAsync<T7>(typeof(T7), dataReader);
                 }
