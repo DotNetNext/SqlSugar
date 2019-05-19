@@ -725,6 +725,55 @@ namespace SqlSugar
                 return SqlQuery<T>(sql);
             }
         }
+        public virtual Task<List<T>> SqlQueryAsync<T>(string sql, object parameters = null)
+        {
+            var sugarParameters = this.GetParameters(parameters);
+            return SqlQueryAsync<T>(sql, sugarParameters);
+        }
+        public virtual async Task<List<T>> SqlQueryAsync<T>(string sql, params SugarParameter[] parameters)
+        {
+            this.Context.InitMappingInfo<T>();
+            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            builder.SqlQueryBuilder.sql.Append(sql);
+            if (parameters != null && parameters.Any())
+                builder.SqlQueryBuilder.Parameters.AddRange(parameters);
+            var dataReader = await this.GetDataReaderAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray());
+            List<T> result = null;
+            if (typeof(T) == UtilConstants.ObjType)
+            {
+                var list = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader);
+                result = list.Select(it => ((T)(object)it)).ToList();
+            }
+            else
+            {
+                result =await this.DbBind.DataReaderToListAsync<T>(typeof(T), dataReader);
+            }
+            builder.SqlQueryBuilder.Clear();
+            if (this.Context.Ado.DataReaderParameters != null)
+            {
+                foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
+                {
+                    var parameter = parameters.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
+                    if (parameter != null)
+                    {
+                        parameter.Value = item.Value;
+                    }
+                }
+                this.Context.Ado.DataReaderParameters = null;
+            }
+            return result;
+        }
+        public virtual Task<List<T>> SqlQueryAsync<T>(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters != null)
+            {
+                return SqlQueryAsync<T>(sql, parameters.ToArray());
+            }
+            else
+            {
+                return SqlQueryAsync<T>(sql);
+            }
+        }
         public Tuple<List<T>, List<T2>> SqlQuery<T, T2>(string sql, object parameters = null)
         {
             var parsmeterArray = this.GetParameters(parameters);
@@ -1041,11 +1090,26 @@ namespace SqlSugar
                 return GetScalar(sql, parameters.ToArray());
             }
         }
+        public virtual Task<object> GetScalarAsync(string sql, object parameters)
+        {
+            return GetScalarAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual Task<object> GetScalarAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetScalarAsync(sql);
+            }
+            else
+            {
+                return GetScalarAsync(sql, parameters.ToArray());
+            }
+        }
         public virtual int ExecuteCommand(string sql, object parameters)
         {
             return ExecuteCommand(sql, GetParameters(parameters));
         }
-        public virtual int ExecuteCommand(string sql, List<SugarParameter> parameters)
+        public virtual int ExecuteCommandAsync(string sql, List<SugarParameter> parameters)
         {
             if (parameters == null)
             {
@@ -1054,6 +1118,21 @@ namespace SqlSugar
             else
             {
                 return ExecuteCommand(sql, parameters.ToArray());
+            }
+        }
+        public virtual Task<int> ExecuteCommandAsync(string sql, object parameters)
+        {
+            return ExecuteCommandAsync(sql, GetParameters(parameters));
+        }
+        public virtual Task<int> ExecuteCommand(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return ExecuteCommandAsync(sql);
+            }
+            else
+            {
+                return ExecuteCommandAsync(sql, parameters.ToArray());
             }
         }
         #endregion

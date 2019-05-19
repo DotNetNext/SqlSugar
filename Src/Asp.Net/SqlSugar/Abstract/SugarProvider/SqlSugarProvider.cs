@@ -794,10 +794,9 @@ namespace SqlSugar
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.ExecuteCommand(sql, parameters); });
         }
 
-        public Task<int> SaveQueuesAsync(bool isTran = true)
+        public async Task<int> SaveQueuesAsync(bool isTran = true)
         {
-            var result =Task.FromResult(SaveQueues(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran, async(sql, parameters) => { return await this.Ado.ExecuteCommandAsync(sql, parameters); });
         }
         public List<T> SaveQueues<T>(bool isTran = true)
         {
