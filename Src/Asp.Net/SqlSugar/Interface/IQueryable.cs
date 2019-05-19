@@ -129,7 +129,7 @@ namespace SqlSugar
         string ToJsonPage(int pageIndex, int pageSize);
         Task<string> ToJsonPageAsync(int pageIndex, int pageSize);
         string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber);
-        Task<string> ToJsonPageAsync(int pageIndex, int pageSize,ref int totalNumber);
+        Task<string> ToJsonPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber);
         KeyValuePair<string, List<SugarParameter>> ToSql();
 
 
@@ -139,13 +139,13 @@ namespace SqlSugar
         Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize);
         DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber);
         DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber,ref int totalPage);
-        Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize,ref int totalNumber);
+        Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber);
 
         List<T> ToPageList(int pageIndex, int pageSize);
         Task<List<T>> ToPageListAsync(int pageIndex, int pageSize);
         List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);
         List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber,ref int totalPage);
-        Task<List<T>> ToPageListAsync(int pageIndex, int pageSize,ref int totalNumber);
+        Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
         string ToClassString(string className);

@@ -83,6 +83,7 @@
     <Compile Include="Abstract\SaveableProvider\SaveableProvider.cs" />
     <Compile Include="CacheScheme\CacheKeyBuider.cs" />
     <Compile Include="CacheScheme\CacheSchemeMain.cs" />
+    <Compile Include="Entities\AsyncRef.cs" />
     <Compile Include="Entities\CacheKey.cs" />
     <Compile Include="Entities\SugarTerant.cs" />
     <Compile Include="Entities\ConditionalModel.cs" />

@@ -996,6 +996,11 @@ namespace SqlSugar
             pageIndex = _PageList(pageIndex, pageSize);
             return ToListAsync();
         }
+        public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
+        {
+            totalNumber = await this.Clone().CountAsync();
+            return await this.Clone().ToPageListAsync(pageIndex, pageSize);
+        }
         public async Task<string> ToJsonAsync()
         {
             if (IsCache)
@@ -1012,41 +1017,43 @@ namespace SqlSugar
                 return  this.Context.Utilities.SerializeObject(await this.ToListAsync(), typeof(T));
             }
         }
-
         public async Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
         {
             return this.Context.Utilities.SerializeObject(await this.ToPageListAsync(pageIndex, pageSize), typeof(T));
         }
-
-        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize, ref int totalNumber)
+        public async Task<string> ToJsonPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
-            //False asynchrony with ref
-            return Task.FromResult(ToJsonPage(pageIndex, pageSize, ref totalNumber));
+            totalNumber = await this.Clone().CountAsync();
+            return await this.Clone().ToJsonPageAsync(pageIndex, pageSize);
         }
-        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
+        public async Task<DataTable> ToDataTableAsync()
         {
-            //False asynchrony with ref
-            return Task.FromResult(ToPageList(pageIndex, pageSize, ref totalNumber));
+            InitMapping();
+            var sqlObj = this.ToSql();
+            RestoreMapping();
+            DataTable result = null;
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result = await this.Db.GetDataTableAsync(sqlObj.Key, sqlObj.Value.ToArray());
+            }
+            return result;
         }
-
-        public Task<DataTable> ToDataTableAsync()
-        {
-            //False asynchrony with dataTable
-            return Task.FromResult(ToDataTable());
-        }
-
         public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize)
         {
-            //False asynchrony with dataTable
-            return Task.FromResult(ToDataTablePage(pageIndex, pageSize));
+            pageIndex = _PageList(pageIndex, pageSize);
+            return ToDataTableAsync();
         }
-
-        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, ref int totalNumber)
+        public async Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
-            //False asynchrony with dataTable
-            return Task.FromResult(ToDataTablePage(pageIndex, pageSize, ref totalNumber));
+            totalNumber = await this.Clone().CountAsync();
+            return await this.Clone().ToDataTablePageAsync(pageIndex, pageSize);
         }
-
+        
         #endregion
 
         #region Private Methods
