@@ -831,7 +831,7 @@ namespace SqlSugar
             using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 DbDataReader DbReader = (DbDataReader)dataReader;
-                List<T> result = null;
+                List<T> result = new List<T>();
                 if (DbReader.HasRows)
                 {
                     result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
@@ -952,7 +952,7 @@ namespace SqlSugar
             using (var dataReader = await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 DbDataReader DbReader = (DbDataReader)dataReader;
-                List<T> result = null;
+                List<T> result = new List<T>();
                 if (DbReader.HasRows)
                 {
                     result =await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
