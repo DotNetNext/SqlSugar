@@ -543,7 +543,7 @@ namespace SqlSugar
         public virtual Task<DataSet> GetDataSetAllAsync(string sql, params SugarParameter[] parameters)
         {
             //False asynchrony . No Support DataSet
-            return Task.FromResult(GetDataSetAll(sql,parameters));
+            return Task.FromResult(GetDataSetAll(sql, parameters));
         }
         #endregion
 
@@ -592,11 +592,11 @@ namespace SqlSugar
 
 
 
-        public virtual long GetLong(string sql, object parameters=null)
+        public virtual long GetLong(string sql, object parameters = null)
         {
             return Convert.ToInt64(GetScalar(sql, GetParameters(parameters)));
         }
-        public virtual async Task<long> GetLongAsync(string sql, object parameters=null)
+        public virtual async Task<long> GetLongAsync(string sql, object parameters = null)
         {
             return Convert.ToInt64(await GetScalarAsync(sql, GetParameters(parameters)));
         }
@@ -712,7 +712,7 @@ namespace SqlSugar
         }
         public virtual async Task<decimal> GetDecimalAsync(string sql, params SugarParameter[] parameters)
         {
-            var result =await GetScalarAsync(sql, parameters);
+            var result = await GetScalarAsync(sql, parameters);
             return result.ObjToDecimal();
         }
         public virtual Task<decimal> GetDecimalAsync(string sql, List<SugarParameter> parameters)
@@ -794,7 +794,7 @@ namespace SqlSugar
             }
             else
             {
-                result=this.DbBind.DataReaderToList<T>(typeof(T), dataReader);
+                result = this.DbBind.DataReaderToList<T>(typeof(T), dataReader);
             }
             builder.SqlQueryBuilder.Clear();
             if (this.Context.Ado.DataReaderParameters != null)
@@ -844,7 +844,7 @@ namespace SqlSugar
             }
             else
             {
-                result =await this.DbBind.DataReaderToListAsync<T>(typeof(T), dataReader);
+                result = await this.DbBind.DataReaderToListAsync<T>(typeof(T), dataReader);
             }
             builder.SqlQueryBuilder.Clear();
             if (this.Context.Ado.DataReaderParameters != null)
@@ -875,168 +875,28 @@ namespace SqlSugar
 
         public Tuple<List<T>, List<T2>> SqlQuery<T, T2>(string sql, object parameters = null)
         {
-            var parsmeterArray = this.GetParameters(parameters);
-            this.Context.InitMappingInfo<T>();
-            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            builder.SqlQueryBuilder.sql.Append(sql);
-            if (parsmeterArray != null && parsmeterArray.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
-            {
-                List<T> result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
-                NextResult(dataReader);
-                List<T2> result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
-                builder.SqlQueryBuilder.Clear();
-                if (this.Context.Ado.DataReaderParameters != null)
-                {
-                    foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
-                    {
-                        var parameter = parsmeterArray.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
-                        if (parameter != null)
-                        {
-                            parameter.Value = item.Value;
-                        }
-                    }
-                    this.Context.Ado.DataReaderParameters = null;
-                }
-                return Tuple.Create<List<T>, List<T2>>(result, result2);
-            }
+            var result = SqlQuery<T, T2, object, object, object, object, object>(sql, parameters);
+            return new Tuple<List<T>, List<T2>>(result.Item1, result.Item2);
         }
         public Tuple<List<T>, List<T2>, List<T3>> SqlQuery<T, T2, T3>(string sql, object parameters = null)
         {
-            var parsmeterArray = this.GetParameters(parameters);
-            this.Context.InitMappingInfo<T>();
-            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            builder.SqlQueryBuilder.sql.Append(sql);
-            if (parsmeterArray != null && parsmeterArray.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
-            {
-                List<T> result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
-                NextResult(dataReader);
-                List<T2> result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
-                NextResult(dataReader);
-                List<T3> result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
-                builder.SqlQueryBuilder.Clear();
-                if (this.Context.Ado.DataReaderParameters != null)
-                {
-                    foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
-                    {
-                        var parameter = parsmeterArray.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
-                        if (parameter != null)
-                        {
-                            parameter.Value = item.Value;
-                        }
-                    }
-                    this.Context.Ado.DataReaderParameters = null;
-                }
-                return Tuple.Create<List<T>, List<T2>, List<T3>>(result, result2, result3);
-            }
+            var result = SqlQuery<T, T2, T3, object, object, object, object>(sql, parameters);
+            return new Tuple<List<T>, List<T2>, List<T3>>(result.Item1, result.Item2, result.Item3);
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>> SqlQuery<T, T2, T3, T4>(string sql, object parameters = null)
         {
-            var parsmeterArray = this.GetParameters(parameters);
-            this.Context.InitMappingInfo<T>();
-            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            builder.SqlQueryBuilder.sql.Append(sql);
-            if (parsmeterArray != null && parsmeterArray.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
-            {
-                List<T> result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
-                NextResult(dataReader);
-                List<T2> result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
-                NextResult(dataReader);
-                List<T3> result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
-                NextResult(dataReader);
-                List<T4> result4 = this.DbBind.DataReaderToListNoUsing<T4>(typeof(T4), dataReader);
-                builder.SqlQueryBuilder.Clear();
-                if (this.Context.Ado.DataReaderParameters != null)
-                {
-                    foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
-                    {
-                        var parameter = parsmeterArray.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
-                        if (parameter != null)
-                        {
-                            parameter.Value = item.Value;
-                        }
-                    }
-                    this.Context.Ado.DataReaderParameters = null;
-                }
-                return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>>(result, result2, result3, result4);
-            }
+            var result = SqlQuery<T, T2, T3, T4, object, object, object>(sql, parameters);
+            return new Tuple<List<T>, List<T2>, List<T3>, List<T4>>(result.Item1, result.Item2, result.Item3, result.Item4);
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>> SqlQuery<T, T2, T3, T4, T5>(string sql, object parameters = null)
         {
-            var parsmeterArray = this.GetParameters(parameters);
-            this.Context.InitMappingInfo<T>();
-            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            builder.SqlQueryBuilder.sql.Append(sql);
-            if (parsmeterArray != null && parsmeterArray.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
-            {
-                List<T> result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
-                NextResult(dataReader);
-                List<T2> result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
-                NextResult(dataReader);
-                List<T3> result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
-                NextResult(dataReader);
-                List<T4> result4 = this.DbBind.DataReaderToListNoUsing<T4>(typeof(T4), dataReader);
-                NextResult(dataReader);
-                List<T5> result5 = this.DbBind.DataReaderToListNoUsing<T5>(typeof(T5), dataReader);
-                builder.SqlQueryBuilder.Clear();
-                if (this.Context.Ado.DataReaderParameters != null)
-                {
-                    foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
-                    {
-                        var parameter = parsmeterArray.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
-                        if (parameter != null)
-                        {
-                            parameter.Value = item.Value;
-                        }
-                    }
-                    this.Context.Ado.DataReaderParameters = null;
-                }
-                return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>(result, result2, result3, result4, result5);
-            }
+            var result = SqlQuery<T, T2, T3, T4, T5, object, object>(sql, parameters);
+            return new Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>(result.Item1, result.Item2, result.Item3, result.Item4, result.Item5);
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SqlQuery<T, T2, T3, T4, T5, T6>(string sql, object parameters = null)
         {
-            var parsmeterArray = this.GetParameters(parameters);
-            this.Context.InitMappingInfo<T>();
-            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            builder.SqlQueryBuilder.sql.Append(sql);
-            if (parsmeterArray != null && parsmeterArray.Any())
-                builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
-            {
-                List<T> result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
-                NextResult(dataReader);
-                List<T2> result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
-                NextResult(dataReader);
-                List<T3> result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
-                NextResult(dataReader);
-                List<T4> result4 = this.DbBind.DataReaderToListNoUsing<T4>(typeof(T4), dataReader);
-                NextResult(dataReader);
-                List<T5> result5 = this.DbBind.DataReaderToListNoUsing<T5>(typeof(T5), dataReader);
-                NextResult(dataReader);
-                List<T6> result6 = this.DbBind.DataReaderToListNoUsing<T6>(typeof(T6), dataReader);
-                builder.SqlQueryBuilder.Clear();
-                if (this.Context.Ado.DataReaderParameters != null)
-                {
-                    foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
-                    {
-                        var parameter = parsmeterArray.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
-                        if (parameter != null)
-                        {
-                            parameter.Value = item.Value;
-                        }
-                    }
-                    this.Context.Ado.DataReaderParameters = null;
-                }
-                return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>(result, result2, result3, result4, result5, result6);
-            }
+            var result = SqlQuery<T, T2, T3, T4, T5, T6, object>(sql, parameters);
+            return new Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>(result.Item1, result.Item2, result.Item3, result.Item4, result.Item5, result.Item6);
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SqlQuery<T, T2, T3, T4, T5, T6, T7>(string sql, object parameters = null)
         {
@@ -1048,19 +908,48 @@ namespace SqlSugar
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
             using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
-                List<T> result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
-                NextResult(dataReader);
-                List<T2> result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
-                NextResult(dataReader);
-                List<T3> result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
-                NextResult(dataReader);
-                List<T4> result4 = this.DbBind.DataReaderToListNoUsing<T4>(typeof(T4), dataReader);
-                NextResult(dataReader);
-                List<T5> result5 = this.DbBind.DataReaderToListNoUsing<T5>(typeof(T5), dataReader);
-                NextResult(dataReader);
-                List<T6> result6 = this.DbBind.DataReaderToListNoUsing<T6>(typeof(T6), dataReader);
-                NextResult(dataReader);
-                List<T7> result7 = this.DbBind.DataReaderToListNoUsing<T7>(typeof(T7), dataReader);
+                DbDataReader DbReader = (DbDataReader)dataReader;
+                List<T> result = null;
+                if (DbReader.HasRows)
+                {
+                    result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
+                }
+                List<T2> result2 = null;
+                if (DbReader.HasRows)
+                {
+                    NextResult(dataReader);
+                    result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
+                }
+                List<T3> result3 = null;
+                if (DbReader.HasRows)
+                {
+                    NextResult(dataReader);
+                    result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
+                }
+                List<T4> result4 = null;
+                if (DbReader.HasRows)
+                {
+                    NextResult(dataReader);
+                    result4 = this.DbBind.DataReaderToListNoUsing<T4>(typeof(T4), dataReader);
+                }
+                List<T5> result5 = null;
+                if (DbReader.HasRows)
+                {
+                    NextResult(dataReader);
+                    result5 = this.DbBind.DataReaderToListNoUsing<T5>(typeof(T5), dataReader);
+                }
+                List<T6> result6 = null;
+                if (DbReader.HasRows)
+                {
+                    NextResult(dataReader);
+                    result6 = this.DbBind.DataReaderToListNoUsing<T6>(typeof(T6), dataReader);
+                }
+                List<T7> result7 = null;
+                if (DbReader.HasRows)
+                {
+                    NextResult(dataReader);
+                    result7 = this.DbBind.DataReaderToListNoUsing<T7>(typeof(T7), dataReader);
+                }
                 builder.SqlQueryBuilder.Clear();
                 if (this.Context.Ado.DataReaderParameters != null)
                 {
@@ -1086,11 +975,11 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader =await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            using (var dataReader = await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
-                List<T> result =await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
+                List<T> result = await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
                 NextResult(dataReader);
-                List<T2> result2 =await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
+                List<T2> result2 = await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
                 builder.SqlQueryBuilder.Clear();
                 if (this.Context.Ado.DataReaderParameters != null)
                 {
@@ -1115,13 +1004,13 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader =await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            using (var dataReader = await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
-                List<T> result =await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
+                List<T> result = await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
                 NextResult(dataReader);
-                List<T2> result2 =await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
+                List<T2> result2 = await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
                 NextResult(dataReader);
-                List<T3> result3 =await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
+                List<T3> result3 = await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
                 builder.SqlQueryBuilder.Clear();
                 if (this.Context.Ado.DataReaderParameters != null)
                 {
@@ -1146,15 +1035,15 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader =await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            using (var dataReader = await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
-                List<T> result =await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
+                List<T> result = await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
                 NextResult(dataReader);
-                List<T2> result2 =await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
+                List<T2> result2 = await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
                 NextResult(dataReader);
-                List<T3> result3 =await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
+                List<T3> result3 = await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
                 NextResult(dataReader);
-                List<T4> result4 =await this.DbBind.DataReaderToListNoUsingAsync<T4>(typeof(T4), dataReader);
+                List<T4> result4 = await this.DbBind.DataReaderToListNoUsingAsync<T4>(typeof(T4), dataReader);
                 builder.SqlQueryBuilder.Clear();
                 if (this.Context.Ado.DataReaderParameters != null)
                 {
@@ -1214,19 +1103,19 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader =await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            using (var dataReader = await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
-                List<T> result =await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
+                List<T> result = await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
                 NextResult(dataReader);
-                List<T2> result2 =await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
+                List<T2> result2 = await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
                 NextResult(dataReader);
-                List<T3> result3 =await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
+                List<T3> result3 = await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
                 NextResult(dataReader);
-                List<T4> result4 =await this.DbBind.DataReaderToListNoUsingAsync<T4>(typeof(T4), dataReader);
+                List<T4> result4 = await this.DbBind.DataReaderToListNoUsingAsync<T4>(typeof(T4), dataReader);
                 NextResult(dataReader);
-                List<T5> result5 =await this.DbBind.DataReaderToListNoUsingAsync<T5>(typeof(T5), dataReader);
+                List<T5> result5 = await this.DbBind.DataReaderToListNoUsingAsync<T5>(typeof(T5), dataReader);
                 NextResult(dataReader);
-                List<T6> result6 =await this.DbBind.DataReaderToListNoUsingAsync<T6>(typeof(T6), dataReader);
+                List<T6> result6 = await this.DbBind.DataReaderToListNoUsingAsync<T6>(typeof(T6), dataReader);
                 builder.SqlQueryBuilder.Clear();
                 if (this.Context.Ado.DataReaderParameters != null)
                 {
@@ -1251,7 +1140,7 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader =await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            using (var dataReader = await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 List<T> result = await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
                 NextResult(dataReader);
@@ -1302,17 +1191,17 @@ namespace SqlSugar
 
         public virtual async Task<T> SqlQuerySingleAsync<T>(string sql, object parameters = null)
         {
-            var result =await SqlQueryAsync<T>(sql, parameters);
+            var result = await SqlQueryAsync<T>(sql, parameters);
             return result == null ? default(T) : result.FirstOrDefault();
         }
         public virtual async Task<T> SqlQuerySingleAsync<T>(string sql, params SugarParameter[] parameters)
         {
-            var result =await SqlQueryAsync<T>(sql, parameters);
+            var result = await SqlQueryAsync<T>(sql, parameters);
             return result == null ? default(T) : result.FirstOrDefault();
         }
         public virtual async Task<T> SqlQuerySingleAsync<T>(string sql, List<SugarParameter> parameters)
         {
-            var result =await SqlQueryAsync<T>(sql, parameters);
+            var result = await SqlQueryAsync<T>(sql, parameters);
             return result == null ? default(T) : result.FirstOrDefault();
         }
 
@@ -1343,7 +1232,7 @@ namespace SqlSugar
 
         public virtual async Task<DataTable> GetDataTableAsync(string sql, params SugarParameter[] parameters)
         {
-            var ds =await GetDataSetAllAsync(sql, parameters);
+            var ds = await GetDataSetAllAsync(sql, parameters);
             if (ds.Tables.Count != 0 && ds.Tables.Count > 0) return ds.Tables[0];
             return new DataTable();
         }

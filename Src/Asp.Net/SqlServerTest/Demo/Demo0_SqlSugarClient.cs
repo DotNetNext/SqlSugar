@@ -41,6 +41,8 @@ namespace OrmTest
 
             //Use db
             var dt = db.Ado.GetDataTable("select 1");
+
+            db.Insertable(new OrderItem() { OrderId = 1, Price = 0 }).ExecuteCommand();
             Console.WriteLine("#### SqlSugarClient End ####");
 
         }
