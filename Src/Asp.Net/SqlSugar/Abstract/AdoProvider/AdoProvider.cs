@@ -1075,6 +1075,21 @@ namespace SqlSugar
                 return GetDataReader(sql, parameters.ToArray());
             }
         }
+        public virtual Task<IDataReader> GetDataReaderAsync(string sql, object parameters)
+        {
+            return GetDataReaderAsync(sql, this.GetParameters(parameters));
+        }
+        public virtual Task<IDataReader> GetDataReaderAsync(string sql, List<SugarParameter> parameters)
+        {
+            if (parameters == null)
+            {
+                return GetDataReaderAsync(sql);
+            }
+            else
+            {
+                return GetDataReaderAsync(sql, parameters.ToArray());
+            }
+        }
         public virtual object GetScalar(string sql, object parameters)
         {
             return GetScalar(sql, this.GetParameters(parameters));
