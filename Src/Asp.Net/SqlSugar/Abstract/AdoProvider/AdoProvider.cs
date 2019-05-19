@@ -834,49 +834,49 @@ namespace SqlSugar
                 List<T> result = new List<T>();
                 if (DbReader.HasRows)
                 {
-                    result = this.DbBind.DataReaderToListNoUsing<T>(typeof(T), dataReader);
+                    result = GetData<T>(typeof(T), dataReader);
                 }
                 List<T2> result2 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T2>();
                     NextResult(dataReader);
-                    result2 = this.DbBind.DataReaderToListNoUsing<T2>(typeof(T2), dataReader);
+                    result2 = GetData<T2>(typeof(T2), dataReader);
                 }
                 List<T3> result3 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T3>();
                     NextResult(dataReader);
-                    result3 = this.DbBind.DataReaderToListNoUsing<T3>(typeof(T3), dataReader);
+                    result3 = GetData<T3>(typeof(T3), dataReader);
                 }
                 List<T4> result4 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T4>();
                     NextResult(dataReader);
-                    result4 = this.DbBind.DataReaderToListNoUsing<T4>(typeof(T4), dataReader);
+                    result4 = GetData<T4>(typeof(T4), dataReader);
                 }
                 List<T5> result5 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T5>();
                     NextResult(dataReader);
-                    result5 = this.DbBind.DataReaderToListNoUsing<T5>(typeof(T5), dataReader);
+                    result5 = GetData<T5>(typeof(T5), dataReader);
                 }
                 List<T6> result6 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T6>();
                     NextResult(dataReader);
-                    result6 = this.DbBind.DataReaderToListNoUsing<T6>(typeof(T6), dataReader);
+                    result6 = GetData<T6>(typeof(T6), dataReader);
                 }
                 List<T7> result7 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T7>();
                     NextResult(dataReader);
-                    result7 = this.DbBind.DataReaderToListNoUsing<T7>(typeof(T7), dataReader);
+                    result7 = GetData<T7>(typeof(T7), dataReader);
                 }
                 builder.SqlQueryBuilder.Clear();
                 if (this.Context.Ado.DataReaderParameters != null)
@@ -955,49 +955,49 @@ namespace SqlSugar
                 List<T> result = new List<T>();
                 if (DbReader.HasRows)
                 {
-                    result =await this.DbBind.DataReaderToListNoUsingAsync<T>(typeof(T), dataReader);
+                    result =await GetDataAsync<T>(typeof(T), dataReader);
                 }
                 List<T2> result2 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T2>();
                     NextResult(dataReader);
-                    result2 = await this.DbBind.DataReaderToListNoUsingAsync<T2>(typeof(T2), dataReader);
+                    result2 = await GetDataAsync<T2>(typeof(T2), dataReader);
                 }
                 List<T3> result3 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T3>();
                     NextResult(dataReader);
-                    result3 = await this.DbBind.DataReaderToListNoUsingAsync<T3>(typeof(T3), dataReader);
+                    result3 = await GetDataAsync<T3>(typeof(T3), dataReader);
                 }
                 List<T4> result4 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T4>();
                     NextResult(dataReader);
-                    result4 = await this.DbBind.DataReaderToListNoUsingAsync<T4>(typeof(T4), dataReader);
+                    result4 = await GetDataAsync<T4>(typeof(T4), dataReader);
                 }
                 List<T5> result5 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T5>();
                     NextResult(dataReader);
-                    result5 = await this.DbBind.DataReaderToListNoUsingAsync<T5>(typeof(T5), dataReader);
+                    result5 = await GetDataAsync<T5>(typeof(T5), dataReader);
                 }
                 List<T6> result6 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T6>();
                     NextResult(dataReader);
-                    result6 = await this.DbBind.DataReaderToListNoUsingAsync<T6>(typeof(T6), dataReader);
+                    result6 = await GetDataAsync<T6>(typeof(T6), dataReader);
                 }
                 List<T7> result7 = null;
                 if (DbReader.HasRows)
                 {
                     this.Context.InitMappingInfo<T7>();
                     NextResult(dataReader);
-                    result7 = await this.DbBind.DataReaderToListNoUsingAsync<T7>(typeof(T7), dataReader);
+                    result7 = await GetDataAsync<T7>(typeof(T7), dataReader);
                 }
                 builder.SqlQueryBuilder.Clear();
                 if (this.Context.Ado.DataReaderParameters != null)
@@ -1416,6 +1416,49 @@ namespace SqlSugar
                     }
                 }
             }
+        }
+        private List<TResult> GetData<TResult>(Type entityType, IDataReader dataReader)
+        {
+            List<TResult> result;
+            if (entityType == UtilConstants.DynamicType)
+            {
+                result = this.Context.Utilities.DataReaderToExpandoObjectListNoUsing(dataReader) as List<TResult>;
+            }
+            else if (entityType == UtilConstants.ObjType)
+            {
+                result = this.Context.Utilities.DataReaderToExpandoObjectListNoUsing(dataReader).Select(it => ((TResult)(object)it)).ToList();
+            }
+            else if (entityType.IsAnonymousType())
+            {
+                result = this.Context.Utilities.DataReaderToListNoUsing<TResult>(dataReader);
+            }
+            else
+            {
+                result = this.Context.Ado.DbBind.DataReaderToListNoUsing<TResult>(entityType, dataReader);
+            }
+            return result;
+        }
+        private async Task<List<TResult>> GetDataAsync<TResult>(Type entityType, IDataReader dataReader)
+        {
+            List<TResult> result;
+            if (entityType == UtilConstants.DynamicType)
+            {
+                result =await this.Context.Utilities.DataReaderToExpandoObjectListAsyncNoUsing(dataReader) as List<TResult>;
+            }
+            else if (entityType == UtilConstants.ObjType)
+            {
+                var list = await this.Context.Utilities.DataReaderToExpandoObjectListAsyncNoUsing(dataReader);
+                result = list.Select(it => ((TResult)(object)it)).ToList();
+            }
+            else if (entityType.IsAnonymousType())
+            {
+                result =await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
+            }
+            else
+            {
+                result =await this.Context.Ado.DbBind.DataReaderToListNoUsingAsync<TResult>(entityType, dataReader);
+            }
+            return result;
         }
         #endregion
 

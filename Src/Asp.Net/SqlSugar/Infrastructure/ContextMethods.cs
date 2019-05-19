@@ -82,6 +82,44 @@ namespace SqlSugar
             }
         }
 
+
+        /// <summary>
+        ///DataReader to Dynamic List
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public List<ExpandoObject> DataReaderToExpandoObjectListNoUsing(IDataReader reader)
+        {
+            List<ExpandoObject> result = new List<ExpandoObject>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (reader.Read())
+                {
+                    result.Add(DataReaderToExpandoObject(reader));
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///DataReader to Dynamic List
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public async Task<List<ExpandoObject>> DataReaderToExpandoObjectListAsyncNoUsing(IDataReader reader)
+        {
+            List<ExpandoObject> result = new List<ExpandoObject>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (await ((DbDataReader)reader).ReadAsync())
+                {
+                    result.Add(DataReaderToExpandoObject(reader));
+                }
+            }
+            return result;
+        }
+
+
         /// <summary>
         ///DataReader to DataReaderToDictionary
         /// </summary>
@@ -165,6 +203,28 @@ namespace SqlSugar
         /// <typeparam name="T"></typeparam>
         /// <param name="reader"></param>
         /// <returns></returns>
+        public List<T> DataReaderToListNoUsing<T>(IDataReader reader)
+        {
+                var tType = typeof(T);
+                var classProperties = tType.GetProperties().ToList();
+                var reval = new List<T>();
+                if (reader != null && !reader.IsClosed)
+                {
+                    while (reader.Read())
+                    {
+                        Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
+                        var stringValue = SerializeObject(result);
+                        reval.Add((T)DeserializeObject<T>(stringValue));
+                    }
+                }
+                return reval;
+        }
+        /// <summary>
+        /// DataReaderToList
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         public async Task<List<T>> DataReaderToListAsync<T>(IDataReader reader)
         {
             using (reader)
@@ -183,6 +243,28 @@ namespace SqlSugar
                 }
                 return reval;
             }
+        }
+        /// <summary>
+        /// DataReaderToList
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public async Task<List<T>> DataReaderToListAsyncNoUsing<T>(IDataReader reader)
+        {
+            var tType = typeof(T);
+            var classProperties = tType.GetProperties().ToList();
+            var reval = new List<T>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (await ((DbDataReader)reader).ReadAsync())
+                {
+                    Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
+                    var stringValue = SerializeObject(result);
+                    reval.Add((T)DeserializeObject<T>(stringValue));
+                }
+            }
+            return reval;
         }
 
         private Dictionary<string, object> DataReaderToList<T>(IDataReader reader, Type tType, List<PropertyInfo> classProperties, List<T> reval)

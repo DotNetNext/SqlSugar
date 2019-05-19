@@ -49,6 +49,9 @@ namespace OrmTest
             UValidate.Check(8, task8.Result[0].id, "ado");
 
             var task9=Db.Ado.SqlQuery<Order, OrderItem>("select * from [order];select * from OrderDetail");
+
+            var task10 = Db.Ado.SqlQueryAsync<Order, OrderItem>("select * from [order];select * from OrderDetail");
+            task10.Wait();
         }
     }
 }
