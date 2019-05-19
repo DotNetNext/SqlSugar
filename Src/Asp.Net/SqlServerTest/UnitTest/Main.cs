@@ -27,6 +27,8 @@ namespace OrmTest
         {
             Json();
             Thread();
+            Thread2();
+            Thread3();
         }
     }
 }

@@ -9,89 +9,27 @@ namespace OrmTest
 {
     public partial class NewUnitTest
     {
-
-        public static SqlSugarClient simpleDb => new SqlSugarClient(new ConnectionConfig()
+ 
+        public static void Thread2()
         {
-            DbType = DbType.SqlServer,
-            ConnectionString = Config.ConnectionString,
-            InitKeyType = InitKeyType.Attribute,
-            IsAutoCloseConnection = true,
-            AopEvents = new AopEvents
-            {
-                OnLogExecuting = (sql, p) =>
-                {
-                    Console.WriteLine(sql);
-                    Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
-                }
-            }
-        });
-        public static SqlSugarClient ssDb => new SqlSugarClient(new ConnectionConfig()
-        {
-            DbType = DbType.SqlServer,
-            ConnectionString = Config.ConnectionString,
-            InitKeyType = InitKeyType.Attribute,
-            IsAutoCloseConnection = true,
-            IsShardSameThread = true,
-            AopEvents = new AopEvents
-            {
-                OnLogExecuting = (sql, p) =>
-                {
-                    Console.WriteLine(sql);
-                    Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
-                }
-            }
-        });
-        public static SqlSugarClient singleDb =  new SqlSugarClient(new ConnectionConfig()
-        {
-            DbType = DbType.SqlServer,
-            ConnectionString = Config.ConnectionString,
-            InitKeyType = InitKeyType.Attribute,
-            IsAutoCloseConnection = true,
-            AopEvents = new AopEvents
-            {
-                OnLogExecuting = (sql, p) =>
-                {
-                    Console.WriteLine(sql);
-                    Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
-                }
-            }
-        });
-        public static SqlSugarClient singleAndSsDb = new SqlSugarClient(new ConnectionConfig()
-        {
-            DbType = DbType.SqlServer,
-            ConnectionString = Config.ConnectionString,
-            InitKeyType = InitKeyType.Attribute,
-            IsAutoCloseConnection = true,
-            IsShardSameThread = true,
-            AopEvents = new AopEvents
-            {
-                OnLogExecuting = (sql, p) =>
-                {
-                    Console.WriteLine(sql);
-                    Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
-                }
-            }
-        });
-        public static void Thread()
-        {
-            Simple();
-            IsShardSameThread();
-            Single();
-            SingleAndIsShardSameThread();
-            SimpleAsync();
-            IsShardSameThreadAsync();
-            SingleAsync();
-            SingleAndIsShardSameThreadAsync();
+            Simple2();
+            IsShardSameThread2();
+            Single2();
+            SingleAndIsShardSameThread2();
+            SimpleAsync2();
+            IsShardSameThreadAsync2();
+            SingleAsync2();
+            SingleAndIsShardSameThreadAsync2();
 
         }
 
-        private static void Simple()
+        private static void Simple2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    simpleDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -100,7 +38,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    simpleDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -109,7 +47,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    simpleDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(6);
                 }
 
@@ -121,13 +59,13 @@ namespace OrmTest
             Task.WaitAll(t1, t2, t3);
         }
 
-        private static void SingleAndIsShardSameThread()
+        private static void SingleAndIsShardSameThread2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleAndSsDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -136,7 +74,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleAndSsDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -145,7 +83,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleAndSsDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(6);
                 }
 
@@ -157,13 +95,13 @@ namespace OrmTest
             Task.WaitAll(t1, t2, t3);
         }
 
-        private static void Single()
+        private static void Single2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -172,7 +110,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -181,7 +119,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(6);
                 }
 
@@ -193,13 +131,13 @@ namespace OrmTest
             Task.WaitAll(t1, t2, t3);
         }
 
-        private static void IsShardSameThread()
+        private static void IsShardSameThread2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    Db.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -208,7 +146,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    Db.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -217,7 +155,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    Db.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommand();
+                    simpleDb.Queryable<Order>().Take(10).ToList();
                     System.Threading.Thread.Sleep(6);
                 }
 
@@ -231,13 +169,13 @@ namespace OrmTest
 
 
 
-        private static void SimpleAsync()
+        private static void SimpleAsync2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    simpleDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -246,7 +184,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    simpleDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait(); ;
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait(); ;
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -255,7 +193,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    simpleDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(6);
                 }
 
@@ -267,13 +205,13 @@ namespace OrmTest
             Task.WaitAll(t1, t2, t3);
         }
 
-        private static void SingleAndIsShardSameThreadAsync()
+        private static void SingleAndIsShardSameThreadAsync2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleAndSsDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -282,7 +220,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleAndSsDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -291,7 +229,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleAndSsDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(6);
                 }
 
@@ -303,13 +241,13 @@ namespace OrmTest
             Task.WaitAll(t1, t2, t3);
         }
 
-        private static void SingleAsync()
+        private static void SingleAsync2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -318,7 +256,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -327,7 +265,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(6);
                 }
 
@@ -339,13 +277,13 @@ namespace OrmTest
             Task.WaitAll(t1, t2, t3);
         }
 
-        private static void IsShardSameThreadAsync()
+        private static void IsShardSameThreadAsync2()
         {
             var t1 = new Task(() =>
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    Db.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(1);
                 }
 
@@ -354,7 +292,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    Db.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(10);
                 }
 
@@ -363,7 +301,7 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    Db.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    simpleDb.Queryable<Order>().Take(10).ToListAsync().Wait();
                     System.Threading.Thread.Sleep(6);
                 }
 

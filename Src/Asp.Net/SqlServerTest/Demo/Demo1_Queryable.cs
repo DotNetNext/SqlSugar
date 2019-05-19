@@ -197,9 +197,10 @@ namespace OrmTest
 
             SqlSugarClient db = GetInstance();
             var task1 = db.Queryable<Order>().FirstAsync();
+            task1.Wait();
             var task2 = db.Queryable<Order>().Where(it => it.Id == 1).ToListAsync();
 
-            task1.Wait();
+        
             task2.Wait();
 
             Console.WriteLine("#### Async End ####");
