@@ -244,6 +244,25 @@ namespace SqlSugar
                 return GetEntityList<T>(Context, dataReader);
             }
         }
+        public virtual Task<List<T>> DataReaderToListNoUsingAsync<T>(Type type, IDataReader dataReader)
+        {
+            if (type.Name.Contains("KeyValuePair"))
+            {
+                return GetKeyValueListAsync<T>(type, dataReader);
+            }
+            else if (type.IsValueType() || type == UtilConstants.StringType || type == UtilConstants.ByteArrayType)
+            {
+                return GetValueTypeListAsync<T>(type, dataReader);
+            }
+            else if (type.IsArray)
+            {
+                return GetArrayListAsync<T>(type, dataReader);
+            }
+            else
+            {
+                return GetEntityListAsync<T>(Context, dataReader);
+            }
+        }
         #endregion
 
         #region Throw rule

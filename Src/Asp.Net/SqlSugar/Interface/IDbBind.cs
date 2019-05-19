@@ -25,6 +25,7 @@ namespace SqlSugar
         List<T> DataReaderToList<T>(Type type, IDataReader reader);
         Task<List<T>> DataReaderToListAsync<T>(Type entityType, IDataReader dataReader);
         List<T> DataReaderToListNoUsing<T>(Type type, IDataReader reader);
-      
+        Task<List<T>> DataReaderToListNoUsingAsync<T>(Type type, IDataReader reader);
+
     }
 }

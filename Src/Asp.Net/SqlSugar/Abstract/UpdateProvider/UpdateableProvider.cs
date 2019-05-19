@@ -191,7 +191,6 @@ namespace SqlSugar
         }
 
 
-
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
             var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
@@ -598,43 +597,7 @@ namespace SqlSugar
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
-        //private void TaskStart<Type>(Task<Type> result)
-        //{
-        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-        //    {
-        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
-        //    }
-        //    result.Start();
-        //}
-        //private IUpdateable<T> CopyUpdateable()
-        //{
-        //    var asyncContext = this.Context.Utilities.CopyContext(true);
-        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-        //    asyncContext.IsAsyncMethod = true;
-
-        //    var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
-        //    var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;
-        //    asyncUpdateableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
-        //    asyncUpdateableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
-        //    asyncUpdateableBuilder.Parameters = this.UpdateBuilder.Parameters;
-        //    asyncUpdateableBuilder.sql = this.UpdateBuilder.sql;
-        //    asyncUpdateableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
-        //    asyncUpdateableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
-        //    asyncUpdateableBuilder.TableName = this.UpdateBuilder.TableName;
-        //    asyncUpdateableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
-        //    asyncUpdateableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
-        //    asyncUpdateableBuilder.SetValues = this.UpdateBuilder.SetValues;
-        //    if (this.IsWhereColumns)
-        //    {
-        //        (asyncUpdateable as UpdateableProvider<T>).WhereColumnList = this.WhereColumnList;
-        //        (asyncUpdateable as UpdateableProvider<T>).IsWhereColumns = this.IsWhereColumns;
-        //    }
-        //    if (this.RemoveCacheFunc != null)
-        //    {
-        //        asyncUpdateable.RemoveDataCache();
-        //    }
-        //    return asyncUpdateable;
-        //}
+ 
 
         private void ValidateVersion()
         {

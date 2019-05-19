@@ -802,64 +802,57 @@ namespace SqlSugar
         {
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T>(sql, parameters); });
         }
-        public Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
+        public async Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
         {
-            var result = Task.FromResult(SaveQueues<T>(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran,async (sql, parameters) => {  return await this.Ado.SqlQueryAsync<T>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>> SaveQueues<T, T2>(bool isTran = true)
         {
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2>(sql, parameters); });
         }
-        public Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true)
+        public async Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true)
         {
-            var result = Task.FromResult(SaveQueues<T,T2>(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran,async (sql, parameters) => { return await this.Ado.SqlQueryAsync<T, T2>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>> SaveQueues<T, T2, T3>(bool isTran = true)
         {
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3>(sql, parameters); });
         }
-        public Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
+        public async Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
         {
-            var result = Task.FromResult(SaveQueues<T, T2,T3>(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran, async(sql, parameters) => { return await this.Ado.SqlQueryAsync<T, T2, T3>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>> SaveQueues<T, T2, T3, T4>(bool isTran = true)
         {
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4>(sql, parameters); });
         }
-        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
+        public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
         {
-            var result = Task.FromResult(SaveQueues<T, T2, T3,T4>(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran,async (sql, parameters) => { return await this.Ado.SqlQueryAsync<T, T2, T3, T4>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>> SaveQueues<T, T2, T3, T4, T5>(bool isTran = true)
         {
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4, T5>(sql, parameters); });
         }
-        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SaveQueuesAsync<T, T2, T3, T4, T5>(bool isTran = true)
+        public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SaveQueuesAsync<T, T2, T3, T4, T5>(bool isTran = true)
         {
-            var result = Task.FromResult(SaveQueues<T, T2, T3, T4,T5>(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran,async (sql, parameters) => { return await this.Ado.SqlQueryAsync<T, T2, T3, T4, T5>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SaveQueues<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4, T5, T6>(sql, parameters); });
         }
-        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6>(bool isTran = true)
+        public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
-            var result = Task.FromResult(SaveQueues<T, T2, T3, T4, T5,T6>(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran,async (sql, parameters) => { return await this.Ado.SqlQueryAsync<T, T2, T3, T4, T5, T6>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
             return SaveQueuesProvider(isTran, (sql, parameters) => { return this.Ado.SqlQuery<T, T2, T3, T4, T5, T6, T7>(sql, parameters); });
         }
-        public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
+        public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
-            var result = Task.FromResult(SaveQueues<T, T2, T3, T4, T5, T6,T7>(isTran));
-            return result;
+            return await SaveQueuesProvider(isTran,async (sql, parameters) => { return await this.Ado.SqlQueryAsync<T, T2, T3, T4, T5, T6, T7>(sql, parameters); });
         }
         public void AddQueue(string sql, object parsmeters=null)
         {
