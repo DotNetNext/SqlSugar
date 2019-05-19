@@ -592,11 +592,11 @@ namespace SqlSugar
 
 
 
-        public virtual long GetLong(string sql, object parameters)
+        public virtual long GetLong(string sql, object parameters=null)
         {
             return Convert.ToInt64(GetScalar(sql, GetParameters(parameters)));
         }
-        public virtual async Task<long> GetLongAsync(string sql, object parameters)
+        public virtual async Task<long> GetLongAsync(string sql, object parameters=null)
         {
             return Convert.ToInt64(await GetScalarAsync(sql, GetParameters(parameters)));
         }

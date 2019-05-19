@@ -94,9 +94,9 @@ namespace SqlSugar
         Task<int> GetIntAsync(string sql, List<SugarParameter> parameters);
 
 
-        long GetLong(string sql, object pars);
+        long GetLong(string sql, object pars=null);
 
-        Task<long> GetLongAsync(string sql, object pars);
+        Task<long> GetLongAsync(string sql, object pars=null);
 
 
         Double GetDouble(string sql, object parameters);
