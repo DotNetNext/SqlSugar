@@ -1184,17 +1184,6 @@ namespace SqlSugar
             }
         }
 
-        private static void NextResult(IDataReader dataReader)
-        {
-            try
-            {
-                dataReader.NextResult();
-            }
-            catch
-            {
-                Check.Exception(true, ErrorMessage.GetThrowMessage("Please reduce the number of T. Save Queue Changes queries don't have so many results", "请减少T的数量，SaveQueueChanges 查询没有这么多结果"));
-            }
-        }
         public virtual T SqlQuerySingle<T>(string sql, object parameters = null)
         {
             var result = SqlQuery<T>(sql, parameters);
@@ -1325,7 +1314,7 @@ namespace SqlSugar
         {
             return ExecuteCommand(sql, GetParameters(parameters));
         }
-        public virtual int ExecuteCommandAsync(string sql, List<SugarParameter> parameters)
+        public virtual int ExecuteCommand(string sql, List<SugarParameter> parameters)
         {
             if (parameters == null)
             {
@@ -1340,7 +1329,7 @@ namespace SqlSugar
         {
             return ExecuteCommandAsync(sql, GetParameters(parameters));
         }
-        public virtual Task<int> ExecuteCommand(string sql, List<SugarParameter> parameters)
+        public virtual Task<int> ExecuteCommandAsync(string sql, List<SugarParameter> parameters)
         {
             if (parameters == null)
             {
@@ -1354,14 +1343,17 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
-        //private void TaskStart<Type>(Task<Type> result)
-        //{
-        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-        //    {
-        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
-        //    }
-        //    result.Start();
-        //}
+        private static void NextResult(IDataReader dataReader)
+        {
+            try
+            {
+                dataReader.NextResult();
+            }
+            catch
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage("Please reduce the number of T. Save Queue Changes queries don't have so many results", "请减少T的数量，SaveQueueChanges 查询没有这么多结果"));
+            }
+        }
         private void ExecuteProcessingSQL(ref string sql, SugarParameter[] parameters)
         {
             var result = this.ProcessingEventStartingSQL(sql, parameters);
