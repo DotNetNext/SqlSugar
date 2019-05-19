@@ -1823,23 +1823,6 @@ namespace SqlSugar
                 }
             }
         }
-        //protected ISugarQueryable<T> CopyQueryable()
-        //{
-        //    var asyncContext = this.Context.Utilities.CopyContext(true);
-        //    asyncContext.IsAsyncMethod = true;
-        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-        //    var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
-        //    if (this.MapperAction != null)
-        //        asyncQueryable.Mapper(MapperAction);
-        //    if (this.MapperActionWithCache != null)
-        //        asyncQueryable.Mapper(MapperActionWithCache);
-        //    if (this.Mappers != null && ((asyncQueryable as QueryableProvider<T>)!=null))
-        //    {
-        //        (asyncQueryable as QueryableProvider<T>).Mappers = this.Mappers;
-        //    }
-        //    CopyQueryBuilder(asyncQueryable.QueryBuilder); return asyncQueryable;
-        //}
-
         protected void CopyQueryBuilder(QueryBuilder asyncQueryableBuilder)
         {
             var pars = new List<SugarParameter>();
