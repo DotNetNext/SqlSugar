@@ -12,7 +12,7 @@ namespace SqlSugar
     public partial class SqlSugarClient : ISqlSugarClient, ITenant
     {
         #region Gobal Property
-        private ISqlSugarClient _Context = null;
+        private SqlSugarProvider _Context = null;
         private string _ThreadId;
         private ConnectionConfig _CurrentConnectionConfig;
         private List<SugarTenant> _AllClients;
@@ -45,7 +45,7 @@ namespace SqlSugar
         #endregion
 
         #region Global variable
-        public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
+        public SqlSugarProvider Context { get => GetContext(); set => _Context = value; }
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
         public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
         public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
@@ -669,20 +669,20 @@ namespace SqlSugar
         #endregion
 
         #region Helper
-        private ISqlSugarClient GetContext()
+        private SqlSugarProvider GetContext()
         {
             if (CurrentConnectionConfig.IsShardSameThread)
             {
-                ISqlSugarClient result = _Context;
+                SqlSugarProvider result = _Context;
                 if (CallContext.ContextList.Value.IsNullOrEmpty())
                 {
 
-                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
+                    CallContext.ContextList.Value = new List<SqlSugarProvider>();
                     CallContext.ContextList.Value.Add(_Context);
                 }
                 else
                 {
-                    ISqlSugarClient cacheContext = GetCallContext();
+                    SqlSugarProvider cacheContext = GetCallContext();
                     if (cacheContext != null)
                     {
                         result = cacheContext;
@@ -707,7 +707,7 @@ namespace SqlSugar
             {
                 if (CallContext.ContextList.Value == null)
                 {
-                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
+                    CallContext.ContextList.Value = new List<SqlSugarProvider>();
                 }
                 if (CallContext.ContextList.Value.IsNullOrEmpty() || GetCallContext() == null)
                 {
@@ -722,9 +722,9 @@ namespace SqlSugar
             }
         }
 
-        private SqlSugarClient CopyClient()
+        private SqlSugarProvider CopyClient()
         {
-            var result = new SqlSugarClient(this.CurrentConnectionConfig);
+            var result = new SqlSugarProvider(this.CurrentConnectionConfig);
             result.MappingColumns = _MappingColumns;
             result.MappingTables = _MappingTables;
             result.IgnoreColumns = _IgnoreColumns;
@@ -733,12 +733,13 @@ namespace SqlSugar
             return result;
         }
 
-        private ISqlSugarClient GetCallContext()
+        private SqlSugarProvider GetCallContext()
         {
             return CallContext.ContextList.Value.FirstOrDefault(it => 
                 it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType&&
                 it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString&&
-                it.CurrentConnectionConfig.InitKeyType==_Context.CurrentConnectionConfig.InitKeyType
+                it.CurrentConnectionConfig.InitKeyType==_Context.CurrentConnectionConfig.InitKeyType&&
+                it.CurrentConnectionConfig.IsAutoCloseConnection == _Context.CurrentConnectionConfig.IsAutoCloseConnection
             );
         }
 
@@ -789,7 +790,7 @@ namespace SqlSugar
         {
             if (Tenant.Context == null)
             {
-                Tenant.Context = new SqlSugarClient(Tenant.ConnectionConfig);
+                Tenant.Context = new SqlSugarProvider(Tenant.ConnectionConfig);
             }
             _Context = Tenant.Context;
             this.CurrentConnectionConfig = Tenant.ConnectionConfig;

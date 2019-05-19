@@ -10,7 +10,7 @@ namespace SqlSugar
     public partial class SqlSugarProvider
     {
         #region Properties
-        public ISqlSugarClient Context
+        public SqlSugarProvider Context
         {
             get
             {
@@ -39,7 +39,7 @@ namespace SqlSugar
         public Dictionary<string, object> _TempItems;
         public QueueList _Queues;
         protected ISqlBuilder _SqlBuilder;
-        protected ISqlSugarClient _Context { get; set; }
+        protected SqlSugarProvider _Context { get; set; }
         protected EntityMaintenance _EntityProvider;
         protected IAdo _Ado;
         protected ILambdaExpressions _LambdaExpressions;

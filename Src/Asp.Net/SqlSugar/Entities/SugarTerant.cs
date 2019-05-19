@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public class SugarTenant
     {
-        public ISqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public ConnectionConfig ConnectionConfig { get; set; }
     }
 }
