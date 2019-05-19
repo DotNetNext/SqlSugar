@@ -77,7 +77,7 @@ namespace OrmTest.Demo
                 new ConnectionConfig() {
                     ConnectionString = Config.ConnectionString,
                     DbType = DbType.SqlServer,
-                    IsAutoCloseConnection = false,
+                    IsAutoCloseConnection = true,
                     IsShardSameThread= true /*Shard Same Thread*/
                 });
           
