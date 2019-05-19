@@ -122,6 +122,11 @@ namespace SqlSugar
         DateTime GetDateTime(string sql, params SugarParameter[] parameters);
         DateTime GetDateTime(string sql, List<SugarParameter> parameters);
 
+        Task<DateTime> GetDateTimeAsync(string sql, object parameters);
+        Task<DateTime> GetDateTimeAsync(string sql, params SugarParameter[] parameters);
+        Task<DateTime> GetDateTimeAsync(string sql, List<SugarParameter> parameters);
+
+
         Tuple<List<T>, List<T2>> SqlQuery<T,T2>(string sql, object parameters = null);
         Tuple<List<T>, List<T2>, List<T3>> SqlQuery<T, T2,T3>(string sql, object parameters = null);
         Tuple<List<T>, List<T2>, List<T3>,List<T4>> SqlQuery<T,T2,T3,T4>(string sql, object parameters = null);
