@@ -248,32 +248,6 @@ namespace SqlSugar
             return Task.FromResult(UseTran(action, errorCallBack));
         }
 
-        public void UseStoredProcedure(Action action)
-        {
-            var oldCommandType = this.CommandType;
-            this.CommandType = CommandType.StoredProcedure;
-            this.IsClearParameters = false;
-            if (action != null)
-            {
-                action();
-            }
-            this.CommandType = oldCommandType;
-            this.IsClearParameters = true;
-        }
-        public T UseStoredProcedure<T>(Func<T> action)
-        {
-            T result = default(T);
-            var oldCommandType = this.CommandType;
-            this.CommandType = CommandType.StoredProcedure;
-            this.IsClearParameters = false;
-            if (action != null)
-            {
-                result = action();
-            }
-            this.CommandType = oldCommandType;
-            this.IsClearParameters = true;
-            return result;
-        }
         public IAdo UseStoredProcedure()
         {
             this.OldCommandType = this.CommandType;
@@ -1730,6 +1704,34 @@ namespace SqlSugar
         {
             var dt = this.GetDataTable(sql, parameters);
             return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
+        }
+        [Obsolete]
+        public void UseStoredProcedure(Action action)
+        {
+            var oldCommandType = this.CommandType;
+            this.CommandType = CommandType.StoredProcedure;
+            this.IsClearParameters = false;
+            if (action != null)
+            {
+                action();
+            }
+            this.CommandType = oldCommandType;
+            this.IsClearParameters = true;
+        }
+        [Obsolete]
+        public T UseStoredProcedure<T>(Func<T> action)
+        {
+            T result = default(T);
+            var oldCommandType = this.CommandType;
+            this.CommandType = CommandType.StoredProcedure;
+            this.IsClearParameters = false;
+            if (action != null)
+            {
+                result = action();
+            }
+            this.CommandType = oldCommandType;
+            this.IsClearParameters = true;
+            return result;
         }
         #endregion
     }
