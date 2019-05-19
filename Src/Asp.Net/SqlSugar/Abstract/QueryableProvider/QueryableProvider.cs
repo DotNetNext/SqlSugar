@@ -991,7 +991,11 @@ namespace SqlSugar
             InitMapping();
             return _ToListAsync<T>();
         }
-
+        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
+        {
+            pageIndex = _PageList(pageIndex, pageSize);
+            return ToListAsync();
+        }
         public async Task<string> ToJsonAsync()
         {
             if (IsCache)
@@ -1016,45 +1020,37 @@ namespace SqlSugar
 
         public Task<string> ToJsonPageAsync(int pageIndex, int pageSize, ref int totalNumber)
         {
+            //False asynchrony with ref
             return Task.FromResult(ToJsonPage(pageIndex, pageSize, ref totalNumber));
+        }
+        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
+        {
+            //False asynchrony with ref
+            return Task.FromResult(ToPageList(pageIndex, pageSize, ref totalNumber));
         }
 
         public Task<DataTable> ToDataTableAsync()
         {
+            //False asynchrony with dataTable
             return Task.FromResult(ToDataTable());
         }
 
         public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize)
         {
+            //False asynchrony with dataTable
             return Task.FromResult(ToDataTablePage(pageIndex, pageSize));
         }
 
         public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, ref int totalNumber)
         {
+            //False asynchrony with dataTable
             return Task.FromResult(ToDataTablePage(pageIndex, pageSize, ref totalNumber));
         }
 
-        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
-        {
-            pageIndex = _PageList(pageIndex, pageSize);
-            return ToListAsync();
-        }
-
-        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
-        {
-            return Task.FromResult(ToPageList(pageIndex, pageSize, ref totalNumber));
-        }
         #endregion
 
         #region Private Methods
-        //private void TaskStart<Type>(Task<Type> result)
-        //{
-        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-        //    {
-        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
-        //    }
-        //    result.Start();
-        //}
+  
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Select");
