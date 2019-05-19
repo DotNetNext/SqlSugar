@@ -540,7 +540,7 @@ namespace SqlSugar
             InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
-            if (this._IsOpen) 
+            if (this._IsOpen)
                 this.Open();
         }
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
@@ -627,7 +627,7 @@ namespace SqlSugar
         public void RollbackTran()
         {
             this.Context.Ado.RollbackTran();
-            AllClientEach(it=>it.Ado.RollbackTran());
+            AllClientEach(it => it.Ado.RollbackTran());
             _IsAllTran = false;
         }
         public void Close()
@@ -671,55 +671,106 @@ namespace SqlSugar
         #region Helper
         private SqlSugarProvider GetContext()
         {
-            if (CurrentConnectionConfig.IsShardSameThread)
-            {
-                SqlSugarProvider result = _Context;
-                if (CallContext.ContextList.Value.IsNullOrEmpty())
-                {
+            if (IsOnleySharedSameThread())
+                return SharedSameThread();
+            else if (IsSingleAndSharedThread())
+                return SingleAndSharedThread();
+            else if (IsSynchronization())
+                return Synchronization();
+            else
+                return Single();
+        }
 
-                    CallContext.ContextList.Value = new List<SqlSugarProvider>();
-                    CallContext.ContextList.Value.Add(_Context);
-                }
-                else
-                {
-                    SqlSugarProvider cacheContext = GetCallContext();
-                    if (cacheContext != null)
-                    {
-                        result = cacheContext;
-                    }
-                    else
-                    {
-                        result = CopyClient();
-                        CallContext.ContextList.Value.Add(result);
-                    }
-                }
-                return result;
-            }
-            else if (_ThreadId == Thread.CurrentThread.ManagedThreadId.ToString())
+        private SqlSugarProvider Single()
+        {
+            if (CallContext.ContextList.Value == null)
             {
-                _Context.MappingColumns = _MappingColumns;
-                _Context.MappingTables = _MappingTables;
-                _Context.IgnoreColumns = _IgnoreColumns;
-                _Context.IgnoreInsertColumns = _IgnoreInsertColumns;
-                return _Context;
+                CallContext.ContextList.Value = new List<SqlSugarProvider>();
+            }
+            if (CallContext.ContextList.Value.IsNullOrEmpty() || GetCallContext() == null)
+            {
+                var context = CopyClient();
+                CallContext.ContextList.Value.Add(context);
+                return context;
             }
             else
             {
-                if (CallContext.ContextList.Value == null)
+                return GetCallContext();
+            }
+        }
+
+        private SqlSugarProvider Synchronization()
+        {
+            _Context.MappingColumns = _MappingColumns;
+            _Context.MappingTables = _MappingTables;
+            _Context.IgnoreColumns = _IgnoreColumns;
+            _Context.IgnoreInsertColumns = _IgnoreInsertColumns;
+            return _Context;
+        }
+
+        private SqlSugarProvider SingleAndSharedThread()
+        {
+            SqlSugarProvider result = _Context;
+            if (CallContext.ContextList.Value.IsNullOrEmpty())
+            {
+
+                CallContext.ContextList.Value = new List<SqlSugarProvider>();
+                CallContext.ContextList.Value.Add(_Context);
+            }
+            else
+            {
+                SqlSugarProvider cacheContext = GetCallContext();
+                if (cacheContext != null)
                 {
-                    CallContext.ContextList.Value = new List<SqlSugarProvider>();
-                }
-                if (CallContext.ContextList.Value.IsNullOrEmpty() || GetCallContext() == null)
-                {
-                    var context = CopyClient();
-                    CallContext.ContextList.Value.Add(context);
-                    return context;
+                    result = cacheContext;
                 }
                 else
                 {
-                    return GetCallContext();
+                    result = CopyClient();
+                    CallContext.ContextList.Value.Add(result);
                 }
             }
+            return result;
+        }
+
+        private SqlSugarProvider SharedSameThread()
+        {
+            SqlSugarProvider result = _Context;
+            if (CallContext.ContextList.Value.IsNullOrEmpty())
+            {
+
+                CallContext.ContextList.Value = new List<SqlSugarProvider>();
+                CallContext.ContextList.Value.Add(_Context);
+            }
+            else
+            {
+                SqlSugarProvider cacheContext = GetCallContext();
+                if (cacheContext != null)
+                {
+                    result = cacheContext;
+                }
+                else
+                {
+                    result = CopyClient();
+                    CallContext.ContextList.Value.Add(result);
+                }
+            }
+            return result;
+        }
+
+        private bool IsSynchronization()
+        {
+            return _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
+        }
+
+        private bool IsSingleAndSharedThread()
+        {
+            return CurrentConnectionConfig.IsShardSameThread && _ThreadId != Thread.CurrentThread.ManagedThreadId.ToString();
+        }
+
+        private bool IsOnleySharedSameThread()
+        {
+            return CurrentConnectionConfig.IsShardSameThread && _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
         }
 
         private SqlSugarProvider CopyClient()
@@ -729,16 +780,16 @@ namespace SqlSugar
             result.MappingTables = _MappingTables;
             result.IgnoreColumns = _IgnoreColumns;
             result.IgnoreInsertColumns = _IgnoreInsertColumns;
- 
+
             return result;
         }
 
         private SqlSugarProvider GetCallContext()
         {
-            return CallContext.ContextList.Value.FirstOrDefault(it => 
-                it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType&&
-                it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString&&
-                it.CurrentConnectionConfig.InitKeyType==_Context.CurrentConnectionConfig.InitKeyType&&
+            return CallContext.ContextList.Value.FirstOrDefault(it =>
+                it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType &&
+                it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString &&
+                it.CurrentConnectionConfig.InitKeyType == _Context.CurrentConnectionConfig.InitKeyType &&
                 it.CurrentConnectionConfig.IsAutoCloseConnection == _Context.CurrentConnectionConfig.IsAutoCloseConnection
             );
         }
