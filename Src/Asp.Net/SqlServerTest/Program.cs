@@ -17,6 +17,7 @@ namespace OrmTest
             Democ_GobalFilter.Init();
             DemoD_DbFirst.Init();
             DemoE_CodeFirst.Init();
+            Demo5_SqlQueryable.Init();
 
             //Unit test
             NewUnitTest.Init();
