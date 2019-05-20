@@ -12,7 +12,7 @@ namespace SqlSugar
     public partial class SqlSugarClient : ISqlSugarClient, ITenant
     {
         #region Gobal Property
-        private ISqlSugarClient _Context = null;
+        private SqlSugarProvider _Context = null;
         private string _ThreadId;
         private ConnectionConfig _CurrentConnectionConfig;
         private List<SugarTenant> _AllClients;
@@ -45,7 +45,7 @@ namespace SqlSugar
         #endregion
 
         #region Global variable
-        public ISqlSugarClient Context { get => GetContext(); set => _Context = value; }
+        public SqlSugarProvider Context { get => GetContext(); }
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
         public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
         public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
@@ -540,7 +540,7 @@ namespace SqlSugar
             InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
-            if (this._IsOpen) 
+            if (this._IsOpen)
                 this.Open();
         }
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
@@ -627,7 +627,7 @@ namespace SqlSugar
         public void RollbackTran()
         {
             this.Context.Ado.RollbackTran();
-            AllClientEach(it=>it.Ado.RollbackTran());
+            AllClientEach(it => it.Ado.RollbackTran());
             _IsAllTran = false;
         }
         public void Close()
@@ -669,76 +669,137 @@ namespace SqlSugar
         #endregion
 
         #region Helper
-        private ISqlSugarClient GetContext()
+        private SqlSugarProvider GetContext()
         {
-            if (CurrentConnectionConfig.IsShardSameThread)
-            {
-                ISqlSugarClient result = _Context;
-                if (CallContext.ContextList.Value.IsNullOrEmpty())
-                {
+            if (IsSameThreadAndShard())
+                return SameThreadAndShard();
+            else if (IsNoSameThreadAndShard())
+                return NoSameThreadAndShard();
+            else if (IsSynchronization())
+                return Synchronization();
+            else
+                return NoSameThread();
+        }
 
-                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
-                    CallContext.ContextList.Value.Add(_Context);
+        private SqlSugarProvider NoSameThread()
+        {
+            if (CallContext.ContextList.Value == null)
+            {
+                var context = CopyClient();
+                AddCallContext(context);
+                return context;
+            }
+            else
+            {
+                var result = GetCallContext();
+                if (result == null)
+                {
+                    var copy = CopyClient();
+                    AddCallContext(copy);
+                    return copy;
                 }
                 else
                 {
-                    ISqlSugarClient cacheContext = GetCallContext();
-                    if (cacheContext != null)
-                    {
-                        result = cacheContext;
-                    }
-                    else
-                    {
-                        result = CopyClient();
-                        CallContext.ContextList.Value.Add(result);
-                    }
+                    return result;
                 }
-                return result;
             }
-            else if (_ThreadId == Thread.CurrentThread.ManagedThreadId.ToString())
+        }
+
+        private SqlSugarProvider Synchronization()
+        {
+            _Context.MappingColumns = _MappingColumns;
+            _Context.MappingTables = _MappingTables;
+            _Context.IgnoreColumns = _IgnoreColumns;
+            _Context.IgnoreInsertColumns = _IgnoreInsertColumns;
+            return _Context;
+        }
+
+        private SqlSugarProvider NoSameThreadAndShard()
+        {
+            if (CallContext.ContextList.Value.IsNullOrEmpty())
             {
-                _Context.MappingColumns = _MappingColumns;
-                _Context.MappingTables = _MappingTables;
-                _Context.IgnoreColumns = _IgnoreColumns;
-                _Context.IgnoreInsertColumns = _IgnoreInsertColumns;
+                var copy = CopyClient();
+                AddCallContext(copy);
+                return copy;
+            }
+            else
+            {
+                var result = GetCallContext();
+                if (result == null)
+                {
+                    var copy = CopyClient();
+                    AddCallContext(copy);
+                    return copy;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+        }
+
+        private SqlSugarProvider SameThreadAndShard()
+        {
+            if (CallContext.ContextList.Value.IsNullOrEmpty())
+            {
+                AddCallContext(_Context);
                 return _Context;
             }
             else
             {
-                if (CallContext.ContextList.Value == null)
+                var result = GetCallContext();
+                if (result == null)
                 {
-                    CallContext.ContextList.Value = new List<ISqlSugarClient>();
-                }
-                if (CallContext.ContextList.Value.IsNullOrEmpty() || GetCallContext() == null)
-                {
-                    var context = CopyClient();
-                    CallContext.ContextList.Value.Add(context);
-                    return context;
+                    var copy = CopyClient();
+                    AddCallContext(copy);
+                    return copy;
                 }
                 else
                 {
-                    return GetCallContext();
+                    return result;
                 }
             }
         }
 
-        private SqlSugarClient CopyClient()
+
+        private bool IsSynchronization()
         {
-            var result = new SqlSugarClient(this.CurrentConnectionConfig);
+            return _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
+        }
+
+        private bool IsNoSameThreadAndShard()
+        {
+            return CurrentConnectionConfig.IsShardSameThread && _ThreadId != Thread.CurrentThread.ManagedThreadId.ToString();
+        }
+
+        private bool IsSameThreadAndShard()
+        {
+            return CurrentConnectionConfig.IsShardSameThread && _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
+        }
+
+        private SqlSugarProvider CopyClient()
+        {
+            var result = new SqlSugarProvider(this.CurrentConnectionConfig);
             result.MappingColumns = _MappingColumns;
             result.MappingTables = _MappingTables;
             result.IgnoreColumns = _IgnoreColumns;
             result.IgnoreInsertColumns = _IgnoreInsertColumns;
- 
+
             return result;
         }
-
-        private ISqlSugarClient GetCallContext()
+        private void AddCallContext(SqlSugarProvider context)
         {
-            return CallContext.ContextList.Value.FirstOrDefault(it => 
-                it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType&&
-                it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString&&
-                it.CurrentConnectionConfig.InitKeyType==_Context.CurrentConnectionConfig.InitKeyType
+            CallContext.ContextList.Value = new List<SqlSugarProvider>();
+            CallContext.ContextList.Value.Add(context);
+        }
+
+        private SqlSugarProvider GetCallContext()
+        {
+            return CallContext.ContextList.Value.FirstOrDefault(it =>
+                it.CurrentConnectionConfig.DbType == _Context.CurrentConnectionConfig.DbType &&
+                it.CurrentConnectionConfig.ConnectionString == _Context.CurrentConnectionConfig.ConnectionString &&
+                it.CurrentConnectionConfig.InitKeyType == _Context.CurrentConnectionConfig.InitKeyType &&
+                it.CurrentConnectionConfig.IsAutoCloseConnection == _Context.CurrentConnectionConfig.IsAutoCloseConnection
             );
         }
 
@@ -789,19 +850,11 @@ namespace SqlSugar
         {
             if (Tenant.Context == null)
             {
-                Tenant.Context = new SqlSugarClient(Tenant.ConnectionConfig);
+                Tenant.Context = new SqlSugarProvider(Tenant.ConnectionConfig);
             }
             _Context = Tenant.Context;
             this.CurrentConnectionConfig = Tenant.ConnectionConfig;
         }
-        //private void TaskStart<Type>(Task<Type> result)
-        //{
-        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-        //    {
-        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
-        //    }
-        //    result.Start();
-        //}
         #endregion
 
         #region Obsolete

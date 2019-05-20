@@ -51,29 +51,25 @@ namespace SqlSugar
         }
         public virtual int ExecuteCommand()
         {
-            PreToSql();
-            AutoRemoveDataCache();
-            Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
-            string sql = UpdateBuilder.ToSqlString();
-            ValidateVersion();
-            RestoreMapping();
-            Before(sql);
+            string sql = _ExecuteCommand();
             var result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             After(sql);
             return result;
         }
-
         public bool ExecuteCommandHasChange()
         {
             return this.ExecuteCommand() > 0;
         }
-        public Task<int> ExecuteCommandAsync()
+        public async Task<int> ExecuteCommandAsync()
         {
-            return Task.FromResult(ExecuteCommand());
+            string sql = _ExecuteCommand();
+            var result =await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            After(sql);
+            return result;
         }
-        public Task<bool> ExecuteCommandHasChangeAsync()
+        public async Task<bool> ExecuteCommandHasChangeAsync()
         {
-            return Task.FromResult(ExecuteCommandHasChange());
+            return await this.ExecuteCommandAsync() > 0;
         }
         #endregion
 
@@ -193,7 +189,6 @@ namespace SqlSugar
             }
             return this;
         }
-
 
 
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
@@ -374,6 +369,17 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        private string _ExecuteCommand()
+        {
+            PreToSql();
+            AutoRemoveDataCache();
+            Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
+            string sql = UpdateBuilder.ToSqlString();
+            ValidateVersion();
+            RestoreMapping();
+            Before(sql);
+            return sql;
+        }
         private void AutoRemoveDataCache()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
@@ -591,43 +597,7 @@ namespace SqlSugar
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
-        //private void TaskStart<Type>(Task<Type> result)
-        //{
-        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-        //    {
-        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
-        //    }
-        //    result.Start();
-        //}
-        //private IUpdateable<T> CopyUpdateable()
-        //{
-        //    var asyncContext = this.Context.Utilities.CopyContext(true);
-        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-        //    asyncContext.IsAsyncMethod = true;
-
-        //    var asyncUpdateable = asyncContext.Updateable<T>(this.UpdateObjs);
-        //    var asyncUpdateableBuilder = asyncUpdateable.UpdateBuilder;
-        //    asyncUpdateableBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList;
-        //    asyncUpdateableBuilder.IsNoUpdateNull = this.UpdateBuilder.IsNoUpdateNull;
-        //    asyncUpdateableBuilder.Parameters = this.UpdateBuilder.Parameters;
-        //    asyncUpdateableBuilder.sql = this.UpdateBuilder.sql;
-        //    asyncUpdateableBuilder.WhereValues = this.UpdateBuilder.WhereValues;
-        //    asyncUpdateableBuilder.TableWithString = this.UpdateBuilder.TableWithString;
-        //    asyncUpdateableBuilder.TableName = this.UpdateBuilder.TableName;
-        //    asyncUpdateableBuilder.PrimaryKeys = this.UpdateBuilder.PrimaryKeys;
-        //    asyncUpdateableBuilder.IsOffIdentity = this.UpdateBuilder.IsOffIdentity;
-        //    asyncUpdateableBuilder.SetValues = this.UpdateBuilder.SetValues;
-        //    if (this.IsWhereColumns)
-        //    {
-        //        (asyncUpdateable as UpdateableProvider<T>).WhereColumnList = this.WhereColumnList;
-        //        (asyncUpdateable as UpdateableProvider<T>).IsWhereColumns = this.IsWhereColumns;
-        //    }
-        //    if (this.RemoveCacheFunc != null)
-        //    {
-        //        asyncUpdateable.RemoveDataCache();
-        //    }
-        //    return asyncUpdateable;
-        //}
+ 
 
         private void ValidateVersion()
         {

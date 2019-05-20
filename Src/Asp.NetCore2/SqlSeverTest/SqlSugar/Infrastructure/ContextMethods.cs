@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
@@ -60,6 +61,64 @@ namespace SqlSugar
                 return result;
             }
         }
+        /// <summary>
+        ///DataReader to Dynamic List
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public async Task<List<ExpandoObject>> DataReaderToExpandoObjectListAsync(IDataReader reader)
+        {
+            using (reader)
+            {
+                List<ExpandoObject> result = new List<ExpandoObject>();
+                if (reader != null && !reader.IsClosed)
+                {
+                    while (await((DbDataReader)reader).ReadAsync())
+                    {
+                        result.Add(DataReaderToExpandoObject(reader));
+                    }
+                }
+                return result;
+            }
+        }
+
+
+        /// <summary>
+        ///DataReader to Dynamic List
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public List<ExpandoObject> DataReaderToExpandoObjectListNoUsing(IDataReader reader)
+        {
+            List<ExpandoObject> result = new List<ExpandoObject>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (reader.Read())
+                {
+                    result.Add(DataReaderToExpandoObject(reader));
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///DataReader to Dynamic List
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public async Task<List<ExpandoObject>> DataReaderToExpandoObjectListAsyncNoUsing(IDataReader reader)
+        {
+            List<ExpandoObject> result = new List<ExpandoObject>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (await ((DbDataReader)reader).ReadAsync())
+                {
+                    result.Add(DataReaderToExpandoObject(reader));
+                }
+            }
+            return result;
+        }
+
 
         /// <summary>
         ///DataReader to DataReaderToDictionary
@@ -130,58 +189,134 @@ namespace SqlSugar
                 {
                     while (reader.Read())
                     {
-                        var readerValues = DataReaderToDictionary(reader, tType);
-                        var result = new Dictionary<string, object>();
-                        foreach (var item in classProperties)
-                        {
-                            var name = item.Name;
-                            var typeName = tType.Name;
-                            if (item.PropertyType.IsClass())
-                            {
-                                result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
-                            }
-                            else
-                            {
-                                if (readerValues.Any(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
-                                {
-                                    var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Value;
-                                    if (addValue == DBNull.Value || addValue == null)
-                                    {
-                                        if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
-                                        {
-                                            addValue = 0;
-                                        }
-                                        else if (item.PropertyType == UtilConstants.GuidType)
-                                        {
-                                            addValue = Guid.Empty;
-                                        }
-                                        else if (item.PropertyType == UtilConstants.DateType)
-                                        {
-                                            addValue = DateTime.MinValue;
-                                        }
-                                        else if (item.PropertyType == UtilConstants.StringType)
-                                        {
-                                            addValue = null;
-                                        }
-                                        else
-                                        {
-                                            addValue = null;
-                                        }
-                                    }
-                                    else if (item.PropertyType == UtilConstants.IntType)
-                                    {
-                                        addValue = Convert.ToInt32(addValue);
-                                    }
-                                    result.Add(name, addValue);
-                                }
-                            }
-                        }
+                        Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
                         var stringValue = SerializeObject(result);
                         reval.Add((T)DeserializeObject<T>(stringValue));
                     }
                 }
                 return reval;
             }
+        }
+        /// <summary>
+        /// DataReaderToList
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public List<T> DataReaderToListNoUsing<T>(IDataReader reader)
+        {
+                var tType = typeof(T);
+                var classProperties = tType.GetProperties().ToList();
+                var reval = new List<T>();
+                if (reader != null && !reader.IsClosed)
+                {
+                    while (reader.Read())
+                    {
+                        Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
+                        var stringValue = SerializeObject(result);
+                        reval.Add((T)DeserializeObject<T>(stringValue));
+                    }
+                }
+                return reval;
+        }
+        /// <summary>
+        /// DataReaderToList
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public async Task<List<T>> DataReaderToListAsync<T>(IDataReader reader)
+        {
+            using (reader)
+            {
+                var tType = typeof(T);
+                var classProperties = tType.GetProperties().ToList();
+                var reval = new List<T>();
+                if (reader != null && !reader.IsClosed)
+                {
+                    while (await ((DbDataReader)reader).ReadAsync())
+                    {
+                        Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
+                        var stringValue = SerializeObject(result);
+                        reval.Add((T)DeserializeObject<T>(stringValue));
+                    }
+                }
+                return reval;
+            }
+        }
+        /// <summary>
+        /// DataReaderToList
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public async Task<List<T>> DataReaderToListAsyncNoUsing<T>(IDataReader reader)
+        {
+            var tType = typeof(T);
+            var classProperties = tType.GetProperties().ToList();
+            var reval = new List<T>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (await ((DbDataReader)reader).ReadAsync())
+                {
+                    Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
+                    var stringValue = SerializeObject(result);
+                    reval.Add((T)DeserializeObject<T>(stringValue));
+                }
+            }
+            return reval;
+        }
+
+        private Dictionary<string, object> DataReaderToList<T>(IDataReader reader, Type tType, List<PropertyInfo> classProperties, List<T> reval)
+        {
+            var readerValues = DataReaderToDictionary(reader, tType);
+            var result = new Dictionary<string, object>();
+            foreach (var item in classProperties)
+            {
+                var name = item.Name;
+                var typeName = tType.Name;
+                if (item.PropertyType.IsClass())
+                {
+                    result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
+                }
+                else
+                {
+                    if (readerValues.Any(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Value;
+                        if (addValue == DBNull.Value || addValue == null)
+                        {
+                            if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
+                            {
+                                addValue = 0;
+                            }
+                            else if (item.PropertyType == UtilConstants.GuidType)
+                            {
+                                addValue = Guid.Empty;
+                            }
+                            else if (item.PropertyType == UtilConstants.DateType)
+                            {
+                                addValue = DateTime.MinValue;
+                            }
+                            else if (item.PropertyType == UtilConstants.StringType)
+                            {
+                                addValue = null;
+                            }
+                            else
+                            {
+                                addValue = null;
+                            }
+                        }
+                        else if (item.PropertyType == UtilConstants.IntType)
+                        {
+                            addValue = Convert.ToInt32(addValue);
+                        }
+                        result.Add(name, addValue);
+                    }
+                }
+            }
+
+            return result;
         }
 
         private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval)

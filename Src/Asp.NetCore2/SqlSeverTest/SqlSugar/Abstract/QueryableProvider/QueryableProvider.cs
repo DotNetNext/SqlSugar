@@ -16,7 +16,7 @@ namespace SqlSugar
     #region T1
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
-        public ISqlSugarClient Context { get; set; }
+        public SqlSugarProvider Context { get; set; }
         public IAdo Db { get { return Context.Ado; } }
         public IDbBind Bind { get { return this.Db.DbBind; } }
         public ISqlBuilder SqlBuilder { get; set; }
@@ -596,9 +596,9 @@ namespace SqlSugar
         }
         public virtual int Count()
         {
-            InitMapping();
-            QueryBuilder.IsCount = true;
-            int result = 0;
+            MappingTableList expMapping;
+            int result;
+            _CountBegin(out expMapping, out result);
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
@@ -608,8 +608,7 @@ namespace SqlSugar
             {
                 result = GetCount();
             }
-            RestoreMapping();
-            QueryBuilder.IsCount = false;
+            _CountEnd(expMapping);
             return result;
         }
 
@@ -753,18 +752,7 @@ namespace SqlSugar
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize)
         {
-            if (pageIndex == 0)
-                pageIndex = 1;
-            if (QueryBuilder.PartitionByValue.HasValue())
-            {
-                QueryBuilder.ExternalPageIndex = pageIndex;
-                QueryBuilder.ExternalPageSize = pageSize;
-            }
-            else
-            {
-                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-                QueryBuilder.Take = pageSize;
-            }
+            pageIndex = _PageList(pageIndex, pageSize);
             return ToList();
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
@@ -836,139 +824,262 @@ namespace SqlSugar
             return result;
         }
         #region Async methods
-        public Task<T> SingleAsync()
+        public async Task<T> SingleAsync()
         {
-            return Task.FromResult(Single());
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+            }
+            var oldSkip = QueryBuilder.Skip;
+            var oldTake = QueryBuilder.Take;
+            var oldOrderBy = QueryBuilder.OrderByValue;
+            QueryBuilder.Skip = null;
+            QueryBuilder.Take = null;
+            QueryBuilder.OrderByValue = null;
+            var result =await this.ToListAsync();
+            QueryBuilder.Skip = oldSkip;
+            QueryBuilder.Take = oldTake;
+            QueryBuilder.OrderByValue = oldOrderBy;
+            if (result == null || result.Count == 0)
+            {
+                return default(T);
+            }
+            else if (result.Count == 2)
+            {
+                Check.Exception(true, ".Single()  result must not exceed one . You can use.First()");
+                return default(T);
+            }
+            else
+            {
+                return result.SingleOrDefault();
+            }
         }
 
-        public Task<T> SingleAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> SingleAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(Single(expression));
+            _Where(expression);
+            var result =await SingleAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
-        public Task<T> FirstAsync()
+        public async Task<T> FirstAsync()
         {
-            return Task.FromResult(First());
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+            }
+            if (QueryBuilder.Skip.HasValue)
+            {
+                QueryBuilder.Take = 1;
+                var list = await this.ToListAsync();
+                return list.FirstOrDefault();
+            }
+            else
+            {
+                QueryBuilder.Skip = 0;
+                QueryBuilder.Take = 1;
+                var result =await this.ToListAsync();
+                if (result.HasValue())
+                    return result.FirstOrDefault();
+                else
+                    return default(T);
+            }
         }
 
-        public Task<T> FirstAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> FirstAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(First(expression));
+            _Where(expression);
+            var result = await FirstAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
-        public Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(Any(expression));
+            _Where(expression);
+            var result =await AnyAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
 
-        public Task<bool> AnyAsync()
+        public async Task<bool> AnyAsync()
         {
-            return Task.FromResult(Any());
+            return await this.CountAsync() > 0;
         }
 
-        public Task<int> CountAsync()
+        public async Task<int> CountAsync()
         {
-            return Task.FromResult(Count());
+            MappingTableList expMapping;
+            int result;
+            _CountBegin(out expMapping, out result);
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<int>(cacheService, this.QueryBuilder, () => { return GetCount(); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result =await GetCountAsync();
+            }
+            _CountEnd(expMapping);
+            return result;
         }
-        public Task<int> CountAsync(Expression<Func<T, bool>> expression)
+        public async Task<int> CountAsync(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(Count(expression));
+            _Where(expression);
+            var result =await CountAsync();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
         }
-        public Task<TResult> MaxAsync<TResult>(string maxField)
+        public  async Task<TResult> MaxAsync<TResult>(string maxField)
         {
-            return Task.FromResult(Max<TResult>(maxField));
+            this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
+            var list = await this._ToListAsync<TResult>();
+            var result =list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Max<TResult>(expression));
+            return _MaxAsync<TResult>(expression);
         }
 
-        public Task<TResult> MinAsync<TResult>(string minField)
+        public async Task<TResult> MinAsync<TResult>(string minField)
         {
-            return Task.FromResult(Min<TResult>(minField));
+            this.Select(string.Format(QueryBuilder.MinTemplate, minField));
+            var list = await this._ToListAsync<TResult>();
+            var result = list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Min<TResult>(expression));
+            return _MinAsync<TResult>(expression);
         }
 
-        public Task<TResult> SumAsync<TResult>(string sumField)
+        public async Task<TResult> SumAsync<TResult>(string sumField)
         {
-            return Task.FromResult(Sum<TResult>(sumField));
+            this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
+            var list = await this._ToListAsync<TResult>();
+            var result = list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Sum<TResult>(expression));
+            return _SumAsync<TResult>(expression);
         }
 
-        public Task<TResult> AvgAsync<TResult>(string avgField)
+        public async Task<TResult> AvgAsync<TResult>(string avgField)
         {
-            return Task.FromResult(Avg<TResult>(avgField));
+            this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
+            var list = await this._ToListAsync<TResult>();
+            var result = list.SingleOrDefault();
+            return result;
         }
 
         public Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
-            return Task.FromResult(Avg<TResult>(expression));
+            return _AvgAsync<TResult>(expression);
         }
 
         public Task<List<T>> ToListAsync()
         {
-            return Task.FromResult(ToList());
+            InitMapping();
+            return _ToListAsync<T>();
         }
-
-        public Task<string> ToJsonAsync()
-        {
-            return Task.FromResult(ToJson());
-        }
-
-        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
-        {
-            return Task.FromResult(ToJsonPage(pageIndex, pageSize));
-        }
-
-        public Task<string> ToJsonPageAsync(int pageIndex, int pageSize, ref int totalNumber)
-        {
-            return Task.FromResult(ToJsonPage(pageIndex, pageSize, ref totalNumber));
-        }
-
-        public Task<DataTable> ToDataTableAsync()
-        {
-            return Task.FromResult(ToDataTable());
-        }
-
-        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize)
-        {
-            return Task.FromResult(ToDataTablePage(pageIndex, pageSize));
-        }
-
-        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, ref int totalNumber)
-        {
-            return Task.FromResult(ToDataTablePage(pageIndex, pageSize, ref totalNumber));
-        }
-
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
-            return Task.FromResult(ToPageList(pageIndex, pageSize));
+            pageIndex = _PageList(pageIndex, pageSize);
+            return ToListAsync();
+        }
+        public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
+        {
+            totalNumber.Value = await this.Clone().CountAsync();
+            return await this.Clone().ToPageListAsync(pageIndex, pageSize);
+        }
+        public async Task<string> ToJsonAsync()
+        {
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () =>
+                {
+                    return this.Context.Utilities.SerializeObject(this.ToList(), typeof(T));
+                }, CacheTime, this.Context);
+                return result;
+            }
+            else
+            {
+                return  this.Context.Utilities.SerializeObject(await this.ToListAsync(), typeof(T));
+            }
+        }
+        public async Task<string> ToJsonPageAsync(int pageIndex, int pageSize)
+        {
+            return this.Context.Utilities.SerializeObject(await this.ToPageListAsync(pageIndex, pageSize), typeof(T));
+        }
+        public async Task<string> ToJsonPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
+        {
+            totalNumber.Value = await this.Clone().CountAsync();
+            return await this.Clone().ToJsonPageAsync(pageIndex, pageSize);
+        }
+        public async Task<DataTable> ToDataTableAsync()
+        {
+            InitMapping();
+            var sqlObj = this.ToSql();
+            RestoreMapping();
+            DataTable result = null;
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result = await this.Db.GetDataTableAsync(sqlObj.Key, sqlObj.Value.ToArray());
+            }
+            return result;
+        }
+        public Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize)
+        {
+            pageIndex = _PageList(pageIndex, pageSize);
+            return ToDataTableAsync();
+        }
+        public async Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
+        {
+            totalNumber.Value = await this.Clone().CountAsync();
+            return await this.Clone().ToDataTablePageAsync(pageIndex, pageSize);
         }
 
-        public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, ref int totalNumber)
-        {
-            return Task.FromResult(ToPageList(pageIndex, pageSize, ref totalNumber));
-        }
         #endregion
 
         #region Private Methods
-        //private void TaskStart<Type>(Task<Type> result)
-        //{
-        //    if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-        //    {
-        //        Check.Exception(true, "IsShardSameThread=true can't be used async method");
-        //    }
-        //    result.Start();
-        //}
+        private void _CountEnd(MappingTableList expMapping)
+        {
+            RestoreMapping();
+            QueryBuilder.IsCount = false;
+            if (expMapping.Count > 0)
+            {
+                if (this.QueryableMappingTableList == null)
+                {
+                    this.QueryableMappingTableList = new MappingTableList();
+                }
+                this.QueryableMappingTableList.Add(expMapping.First());
+            }
+        }
+
+        private void _CountBegin(out MappingTableList expMapping, out int result)
+        {
+            expMapping = new MappingTableList();
+            if (QueryBuilder.EntityName == "ExpandoObject" && this.Context.MappingTables.Any(it => it.EntityName == "ExpandoObject"))
+            {
+                expMapping.Add("ExpandoObject", this.Context.MappingTables.First(it => it.EntityName == "ExpandoObject").DbTableName);
+            }
+            InitMapping();
+            QueryBuilder.IsCount = true;
+            result = 0;
+        }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Select");
@@ -1005,6 +1116,23 @@ namespace SqlSugar
                 return this;
             }
         }
+        private int _PageList(int pageIndex, int pageSize)
+        {
+            if (pageIndex == 0)
+                pageIndex = 1;
+            if (QueryBuilder.PartitionByValue.HasValue())
+            {
+                QueryBuilder.ExternalPageIndex = pageIndex;
+                QueryBuilder.ExternalPageSize = pageSize;
+            }
+            else
+            {
+                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+                QueryBuilder.Take = pageSize;
+            }
+
+            return pageIndex;
+        }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "GroupBy");
@@ -1035,12 +1163,28 @@ namespace SqlSugar
             QueryBuilder.SelectValue = null;
             return result;
         }
+        protected async Task<TResult> _MinAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Main");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var result = await MinAsync<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return result;
+        }
         protected TResult _Avg<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Avg");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             return Avg<TResult>(lamResult.GetResultString());
+        }
+        protected async Task<TResult> _AvgAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Avg");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            return  await AvgAsync<TResult>(lamResult.GetResultString());
         }
         protected TResult _Max<TResult>(Expression expression)
         {
@@ -1051,12 +1195,30 @@ namespace SqlSugar
             QueryBuilder.SelectValue = null;
             return reslut;
         }
+        protected async Task<TResult> _MaxAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Max");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var reslut =await MaxAsync<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
+        }
         protected TResult _Sum<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Sum");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var reslut = Sum<TResult>(lamResult.GetResultString());
+            QueryBuilder.SelectValue = null;
+            return reslut;
+        }
+        protected async Task<TResult> _SumAsync<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Sum");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+            var reslut =await SumAsync<TResult>(lamResult.GetResultString());
             QueryBuilder.SelectValue = null;
             return reslut;
         }
@@ -1127,6 +1289,23 @@ namespace SqlSugar
             else
             {
                 result = GetData<TResult>(sqlObj);
+            }
+            RestoreMapping();
+            _Mapper(result);
+            return result;
+        }
+        protected async Task<List<TResult>> _ToListAsync<TResult>()
+        {
+            List<TResult> result = null;
+            var sqlObj = this.ToSql();
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context);
+            }
+            else
+            {
+                result =await GetDataAsync<TResult>(sqlObj);
             }
             RestoreMapping();
             _Mapper(result);
@@ -1519,6 +1698,15 @@ namespace SqlSugar
             var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
             return result;
         }
+        protected async Task<int> GetCountAsync()
+        {
+            var sql = string.Empty;
+            ToSqlBefore();
+            sql = QueryBuilder.ToSqlString();
+            sql = QueryBuilder.ToCountSql(sql);
+            var result =Convert.ToInt32(await Context.Ado.GetScalarAsync(sql, QueryBuilder.Parameters.ToArray()));
+            return result;
+        }
 
         private void ToSqlBefore()
         {
@@ -1535,6 +1723,22 @@ namespace SqlSugar
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
             var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
+            result = GetData<TResult>(isComplexModel, entityType, dataReader);
+            return result;
+        }
+        protected async Task<List<TResult>> GetDataAsync<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
+        {
+            List<TResult> result;
+            var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
+            var entityType = typeof(TResult);
+            var dataReader = await this.Db.GetDataReaderAsync(sqlObj.Key, sqlObj.Value.ToArray());
+            result =await GetDataAsync<TResult>(isComplexModel, entityType, dataReader);
+            return result;
+        }
+
+        private List<TResult> GetData<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
+        {
+            List<TResult> result;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
@@ -1550,6 +1754,29 @@ namespace SqlSugar
             else
             {
                 result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);
+            }
+            SetContextModel(result, entityType);
+            return result;
+        }
+        private async Task<List<TResult>> GetDataAsync<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
+        {
+            List<TResult> result;
+            if (entityType == UtilConstants.DynamicType)
+            {
+                result =await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader) as List<TResult>;
+            }
+            else if (entityType == UtilConstants.ObjType)
+            {
+                var expObj = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader);
+                result = expObj.Select(it => ((TResult)(object)it)).ToList();
+            }
+            else if (entityType.IsAnonymousType() || isComplexModel)
+            {
+                result =await this.Context.Utilities.DataReaderToListAsync<TResult>(dataReader);
+            }
+            else
+            {
+                result =await this.Bind.DataReaderToListAsync<TResult>(entityType, dataReader);
             }
             SetContextModel(result, entityType);
             return result;
@@ -1618,6 +1845,7 @@ namespace SqlSugar
                     {
                         var contextProperty = item.GetType().GetProperty("Context");
                         SqlSugarProvider newClient = this.Context.Utilities.CopyContext();
+                        newClient.Ado.IsDisableMasterSlaveSeparation = true;
                         if (newClient.CurrentConnectionConfig.AopEvents == null)
                             newClient.CurrentConnectionConfig.AopEvents = new AopEvents();
                         contextProperty.SetValue(item, newClient, null);
@@ -1625,23 +1853,6 @@ namespace SqlSugar
                 }
             }
         }
-        //protected ISugarQueryable<T> CopyQueryable()
-        //{
-        //    var asyncContext = this.Context.Utilities.CopyContext(true);
-        //    asyncContext.IsAsyncMethod = true;
-        //    asyncContext.CurrentConnectionConfig.IsAutoCloseConnection = true;
-        //    var asyncQueryable = asyncContext.Queryable<ExpandoObject>().Select<T>(string.Empty).WithCacheIF(IsCache, CacheTime);
-        //    if (this.MapperAction != null)
-        //        asyncQueryable.Mapper(MapperAction);
-        //    if (this.MapperActionWithCache != null)
-        //        asyncQueryable.Mapper(MapperActionWithCache);
-        //    if (this.Mappers != null && ((asyncQueryable as QueryableProvider<T>)!=null))
-        //    {
-        //        (asyncQueryable as QueryableProvider<T>).Mappers = this.Mappers;
-        //    }
-        //    CopyQueryBuilder(asyncQueryable.QueryBuilder); return asyncQueryable;
-        //}
-
         protected void CopyQueryBuilder(QueryBuilder asyncQueryableBuilder)
         {
             var pars = new List<SugarParameter>();

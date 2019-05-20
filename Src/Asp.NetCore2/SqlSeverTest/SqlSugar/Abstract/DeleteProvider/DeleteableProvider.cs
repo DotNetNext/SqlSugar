@@ -29,35 +29,36 @@ namespace SqlSugar
                 return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
-        public int ExecuteCommand()
-        {
-            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            string sql = DeleteBuilder.ToSqlString();
-            var paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
-            RestoreMapping();
-            AutoRemoveDataCache();
-            Before(sql);
-            var result = Db.ExecuteCommand(sql, paramters);
-            After(sql);
-            return result;
-        }
         public void AddQueue()
         {
             var sqlObj = this.ToSql();
             this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
         }
+        public int ExecuteCommand()
+        {
+            string sql;
+            SugarParameter[] paramters;
+            _ExecuteCommand(out sql, out paramters);
+            var result = Db.ExecuteCommand(sql, paramters);
+            After(sql);
+            return result;
+        }
         public bool ExecuteCommandHasChange()
         {
             return ExecuteCommand() > 0;
         }
-        public Task<int> ExecuteCommandAsync()
+        public async Task<int> ExecuteCommandAsync()
         {
-            return Task.FromResult(ExecuteCommand());
+            string sql;
+            SugarParameter[] paramters;
+            _ExecuteCommand(out sql, out paramters);
+            var result =await Db.ExecuteCommandAsync(sql, paramters);
+            After(sql);
+            return result;
         }
-
-        public Task<bool> ExecuteCommandHasChangeAsync()
+        public async Task<bool> ExecuteCommandHasChangeAsync()
         {
-            return Task.FromResult(ExecuteCommandHasChange());
+            return await ExecuteCommandAsync() > 0;
         }
         public IDeleteable<T> AS(string tableName)
         {
@@ -324,6 +325,15 @@ namespace SqlSugar
             {
                 return this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
             }
+        }
+        private void _ExecuteCommand(out string sql, out SugarParameter[] paramters)
+        {
+            DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            sql = DeleteBuilder.ToSqlString();
+            paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
+            RestoreMapping();
+            AutoRemoveDataCache();
+            Before(sql);
         }
 
         protected virtual List<string> GetIdentityKeys()
