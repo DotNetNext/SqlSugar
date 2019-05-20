@@ -18,6 +18,7 @@ namespace OrmTest
             DemoD_DbFirst.Init();
             DemoE_CodeFirst.Init();
             Demo5_SqlQueryable.Init();
+            Demo6_Queue.Init();
 
             //Unit test
             NewUnitTest.Init();

@@ -8,5 +8,8 @@ namespace OrmTest
 {
     public class Demo6_Queue
     {
+        public static void Init()
+        {
+        }
     }
 }
