@@ -13,6 +13,7 @@ namespace OrmTest
 
         public static void Init()
         {
+            EasyExamples();
             QueryConditions();
             JoinTable();
             Async();
@@ -21,6 +22,26 @@ namespace OrmTest
             SqlFuncTest();
             Subquery();
             ReturnType();
+        }
+
+        private static void EasyExamples()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### Examples Start ####");
+            var db = GetInstance();
+            var dbTime = db.GetDate();
+            var getAll = db.Queryable<Order>().ToList();
+            var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
+            var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
+            var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
+            var getRandom = db.Queryable<Order>().OrderBy(it => SqlFunc.GetRandom()).First();
+            var getByPrimaryKey = db.Queryable<Order>().InSingle(2);
+            var getSingleOrDefault = db.Queryable<Order>().Where(it => it.Id == 1).Single();
+            var getFirstOrDefault = db.Queryable<Order>().First();
+            var getByWhere = db.Queryable<Order>().Where(it => it.Id == 1 || it.Name == "a").ToList();
+            var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
+            var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
+            Console.WriteLine("#### Examples End ####");
         }
 
         private static void ReturnType()
