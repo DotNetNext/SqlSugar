@@ -45,7 +45,7 @@ namespace SqlSugar
         #endregion
 
         #region Global variable
-        public SqlSugarProvider Context { get => GetContext();}
+        public SqlSugarProvider Context { get => GetContext(); }
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
         public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
         public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }
@@ -671,31 +671,37 @@ namespace SqlSugar
         #region Helper
         private SqlSugarProvider GetContext()
         {
-            if (IsOnleySharedSameThread())
-                return SharedSameThread();
-            else if (IsSingleAndSharedThread())
-                return SingleAndSharedThread();
+            if (IsSameThreadAndShard())
+                return SameThreadAndShard();
+            else if (IsNoSameThreadAndShard())
+                return NoSameThreadAndShard();
             else if (IsSynchronization())
                 return Synchronization();
             else
-                return Single();
+                return NoSameThread();
         }
 
-        private SqlSugarProvider Single()
+        private SqlSugarProvider NoSameThread()
         {
             if (CallContext.ContextList.Value == null)
             {
-                CallContext.ContextList.Value = new List<SqlSugarProvider>();
-            }
-            if (CallContext.ContextList.Value.IsNullOrEmpty() || GetCallContext() == null)
-            {
                 var context = CopyClient();
-                CallContext.ContextList.Value.Add(context);
+                AddCallContext(context);
                 return context;
             }
             else
             {
-                return GetCallContext();
+                var result = GetCallContext();
+                if (result == null)
+                {
+                    var copy = CopyClient();
+                    AddCallContext(copy);
+                    return copy;
+                }
+                else
+                {
+                    return result;
+                }
             }
         }
 
@@ -708,67 +714,65 @@ namespace SqlSugar
             return _Context;
         }
 
-        private SqlSugarProvider SingleAndSharedThread()
+        private SqlSugarProvider NoSameThreadAndShard()
         {
-            SqlSugarProvider result = _Context;
             if (CallContext.ContextList.Value.IsNullOrEmpty())
             {
-
-                CallContext.ContextList.Value = new List<SqlSugarProvider>();
-                CallContext.ContextList.Value.Add(_Context);
+                var copy = CopyClient();
+                AddCallContext(copy);
+                return copy;
             }
             else
             {
-                SqlSugarProvider cacheContext = GetCallContext();
-                if (cacheContext != null)
+                var result = GetCallContext();
+                if (result == null)
                 {
-                    result = cacheContext;
+                    var copy = CopyClient();
+                    AddCallContext(copy);
+                    return copy;
                 }
                 else
                 {
-                    result = CopyClient();
-                    CallContext.ContextList.Value.Add(result);
+                    return result;
                 }
             }
-            return result;
         }
 
-        private SqlSugarProvider SharedSameThread()
+        private SqlSugarProvider SameThreadAndShard()
         {
-            SqlSugarProvider result = _Context;
             if (CallContext.ContextList.Value.IsNullOrEmpty())
             {
-
-                CallContext.ContextList.Value = new List<SqlSugarProvider>();
-                CallContext.ContextList.Value.Add(_Context);
+                AddCallContext(_Context);
+                return _Context;
             }
             else
             {
-                SqlSugarProvider cacheContext = GetCallContext();
-                if (cacheContext != null)
+                var result = GetCallContext();
+                if (result == null)
                 {
-                    result = cacheContext;
+                    var copy = CopyClient();
+                    AddCallContext(copy);
+                    return copy;
                 }
                 else
                 {
-                    result = CopyClient();
-                    CallContext.ContextList.Value.Add(result);
+                    return result;
                 }
             }
-            return result;
         }
+
 
         private bool IsSynchronization()
         {
             return _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
         }
 
-        private bool IsSingleAndSharedThread()
+        private bool IsNoSameThreadAndShard()
         {
             return CurrentConnectionConfig.IsShardSameThread && _ThreadId != Thread.CurrentThread.ManagedThreadId.ToString();
         }
 
-        private bool IsOnleySharedSameThread()
+        private bool IsSameThreadAndShard()
         {
             return CurrentConnectionConfig.IsShardSameThread && _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
         }
@@ -782,6 +786,11 @@ namespace SqlSugar
             result.IgnoreInsertColumns = _IgnoreInsertColumns;
 
             return result;
+        }
+        private void AddCallContext(SqlSugarProvider context)
+        {
+            CallContext.ContextList.Value = new List<SqlSugarProvider>();
+            CallContext.ContextList.Value.Add(context);
         }
 
         private SqlSugarProvider GetCallContext()
