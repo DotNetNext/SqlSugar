@@ -27,6 +27,7 @@ namespace OrmTest
         {
             Json();
             Ado();
+            Queryable();
             QueryableAsync();
             Thread();
             Thread2();
