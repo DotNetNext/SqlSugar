@@ -1,6 +1,8 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 
@@ -18,6 +20,63 @@ namespace OrmTest
             Mapper();
             SqlFuncTest();
             Subquery();
+            ReturnType();
+        }
+
+        private static void ReturnType()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### ReturnType Start ####");
+            var db = GetInstance();
+            List<Order> list = db.Queryable<Order>().ToList();
+
+            Order item = db.Queryable<Order>().First(it => it.Id == 1);
+
+            DataTable dataTable = db.Queryable<Order>().Select(it => it.Id).ToDataTable();
+
+            var json = db.Queryable<Order>().ToJson();
+
+            List<int> listInt = db.Queryable<Order>().Select(it => it.Id).ToList();
+
+            var dynamic = db.Queryable<Order>().Select<dynamic>().ToList();
+
+            var viewModel = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+                    JoinType.Left, o.Id == i.OrderId  ,
+                    JoinType.Left, o.CustomId == c.Id 
+                ))
+                .Select<ViewOrder>().ToList();
+
+            var newDynamic = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+                   JoinType.Left, o.Id == i.OrderId,
+                   JoinType.Left, o.CustomId == c.Id
+               ))
+                .Select((o, i, c) => new { orderName = o.Name, cusName=c.Name }).ToList();
+
+            var newClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+                   JoinType.Left, o.Id == i.OrderId,
+                   JoinType.Left, o.CustomId == c.Id
+               ))
+                .Select((o, i, c) => new ViewOrder {  Name=o.Name,  CustomName=c.Name }).ToList();
+
+
+            var oneClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+              JoinType.Left, o.Id == i.OrderId,
+              JoinType.Left, o.CustomId == c.Id
+            ))
+           .Select((o, i, c) => c).ToList();
+
+            var twoClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+            JoinType.Left, o.Id == i.OrderId,
+            JoinType.Left, o.CustomId == c.Id
+            ))
+           .Select((o, i, c) => new { o,i}).ToList();
+
+            List<Dictionary<string, object>> ListDic = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+                  JoinType.Left, o.Id == i.OrderId,
+                  JoinType.Left, o.CustomId == c.Id
+                ))
+                .Select<ExpandoObject>().ToList().Select(it => it.ToDictionary(x => x.Key, x => x.Value)).ToList();
+            Console.WriteLine("#### ReturnType End ####");
         }
 
         private static void Subquery()
@@ -31,6 +90,8 @@ namespace OrmTest
                 customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s=>s.Name),
                 customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
             }).ToList();
+
+            var list2 = db.Queryable<Order>().Where(it => SqlFunc.Subqueryable<OrderItem>().Where(i => i.OrderId == it.Id).Any()).ToList();
 
             Console.WriteLine("#### Subquery End ####");
         }
@@ -210,7 +271,7 @@ namespace OrmTest
         {
             return new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.SqlServer,
+                DbType = SqlSugar.DbType.SqlServer,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
