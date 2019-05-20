@@ -65,6 +65,10 @@ namespace OrmTest
             }
             db.DbFirst.IsCreateAttribute().CreateClassFile("c:\\Demo\\8", "Models");
 
+
+            //Use Razor Template
+            //db.DbFirst.UseRazorAnalysis(RazorFirst.DefaultRazorClassTemplate).CreateClassFile("");
+
             Console.WriteLine("#### DbFirst End ####");
         }
     }
