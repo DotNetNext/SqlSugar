@@ -596,14 +596,9 @@ namespace SqlSugar
         }
         public virtual int Count()
         {
-            MappingTableList expMapping = new MappingTableList();
-            if (QueryBuilder.EntityName== "ExpandoObject" && this.Context.MappingTables.Any(it => it.EntityName == "ExpandoObject"))
-            {
-                expMapping.Add("ExpandoObject", this.Context.MappingTables.First(it => it.EntityName == "ExpandoObject").DbTableName);
-            }
-            InitMapping();
-            QueryBuilder.IsCount = true;
-            int result = 0;
+            MappingTableList expMapping;
+            int result;
+            _CountBegin(out expMapping, out result);
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
@@ -613,16 +608,7 @@ namespace SqlSugar
             {
                 result = GetCount();
             }
-            RestoreMapping();
-            QueryBuilder.IsCount = false;
-            if (expMapping.Count > 0)
-            {
-                if (this.QueryableMappingTableList == null)
-                {
-                    this.QueryableMappingTableList = new MappingTableList();
-                }
-                this.QueryableMappingTableList.Add(expMapping.First());
-            }
+            _CountEnd(expMapping);
             return result;
         }
 
@@ -924,9 +910,9 @@ namespace SqlSugar
 
         public async Task<int> CountAsync()
         {
-            InitMapping();
-            QueryBuilder.IsCount = true;
-            int result = 0;
+            MappingTableList expMapping;
+            int result;
+            _CountBegin(out expMapping, out result);
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
@@ -936,8 +922,7 @@ namespace SqlSugar
             {
                 result =await GetCountAsync();
             }
-            RestoreMapping();
-            QueryBuilder.IsCount = false;
+            _CountEnd(expMapping);
             return result;
         }
         public async Task<int> CountAsync(Expression<Func<T, bool>> expression)
@@ -1066,11 +1051,35 @@ namespace SqlSugar
             totalNumber.Value = await this.Clone().CountAsync();
             return await this.Clone().ToDataTablePageAsync(pageIndex, pageSize);
         }
-        
+
         #endregion
 
         #region Private Methods
-  
+        private void _CountEnd(MappingTableList expMapping)
+        {
+            RestoreMapping();
+            QueryBuilder.IsCount = false;
+            if (expMapping.Count > 0)
+            {
+                if (this.QueryableMappingTableList == null)
+                {
+                    this.QueryableMappingTableList = new MappingTableList();
+                }
+                this.QueryableMappingTableList.Add(expMapping.First());
+            }
+        }
+
+        private void _CountBegin(out MappingTableList expMapping, out int result)
+        {
+            expMapping = new MappingTableList();
+            if (QueryBuilder.EntityName == "ExpandoObject" && this.Context.MappingTables.Any(it => it.EntityName == "ExpandoObject"))
+            {
+                expMapping.Add("ExpandoObject", this.Context.MappingTables.First(it => it.EntityName == "ExpandoObject").DbTableName);
+            }
+            InitMapping();
+            QueryBuilder.IsCount = true;
+            result = 0;
+        }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Select");
