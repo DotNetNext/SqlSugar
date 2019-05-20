@@ -1845,6 +1845,7 @@ namespace SqlSugar
                     {
                         var contextProperty = item.GetType().GetProperty("Context");
                         SqlSugarProvider newClient = this.Context.Utilities.CopyContext();
+                        newClient.Ado.IsDisableMasterSlaveSeparation = true;
                         if (newClient.CurrentConnectionConfig.AopEvents == null)
                             newClient.CurrentConnectionConfig.AopEvents = new AopEvents();
                         contextProperty.SetValue(item, newClient, null);

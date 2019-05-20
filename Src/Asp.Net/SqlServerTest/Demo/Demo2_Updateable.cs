@@ -11,6 +11,9 @@ namespace OrmTest
     {
         public static void Init()
         {
+            Console.WriteLine("");
+            Console.WriteLine("#### Updateable Start ####");
+
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.SqlServer,
@@ -96,6 +99,8 @@ namespace OrmTest
 
             //Where Sql
             db.Updateable(updateObj).Where("id=@x", new { x = "1" }).ExecuteCommand();
+
+            Console.WriteLine("#### Updateable End ####");
         }
 
     }
