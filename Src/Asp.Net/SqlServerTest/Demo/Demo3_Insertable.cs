@@ -9,7 +9,8 @@ namespace OrmTest
 {
     public class Demo3_Insertable
     {
-        public static void Init() {
+        public static void Init()
+        {
             Console.WriteLine("");
             Console.WriteLine("#### Insertable Start ####");
 
@@ -36,7 +37,7 @@ namespace OrmTest
             };
 
             //Ignore  Price
-            db.Insertable(insertObj).IgnoreColumns(it => new {  it.Price }).ExecuteReturnIdentity();//get identity
+            db.Insertable(insertObj).IgnoreColumns(it => new { it.Price }).ExecuteReturnIdentity();//get identity
             db.Insertable(insertObj).IgnoreColumns("Name", "TestId").ExecuteReturnIdentity();
 
             //Only  insert  Name and Price
