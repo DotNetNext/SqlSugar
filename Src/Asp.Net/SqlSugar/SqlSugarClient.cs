@@ -45,7 +45,7 @@ namespace SqlSugar
         #endregion
 
         #region Global variable
-        public SqlSugarProvider Context { get => GetContext(); set => _Context = value; }
+        public SqlSugarProvider Context { get => GetContext();}
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
         public ConnectionConfig CurrentConnectionConfig { get => _CurrentConnectionConfig; set => _CurrentConnectionConfig = value; }
         public Guid ContextID { get => this.Context.ContextID; set => this.Context.ContextID = value; }

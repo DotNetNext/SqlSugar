@@ -23,7 +23,7 @@ namespace SqlSugar
         IAdo Ado { get; }
         AopProvider Aop { get; }
         ICodeFirst CodeFirst { get; }
-        SqlSugarProvider Context { get; set; }
+
  
         IDbFirst DbFirst { get; }
         IDbMaintenance DbMaintenance { get; }

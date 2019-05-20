@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     internal class CacheKeyBuider
     {
-        public static CacheKey GetKey(ISqlSugarClient context, QueryBuilder queryBuilder)
+        public static CacheKey GetKey(SqlSugarProvider context, QueryBuilder queryBuilder)
         {
             CacheKey result = new CacheKey();
             result.Database = context.Context.Ado.Connection.Database;
