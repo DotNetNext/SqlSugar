@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using SqlSugar;
 namespace OrmTest
 {
-    public class Demo1_SqlSugarClient
+    public class Demo0_SqlSugarClient
     {
 
         public static void Init()
@@ -35,6 +35,7 @@ namespace OrmTest
                     OnLogExecuting = (sql, p) =>
                     {
                         Console.WriteLine(sql);
+                        Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
                     }
                 }
             });

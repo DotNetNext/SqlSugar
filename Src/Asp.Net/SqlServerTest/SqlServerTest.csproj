@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Demo\Demo2_Updateable.cs" />
     <Compile Include="Demo\DemoC_GobalFilter.cs" />
     <Compile Include="Demo\Demo1_Queryable.cs" />
     <Compile Include="Demo\DemoD_DbFirst.cs" />
