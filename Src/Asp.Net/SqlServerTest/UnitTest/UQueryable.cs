@@ -16,6 +16,11 @@ namespace OrmTest
             var totalPage = 0;
             var list=Db.Queryable<Order>().ToPageList(pageindex, pagesize, ref total, ref totalPage);
 
+            Db.CodeFirst.InitTables(typeof(CarType));
+            Db.Updateable<CarType>()
+                  .SetColumns(it => new CarType { State =SqlSugar.SqlFunc.IIF(it.State==true,false,true) }).Where(it=>true)
+               .ExecuteCommand();
+
         }
     }
 }
