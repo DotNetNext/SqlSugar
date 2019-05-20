@@ -596,6 +596,14 @@ namespace SqlSugar
         }
         public virtual int Count()
         {
+            if (QueryBuilder.EntityName== "ExpandoObject" && this.Context.MappingTables.Any(it => it.EntityName == "ExpandoObject"))
+            {
+                if (OldMappingTableList == null)
+                {
+                    OldMappingTableList = new MappingTableList();
+                }
+                OldMappingTableList.Add("ExpandoObject", this.Context.MappingTables.First(it => it.EntityName == "ExpandoObject").DbTableName);
+            }
             InitMapping();
             QueryBuilder.IsCount = true;
             int result = 0;
