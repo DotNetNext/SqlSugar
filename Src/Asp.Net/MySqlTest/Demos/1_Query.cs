@@ -257,6 +257,26 @@ namespace OrmTest.Demo
               JoinType.Left,st.SchoolId==sc.Id
             }).ToPageList(pageIndex, pageSize, ref totalCount);
 
+
+            var queryable = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            });
+            queryable.Count();
+            queryable.ToList();
+
+
+            var queryable2 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).Select<Student>().MergeTable();
+            queryable2.Count();
+            queryable2.ToList();
+
+
+            var queryable3 = db.Queryable<Student, School>((st, sc) => new object[] {
+              JoinType.Left,st.SchoolId==sc.Id
+            }).Select<Student>().MergeTable().ToPageList(1,2,ref totalCount);
+
+
             //top 5
             var top5 = db.Queryable<Student>().Take(5).ToList();
 
