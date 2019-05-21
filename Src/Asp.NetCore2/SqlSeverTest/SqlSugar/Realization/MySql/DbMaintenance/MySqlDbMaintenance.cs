@@ -383,7 +383,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    appendSql += column.IsNullable ? " NULL" : "NOT NULL";
+                    appendSql += column.IsNullable ? " NULL " : " NOT NULL ";
                 }
                 tableName = this.SqlBuilder.GetTranslationTableName(tableName);
                 oldColumnName = this.SqlBuilder.GetTranslationColumnName(oldColumnName);
