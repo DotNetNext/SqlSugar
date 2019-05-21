@@ -106,7 +106,7 @@ namespace SqlSugar
             foreach (var columnInfo in columnInfos)
             {
                 string fileName = columnInfo.DbColumnName ?? columnInfo.PropertyName;
-                if (columnInfo.IsIgnore)
+                if (columnInfo.IsIgnore&& !this.ReaderKeys.Any(it=>it.Equals(fileName,StringComparison.CurrentCultureIgnoreCase)))
                 {
                     continue;
                 }
