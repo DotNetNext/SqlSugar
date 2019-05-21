@@ -146,7 +146,7 @@ namespace SqlSugar
         {
             get
             {
-                return "exec sp_rename '{0}.{1}','{2}','column';";
+                return "alter table {0} change  column {1} {2}";
             }
         }
         #endregion
@@ -364,6 +364,38 @@ namespace SqlSugar
                 dataSize = item.Length > 0 ? string.Format("({0},{1})", item.Length, item.DecimalDigits) : null;
             }
             return dataSize;
+        }
+
+        public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
+        {
+            var columns=GetColumnInfosByTableName(tableName).Where(it=>it.DbColumnName.Equals(oldColumnName,StringComparison.CurrentCultureIgnoreCase));
+            if (columns != null && columns.Any())
+            {
+                var column = columns.First();
+                var appendSql = " " + column.DataType;
+                if (column.Length > 0 && column.Scale == 0)
+                {
+                    appendSql += string.Format("({0}) ", column.Length);
+                }
+                else if (column.Scale > 0 && column.Length > 0)
+                {
+                    appendSql += string.Format("({0},{1}) ", column.Length, column.Scale);
+                }
+                else
+                {
+                    appendSql += column.IsNullable ? " NULL" : "NOT NULL";
+                }
+                tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+                oldColumnName = this.SqlBuilder.GetTranslationColumnName(oldColumnName);
+                newColumnName = this.SqlBuilder.GetTranslationColumnName(newColumnName);
+                string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName+appendSql);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override bool IsAnyConstraint(string constraintName)

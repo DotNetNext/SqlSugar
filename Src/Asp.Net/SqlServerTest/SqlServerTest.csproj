@@ -147,6 +147,7 @@
     <Compile Include="OldTest\UnitTest\Update.cs" />
     <Compile Include="Models\CarType.cs" />
     <Compile Include="UnitTest\UAdo.cs" />
+    <Compile Include="UnitTest\Updateable.cs" />
     <Compile Include="UnitTest\UQueryable.cs" />
     <Compile Include="UnitTest\UQueryableAsync.cs" />
     <Compile Include="UnitTest\UThread3.cs" />
