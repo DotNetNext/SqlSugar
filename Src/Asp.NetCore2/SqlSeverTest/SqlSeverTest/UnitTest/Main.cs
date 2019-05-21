@@ -25,7 +25,14 @@ namespace OrmTest
         });
         public static void Init()
         {
+            Updateable();
             Json();
+            Ado();
+            Queryable();
+            QueryableAsync();
+            Thread();
+            Thread2();
+            Thread3();
         }
     }
 }

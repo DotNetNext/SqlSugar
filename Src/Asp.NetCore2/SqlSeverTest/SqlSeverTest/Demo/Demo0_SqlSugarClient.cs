@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using SqlSugar;
 namespace OrmTest
 {
-    public class Demo1_SqlSugarClient
+    public class Demo0_SqlSugarClient
     {
 
         public static void Init()
@@ -35,12 +35,21 @@ namespace OrmTest
                     OnLogExecuting = (sql, p) =>
                     {
                         Console.WriteLine(sql);
+                        Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
                     }
                 }
             });
 
+            //if no exist create datebase SQLSUGAR4XTEST (bin/database/)
+            db.DbMaintenance.CreateDatabase();
+
             //Use db
             var dt = db.Ado.GetDataTable("select 1");
+
+            //create table OrderDetail
+            db.CodeFirst.InitTables(typeof(OrderItem));
+
+            db.Insertable(new OrderItem() { OrderId = 1, Price = 0 }).ExecuteCommand();
             Console.WriteLine("#### SqlSugarClient End ####");
 
         }

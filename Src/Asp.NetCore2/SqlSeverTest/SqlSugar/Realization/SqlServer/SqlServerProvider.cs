@@ -129,7 +129,7 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
-                if (sqlParameter.Value!=null&&sqlParameter.DbType == System.Data.DbType.DateTime)
+                if (sqlParameter.Value!=null&& sqlParameter.Value != DBNull.Value && sqlParameter.DbType == System.Data.DbType.DateTime)
                 {
                     var date = Convert.ToDateTime(sqlParameter.Value);
                     if (date==DateTime.MinValue)

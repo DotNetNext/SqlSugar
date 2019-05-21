@@ -15,7 +15,10 @@ namespace OrmTest
             Db.DbMaintenance.TruncateTable<JsonTest>();
             Db.Insertable(new JsonTest() { Order = new Order { Id = 1, Name = "order1" } }).ExecuteCommand();
             var list = Db.Queryable<JsonTest>().ToList();
+            UValidate.Check("order1", list.First().Order.Name, "Json");
             Db.Updateable(new JsonTest() { Id = 1, Order = new Order { Id = 2, Name = "order2" } }).ExecuteCommand();
+            list= Db.Queryable<JsonTest>().ToList();
+            UValidate.Check("order2", list.First().Order.Name, "Json");
             var list2 = Db.Queryable<JsonTest>().ToList();
         }
     }
