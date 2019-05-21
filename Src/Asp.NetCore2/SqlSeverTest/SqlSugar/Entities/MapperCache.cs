@@ -22,7 +22,7 @@ namespace SqlSugar
         public Result Get<Result>(Func<List<T>, Result> action)
         {
             GetIndex++;
-            string key = "Get" + GetIndex;
+            string key = "Get" +typeof(Result)+action.GetHashCode()+action.Method.Name;
             if (caches.ContainsKey(key))
             {
                 return (Result)caches[key];
