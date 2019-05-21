@@ -1,4 +1,4 @@
-# SqlSugar 4.X  API
+# SqlSugar 5.X  API
 
 Using SqlSugar is very simple ,And it's powerful.
 
