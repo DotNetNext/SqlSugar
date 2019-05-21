@@ -10,7 +10,7 @@ namespace OrmTest
         {
             //OldTestMain.Init();
 
-            Demo
+            //Demo
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
             Democ_GobalFilter.Init();
