@@ -1,4 +1,4 @@
-# SqlSugar 5.X  API
+# SqlSugar 5.X  API 
 
 Using SqlSugar is very simple ,And it's powerful.
 
@@ -11,15 +11,10 @@ QQ Group:225982985
 
 ## Nuget 
 
-.net Install：
-```ps1
-Install-Package sqlSugar 
-```
-.net core Install：
-```ps1
-Install-Package sqlSugarCore
-```
-
+|.net |.net core |
+|---------| ---------|
+|Install-Package sqlSugar |Install-Package sqlSugarCore|
+ 
 ## SqlSugar's 16 Functions
 There are 16 methods under SqlSugarClient
 ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190430/6369224056499802674782957.jpg?id=1 "sqlsugar")
