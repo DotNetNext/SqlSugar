@@ -295,13 +295,13 @@ namespace SqlSugar
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            //if (databaseDirectory != null)
-            //{
-            //    if (!FileHelper.IsExistDirectory(databaseDirectory))
-            //    {
-            //        FileHelper.CreateDirectory(databaseDirectory);
-            //    }
-            //}
+            if (databaseDirectory != null)
+            {
+                if (!FileHelper.IsExistDirectory(databaseDirectory))
+                {
+                    FileHelper.CreateDirectory(databaseDirectory);
+                }
+            }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
             connection = connection.Replace(oldDatabaseName, "master");
@@ -339,7 +339,7 @@ namespace SqlSugar
                                             filegrowth = 10mb
                                         ); ";
                 }
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, databaseName, databaseDirectory));
+                newDb.Ado.ExecuteCommand(string.Format(sql, databaseName, databaseDirectory));
             }
             return true;
         }
