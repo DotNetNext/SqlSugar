@@ -25,6 +25,15 @@ namespace OrmTest
             //Db.DbMaintenance.TruncateTable<TestTree>();
             //Db.Ado.ExecuteCommand("insert testtree values(hierarchyid::GetRoot(),'name')");
             //var list2 = Db.Queryable<TestTree>().ToList();
+
+            Db.CodeFirst.InitTables<GuidTable>();
+            Db.Queryable<GuidTable>().Where(it => it.Id.HasValue).ToList();
+        }
+
+
+        public class GuidTable
+        {
+            public Guid? Id { get; set; }
         }
     }
 }

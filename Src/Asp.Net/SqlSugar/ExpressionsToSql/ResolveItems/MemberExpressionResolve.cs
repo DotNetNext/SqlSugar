@@ -336,6 +336,10 @@ namespace SqlSugar
             this.Expression = expression.Expression;
             this.Start();
             var methodParamter = new MethodCallExpressionArgs() { IsMember = true, MemberName = parameter.CommonTempData, MemberValue = null };
+            if (expression.Expression?.Type != null)
+            {
+                methodParamter.Type =UtilMethods.GetUnderType(expression.Expression?.Type);
+            }
             var result = this.Context.DbMehtods.HasValue(new MethodCallExpressionModel()
             {
                 Args = new List<MethodCallExpressionArgs>() {
