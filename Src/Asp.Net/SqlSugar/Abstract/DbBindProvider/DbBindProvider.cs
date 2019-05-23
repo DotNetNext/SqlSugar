@@ -151,6 +151,10 @@ namespace SqlSugar
             {
                 return "long";
             }
+            else if (dbTypeName.Contains("hierarchyid"))
+            {
+                return "object";
+            }
             else if (dbTypeName == "int16")
             {
                 return "short";

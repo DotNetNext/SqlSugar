@@ -136,7 +136,19 @@ namespace SqlSugar
             var result = dr.GetInt32(i);
             return result;
         }
-
+        public static object SugarGetValue(this IDataRecord dr, int i)
+        {
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            var result = dr.GetValue(i);
+            if (result.GetType().Name == "SqlHierarchyId")
+            {
+                result = result.ObjToString();
+            }
+            return result;
+        }
         public static long? GetConvetInt64(this IDataRecord dr, int i)
         {
             if (dr.IsDBNull(i))

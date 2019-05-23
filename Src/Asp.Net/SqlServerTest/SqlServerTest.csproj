@@ -87,6 +87,7 @@
     <Compile Include="OldTest\Demos\K_MultiClient.cs" />
     <Compile Include="OldTest\Models\Brand.cs" />
     <Compile Include="OldTest\BugTest\Bug1.cs" />
+    <Compile Include="Models\TestTree.cs" />
     <Compile Include="OldTest\Models\VendorAndBrand.cs" />
     <Compile Include="OldTest\Demos\F_VersionValidation.cs" />
     <Compile Include="OldTest\Demos\G_Mapper.cs" />
