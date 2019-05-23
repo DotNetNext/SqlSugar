@@ -21,7 +21,7 @@ namespace OrmTest.UnitTest
         }
         public SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.MySql, IsAutoCloseConnection = true });
             return db;
         }
     }
