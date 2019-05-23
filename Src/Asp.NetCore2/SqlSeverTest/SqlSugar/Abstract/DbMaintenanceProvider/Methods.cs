@@ -146,11 +146,7 @@ namespace SqlSugar
         public virtual bool CreateDatabase(string databaseDirectory = null)
         {
             var seChar = Path.DirectorySeparatorChar.ToString();
-            if (databaseDirectory == null)
-            {
-                databaseDirectory = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\').TrimEnd('/') +seChar+ "database";
-            }
-            else
+            if (databaseDirectory.HasValue())
             {
                 databaseDirectory = databaseDirectory.TrimEnd('\\').TrimEnd('/');
             }
