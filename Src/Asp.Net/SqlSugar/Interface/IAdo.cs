@@ -59,7 +59,7 @@ namespace SqlSugar
         Task<IDataReader> GetDataReaderAsync(string sql, object parameters);
         Task<IDataReader> GetDataReaderAsync(string sql, params SugarParameter[] parameters);
         Task<IDataReader> GetDataReaderAsync(string sql, List<SugarParameter> parameters);
-        Task<IDataReader> GetDataReaderNoCloseAsync(string sql, params SugarParameter[] parameters);
+
 
         object GetScalar(string sql, object parameters);
         object GetScalar(string sql, params SugarParameter[] parameters);

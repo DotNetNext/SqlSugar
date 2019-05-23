@@ -86,31 +86,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"
-create database {0}  
-on primary 
-(
-    name = N'{0}',
-    filename=N'{1}\{0}.mdf',
-    size=10mb,
-    maxsize=100mb,
-    filegrowth=1mb
-),
-(
-    name=N'{0}_ndf',   
-    filename=N'{1}\{0}.ndf',
-    size=10mb,
-    maxsize=100mb,
-     filegrowth=10%
-)
-log on  --逻辑文件
-(
-    name=N'{0}_log',  
-    filename=N'{1}\{0}.ldf', 
-    size=100mb,
-    maxsize=1gb,
-    filegrowth=10mb
-);";
+                return @"create database {0}  ";
             }
         }
         protected override string AddPrimaryKeySql
@@ -336,7 +312,34 @@ log on  --逻辑文件
             });
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, databaseName, databaseDirectory));
+                var sql = CreateDataBaseSql;
+                if (databaseDirectory.HasValue())
+                {
+                    sql += @"on primary 
+                                        (
+                                            name = N'{0}',
+                                            filename = N'{1}\{0}.mdf',
+                                            size = 10mb,
+                                            maxsize = 100mb,
+                                            filegrowth = 1mb
+                                        ),
+                                        (
+                                            name = N'{0}_ndf',   
+                                            filename = N'{1}\{0}.ndf',
+                                            size = 10mb,
+                                            maxsize = 100mb,
+                                             filegrowth = 10 %
+                                        )
+                                        log on  --逻辑文件
+                                        (
+                                            name = N'{0}_log',
+                                            filename = N'{1}\{0}.ldf',
+                                            size = 100mb,
+                                            maxsize = 1gb,
+                                            filegrowth = 10mb
+                                        ); ";
+                }
+                newDb.Ado.ExecuteCommand(string.Format(sql, databaseName, databaseDirectory));
             }
             return true;
         }

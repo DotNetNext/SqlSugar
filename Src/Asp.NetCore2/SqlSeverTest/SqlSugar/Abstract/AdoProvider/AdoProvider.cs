@@ -320,36 +320,6 @@ namespace SqlSugar
                 throw ex;
             }
         }
-        public virtual IDataReader GetDataReaderNoClose(string sql, params SugarParameter[] parameters)
-        {
-            try
-            {
-                InitParameters(ref sql, parameters);
-                if (FormatSql != null)
-                    sql = FormatSql(sql);
-                SetConnectionStart(sql);
-                var isSp = this.CommandType == CommandType.StoredProcedure;
-                if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
-                ExecuteBefore(sql, parameters);
-                IDbCommand sqlCommand = GetCommand(sql, parameters);
-                IDataReader sqlDataReader = sqlCommand.ExecuteReader();
-                if (isSp)
-                    DataReaderParameters = sqlCommand.Parameters;
-                if (this.IsClearParameters)
-                    sqlCommand.Parameters.Clear();
-                ExecuteAfter(sql, parameters);
-                SetConnectionEnd(sql);
-                return sqlDataReader;
-            }
-            catch (Exception ex)
-            {
-                CommandType = CommandType.Text;
-                if (ErrorEvent != null)
-                    ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
-            }
-        }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
         {
             try
@@ -462,36 +432,6 @@ namespace SqlSugar
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
                 var sqlDataReader = await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
-                if (isSp)
-                    DataReaderParameters = sqlCommand.Parameters;
-                if (this.IsClearParameters)
-                    sqlCommand.Parameters.Clear();
-                ExecuteAfter(sql, parameters);
-                SetConnectionEnd(sql);
-                return sqlDataReader;
-            }
-            catch (Exception ex)
-            {
-                CommandType = CommandType.Text;
-                if (ErrorEvent != null)
-                    ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
-            }
-        }
-        public virtual async Task<IDataReader> GetDataReaderNoCloseAsync(string sql, params SugarParameter[] parameters)
-        {
-            try
-            {
-                InitParameters(ref sql, parameters);
-                if (FormatSql != null)
-                    sql = FormatSql(sql);
-                SetConnectionStart(sql);
-                var isSp = this.CommandType == CommandType.StoredProcedure;
-                if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
-                ExecuteBefore(sql, parameters);
-                var sqlCommand = GetCommand(sql, parameters);
-                var sqlDataReader = await sqlCommand.ExecuteReaderAsync();
                 if (isSp)
                     DataReaderParameters = sqlCommand.Parameters;
                 if (this.IsClearParameters)
@@ -828,7 +768,7 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = this.GetDataReaderNoClose(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            using (var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 DbDataReader DbReader = (DbDataReader)dataReader;
                 List<T> result = new List<T>();
@@ -949,7 +889,7 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = await this.GetDataReaderNoCloseAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            using (var dataReader = await this.GetDataReaderAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
             {
                 DbDataReader DbReader = (DbDataReader)dataReader;
                 List<T> result = new List<T>();
