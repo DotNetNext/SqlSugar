@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -12,6 +14,39 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+
+        internal static object To(object value, Type destinationType)
+        {
+            return To(value, destinationType, CultureInfo.InvariantCulture);
+        }
+ 
+        internal static object To(object value, Type destinationType, CultureInfo culture)
+        {
+            if (value != null)
+            {
+                var sourceType = value.GetType();
+
+                var destinationConverter = TypeDescriptor.GetConverter(destinationType);
+                if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
+                    return destinationConverter.ConvertFrom(null, culture, value);
+
+                var sourceConverter = TypeDescriptor.GetConverter(sourceType);
+                if (sourceConverter != null && sourceConverter.CanConvertTo(destinationType))
+                    return sourceConverter.ConvertTo(null, culture, value, destinationType);
+
+                if (destinationType.IsEnum && value is int)
+                    return Enum.ToObject(destinationType, (int)value);
+
+                if (!destinationType.IsInstanceOfType(value))
+                    return Convert.ChangeType(value, destinationType, culture);
+            }
+            return value;
+        }
+
+        internal static T To<T>(object value)
+        {
+            return (T)To(value, typeof(T));
+        }
         internal static Type GetUnderType(Type oldType)
         {
             Type type = Nullable.GetUnderlyingType(oldType);

@@ -136,19 +136,16 @@ namespace SqlSugar
             var result = dr.GetInt32(i);
             return result;
         }
-        public static object GetValue(this IDataRecord dr, int i)
+        public static T GetConvertValue<T>(this IDataRecord dr, int i)
         {
             if (dr.IsDBNull(i))
             {
-                return null;
+                return default(T);
             }
             var result = dr.GetValue(i);
-            if (result.GetType().Name == "SqlHierarchyId")
-            {
-                result = result.ObjToString();
-            }
-            return result;
+            return UtilMethods.To<T>(result);
         }
+
         public static long? GetConvetInt64(this IDataRecord dr, int i)
         {
             if (dr.IsDBNull(i))
@@ -280,62 +277,6 @@ namespace SqlSugar
             return null;
         }
 
-        #endregion
-
-        #region Sqlite Extensions
-        public static Nullable<T> GetSqliteTypeNull<T>(this IDataReader dr, int i) where T : struct
-        {
-            var type = UtilMethods.GetUnderType(typeof(T));
-            if (dr.IsDBNull(i))
-            {
-                return null;
-            }
-            return SqliteTypeConvert<T>(dr, i, type);
-        }
-
-        public static T GetSqliteType<T>(this IDataReader dr, int i) where T : struct
-        {
-            var type = typeof(T);
-            return SqliteTypeConvert<T>(dr, i, type);
-        }
-
-        private static T SqliteTypeConvert<T>(IDataReader dr, int i, Type type) where T : struct
-        {
-            if (type.IsIn(UtilConstants.IntType))
-            {
-                return (T)((object)(dr.GetInt32(i)));
-            }
-            else if (type == UtilConstants.DateType)
-            {
-                return (T)Convert.ChangeType(Convert.ToDateTime(dr.GetString(i)), type);
-            }
-            else if (type == UtilConstants.DecType)
-            {
-                return (T)Convert.ChangeType(dr.GetDecimal(i), type);
-            }
-            else if (type == UtilConstants.DobType)
-            {
-                return (T)Convert.ChangeType(dr.GetDouble(i), type);
-            }
-            else if (type == UtilConstants.BoolType)
-            {
-                return (T)Convert.ChangeType(dr.GetBoolean(i), type);
-            }
-            else if (type == UtilConstants.LongType)
-            {
-                return (T)Convert.ChangeType(dr.GetInt64(i), type);
-            }
-            else if (type == UtilConstants.GuidType)
-            {
-                string guidString = dr.GetString(i);
-                string changeValue = guidString.IsNullOrEmpty() ? Guid.Empty.ToString() : guidString;
-                return (T)Convert.ChangeType(Guid.Parse(changeValue), type);
-            }
-            else
-            {
-                return (T)Convert.ChangeType((dr.GetString(i)), type);
-            }
-        }
         #endregion
     }
 }

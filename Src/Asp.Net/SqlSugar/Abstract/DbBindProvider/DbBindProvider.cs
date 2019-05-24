@@ -151,10 +151,6 @@ namespace SqlSugar
             {
                 return "long";
             }
-            else if (dbTypeName.Contains("hierarchyid"))
-            {
-                return "object";
-            }
             else if (dbTypeName == "int16")
             {
                 return "short";
@@ -173,8 +169,7 @@ namespace SqlSugar
             }
             else if (propertyTypes == null || propertyTypes.Count() == 0)
             {
-                Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
-                return null;
+                return "object";
             }
             else if (propertyTypes.First().Value == CSharpDataType.byteArray)
             {
