@@ -225,13 +225,19 @@ namespace SqlSugar
             {
                 return null;
             }
-            return (T)Convert.ChangeType(dr.GetValue(i), typeof(T));
+            var result = dr.GetValue(i);
+            return UtilMethods.To<T>(result);
 
         }
 
         public static T GetOther<T>(this IDataReader dr, int i)
         {
-            return (T)Convert.ChangeType(dr.GetValue(i), typeof(T));
+            if (dr.IsDBNull(i))
+            {
+                return default(T);
+            }
+            var result = dr.GetValue(i);
+            return UtilMethods.To<T>(result);
         }
 
         public static T GetJson<T>(this IDataReader dr, int i)
