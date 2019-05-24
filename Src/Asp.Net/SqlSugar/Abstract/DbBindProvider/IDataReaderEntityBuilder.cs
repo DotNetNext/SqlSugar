@@ -267,6 +267,10 @@ namespace SqlSugar
                     {
                         method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
                     }
+                    if (bindPropertyType == UtilConstants.IntType)
+                    {
+                        method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                    }
                     break;
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
