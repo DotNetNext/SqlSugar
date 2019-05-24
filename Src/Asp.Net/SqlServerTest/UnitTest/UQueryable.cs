@@ -18,12 +18,12 @@ namespace OrmTest
 
             //Db.CodeFirst.InitTables(typeof(CarType));
             //Db.Updateable<CarType>()
-            //      .SetColumns(it => new CarType { State =SqlSugar.SqlFunc.IIF(it.State==true,false,true) }).Where(it=>true)
+            //      .SetColumns(it => new CarType { State = SqlSugar.SqlFunc.IIF(it.State == true, false, true) }).Where(it => true)
             //   .ExecuteCommand();
 
             //Db.CodeFirst.InitTables(typeof(TestTree));
             //Db.DbMaintenance.TruncateTable<TestTree>();
-            //Db.Ado.ExecuteCommand("insert testtree values(hierarchyid::GetRoot(),'name')");
+            //Db.Ado.ExecuteCommand("insert testtree values(hierarchyid::GetRoot(),geography :: STGeomFromText ('POINT(55.9271035250276 -3.29431266523898)',4326),'name')");
             //var list2 = Db.Queryable<TestTree>().ToList();
 
             Db.CodeFirst.InitTables<GuidTable>();

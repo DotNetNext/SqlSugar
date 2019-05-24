@@ -10,6 +10,8 @@ namespace OrmTest
     {
         [SqlSugar.SugarColumn(ColumnDataType = "hierarchyid")]
         public string TreeId { get; set; }
+        [SqlSugar.SugarColumn(ColumnDataType = "Geography")]
+        public string GId { get; set; }
         public string Name { get; set; }
     }
 }
