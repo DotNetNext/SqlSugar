@@ -263,6 +263,10 @@ namespace SqlSugar
                     if (dbTypeName.Equals("float",StringComparison.CurrentCultureIgnoreCase) && isNullableType && bindProperyTypeName.Equals("single",StringComparison.CurrentCultureIgnoreCase)) {
                         method = getConvertDoubleToFloat;
                     }
+                    if (bindPropertyType == UtilConstants.DecType)
+                    {
+                        method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                    }
                     break;
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
