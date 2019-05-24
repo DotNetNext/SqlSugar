@@ -1173,7 +1173,7 @@ namespace SqlSugar
             }
             catch
             {
-                Check.Exception(true, ErrorMessage.GetThrowMessage("Please reduce the number of T. Save Queue Changes queries don't have so many results", "请减少T的数量，SaveQueueChanges 查询没有这么多结果"));
+               // Check.Exception(true, ErrorMessage.GetThrowMessage("Please reduce the number of T. Save Queue Changes queries don't have so many results", "请减少T的数量，SaveQueueChanges 查询没有这么多结果"));
             }
         }
         private void ExecuteProcessingSQL(ref string sql, SugarParameter[] parameters)
