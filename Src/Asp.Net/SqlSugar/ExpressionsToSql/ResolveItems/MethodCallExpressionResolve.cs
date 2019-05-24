@@ -578,6 +578,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.AggregateMax(model);
                     case "AggregateCount":
                         return this.Context.DbMehtods.AggregateCount(model);
+                    case "AggregateDistinctCount":
+                        return this.Context.DbMehtods.AggregateDistinctCount(model);
                     case "MappingColumn":
                         var mappingColumnResult = this.Context.DbMehtods.MappingColumn(model);
                         var isValid = model.Args[0].IsMember && model.Args[1].IsMember == false;
