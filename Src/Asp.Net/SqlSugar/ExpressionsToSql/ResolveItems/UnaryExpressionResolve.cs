@@ -123,6 +123,8 @@ namespace SqlSugar
             parameter.CommonTempData = CommonTempDataType.Append;
             if (nodeType == ExpressionType.Not)
                 AppendNot(parameter.CommonTempData);
+            if (nodeType == ExpressionType.Negate)
+                AppendNegate(parameter.CommonTempData);
             base.Start();
             parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
             parameter.BaseParameter.ChildExpression = base.Expression;

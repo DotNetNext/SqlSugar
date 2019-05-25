@@ -253,6 +253,19 @@ namespace SqlSugar
                 this.Context.Result.Replace(ExpressionConst.FormatSymbol, "NOT");
             }
         }
+        protected void AppendNegate(object Value)
+        {
+            var isAppend = !this.Context.Result.Contains(ExpressionConst.FormatSymbol);
+            var lastCharIsSpace = this.Context.Result.LastCharIsSpace;
+            if (isAppend)
+            {
+                this.Context.Result.Append(lastCharIsSpace ? "-" : " -");
+            }
+            else
+            {
+                this.Context.Result.Replace(ExpressionConst.FormatSymbol, "-");
+            }
+        }
 
         protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item)
         {
