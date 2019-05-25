@@ -330,7 +330,7 @@ namespace SqlSugar
                                             maxsize = 100mb,
                                              filegrowth = 10 %
                                         )
-                                        log on  --逻辑文件
+                                        log on  
                                         (
                                             name = N'{0}_log',
                                             filename = N'{1}\{0}.ldf',
