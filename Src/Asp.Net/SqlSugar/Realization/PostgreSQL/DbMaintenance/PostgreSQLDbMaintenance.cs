@@ -220,21 +220,21 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return "CREATE INDEX Index_{0}_{2} ON {0} ({1})";
             }
         }
         protected override string AddDefaultValueSql
         {
             get
             {
-                return "";
+                return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT {2}";
             }
         }
         protected override string IsAnyIndexSql
         {
             get
             {
-                return "select count(*) from sys.indexes where name='{0}'";
+                return " SELECT count(1) FROM pg_class c JOIN   pg_namespace n ON n.oid = c.relnamespace where relname = '{0}'";
             }
         }
         #endregion
