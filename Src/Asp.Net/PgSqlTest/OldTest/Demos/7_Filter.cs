@@ -41,7 +41,7 @@ namespace OrmTest.Demo
 
         public static SqlSugarClient GetInstance1()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.PostgreSQL, IsAutoCloseConnection = true });
             db.QueryFilter
              .Add(new SqlFilterItem()
              {
