@@ -9,6 +9,7 @@ namespace SqlSugar
         SqlSugarProvider Context { get; set; }
 
         #region DML
+        List<string> GetDataBaseList(SqlSugarClient db);
         List<DbTableInfo> GetViewInfoList(bool isCache=true);
         List<DbTableInfo> GetTableInfoList(bool isCache=true);
         List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true);
@@ -26,6 +27,8 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        bool AddDefaultValue(string tableName,string columnName,string defaultValue);
+        bool CreateIndex(string tableName, string [] columnNames);
         bool DropTable(string tableName);
         bool TruncateTable(string tableName);
         bool TruncateTable<T>();
@@ -40,6 +43,10 @@ namespace SqlSugar
         bool DropColumn(string tableName,string columnName);
         bool RenameColumn(string tableName, string oldColumnName, string newColumnName);
         bool AddRemark(EntityInfo entity);
+        void AddIndex(EntityInfo entityInfo);
+        void AddDefaultValue(EntityInfo entityInfo);
+        bool IsAnyDefaultValue(string tableName, string columnName);
+        bool IsAnyIndex(string indexName);
         bool AddColumnRemark(string columnName,string tableName,string description);
         bool DeleteColumnRemark(string columnName, string tableName);
         bool IsAnyColumnRemark(string columnName, string tableName);
@@ -60,7 +67,6 @@ namespace SqlSugar
         /// <param name="databaseDirectory"></param>
         /// <returns></returns>
         bool CreateDatabase(string databaseName,string databaseDirectory = null);
-        List<string> GetDataBaseList(SqlSugarClient db);
         #endregion
     }
 }

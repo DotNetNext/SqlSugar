@@ -135,47 +135,6 @@ namespace SqlSugar
                 throw new NotSupportedException();
             }
         }
-        #endregion
-
-        #region Check
-        protected override string CheckSystemTablePermissionsSql
-        {
-            get
-            {
-                return "select Name from sqlite_master limit 0,1";
-            }
-        }
-        #endregion
-
-        #region Scattered
-        protected override string CreateTableNull
-        {
-            get
-            {
-                return "NULL";
-            }
-        }
-        protected override string CreateTableNotNull
-        {
-            get
-            {
-                return "NOT NULL";
-            }
-        }
-        protected override string CreateTablePirmaryKey
-        {
-            get
-            {
-                return "PRIMARY KEY";
-            }
-        }
-        protected override string CreateTableIdentity
-        {
-            get
-            {
-                return "AUTOINCREMENT";
-            }
-        }
 
         protected override string AddColumnRemarkSql
         {
@@ -230,6 +189,69 @@ namespace SqlSugar
             get
             {
                 throw new NotSupportedException();
+            }
+        }
+
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+        protected override string IsAnyIndexSql
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
+        #endregion
+
+        #region Check
+        protected override string CheckSystemTablePermissionsSql
+        {
+            get
+            {
+                return "select Name from sqlite_master limit 0,1";
+            }
+        }
+        #endregion
+
+        #region Scattered
+        protected override string CreateTableNull
+        {
+            get
+            {
+                return "NULL";
+            }
+        }
+        protected override string CreateTableNotNull
+        {
+            get
+            {
+                return "NOT NULL";
+            }
+        }
+        protected override string CreateTablePirmaryKey
+        {
+            get
+            {
+                return "PRIMARY KEY";
+            }
+        }
+        protected override string CreateTableIdentity
+        {
+            get
+            {
+                return "AUTOINCREMENT";
             }
         }
         #endregion

@@ -216,6 +216,27 @@ namespace SqlSugar
 
         protected override string RenameTableSql => "alter table 表名 {0} to {1}";
 
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string IsAnyIndexSql
+        {
+            get
+            {
+                return "select count(*) from sys.indexes where name='{0}'";
+            }
+        }
         #endregion
 
         #region Methods

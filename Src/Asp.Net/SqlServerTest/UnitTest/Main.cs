@@ -25,6 +25,7 @@ namespace OrmTest
         });
         public static void Init()
         {
+            CodeFirst();
             Updateable();
             Json();
             Ado();

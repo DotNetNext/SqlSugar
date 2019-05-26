@@ -157,6 +157,13 @@ namespace SqlSugar
             set { _DefaultValue = value; }
         }
 
+        private string[] _IndexGroupNameList;
+        public string[] IndexGroupNameList
+        {
+            get { return _IndexGroupNameList; }
+            set { _IndexGroupNameList = value; }
+        }
+
     }
 
 }

@@ -32,6 +32,9 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected abstract string CreateIndexSql { get;  }
+        protected abstract string IsAnyIndexSql { get; }
+        protected abstract string AddDefaultValueSql { get;  }
         protected abstract string CreateDataBaseSql { get; }
         protected abstract string AddColumnToTableSql { get; }
         protected abstract string AlterColumnToTableSql { get; }

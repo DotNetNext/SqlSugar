@@ -51,6 +51,27 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string IsAnyIndexSql 
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                return "";
+            }
+        }
         protected override string CreateDataBaseSql
         {
             get
@@ -142,48 +163,6 @@ namespace SqlSugar
                 return "ALTER TABLE {0} rename   column  {1} to {2}";
             }
         }
-        #endregion
-
-        #region Check
-        protected override string CheckSystemTablePermissionsSql
-        {
-            get
-            {
-                return "select  t.table_name from user_tables t  where rownum=1";
-            }
-        }
-        #endregion
-
-        #region Scattered
-        protected override string CreateTableNull
-        {
-            get
-            {
-                return "";
-            }
-        }
-        protected override string CreateTableNotNull
-        {
-            get
-            {
-                return "";
-            }
-        }
-        protected override string CreateTablePirmaryKey
-        {
-            get
-            {
-                return "PRIMARY KEY";
-            }
-        }
-        protected override string CreateTableIdentity
-        {
-            get
-            {
-                return "";
-            }
-        }
-
         protected override string AddColumnRemarkSql
         {
             get
@@ -232,10 +211,52 @@ namespace SqlSugar
             }
         }
 
-        protected override string RenameTableSql {
+        protected override string RenameTableSql
+        {
             get
             {
                 return "alter table {0} rename to {1}";
+            }
+        }
+        #endregion
+
+        #region Check
+        protected override string CheckSystemTablePermissionsSql
+        {
+            get
+            {
+                return "select  t.table_name from user_tables t  where rownum=1";
+            }
+        }
+        #endregion
+
+        #region Scattered
+        protected override string CreateTableNull
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string CreateTableNotNull
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string CreateTablePirmaryKey
+        {
+            get
+            {
+                return "PRIMARY KEY";
+            }
+        }
+        protected override string CreateTableIdentity
+        {
+            get
+            {
+                return "";
             }
         }
         #endregion

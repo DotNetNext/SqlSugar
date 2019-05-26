@@ -116,6 +116,8 @@ namespace SqlSugar
                 NoExistLogic(entityInfo);
 
             this.Context.DbMaintenance.AddRemark(entityInfo);
+            this.Context.DbMaintenance.AddIndex(entityInfo);
+            this.Context.DbMaintenance.AddDefaultValue(entityInfo);
         }
         public virtual void NoExistLogic(EntityInfo entityInfo)
         {
