@@ -11,7 +11,7 @@ namespace OrmTest.Demo
         public  static SqlSugarClient GetInstance()
         {
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() {
-                ConnectionString = Config.ConnectionString, DbType = DbType.Oracle, IsAutoCloseConnection = true
+                ConnectionString = Config.ConnectionString, DbType = DbType.DB2, IsAutoCloseConnection = true
             });
             db.Ado.IsEnableLogEvent = true;
             db.Ado.LogEventStarting = (sql, pars) =>

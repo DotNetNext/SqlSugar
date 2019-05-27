@@ -66,7 +66,7 @@ namespace OrmTest.Demo
                 throw;
             }
             var join = db.Queryable<EquWorkHours, EquWorkHoursVer>((e,e1)=>new object[] { JoinType.Inner,e.EquWorkHoursVerId==e1.EquWorkHoursVerId})
-                .Select((e,e1)=>new EquWorkhoursViewModel{ EquWorkHours=e,Factoryname=e1.Factoryid.ToString(),Vername=e1.Vername}).ToDataTable();
+                .Select((e,e1)=>new EquWorkhoursViewModel{ EquWorkHours=e,Vername=e1.Vername}).ToDataTable();
             testBase. End("jointable");
             var getequhouts = db.Queryable<EquWorkHours>().ToDataTable();
             var getver = db.Queryable<EquWorkHoursVer>().ToDataTable();
