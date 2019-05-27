@@ -8,7 +8,7 @@ namespace OrmTest
     [SqlSugar.SugarTable("OrderDetail")]
     public class OrderItem
     {
-        [SqlSugar.SugarColumn(IsPrimaryKey =true, IsIdentity =true)]
+        [SqlSugar.SugarColumn(IsPrimaryKey =true, OracleSequenceName = "seq_newsId")]
         public int ItemId { get; set; }
         public int OrderId { get; set; }
         public decimal? Price { get; set; }

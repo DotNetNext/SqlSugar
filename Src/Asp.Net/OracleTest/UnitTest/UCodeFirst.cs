@@ -18,7 +18,7 @@ namespace OrmTest
         {
             [SqlSugar.SugarColumn(IndexGroupNameList = new string[] { "group1" })]
             public int Id { get; set; }
-            [SqlSugar.SugarColumn(DefaultValue="getdate()", IndexGroupNameList =new string[] {"group1" } )]
+            [SqlSugar.SugarColumn(DefaultValue="sysdate", IndexGroupNameList =new string[] {"group1" } )]
             public DateTime? CreateDate { get; set; }
         }
     }

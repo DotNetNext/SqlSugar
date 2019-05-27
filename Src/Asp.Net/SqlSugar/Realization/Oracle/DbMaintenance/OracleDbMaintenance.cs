@@ -55,21 +55,21 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return "select count(1) from user_ind_columns where index_name=('{0}')";
             }
         }
         protected override string CreateIndexSql
         {
             get
             {
-                return "";
+                return "CREATE INDEX Index_{0}_{2} ON {0}({1})";
             }
         }
         protected override string AddDefaultValueSql
         {
             get
             {
-                return "";
+                return "ALTER TABLE {0} MODIFY({1} DEFAULT '{2}')";
             }
         }
         protected override string CreateDataBaseSql
@@ -262,6 +262,35 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            if (columnInfo.DataType == "varchar"&& columnInfo.Length ==0)
+            {
+                columnInfo.DataType = "varchar2";
+                columnInfo.Length = 50;
+            }
+            return base.AddColumn(tableName,columnInfo);
+        }
+        public override bool CreateIndex(string tableName, string[] columnNames)
+        {
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it=>(it+"abc").Substring(0,3))));
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            if (defaultValue.ToLower().IsIn("sysdate"))
+            {
+                var template = AddDefaultValueSql.Replace("'", "");
+                string sql = string.Format(template,tableName,columnName,defaultValue);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            else
+            {
+                return base.AddDefaultValue(tableName, columnName, defaultValue);
+            }
+        }
         public override bool CreateDatabase(string databaseDirectory = null)
         {
             throw new NotSupportedException();

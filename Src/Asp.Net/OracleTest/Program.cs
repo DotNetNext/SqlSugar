@@ -9,7 +9,9 @@ namespace OrmTest
         static void Main(string[] args)
         {
             OldTestMain.Init();
- 
+
+            Demo0_SqlSugarClient.Init();
+
             //Unit test
             NewUnitTest.Init();
 

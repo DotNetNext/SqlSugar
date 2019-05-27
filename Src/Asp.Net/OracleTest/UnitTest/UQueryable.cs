@@ -26,12 +26,12 @@ namespace OrmTest
             //Db.Ado.ExecuteCommand("insert testtree values(hierarchyid::GetRoot(),geography :: STGeomFromText ('POINT(55.9271035250276 -3.29431266523898)',4326),'name')");
             //var list2 = Db.Queryable<TestTree>().ToList();
 
-            Db.CodeFirst.InitTables<GuidTable>();
-            Db.Queryable<GuidTable>().Where(it => it.Id.HasValue).ToList();
+            Db.CodeFirst.InitTables<GuidTable2>();
+            Db.Queryable<GuidTable2>().Where(it => it.Id.HasValue).ToList();
         }
 
 
-        public class GuidTable
+        public class GuidTable2
         {
             public Guid? Id { get; set; }
         }

@@ -6,9 +6,10 @@ using System.Text;
 namespace OrmTest
 {
 
+    [SqlSugar.SugarTable("ORDERINFO")]
     public class Order
     {
-        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, OracleSequenceName = "seq_newsId")]
         public int Id { get; set; }
 
         public string Name { get; set; }
