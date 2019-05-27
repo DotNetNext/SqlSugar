@@ -16,6 +16,7 @@ namespace SqlSugar
         List<T> DataReaderToList<T>(IDataReader reader);
         string SerializeObject(object value);
         T DeserializeObject<T>(string value);
+        string SerializeObject(object value, Type type);
         T TranslateCopy<T>(T sourceObject);
         SqlSugarClient CopyContext(bool isCopyEvents = false);
         dynamic DataTableToDynamic(DataTable table);

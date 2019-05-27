@@ -9,5 +9,6 @@ namespace SqlSugar
     {
         string SerializeObject(object value);
          T DeserializeObject<T>(string value);
+        string SugarSerializeObject(object value);
     }
 }
