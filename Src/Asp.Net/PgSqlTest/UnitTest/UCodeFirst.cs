@@ -13,6 +13,7 @@ namespace OrmTest
             if (Db.DbMaintenance.IsAnyTable("UnitCodeTest1", false))
                 Db.DbMaintenance.DropTable("UnitCodeTest1");
             Db.CodeFirst.InitTables<UnitCodeTest1>();
+            Db.CodeFirst.InitTables<UnitCodeTest1>();
         }
         public class UnitCodeTest1
         {
