@@ -160,6 +160,42 @@ namespace SqlSugar
                 return "ALTER TABLE {0} RENAME {1} TO {2}";
             }
         }
+        protected override string AddColumnRemarkSql => "comment on column {1}.{0} is '{2}'";
+
+        protected override string DeleteColumnRemarkSql => "comment on column {1}.{0} is ''";
+
+        protected override string IsAnyColumnRemarkSql => throw new NotSupportedException();
+
+        protected override string AddTableRemarkSql => "comment on table {0} is '{1}'";
+
+        protected override string DeleteTableRemarkSql => "comment on table {0} is ''";
+
+        protected override string IsAnyTableRemarkSql => throw new NotSupportedException();
+
+        protected override string RenameTableSql => "alter table 表名 {0} to {1}";
+
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                return "CREATE INDEX Index_{0}_{2} ON {0} ({1})";
+            }
+        }
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT {2}";
+            }
+        }
+        protected override string IsAnyIndexSql
+        {
+            get
+            {
+                return "  Select count(1) from (SELECT to_regclass('Index_UnitCodeTest1_Id_CreateDate') as c ) t where t.c is not null";
+            }
+        }
+
         #endregion
 
         #region Check
@@ -201,43 +237,7 @@ namespace SqlSugar
                 return "serial";
             }
         }
-
-        protected override string AddColumnRemarkSql => "comment on column {1}.{0} is '{2}'";
-
-        protected override string DeleteColumnRemarkSql => "comment on column {1}.{0} is ''";
-
-        protected override string IsAnyColumnRemarkSql => throw new NotSupportedException();
-
-        protected override string AddTableRemarkSql => "comment on table {0} is '{1}'";
-
-        protected override string DeleteTableRemarkSql => "comment on table {0} is ''";
-
-        protected override string IsAnyTableRemarkSql => throw new NotSupportedException();
-
-        protected override string RenameTableSql => "alter table 表名 {0} to {1}";
-
-        protected override string CreateIndexSql
-        {
-            get
-            {
-                return "CREATE INDEX Index_{0}_{2} ON {0} ({1})";
-            }
-        }
-        protected override string AddDefaultValueSql
-        {
-            get
-            {
-                return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT {2}";
-            }
-        }
-        protected override string IsAnyIndexSql
-        {
-            get
-            {
-                return " SELECT count(1) FROM pg_class c JOIN   pg_namespace n ON n.oid = c.relnamespace where relname = '{0}'";
-            }
-        }
-        #endregion
+          #endregion
 
         #region Methods
         /// <summary>
