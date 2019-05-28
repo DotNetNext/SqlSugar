@@ -18,8 +18,11 @@ namespace OrmTest
             Db.CodeFirst.InitTables(typeof(BoolTest));
             var x = new BoolTest();
             Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
-  
             Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
+            Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
         }
     }
 
