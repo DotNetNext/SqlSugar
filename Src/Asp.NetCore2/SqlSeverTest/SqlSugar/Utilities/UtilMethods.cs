@@ -24,6 +24,7 @@ namespace SqlSugar
         {
             if (value != null)
             {
+                destinationType = UtilMethods.GetUnderType(destinationType);
                 var sourceType = value.GetType();
 
                 var destinationConverter = TypeDescriptor.GetConverter(destinationType);
