@@ -48,7 +48,7 @@ namespace SqlSugar
                     throw new NotSupportedException();
                 }
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
-                var type =expression.Type;
+                var type = expression.Type;
                 var memberName = this.Context.GetDbColumnName(type.Name, memberAssignment.Member.Name);
                 var item = memberAssignment.Expression;
                 if ((item is MemberExpression) && ((MemberExpression)item).Expression == null)
@@ -57,12 +57,7 @@ namespace SqlSugar
                     string parameterName = AppendParameter(paramterValue);
                     this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                 }
-                else if (item is UnaryExpression&& 
-                         item.Type==UtilConstants.BoolType&& 
-                        (item as UnaryExpression).NodeType==ExpressionType.Not&& 
-                        (item as UnaryExpression).Operand is MemberExpression&&
-                       ((item as UnaryExpression).Operand as MemberExpression).Expression!=null&&
-                       ((item as UnaryExpression).Operand as MemberExpression).Expression.NodeType == ExpressionType.Parameter)
+                else if (IsNotMember(item))
                 {
                     if (base.Context.Result.IsLockCurrentParameter == false)
                     {

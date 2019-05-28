@@ -15,8 +15,18 @@ namespace OrmTest
             Db.DbMaintenance.TruncateTable<SYS_USER>();
             Db.Insertable(new SYS_USER() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
             Db.Updateable(new SYS_USER() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
-            
+            Db.CodeFirst.InitTables(typeof(BoolTest));
+            var x = new BoolTest();
+            Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
+  
+            Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
         }
+    }
+
+    public class BoolTest
+    {
+        public int Id { get; set; }
+        public bool BoolValue { get; set; }
     }
     /// <summary>
     /// 普通用户表
