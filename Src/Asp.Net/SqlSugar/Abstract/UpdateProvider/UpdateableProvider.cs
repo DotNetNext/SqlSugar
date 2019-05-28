@@ -154,9 +154,10 @@ namespace SqlSugar
             LambdaExpression lambda = setValueExpression as LambdaExpression;
             var expression = lambda.Body;
             Check.Exception(!(expression is BinaryExpression), "Expression  format error");
+            Check.Exception( (expression as BinaryExpression).NodeType!=ExpressionType.Equal, "Expression  format error");
             var leftExpression = (expression as BinaryExpression).Left;
             Check.Exception(!(leftExpression is MemberExpression), "Expression  format error");
-            var leftResultString = UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.WhereSingle).GetString();
+            var leftResultString = UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.FieldSingle).GetString();
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(leftResultString, resultString));
             return this;
         }
