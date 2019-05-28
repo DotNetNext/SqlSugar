@@ -51,6 +51,27 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        protected override string IsAnyIndexSql 
+        {
+            get
+            {
+                return "select count(1) from user_ind_columns where index_name=('{0}')";
+            }
+        }
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                return "CREATE INDEX Index_{0}_{2} ON {0}({1})";
+            }
+        }
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} MODIFY({1} DEFAULT '{2}')";
+            }
+        }
         protected override string CreateDataBaseSql
         {
             get
@@ -142,48 +163,6 @@ namespace SqlSugar
                 return "ALTER TABLE {0} rename   column  {1} to {2}";
             }
         }
-        #endregion
-
-        #region Check
-        protected override string CheckSystemTablePermissionsSql
-        {
-            get
-            {
-                return "select  t.table_name from user_tables t  where rownum=1";
-            }
-        }
-        #endregion
-
-        #region Scattered
-        protected override string CreateTableNull
-        {
-            get
-            {
-                return "";
-            }
-        }
-        protected override string CreateTableNotNull
-        {
-            get
-            {
-                return "";
-            }
-        }
-        protected override string CreateTablePirmaryKey
-        {
-            get
-            {
-                return "PRIMARY KEY";
-            }
-        }
-        protected override string CreateTableIdentity
-        {
-            get
-            {
-                return "";
-            }
-        }
-
         protected override string AddColumnRemarkSql
         {
             get
@@ -232,7 +211,8 @@ namespace SqlSugar
             }
         }
 
-        protected override string RenameTableSql {
+        protected override string RenameTableSql
+        {
             get
             {
                 return "alter table {0} rename to {1}";
@@ -240,7 +220,81 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Check
+        protected override string CheckSystemTablePermissionsSql
+        {
+            get
+            {
+                return "select  t.table_name from user_tables t  where rownum=1";
+            }
+        }
+        #endregion
+
+        #region Scattered
+        protected override string CreateTableNull
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string CreateTableNotNull
+        {
+            get
+            {
+                return "";
+            }
+        }
+        protected override string CreateTablePirmaryKey
+        {
+            get
+            {
+                return "PRIMARY KEY";
+            }
+        }
+        protected override string CreateTableIdentity
+        {
+            get
+            {
+                return "";
+            }
+        }
+        #endregion
+
         #region Methods
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            if (columnInfo.DataType == "varchar"&& columnInfo.Length ==0)
+            {
+                columnInfo.DataType = "varchar2";
+                columnInfo.Length = 50;
+            }
+            return base.AddColumn(tableName,columnInfo);
+        }
+        public override bool CreateIndex(string tableName, string[] columnNames)
+        {
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it=>(it+"abc").Substring(0,3))));
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
+            if (defaultValue.ToLower().IsIn("sysdate"))
+            {
+                var template = AddDefaultValueSql.Replace("'", "");
+                string sql = string.Format(template,tableName,columnName,defaultValue);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            else
+            {
+                return base.AddDefaultValue(tableName, columnName, defaultValue);
+            }
+        }
         public override bool CreateDatabase(string databaseDirectory = null)
         {
             throw new NotSupportedException();

@@ -169,8 +169,7 @@ namespace SqlSugar
             }
             else if (propertyTypes == null || propertyTypes.Count() == 0)
             {
-                Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
-                return null;
+                return "object";
             }
             else if (propertyTypes.First().Value == CSharpDataType.byteArray)
             {

@@ -232,6 +232,12 @@ namespace SqlSugar
                 throw new NotSupportedException();
             }
         }
+
+        protected override string CreateIndexSql => throw new NotSupportedException();
+
+        protected override string IsAnyIndexSql => throw new NotSupportedException();
+
+        protected override string AddDefaultValueSql => throw new NotSupportedException();
         #endregion
 
         #region Methods

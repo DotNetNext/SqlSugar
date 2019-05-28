@@ -17,5 +17,6 @@ namespace SqlSugar
         public bool IsMember { get; set; }
         public object MemberName { get; set; }
         public object MemberValue { get; set; }
+        public Type Type { get;  set; }
     }
 }

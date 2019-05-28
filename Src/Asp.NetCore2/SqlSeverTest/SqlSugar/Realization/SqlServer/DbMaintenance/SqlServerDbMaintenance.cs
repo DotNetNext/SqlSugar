@@ -173,48 +173,6 @@ namespace SqlSugar
                 return "exec sp_rename '{0}.{1}','{2}','column';";
             }
         }
-        #endregion
-
-        #region Check
-        protected override string CheckSystemTablePermissionsSql
-        {
-            get
-            {
-                return "select top 1 id from sysobjects";
-            }
-        }
-        #endregion
-
-        #region Scattered
-        protected override string CreateTableNull
-        {
-            get
-            {
-                return "NULL";
-            }
-        }
-        protected override string CreateTableNotNull
-        {
-            get
-            {
-                return "NOT NULL";
-            }
-        }
-        protected override string CreateTablePirmaryKey
-        {
-            get
-            {
-                return "PRIMARY KEY";
-            }
-        }
-        protected override string CreateTableIdentity
-        {
-            get
-            {
-                return "IDENTITY(1,1)";
-            }
-        }
-
         protected override string AddColumnRemarkSql
         {
             get
@@ -287,7 +245,73 @@ namespace SqlSugar
             }
         }
 
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                return "CREATE NONCLUSTERED INDEX Index_{0}_{2} ON {0}({1})";
+            }
+        }
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                return "alter table {0} ADD DEFAULT '{2}' FOR {1}";
+            }
+        }
+        protected override string IsAnyIndexSql
+        {
+            get
+            {
+                return "select count(*) from sys.indexes where name='{0}'";
+            }
+        }
         #endregion
+
+        #region Check
+        protected override string CheckSystemTablePermissionsSql
+        {
+            get
+            {
+                return "select top 1 id from sysobjects";
+            }
+        }
+        #endregion
+
+        #region Scattered
+        protected override string CreateTableNull
+        {
+            get
+            {
+                return "NULL";
+            }
+        }
+        protected override string CreateTableNotNull
+        {
+            get
+            {
+                return "NOT NULL";
+            }
+        }
+        protected override string CreateTablePirmaryKey
+        {
+            get
+            {
+                return "PRIMARY KEY";
+            }
+        }
+        protected override string CreateTableIdentity
+        {
+            get
+            {
+                return "IDENTITY(1,1)";
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         ///by current connection string
         /// </summary>
@@ -305,7 +329,8 @@ namespace SqlSugar
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
             connection = connection.Replace(oldDatabaseName, "master");
-            var newDb = new SqlSugarClient(new ConnectionConfig() {
+            var newDb = new SqlSugarClient(new ConnectionConfig()
+            {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
                 IsAutoCloseConnection = true,
                 ConnectionString = connection
@@ -330,7 +355,7 @@ namespace SqlSugar
                                             maxsize = 100mb,
                                              filegrowth = 10 %
                                         )
-                                        log on  --逻辑文件
+                                        log on  
                                         (
                                             name = N'{0}_log',
                                             filename = N'{1}\{0}.ldf',
@@ -353,7 +378,7 @@ namespace SqlSugar
                 var pkColumns = columns.Where(it => it.IsPrimarykey).ToList();
                 if (pkColumns.Count > 1)
                 {
-                    this.Context.DbMaintenance.AddPrimaryKeys(tableName, pkColumns.Select(it=>it.DbColumnName).ToArray());
+                    this.Context.DbMaintenance.AddPrimaryKeys(tableName, pkColumns.Select(it => it.DbColumnName).ToArray());
                 }
                 else
                 {
@@ -365,7 +390,6 @@ namespace SqlSugar
             }
             return true;
         }
-
         public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
@@ -374,6 +398,7 @@ namespace SqlSugar
             string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
-        }
+        } 
+        #endregion
     }
 }

@@ -31,5 +31,6 @@ namespace SqlSugar
         public string SerializeDateTimeFormat { get;  set; }
         public bool IsJson { get;  set; }
         public bool NoSerialize { get;  set; }
+        public string[] IndexGroupNameList { get;  set; }
     }
 }

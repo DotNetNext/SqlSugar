@@ -253,6 +253,19 @@ namespace SqlSugar
                 this.Context.Result.Replace(ExpressionConst.FormatSymbol, "NOT");
             }
         }
+        protected void AppendNegate(object Value)
+        {
+            var isAppend = !this.Context.Result.Contains(ExpressionConst.FormatSymbol);
+            var lastCharIsSpace = this.Context.Result.LastCharIsSpace;
+            if (isAppend)
+            {
+                this.Context.Result.Append(lastCharIsSpace ? "-" : " -");
+            }
+            else
+            {
+                this.Context.Result.Replace(ExpressionConst.FormatSymbol, "-");
+            }
+        }
 
         protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item)
         {
@@ -477,6 +490,24 @@ namespace SqlSugar
             {
                 Check.ThrowNotSupportedException(item.GetType().Name);
             }
+        }
+        protected static bool IsNotMember(Expression item)
+        {
+            return item is UnaryExpression &&
+                                     item.Type == UtilConstants.BoolType &&
+                                    (item as UnaryExpression).NodeType == ExpressionType.Not &&
+                                    (item as UnaryExpression).Operand is MemberExpression &&
+                                   ((item as UnaryExpression).Operand as MemberExpression).Expression != null &&
+                                   ((item as UnaryExpression).Operand as MemberExpression).Expression.NodeType == ExpressionType.Parameter;
+        }
+        protected static bool IsNotParameter(Expression item)
+        {
+            return item is UnaryExpression &&
+                                     item.Type == UtilConstants.BoolType &&
+                                    (item as UnaryExpression).NodeType == ExpressionType.Not &&
+                                    (item as UnaryExpression).Operand is MemberExpression &&
+                                   ((item as UnaryExpression).Operand as MemberExpression).Expression != null &&
+                                   ((item as UnaryExpression).Operand as MemberExpression).Expression.NodeType == ExpressionType.MemberAccess;
         }
 
         protected bool IsSubMethod(MethodCallExpression express)

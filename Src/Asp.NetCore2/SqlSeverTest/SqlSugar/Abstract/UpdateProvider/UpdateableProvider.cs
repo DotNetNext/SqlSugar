@@ -154,9 +154,10 @@ namespace SqlSugar
             LambdaExpression lambda = setValueExpression as LambdaExpression;
             var expression = lambda.Body;
             Check.Exception(!(expression is BinaryExpression), "Expression  format error");
+            Check.Exception( (expression as BinaryExpression).NodeType!=ExpressionType.Equal, "Expression  format error");
             var leftExpression = (expression as BinaryExpression).Left;
             Check.Exception(!(leftExpression is MemberExpression), "Expression  format error");
-            var leftResultString = UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.WhereSingle).GetString();
+            var leftResultString = UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.FieldSingle).GetString();
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(leftResultString, resultString));
             return this;
         }
@@ -620,21 +621,21 @@ namespace SqlSugar
                     Check.Exception(dbVersion == null, "UpdateVersionValidation database column {0} is not null", versionColumn.DbColumnName);
                     if (versionColumn.PropertyInfo.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.LongType))
                     {
-                        if (Convert.ToInt64(dbVersion) > Convert.ToInt64(currentVersion))
+                        if (Convert.ToInt64(dbVersion) != Convert.ToInt64(currentVersion))
                         {
                             throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", versionColumn.PropertyName));
                         }
                     }
                     else if (versionColumn.PropertyInfo.PropertyType.IsIn(UtilConstants.DateType))
                     {
-                        if (dbVersion.ObjToDate() > currentVersion.ObjToDate())
+                        if (dbVersion.ObjToDate() != currentVersion.ObjToDate())
                         {
                             throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", versionColumn.PropertyName));
                         }
                     }
                     else if (versionColumn.PropertyInfo.PropertyType.IsIn(UtilConstants.ByteArrayType))
                     {
-                        if (UtilMethods.GetLong((byte[])dbVersion) > UtilMethods.GetLong((byte[])currentVersion))
+                        if (UtilMethods.GetLong((byte[])dbVersion) != UtilMethods.GetLong((byte[])currentVersion))
                         {
                             throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", versionColumn.PropertyName));
                         }

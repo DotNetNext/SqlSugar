@@ -171,6 +171,8 @@ namespace SqlSugar
                         column.SerializeDateTimeFormat = sugarColumn.SerializeDateTimeFormat;
                         column.IsJson = sugarColumn.IsJson;
                         column.NoSerialize = sugarColumn.NoSerialize;
+                        column.DefaultValue = sugarColumn.DefaultValue;
+                        column.IndexGroupNameList = sugarColumn.IndexGroupNameList;
                     }
                     else
                     {

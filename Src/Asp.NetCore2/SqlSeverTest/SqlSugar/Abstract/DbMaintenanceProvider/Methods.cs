@@ -292,6 +292,27 @@ namespace SqlSugar
             var dt=this.Context.Ado.GetDataTable(sql);
             return dt.Rows != null && dt.Rows.Count > 0;
         }
+        public virtual bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
+            string sql = string.Format(AddDefaultValueSql, tableName, columnName,defaultValue);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool CreateIndex(string tableName, string[] columnNames)
+        {
+            string sql = string.Format(CreateIndexSql,tableName,string.Join(",",columnNames), string.Join("_", columnNames));
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public virtual bool IsAnyIndex(string indexName)
+        {
+            string sql = string.Format(this.IsAnyIndexSql, indexName);
+            return this.Context.Ado.GetInt(sql)>0;
+        }
         public virtual bool AddRemark(EntityInfo entity)
         {
             var db = this.Context;
@@ -328,6 +349,54 @@ namespace SqlSugar
                 }
             }
             return true;
+        }
+
+        public virtual void AddIndex(EntityInfo entityInfo)
+        {
+            var db = this.Context;
+            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+            var indexColumns = columns.Where(it => it.IndexGroupNameList.HasValue()).ToList();
+            if (indexColumns.HasValue())
+            {
+                var groups = indexColumns.SelectMany(it => it.IndexGroupNameList).GroupBy(it => it).Select(it=>it.Key).ToList();
+                foreach (var item in groups)
+                {
+                    var columnNames = indexColumns.Where(it => it.IndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it=>it.DbColumnName).ToArray();
+                    var indexName = string.Format("Index_{0}_{1}",entityInfo.DbTableName, string.Join("_", columnNames));
+                    if (!IsAnyIndex(indexName))
+                    {
+                        CreateIndex(entityInfo.DbTableName, columnNames);
+                    }
+                }
+            }
+        }
+
+        protected virtual bool IsAnyDefaultValue(string tableName, string columnName,List<DbColumnInfo> columns)
+        {
+            var defaultValue = columns.Where(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).First().DefaultValue;
+            return defaultValue.HasValue();
+        }
+
+        public virtual bool IsAnyDefaultValue(string tableName, string columnName)
+        {
+            return IsAnyDefaultValue(tableName, columnName, this.GetColumnInfosByTableName(tableName, false));
+        }
+
+        public virtual void AddDefaultValue(EntityInfo entityInfo)
+        {
+            var dbColumns=this.GetColumnInfosByTableName(entityInfo.DbTableName, false);
+            var db = this.Context;
+            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+            foreach (var item in columns)
+            {
+                if (item.DefaultValue.HasValue())
+                {
+                    if (!IsAnyDefaultValue(entityInfo.DbTableName,item.DbColumnName,dbColumns))
+                    {
+                        this.AddDefaultValue(entityInfo.DbTableName, item.DbColumnName, item.DefaultValue);
+                    }
+                }
+            }
         }
 
         public virtual bool RenameTable(string oldTableName, string newTableName)

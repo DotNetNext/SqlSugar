@@ -245,6 +245,29 @@ namespace SqlSugar
                 return "alter table {0} rename {1}";
             }
         }
+
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                return "CREATE INDEX Index_{0}_{2} ON {0} ({1})";
+            }
+        }
+
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT '{2}'";
+            }
+        }
+        protected override string IsAnyIndexSql
+        {
+            get
+            {
+                return "SELECT count(*) FROM information_schema.statistics WHERE index_name = '{0}'";
+            }
+        }
         #endregion
 
         #region Methods
@@ -397,7 +420,25 @@ namespace SqlSugar
                 return false;
             }
         }
-
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
+            if (defaultValue.ToLower().IsIn("now()", "current_timestamp"))
+            {
+                string template = "ALTER table {0} CHANGE COLUMN {1} {1} {3} default {2}";
+                var dbColumnInfo=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).First(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
+                string sql = string.Format(template, tableName, columnName, defaultValue, dbColumnInfo.DataType);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            else
+            {
+                return base.AddDefaultValue(tableName,columnName,defaultValue);
+            }
+        }
         public override bool IsAnyConstraint(string constraintName)
         {
             throw new NotSupportedException("MySql IsAnyConstraint NotSupportedException");

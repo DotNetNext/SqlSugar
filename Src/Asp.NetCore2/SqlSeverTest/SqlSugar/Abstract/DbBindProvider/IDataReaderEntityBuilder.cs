@@ -26,7 +26,6 @@ namespace SqlSugar
         private IDataReaderEntityBuilder<T> DynamicBuilder;
         private IDataRecord DataRecord;
         private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
-        private static readonly MethodInfo getValueMethod = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
         private static readonly MethodInfo getBoolean = typeof(IDataRecord).GetMethod("GetBoolean", new Type[] { typeof(int) });
         private static readonly MethodInfo getByte = typeof(IDataRecord).GetMethod("GetByte", new Type[] { typeof(int) });
         private static readonly MethodInfo getDateTime = typeof(IDataRecord).GetMethod("GetDateTime", new Type[] { typeof(int) });
@@ -38,6 +37,7 @@ namespace SqlSugar
         private static readonly MethodInfo getInt32 = typeof(IDataRecord).GetMethod("GetInt32", new Type[] { typeof(int) });
         private static readonly MethodInfo getInt64 = typeof(IDataRecord).GetMethod("GetInt64", new Type[] { typeof(int) });
         private static readonly MethodInfo getString = typeof(IDataRecord).GetMethod("GetString", new Type[] { typeof(int) });
+        private static readonly MethodInfo getConvertValueMethod = typeof(IDataRecordExtensions).GetMethod("GetConvertValue");
         private static readonly MethodInfo getdatetimeoffset = typeof(IDataRecordExtensions).GetMethod("Getdatetimeoffset");
         private static readonly MethodInfo getdatetimeoffsetDate = typeof(IDataRecordExtensions).GetMethod("GetdatetimeoffsetDate");
         private static readonly MethodInfo getStringGuid = typeof(IDataRecordExtensions).GetMethod("GetStringGuid");
@@ -64,8 +64,6 @@ namespace SqlSugar
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
         private static readonly MethodInfo getJson = typeof(IDataRecordExtensions).GetMethod("GetJson");
-        private static readonly MethodInfo getSqliteTypeNull = typeof(IDataRecordExtensions).GetMethod("GetSqliteTypeNull");
-        private static readonly MethodInfo getSqliteType = typeof(IDataRecordExtensions).GetMethod("GetSqliteType");
         private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarProvider) });
 
         private delegate T Load(IDataRecord dataRecord);
@@ -205,16 +203,9 @@ namespace SqlSugar
                 {
                     method = getString;
                 }
-                else if (bindPropertyType == UtilConstants.ByteArrayType)
-                {
-                    method = getValueMethod;
-                    generator.Emit(OpCodes.Call, method);
-                    generator.Emit(OpCodes.Unbox_Any, columnInfo.PropertyInfo.PropertyType);
-                    return;
-                }
                 else
                 {
-                    method = isNullableType ? getSqliteTypeNull.MakeGenericMethod(bindPropertyType) : getSqliteType.MakeGenericMethod(bindPropertyType);
+                    method = getConvertValueMethod.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
                 }
                 generator.Emit(OpCodes.Call, method);
                 return;
@@ -272,6 +263,14 @@ namespace SqlSugar
                     if (dbTypeName.Equals("float",StringComparison.CurrentCultureIgnoreCase) && isNullableType && bindProperyTypeName.Equals("single",StringComparison.CurrentCultureIgnoreCase)) {
                         method = getConvertDoubleToFloat;
                     }
+                    if (bindPropertyType == UtilConstants.DecType)
+                    {
+                        method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                    }
+                    if (bindPropertyType == UtilConstants.IntType)
+                    {
+                        method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                    }
                     break;
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
@@ -300,7 +299,7 @@ namespace SqlSugar
                         method = isNullableType ? getConvertdatetimeoffsetDate : getdatetimeoffsetDate;
                     break;
                 default:
-                    method = getValueMethod;
+                    method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
                     break;
             }
             if (method == null && bindPropertyType == UtilConstants.StringType)
@@ -309,15 +308,12 @@ namespace SqlSugar
             }
             if (bindPropertyType == UtilConstants.ObjType)
             {
-                method = getValueMethod;
+                method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
             }
             if (method == null)
                 method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
+
             generator.Emit(OpCodes.Call, method);
-            if (method == getValueMethod)
-            {
-                generator.Emit(OpCodes.Unbox_Any, columnInfo.PropertyInfo.PropertyType);
-            }
             #endregion
         }
 
