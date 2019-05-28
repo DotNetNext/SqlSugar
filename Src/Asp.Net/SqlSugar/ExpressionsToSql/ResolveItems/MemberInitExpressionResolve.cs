@@ -57,12 +57,40 @@ namespace SqlSugar
                     string parameterName = AppendParameter(paramterValue);
                     this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                 }
+                else if (item is UnaryExpression&& 
+                         item.Type==UtilConstants.BoolType&& 
+                        (item as UnaryExpression).NodeType==ExpressionType.Not&& 
+                        (item as UnaryExpression).Operand is MemberExpression&&
+                       ((item as UnaryExpression).Operand as MemberExpression).Expression!=null&&
+                       ((item as UnaryExpression).Operand as MemberExpression).Expression.NodeType == ExpressionType.Parameter)
+                {
+                    if (base.Context.Result.IsLockCurrentParameter == false)
+                    {
+                        base.Context.Result.CurrentParameter = parameter;
+                        base.Context.Result.IsLockCurrentParameter = true;
+                        parameter.IsAppendTempDate();
+                        base.Expression = item;
+                        base.Expression = (item as UnaryExpression).Operand;
+                        base.Start();
+                        parameter.IsAppendResult();
+                        var result = this.Context.DbMehtods.IIF(new MethodCallExpressionModel()
+                        {
+                            Args = new List<MethodCallExpressionArgs>() {
+                                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=parameter.CommonTempData.ObjToString()+"=1" },
+                                  new MethodCallExpressionArgs(){ IsMember=true,MemberName=AppendParameter(0)  },
+                                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=AppendParameter(1)  }
+                           }
+                        });
+                        parameter.Context.Result.Append(base.Context.GetEqString(memberName, result));
+                        base.Context.Result.CurrentParameter = null;
+                    }
+                }
                 else if (IsMethod(item))
                 {
                     if (item is UnaryExpression)
                         item = (item as UnaryExpression).Operand;
                     var callMethod = item as MethodCallExpression;
-                    if (MethodTimeMapping.Any(it => it.Key == callMethod.Method.Name) || MethodMapping.Any(it=>it.Key==callMethod.Method.Name)||IsExtMethod(callMethod.Method.Name)||IsSubMethod(callMethod)|| callMethod.Method.DeclaringType.FullName.StartsWith(UtilConstants.AssemblyName+UtilConstants.Dot))
+                    if (MethodTimeMapping.Any(it => it.Key == callMethod.Method.Name) || MethodMapping.Any(it => it.Key == callMethod.Method.Name) || IsExtMethod(callMethod.Method.Name) || IsSubMethod(callMethod) || callMethod.Method.DeclaringType.FullName.StartsWith(UtilConstants.AssemblyName + UtilConstants.Dot))
                     {
                         MethodCall(parameter, memberName, item);
                     }
@@ -105,7 +133,7 @@ namespace SqlSugar
                 {
                     try
                     {
-                        var value =ExpressionTool.DynamicInvoke(item);
+                        var value = ExpressionTool.DynamicInvoke(item);
                         var parameterName = AppendParameter(value);
                         parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     }
