@@ -32,15 +32,15 @@ namespace SqlSugar
             {
                 base.Context.Result.Replace(ExpressionConst.FormatSymbol, ExpressionConst.LeftParenthesis + ExpressionConst.FormatSymbol);
             }
-            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand is UnaryExpression&& (leftExpression as UnaryExpression).NodeType != ExpressionType.Not)
+            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand is UnaryExpression&& (leftExpression as UnaryExpression).NodeType == ExpressionType.Convert)
             {
                 leftExpression = (leftExpression as UnaryExpression).Operand;
             }
-            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand.Type == UtilConstants.BoolType && (leftExpression as UnaryExpression).NodeType != ExpressionType.Not&&rightExpression.Type==UtilConstants.BoolTypeNull)
+            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand.Type == UtilConstants.BoolType && (leftExpression as UnaryExpression).NodeType == ExpressionType.Convert&&rightExpression.Type==UtilConstants.BoolTypeNull)
             {
                 leftExpression = (leftExpression as UnaryExpression).Operand;
             }
-            if (rightExpression is UnaryExpression&& (rightExpression as UnaryExpression).Operand.Type==UtilConstants.BoolType&& (rightExpression as UnaryExpression).NodeType != ExpressionType.Not)
+            if (rightExpression is UnaryExpression&& (rightExpression as UnaryExpression).Operand.Type==UtilConstants.BoolType&& (rightExpression as UnaryExpression).NodeType == ExpressionType.Convert)
             {
                 rightExpression = (rightExpression as UnaryExpression).Operand;
             }
