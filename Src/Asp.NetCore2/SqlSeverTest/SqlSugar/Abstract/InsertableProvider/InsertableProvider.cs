@@ -117,7 +117,7 @@ namespace SqlSugar
             After(sql, null);
             return result;
         }
-        public async Task<int> ExecuteReturnIdentityAsync()
+        public virtual async Task<int> ExecuteReturnIdentityAsync()
         {
             if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
             {
@@ -149,7 +149,7 @@ namespace SqlSugar
             this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
             return idValue > 0;
         }
-        public async Task<long> ExecuteReturnBigIdentityAsync()
+        public virtual async Task<long> ExecuteReturnBigIdentityAsync()
         {
             if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
             {

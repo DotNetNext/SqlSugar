@@ -18,6 +18,16 @@ namespace SqlSugar
             var result = Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()).ObjToInt();
             return result;
         }
+        public override async Task<int> ExecuteReturnIdentityAsync()
+        {
+            InsertBuilder.IsReturnIdentity = true;
+            PreToSql();
+            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", GetPrimaryKeys().FirstOrDefault());
+            RestoreMapping();
+            var obj = await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            var result = obj.ObjToInt();
+            return result;
+        }
         public override KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             var result= base.ToSql();
@@ -31,6 +41,15 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", GetPrimaryKeys().FirstOrDefault());
             RestoreMapping();
             var result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
+            return result;
+        }
+        public override async Task<long> ExecuteReturnBigIdentityAsync()
+        {
+            InsertBuilder.IsReturnIdentity = true;
+            PreToSql();
+            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", GetPrimaryKeys().FirstOrDefault());
+            RestoreMapping();
+            var result = Convert.ToInt64(await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
             return result;
         }
 
