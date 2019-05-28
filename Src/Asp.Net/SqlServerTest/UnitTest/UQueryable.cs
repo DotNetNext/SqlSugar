@@ -28,6 +28,8 @@ namespace OrmTest
 
             Db.CodeFirst.InitTables<GuidTable>();
             Db.Queryable<GuidTable>().Where(it => it.Id.HasValue).ToList();
+
+            Db.Queryable<Order>().Where(it => SqlSugar.SqlFunc.Equals(it.CreateTime.Date, it.CreateTime.Date)).ToList();
         }
 
 

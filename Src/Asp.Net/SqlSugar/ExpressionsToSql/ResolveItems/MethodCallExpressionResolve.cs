@@ -413,6 +413,10 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = DateTime.Now.Date;
             }
+            else if (IsDateDate(item))
+            {
+                parameter.CommonTempData = GetNewExpressionValue(item);
+            }
             else if (model.Name == "ToString" && item is ConstantExpression && (item as ConstantExpression).Type.IsEnum())
             {
                 parameter.CommonTempData = item.ToString();
@@ -439,6 +443,10 @@ namespace SqlSugar
                     methodCallExpressionArgs.IsMember = false;
                 }
             }
+            if (IsDateDate(item))
+            {
+                methodCallExpressionArgs.IsMember = true;
+            }
             if (methodCallExpressionArgs.IsMember == false && (item is MethodCallExpression && item.ToString() == "GetDate()") || (item is UnaryExpression && ((UnaryExpression)item).Operand.ToString() == "GetDate()"))
             {
                 var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
@@ -456,6 +464,11 @@ namespace SqlSugar
             }
             model.Args.Add(methodCallExpressionArgs);
             parameter.ChildExpression = null;
+        }
+
+        private static bool IsDateDate(Expression item)
+        {
+            return item.Type == UtilConstants.DateType && item is MemberExpression && (item as MemberExpression).Member.Name == "Date";
         }
 
         private object GetMethodValue(string name, MethodCallExpressionModel model)
