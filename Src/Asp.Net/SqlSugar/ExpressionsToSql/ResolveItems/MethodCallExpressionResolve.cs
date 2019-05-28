@@ -468,7 +468,7 @@ namespace SqlSugar
 
         private static bool IsDateDate(Expression item)
         {
-            return item.Type == UtilConstants.DateType && item is MemberExpression && (item as MemberExpression).Member.Name == "Date";
+            return item.Type == UtilConstants.DateType && item is MemberExpression && (item as MemberExpression).Member.Name == "Date"&&item.ToString()!= "DateTime.Now.Date";
         }
 
         private object GetMethodValue(string name, MethodCallExpressionModel model)
