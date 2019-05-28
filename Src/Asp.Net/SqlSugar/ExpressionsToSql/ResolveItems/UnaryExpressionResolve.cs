@@ -41,6 +41,10 @@ namespace SqlSugar
                     {
                         AppendNotMember(parameter,nodeType);
                     }
+                    else if (baseParameter.OperatorValue == "=" && IsNotParameter(oldExpression))
+                    {
+                        AppendNotParameter(parameter, nodeType);
+                    }
                     else if (base.Expression is BinaryExpression || parameter.BaseExpression is BinaryExpression || baseParameter.CommonTempData.ObjToString() == CommonTempDataType.Append.ToString())
                     {
                         Append(parameter, nodeType);
@@ -147,6 +151,26 @@ namespace SqlSugar
             {
                 Args = new List<MethodCallExpressionArgs>() {
                                   new MethodCallExpressionArgs(){ IsMember=true, MemberName=parameter.CommonTempData.ObjToString()+"=1" },
+                                  new MethodCallExpressionArgs(){ IsMember=true,MemberName=AppendParameter(0)  },
+                                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=AppendParameter(1)  }
+                           }
+            });
+            this.Context.Result.Append(result);
+            parameter.BaseParameter.ChildExpression = base.Expression;
+            parameter.CommonTempData = null;
+        }
+
+
+        private void AppendNotParameter(ExpressionParameter parameter, ExpressionType nodeType)
+        {
+            BaseParameter.ChildExpression = base.Expression;
+            this.IsLeft = parameter.IsLeft;
+            parameter.CommonTempData = CommonTempDataType.Result;
+            base.Start();
+            var result = this.Context.DbMehtods.IIF(new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=AppendParameter(parameter.CommonTempData)+"=1" },
                                   new MethodCallExpressionArgs(){ IsMember=true,MemberName=AppendParameter(0)  },
                                   new MethodCallExpressionArgs(){ IsMember=true, MemberName=AppendParameter(1)  }
                            }

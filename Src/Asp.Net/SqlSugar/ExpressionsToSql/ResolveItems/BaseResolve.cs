@@ -500,6 +500,15 @@ namespace SqlSugar
                                    ((item as UnaryExpression).Operand as MemberExpression).Expression != null &&
                                    ((item as UnaryExpression).Operand as MemberExpression).Expression.NodeType == ExpressionType.Parameter;
         }
+        protected static bool IsNotParameter(Expression item)
+        {
+            return item is UnaryExpression &&
+                                     item.Type == UtilConstants.BoolType &&
+                                    (item as UnaryExpression).NodeType == ExpressionType.Not &&
+                                    (item as UnaryExpression).Operand is MemberExpression &&
+                                   ((item as UnaryExpression).Operand as MemberExpression).Expression != null &&
+                                   ((item as UnaryExpression).Operand as MemberExpression).Expression.NodeType == ExpressionType.MemberAccess;
+        }
 
         protected bool IsSubMethod(MethodCallExpression express)
         {

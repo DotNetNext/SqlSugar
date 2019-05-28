@@ -80,6 +80,17 @@ namespace SqlSugar
                         base.Context.Result.CurrentParameter = null;
                     }
                 }
+                else if (IsNotParameter(item))
+                {
+                    try
+                    {
+                        parameter.Context.Result.Append(base.Context.GetEqString(memberName,AppendParameter(ExpressionTool.DynamicInvoke(item).ObjToBool())));
+                    }
+                    catch  
+                    {
+                        throw new NotSupportedException(item.ToString());
+                    }
+                }
                 else if (IsMethod(item))
                 {
                     if (item is UnaryExpression)
