@@ -279,6 +279,10 @@ namespace SqlSugar
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
             if (defaultValue.ToLower().IsIn("sysdate"))
             {
                 var template = AddDefaultValueSql.Replace("'", "");

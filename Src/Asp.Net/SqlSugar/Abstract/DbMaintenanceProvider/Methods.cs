@@ -294,6 +294,10 @@ namespace SqlSugar
         }
         public virtual bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
             string sql = string.Format(AddDefaultValueSql, tableName, columnName,defaultValue);
             this.Context.Ado.ExecuteCommand(sql);
             return true;

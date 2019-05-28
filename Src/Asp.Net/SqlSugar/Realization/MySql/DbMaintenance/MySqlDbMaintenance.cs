@@ -422,6 +422,10 @@ namespace SqlSugar
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
             if (defaultValue.ToLower().IsIn("now()", "current_timestamp"))
             {
                 string template = "ALTER table {0} CHANGE COLUMN {1} {1} {3} default {2}";
