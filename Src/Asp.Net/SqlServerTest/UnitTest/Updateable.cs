@@ -23,13 +23,18 @@ namespace OrmTest
             Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
+            Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
+            Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
         }
     }
 
     public class BoolTest
     {
+        [SugarColumn(IsPrimaryKey =true)]
         public int Id { get; set; }
         public bool BoolValue { get; set; }
+        public string Name { get; set; }
     }
     /// <summary>
     /// 普通用户表
