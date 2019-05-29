@@ -340,7 +340,7 @@ namespace SqlSugar
         #endregion
 
         #region Queue
-        public QueueList Queues { get => this.Context.Queues; set => this.Context.Queues = value; }
+        public QueueList Queues { get { return this.Context.Queues; } set { this.Context.Queues = value; } }
         public void AddQueue(string sql, object parsmeters = null)
         {
             this.Context.AddQueue(sql, parsmeters);
@@ -524,13 +524,13 @@ namespace SqlSugar
         #endregion
 
         #region More api
-        public IContextMethods Utilities { get => this.Context.Utilities; set => this.Context.Utilities = value; }
+        public IContextMethods Utilities { get { return this.Context.Utilities; } set { this.Context.Utilities = value; } }
         public AopProvider Aop => this.Context.Aop;
         public ICodeFirst CodeFirst => this.Context.CodeFirst;
         public IDbFirst DbFirst => this.Context.DbFirst;
         public IDbMaintenance DbMaintenance => this.Context.DbMaintenance;
-        public EntityMaintenance EntityMaintenance { get => this.Context.EntityMaintenance; set => this.Context.EntityMaintenance = value; }
-        public QueryFilterProvider QueryFilter { get => this.Context.QueryFilter; set => this.Context.QueryFilter = value; }
+        public EntityMaintenance EntityMaintenance { get { return this.Context.EntityMaintenance; } set { this.Context.EntityMaintenance = value; } }
+        public QueryFilterProvider QueryFilter { get { return this.Context.QueryFilter; }set { this.Context.QueryFilter = value; } }
         #endregion
 
         #region TenantManager

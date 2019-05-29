@@ -164,13 +164,13 @@ namespace SqlSugar
 
         protected override string DeleteColumnRemarkSql => "comment on column {1}.{0} is ''";
 
-        protected override string IsAnyColumnRemarkSql => throw new NotSupportedException();
+        protected override string IsAnyColumnRemarkSql { get { throw new NotSupportedException(); } }
 
         protected override string AddTableRemarkSql => "comment on table {0} is '{1}'";
 
         protected override string DeleteTableRemarkSql => "comment on table {0} is ''";
 
-        protected override string IsAnyTableRemarkSql => throw new NotSupportedException();
+        protected override string IsAnyTableRemarkSql { get { throw new NotSupportedException(); } }
 
         protected override string RenameTableSql => "alter table 表名 {0} to {1}";
 
