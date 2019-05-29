@@ -138,7 +138,7 @@ namespace SqlSugar
         {
             if (columns.HasValue())
             {
-                var ignoreColumns = columns;
+                var ignoreColumns = columns.Select(it => it.ToLower()).ToList() ;
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName.ToLower())).ToList();
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.DbColumnName.ToLower())).ToList();
             }

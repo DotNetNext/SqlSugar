@@ -26,6 +26,7 @@ namespace OrmTest
             Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
             Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
             Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
+            Db.Updateable<BoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
         }
     }
 
