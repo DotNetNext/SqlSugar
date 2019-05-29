@@ -429,14 +429,20 @@ namespace SqlSugar
             if (defaultValue.ToLower().IsIn("now()", "current_timestamp"))
             {
                 string template = "ALTER table {0} CHANGE COLUMN {1} {1} {3} default {2}";
-                var dbColumnInfo=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).First(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
+                var dbColumnInfo = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).First(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
                 string sql = string.Format(template, tableName, columnName, defaultValue, dbColumnInfo.DataType);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            else if (defaultValue=="0"|| defaultValue == "1")
+            {
+                string sql = string.Format(AddDefaultValueSql.Replace("'",""), tableName, columnName, defaultValue);
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
             }
             else
             {
-                return base.AddDefaultValue(tableName,columnName,defaultValue);
+                return base.AddDefaultValue(tableName, columnName, defaultValue);
             }
         }
         public override bool IsAnyConstraint(string constraintName)
