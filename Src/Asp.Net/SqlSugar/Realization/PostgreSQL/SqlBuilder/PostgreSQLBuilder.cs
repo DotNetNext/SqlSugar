@@ -67,13 +67,17 @@ namespace SqlSugar
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
-            if (name.Contains("."))
+            if (name.Contains(".")&& !name.Contains("("))
             {
                 return string.Join(".", name.ToLower().Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
             }
             else if (name.Contains("("))
             {
                 return name.ToLower();
+            }
+            else if (name.Contains(SqlTranslationLeft) && name.Contains(SqlTranslationRight))
+            {
+                return name;
             }
             else
             {
