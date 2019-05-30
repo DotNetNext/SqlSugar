@@ -491,6 +491,11 @@ namespace SqlSugar
                 Check.ThrowNotSupportedException(item.GetType().Name);
             }
         }
+        protected static bool IsConvert(Expression item)
+        {
+            return item is UnaryExpression && item.NodeType == ExpressionType.Convert;
+        }
+
         protected static bool IsNotMember(Expression item)
         {
             return item is UnaryExpression &&

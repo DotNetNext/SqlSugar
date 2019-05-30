@@ -27,7 +27,101 @@ namespace OrmTest
             Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
             Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
             Db.Updateable<BoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
+
+
+
+            SaveDiary saveDiary = new SaveDiary();
+            saveDiary.ID = 2;
+            saveDiary.TypeID = 10;
+            saveDiary.TypeName = "类型100";
+            saveDiary.Title = "标题1000";
+            saveDiary.Content = "内容";
+            saveDiary.Time = DateTime.Now;
+            saveDiary.IsRemind = false;//无论传false/true 最终执行的结果都是以true执行的
+ 
+            var sql = Db.Updateable<Diary>().SetColumns(it => new Diary()
+            {
+                IsRemind = saveDiary.IsRemind,
+            }).Where(it => it.ID == saveDiary.ID).ToSql();
+            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
+            [IsRemind] = @Const1   WHERE ( [ID] = @ID2 )", "Updateable");
+
         }
+    }
+    public class SaveDiary
+    {
+        public int ID { get; set; }
+        public int TypeID { get; set; }
+        public string TypeName { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public DateTime? Time { get; set; }
+        public bool IsRemind { get; set; }
+    }
+    /// <summary>
+    /// 日记表
+    /// </summary>
+    [SugarTable("Diary")]
+    public class Diary
+    {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int ID { get; set; }
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public int? UserID { get; set; }
+        /// <summary>
+        /// 日记类型ID
+        /// </summary>
+        public int TypeID { get; set; }
+        /// <summary>
+        /// 日记类型名称
+        /// </summary>
+        public string TypeName { get; set; }
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 内容
+        /// </summary>
+        public string Content { get; set; }
+        /// <summary>
+        /// 时间
+        /// </summary>
+        public DateTime? Time { get; set; }
+        /// <summary>
+        /// 是否提醒
+        /// </summary>
+        public bool? IsRemind { get; set; }
+        /// <summary>
+        /// 封面图
+        /// </summary>
+        public string Cover { get; set; }
+        /// <summary>
+        /// 是否为系统日记 1:系统日记 0:用户日记
+        /// </summary>
+        public bool? IsSystem { get; set; }
+        /// <summary>
+        /// 权重(排序)
+        /// </summary>
+        public int? Sequence { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string IP { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? CreateTime { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? UpdateTime { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? IsDelete { get; set; }
     }
 
     public class BoolTest
