@@ -77,7 +77,7 @@ namespace SqlSugar
             }
             else
             {
-                return SqlTranslationLeft + name.ToLower() + SqlTranslationRight;
+                return SqlTranslationLeft + name.ToLower().TrimEnd('"').TrimStart('"') + SqlTranslationRight;
             }
         }
     }
