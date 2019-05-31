@@ -26,14 +26,29 @@ namespace OrmTest
             //Db.Ado.ExecuteCommand("insert testtree values(hierarchyid::GetRoot(),geography :: STGeomFromText ('POINT(55.9271035250276 -3.29431266523898)',4326),'name')");
             //var list2 = Db.Queryable<TestTree>().ToList();
 
-            Db.CodeFirst.InitTables<GuidTable>();
-            Db.Queryable<GuidTable>().Where(it => it.Id.HasValue).ToList();
+            Db.CodeFirst.InitTables<UnitGuidTable>();
+            Db.Queryable<UnitGuidTable>().Where(it => it.Id.HasValue).ToList();
 
             Db.Queryable<Order>().Where(it => SqlSugar.SqlFunc.Equals(it.CreateTime.Date, it.CreateTime.Date)).ToList();
+
+           var sql= Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
+            {
+             
+               DcNull=it.Dc,
+               Dc=it.Int
+            }).ToSql().Key;
+            UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
         }
 
-
-        public class GuidTable
+        public class UnitSelectTest
+        {
+            public decimal? DcNull { get; set; }
+            public decimal Dc { get; set; }
+            public int? IntNull { get; set; }
+            public decimal Int { get; set; }
+        }
+ 
+        public class UnitGuidTable
         {
             public Guid? Id { get; set; }
         }
