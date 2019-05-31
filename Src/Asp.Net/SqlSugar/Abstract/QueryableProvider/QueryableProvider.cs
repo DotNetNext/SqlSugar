@@ -824,6 +824,13 @@ namespace SqlSugar
             return result;
         }
         #region Async methods
+        public virtual async Task<T> InSingleAsync(object pkValue)
+        {
+            Check.Exception(this.QueryBuilder.SelectValue.HasValue(), "'InSingle' and' Select' can't be used together,You can use .Select(it=>...).Single(it.id==1)");
+            var list =await In(pkValue).ToListAsync();
+            if (list == null) return default(T);
+            else return list.SingleOrDefault();
+        }
         public async Task<T> SingleAsync()
         {
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
