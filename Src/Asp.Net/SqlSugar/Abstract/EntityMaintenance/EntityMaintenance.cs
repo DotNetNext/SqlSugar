@@ -173,6 +173,7 @@ namespace SqlSugar
                         column.NoSerialize = sugarColumn.NoSerialize;
                         column.DefaultValue = sugarColumn.DefaultValue;
                         column.IndexGroupNameList = sugarColumn.IndexGroupNameList;
+                        column.IsOnlyIgnoreUpdate = sugarColumn.IsOnlyIgnoreUpdate;
                     }
                     else
                     {

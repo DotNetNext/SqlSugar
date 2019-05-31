@@ -38,6 +38,20 @@ namespace OrmTest
                Dc=it.Int
             }).ToSql().Key;
             UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
+
+            sql= Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
+        }
+
+
+
+        public class UnitSelectTest2
+        {
+            [SqlSugar.SugarColumn(IsOnlyIgnoreUpdate = true)]
+            public decimal? DcNull { get; set; }
+            public decimal Dc { get; set; }
+            public int? IntNull { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public decimal Int { get; set; }
         }
 
         public class UnitSelectTest

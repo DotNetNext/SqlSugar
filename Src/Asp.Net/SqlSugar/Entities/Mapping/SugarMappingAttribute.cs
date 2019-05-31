@@ -112,6 +112,13 @@ namespace SqlSugar
             set { _IsOnlyIgnoreInsert = value; }
         }
 
+        private bool _IsOnlyIgnoreUpdate;
+        public bool IsOnlyIgnoreUpdate
+        {
+            get { return _IsOnlyIgnoreUpdate; }
+            set { _IsOnlyIgnoreUpdate = value; }
+        }
+
 
         private bool _IsEnableUpdateVersionValidation;
         public bool IsEnableUpdateVersionValidation {
