@@ -40,6 +40,8 @@ namespace OrmTest
             UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
 
             sql= Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
+            UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
+           [Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
         }
 
 
