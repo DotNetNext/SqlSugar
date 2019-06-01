@@ -109,6 +109,11 @@ namespace SqlSugar
                 }
                 else if (IsConst(item))
                 {
+                    var oldCommonTempData = parameter.CommonTempData;
+                    if (oldCommonTempData == null)
+                    {
+                        parameter.CommonTempData = CommonTempDataType.Result;
+                    }
                     base.Expression = item;
                     if (IsConvert(item))
                     {
@@ -118,7 +123,7 @@ namespace SqlSugar
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
-                    parameter.CommonTempData = null;
+                    parameter.CommonTempData = oldCommonTempData;
                     this.Context.ParameterIndex++;
                 }
                 else if (item is MemberExpression)
