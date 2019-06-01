@@ -8,13 +8,14 @@ namespace OrmTest
 {
     public partial class NewUnitTest
     {
-        public static void Queryable() {
+        public static void Queryable()
+        {
 
             var pageindex = 1;
             var pagesize = 10;
             var total = 0;
             var totalPage = 0;
-            var list=Db.Queryable<Order>().ToPageList(pageindex, pagesize, ref total, ref totalPage);
+            var list = Db.Queryable<Order>().ToPageList(pageindex, pagesize, ref total, ref totalPage);
 
             //Db.CodeFirst.InitTables(typeof(CarType));
             //Db.Updateable<CarType>()
@@ -31,26 +32,47 @@ namespace OrmTest
 
             Db.Queryable<Order>().Where(it => SqlSugar.SqlFunc.Equals(it.CreateTime.Date, it.CreateTime.Date)).ToList();
 
-           var sql= Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
+            var sql = Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
             {
-             
-               DcNull=it.Dc,
-               Dc=it.Int
+
+                DcNull = it.Dc,
+                Dc = it.Int
             }).ToSql().Key;
             UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
 
-            sql= Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
+            sql = Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
             UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
            [Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
 
-            sql= Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
+            sql = Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
             UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
-            sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id,it.Name }).ToSql().Key;
+            sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id, it.Name }).ToSql().Key;
             UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
             sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
             UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+
+            var cts = IEnumerbleContains.Data();
+            var list2=Db.Queryable<Order>()
+                    .Where(p => /*ids.*/cts.Select(c => c.Id).Contains(p.Id)).ToList();
+
+            var cts2 = IEnumerbleContains.Data().ToList(); ;
+            var list3 = Db.Queryable<Order>()
+                    .Where(p => /*ids.*/cts2.Select(c => c.Id).Contains(p.Id)).ToList();
         }
 
+        public static class IEnumerbleContains
+        {
+            public static IEnumerable<Order> Data()
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    yield return new Order
+                    {
+                        Id = i,
+                    };
+                }
+            }
+        }
 
 
         public class UnitSelectTest2
@@ -70,7 +92,7 @@ namespace OrmTest
             public int? IntNull { get; set; }
             public decimal Int { get; set; }
         }
- 
+
         public class UnitGuidTable
         {
             public Guid? Id { get; set; }

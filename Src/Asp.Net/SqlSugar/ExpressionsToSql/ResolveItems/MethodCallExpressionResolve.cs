@@ -515,6 +515,14 @@ namespace SqlSugar
                     case "Contains":
                         return this.Context.DbMehtods.Contains(model);
                     case "ContainsArray":
+                        if (model.Args[0].MemberValue == null)
+                        {
+                            var first = this.Context.Parameters.FirstOrDefault(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
+                            if (first.HasValue())
+                            {
+                                model.Args[0].MemberValue = first.Value;
+                            }
+                        }
                         var caResult = this.Context.DbMehtods.ContainsArray(model);
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
                         return caResult;
