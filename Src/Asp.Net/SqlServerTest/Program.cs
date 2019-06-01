@@ -11,14 +11,14 @@ namespace OrmTest
             //OldTestMain.Init();
 
             //Demo
-            //Demo0_SqlSugarClient.Init();
-            //Demo1_Queryable.Init();
-            //Demo2_Updateable.Init();
-            //Democ_GobalFilter.Init();
-            //DemoD_DbFirst.Init();
-            //DemoE_CodeFirst.Init();
-            //Demo5_SqlQueryable.Init();
-            //Demo6_Queue.Init();
+            Demo0_SqlSugarClient.Init();
+            Demo1_Queryable.Init();
+            Demo2_Updateable.Init();
+            Democ_GobalFilter.Init();
+            DemoD_DbFirst.Init();
+            DemoE_CodeFirst.Init();
+            Demo5_SqlQueryable.Init();
+            Demo6_Queue.Init();
 
             //Unit test
             NewUnitTest.Init();
