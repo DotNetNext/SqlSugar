@@ -120,6 +120,7 @@ namespace SqlSugar
 
         public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false,bool ignoreAllDefaultValue = false)
         {
+            Check.Exception(this.UpdateObjs.Count() > 1 && ignoreAllNullColumns, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
             UpdateBuilder.IsOffIdentity = isOffIdentity;
             if (this.UpdateBuilder.LambdaExpressions == null)
                 this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
