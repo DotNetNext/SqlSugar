@@ -42,6 +42,13 @@ namespace OrmTest
             sql= Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
             UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
            [Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
+
+            sql= Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
+            UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
+            sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id,it.Name }).ToSql().Key;
+            UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+            sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
+            UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
         }
 
 
