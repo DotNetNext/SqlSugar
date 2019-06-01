@@ -44,7 +44,7 @@ namespace OrmTest
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
             UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
-            [IsRemind] = @Const1   WHERE ( [ID] = @ID2 )", "Updateable");
+            [IsRemind] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
 
         }
     }
