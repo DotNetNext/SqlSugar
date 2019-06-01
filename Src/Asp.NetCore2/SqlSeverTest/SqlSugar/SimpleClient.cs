@@ -11,6 +11,10 @@ namespace SqlSugar
     {
         protected ISqlSugarClient Context { get; set; }
 
+        public ITenant AsTenant()
+        {
+            return this.Context as ITenant;
+        }
         public ISqlSugarClient AsSugarClient()
         {
             return this.Context;
@@ -170,7 +174,10 @@ namespace SqlSugar
     public partial class SimpleClient
     {
         protected ISqlSugarClient Context { get; set; }
-
+        public ITenant AsTenant()
+        {
+            return this.Context as ITenant;
+        }
         public ISqlSugarClient AsSugarClient()
         {
             return this.Context;

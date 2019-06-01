@@ -33,6 +33,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        public List<string> IgnoreColumns { get; set; }
         public bool IsCount { get; set; }
         public int? Skip { get; set; }
         public int ExternalPageIndex { get; set; }
@@ -429,7 +430,12 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
-                result = string.Join(",", this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore).Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
+                var columns = this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore);
+                if (this.IgnoreColumns.HasValue())
+                {
+                    columns = columns.Where(c => !this.IgnoreColumns.Any(i=>c.PropertyName.Equals(i,StringComparison.CurrentCultureIgnoreCase)||c.DbColumnName.Equals(i,StringComparison.CurrentCultureIgnoreCase))).ToList();
+                }
+                result = string.Join(",", columns.Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
             }
             else
             {

@@ -54,6 +54,7 @@ namespace SqlSugar
         ISugarQueryable<T> WhereIF(bool isWhere, string whereString, object parameters = null);
 
         T InSingle(object pkValue);
+        Task<T> InSingleAsync(object pkValue);
         ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues);
         ISugarQueryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues);
         ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
@@ -151,6 +152,8 @@ namespace SqlSugar
         string ToClassString(string className);
         void Clear();
         void AddQueue();
+        ISugarQueryable<T> IgnoreColumns(Expression<Func<T, object>> columns);
+        ISugarQueryable<T> IgnoreColumns(params string[] columns);
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {

@@ -211,6 +211,7 @@ namespace SqlSugar
             return this;
         }
         public IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false) {
+            Check.Exception(this.InsertObjs.Count() > 1&& ignoreNullColumn, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
             this.IsOffIdentity = isOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);

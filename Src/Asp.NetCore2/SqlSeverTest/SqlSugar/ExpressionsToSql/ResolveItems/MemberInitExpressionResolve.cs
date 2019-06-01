@@ -109,11 +109,21 @@ namespace SqlSugar
                 }
                 else if (IsConst(item))
                 {
+                    var oldCommonTempData = parameter.CommonTempData;
+                    if (oldCommonTempData == null)
+                    {
+                        parameter.CommonTempData = CommonTempDataType.Result;
+                    }
                     base.Expression = item;
+                    if (IsConvert(item))
+                    {
+                        base.Expression = (base.Expression as UnaryExpression).Operand;
+                    }
                     base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+                    parameter.CommonTempData = oldCommonTempData;
                     this.Context.ParameterIndex++;
                 }
                 else if (item is MemberExpression)
@@ -163,7 +173,6 @@ namespace SqlSugar
                 }
             }
         }
-
         private static bool IsConst(Expression item)
         {
             return item is UnaryExpression || item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant;

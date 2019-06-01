@@ -452,7 +452,7 @@ namespace SqlSugar
         }
         protected virtual string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
         {
-            string columnName = this.SqlBuilder.GetTranslationTableName(columnInfo.DbColumnName);
+            string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataSize = GetSize(columnInfo);
             string dataType = columnInfo.DataType;

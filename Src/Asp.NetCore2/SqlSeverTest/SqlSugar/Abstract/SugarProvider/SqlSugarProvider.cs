@@ -878,7 +878,7 @@ namespace SqlSugar
             }
             this.Queues.Add(sql, parsmeters);
         }
-        public QueueList Queues { get { if (_Queues == null) { _Queues = new QueueList(); } return _Queues; }  set => _Queues = value; }
+        public QueueList Queues { get { if (_Queues == null) { _Queues = new QueueList(); } return _Queues; }  set { _Queues = value; } }
 
 
 

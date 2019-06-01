@@ -50,6 +50,20 @@ namespace SqlSugar
         {
             QueryBuilder.Clear();
         }
+        public ISugarQueryable<T> IgnoreColumns(Expression<Func<T, object>> columns)
+        {
+            var ignoreColumns = QueryBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it).ToLower()).ToList();
+            return IgnoreColumns(ignoreColumns.ToArray());
+        }
+        public ISugarQueryable<T> IgnoreColumns(params string[] columns)
+        {
+            if (QueryBuilder.IgnoreColumns.IsNullOrEmpty())
+            {
+                QueryBuilder.IgnoreColumns = new List<string>();
+            }
+            QueryBuilder.IgnoreColumns.AddRange(columns);
+            return this;
+        }
         public void AddQueue()
         {
             var sqlObj = this.ToSql();
@@ -824,6 +838,13 @@ namespace SqlSugar
             return result;
         }
         #region Async methods
+        public virtual async Task<T> InSingleAsync(object pkValue)
+        {
+            Check.Exception(this.QueryBuilder.SelectValue.HasValue(), "'InSingle' and' Select' can't be used together,You can use .Select(it=>...).Single(it.id==1)");
+            var list =await In(pkValue).ToListAsync();
+            if (list == null) return default(T);
+            else return list.SingleOrDefault();
+        }
         public async Task<T> SingleAsync()
         {
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
@@ -1878,6 +1899,7 @@ namespace SqlSugar
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
             asyncQueryableBuilder.HavingInfos = this.QueryBuilder.HavingInfos;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            asyncQueryableBuilder.IgnoreColumns = this.QueryBuilder.IgnoreColumns;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
