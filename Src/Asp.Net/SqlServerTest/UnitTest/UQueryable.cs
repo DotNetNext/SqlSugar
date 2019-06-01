@@ -58,6 +58,11 @@ namespace OrmTest
             var cts2 = IEnumerbleContains.Data().ToList(); ;
             var list3 = Db.Queryable<Order>()
                     .Where(p => /*ids.*/cts2.Select(c => c.Id).Contains(p.Id)).ToList();
+
+
+            var list4 = Db.Queryable<Order>()
+                .Where(p => new List<int> { 1, 2, 3 }.Where(b => b > 1).Contains(p.Id)).ToList();
+           
         }
 
         public static class IEnumerbleContains
