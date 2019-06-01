@@ -152,6 +152,8 @@ namespace SqlSugar
         string ToClassString(string className);
         void Clear();
         void AddQueue();
+        ISugarQueryable<T> IgnoreColumns(Expression<Func<T, object>> columns);
+        ISugarQueryable<T> IgnoreColumns(params string[] columns);
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {
