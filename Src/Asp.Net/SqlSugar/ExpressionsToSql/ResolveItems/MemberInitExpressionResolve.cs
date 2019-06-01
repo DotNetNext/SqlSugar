@@ -118,6 +118,7 @@ namespace SqlSugar
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
+                    parameter.CommonTempData = null;
                     this.Context.ParameterIndex++;
                 }
                 else if (item is MemberExpression)
