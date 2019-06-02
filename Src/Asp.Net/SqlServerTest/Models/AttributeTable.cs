@@ -7,9 +7,9 @@ using System.Text;
 
 namespace OrmTest
 {
-    [Table(Name = "CustomAttributeTable")]
+    [Table(Name = "MyAttributeTable")]
     //[SugarTable("CustomAttributeTable")]
-    public class MyCustomAttributeTable
+    public class  AttributeTable
     {
 
         [Key]

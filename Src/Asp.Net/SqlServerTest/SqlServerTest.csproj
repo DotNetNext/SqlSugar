@@ -61,8 +61,8 @@
     <Compile Include="Demo\DemoD_DbFirst.cs" />
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
     <Compile Include="Models\Custom.cs" />
-    <Compile Include="Models\Mappers.cs" />
-    <Compile Include="Models\MyCustomAttributeTable.cs" />
+    <Compile Include="Models\Tree.cs" />
+    <Compile Include="Models\AttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
@@ -146,7 +146,6 @@
     <Compile Include="OldTest\UnitTest\Setting\MapColumn.cs" />
     <Compile Include="OldTest\UnitTest\Setting\MapTable.cs" />
     <Compile Include="OldTest\UnitTest\Update.cs" />
-    <Compile Include="Models\CarType.cs" />
     <Compile Include="UnitTest\UCodeFirst.cs" />
     <Compile Include="UnitTest\UAdo.cs" />
     <Compile Include="UnitTest\Updateable.cs" />
