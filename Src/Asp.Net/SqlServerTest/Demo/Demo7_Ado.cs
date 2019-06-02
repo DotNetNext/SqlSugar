@@ -11,6 +11,8 @@ namespace OrmTest
     {
         public static void Init()
         {
+            Console.WriteLine("");
+            Console.WriteLine("#### Ado Start ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -49,7 +51,7 @@ namespace OrmTest
             var intValue=db.Ado.SqlQuerySingle<int>("select 1");
             db.Ado.ExecuteCommand("delete [order] where id>1000");
             //db.Ado.xxx
-
+            Console.WriteLine("#### Ado End ####");
         }
     }
 }
