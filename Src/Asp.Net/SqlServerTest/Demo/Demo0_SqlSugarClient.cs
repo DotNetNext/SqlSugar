@@ -16,8 +16,35 @@ namespace OrmTest
             SqlSugarClient();//Create db
             DbContext();//Optimizing SqlSugarClient usage
             SingletonPattern();//Singleten Pattern
-            DistributedTransactionExample(); 
+            DistributedTransactionExample();
+            MasterSlave();//Read-write separation 
             CustomAttribute(); 
+        }
+
+        private static void MasterSlave()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("#### MasterSlave Start ####");
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
+            {
+                ConnectionString = Config.ConnectionString,//Master Connection
+                DbType = DbType.SqlServer,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection = true,
+                SlaveConnectionConfigs = new List<SlaveConnectionConfig>() {
+                     new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 } ,
+                       new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 }
+                } 
+            });
+            db.Aop.OnLogExecuted = (s, p) =>
+            {
+                Console.WriteLine(db.Ado.Connection.ConnectionString);
+            };
+            Console.WriteLine("Master:");
+            db.Insertable(new Order() { Name = "abc", CustomId = 1, CreateTime = DateTime.Now }).ExecuteCommand();
+            Console.WriteLine("Slave:");
+            db.Queryable<Order>().First();
+            Console.WriteLine("#### MasterSlave End ####");
         }
 
         private static void SqlSugarClient()
