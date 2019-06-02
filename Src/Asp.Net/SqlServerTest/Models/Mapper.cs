@@ -28,4 +28,27 @@ namespace OrmTest
         [SugarColumn(IsIgnore = true)]
         public List<OrderItem> Items { get; set; }
     }
+    public class ABMapping
+    {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int AId { get; set; }
+        public int BId { get; set; }
+        [SugarColumn(IsIgnore = true)]
+        public A A { get; set; }
+        [SugarColumn(IsIgnore = true)]
+        public B B { get; set; }
+
+    }
+    public class A
+    {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+    public class B
+    {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }
