@@ -47,6 +47,7 @@ namespace OrmTest
                 var businessData = it.BusinessData;
                 var time = it.Time;
                 var diffType = it.DiffType;//enum insert 、update and delete  
+                Console.WriteLine(businessData);
                 Console.WriteLine(editBeforeData[0].Columns[1].Value);
                 Console.WriteLine("to");
                 Console.WriteLine(editAfterData[0].Columns[1].Value);
@@ -62,7 +63,7 @@ namespace OrmTest
             //OnDiffLogEvent
             var data = db.Queryable<Order>().First();
             data.Name = "changeName";
-            db.Updateable(data).EnableDiffLogEvent().ExecuteCommand();
+            db.Updateable(data).EnableDiffLogEvent("--update Order--").ExecuteCommand();
 
             Console.WriteLine("#### Aop End ####");
         }
