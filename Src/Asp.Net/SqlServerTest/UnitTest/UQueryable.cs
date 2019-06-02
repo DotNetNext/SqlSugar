@@ -62,7 +62,11 @@ namespace OrmTest
 
             var list4 = Db.Queryable<Order>()
                 .Where(p => new List<int> { 1, 2, 3 }.Where(b => b > 1).Contains(p.Id)).ToList();
-           
+
+            Db.CodeFirst.InitTables<UnitTest3>();
+            var list5 = Db.Queryable<UnitTest3>().Where(it => SqlSugar.SqlFunc.ToString(it.Date.Value.Year) == "1").ToList();
+            var list6 = Db.Queryable<UnitTest3>().Where(it => it.Date.Value.Year ==1).ToList();
+            var list7 = Db.Queryable<UnitTest3>().Where(it => it.Date.Value.Date==DateTime.Now.Date).ToList();
         }
 
         public static class IEnumerbleContains
@@ -77,6 +81,11 @@ namespace OrmTest
                     };
                 }
             }
+        }
+
+        public class UnitTest3
+        {
+            public DateTime? Date { get; set; }
         }
 
 
