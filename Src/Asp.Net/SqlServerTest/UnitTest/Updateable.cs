@@ -11,26 +11,26 @@ namespace OrmTest
     {
         public static void Updateable()
         {
-            Db.CodeFirst.InitTables(typeof(SYS_USER));
-            Db.DbMaintenance.TruncateTable<SYS_USER>();
-            Db.Insertable(new SYS_USER() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
-            Db.Updateable(new SYS_USER() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
-            Db.CodeFirst.InitTables(typeof(BoolTest));
-            var x = new BoolTest();
-            Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
-            Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
-            Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<BoolTest>().SetColumns(it => new BoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<BoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
-            Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
-            Db.Updateable<BoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
-            Db.Updateable<BoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
+            Db.CodeFirst.InitTables(typeof(UnitSYS_USER));
+            Db.DbMaintenance.TruncateTable<UnitSYS_USER>();
+            Db.Insertable(new UnitSYS_USER() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
+            Db.Updateable(new UnitSYS_USER() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
+            Db.CodeFirst.InitTables(typeof(UnitBoolTest));
+            var x = new UnitBoolTest();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
 
 
 
-            SaveDiary saveDiary = new SaveDiary();
+            UnitSaveDiary saveDiary = new UnitSaveDiary();
             saveDiary.ID = 2;
             saveDiary.TypeID = 10;
             saveDiary.TypeName = "类型100";
@@ -48,7 +48,7 @@ namespace OrmTest
 
         }
     }
-    public class SaveDiary
+    public class UnitSaveDiary
     {
         public int ID { get; set; }
         public int TypeID { get; set; }
@@ -62,7 +62,7 @@ namespace OrmTest
     /// 日记表
     /// </summary>
     [SugarTable("Diary")]
-    public class Diary
+    public class UnitDiary
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int ID { get; set; }
@@ -124,7 +124,7 @@ namespace OrmTest
         public bool? IsDelete { get; set; }
     }
 
-    public class BoolTest
+    public class UnitBoolTest
     {
         [SugarColumn(IsPrimaryKey =true)]
         public int Id { get; set; }
@@ -135,7 +135,7 @@ namespace OrmTest
     /// 普通用户表
     /// </summary>
     [Serializable]
-    public class SYS_USER 
+    public class UnitSYS_USER 
     {
         private System.Int64? _USER_ID;
         /// <summary>
