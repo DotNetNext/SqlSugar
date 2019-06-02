@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SqlSugar;
+
 namespace OrmTest
 {
     public class DemoB_Aop
@@ -37,7 +37,6 @@ namespace OrmTest
             {
                 return new KeyValuePair<string, SugarParameter[]>(sql, pars);
             };
-
             db.Aop.OnDiffLogEvent = it =>//Get data changes
             {
                 var editBeforeData = it.BeforeData;
@@ -53,8 +52,6 @@ namespace OrmTest
                 Console.WriteLine(editAfterData[0].Columns[1].Value);
                 //Write logic
             };
-
-
 
      
             db.Queryable<Order>().ToList();
