@@ -15,7 +15,7 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.SqlServer,
-                ConnectionString = "server=.;uid=sa;pwd=haosql;database=cCcMyDbBaseTest",
+                ConnectionString = Config.ConnectionString3,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
