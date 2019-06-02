@@ -25,7 +25,10 @@ namespace OrmTest
             Demo6_Queue.Init();
 
             //Unit test
-            NewUnitTest.Init();
+            //NewUnitTest.Init();
+
+            //Rest Data
+            NewUnitTest.RestData();
 
             Console.WriteLine("all successfully.");
             Console.ReadKey();

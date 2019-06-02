@@ -150,6 +150,9 @@ namespace OrmTest
                                      .ToList();
             //one to one
             var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
+
+            //one to many
+            var list3 = db.Queryable<Order>().Mapper(it => it.Items, it => it.Items.First().OrderId).ToList();
             Console.WriteLine("#### End Start ####");
         }
 

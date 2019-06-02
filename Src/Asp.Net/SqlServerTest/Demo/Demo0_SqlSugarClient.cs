@@ -40,7 +40,7 @@ namespace OrmTest
                 }
             });
 
-            //if no exist create datebase SQLSUGAR4XTEST (bin/database/)
+            //if no exist create datebase 
             db.DbMaintenance.CreateDatabase();
 
             //Use db
@@ -49,7 +49,7 @@ namespace OrmTest
             //create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
             var id = db.Insertable(new Order() { Name = "order1", CustomId = 1, Price = 0, CreateTime = DateTime.Now }).ExecuteReturnIdentity();
-            db.Insertable(new OrderItem() { OrderId = id, Price = 0 }).ExecuteCommand();
+            db.Insertable(new OrderItem() { OrderId = id, Price = 0, CreateTime=DateTime.Now }).ExecuteCommand();
             Console.WriteLine("#### SqlSugarClient End ####");
 
         }
@@ -91,10 +91,10 @@ namespace OrmTest
 
             //Delete
             orderDb.Delete(insertObj);
-            orderDb.DeleteById(1);
-            orderDb.DeleteById(new int[] { 1, 2 });
-            orderDb.Delete(it => it.Id == 1);
-            orderDb.AsDeleteable().Where(it => it.Id == 1).ExecuteCommand();
+            orderDb.DeleteById(11111);
+            orderDb.DeleteById(new int[] { 1111, 2222 });
+            orderDb.Delete(it => it.Id == 1111);
+            orderDb.AsDeleteable().Where(it => it.Id == 1111).ExecuteCommand();
 
             //Update
             orderDb.Update(insertObj);
