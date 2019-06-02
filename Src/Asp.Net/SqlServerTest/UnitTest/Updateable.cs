@@ -11,10 +11,10 @@ namespace OrmTest
     {
         public static void Updateable()
         {
-            Db.CodeFirst.InitTables(typeof(UnitSYS_USER));
-            Db.DbMaintenance.TruncateTable<UnitSYS_USER>();
-            Db.Insertable(new UnitSYS_USER() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
-            Db.Updateable(new UnitSYS_USER() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
+            Db.CodeFirst.InitTables(typeof(UnitUser));
+            Db.DbMaintenance.TruncateTable<UnitUser>();
+            Db.Insertable(new UnitUser() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
+            Db.Updateable(new UnitUser() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
             Db.CodeFirst.InitTables(typeof(UnitBoolTest));
             var x = new UnitBoolTest();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
@@ -135,7 +135,7 @@ namespace OrmTest
     /// 普通用户表
     /// </summary>
     [Serializable]
-    public class UnitSYS_USER 
+    public class UnitUser 
     {
         private System.Int64? _USER_ID;
         /// <summary>
