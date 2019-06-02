@@ -30,6 +30,16 @@ namespace OrmTest
                 }
             });
 
+
+            List<int> ids = Enumerable.Range(1, 100).ToList();
+            db.Utilities.PageEach(ids, 10, list =>
+            {
+                Console.WriteLine(string.Join("," ,list));   
+            });
+
+            var list2= db.Utilities.DataTableToList<Order>(db.Ado.GetDataTable("select * from [order]"));
+
+            //more https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities
             Console.WriteLine("#### Utilities End ####");
         }
     }
