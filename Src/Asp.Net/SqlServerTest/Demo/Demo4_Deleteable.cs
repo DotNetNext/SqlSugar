@@ -33,7 +33,7 @@ namespace OrmTest
             db.Deleteable<Order>().Where(new Order() { Id = 1111 }).ExecuteCommand();
 
             //by primary key
-            db.Deleteable<Order>().In(1).ExecuteCommand();
+            db.Deleteable<Order>().In(1111).ExecuteCommand();
 
             //by primary key array
             db.Deleteable<Order>().In(new int[] { 1111, 2222 }).ExecuteCommand();
