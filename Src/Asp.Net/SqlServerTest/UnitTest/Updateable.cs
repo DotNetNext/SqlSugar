@@ -39,7 +39,7 @@ namespace OrmTest
             saveDiary.Time = DateTime.Now;
             saveDiary.IsRemind = false;//无论传false/true 最终执行的结果都是以true执行的
  
-            var sql = Db.Updateable<Diary>().SetColumns(it => new Diary()
+            var sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();

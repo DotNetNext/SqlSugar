@@ -197,8 +197,8 @@ namespace OrmTest
             Console.WriteLine("#### Distributed TransactionExample Start ####");
             SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
             {
-                new ConnectionConfig(){ ConfigId=1, DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
-                new ConnectionConfig(){ ConfigId=2, DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
+                new ConnectionConfig(){ ConfigId="1", DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
+                new ConnectionConfig(){ ConfigId="2", DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
             });
 
             //use db1
@@ -298,11 +298,11 @@ namespace OrmTest
             if (result.IsSuccess == false)
             {
                 Console.WriteLine("---Roll back");
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+                db.ChangeDatabase("1");//use sqlserver
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+                db.ChangeDatabase("2");//use mysql
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
             }
