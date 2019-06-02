@@ -198,28 +198,20 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
             {
                 new ConnectionConfig(){ ConfigId=1, DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
-                new ConnectionConfig(){ ConfigId=2, DbType=DbType.MySql, ConnectionString=Config.ConnectionString4 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
+                new ConnectionConfig(){ ConfigId=2, DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
             });
 
-            db.MappingTables.Add(typeof(Order).Name, typeof(Order).Name + "2018");
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order));
-
-            db.MappingTables.Add(typeof(Order).Name, typeof(Order).Name + "2019");
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order));//
-
-            //use first(SqlServer)
+            //use db1
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
 
-            //use mysql
-            db.ChangeDatabase(it => it.DbType == DbType.MySql);
+            //use db2
+            db.ChangeDatabase("2");
+            db.DbMaintenance.CreateDatabase();//Create Database2
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
-
-            //SqlServer
-            db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
 
             // Example 1
             Console.WriteLine("Example 1");
@@ -227,12 +219,12 @@ namespace OrmTest
             {
                 db.BeginTran();
 
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+                db.ChangeDatabase("1");//use db1
                 db.Deleteable<Order>().ExecuteCommand();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+                db.ChangeDatabase("2");//use db2
                 db.Deleteable<Order>().ExecuteCommand();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
@@ -244,11 +236,11 @@ namespace OrmTest
             {
                 db.RollbackTran();
                 Console.WriteLine("---Roll back");
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+                db.ChangeDatabase("1");//use db1
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+                db.ChangeDatabase("2");//use db2
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
             }
@@ -261,12 +253,12 @@ namespace OrmTest
             var result=db.UseTran(() =>
             {
 
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+                db.ChangeDatabase("1");//use db1
                 db.Deleteable<Order>().ExecuteCommand();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+                db.ChangeDatabase("2");//use db2
                 db.Deleteable<Order>().ExecuteCommand();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
@@ -275,11 +267,11 @@ namespace OrmTest
             });
             if (result.IsSuccess == false) {
                 Console.WriteLine("---Roll back");
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+                db.ChangeDatabase("1");//use db1
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+                db.ChangeDatabase("2");//use db2
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
             }
@@ -290,12 +282,12 @@ namespace OrmTest
             var result2 = db.UseTranAsync(() =>
             {
 
-                db.ChangeDatabase(it => it.DbType == DbType.SqlServer);//use sqlserver
+                db.ChangeDatabase("1");//use db1
                 db.Deleteable<Order>().ExecuteCommand();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase(it => it.DbType == DbType.MySql);//use mysql
+                db.ChangeDatabase("2");//use db2
                 db.Deleteable<Order>().ExecuteCommand();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
