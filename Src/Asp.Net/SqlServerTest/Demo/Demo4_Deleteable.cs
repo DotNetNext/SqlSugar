@@ -30,16 +30,16 @@ namespace OrmTest
                 }
             });
             //by entity
-            db.Deleteable<Order>().Where(new Order() { Id = 1 }).ExecuteCommand();
+            db.Deleteable<Order>().Where(new Order() { Id = 1111 }).ExecuteCommand();
 
             //by primary key
             db.Deleteable<Order>().In(1).ExecuteCommand();
 
             //by primary key array
-            db.Deleteable<Order>().In(new int[] { 1, 2 }).ExecuteCommand();
+            db.Deleteable<Order>().In(new int[] { 1111, 2222 }).ExecuteCommand();
 
             //by expression
-            db.Deleteable<Order>().Where(it => it.Id == 1).ExecuteCommand();
+            db.Deleteable<Order>().Where(it => it.Id == 11111).ExecuteCommand();
 
             Console.WriteLine("#### Deleteable End ####");
 

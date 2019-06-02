@@ -40,15 +40,17 @@ namespace OrmTest
                 }
             });
 
-            //if no exist create datebase 
+            //If no exist create datebase 
             db.DbMaintenance.CreateDatabase();
 
-            //Use db
+            //Use db query
             var dt = db.Ado.GetDataTable("select 1");
 
-            //create tables
+            //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
             var id = db.Insertable(new Order() { Name = "order1", CustomId = 1, Price = 0, CreateTime = DateTime.Now }).ExecuteReturnIdentity();
+
+            //Insert data
             db.Insertable(new OrderItem() { OrderId = id, Price = 0, CreateTime=DateTime.Now }).ExecuteCommand();
             Console.WriteLine("#### SqlSugarClient End ####");
 
