@@ -46,10 +46,10 @@ namespace OrmTest
             //Use db
             var dt = db.Ado.GetDataTable("select 1");
 
-            //create table OrderDetail
-            db.CodeFirst.InitTables(typeof(OrderItem));
-
-            db.Insertable(new OrderItem() { OrderId = 1, Price = 0 }).ExecuteCommand();
+            //create tables
+            db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
+            var id = db.Insertable(new Order() { Name = "order1", CustomId = 1, Price = 0, CreateTime = DateTime.Now }).ExecuteReturnIdentity();
+            db.Insertable(new OrderItem() { OrderId = id, Price = 0 }).ExecuteCommand();
             Console.WriteLine("#### SqlSugarClient End ####");
 
         }

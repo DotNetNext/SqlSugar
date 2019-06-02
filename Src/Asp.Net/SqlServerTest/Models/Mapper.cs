@@ -5,16 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrmTest.Models
+namespace OrmTest
 {
     [SugarTable("OrderDetail")]
     public class OrderItemInfo
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int ItemId { get; set; }
-        public string ItemCode { get; set; }
-        public decimal Pirce { get; set; }
         public int OrderId { get; set; }
+        public decimal? Price { get; set; }
+        [SqlSugar.SugarColumn(IsNullable = true)]
+        public DateTime? CreateTime { get; set; }
         [SugarColumn(IsIgnore = true)]
         public Order Order { get; set; }
     }

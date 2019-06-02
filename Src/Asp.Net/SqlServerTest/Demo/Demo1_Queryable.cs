@@ -148,8 +148,8 @@ namespace OrmTest
                                      //Child=(select * from parent where ParentId=it.id)
                                      .Mapper(it => it.Child, it => it.Id, it => it.Parent.ParentId)
                                      .ToList();
-
-
+            //one to one
+            var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
             Console.WriteLine("#### End Start ####");
         }
 
