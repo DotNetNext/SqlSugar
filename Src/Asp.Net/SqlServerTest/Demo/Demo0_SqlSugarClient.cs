@@ -142,10 +142,10 @@ namespace OrmTest
                     }
                 }
             });
-            db.CodeFirst.InitTables<MyCustomAttributeTable>();//Create Table
+            db.CodeFirst.InitTables<AttributeTable>();//Create Table
 
-            db.Insertable(new MyCustomAttributeTable() { Id = Guid.NewGuid().ToString(), Name = "Name" }).ExecuteCommand();
-            var list = db.Queryable<MyCustomAttributeTable>().ToList();
+            db.Insertable(new AttributeTable() { Id = Guid.NewGuid().ToString(), Name = "Name" }).ExecuteCommand();
+            var list = db.Queryable<AttributeTable>().ToList();
 
             Console.WriteLine("#### Custom Attribute End ####");
         }
