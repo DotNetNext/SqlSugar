@@ -30,6 +30,12 @@ namespace OrmTest
                 }
             });
 
+            var tables = db.DbMaintenance.GetTableInfoList();
+            foreach (var table in tables)
+            {
+                Console.WriteLine(table.Description);
+            }
+            //more https://github.com/sunkaixuan/SqlSugar/wiki/a.DbMain
             Console.WriteLine("#### DbMain End ####");
         }
     }

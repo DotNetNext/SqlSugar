@@ -29,7 +29,12 @@ namespace OrmTest
                     }
                 }
             });
-
+            var entityInfo = db.EntityMaintenance.GetEntityInfo<Order>();
+            foreach (var column in entityInfo.Columns)
+            {
+                Console.WriteLine(column.DbColumnName);
+            }
+            //more https://github.com/sunkaixuan/SqlSugar/wiki/9.EntityMain
             Console.WriteLine("#### EntityMain End ####");
         }
     }
