@@ -38,13 +38,21 @@ namespace OrmTest
             saveDiary.Content = "内容";
             saveDiary.Time = DateTime.Now;
             saveDiary.IsRemind = false;//无论传false/true 最终执行的结果都是以true执行的
- 
+
             var sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
             UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
-            [IsRemind] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
+            [IsRemind] =  @Const0    WHERE ( [ID] = @ID1 )", "Updateable");
+
+
+            sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
+            {
+               TypeID = saveDiary.TypeID,
+            }).Where(it => it.ID == saveDiary.ID).ToSql();
+            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
+            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
 
         }
     }
@@ -73,7 +81,7 @@ namespace OrmTest
         /// <summary>
         /// 日记类型ID
         /// </summary>
-        public int TypeID { get; set; }
+        public int? TypeID { get; set; }
         /// <summary>
         /// 日记类型名称
         /// </summary>
