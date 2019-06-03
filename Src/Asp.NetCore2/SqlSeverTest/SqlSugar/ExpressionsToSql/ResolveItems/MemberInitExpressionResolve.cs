@@ -107,23 +107,17 @@ namespace SqlSugar
                         this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     }
                 }
+                else if (IsConst(item)&&IsConvert(item)&&UtilMethods.IsNullable(item.Type) && UtilMethods.GetUnderType(item.Type)==UtilConstants.BoolType)
+                {
+                    parameter.Context.Result.Append(base.Context.GetEqString(memberName, GetNewExpressionValue(item)));
+                }
                 else if (IsConst(item))
                 {
-                    var oldCommonTempData = parameter.CommonTempData;
-                    if (oldCommonTempData == null)
-                    {
-                        parameter.CommonTempData = CommonTempDataType.Result;
-                    }
                     base.Expression = item;
-                    if (IsConvert(item))
-                    {
-                        base.Expression = (base.Expression as UnaryExpression).Operand;
-                    }
                     base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, parameter.CommonTempData));
-                    parameter.CommonTempData = oldCommonTempData;
                     this.Context.ParameterIndex++;
                 }
                 else if (item is MemberExpression)
