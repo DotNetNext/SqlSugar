@@ -16,7 +16,7 @@ namespace OrmTest
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.SqlServer,
+                DbType = DbType.MySql,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
@@ -37,7 +37,7 @@ namespace OrmTest
                 Console.WriteLine(string.Join("," ,list));   
             });
 
-            var list2= db.Utilities.DataTableToList<Order>(db.Ado.GetDataTable("select * from [order]"));
+            var list2= db.Utilities.DataTableToList<Order>(db.Ado.GetDataTable("select * from `order`"));
 
             //more https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities
             Console.WriteLine("#### Utilities End ####");

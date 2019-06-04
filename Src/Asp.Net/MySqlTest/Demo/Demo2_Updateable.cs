@@ -16,7 +16,7 @@ namespace OrmTest
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.SqlServer,
+                DbType = DbType.MySql,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
@@ -78,8 +78,8 @@ namespace OrmTest
             var dtList = new List<Dictionary<string, object>>();
             dtList.Add(dt);
 
-            var t66 = db.Updateable(dt).AS("[Order]").WhereColumns("id").ExecuteCommand();
-            var t666 = db.Updateable(dtList).AS("[Order]").WhereColumns("id").ExecuteCommand();
+            var t66 = db.Updateable(dt).AS("`order`").WhereColumns("id").ExecuteCommand();
+            var t666 = db.Updateable(dtList).AS("`order`").WhereColumns("id").ExecuteCommand();
 
 
 

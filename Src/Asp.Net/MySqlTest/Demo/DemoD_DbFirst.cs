@@ -14,7 +14,7 @@ namespace OrmTest
             Console.WriteLine("#### DbFirst Start ####");
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.SqlServer,
+                DbType = DbType.MySql,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true

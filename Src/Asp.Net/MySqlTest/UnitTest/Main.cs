@@ -10,7 +10,7 @@ namespace OrmTest
     {
        public static  SqlSugarClient Db=> new SqlSugarClient(new ConnectionConfig()
         {
-            DbType = DbType.SqlServer,
+            DbType = DbType.MySql,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,

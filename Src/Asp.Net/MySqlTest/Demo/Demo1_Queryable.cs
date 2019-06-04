@@ -189,7 +189,7 @@ namespace OrmTest
             Console.WriteLine("#### No Entity Start ####");
             var db = GetInstance();
 
-            var list = db.Queryable<dynamic>().AS("order ").Where("id=id", new { id = 1 }).ToList();
+            var list = db.Queryable<dynamic>().AS("order").Where("id=id", new { id = 1 }).ToList();
 
             var list2 = db.Queryable<dynamic>("o").AS("order").AddJoinInfo("OrderDetail", "i", "o.id=i.OrderId").Where("id=id", new { id = 1 }).Select("o.*").ToList();
             Console.WriteLine("#### No Entity End ####");
@@ -252,7 +252,7 @@ namespace OrmTest
             //id=@id
             var list4 = db.Queryable<Order>().Where("id=@id", new { id = 1 }).ToList();
             //id=@id or name like '%'+@name+'%'
-            var list5 = db.Queryable<Order>().Where("id=@id or name like '%'+@name+'%' ", new { id = 1, name = "jack" }).ToList();
+            var list5 = db.Queryable<Order>().Where("id=@id or name like @name ", new { id = 1, name = "%jack%" }).ToList();
 
 
 
@@ -323,7 +323,7 @@ namespace OrmTest
         {
             return new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = SqlSugar.DbType.SqlServer,
+                DbType = SqlSugar.DbType.MySql,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,

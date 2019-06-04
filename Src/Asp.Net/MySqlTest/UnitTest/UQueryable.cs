@@ -46,11 +46,11 @@ namespace OrmTest
            [Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
 
             sql = Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
-            UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
+            UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM `order` ", "Queryable");
             sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id, it.Name }).ToSql().Key;
-            UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+            UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM `order` ", "Queryable");
             sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
-            UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+            UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM `order` ", "Queryable");
 
             var cts = IEnumerbleContains.Data();
             var list2=Db.Queryable<Order>()
