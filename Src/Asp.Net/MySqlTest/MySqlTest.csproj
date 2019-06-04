@@ -67,12 +67,16 @@
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
     <Compile Include="Demo\DemoF_Utilities.cs" />
     <Compile Include="Demo\DemoG_SimpleClient.cs" />
+    <Compile Include="Models\AttributeTable.cs" />
     <Compile Include="Models\CarType.cs" />
     <Compile Include="Models\Custom.cs" />
-    <Compile Include="Models\Mappers.cs" />
+    <Compile Include="Models\EntityMapper.cs" />
+    <Compile Include="Models\Mapper.cs" />
     <Compile Include="Models\MyCustomAttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\TestTree.cs" />
+    <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="OldTests\Demos\1_Query.cs" />
     <Compile Include="OldTests\Demos\2_Update.cs" />
