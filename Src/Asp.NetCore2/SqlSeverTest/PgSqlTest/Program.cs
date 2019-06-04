@@ -1,14 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using SqlSugar;
-using OrmTest.Models;
-using System.Data.SqlClient;
-
 
 namespace OrmTest
 {
@@ -16,22 +6,35 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            Demo.DbFirst.Init();
-            Demo.CodeFirst.Init();
-            Demo.Aop.Init();
-            Demo.Query.Init();
-            Demo.Insert.Init();
-            Demo.Delete.Init();
-            Demo.Update.Init();
-            Demo.MasterSlave.Init();
-            Demo.SharedConnection.Init();
-            Demo.ExtSqlFun.Init();
-            //Demo.QueryableView.Init();
-            Demo.AttributeDemo.Init();
-            Demo.Mapper.Init();
-            Demo.ExtEntity.Init();
-            Demo.Queue.Init();
+            //Demo
+            Demo0_SqlSugarClient.Init();
+            Demo1_Queryable.Init();
+            Demo2_Updateable.Init();
+            Demo3_Insertable.Init();
+            Demo4_Deleteable.Init();
+            Demo5_SqlQueryable.Init();
+            Demo6_Queue.Init();
+            Demo7_Ado.Init();
+            Demo8_Saveable.Init();
+            Demo9_EntityMain.Init();
+            DemoA_DbMain.Init();
+            DemoB_Aop.Init();
+            DemoC_GobalFilter.Init();
+            DemoD_DbFirst.Init(); ;
+            DemoE_CodeFirst.Init();
+            DemoF_Utilities.Init();
+            DemoG_SimpleClient.Init();
 
+            //Unit test
+            //NewUnitTest.Init();
+
+            //Rest Data
+            NewUnitTest.RestData();
+
+            Console.WriteLine("all successfully.");
+            Console.ReadKey();
         }
+
+ 
     }
 }
