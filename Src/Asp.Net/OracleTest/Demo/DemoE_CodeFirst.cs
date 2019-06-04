@@ -28,10 +28,9 @@ namespace OrmTest
 
     public class CodeFirstTable1
     {
-        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
+        [SugarColumn(OracleSequenceName ="SEQ_ID", IsPrimaryKey = true)]
         public int Id { get; set; }
         public string Name { get; set; }
-        [SugarColumn(ColumnDataType = "Nvarchar(255)")]//custom
         public string Text { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }
