@@ -16,9 +16,7 @@ namespace OrmTest
         }
         public class UnitCodeTest1
         {
-            [SqlSugar.SugarColumn(IndexGroupNameList = new string[] { "group1" })]
             public int Id { get; set; }
-            [SqlSugar.SugarColumn(DefaultValue="getdate()", IndexGroupNameList =new string[] {"group1" } )]
             public DateTime? CreateDate { get; set; }
         }
     }
