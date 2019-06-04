@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using SqlSugar;
-using OrmTest.Models;
-using System.Data.SqlClient;
+﻿using OrmTest.PerformanceTesting;
 using OrmTest.UnitTest;
-using OrmTest.PerformanceTesting;
+using System;
 
 namespace OrmTest
 {
@@ -17,35 +8,35 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            /***Unit Test***/
-            new Field(1).Init();
-            new Where(1).Init();
-            new Method(1).Init();
-            new JoinQuery(1).Init();
-            new SingleQuery(1).Init();
-            new SelectQuery(1).Init();
-            new AutoClose(1).Init();
-            new Insert(1).Init();
-            new Delete(1).Init();
-            new Update(1).Init();
-            new Mapping(1).Init();
-            new DataTest(1).Init();
+            //Demo
+            Demo0_SqlSugarClient.Init();
+            Demo1_Queryable.Init();
+            Demo2_Updateable.Init();
+            Demo3_Insertable.Init();
+            Demo4_Deleteable.Init();
+            Demo5_SqlQueryable.Init();
+            Demo6_Queue.Init();
+            Demo7_Ado.Init();
+            Demo8_Saveable.Init();
+            Demo9_EntityMain.Init();
+            DemoA_DbMain.Init();
+            DemoB_Aop.Init();
+            DemoC_GobalFilter.Init();
+            DemoD_DbFirst.Init(); ;
+            DemoE_CodeFirst.Init();
+            DemoF_Utilities.Init();
+            DemoG_SimpleClient.Init();
 
-            /***Performance Test***/
-            new SqlSugarPerformance(100).Select();
+            //Unit test
+            //NewUnitTest.Init();
 
-            /***Demo***/
-            OrmTest.Demo.Query.Init();
-            OrmTest.Demo.Insert.Init();
-            OrmTest.Demo.Delete.Init();
-            OrmTest.Demo.Update.Init();
-            OrmTest.Demo.DbFirst.Init();
-            OrmTest.Demo.JoinSql.Init();
-            OrmTest.Demo.Filter.Init();
-            OrmTest.Demo.ComplexModel.Init();
-            OrmTest.Demo.CodeFirst.Init();
-            OrmTest.Demo.Aop.Init();
-            OrmTest.Demo.Queue.Init();
+            //Rest Data
+            NewUnitTest.RestData();
+
+            Console.WriteLine("all successfully.");
+            Console.ReadKey();
         }
+
+ 
     }
 }
