@@ -6,8 +6,26 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
+    /// <summary>
+    /// Setting up the database name does not require you to create the database
+    /// 设置好数据库名不需要你去手动建库
+    /// </summary>
     public class Config
     {
-        public static string ConnectionString = "Database=SqlSugar4xTest;Data Source=127.0.0.1;User Id=root;Password=haosql;pooling=false;CharSet=utf8;port=3306";
+        /// <summary>
+        /// Account have permission to create database
+        /// 用有建库权限的数据库账号
+        /// </summary>
+        public static string ConnectionString = "server=localhost;Database=SqlSugar4xTest;Uid=root;Pwd=haosql";
+        /// <summary>
+        /// Account have permission to create database
+        /// 用有建库权限的数据库账号
+        /// </summary>
+        public static string ConnectionString2 = "server=localhost;Database=SqlSugar4xTest2;Uid=root;Pwd=haosql";
+        /// <summary>
+        /// Account have permission to create database
+        /// 用有建库权限的数据库账号
+        /// </summary>
+        public static string ConnectionString3 = "server=localhost;Database=SqlSugar4xTest3;Uid=root;Pwd=haosql";
     }
 }
