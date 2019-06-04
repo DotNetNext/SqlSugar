@@ -11,18 +11,139 @@ namespace OrmTest
     {
         public static void Updateable()
         {
-            Db.CodeFirst.InitTables(typeof(SYS_USER));
-            Db.DbMaintenance.TruncateTable<SYS_USER>();
-            Db.Insertable(new SYS_USER() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
-            Db.Updateable(new SYS_USER() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
-            
+            Db.CodeFirst.InitTables(typeof(UnitUser));
+            Db.DbMaintenance.TruncateTable<UnitUser>();
+            Db.Insertable(new UnitUser() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
+            Db.Updateable(new UnitUser() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
+            Db.CodeFirst.InitTables(typeof(UnitBoolTest));
+            var x = new UnitBoolTest();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
+
+
+
+            UnitSaveDiary saveDiary = new UnitSaveDiary();
+            saveDiary.ID = 2;
+            saveDiary.TypeID = 10;
+            saveDiary.TypeName = "类型100";
+            saveDiary.Title = "标题1000";
+            saveDiary.Content = "内容";
+            saveDiary.Time = DateTime.Now;
+            saveDiary.IsRemind = false;//无论传false/true 最终执行的结果都是以true执行的
+
+            var sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
+            {
+                IsRemind = saveDiary.IsRemind,
+            }).Where(it => it.ID == saveDiary.ID).ToSql();
+            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
+            [IsRemind] =  @Const0    WHERE ( [ID] = @ID1 )", "Updateable");
+
+
+            sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
+            {
+               TypeID = saveDiary.TypeID,
+            }).Where(it => it.ID == saveDiary.ID).ToSql();
+            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
+            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
+
         }
+    }
+    public class UnitSaveDiary
+    {
+        public int ID { get; set; }
+        public int TypeID { get; set; }
+        public string TypeName { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public DateTime? Time { get; set; }
+        public bool IsRemind { get; set; }
+    }
+    /// <summary>
+    /// 日记表
+    /// </summary>
+    [SugarTable("Diary")]
+    public class UnitDiary
+    {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int ID { get; set; }
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public int? UserID { get; set; }
+        /// <summary>
+        /// 日记类型ID
+        /// </summary>
+        public int? TypeID { get; set; }
+        /// <summary>
+        /// 日记类型名称
+        /// </summary>
+        public string TypeName { get; set; }
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 内容
+        /// </summary>
+        public string Content { get; set; }
+        /// <summary>
+        /// 时间
+        /// </summary>
+        public DateTime? Time { get; set; }
+        /// <summary>
+        /// 是否提醒
+        /// </summary>
+        public bool? IsRemind { get; set; }
+        /// <summary>
+        /// 封面图
+        /// </summary>
+        public string Cover { get; set; }
+        /// <summary>
+        /// 是否为系统日记 1:系统日记 0:用户日记
+        /// </summary>
+        public bool? IsSystem { get; set; }
+        /// <summary>
+        /// 权重(排序)
+        /// </summary>
+        public int? Sequence { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string IP { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? CreateTime { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? UpdateTime { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? IsDelete { get; set; }
+    }
+
+    public class UnitBoolTest
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public int Id { get; set; }
+        public bool BoolValue { get; set; }
+        public string Name { get; set; }
     }
     /// <summary>
     /// 普通用户表
     /// </summary>
     [Serializable]
-    public class SYS_USER 
+    public class UnitUser 
     {
         private System.Int64? _USER_ID;
         /// <summary>

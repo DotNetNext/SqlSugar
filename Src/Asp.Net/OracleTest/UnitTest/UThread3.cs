@@ -13,10 +13,10 @@ namespace OrmTest
         public static void Thread3()
         {
             Console.WriteLine("Thread3");
-            SimpleAsync3();
-            IsShardSameThreadAsync3();
-            SingleAsync3();
-            SingleAndIsShardSameThreadAsync3();
+            SimpleAsync3().Wait();
+            IsShardSameThreadAsync3().Wait();
+            SingleAsync3().Wait();
+            SingleAndIsShardSameThreadAsync3().Wait();
 
         }
 
