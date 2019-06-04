@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OrmTest
 {
-    public class Democ_GobalFilter
+    public class DemoC_GobalFilter
     {
         public static void Init()
         {
