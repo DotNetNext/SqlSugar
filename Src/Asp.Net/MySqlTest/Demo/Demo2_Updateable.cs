@@ -16,7 +16,7 @@ namespace OrmTest
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.MySql,
+                DbType = DbType.SqlServer,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
@@ -63,8 +63,8 @@ namespace OrmTest
             var result7 = db.Updateable<Order>(it => new Order() { Name = "a", CreateTime = DateTime.Now }).Where(it => it.Id == 11).ExecuteCommand();
             var result71 = db.Updateable<Order>().SetColumns(it => new Order() { Name = "a", CreateTime = DateTime.Now }).Where(it => it.Id == 11).ExecuteCommand();
             //only update name
-            var result8 = db.Updateable<Order>(it => it.Name == "Name" + 1).Where(it => it.Id == 1).ExecuteCommand();
-            var result81 = db.Updateable<Order>().SetColumns(it => it.Name == "Name" + 1).Where(it => it.Id == 1).ExecuteCommand();
+            var result8 = db.Updateable<Order>(it => it.Name == "Name" + "1").Where(it => it.Id == 1).ExecuteCommand();
+            var result81 = db.Updateable<Order>().SetColumns(it => it.Name == "Name" + "1").Where(it => it.Id == 1).ExecuteCommand();
             //
 
 
@@ -73,13 +73,13 @@ namespace OrmTest
             /*** 3.by Dictionary ***/
             var dt = new Dictionary<string, object>();
             dt.Add("id", 1);
-            dt.Add("name", null);
+            dt.Add("name", "abc");
             dt.Add("createTime", DateTime.Now);
             var dtList = new List<Dictionary<string, object>>();
             dtList.Add(dt);
 
-            var t66 = db.Updateable(dt).AS("student").WhereColumns("id").ExecuteCommand();
-            var t666 = db.Updateable(dtList).AS("student").WhereColumns("id").ExecuteCommand();
+            var t66 = db.Updateable(dt).AS("[Order]").WhereColumns("id").ExecuteCommand();
+            var t666 = db.Updateable(dtList).AS("[Order]").WhereColumns("id").ExecuteCommand();
 
 
 

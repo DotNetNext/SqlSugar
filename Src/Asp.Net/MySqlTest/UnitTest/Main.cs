@@ -10,7 +10,7 @@ namespace OrmTest
     {
        public static  SqlSugarClient Db=> new SqlSugarClient(new ConnectionConfig()
         {
-            DbType = DbType.MySql,
+            DbType = DbType.SqlServer,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
@@ -23,6 +23,12 @@ namespace OrmTest
                 }
             }
         });
+
+        public static void RestData()
+        {
+            Db.DbMaintenance.TruncateTable<Order>();
+            Db.DbMaintenance.TruncateTable<OrderItem>();
+        }
         public static void Init()
         {
             CodeFirst();

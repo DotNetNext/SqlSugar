@@ -41,7 +41,7 @@ namespace OrmTest
             var getByWhere = db.Queryable<Order>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
-            var getByFuns2 = db.Queryable<Order>().GroupBy(it=>it.Name).Select(it=>SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+            var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -142,13 +142,43 @@ namespace OrmTest
             db.Insertable(new Tree() { Id = 2, Name = "root" }).ExecuteCommand();
             db.Insertable(new Tree() { Id = 22, Name = "child3", ParentId = 2 }).ExecuteCommand();
 
-            var list=db.Queryable<Tree>()
+            // Same property name mapping,Both entities have parentId
+            var list = db.Queryable<Tree>().Mapper(it => it.Parent, it => it.ParentId).ToList();
+
+
+            //If both entities have parentId, I don't want to associate with parentId.
+            var list1 =db.Queryable<Tree>()
                                      //parent=(select * from parent where id=it.parentid)
                                      .Mapper(it=>it.Parent,it=>it.ParentId, it=>it.Parent.Id)
                                      //Child=(select * from parent where ParentId=it.id)
                                      .Mapper(it => it.Child, it => it.Id, it => it.Parent.ParentId)
                                      .ToList();
+            //one to one
+            var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
 
+            //one to many
+            var list3 = db.Queryable<Order>().Mapper(it => it.Items, it => it.Items.First().OrderId).ToList();
+
+            //many to many
+            db.CodeFirst.InitTables<A, B, ABMapping>();
+
+            db.Insertable(new A() { Name = "A" }).ExecuteCommand();
+            db.Insertable(new B() { Name = "B" }).ExecuteCommand();
+            db.Insertable(new ABMapping() { AId = 1, BId = 1 }).ExecuteCommand();
+
+            var  list4 = db.Queryable<ABMapping>()
+              .Mapper(it => it.A, it => it.AId)
+              .Mapper(it => it.B, it => it.BId).ToList();
+
+            //Manual mode
+            var result = db.Queryable<OrderInfo>().Take(10).Select<ViewOrder>().Mapper((itemModel, cache) =>
+            {
+                var allItems = cache.Get(orderList => {
+                    var allIds = orderList.Select(it => it.Id).ToList();
+                    return db.Queryable<OrderItem>().Where(it => allIds.Contains(it.OrderId)).ToList();//Execute only once
+                });
+                itemModel.Items = allItems.Where(it => it.OrderId==itemModel.Id).ToList();//Every time it's executed
+            }).ToList();
 
             Console.WriteLine("#### End Start ####");
         }
@@ -159,9 +189,9 @@ namespace OrmTest
             Console.WriteLine("#### No Entity Start ####");
             var db = GetInstance();
 
-            var list = db.Queryable<dynamic>().AS("`order` ").Where("id=id", new { id = 1 }).ToList();
+            var list = db.Queryable<dynamic>().AS("order ").Where("id=id", new { id = 1 }).ToList();
 
-            var list2 = db.Queryable<dynamic>("o").AS("`order`").AddJoinInfo("OrderDetail", "i", "o.id=i.OrderId").Where("id=id", new { id = 1 }).Select("o.*").ToList();
+            var list2 = db.Queryable<dynamic>("o").AS("order").AddJoinInfo("OrderDetail", "i", "o.id=i.OrderId").Where("id=id", new { id = 1 }).Select("o.*").ToList();
             Console.WriteLine("#### No Entity End ####");
         }
 
@@ -222,7 +252,7 @@ namespace OrmTest
             //id=@id
             var list4 = db.Queryable<Order>().Where("id=@id", new { id = 1 }).ToList();
             //id=@id or name like '%'+@name+'%'
-            var list5 = db.Queryable<Order>().Where("id=@id or name like '%'||@name||'%' ", new { id = 1, name = "jack" }).ToList();
+            var list5 = db.Queryable<Order>().Where("id=@id or name like '%'+@name+'%' ", new { id = 1, name = "jack" }).ToList();
 
 
 
@@ -293,7 +323,7 @@ namespace OrmTest
         {
             return new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = SqlSugar.DbType.MySql,
+                DbType = SqlSugar.DbType.SqlServer,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,

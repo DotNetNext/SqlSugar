@@ -57,9 +57,16 @@
     <Compile Include="Demo\Demo4_Deleteable.cs" />
     <Compile Include="Demo\Demo5_SqlQueryable.cs" />
     <Compile Include="Demo\Demo6_Queue.cs" />
+    <Compile Include="Demo\Demo7_Ado.cs" />
+    <Compile Include="Demo\Demo8_Saveable.cs" />
+    <Compile Include="Demo\Demo9_EntityMain.cs" />
+    <Compile Include="Demo\DemoA_DbMain.cs" />
+    <Compile Include="Demo\DemoB_Aop.cs" />
     <Compile Include="Demo\Democ_GobalFilter.cs" />
     <Compile Include="Demo\DemoD_DbFirst.cs" />
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
+    <Compile Include="Demo\DemoF_Utilities.cs" />
+    <Compile Include="Demo\DemoG_SimpleClient.cs" />
     <Compile Include="Models\CarType.cs" />
     <Compile Include="Models\Custom.cs" />
     <Compile Include="Models\Mappers.cs" />
