@@ -68,6 +68,7 @@
     <Compile Include="Demo\DemoF_Utilities.cs" />
     <Compile Include="Demo\DemoG_SimpleClient.cs" />
     <Compile Include="Models\Custom.cs" />
+    <Compile Include="Models\EntityMapper.cs" />
     <Compile Include="Models\Mapper.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\AttributeTable.cs" />

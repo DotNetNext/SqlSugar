@@ -34,6 +34,11 @@ namespace OrmTest
             {
                 Console.WriteLine(column.DbColumnName);
             }
+
+            var dbColumnsName = db.EntityMaintenance.GetDbColumnName<EntityMapper>("Name");
+
+            var dbTableName = db.EntityMaintenance.GetTableName<EntityMapper>();
+
             //more https://github.com/sunkaixuan/SqlSugar/wiki/9.EntityMain
             Console.WriteLine("#### EntityMain End ####");
         }
