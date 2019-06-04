@@ -123,7 +123,7 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
-            var index= db.Queryable<Order>().Select(it => SqlFunc.CharIndex("a", "cccacc")).First();
+            var index= db.Queryable<Order>().Select(it => SqlFunc.Contains("a", "cccacc")).First();
 
             Console.WriteLine("#### SqlFunc  End ####");
         }
