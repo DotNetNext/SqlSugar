@@ -128,7 +128,7 @@ namespace OrmTest.UnitTest
 
         public new SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.SqlServer });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { ConnectionString = Config.ConnectionString, DbType = DbType.Oracle });
             db.Aop.OnLogExecuting = (sql, pars) =>
             {
                 Console.WriteLine(sql + " " + pars);

@@ -10,7 +10,7 @@ namespace OrmTest
     {
        public static  SqlSugarClient Db=> new SqlSugarClient(new ConnectionConfig()
         {
-            DbType = DbType.SqlServer,
+            DbType = DbType.Oracle,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
@@ -28,6 +28,9 @@ namespace OrmTest
         {
             Db.DbMaintenance.TruncateTable<Order>();
             Db.DbMaintenance.TruncateTable<OrderItem>();
+            Db.DbMaintenance.TruncateTable<A>();
+            Db.DbMaintenance.TruncateTable<B>();
+            Db.DbMaintenance.TruncateTable<ABMapping>();
         }
         public static void Init()
         {

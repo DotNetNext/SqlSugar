@@ -14,12 +14,11 @@ namespace OrmTest
             Console.WriteLine("#### CodeFirst Start ####");
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.SqlServer,
+                DbType = DbType.Oracle,
                 ConnectionString = Config.ConnectionString3,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-            db.DbMaintenance.CreateDatabase(); 
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();

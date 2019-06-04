@@ -38,7 +38,7 @@ namespace OrmTest
  
         public static SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { DbType = DbType.SqlServer, ConnectionString = Config.ConnectionString, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { DbType = DbType.Oracle, ConnectionString = Config.ConnectionString, IsAutoCloseConnection = true });
 
             //single table query gobal filter
             db.QueryFilter.Add(new SqlFilterItem()

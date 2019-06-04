@@ -357,7 +357,7 @@ namespace SqlSugar
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
-            string sql = "select * from " + tableName + " WHERE 1=2 ";
+            string sql = "select * from " +SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
             using (DbDataReader reader = (DbDataReader)this.Context.Ado.GetDataReader(sql))

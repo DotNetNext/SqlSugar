@@ -30,7 +30,7 @@ namespace OrmTest
     }
     public class ABMapping
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true,OracleSequenceName = "SEQ_ID")]
         public int AId { get; set; }
         public int BId { get; set; }
         [SugarColumn(IsIgnore = true)]
@@ -41,13 +41,13 @@ namespace OrmTest
     }
     public class A
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true, OracleSequenceName ="SEQ_ID")]
         public int Id { get; set; }
         public string Name { get; set; }
     }
     public class B
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true, OracleSequenceName = "SEQ_ID")]
         public int Id { get; set; }
         public string Name { get; set; }
     }

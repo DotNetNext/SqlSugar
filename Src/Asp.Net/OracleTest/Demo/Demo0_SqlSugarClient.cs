@@ -17,7 +17,6 @@ namespace OrmTest
             SqlSugarClient();//Create db
             DbContext();//Optimizing SqlSugarClient usage
             SingletonPattern();//Singleten Pattern
-            DistributedTransactionExample();
             MasterSlave();//Read-write separation 
             CustomAttribute(); 
         }
@@ -29,7 +28,7 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,//Master Connection
-                DbType = DbType.SqlServer,
+                DbType = DbType.Oracle,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 SlaveConnectionConfigs = new List<SlaveConnectionConfig>() {
@@ -37,6 +36,7 @@ namespace OrmTest
                        new SlaveConnectionConfig() { HitRate=10, ConnectionString=Config.ConnectionString2 }
                 } 
             });
+
             db.Aop.OnLogExecuted = (s, p) =>
             {
                 Console.WriteLine(db.Ado.Connection.ConnectionString);
@@ -54,7 +54,7 @@ namespace OrmTest
             Console.WriteLine("#### SqlSugarClient Start ####");
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.SqlServer,
+                DbType = DbType.Oracle,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
@@ -68,11 +68,17 @@ namespace OrmTest
                 }
             });
 
-            //If no exist create datebase 
-            db.DbMaintenance.CreateDatabase();
+
+            var isAnySeq = db.Ado.GetInt("SELECT COUNT(*)  FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'SEQ_ID'") >0;
+            //Create seq  相当于创建一个自增标识
+            if (!isAnySeq)
+            {
+                db.Ado.ExecuteCommand("CREATE SEQUENCE Seq_Id");
+            }
+ 
 
             //Use db query
-            var dt = db.Ado.GetDataTable("select 1");
+            var dt = db.Ado.GetDataTable("select 1 from dual");
 
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
@@ -147,7 +153,7 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.SqlServer,
+                DbType = DbType.Oracle,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute,
                 ConfigureExternalServices = new ConfigureExternalServices()
@@ -210,7 +216,7 @@ namespace OrmTest
             new ConnectionConfig()
             {
                 ConfigId = 1,
-                DbType = DbType.SqlServer,
+                DbType = DbType.Oracle,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
@@ -219,126 +225,6 @@ namespace OrmTest
                     OnLogExecuting = (sql, p) => { Console.WriteLine(sql); }
                 }
             });
-
-
-        private static void DistributedTransactionExample()
-        {
-            Console.WriteLine("");
-            Console.WriteLine("#### Distributed TransactionExample Start ####");
-            SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
-            {
-                new ConnectionConfig(){ ConfigId="1", DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
-                new ConnectionConfig(){ ConfigId="2", DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
-            });
-
-            //use db1
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
-            db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
-            Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
-
-            //use db2
-            db.ChangeDatabase("2");
-            db.DbMaintenance.CreateDatabase();//Create Database2
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
-            db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
-            Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
-
-            // Example 1
-            Console.WriteLine("Example 1");
-            try
-            {
-                db.BeginTran();
-
-                db.ChangeDatabase("1");//use db1
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use db2
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                throw new Exception();
-                db.CommitTran();
-            }
-            catch
-            {
-                db.RollbackTran();
-                Console.WriteLine("---Roll back");
-                db.ChangeDatabase("1");//use db1
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use db2
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-            }
-
-
-
-            // Example 2
-            Console.WriteLine("Example 2");
-
-            var result=db.UseTran(() =>
-            {
-
-                db.ChangeDatabase("1");//use db1
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use db2
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-                throw new Exception("");
-
-            });
-            if (result.IsSuccess == false) {
-                Console.WriteLine("---Roll back");
-                db.ChangeDatabase("1");//use db1
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use db2
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-            }
-
-            // Example 3
-            Console.WriteLine("Example 3");
-
-            var result2 = db.UseTranAsync(() =>
-            {
-
-                db.ChangeDatabase("1");//use db1
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use db2
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-                throw new Exception("");
-
-            });
-            result2.Wait();
-            if (result.IsSuccess == false)
-            {
-                Console.WriteLine("---Roll back");
-                db.ChangeDatabase("1");//use sqlserver
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use mysql
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-            }
-
-            Console.WriteLine("#### Distributed TransactionExample End ####");
-        }
     }
 
     /// <summary>
@@ -353,7 +239,7 @@ namespace OrmTest
             Db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.SqlServer,
+                DbType = DbType.Oracle,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute,
                 AopEvents = new AopEvents()
@@ -387,7 +273,7 @@ namespace OrmTest
             Db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.SqlServer,
+                DbType = DbType.Oracle,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute,
                 AopEvents = new AopEvents()
