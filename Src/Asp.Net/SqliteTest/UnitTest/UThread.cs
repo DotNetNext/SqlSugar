@@ -12,7 +12,7 @@ namespace OrmTest
 
         public static SqlSugarClient simpleDb => new SqlSugarClient(new ConnectionConfig()
         {
-            DbType = DbType.MySql,
+            DbType = DbType.Sqlite,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
@@ -27,7 +27,7 @@ namespace OrmTest
         });
         public static SqlSugarClient ssDb => new SqlSugarClient(new ConnectionConfig()
         {
-            DbType = DbType.MySql,
+            DbType = DbType.Sqlite,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
@@ -43,7 +43,7 @@ namespace OrmTest
         });
         public static SqlSugarClient singleDb =  new SqlSugarClient(new ConnectionConfig()
         {
-            DbType = DbType.MySql,
+            DbType = DbType.Sqlite,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
@@ -58,7 +58,7 @@ namespace OrmTest
         });
         public static SqlSugarClient singleAndSsDb = new SqlSugarClient(new ConnectionConfig()
         {
-            DbType = DbType.MySql,
+            DbType = DbType.Sqlite,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,

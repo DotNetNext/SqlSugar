@@ -28,7 +28,7 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,//Master Connection
-                DbType = DbType.MySql,
+                DbType = DbType.Sqlite,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 SlaveConnectionConfigs = new List<SlaveConnectionConfig>() {
@@ -53,7 +53,7 @@ namespace OrmTest
             Console.WriteLine("#### SqlSugarClient Start ####");
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = DbType.MySql,
+                DbType = DbType.Sqlite,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
@@ -146,7 +146,7 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.MySql,
+                DbType = DbType.Sqlite,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute,
                 ConfigureExternalServices = new ConfigureExternalServices()
@@ -209,7 +209,7 @@ namespace OrmTest
             new ConnectionConfig()
             {
                 ConfigId = 1,
-                DbType = DbType.MySql,
+                DbType = DbType.Sqlite,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
@@ -226,8 +226,8 @@ namespace OrmTest
             Console.WriteLine("#### Distributed TransactionExample Start ####");
             SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
             {
-                new ConnectionConfig(){ ConfigId="1", DbType=DbType.MySql, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
-                new ConnectionConfig(){ ConfigId="2", DbType=DbType.MySql, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
+                new ConnectionConfig(){ ConfigId="1", DbType=DbType.Sqlite, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
+                new ConnectionConfig(){ ConfigId="2", DbType=DbType.Sqlite, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
             });
 
             //use db1
@@ -352,7 +352,7 @@ namespace OrmTest
             Db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.MySql,
+                DbType = DbType.Sqlite,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute,
                 AopEvents = new AopEvents()
@@ -386,7 +386,7 @@ namespace OrmTest
             Db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
-                DbType = DbType.MySql,
+                DbType = DbType.Sqlite,
                 IsAutoCloseConnection = true,
                 InitKeyType = InitKeyType.Attribute,
                 AopEvents = new AopEvents()
