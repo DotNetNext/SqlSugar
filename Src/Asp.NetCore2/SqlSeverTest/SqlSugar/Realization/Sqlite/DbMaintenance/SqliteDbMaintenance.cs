@@ -283,7 +283,7 @@ namespace SqlSugar
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
-            string sql = "PRAGMA table_info(" + tableName + ")";
+            string sql = "PRAGMA table_info(" +SqlBuilder.GetTranslationTableName(tableName) + ")";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
             using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
