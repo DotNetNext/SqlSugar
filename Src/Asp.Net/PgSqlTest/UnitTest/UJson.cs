@@ -16,7 +16,7 @@ namespace OrmTest
             Db.Insertable(new UnitJsonTest() { Order = new Order { Id = 1, Name = "order1" } }).ExecuteCommand();
             var list = Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order1", list.First().Order.Name, "Json");
-            Db.Updateable(new UnitJsonTest() { Id = 1, Order = new Order { Id = 2, Name = "order2" } }).ExecuteCommand();
+            Db.Updateable(new UnitJsonTest() { Id = Db.Queryable<UnitJsonTest>().First().Id, Order = new Order { Id = 2, Name = "order2" } }).ExecuteCommand();
             list= Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
             var list2 = Db.Queryable<UnitJsonTest>().ToList();
@@ -28,7 +28,7 @@ namespace OrmTest
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
-        [SqlSugar.SugarColumn(ColumnDataType = "varchar(max)", IsJson = true)]
+        [SqlSugar.SugarColumn(ColumnDataType = "varchar(4000)", IsJson = true)]
         public Order Order { get; set; }
     }
 }

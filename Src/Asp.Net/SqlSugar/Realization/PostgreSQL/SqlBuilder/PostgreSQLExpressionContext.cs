@@ -93,7 +93,36 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" {0}({1}) ", parameter2.MemberValue, parameter.MemberName);
+            var format = "dd";
+            if (parameter2.MemberValue.ObjToString() == DateType.Year.ToString())
+            {
+                format = "yyyy";
+            }
+            if (parameter2.MemberValue.ObjToString() == DateType.Month.ToString())
+            {
+                format = "MM";
+            }
+            if (parameter2.MemberValue.ObjToString() == DateType.Day.ToString())
+            {
+                format = "dd";
+            }
+            if (parameter2.MemberValue.ObjToString() == DateType.Hour.ToString())
+            {
+                format = "hh";
+            }
+            if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
+            {
+                format = "mm";
+            }
+            if (parameter2.MemberValue.ObjToString() == DateType.Second.ToString())
+            {
+                format = "ss";
+            }
+            if (parameter2.MemberValue.ObjToString() == DateType.Millisecond.ToString())
+            {
+                format = "ss";
+            }
+            return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
         }
 
         public override string Contains(MethodCallExpressionModel model)
@@ -132,6 +161,11 @@ namespace SqlSugar
             return string.Format(" (date_part('{2}',{0}-{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
+        public override string ToDate(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS timestamp)", parameter.MemberName);
+        }
         public override string DateAddByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

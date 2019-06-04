@@ -17,15 +17,15 @@ namespace OrmTest
             Db.Updateable(new UnitUser() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
             Db.CodeFirst.InitTables(typeof(UnitBoolTest));
             var x = new UnitBoolTest();
-            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
+            //Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
+            //Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
+            //Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
+            //Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
 
 
@@ -43,16 +43,16 @@ namespace OrmTest
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
-            [IsRemind] =  @Const0    WHERE ( [ID] = @ID1 )", "Updateable");
+            UValidate.Check(sql.Key, @"UPDATE ""diary""  SET
+            ""isremind"" =  @Const0    WHERE ( ""id"" = @ID1 )", "Updateable");
 
 
             sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
             {
                TypeID = saveDiary.TypeID,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
-            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
+            UValidate.Check(sql.Key, @"UPDATE ""diary""  SET
+            ""typeid"" = @Const0   WHERE ( ""id"" = @ID1 )", "Updateable");
 
         }
     }
