@@ -15,7 +15,7 @@ namespace OrmTest
         {
             EasyExamples();
             QueryConditions();
-            //JoinTable();
+            JoinTable();
             Async();
             NoEntity();
             Mapper();
@@ -123,7 +123,7 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
-            var index= db.Queryable<Order>().Select(it => SqlFunc.Contains(it.Name, "cccacc")).First();
+            var index= db.Queryable<Order>().Select(it => SqlFunc.Contains("a", "cccacc")).First();
 
             Console.WriteLine("#### SqlFunc  End ####");
         }
@@ -142,13 +142,43 @@ namespace OrmTest
             db.Insertable(new Tree() { Id = 2, Name = "root" }).ExecuteCommand();
             db.Insertable(new Tree() { Id = 22, Name = "child3", ParentId = 2 }).ExecuteCommand();
 
-            var list=db.Queryable<Tree>()
+            // Same property name mapping,Both entities have parentId
+            var list = db.Queryable<Tree>().Mapper(it => it.Parent, it => it.ParentId).ToList();
+
+
+            //If both entities have parentId, I don't want to associate with parentId.
+            var list1 =db.Queryable<Tree>()
                                      //parent=(select * from parent where id=it.parentid)
                                      .Mapper(it=>it.Parent,it=>it.ParentId, it=>it.Parent.Id)
                                      //Child=(select * from parent where ParentId=it.id)
                                      .Mapper(it => it.Child, it => it.Id, it => it.Parent.ParentId)
                                      .ToList();
+            //one to one
+            var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
 
+            //one to many
+            var list3 = db.Queryable<Order>().Mapper(it => it.Items, it => it.Items.First().OrderId).ToList();
+
+            //many to many
+            db.CodeFirst.InitTables<A, B, ABMapping>();
+
+            db.Insertable(new A() { Name = "A" }).ExecuteCommand();
+            db.Insertable(new B() { Name = "B" }).ExecuteCommand();
+            db.Insertable(new ABMapping() { AId = 1, BId = 1 }).ExecuteCommand();
+
+            var  list4 = db.Queryable<ABMapping>()
+              .Mapper(it => it.A, it => it.AId)
+              .Mapper(it => it.B, it => it.BId).ToList();
+
+            //Manual mode
+            var result = db.Queryable<OrderInfo>().Take(10).Select<ViewOrder>().Mapper((itemModel, cache) =>
+            {
+                var allItems = cache.Get(orderList => {
+                    var allIds = orderList.Select(it => it.Id).ToList();
+                    return db.Queryable<OrderItem>().Where(it => allIds.Contains(it.OrderId)).ToList();//Execute only once
+                });
+                itemModel.Items = allItems.Where(it => it.OrderId==itemModel.Id).ToList();//Every time it's executed
+            }).ToList();
 
             Console.WriteLine("#### End Start ####");
         }
@@ -159,7 +189,7 @@ namespace OrmTest
             Console.WriteLine("#### No Entity Start ####");
             var db = GetInstance();
 
-            var list = db.Queryable<dynamic>().AS("order").Where("id=@id", new { id = 1 }).ToList();
+            var list = db.Queryable<dynamic>().AS("order").Where("id=id", new { id = 1 }).ToList();
 
             var list2 = db.Queryable<dynamic>("o").AS("order").AddJoinInfo("OrderDetail", "i", "o.id=i.OrderId").Where("id=id", new { id = 1 }).Select("o.*").ToList();
             Console.WriteLine("#### No Entity End ####");
@@ -216,20 +246,42 @@ namespace OrmTest
                             .Or(it => it.Name.Contains("jack")).ToExpression();
             var list3 = db.Queryable<Order>().Where(exp).ToList();
 
- 
+
+            /*** By sql***/
+
+            //id=@id
+            var list4 = db.Queryable<Order>().Where("id=@id", new { id = 1 }).ToList();
+            //id=@id or name like '%'+@name+'%'
+            var list5 = db.Queryable<Order>().Where("id=@id or name like @name ", new { id = 1, name = "%jack%" }).ToList();
+
 
 
             /*** By dynamic***/
 
             //id=1
             var conModels = new List<IConditionalModel>();
-            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" , FieldValueConvertFunc = it => Convert.ToInt32(it) });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" , FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
             var student = db.Queryable<Order>().Where(conModels).ToList();
 
             //Complex use case
             List<IConditionalModel> Order = new List<IConditionalModel>();
-            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1", FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
-       
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1", FieldValueConvertFunc = it => Convert.ToInt32(it) });//id=1
+            //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1", FieldValueConvertFunc = it => Convert.ToInt32(it) });// id like '%1%'
+            //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNullOrEmpty });
+            //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.In, FieldValue = "1,2,3" });
+            //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NotIn, FieldValue = "1,2,3" });
+            //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1,2,3" });
+            //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNot, FieldValue = null });// id is not null
+
+            conModels.Add(new ConditionalCollections()
+            {
+                ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()//  (id=1 or id=2 and id=1)
+            {
+                //new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
+                new  KeyValuePair<WhereType, ConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" , FieldValueConvertFunc = it => Convert.ToInt32(it) }),
+                new  KeyValuePair<WhereType, ConditionalModel> ( WhereType.And,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" ,FieldValueConvertFunc = it => Convert.ToInt32(it)})
+            }
+            });
             var list6 = db.Queryable<Order>().Where(conModels).ToList();
 
             /*** Conditional builder ***/

@@ -15,11 +15,11 @@ namespace OrmTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.PostgreSQL,
-                ConnectionString = "PORT=5432;DATABASE=MyDbTest;HOST=localhost;PASSWORD=haosql;USER ID=postgres",
+                ConnectionString = Config.ConnectionString3,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-            db.DbMaintenance.CreateDatabase(@"c:\"); 
+            db.DbMaintenance.CreateDatabase(); 
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
@@ -32,6 +32,7 @@ namespace OrmTest
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
         public int Id { get; set; }
         public string Name { get; set; }
+        [SugarColumn(ColumnDataType = "varchar(255)")]//custom
         public string Text { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }

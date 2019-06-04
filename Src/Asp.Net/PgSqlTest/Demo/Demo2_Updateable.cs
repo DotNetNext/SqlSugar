@@ -64,7 +64,7 @@ namespace OrmTest
             var result71 = db.Updateable<Order>().SetColumns(it => new Order() { Name = "a", CreateTime = DateTime.Now }).Where(it => it.Id == 11).ExecuteCommand();
             //only update name
             var result8 = db.Updateable<Order>(it => it.Name == "Name").Where(it => it.Id == 1).ExecuteCommand();
-            var result81 = db.Updateable<Order>().SetColumns(it => it.Name == "Name").Where(it => it.Id == 1).ExecuteCommand();
+            var result81 = db.Updateable<Order>().SetColumns(it => it.Name == "Name" ).Where(it => it.Id == 1).ExecuteCommand();
             //
 
 
@@ -73,13 +73,13 @@ namespace OrmTest
             /*** 3.by Dictionary ***/
             var dt = new Dictionary<string, object>();
             dt.Add("id", 1);
-            dt.Add("name", null);
+            dt.Add("name", "abc");
             dt.Add("createTime", DateTime.Now);
             var dtList = new List<Dictionary<string, object>>();
             dtList.Add(dt);
 
-            var t66 = db.Updateable(dt).AS("student").WhereColumns("id").ExecuteCommand();
-            var t666 = db.Updateable(dtList).AS("student").WhereColumns("id").ExecuteCommand();
+            var t66 = db.Updateable(dt).AS("order").WhereColumns("id").ExecuteCommand();
+            var t666 = db.Updateable(dtList).AS("order").WhereColumns("id").ExecuteCommand();
 
 
 

@@ -30,22 +30,22 @@ namespace OrmTest
                 }
             });
 
-            var insertObj = new Order() { Id = 1, Name = "order1" };
+            var insertObj = new Order() { Id = 1, Name = "order1",Price=0 };
             var updateObjs = new List<Order> {
-                 new Order() { Id = 11, Name = "order11" },
-                 new Order() { Id = 12, Name = "order12" }
+                 new Order() { Id = 11, Name = "order11", Price=0 },
+                 new Order() { Id = 12, Name = "order12" , Price=0}
             };
 
-            //Ignore  Price
-            db.Insertable(insertObj).IgnoreColumns(it => new { it.Price }).ExecuteReturnIdentity();//get identity
-            db.Insertable(insertObj).IgnoreColumns("Name", "TestId").ExecuteReturnIdentity();
+            //Ignore  CreateTime
+            db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
+            db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnIdentity();
 
             //Only  insert  Name and Price
             db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.Price }).ExecuteReturnIdentity();
-            db.Insertable(insertObj).InsertColumns("Name", "SchoolId").ExecuteReturnIdentity();
+            db.Insertable(insertObj).InsertColumns("Name", "Price").ExecuteReturnIdentity();
 
             //ignore null columns
-            db.Insertable(insertObj).IgnoreColumns(ignoreNullColumn: true).ExecuteCommand();//get change row count
+            db.Insertable(updateObjs).ExecuteCommand();//get change row count
 
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    public class Demo4_Deleteable
+    public class DemoF_Utilities
     {
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### Deleteable Start ####");
+            Console.WriteLine("#### Utilities Start ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -29,20 +29,18 @@ namespace OrmTest
                     }
                 }
             });
-            //by entity
-            db.Deleteable<Order>().Where(new Order() { Id = 1111 }).ExecuteCommand();
 
-            //by primary key
-            db.Deleteable<Order>().In(1111).ExecuteCommand();
 
-            //by primary key array
-            db.Deleteable<Order>().In(new int[] { 1111, 2222 }).ExecuteCommand();
+            List<int> ids = Enumerable.Range(1, 100).ToList();
+            db.Utilities.PageEach(ids, 10, list =>
+            {
+                Console.WriteLine(string.Join("," ,list));   
+            });
 
-            //by expression
-            db.Deleteable<Order>().Where(it => it.Id == 11111).ExecuteCommand();
+            var list2= db.Utilities.DataTableToList<Order>(db.Ado.GetDataTable("select * from \"order\""));
 
-            Console.WriteLine("#### Deleteable End ####");
-
+            //more https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities
+            Console.WriteLine("#### Utilities End ####");
         }
     }
 }
