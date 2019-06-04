@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -248,6 +249,16 @@ namespace SqlSugar
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
+            var connString = this.Context.CurrentConnectionConfig.ConnectionString;
+            var path = Regex.Match(connString, @"[a-z,A-Z]\:\\.+\\").Value;
+            if (path.IsNullOrEmpty())
+            {
+                path = Regex.Match(connString, @"[a-z,A-Z]\:\/.+\/").Value;
+            }
+            if (!FileHelper.IsExistDirectory(path))
+            {
+                FileHelper.CreateDirectory(path);
+            }
             this.Context.Ado.Connection.Open();
             this.Context.Ado.Connection.Close();
             return true;

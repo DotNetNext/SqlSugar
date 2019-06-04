@@ -1,38 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
-using SqlSugar;
-using OrmTest.Models;
-using System.Data.SqlClient;
-using OrmTest.UnitTest;
-using OrmTest.PerformanceTesting;
 
 namespace OrmTest
 {
     class Program
     {
+        /// <summary>
+        /// Set up config.cs file and start directly F5
+        /// 设置Config.cs文件直接F5启动例子
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
  
-            //    /***Unit Test***/
-            new Select(1).Init();
-            new Field(1).Init();
-       
+            //Demo
+            Demo0_SqlSugarClient.Init();
+            Demo1_Queryable.Init();
+            Demo2_Updateable.Init();
+            Demo3_Insertable.Init();
+            Demo4_Deleteable.Init();
+            Demo5_SqlQueryable.Init();
+            Demo6_Queue.Init();
+            Demo7_Ado.Init();
+            Demo8_Saveable.Init();
+            Demo9_EntityMain.Init();
+            DemoA_DbMain.Init();
+            DemoB_Aop.Init();
+            DemoC_GobalFilter.Init();
+            DemoD_DbFirst.Init();;
+            DemoE_CodeFirst.Init();
+            DemoF_Utilities.Init();
+            DemoG_SimpleClient.Init();
 
-            /***Demo***/
-            OrmTest.Demo.Query.Init();
-            OrmTest.Demo.Insert.Init();
-            OrmTest.Demo.Delete.Init();
-            OrmTest.Demo.Update.Init();
-            OrmTest.Demo.DbFirst.Init();
-            OrmTest.Demo.JoinSql.Init();
-            OrmTest.Demo.Filter.Init();
-            OrmTest.Demo.ComplexModel.Init();
-            OrmTest.Demo.CodeFirst.Init();
+            //Unit test
+            //NewUnitTest.Init();
+
+            //Rest Data
+            NewUnitTest.RestData();
+
+            Console.WriteLine("all successfully.");
+            Console.ReadKey();
         }
+
+ 
     }
 }
