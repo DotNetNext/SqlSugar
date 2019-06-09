@@ -78,6 +78,7 @@
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="_OldTests\Demos\1_Query.cs" />
     <Compile Include="_OldTests\Demos\2_Update.cs" />
     <Compile Include="_OldTests\Demos\3_Insert.cs" />

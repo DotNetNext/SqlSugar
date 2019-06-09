@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Queue();
             CodeFirst();
             Updateable();
             Json();
