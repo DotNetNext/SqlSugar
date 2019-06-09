@@ -1,5 +1,6 @@
 ﻿using SqlSugar;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -539,6 +540,30 @@ namespace SqlSugar
                         var caResult = this.Context.DbMehtods.ContainsArray(model);
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
                         return caResult;
+                    case "ContainsArrayUseSqlParameters":
+                        if (model.Args[0].MemberValue == null)
+                        {
+                            var first = this.Context.Parameters.FirstOrDefault(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
+                            if (first.HasValue())
+                            {
+                                model.Args[0].MemberValue = first.Value;
+                            }
+                        }
+                        model.Data =this.Context.SqlParameterKeyWord+"INP_"+this.Context.ParameterIndex;
+                        this.Context.ParameterIndex++;
+                        if (model.Args[0].MemberValue.HasValue())
+                        {
+                            var inValueIEnumerable = (IEnumerable)model.Args[0].MemberValue;
+                            int i = 0;
+                            foreach (var item in inValueIEnumerable) 
+                            {
+                                this.Context.Parameters.Add(new SugarParameter(model.Data+"_"+i,item));
+                                i++;
+                            }
+                        }
+                        var caResult2 = this.Context.DbMehtods.ContainsArrayUseSqlParameters(model);
+                        this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
+                        return caResult2;
                     case "Equals":
                         return this.Context.DbMehtods.Equals(model);
                     case "DateIsSame":

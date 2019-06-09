@@ -93,6 +93,44 @@ namespace SqlSugar
             }
         }
 
+        public virtual string ContainsArrayUseSqlParameters(MethodCallExpressionModel model)
+        {
+            var inValueIEnumerable = (IEnumerable)model.Args[0].MemberValue;
+            List<object> inValues = new List<object>();
+            if (inValueIEnumerable != null)
+            {
+                foreach (var item in inValueIEnumerable)
+                {
+                    if (item != null && item.GetType().IsEnum())
+                    {
+                        inValues.Add(Convert.ToInt64(item));
+                    }
+                    else
+                    {
+                        inValues.Add(item);
+                    }
+                }
+            }
+            var value = model.Args[1].MemberName;
+            string inValueString = null;
+            if (inValues != null && inValues.Count > 0)
+            {
+                for (int i = 0; i < inValues.Count; i++)
+                {
+                    inValueString += model.Data + "_" + i+",";
+                }
+            }
+            if (inValueString.IsNullOrEmpty())
+            {
+                return " (1=2) ";
+            }
+            else
+            {
+                inValueString=inValueString.TrimEnd(',');
+                return string.Format(" ({0} IN ({1})) ", value, inValueString);
+            }
+        }
+
         public virtual string Equals(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

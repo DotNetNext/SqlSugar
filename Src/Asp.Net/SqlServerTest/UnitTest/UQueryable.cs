@@ -78,6 +78,9 @@ namespace OrmTest
                 CheckMan = saleOrderInfo.CheckMan,
                 CheckTime = DateTime.Now
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+
+            var ids = Enumerable.Range(1, 11).ToList();
+            var list8=Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
         }
 
         public static class IEnumerbleContains
