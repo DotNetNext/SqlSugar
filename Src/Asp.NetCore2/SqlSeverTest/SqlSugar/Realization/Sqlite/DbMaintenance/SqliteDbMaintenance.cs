@@ -283,6 +283,7 @@ namespace SqlSugar
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
+            var columns = GetColumnsByTableName2(tableName);
             string sql = "PRAGMA table_info(" +SqlBuilder.GetTranslationTableName(tableName) + ")";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
@@ -298,17 +299,42 @@ namespace SqlSugar
                         type = type.Split('(').First();
                         length = type.Split('(').Last().TrimEnd(')').ObjToInt();
                     }
+                    bool isIdentity = columns.FirstOrDefault(it => it.DbColumnName.Equals(dataReader.GetString(1),StringComparison.CurrentCultureIgnoreCase)).IsIdentity;
                     DbColumnInfo column = new DbColumnInfo()
                     {
                         TableName = tableName,
                         DataType = type,
                         IsNullable = !dataReader.GetBoolean(3),
-                        IsIdentity = dataReader.GetBoolean(3) && dataReader.GetBoolean(5).ObjToBool() && (type.IsIn("integer", "int", "int32", "int64", "long")),
+                        IsIdentity = isIdentity,
                         ColumnDescription = null,
                         DbColumnName = dataReader.GetString(1),
                         DefaultValue = dataReader.GetValue(4).ObjToString(),
                         IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
                         Length = length
+                    };
+                    result.Add(column);
+                }
+                return result;
+            }
+        }
+        private List<DbColumnInfo> GetColumnsByTableName2(string tableName)
+        {
+            tableName = SqlBuilder.GetTranslationTableName(tableName);
+            string sql = "select * from " + tableName + " limit 0,1";
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            using (DbDataReader reader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
+            {
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                List<DbColumnInfo> result = new List<DbColumnInfo>();
+                var schemaTable = reader.GetSchemaTable();
+                foreach (DataRow row in schemaTable.Rows)
+                {
+                    DbColumnInfo column = new DbColumnInfo()
+                    {
+                        TableName = tableName,
+                        IsIdentity = (bool)row["IsAutoIncrement"],
+                        DbColumnName = row["ColumnName"].ToString(),
                     };
                     result.Add(column);
                 }
