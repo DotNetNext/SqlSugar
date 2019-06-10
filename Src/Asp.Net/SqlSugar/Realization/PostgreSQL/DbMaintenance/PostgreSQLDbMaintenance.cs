@@ -356,7 +356,7 @@ namespace SqlSugar
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
-            return base.GetColumnInfosByTableName(tableName.ToLower(), isCache);
+            return base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
         }
         #endregion
     }
