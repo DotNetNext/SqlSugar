@@ -89,6 +89,7 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="UnitTest\USave.cs" />
     <Compile Include="_OldTest\Demos\1_Query.cs" />
     <Compile Include="_OldTest\Demos\2_Update.cs" />
     <Compile Include="_OldTest\Demos\3_Insert.cs" />
