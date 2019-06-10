@@ -31,6 +31,7 @@ namespace SqlSugar
         public bool IsNoUpdateDefaultValue { get; set; }
         public List<string> PrimaryKeys { get; set; }
         public bool IsOffIdentity { get; set; }
+        public bool IsWhereColumns { get; set; }
 
         public virtual string SqlTemplate
         {
@@ -245,6 +246,15 @@ namespace SqlSugar
                 }
             }
             else if (PrimaryKeys.HasValue())
+            {
+                foreach (var item in PrimaryKeys)
+                {
+                    var isFirst = whereString == null;
+                    whereString += (isFirst ? " WHERE " : " AND ");
+                    whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
+                }
+            }
+            if (PrimaryKeys.HasValue()&&IsWhereColumns)
             {
                 foreach (var item in PrimaryKeys)
                 {

@@ -37,9 +37,21 @@ namespace SqlSugar
         {
             return thisValue.Contains(parameterValue);
         }
-        public static bool ContainsArray<T>(T[] thisValue, object parameterValue)
+        public static bool ContainsArray<T>(T[] thisValue, object InField)
         {
-            return thisValue.Contains((T)parameterValue);
+            return thisValue.Contains((T)InField);
+        }
+        public static bool ContainsArray<T>(List<T> thisValue, object InField)
+        {
+            return thisValue.Contains((T)InField);
+        }
+        public static bool ContainsArrayUseSqlParameters<T>(List<T> thisValue, object InField)
+        {
+            return thisValue.Contains((T)InField);
+        }
+        public static bool ContainsArrayUseSqlParameters<T>(T[] thisValue, object InField)
+        {
+            return thisValue.Contains((T)InField);
         }
         public static bool StartsWith(string thisValue, string parameterValue)
         {

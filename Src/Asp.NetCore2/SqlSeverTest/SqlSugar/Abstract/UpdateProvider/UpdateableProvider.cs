@@ -167,6 +167,7 @@ namespace SqlSugar
         public IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
             this.IsWhereColumns = true;
+            UpdateBuilder.IsWhereColumns = true;
             Check.Exception(UpdateParameterIsNull == true, "Updateable<T>().Updateable is error,Use Updateable(obj).WhereColumns");
             var whereColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
