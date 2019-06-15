@@ -23,7 +23,7 @@ namespace SqlSugar
         private IgnoreColumnList _IgnoreColumns;
         private IgnoreColumnList _IgnoreInsertColumns;
         internal Guid? AsyncId { get; set; }
-        internal bool? IsSingeInstance { get; set; }
+        internal bool? IsSingleInstance { get; set; }
 
         #endregion
 
@@ -686,7 +686,7 @@ namespace SqlSugar
             {
                 result = Synchronization();
             }
-            else if (IsInstanceAsync())
+            else if (IsSingleInstanceAsync())
             {
                 result = NoSameThreadAsync();
             }
@@ -696,7 +696,7 @@ namespace SqlSugar
             }
             else
             {
-                IsSingeInstance = true;
+                IsSingleInstance = true;
                 result = NoSameThread();
             }
             if (result.Root == null)
@@ -796,9 +796,9 @@ namespace SqlSugar
             return AsyncId != null;
         }
 
-        private bool IsInstanceAsync()
+        private bool IsSingleInstanceAsync()
         {
-            return IsSingeInstance == true && AsyncId != null;
+            return IsSingleInstance == true && AsyncId != null;
         }
 
         private bool IsSynchronization()
