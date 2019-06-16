@@ -96,7 +96,14 @@ namespace SqlSugar
                     var isField = memberExpr.Member.MemberType == MemberTypes.Field;
                     if (isProperty)
                     {
-                        reval = GetPropertyValue(memberExpr);
+                        try
+                        {
+                            reval = GetPropertyValue(memberExpr);
+                        }
+                        catch 
+                        {
+                            reval = null;
+                        }
                     }
                     else if (isField)
                     {

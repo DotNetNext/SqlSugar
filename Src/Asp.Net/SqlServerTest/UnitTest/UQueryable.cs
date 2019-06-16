@@ -9,6 +9,7 @@ namespace OrmTest
 {
     public partial class NewUnitTest
     {
+        public static Unit_SYS_USER UserLoginInfo => new Unit_SYS_USER() { XH = "10010" };
         public static void Queryable()
         {
 
@@ -81,8 +82,44 @@ namespace OrmTest
 
             var ids = Enumerable.Range(1, 11).ToList();
             var list8=Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
+
+            var result2 = Db.Queryable<Unit_SYS_USER>().Where(o => o.XH == UserLoginInfo.XH).Select(o => o.XH).ToSql();
         }
 
+
+        /// <summary>
+        /// 系统用户表实体模型类
+        /// </summary>
+        [SugarTable("Unit_SYS_USER")]
+
+        public class Unit_SYS_USER
+        {
+            /// <summary>
+            /// 序号
+            /// </summary>
+            private string _XH;
+
+            /// <summary>
+            /// 序号【主键唯一标识，自动生成】
+            /// </summary>
+            [SugarColumn(ColumnName = "XH",
+                ColumnDataType = "VARCHAR2",
+                IsPrimaryKey = true,
+                IsNullable = false,
+                Length = 50,
+                ColumnDescription = "序号【主键唯一标识，自动生成】")]
+            public string XH
+            {
+                get
+                {
+                    return _XH;
+                }
+                set
+                {
+                    _XH = value;
+                }
+            }
+        }
         public static class IEnumerbleContains
         {
             public static IEnumerable<Order> Data()
