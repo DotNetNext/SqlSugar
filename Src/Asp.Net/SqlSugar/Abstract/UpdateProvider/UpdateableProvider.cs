@@ -33,6 +33,7 @@ namespace SqlSugar
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
         private Action RemoveCacheFunc { get; set; }
+        private int SetColumnsIndex { get; set; }
         #endregion
 
         #region Core
@@ -230,6 +231,7 @@ namespace SqlSugar
             }
             this.UpdateBuilder.DbColumnInfoList = UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull==false&&IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             CheckTranscodeing();
+            AppendSets();
             return this;
         }
 
@@ -244,9 +246,9 @@ namespace SqlSugar
             string key = SqlBuilder.GetNoTranslationColumnName(expResult);
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), expResult));
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
+            AppendSets();
             return this;
         }
-
 
         public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> columns)
         {
@@ -372,6 +374,17 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        private void AppendSets()
+        {
+            if (SetColumnsIndex > 0)
+            {
+                var keys = UpdateBuilder.SetValues.Select(it => SqlBuilder.GetNoTranslationColumnName(it.Key.ToLower())).ToList();
+                var addKeys = keys.Where(k => !this.UpdateBuilder.DbColumnInfoList.Any(it => it.PropertyName.ToLower() == k || it.DbColumnName.ToLower() == k)).ToList();
+                var addItems = this.EntityInfo.Columns.Where(it =>!GetPrimaryKeys().Any(p=>p.ToLower()==it.PropertyName?.ToLower()|| p.ToLower() == it.DbColumnName?.ToLower()) && addKeys.Any(k => it.PropertyName?.ToLower() == k || it.DbColumnName?.ToLower() == k)).ToList();
+                this.UpdateBuilder.DbColumnInfoList.AddRange(addItems.Select(it => new DbColumnInfo() { PropertyName = it.PropertyName, DbColumnName = it.DbColumnName }));
+            }
+            SetColumnsIndex++;
+        }
         private string _ExecuteCommand()
         {
             PreToSql();

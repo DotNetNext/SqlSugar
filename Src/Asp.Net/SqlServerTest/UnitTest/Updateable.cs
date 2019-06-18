@@ -76,6 +76,23 @@ namespace OrmTest
             }).Where(it => it.id == 1).ToSql();
             UValidate.Check(sql.Key, @"UPDATE [NullTest]  SET
             [p2] = @Const0   WHERE ( [id] = @id1 )", "Updateable");
+
+
+            Db.Updateable<Order>()
+                .SetColumns(it => it.Name == "a")
+                .SetColumns(it => it.CreateTime == DateTime.Now)
+                .SetColumns(it=>it.Price==1).Where(it=>it.Id==1).ExecuteCommand();
+
+
+            Db.Updateable<Order>()
+               .SetColumns(it =>new Order{ Name="a",CreateTime=DateTime.Now })
+               .SetColumns(it => it.Price==1).Where(it => it.Id == 1).ExecuteCommand();
+
+
+
+            Db.Updateable<Order>()
+             .SetColumns(it => new Order { Name = "a", CreateTime = DateTime.Now })
+             .SetColumns(it => new Order() { Price=1 }).Where(it => it.Id == 1).ExecuteCommand();
         }
     }
     public class NullTest
