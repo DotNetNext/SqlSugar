@@ -109,6 +109,7 @@ namespace SqlSugar
                 }
                 else if (IsConst(item)&&IsConvert(item)&&UtilMethods.IsNullable(item.Type) && UtilMethods.GetUnderType(item.Type)==UtilConstants.BoolType)
                 {
+                    item = (item as UnaryExpression).Operand;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, GetNewExpressionValue(item)));
                 }
                 else if (IsConst(item))

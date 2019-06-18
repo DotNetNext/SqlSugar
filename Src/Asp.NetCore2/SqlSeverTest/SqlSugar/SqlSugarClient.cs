@@ -22,6 +22,8 @@ namespace SqlSugar
         private MappingColumnList _MappingColumns;
         private IgnoreColumnList _IgnoreColumns;
         private IgnoreColumnList _IgnoreInsertColumns;
+        internal Guid? AsyncId { get; set; }
+        internal bool? IsSingleInstance { get; set; }
 
         #endregion
 
@@ -671,16 +673,44 @@ namespace SqlSugar
         #region Helper
         private SqlSugarProvider GetContext()
         {
+            SqlSugarProvider result = null;
             if (IsSameThreadAndShard())
-                return SameThreadAndShard();
+            {
+                result = SameThreadAndShard();
+            }
             else if (IsNoSameThreadAndShard())
-                return NoSameThreadAndShard();
+            {
+                result = NoSameThreadAndShard();
+            }
             else if (IsSynchronization())
-                return Synchronization();
+            {
+                result = Synchronization();
+            }
+            else if (IsSingleInstanceAsync())
+            {
+                result = NoSameThreadAsync();
+            }
+            else if (IsAsync())
+            {
+                result = Synchronization();
+            }
             else
-                return NoSameThread();
+            {
+                IsSingleInstance = true;
+                result = NoSameThread();
+            }
+            if (result.Root == null)
+            {
+                result.Root = this;
+            }
+            return result;
         }
 
+        private SqlSugarProvider NoSameThreadAsync()
+        {
+            var result = GetCallContext();
+            return result;
+        }
         private SqlSugarProvider NoSameThread()
         {
             if (CallContext.ContextList.Value == null)
@@ -761,6 +791,15 @@ namespace SqlSugar
             }
         }
 
+        private bool IsAsync()
+        {
+            return AsyncId != null;
+        }
+
+        private bool IsSingleInstanceAsync()
+        {
+            return IsSingleInstance == true && AsyncId != null;
+        }
 
         private bool IsSynchronization()
         {

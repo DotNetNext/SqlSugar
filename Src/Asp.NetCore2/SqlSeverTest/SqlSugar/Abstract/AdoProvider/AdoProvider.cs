@@ -391,6 +391,7 @@ namespace SqlSugar
         {
             try
             {
+                Async();
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
@@ -422,6 +423,7 @@ namespace SqlSugar
         {
             try
             {
+                Async();
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
@@ -452,6 +454,7 @@ namespace SqlSugar
         {
             try
             {
+                Async();
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
@@ -482,6 +485,7 @@ namespace SqlSugar
         }
         public virtual Task<DataSet> GetDataSetAllAsync(string sql, params SugarParameter[] parameters)
         {
+            Async();
             //False asynchrony . No Support DataSet
             return Task.FromResult(GetDataSetAll(sql, parameters));
         }
@@ -1152,17 +1156,13 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
-        //private static void NextResult(IDataReader dataReader)
-        //{
-        //    try
-        //    {
-        //        NextResult(dataReader);
-        //    }
-        //    catch
-        //    {
-        //       // Check.Exception(true, ErrorMessage.GetThrowMessage("Please reduce the number of T. Save Queue Changes queries don't have so many results", "请减少T的数量，SaveQueueChanges 查询没有这么多结果"));
-        //    }
-        //}
+        private void Async()
+        {
+            if (this.Context.Root != null & this.Context.Root.AsyncId == null)
+            {
+                this.Context.Root.AsyncId = Guid.NewGuid(); ;
+            }
+        }
         private static bool NextResult(IDataReader dataReader)
         {
             try
