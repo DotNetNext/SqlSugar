@@ -54,7 +54,36 @@ namespace OrmTest
             UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
             [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
 
+
+            sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
+            {
+                TypeID = saveDiary.TypeID,
+            }).Where(it => it.ID == saveDiary.ID).ToSql();
+            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
+            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
+
+            sql=Db.Updateable<NullTest>().SetColumns(it => new NullTest()
+            {
+                p = true
+
+            }).Where(it => it.id == 1).ToSql();
+            UValidate.Check(sql.Key, @"UPDATE [NullTest]  SET
+            [p] =  @Const0    WHERE ( [id] = @id1 )", "Updateable");
+            sql = Db.Updateable<NullTest>().SetColumns(it => new NullTest()
+            {
+                p2 = true
+
+            }).Where(it => it.id == 1).ToSql();
+            UValidate.Check(sql.Key, @"UPDATE [NullTest]  SET
+            [p2] = @Const0   WHERE ( [id] = @id1 )", "Updateable");
         }
+    }
+    public class NullTest
+    {
+        public int id { get; set; }
+        public bool? p { get; set; }
+        public bool p2 { get; set; }
+
     }
     public class UnitSaveDiary
     {
