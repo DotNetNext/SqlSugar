@@ -73,7 +73,7 @@ namespace SqlSugar
             }
             else if (name.Contains("("))
             {
-                return name.ToLower();
+                return name;
             }
             else if (name.Contains(SqlTranslationLeft) && name.Contains(SqlTranslationRight))
             {
