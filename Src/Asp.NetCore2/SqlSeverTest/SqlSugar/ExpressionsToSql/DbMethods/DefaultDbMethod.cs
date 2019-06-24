@@ -17,7 +17,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" to_char({0},{1})", parameter.MemberName, parameter2.MemberName);
+            return string.Format("  CONVERT(varchar(100), {0}, {1}) ", parameter.MemberName, parameter2.MemberName);
         }
 		
 		
