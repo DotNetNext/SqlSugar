@@ -540,7 +540,8 @@ namespace SqlSugar
             { "ToLower","ToLower"},
             { "ToUpper","ToUpper"},
             { "Substring","Substring"},
-            { "DateAdd","DateAdd"}
+            { "DateAdd","DateAdd"},
+			{ "DateToChar","DateToChar"} //by sy 2019-4-10
         };
 
         protected static  Dictionary<string, DateType> MethodTimeMapping = new Dictionary<string, DateType>() {

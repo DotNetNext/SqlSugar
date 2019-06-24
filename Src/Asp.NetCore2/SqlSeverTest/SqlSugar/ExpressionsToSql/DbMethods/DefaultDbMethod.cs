@@ -8,6 +8,19 @@ namespace SqlSugar
 {
     public partial class DefaultDbMethod : IDbMethods
     {
+		 /// <summary>
+        /// by sy 2019-4-10
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public virtual string DateToChar(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" to_char({0},{1})", parameter.MemberName, parameter2.MemberName);
+        }
+		
+		
         public virtual string IIF(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

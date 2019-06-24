@@ -26,6 +26,13 @@ namespace SqlSugar
         string DateIsSameByType(MethodCallExpressionModel model);
         string DateAddByType(MethodCallExpressionModel model);
 
+        /// <summary>
+        /// by sy 2019-4-10
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        string DateToChar(MethodCallExpressionModel model);
+
         string DateValue(MethodCallExpressionModel model);
         string DateAddDay(MethodCallExpressionModel model);
         string Between(MethodCallExpressionModel model);

@@ -512,6 +512,8 @@ namespace SqlSugar
                 }
                 switch (name)
                 {
+					 case "DateToChar"://by sy 2019-4-10
+                        return this.Context.DbMehtods.DateToChar(model);
                     case "IIF":
                         return this.Context.DbMehtods.IIF(model);
                     case "HasNumber":

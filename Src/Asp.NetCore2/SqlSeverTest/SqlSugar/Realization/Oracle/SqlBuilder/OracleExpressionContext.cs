@@ -40,6 +40,19 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+		        /// <summary>
+        /// by sy 2019-5-10
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public override string DateToChar(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+
+            return string.Format(" to_char({0},{1})", parameter.MemberName, parameter2.MemberName);
+        }
+		
         public override string ToTime(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
