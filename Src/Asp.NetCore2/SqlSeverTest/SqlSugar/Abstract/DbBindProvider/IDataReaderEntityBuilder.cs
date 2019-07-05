@@ -207,7 +207,11 @@ namespace SqlSugar
                 {
                     method = getConvertValueMethod.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
                 }
-                generator.Emit(OpCodes.Call, method);
+
+                if (method.IsVirtual)
+                    generator.Emit(OpCodes.Callvirt, method);
+                else
+                    generator.Emit(OpCodes.Call, method);
                 return;
             };
             #endregion
@@ -313,7 +317,10 @@ namespace SqlSugar
             if (method == null)
                 method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
 
-            generator.Emit(OpCodes.Call, method);
+            if (method.IsVirtual)
+                generator.Emit(OpCodes.Callvirt, method);
+            else
+                generator.Emit(OpCodes.Call, method);
             #endregion
         }
 
