@@ -116,6 +116,12 @@ namespace SqlSugar
             return string.Format("({0}+(1*{1})) ", parameter.MemberName, parameter2.MemberName);
         }
 
+        public override string ToInt64(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS Number)", parameter.MemberName);
+        }
+
         public override string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
