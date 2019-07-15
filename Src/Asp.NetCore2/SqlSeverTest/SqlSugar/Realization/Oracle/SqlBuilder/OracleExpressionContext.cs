@@ -40,6 +40,12 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string ToInt64(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS Number)", parameter.MemberName);
+        }
+
         public override string ToTime(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

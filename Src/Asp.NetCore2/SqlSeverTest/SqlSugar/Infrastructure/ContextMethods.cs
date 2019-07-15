@@ -311,6 +311,10 @@ namespace SqlSugar
                         {
                             addValue = Convert.ToInt32(addValue);
                         }
+                        else if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.LongType)
+                        {
+                            addValue = Convert.ToInt64(addValue);
+                        }
                         result.Add(name, addValue);
                     }
                 }

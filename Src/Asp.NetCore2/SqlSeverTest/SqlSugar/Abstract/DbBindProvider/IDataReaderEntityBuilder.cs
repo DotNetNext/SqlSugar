@@ -76,7 +76,7 @@ namespace SqlSugar
 
         }
 
-        public IDataReaderEntityBuilder(SqlSugarProvider context, IDataRecord dataRecord,List<string> fieldNames)
+        public IDataReaderEntityBuilder(SqlSugarProvider context, IDataRecord dataRecord, List<string> fieldNames)
         {
             this.Context = context;
             this.DataRecord = dataRecord;
@@ -104,7 +104,7 @@ namespace SqlSugar
             foreach (var columnInfo in columnInfos)
             {
                 string fileName = columnInfo.DbColumnName ?? columnInfo.PropertyName;
-                if (columnInfo.IsIgnore&& !this.ReaderKeys.Any(it=>it.Equals(fileName,StringComparison.CurrentCultureIgnoreCase)))
+                if (columnInfo.IsIgnore && !this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     continue;
                 }
@@ -114,7 +114,7 @@ namespace SqlSugar
                     {
                         if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                         {
-                            BindClass(generator, result, columnInfo,ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
+                            BindClass(generator, result, columnInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
                     }
                     else
@@ -176,7 +176,8 @@ namespace SqlSugar
             MethodInfo method = null;
             Type bindPropertyType = UtilMethods.GetUnderType(columnInfo.PropertyInfo, ref isNullableType);
             string dbTypeName = UtilMethods.GetParenthesesValue(DataRecord.GetDataTypeName(ordinal));
-            if (dbTypeName.IsNullOrEmpty()) {
+            if (dbTypeName.IsNullOrEmpty())
+            {
                 dbTypeName = bindPropertyType.Name;
             }
             string propertyName = columnInfo.PropertyName;
@@ -249,7 +250,7 @@ namespace SqlSugar
                     CheckType(bind.DateThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "datetime")
                         method = isNullableType ? getConvertDateTime : getDateTime;
-                    if (bindProperyTypeName == "datetime"&&dbTypeName.ToLower() == "time")
+                    if (bindProperyTypeName == "datetime" && dbTypeName.ToLower() == "time")
                         method = isNullableType ? getConvertTime : getTime;
                     break;
                 case CSharpDataType.@decimal:
@@ -260,11 +261,12 @@ namespace SqlSugar
                 case CSharpDataType.@float:
                 case CSharpDataType.@double:
                     CheckType(bind.DoubleThrow, bindProperyTypeName, validPropertyName, propertyName);
-                    if (bindProperyTypeName.IsIn( "double", "single")&&dbTypeName!="real")
+                    if (bindProperyTypeName.IsIn("double", "single") && dbTypeName != "real")
                         method = isNullableType ? getConvertDouble : getDouble;
                     else
                         method = isNullableType ? getConvertFloat : getFloat;
-                    if (dbTypeName.Equals("float",StringComparison.CurrentCultureIgnoreCase) && isNullableType && bindProperyTypeName.Equals("single",StringComparison.CurrentCultureIgnoreCase)) {
+                    if (dbTypeName.Equals("float", StringComparison.CurrentCultureIgnoreCase) && isNullableType && bindProperyTypeName.Equals("single", StringComparison.CurrentCultureIgnoreCase))
+                    {
                         method = getConvertDoubleToFloat;
                     }
                     if (bindPropertyType == UtilConstants.DecType)
