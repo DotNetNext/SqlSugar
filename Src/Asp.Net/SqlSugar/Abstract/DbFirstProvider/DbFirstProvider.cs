@@ -417,7 +417,7 @@ namespace SqlSugar
                 return convertString;
             if (convertString.ObjToString() == "newid()")
             {
-                return "Guid.NewGuid()";
+                return "Guid.NewGuid().ToString()";
             }
             if (item.DataType == "bit")
                 return (convertString == "1" || convertString.Equals("true", StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
