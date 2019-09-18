@@ -226,7 +226,12 @@ namespace SqlSugar
                 foreach (var item in resultArray)
                 {
                     string key = SqlBuilder.GetNoTranslationColumnName(item);
-                    UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), item));
+                    var value = item;
+                    if (value.Contains("= \"SYSDATE\""))
+                    {
+                        value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
+                    }
+                    UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), value));
                 }
             }
             this.UpdateBuilder.DbColumnInfoList = UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull==false&&IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
