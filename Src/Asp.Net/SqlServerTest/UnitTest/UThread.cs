@@ -309,8 +309,8 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
-                    System.Threading.Thread.Sleep(1);
+                    //singleDb.Insertable(new Order() { Name = "test", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    //System.Threading.Thread.Sleep(1); No Support
                 }
 
             });
@@ -318,8 +318,8 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
-                    System.Threading.Thread.Sleep(10);
+                    //singleDb.Insertable(new Order() { Name = "test2", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    //System.Threading.Thread.Sleep(10); No Support
                 }
 
             });
@@ -327,8 +327,8 @@ namespace OrmTest
             {
                 for (int i = 0; i < 100; i++)
                 {
-                    singleDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
-                    System.Threading.Thread.Sleep(6);
+                    //singleDb.Insertable(new Order() { Name = "test3", CreateTime = DateTime.Now }).ExecuteCommandAsync().Wait();
+                    //System.Threading.Thread.Sleep(6); No Support
                 }
 
             });
