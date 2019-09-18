@@ -688,7 +688,7 @@ namespace SqlSugar
             }
             else if (IsSingleInstanceAsync())
             {
-                result = NoSameThreadAsync();
+                result = Synchronization();//Async no support  Single Instance
             }
             else if (IsAsync())
             {
