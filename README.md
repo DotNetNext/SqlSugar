@@ -1,17 +1,17 @@
 # SqlSugar 5.X  API 
 
-Using SqlSugar is very simple ,And it's powerful.
+Using SqlSugar is very simple and it's powerful.
 
 SqlSugar=One object+One parameter=16 functions,
 
 Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 
 ## Contactinfomation  
-Email:610262374@qq.com 
+Email:610262374@qq.com   
 QQ Group:225982985
 
 ## Nuget 
 
-|.net |.net core |
+|.Net |.Net Core |
 |---------| ---------|
 |Install-Package sqlSugar |Install-Package sqlSugarCore|
  
@@ -130,17 +130,17 @@ var t9 = db.Updateable(it=>new class() { name="a",createtime=p }).Where(it => it
 ##  3. Insertable
 We use it to Insert
  ```cs
-//Insert reutrn Insert Count
+//Insert return Insert Count
 var t2 = db.Insertable(insertObj).ExecuteCommand();
 
-//Insert reutrn Identity Value
-var t3 = db.Insertable(insertObj).ExecuteReutrnIdentity();
+//Insert return Identity Value
+var t3 = db.Insertable(insertObj).ExecuteReturnIdentity();
 
 //Only  insert  Name 
-var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name,it.SchoolId }).ExecuteReutrnIdentity();
+var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name,it.SchoolId }).ExecuteReturnIdentity();
 
 //Ignore TestId
-var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReutrnIdentity();
+var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReturnIdentity();
 
 //Insert List<T>
 var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteCommand();
@@ -249,21 +249,21 @@ foreach (var column in entityInfo.Columns)
 
   ##  11.Aop
   ```cs
-db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
+db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
 {
- 
+ 
 };
-db.Aop.OnLogExecuting = (sql, pars) => //SQL executing event (pre-execution)
+db.Aop.OnLogExecuting = (sql, pars) => //SQL executing event (pre-execution)
 {
- 
+ 
 };
-db.Aop.OnError = (exp) =>//SQL execution error event
+db.Aop.OnError = (exp) =>//SQL execution error event
 {
-                 
+                 
 };
-db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-execution,SQL script can be modified)
+db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-execution,SQL script can be modified)
 {
-    return new KeyValuePair<string, SugarParameter[]>(sql,pars);
+    return new KeyValuePair<string, SugarParameter[]>(sql,pars);
 };
 
 ```
