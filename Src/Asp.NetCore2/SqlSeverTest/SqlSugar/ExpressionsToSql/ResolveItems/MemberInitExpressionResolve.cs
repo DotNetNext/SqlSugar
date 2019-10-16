@@ -223,7 +223,7 @@ namespace SqlSugar
                     throw new NotSupportedException();
                 }
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
-                var memberName = memberAssignment.Member.Name;
+                var memberName = Context.GetDbColumnName(expression.Type.Name, memberAssignment.Member.Name);
                 var item = memberAssignment.Expression;
                 ResolveNewExpressions(parameter, item, memberName);
             }
