@@ -480,9 +480,10 @@ namespace SqlSugar
                     DbColumnName = GetDbColumnName(column.PropertyName),
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
-                    TableId = i
+                    TableId = i,
+                    IsNullable = column.IsNullable
                 };
-                if (columnInfo.PropertyType.IsEnum())
+                if (columnInfo.PropertyType.IsEnum() && !column.IsNullable)
                 {
                     columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                 }
