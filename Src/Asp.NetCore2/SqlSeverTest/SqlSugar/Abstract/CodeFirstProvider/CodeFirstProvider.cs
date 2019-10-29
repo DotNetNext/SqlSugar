@@ -12,6 +12,8 @@ namespace SqlSugar
         protected bool IsBackupTable { get; set; }
         protected int MaxBackupDataRows { get; set; }
         protected virtual int DefultLength { get; set; }
+
+        protected virtual int DefaultGuidLength { get; set; }
         public CodeFirstProvider()
         {
             if (DefultLength == 0)
@@ -32,6 +34,12 @@ namespace SqlSugar
         public virtual ICodeFirst SetStringDefaultLength(int length)
         {
             DefultLength = length;
+            return this;
+        }
+
+        public virtual ICodeFirst SetGuidDefaultLength(int length)
+        {
+            DefaultGuidLength = length;
             return this;
         }
 
@@ -105,6 +113,10 @@ namespace SqlSugar
                     if (item.PropertyInfo.PropertyType == UtilConstants.StringType && item.DataType.IsNullOrEmpty() && item.Length == 0)
                     {
                         item.Length = DefultLength;
+                    }
+                    if (item.PropertyInfo.PropertyType == UtilConstants.GuidType && item.DataType.IsNullOrEmpty() && item.Length == 0)
+                    {
+                        item.Length = DefaultGuidLength;
                     }
                 }
             }

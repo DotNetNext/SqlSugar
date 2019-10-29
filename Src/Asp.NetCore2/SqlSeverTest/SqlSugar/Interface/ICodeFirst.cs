@@ -9,6 +9,7 @@ namespace SqlSugar
         SqlSugarProvider Context { get; set; }
         ICodeFirst BackupTable(int maxBackupDataRows = int.MaxValue);
         ICodeFirst SetStringDefaultLength(int length);
+        ICodeFirst SetGuidDefaultLength(int length);
         void InitTables(string entitiesNamespace);
         void InitTables(string[] entitiesNamespaces);
         void InitTables(params Type[] entityTypes);
