@@ -358,4 +358,4 @@ sdb.Update(obj);
 https://github.com/sunkaixuan/SoEasyPlatform
 
 # More APi 中文文档：
-http://www.codeisbug.com/Doc/8
+http://www.codeisbug.com/Doc/8 
