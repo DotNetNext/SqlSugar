@@ -311,7 +311,7 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
-                sqlCommand.Dispose();
+                //sqlCommand.Dispose();
                 return sqlDataReader;
             }
             catch (Exception ex)
@@ -445,7 +445,7 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
-                sqlCommand.Dispose();
+                //sqlCommand.Dispose();
                 return sqlDataReader;
             }
             catch (Exception ex)
