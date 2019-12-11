@@ -352,6 +352,14 @@ namespace SqlSugar
             ILambdaExpressions expressionContext = sqlBuilder.QueryBuilder.LambdaExpressions;
             expressionContext.MappingColumns = this.MappingColumns;
             expressionContext.MappingTables = this.MappingTables;
+            if (this.Context.CurrentConnectionConfig.MoreSettings != null)
+            {
+                expressionContext.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+            }
+            else
+            {
+                expressionContext.PgSqlIsAutoToLower = true;
+            }
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null)
                 expressionContext.SqlFuncServices = this.Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             expressionContext.Resolve(joinExpression, ResolveExpressType.Join);

@@ -126,6 +126,7 @@ namespace SqlSugar
             copyContext.InitMappingInfo = this.InitMappingInfo;
             copyContext.RefreshMapping = this.RefreshMapping;
             copyContext.ParameterIndex = this.ParameterIndex;
+            copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
             return copyContext;
         }
         public ExpressionContext GetCopyContextWithMapping()
