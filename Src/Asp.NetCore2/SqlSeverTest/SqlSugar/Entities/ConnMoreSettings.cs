@@ -13,6 +13,7 @@ namespace SqlSugar
         /// Some MYSQL databases do not support NVarchar set true
         /// </summary>
         public bool MySqlDisableNarvchar { get; set; }
+        public bool PgSqlIsAutoToLower = true;
         public int DefaultCacheDurationInSeconds { get; set; }
     }
 }

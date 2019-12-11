@@ -34,11 +34,20 @@ namespace SqlSugar
                 return "select current_date";
             }
         }
+
+        public bool isAutoToLower
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null) return true;
+                return this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+            }
+        }
         public override string GetTranslationColumnName(string propertyName)
         {
             if (propertyName.Contains(SqlTranslationLeft)) return propertyName;
             else
-                return SqlTranslationLeft + propertyName.ToLower() + SqlTranslationRight;
+                return SqlTranslationLeft + propertyName.ToLower(isAutoToLower) + SqlTranslationRight;
         }
 
         //public override string GetNoTranslationColumnName(string name)
@@ -55,7 +64,7 @@ namespace SqlSugar
                  .FirstOrDefault(it =>
                  it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase) &&
                  it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToLower() + SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToLower() + SqlTranslationRight);
+            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToLower(isAutoToLower) + SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToLower(isAutoToLower) + SqlTranslationRight);
         }
 
         public override string GetTranslationTableName(string name)
@@ -69,7 +78,7 @@ namespace SqlSugar
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
             if (name.Contains(".")&& !name.Contains("("))
             {
-                return string.Join(".", name.ToLower().Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
+                return string.Join(".", name.ToLower(isAutoToLower).Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
             }
             else if (name.Contains("("))
             {
@@ -81,7 +90,7 @@ namespace SqlSugar
             }
             else
             {
-                return SqlTranslationLeft + name.ToLower().TrimEnd('"').TrimStart('"') + SqlTranslationRight;
+                return SqlTranslationLeft + name.ToLower(isAutoToLower).TrimEnd('"').TrimStart('"') + SqlTranslationRight;
             }
         }
     }
