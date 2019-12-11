@@ -42,6 +42,7 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public MappingTableList MappingTables { get; set; }
         public IgnoreColumnList IgnoreComumnList { get; set; }
+        public bool PgSqlIsAutoToLower { get; set; }
         public List<SqlFuncExternal> SqlFuncServices { get; set; }
         public bool IsSingle
         {
@@ -138,6 +139,7 @@ namespace SqlSugar
             copyContext.SqlFuncServices = this.SqlFuncServices;
             copyContext.InitMappingInfo = this.InitMappingInfo;
             copyContext.RefreshMapping = this.RefreshMapping;
+            copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
             return copyContext;
         }
         #endregion
