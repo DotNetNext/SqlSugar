@@ -19,7 +19,7 @@ namespace PerformanceTest
             InitData();
 
             var type = DemoType.Insert;
-            var ormType = OrmType.SqlSugar;
+            var ormType = OrmType.EF;
             switch (type)
             {
                 case DemoType.GetAll:

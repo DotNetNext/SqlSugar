@@ -57,7 +57,7 @@ namespace PerformanceTest.TestItems
 
 
             //删除插入数据
-            Config.GetSugarConn().Deleteable<Test>().Where(it => it.F_String == "test").ExecuteCommand();
+            DeleteAddData();
         }
 
         private static void Dapper(int eachCount)
@@ -74,7 +74,7 @@ namespace PerformanceTest.TestItems
             });
 
             //删除插入数据
-            Config.GetSugarConn().Deleteable<Test>().Where(it => it.F_String == "test").ExecuteCommand();
+            DeleteAddData();
         }
 
         private static void EF(int eachCount)
@@ -87,11 +87,18 @@ namespace PerformanceTest.TestItems
                 using (EFContext conn = new EFContext(Config.connectionString))
                 {
                     conn.Set<Test>().Add(GetData());
+                    conn.SaveChanges();
                 }
             });
 
             //删除插入数据
-            Config.GetSugarConn().Deleteable<Test>().Where(it => it.F_String == "test").ExecuteCommand();
+            DeleteAddData();
+        }
+
+        private static void DeleteAddData()
+        {
+            var count=Config.GetSugarConn().Deleteable<Test>().Where(it => it.F_String == "test").ExecuteCommand();
+            Console.WriteLine("删除：刚插入" + count + "条");
         }
 
         private static Test GetData()
