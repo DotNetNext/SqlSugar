@@ -11,6 +11,7 @@ namespace PerformanceTest
     public class Test
     {
         [Dapper.Contrib.Extensions.Key]
+        [SqlSugar.SugarColumn(IsIdentity =true ,IsPrimaryKey =true)]
         public int Id { get; set; }
         public byte? F_Byte { get; set; }
         public Int16? F_Int16 { get; set; }

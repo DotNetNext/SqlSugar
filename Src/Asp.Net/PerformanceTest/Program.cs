@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PerformanceTest.TestItems;
+using SqlSugar;
 
 namespace PerformanceTest
 {
@@ -15,7 +16,9 @@ namespace PerformanceTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            var type = DemoType.GetAll;
+            InitData();
+
+            var type = DemoType.GetById;
             var ormType = OrmType.Dapper;
             switch (type)
             {
@@ -33,6 +36,40 @@ namespace PerformanceTest
             }
             Console.ReadKey();
         }
+
+        private static void InitData()
+        {
+            SqlSugarClient conn = Config.GetSugarConn();
+            conn.CurrentConnectionConfig.InitKeyType = InitKeyType.Attribute;
+            conn.DbMaintenance.CreateDatabase();//创建库
+            conn.CodeFirst.InitTables<Test>();
+            List<Test> test = new List<Test>();
+            if (conn.Queryable<Test>().Count() < 100000)
+            {
+                Console.WriteLine("初始化数据");
+
+                for (int i = 0; i < 100000; i++)
+                {
+                    test.Add(new Test()
+                    {
+                        F_Bool = true,
+                        F_Byte = 0,
+                        F_DateTime = DateTime.Now,
+                        F_Decimal = 1,
+                        F_Double = 11,
+                        F_Float = 11,
+                        F_Guid = Guid.Empty,
+                        F_String = "abc",
+                        F_Int16 = 1,
+                        F_Int32 = 1,
+                        F_Int64 = 1
+
+                    });
+                }
+            }
+            conn.Insertable(test).ExecuteCommand();
+        }
+
         enum DemoType
         {
             GetAll,

@@ -15,7 +15,7 @@ namespace PerformanceTest.TestItems
         public void Init(OrmType type)
         {
             Database.SetInitializer<EFContext>(null);
-            Console.WriteLine("测试一次读取100万条数据的速度");
+            Console.WriteLine("测试一次读取10万条数据的速度");
             var eachCount = 1;
 
             var beginDate = DateTime.Now;
