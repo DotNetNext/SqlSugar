@@ -73,6 +73,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestItems\TestGetSql.cs" />
+    <Compile Include="TestItems\TestInsert.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -18,8 +18,8 @@ namespace PerformanceTest
         {
             InitData();
 
-            var type = DemoType.GetById;
-            var ormType = OrmType.Dapper;
+            var type = DemoType.Insert;
+            var ormType = OrmType.SqlSugar;
             switch (type)
             {
                 case DemoType.GetAll:
@@ -30,6 +30,9 @@ namespace PerformanceTest
                     break;
                 case DemoType.GetSql:
                     new TestGetSql().Init(ormType);
+                    break;
+                case DemoType.Insert:
+                    new TestInsert().Init(ormType);
                     break;
                 default:
                     break;
@@ -74,7 +77,8 @@ namespace PerformanceTest
         {
             GetAll,
             GetById,
-            GetSql
+            GetSql,
+            Insert
         }
     }
 }
