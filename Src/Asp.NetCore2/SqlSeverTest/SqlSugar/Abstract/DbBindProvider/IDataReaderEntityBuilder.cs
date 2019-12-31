@@ -108,7 +108,7 @@ namespace SqlSugar
                 {
                     continue;
                 }
-                if (columnInfo != null && columnInfo.PropertyInfo.GetSetMethod() != null)
+                if (columnInfo != null && columnInfo.PropertyInfo.GetSetMethod(true) != null)
                 {
                     if (columnInfo.PropertyInfo.PropertyType.IsClass() && columnInfo.PropertyInfo.PropertyType != UtilConstants.ByteArrayType && columnInfo.PropertyInfo.PropertyType != UtilConstants.ObjType)
                     {
@@ -150,7 +150,7 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldc_I4, i);
                 generator.Emit(OpCodes.Call, jsonMethod);
-                generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod());
+                generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
                 generator.MarkLabel(endIfLabel);
             }
         }
@@ -166,7 +166,7 @@ namespace SqlSugar
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
             BindMethod(generator, columnInfo, i);
-            generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod());
+            generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
             generator.MarkLabel(endIfLabel);
         }
         private void BindMethod(ILGenerator generator, EntityColumnInfo columnInfo, int ordinal)
