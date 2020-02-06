@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -51,6 +52,22 @@ namespace SqlSugar
                 var type = expression.Type;
                 var memberName = this.Context.GetDbColumnName(type.Name, memberAssignment.Member.Name);
                 var item = memberAssignment.Expression;
+
+                //Column IsJson Handler
+                if (memberAssignment.Member.CustomAttributes != null)
+                {
+                    var customAttribute = memberAssignment.Member.GetCustomAttribute<SugarColumn>();
+
+                    if (customAttribute?.IsJson ?? false)
+                    {
+                        var paramterValue = ExpressionTool.DynamicInvoke(item);
+                        var parameterName = AppendParameter(JsonConvert.SerializeObject(paramterValue));
+                        this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+
+                        continue;
+                    }
+                }
+
                 if ((item is MemberExpression) && ((MemberExpression)item).Expression == null)
                 {
                     var paramterValue = ExpressionTool.DynamicInvoke(item);
