@@ -302,9 +302,9 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool CreateIndex(string tableName, string[] columnNames)
+        public virtual bool CreateIndex(string tableName, string[] columnNames, bool isUnique=false)
         {
-            string sql = string.Format(CreateIndexSql,tableName,string.Join(",",columnNames), string.Join("_", columnNames));
+            string sql = string.Format(CreateIndexSql,tableName,string.Join(",",columnNames), string.Join("_", columnNames), isUnique ? "unique" : "");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -366,6 +366,21 @@ namespace SqlSugar
                     if (!IsAnyIndex(indexName))
                     {
                         CreateIndex(entityInfo.DbTableName, columnNames);
+                    }
+                }
+            }
+
+            indexColumns = columns.Where(it => it.UIndexGroupNameList.HasValue()).ToList();
+            if (indexColumns.HasValue())
+            {
+                var groups = indexColumns.SelectMany(it => it.UIndexGroupNameList).GroupBy(it => it).Select(it=>it.Key).ToList();
+                foreach (var item in groups)
+                {
+                    var columnNames = indexColumns.Where(it => it.UIndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it=>it.DbColumnName).ToArray();
+                    var indexName = string.Format("Index_{0}_{1}",entityInfo.DbTableName, string.Join("_", columnNames));
+                    if (!IsAnyIndex(indexName))
+                    {
+                        CreateIndex(entityInfo.DbTableName, columnNames, true);
                     }
                 }
             }

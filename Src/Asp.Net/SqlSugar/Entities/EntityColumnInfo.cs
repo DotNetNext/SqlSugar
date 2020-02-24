@@ -33,5 +33,6 @@ namespace SqlSugar
         public bool IsJson { get;  set; }
         public bool NoSerialize { get;  set; }
         public string[] IndexGroupNameList { get;  set; }
+        public string[] UIndexGroupNameList { get;  set; }
     }
 }
