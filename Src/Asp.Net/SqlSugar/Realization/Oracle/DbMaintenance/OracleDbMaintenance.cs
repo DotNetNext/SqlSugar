@@ -271,9 +271,9 @@ namespace SqlSugar
             }
             return base.AddColumn(tableName,columnInfo);
         }
-        public override bool CreateIndex(string tableName, string[] columnNames)
+        public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique=false)
         {
-            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it=>(it+"abc").Substring(0,3))));
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it=>(it+"abc").Substring(0,3))), isUnique ? "unique" : "");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
