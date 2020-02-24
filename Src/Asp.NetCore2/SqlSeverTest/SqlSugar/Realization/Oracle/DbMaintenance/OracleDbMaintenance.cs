@@ -273,7 +273,7 @@ namespace SqlSugar
         }
         public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique = false)
         {
-            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it=>(it+"abc").Substring(0,3))), isUnique ? "unique" : "");
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it=>(it+"abc").Substring(0,3))), isUnique ? "UNIQUE" : "");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
