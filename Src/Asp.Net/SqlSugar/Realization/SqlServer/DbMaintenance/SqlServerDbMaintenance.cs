@@ -51,8 +51,8 @@ namespace SqlSugar
                     WHERE syscolumns.id IN
                         (SELECT id
                          FROM sysobjects
-                         WHERE xtype IN('u',
-                                        'v') )
+                         WHERE xtype IN('U',
+                                        'V') )
                       AND (systypes.name <> 'sysname')
                       AND sysobjects.name='{0}'
                       AND systypes.name<>'geometry'
