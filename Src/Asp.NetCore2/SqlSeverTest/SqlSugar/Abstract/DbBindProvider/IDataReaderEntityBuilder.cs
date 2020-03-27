@@ -241,10 +241,6 @@ namespace SqlSugar
                 case CSharpDataType.@string:
                     CheckType(bind.StringThrow, bindProperyTypeName, validPropertyName, propertyName);
                     method = getString;
-                    if (bindProperyTypeName == "guid")
-                    {
-                        method = isNullableType ? getConvertStringGuid : getStringGuid;
-                    }
                     break;
                 case CSharpDataType.DateTime:
                     CheckType(bind.DateThrow, bindProperyTypeName, validPropertyName, propertyName);
@@ -316,9 +312,14 @@ namespace SqlSugar
             {
                 method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
             }
-            if (method == null)
+            if (validPropertyType == CSharpDataType.@string && bindPropertyType.IsValueType)
+            {
                 method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
-
+            }
+            if (method == null)
+            {
+                method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
+            }
             if (method.IsVirtual)
                 generator.Emit(OpCodes.Callvirt, method);
             else
