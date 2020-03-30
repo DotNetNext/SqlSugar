@@ -24,7 +24,7 @@ There are 16 methods under SqlSugarClient
  
 
 ## Create SqlSugarClient
-All operations are based on SqlSugarClient
+All operations are based on SqlSugarClient 
 
 SqlSugarClient parameter and only one ConnectionConfig
 ```cs
