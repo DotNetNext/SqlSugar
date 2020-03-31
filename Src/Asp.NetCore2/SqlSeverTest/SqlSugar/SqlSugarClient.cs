@@ -538,15 +538,18 @@ namespace SqlSugar
         #region TenantManager
         public void ChangeDatabase(string configId)
         {
+            var isLog = _Context.Ado.IsEnableLogEvent;
             Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
             InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
             if (this._IsOpen)
                 this.Open();
+            _Context.Ado.IsEnableLogEvent = isLog;
         }
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
         {
+            var isLog = _Context.Ado.IsEnableLogEvent;
             var allConfigs = _AllClients.Select(it => it.ConnectionConfig);
             Check.Exception(!allConfigs.Any(changeExpression), "changeExpression was not found {0}", changeExpression.ToString());
             InitTenant(_AllClients.First(it => it.ConnectionConfig == allConfigs.First(changeExpression)));
@@ -554,6 +557,7 @@ namespace SqlSugar
                 this.Ado.BeginTran();
             if (this._IsOpen)
                 this.Open();
+            _Context.Ado.IsEnableLogEvent = isLog;
         }
         public void BeginTran()
         {
