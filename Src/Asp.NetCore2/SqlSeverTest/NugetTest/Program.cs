@@ -9,14 +9,14 @@ namespace NugetTest
             var db = new SqlSugarClient(new ConnectionConfig() {
                  ConnectionString=Config.ConnectionString,
                  IsAutoCloseConnection=true,
-                 DbType=DbType.Oracle
+                 DbType=DbType.SqlServer
             });
             var list = db.Ado.GetInt("select 1");
             Console.WriteLine("Hello World!");
         }
         public class Config
         {
-            public static string ConnectionString = "Database=SqlSugar4xTest;Data Source=127.0.0.1;User Id=root;Password=root;pooling=false;CharSet=utf8;port=3306";
+            public static string ConnectionString = "server=.;uid=sa;pwd=haosql;database=SQLSUGAR4XTEST";
         }
     }
 }
