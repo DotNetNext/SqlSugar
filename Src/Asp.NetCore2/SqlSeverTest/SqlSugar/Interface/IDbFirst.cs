@@ -18,6 +18,7 @@ namespace SqlSugar
         IDbFirst IsCreateDefaultValue(bool isCreateDefaultValue=true);
         IDbFirst Where(params string[] objectNames);
         IDbFirst Where(Func<string,bool> func);
+        IDbFirst WhereColumns(Func<string, bool> func);
         IDbFirst Where(DbObjectType dbObjectType);
         void CreateClassFile(string directoryPath,  string nameSpace = "Models");
         Dictionary<string, string> ToClassStringList(string nameSpace = "Models");
