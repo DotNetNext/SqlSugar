@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>sqlSugarCore</id>
+    <id>sqlSugarCoreNoDrive</id>
     <version>5.0.0.14</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
@@ -17,11 +17,7 @@
         <dependency id="System.Data.Common" version="4.3.0" />
         <dependency id="System.Data.SqlClient" version="4.4.0" />
         <dependency id="Newtonsoft.Json" version="10.0.3" />
-        <dependency id="Microsoft.Data.Sqlite" version="2.2.4" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
-        <dependency id="MySql.Data" version="8.0.15" />
-        <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
-        <dependency id="Npgsql" version="3.2.7" />
       </group>
     </dependencies>
   </metadata>
