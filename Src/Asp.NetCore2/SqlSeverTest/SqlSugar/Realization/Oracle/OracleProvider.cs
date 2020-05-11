@@ -150,6 +150,11 @@ namespace SqlSugar
                         sqlParameter.Value = (bool)parameter.Value ? 1 : 0;
                     }
                 }
+                else if (parameter.DbType == System.Data.DbType.DateTime)
+                {
+                    sqlParameter.Value = parameter.Value;
+                    sqlParameter.DbType = System.Data.DbType.Date;
+                }
                 else
                 {
                     if (parameter.Value != null && parameter.Value.GetType() == UtilConstants.GuidType)
