@@ -143,5 +143,20 @@ namespace SqlSugar
         {
             return string.Format("instr ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
         }
+
+        public override string DateToString(MethodCallExpressionModel model)
+        {
+            string parm = "%Y-%m-%d %H:%i:%S";
+            if (model.Args[1].MemberValue.ToString() == SugarDateTimeFormat.Date)
+            {
+                parm = "%Y-%m-%d";
+            }
+            else if (model.Args[1].MemberValue.ToString() == SugarDateTimeFormat.Time)
+            {
+                parm = "%H:%i";
+            }
+
+            return string.Format("(DATE_FORMAT({0}, '{1}')) ", model.Args[0].MemberName, parm);
+        }
     }
 }

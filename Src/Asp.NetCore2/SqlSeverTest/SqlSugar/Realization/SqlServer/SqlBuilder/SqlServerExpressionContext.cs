@@ -33,5 +33,19 @@ namespace SqlSugar
                 return string.Format("( {0}<>'' AND {0} IS NOT NULL )", parameter.MemberName);
             }
         }
+        public override string DateToString(MethodCallExpressionModel model)
+        {
+            string parm = "20";
+            if (model.Args[1].MemberValue.ToString() == SugarDateTimeFormat.Date)
+            {
+                parm = "120";
+            }
+            else if (model.Args[1].MemberValue.ToString() == SugarDateTimeFormat.Time)
+            {
+                parm = "108";
+            }
+
+            return string.Format(" CONVERT(varchar(100),{0}, {1}) ", model.Args[0].MemberName, parm);
+        }
     }
 }

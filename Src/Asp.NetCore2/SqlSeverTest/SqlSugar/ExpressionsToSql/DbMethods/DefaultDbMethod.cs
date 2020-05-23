@@ -401,5 +401,9 @@ namespace SqlSugar
         {
             return string.Format("CHARINDEX ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
         }
+        public virtual string DateToString(MethodCallExpressionModel model)
+        {
+            return string.Format(" FORMAT({0},'{1}') ", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
     }
 }
