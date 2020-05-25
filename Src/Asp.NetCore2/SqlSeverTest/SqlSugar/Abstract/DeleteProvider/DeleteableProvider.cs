@@ -52,7 +52,7 @@ namespace SqlSugar
             string sql;
             SugarParameter[] paramters;
             _ExecuteCommand(out sql, out paramters);
-            var result =await Db.ExecuteCommandAsync(sql, paramters);
+            var result = await Db.ExecuteCommandAsync(sql, paramters);
             After(sql);
             return result;
         }
@@ -161,8 +161,9 @@ namespace SqlSugar
         {
             var expResult = DeleteBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
             var whereString = expResult.GetResultString();
-            if (expression.ToString().Contains("Subqueryable()")){
-                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".",this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+            if (expression.ToString().Contains("Subqueryable()"))
+            {
+                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
             }
             DeleteBuilder.WhereInfos.Add(whereString);
             return this;
@@ -287,7 +288,7 @@ namespace SqlSugar
             var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
             var fieldName = lamResult.GetResultString();
             tempPrimaryKeys = new List<string>() { fieldName };
-            var result = In(primaryKeyValue);;
+            var result = In(primaryKeyValue); ;
             tempPrimaryKeys = null;
             return this;
         }
@@ -406,7 +407,8 @@ namespace SqlSugar
                     this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(diffModel);
                 this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
-            if (this.RemoveCacheFunc != null) {
+            if (this.RemoveCacheFunc != null)
+            {
                 this.RemoveCacheFunc();
             }
         }
