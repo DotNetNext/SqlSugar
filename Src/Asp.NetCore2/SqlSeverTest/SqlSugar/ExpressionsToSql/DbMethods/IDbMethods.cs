@@ -34,6 +34,7 @@ namespace SqlSugar
         string ToInt32(MethodCallExpressionModel model);
         string ToInt64(MethodCallExpressionModel model);
         string ToString(MethodCallExpressionModel model);
+        string ToVarchar(MethodCallExpressionModel model); 
         string ToGuid(MethodCallExpressionModel model);
         string ToDouble(MethodCallExpressionModel model);
         string ToBool(MethodCallExpressionModel model);

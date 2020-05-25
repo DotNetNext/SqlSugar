@@ -101,6 +101,7 @@ namespace SqlSugar
         /// <returns></returns>
         public static TimeSpan ToTime(object value) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string ToString(object value) { return value.ObjToString(); }
+        public static string ToVarchar(object value) { return value.ObjToString(); }
         public static decimal ToDecimal(object value) { return value.ObjToDecimal(); }
         public static Guid ToGuid(object value) { return Guid.Parse(value.ObjToString()); }
         public static double ToDouble(object value) { return value.ObjToMoney(); }
