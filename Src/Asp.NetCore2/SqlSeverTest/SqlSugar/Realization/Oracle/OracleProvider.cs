@@ -156,6 +156,10 @@ namespace SqlSugar
                     {
                         parameter.Value = parameter.Value.ToString();
                     }
+                    if (parameter.Value != null && parameter.Value.GetType() == UtilConstants.StringType)
+                    {
+                        sqlParameter.OracleDbType = OracleDbType.NVarchar2;
+                    }
                     sqlParameter.Value = parameter.Value;
                 }
                 if (parameter.Direction != 0)
