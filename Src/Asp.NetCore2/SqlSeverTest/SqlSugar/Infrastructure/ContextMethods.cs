@@ -275,7 +275,15 @@ namespace SqlSugar
             {
                 var name = item.Name;
                 var typeName = tType.Name;
-                if (item.PropertyType.IsClass())
+                Type columnType = item.PropertyType;
+                bool columnIsNullable = false;
+                if (item.PropertyType.IsGenericType && item.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                { 
+                    columnType = UtilMethods.GetUnderType(item.PropertyType);
+                    columnIsNullable = true;
+                }
+
+                if (columnType.IsClass())
                 {
                     result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
                 }
@@ -286,19 +294,23 @@ namespace SqlSugar
                         var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Value;
                         if (addValue == DBNull.Value || addValue == null)
                         {
-                            if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
+                            if (columnIsNullable)
+                            {
+                                addValue = null;
+                            }
+                            else if (columnType.IsIn(UtilConstants.IntType, UtilConstants.LongType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.FloatType, UtilConstants.ByteType))
                             {
                                 addValue = 0;
                             }
-                            else if (item.PropertyType == UtilConstants.GuidType)
+                            else if (columnType == UtilConstants.GuidType)
                             {
                                 addValue = Guid.Empty;
                             }
-                            else if (item.PropertyType == UtilConstants.DateType)
+                            else if (columnType == UtilConstants.DateType)
                             {
                                 addValue = DateTime.MinValue;
                             }
-                            else if (item.PropertyType == UtilConstants.StringType)
+                            else if (columnType == UtilConstants.StringType)
                             {
                                 addValue = null;
                             }
@@ -307,13 +319,32 @@ namespace SqlSugar
                                 addValue = null;
                             }
                         }
-                        else if (item.PropertyType == UtilConstants.IntType)
+                        else
                         {
-                            addValue = Convert.ToInt32(addValue);
-                        }
-                        else if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.LongType)
-                        {
-                            addValue = Convert.ToInt64(addValue);
+                            if (columnType == UtilConstants.IntType)
+                            {
+                                addValue = Convert.ToInt32(addValue);
+                            }
+                            else if (columnType == UtilConstants.LongType)
+                            {
+                                addValue = Convert.ToInt64(addValue);
+                            }
+                            else if (columnType == UtilConstants.DecType)
+                            {
+                                addValue = Convert.ToDecimal(addValue);
+                            }
+                            else if (columnType == UtilConstants.FloatType)
+                            {
+                                addValue = Convert.ToSingle(addValue);
+                            }
+                            else if (columnType == UtilConstants.DobType)
+                            {
+                                addValue = Convert.ToDouble(addValue);
+                            }
+                            else if (columnType == UtilConstants.ByteType)
+                            {
+                                addValue = Convert.ToByte(addValue);
+                            }
                         }
                         result.Add(name, addValue);
                     }
