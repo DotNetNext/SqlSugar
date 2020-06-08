@@ -37,7 +37,13 @@ namespace SqlSugar
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
             if (isIgnoreOrderBy) { orderByValue = null; }
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
+            string selectedValue = GetSelectValue;
+            string tableNameString = GetTableNameString;
+            if (selectedValue == "*" && tableNameString.TrimEnd().EndsWith("MergeTable"))
+            {
+                selectedValue = "MergeTable.*";
+            }
+            sql.AppendFormat(SqlTemplate, selectedValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
             if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
