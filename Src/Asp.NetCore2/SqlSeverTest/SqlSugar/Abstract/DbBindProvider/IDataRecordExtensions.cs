@@ -267,7 +267,7 @@ namespace SqlSugar
             {
                 if (value.GetType() == UtilConstants.DecType)
                 {
-                    value = Convert.ToUInt32(value);
+                    value = Convert.ToInt16(value);
                 }
                 else if (value.GetType() == UtilConstants.StringType)
                 {
