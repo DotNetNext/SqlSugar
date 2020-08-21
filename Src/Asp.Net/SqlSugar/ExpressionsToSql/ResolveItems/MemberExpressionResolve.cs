@@ -254,6 +254,12 @@ namespace SqlSugar
             }
             else
             {
+                if (null == value)
+                {
+                    parameter.BaseParameter.ValueIsNull = true;
+                    value = this.Context.DbMehtods.Null();
+
+                }
                 AppendValue(parameter, isLeft, value);
             }
         }
