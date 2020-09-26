@@ -87,7 +87,14 @@ namespace SqlSugar
                     batchInsetrSql.AppendLine(")  ");
 
                 }
-                batchInsetrSql.AppendLine("SELECT 1 FROM DUAL");
+                if (identities.HasValue())
+                {
+                    batchInsetrSql.AppendLine("SELECT "+ (this.OracleSeqInfoList.First().Value-1) + "  FROM DUAL");
+                }
+                else
+                {
+                    batchInsetrSql.AppendLine("SELECT 1 FROM DUAL");
+                }
                 var result= batchInsetrSql.ToString();
                 return result;
             }
