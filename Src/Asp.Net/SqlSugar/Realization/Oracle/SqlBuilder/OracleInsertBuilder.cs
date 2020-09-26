@@ -76,11 +76,11 @@ namespace SqlSugar
                             this.OracleSeqInfoList[idn.OracleSequenceName] = this.OracleSeqInfoList[idn.OracleSequenceName] + 1;
                             if (identities.Last() == idn)
                             {
-                                batchInsetrSql.Append(seqvalue + 1 );
+                                batchInsetrSql.Append(seqvalue );
                             }
                             else
                             {
-                                batchInsetrSql.Append(seqvalue + 1 + ",");
+                                batchInsetrSql.Append(seqvalue + ",");
                             }
                         }
                     }
