@@ -79,7 +79,7 @@ namespace SqlSugar
                             }
                         }
                         sb.AppendLine(" )t");
-                        this.Ado.GetInt(sb.ToString());
+                        this.Ado.SqlQuery<int>(sb.ToString());
                     }
                     InsertBuilder.OracleSeqInfoList.Add(seqName, seqBeginValue);
                 }
