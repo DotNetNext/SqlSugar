@@ -48,13 +48,6 @@ namespace SqlSugar
             return result;
         }
 
-
-        public override int ExecuteCommand()
-        {
-            base.ExecuteCommand();
-            return base.InsertObjs.Count();
-        }
-
         private object GetSeqValue(string seqName)
         {
             return Ado.GetScalar(" SELECT " + seqName + ".currval FROM DUAL");
@@ -70,9 +63,24 @@ namespace SqlSugar
                 foreach (var seqName in identities)
                 {
                     int seqBeginValue = 0;
-                    this.Ado.ExecuteCommand("alter sequence " + seqName + " increment by " + insertCount);
-                    seqBeginValue = this.Ado.GetInt("select  " + seqName + ".Nextval  from dual") - insertCount;
-                    this.Ado.ExecuteCommand("alter sequence " + seqName + " increment by " + 1);
+                    seqBeginValue = this.Ado.GetInt("select  " + seqName + ".Nextval  from dual");
+                    //Console.WriteLine(seqBeginValue);
+                    var nextLength= insertCount - 1;
+                    if (nextLength > 0)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine(" select Seq_Id.nextval,t.* from (");
+                        for (int i = 0; i < nextLength; i++)
+                        {
+                            sb.AppendLine(" select 1 from dual");
+                            if (i<(nextLength - 1) )
+                            {
+                                sb.AppendLine("union all");
+                            }
+                        }
+                        sb.AppendLine(" )t");
+                        this.Ado.SqlQuery<int>(sb.ToString());
+                    }
                     InsertBuilder.OracleSeqInfoList.Add(seqName, seqBeginValue);
                 }
             }

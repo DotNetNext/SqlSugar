@@ -49,42 +49,54 @@ namespace SqlSugar
             else
             {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                int pageSize = 200;
-                int pageIndex = 1;
-                int totalRecord = groupList.Count;
-                int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                batchInsetrSql.AppendLine("INSERT ALL");
+                foreach (var item in groupList)
+                {
+                    batchInsetrSql.Append("INTO " + GetTableNameString + " ");
+                    string insertColumns = "";
+
+                    batchInsetrSql.Append("(");
+                    batchInsetrSql.Append(columnsString);
+                    if (identities.HasValue())
+                    {
+                        batchInsetrSql.Append("," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName))));
+                    }
+                    batchInsetrSql.Append(") VALUES");
+
+
+                    batchInsetrSql.Append("(");
+                    insertColumns =  string.Join(",", item.Select(it =>FormatValue(it.Value)));
+                    batchInsetrSql.Append(insertColumns);
+                    if (identities.HasValue())
+                    {
+                        batchInsetrSql.Append(",");
+                        foreach (var idn in identities)
+                        {
+                            var seqvalue = this.OracleSeqInfoList[idn.OracleSequenceName];
+                            this.OracleSeqInfoList[idn.OracleSequenceName] = this.OracleSeqInfoList[idn.OracleSequenceName] + 1;
+                            if (identities.Last() == idn)
+                            {
+                                batchInsetrSql.Append(seqvalue );
+                            }
+                            else
+                            {
+                                batchInsetrSql.Append(seqvalue + ",");
+                            }
+                        }
+                    }
+                    batchInsetrSql.AppendLine(")  ");
+
+                }
                 if (identities.HasValue())
                 {
-                    columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
+                    batchInsetrSql.AppendLine("SELECT "+ (this.OracleSeqInfoList.First().Value-1) + "  FROM DUAL");
                 }
-                while (pageCount >= pageIndex)
+                else
                 {
-                    batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
-                    int i = 0;
-                    foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
-                    {
-                        var isFirst = i == 0;
-                        if (!isFirst)
-                        {
-                            batchInsetrSql.Append(SqlTemplateBatchUnion);
-                        }
-                        var insertColumns = string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), Builder.GetTranslationColumnName(it.DbColumnName))));
-                        if (identities.HasValue())
-                        {
-                            insertColumns = insertColumns.TrimEnd(',') + "," + string.Join(",", identities.Select(it =>
-                            {
-                                var seqValue = this.OracleSeqInfoList[it.OracleSequenceName];
-                                this.OracleSeqInfoList[it.OracleSequenceName] = this.OracleSeqInfoList[it.OracleSequenceName] + 1;
-                                return seqValue + 1+" AS "+it.DbColumnName;
-                            }));
-                        }
-                        batchInsetrSql.Append("\r\n SELECT " + insertColumns + " FROM DUAL ");
-                        ++i;
-                    }
-                    pageIndex++;
-                    batchInsetrSql.Append("\r\n;\r\n");
+                    batchInsetrSql.AppendLine("SELECT 1 FROM DUAL");
                 }
-                return "BEGIN\r\n"+ batchInsetrSql.ToString()+"\r\nEND;";
+                var result= batchInsetrSql.ToString();
+                return result;
             }
         }
         public override object FormatValue(object value)
@@ -103,7 +115,7 @@ namespace SqlSugar
                     {
                         date = Convert.ToDateTime("1900-1-1");
                     }
-                    return "to_date('"+ date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ";  
+                    return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ";
                 }
                 else if (type.IsEnum())
                 {
