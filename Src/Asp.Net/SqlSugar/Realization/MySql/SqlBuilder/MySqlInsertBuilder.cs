@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 
 namespace SqlSugar
 {
@@ -79,6 +81,49 @@ namespace SqlSugar
                 result = result.Replace("\\", "\\\\");
             }
             return result;
+        }
+
+        public override string ToSqlString()
+        {
+            if (IsNoInsertNull)
+            {
+                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
+            }
+            var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
+            var isSingle = groupList.Count() == 1;
+            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
+            if (isSingle)
+            {
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+            }
+            else
+            {
+                StringBuilder batchInsetrSql = new StringBuilder();
+                batchInsetrSql.Append("INSERT INTO " + GetTableNameString + " ");
+                batchInsetrSql.Append("(");
+                batchInsetrSql.Append(columnsString);
+                batchInsetrSql.Append(") VALUES");
+                string insertColumns = "";
+                foreach (var item in groupList)
+                {
+                    batchInsetrSql.Append("(");
+                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value)));
+                    batchInsetrSql.Append(insertColumns);
+                    if (groupList.Last() == item)
+                    {
+                        batchInsetrSql.Append(") ");
+                    }
+                    else
+                    {
+                        batchInsetrSql.Append("),  ");
+                    }
+                }
+               
+                batchInsetrSql.AppendLine(";select @@IDENTITY");
+                var result = batchInsetrSql.ToString();
+                return result;
+            }
         }
     }
 }
