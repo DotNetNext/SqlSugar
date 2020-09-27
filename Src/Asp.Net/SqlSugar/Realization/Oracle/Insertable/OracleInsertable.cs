@@ -69,7 +69,7 @@ namespace SqlSugar
                     if (nextLength > 0)
                     {
                         StringBuilder sb = new StringBuilder();
-                        sb.AppendLine(" select Seq_Id.nextval,t.* from (");
+                        sb.AppendLine(" select "+ seqName + ".nextval,t.* from (");
                         for (int i = 0; i < nextLength; i++)
                         {
                             sb.AppendLine(" select 1 from dual");
