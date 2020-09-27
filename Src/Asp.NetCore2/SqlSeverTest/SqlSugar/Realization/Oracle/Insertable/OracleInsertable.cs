@@ -43,7 +43,7 @@ namespace SqlSugar
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
             var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
-            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 :Convert.ToInt64(GetSeqValue(GetSeqName()));
+            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : Convert.ToInt64(GetSeqValue(GetSeqName()));
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             return result;
         }
@@ -65,15 +65,15 @@ namespace SqlSugar
                     int seqBeginValue = 0;
                     seqBeginValue = this.Ado.GetInt("select  " + seqName + ".Nextval  from dual");
                     //Console.WriteLine(seqBeginValue);
-                    var nextLength= insertCount - 1;
+                    var nextLength = insertCount - 1;
                     if (nextLength > 0)
                     {
                         StringBuilder sb = new StringBuilder();
-                        sb.AppendLine(" select Seq_Id.nextval,t.* from (");
+                        sb.AppendLine(" select " + seqName + ".nextval,t.* from (");
                         for (int i = 0; i < nextLength; i++)
                         {
                             sb.AppendLine(" select 1 from dual");
-                            if (i<(nextLength - 1) )
+                            if (i < (nextLength - 1))
                             {
                                 sb.AppendLine("union all");
                             }
