@@ -2,6 +2,8 @@
 
 世界上最简单的ORM，只需要配置连接字符串，F5运行控制台自动建库建表运行DEMO
 
+中文文档：http://www.codeisbug.com/Doc/8
+
 Using SqlSugar is very simple ,And it's powerful.
 
 SqlSugar=One object+One parameter=16 functions,
