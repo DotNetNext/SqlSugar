@@ -12,7 +12,7 @@ namespace NugetTest
         {
             var db = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = "server=.;uid=sa;pwd=@jhl85661501;database=SqlSugar4XTest",
+                ConnectionString = "server=.;uid=sa;pwd=haosql;database=SqlSugar4XTest",
                 IsAutoCloseConnection = true,
                 DbType = DbType.SqlServer
             });

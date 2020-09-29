@@ -37,5 +37,12 @@ namespace SqlSugar
             }
             return value;
         }
+
+        internal static string ToLower(this string value ,bool isAutoToLower)
+        {
+            if (value == null) return null;
+            if (isAutoToLower == false) return value;
+            return value.ToLower();
+        }
     }
 }

@@ -99,6 +99,14 @@ namespace SqlSugar
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
             this.LambdaExpressions.Clear();
+            if (this.Context.CurrentConnectionConfig.MoreSettings != null)
+            {
+                resolveExpress.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+            }
+            else
+            {
+                resolveExpress.PgSqlIsAutoToLower = true;
+            }
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;

@@ -220,6 +220,14 @@ namespace SqlSugar
                 resolveType = resolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.FieldSingle) ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
             }
             this.LambdaExpressions.Clear();
+            if (this.Context.CurrentConnectionConfig.MoreSettings != null)
+            {
+                resolveExpress.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+            }
+            else
+            {
+                resolveExpress.PgSqlIsAutoToLower = true;
+            }
             resolveExpress.JoinQueryInfos = Builder.QueryBuilder.JoinQueryInfos;
             resolveExpress.IsSingle = IsSingle();
             resolveExpress.MappingColumns = Context.MappingColumns;

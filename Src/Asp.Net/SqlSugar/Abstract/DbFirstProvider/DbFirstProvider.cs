@@ -19,6 +19,7 @@ namespace SqlSugar
         private string Namespace { get; set; }
         private bool IsAttribute { get; set; }
         private bool IsDefaultValue { get; set; }
+        private Func<string, bool> WhereColumnsfunc;
         private ISqlBuilder SqlBuilder
         {
             get
@@ -89,13 +90,13 @@ namespace SqlSugar
             this.PropertyTemplate = func(this.PropertyTemplate);
             return this;
         }
-        public RazorFirst UseRazorAnalysis(string razorClassTemplate,string classNamespace="Models" )
+        public RazorFirst UseRazorAnalysis(string razorClassTemplate, string classNamespace = "Models")
         {
             if (razorClassTemplate == null)
             {
                 razorClassTemplate = "";
             }
-            razorClassTemplate=razorClassTemplate.Replace("@Model.Namespace", classNamespace);
+            razorClassTemplate = razorClassTemplate.Replace("@Model.Namespace", classNamespace);
             var result = new RazorFirst();
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices?.RazorService != null)
             {
@@ -108,7 +109,7 @@ namespace SqlSugar
                         var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(item.Name, false);
                         RazorTableInfo table = new RazorTableInfo()
                         {
-                            Columns = columns.Select(it => new RazorColumnInfo()
+                            Columns = columns.Where(it => WhereColumnsfunc == null || WhereColumnsfunc(it.DbColumnName)).Select(it => new RazorColumnInfo()
                             {
                                 ColumnDescription = it.ColumnDescription,
                                 DataType = it.DataType,
@@ -124,7 +125,7 @@ namespace SqlSugar
                         };
                         foreach (var col in table.Columns)
                         {
-                            col.DataType = GetPropertyTypeName(columns.First(it=>it.DbColumnName==col.DbColumnName));
+                            col.DataType = GetPropertyTypeName(columns.First(it => it.DbColumnName == col.DbColumnName));
                         }
                         razorList.Add(table);
                     }
@@ -166,6 +167,13 @@ namespace SqlSugar
             this.TableInfoList = this.TableInfoList.Where(it => func(it.Name)).ToList();
             return this;
         }
+
+        public IDbFirst WhereColumns(Func<string, bool> func)
+        {
+            WhereColumnsfunc = func;
+            return this;
+        }
+
 
         public IDbFirst Where(params string[] objectNames)
         {
@@ -235,7 +243,7 @@ namespace SqlSugar
             classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
             if (columns.HasValue())
             {
-                foreach (var item in columns)
+                foreach (var item in columns.Where(it => WhereColumnsfunc == null || WhereColumnsfunc(it.DbColumnName)))
                 {
                     var isLast = columns.Last() == item;
                     var index = columns.IndexOf(item);

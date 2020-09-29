@@ -275,6 +275,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return count;
             }
             catch (Exception ex)
@@ -310,6 +311,8 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
+                    sqlCommand.Dispose();
                 return sqlDataReader;
             }
             catch (Exception ex)
@@ -339,6 +342,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return ds;
             }
             catch (Exception ex)
@@ -371,6 +375,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return scalar;
             }
             catch (Exception ex)
@@ -404,6 +409,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return count;
             }
             catch (Exception ex)
@@ -440,6 +446,8 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
+                    sqlCommand.Dispose(); 
                 return sqlDataReader;
             }
             catch (Exception ex)
@@ -468,6 +476,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return scalar;
             }
             catch (Exception ex)

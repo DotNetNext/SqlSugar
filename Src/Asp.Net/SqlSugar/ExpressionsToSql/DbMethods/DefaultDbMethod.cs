@@ -401,5 +401,11 @@ namespace SqlSugar
         {
             return string.Format("CHARINDEX ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
         }
+
+        public string ToVarchar(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS VARCHAR(MAX))", parameter.MemberName);
+        }
     }
 }

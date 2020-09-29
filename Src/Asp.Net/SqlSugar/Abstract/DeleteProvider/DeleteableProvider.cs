@@ -191,16 +191,31 @@ namespace SqlSugar
 
         public IDeleteable<T> Where(string whereString, SugarParameter parameter)
         {
+            DeleteBuilder.WhereInfos.Add(whereString);
+            if (DeleteBuilder.Parameters == null)
+            {
+                DeleteBuilder.Parameters = new List<SugarParameter>();
+            }
             DeleteBuilder.Parameters.Add(parameter);
             return this;
         }
         public IDeleteable<T> Where(string whereString, SugarParameter[] parameters)
         {
+            DeleteBuilder.WhereInfos.Add(whereString);
+            if (DeleteBuilder.Parameters == null)
+            {
+                DeleteBuilder.Parameters = new List<SugarParameter>();
+            }
             DeleteBuilder.Parameters.AddRange(parameters);
             return this;
         }
         public IDeleteable<T> Where(string whereString, List<SugarParameter> parameters)
         {
+            DeleteBuilder.WhereInfos.Add(whereString);
+            if (DeleteBuilder.Parameters == null)
+            {
+                DeleteBuilder.Parameters = new List<SugarParameter>();
+            }
             DeleteBuilder.Parameters.AddRange(parameters);
             return this;
         }

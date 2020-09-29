@@ -965,7 +965,12 @@ namespace SqlSugar
                             addParameters.Add(parameter);
                         }
                         parsmeters.AddRange(addParameters);
-                        itemSql = itemSql.TrimEnd(';')+";";
+                        itemSql = itemSql
+                            .TrimEnd('\r')
+                            .TrimEnd('\n')
+                            .TrimEnd('\r')
+                            .TrimEnd('\n')
+                            .TrimEnd(';')+";";
                         sqlBuilder.AppendLine(itemSql);
                         index++;
                     }

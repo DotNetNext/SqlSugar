@@ -43,16 +43,9 @@ namespace SqlSugar
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
             var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
-            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 :Convert.ToInt64(GetSeqValue(GetSeqName()));
+            var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : Convert.ToInt64(GetSeqValue(GetSeqName()));
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             return result;
-        }
-
-
-        public override int ExecuteCommand()
-        {
-            base.ExecuteCommand();
-            return base.InsertObjs.Count();
         }
 
         private object GetSeqValue(string seqName)
@@ -70,9 +63,24 @@ namespace SqlSugar
                 foreach (var seqName in identities)
                 {
                     int seqBeginValue = 0;
-                    this.Ado.ExecuteCommand("alter sequence " + seqName + " increment by " + insertCount);
-                    seqBeginValue = this.Ado.GetInt("select  " + seqName + ".Nextval  from dual") - insertCount;
-                    this.Ado.ExecuteCommand("alter sequence " + seqName + " increment by " + 1);
+                    seqBeginValue = this.Ado.GetInt("select  " + seqName + ".Nextval  from dual");
+                    //Console.WriteLine(seqBeginValue);
+                    var nextLength = insertCount - 1;
+                    if (nextLength > 0)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine(" select " + seqName + ".nextval,t.* from (");
+                        for (int i = 0; i < nextLength; i++)
+                        {
+                            sb.AppendLine(" select 1 from dual");
+                            if (i < (nextLength - 1))
+                            {
+                                sb.AppendLine("union all");
+                            }
+                        }
+                        sb.AppendLine(" )t");
+                        this.Ado.SqlQuery<int>(sb.ToString());
+                    }
                     InsertBuilder.OracleSeqInfoList.Add(seqName, seqBeginValue);
                 }
             }

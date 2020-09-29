@@ -75,11 +75,11 @@ namespace SqlSugar
                             {
                                 value = it.Value;
                             }
-                            if (value == null)
+                            if (value == null||value==DBNull.Value)
                             {
                                 return string.Format(SqlTemplateBatchSelect, "NULL");
                             }
-                            return string.Format(SqlTemplateBatchSelect, "'" + value + "'");
+                            return string.Format(SqlTemplateBatchSelect, "'" + value.ObjToString().ToSqlFilter() + "'");
                         })) + "),");
                         ++i;
                     }

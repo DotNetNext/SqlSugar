@@ -275,6 +275,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return count;
             }
             catch (Exception ex)
@@ -310,6 +311,7 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
+                //sqlCommand.Dispose();
                 return sqlDataReader;
             }
             catch (Exception ex)
@@ -339,6 +341,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return ds;
             }
             catch (Exception ex)
@@ -371,6 +374,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return scalar;
             }
             catch (Exception ex)
@@ -404,6 +408,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return count;
             }
             catch (Exception ex)
@@ -440,6 +445,7 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
+                //sqlCommand.Dispose();
                 return sqlDataReader;
             }
             catch (Exception ex)
@@ -468,6 +474,7 @@ namespace SqlSugar
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
+                sqlCommand.Dispose();
                 return scalar;
             }
             catch (Exception ex)
@@ -875,7 +882,7 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SqlQueryAsync<T, T2, T3, T4, T5, T6>(string sql, object parameters = null)
         {
-            var result =await SqlQueryAsync<T, T2, T3, T4, T5, T6, object>(sql, parameters);
+            var result = await SqlQueryAsync<T, T2, T3, T4, T5, T6, object>(sql, parameters);
             return new Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>(result.Item1, result.Item2, result.Item3, result.Item4, result.Item5, result.Item6);
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SqlQueryAsync<T, T2, T3, T4, T5, T6, T7>(string sql, object parameters = null)
@@ -892,7 +899,7 @@ namespace SqlSugar
                 List<T> result = new List<T>();
                 if (DbReader.HasRows)
                 {
-                    result =await GetDataAsync<T>(typeof(T), dataReader);
+                    result = await GetDataAsync<T>(typeof(T), dataReader);
                 }
                 List<T2> result2 = null;
                 if (NextResult(dataReader))
@@ -1169,7 +1176,7 @@ namespace SqlSugar
             {
                 return dataReader.NextResult();
             }
-            catch  
+            catch
             {
                 return false;
             }
@@ -1382,7 +1389,7 @@ namespace SqlSugar
             List<TResult> result;
             if (entityType == UtilConstants.DynamicType)
             {
-                result =await this.Context.Utilities.DataReaderToExpandoObjectListAsyncNoUsing(dataReader) as List<TResult>;
+                result = await this.Context.Utilities.DataReaderToExpandoObjectListAsyncNoUsing(dataReader) as List<TResult>;
             }
             else if (entityType == UtilConstants.ObjType)
             {
@@ -1391,11 +1398,11 @@ namespace SqlSugar
             }
             else if (entityType.IsAnonymousType())
             {
-                result =await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
+                result = await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
             }
             else
             {
-                result =await this.Context.Ado.DbBind.DataReaderToListNoUsingAsync<TResult>(entityType, dataReader);
+                result = await this.Context.Ado.DbBind.DataReaderToListNoUsingAsync<TResult>(entityType, dataReader);
             }
             return result;
         }

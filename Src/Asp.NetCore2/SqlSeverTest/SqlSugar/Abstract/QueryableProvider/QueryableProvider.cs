@@ -71,7 +71,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Clone()
         {
-            var queryable = this.Context.Queryable<T>().WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<object>().Select<T>().WithCacheIF(IsCache, CacheTime);
             CopyQueryBuilder(queryable.QueryBuilder);
             ((QueryableProvider<T>)queryable).MapperAction = this.MapperAction;
             ((QueryableProvider<T>)queryable).MapperActionWithCache = this.MapperActionWithCache;
@@ -90,7 +90,10 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> With(string withString)
         {
-            QueryBuilder.TableWithString = withString;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                QueryBuilder.TableWithString = withString;
+            }
             return this;
         }
 

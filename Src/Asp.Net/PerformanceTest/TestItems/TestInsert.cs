@@ -1,22 +1,24 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Dapper;
-using SqlSugar;
+using Dapper.Contrib;
 using Dapper.Contrib.Extensions;
-using System.Data.Entity;
 
 namespace PerformanceTest.TestItems
 {
-    public class TestGetAll  
+    public class TestInsert
     {
         public void Init(OrmType type)
         {
             Database.SetInitializer<EFContext>(null);
-            Console.WriteLine("测试一次读取10万条数据的速度");
-            var eachCount = 1;
+            Console.WriteLine("测试插入1条");
+            var eachCount = 100;
 
             var beginDate = DateTime.Now;
             for (int i = 0; i < 10; i++)
@@ -35,7 +37,7 @@ namespace PerformanceTest.TestItems
                     default:
                         break;
                 }
-    
+
             }
             Console.Write("总计：" + (DateTime.Now - beginDate).TotalMilliseconds / 1000.0);
         }
@@ -49,11 +51,14 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlSugarClient conn = Config.GetSugarConn())
                 {
-                    var list2 = conn.Queryable<Test>().ToList();
+                    conn.Insertable(GetData()).ExecuteCommand();
                 }
             });
-        }
 
+
+            //删除插入数据
+            DeleteAddData();
+        }
 
         private static void Dapper(int eachCount)
         {
@@ -64,9 +69,12 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlConnection conn = new SqlConnection(Config.connectionString))
                 {
-                  var list = conn.GetAll<Test>();
+                    conn.Insert(GetData());
                 }
             });
+
+            //删除插入数据
+            DeleteAddData();
         }
 
         private static void EF(int eachCount)
@@ -78,9 +86,38 @@ namespace PerformanceTest.TestItems
             {
                 using (EFContext conn = new EFContext(Config.connectionString))
                 {
-                    var list = conn.TestList.AsNoTracking().ToList();
+                    conn.Set<Test>().Add(GetData());
+                    conn.SaveChanges();
                 }
             });
+
+            //删除插入数据
+            DeleteAddData();
+        }
+
+        private static void DeleteAddData()
+        {
+            var count=Config.GetSugarConn().Deleteable<Test>().Where(it => it.F_String == "test").ExecuteCommand();
+            Console.WriteLine("删除：刚插入" + count + "条");
+        }
+
+        private static Test GetData()
+        {
+            return new Test()
+            {
+                F_Bool = true,
+                F_Byte = 0,
+                F_DateTime = DateTime.Now,
+                F_Decimal = 1,
+                F_Double = 11,
+                F_Float = 11,
+                F_Guid = Guid.Empty,
+                F_String = "test",
+                F_Int16 = 1,
+                F_Int32 = 1,
+                F_Int64 = 1
+
+            };
         }
     }
 }

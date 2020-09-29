@@ -25,7 +25,14 @@ namespace SqlSugar
         }
         public override string GetTranslationText(string name)
         {
-            return SqlTranslationLeft + name.ToLower() + SqlTranslationRight;
+            return SqlTranslationLeft + name.ToLower(isAutoToLower) + SqlTranslationRight;
+        }
+        public bool isAutoToLower
+        {
+            get
+            {
+                return base.PgSqlIsAutoToLower;
+            }
         }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
         {
@@ -46,7 +53,7 @@ namespace SqlSugar
             else if (isMapping)
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToLower() + SqlTranslationRight;
+                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToLower(isAutoToLower) + SqlTranslationRight;
             }
             else if (isComplex)
             {
@@ -79,11 +86,11 @@ namespace SqlSugar
             if (this.MappingColumns.HasValue())
             {
                 var mappingInfo = this.MappingColumns.SingleOrDefault(it => it.EntityName == entityName && it.PropertyName == propertyName);
-                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToLower();
+                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToLower(isAutoToLower);
             }
             else
             {
-                return propertyName.ToLower();
+                return propertyName.ToLower(isAutoToLower);
             }
         }
     }
@@ -171,14 +178,14 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (DATE_ADD({1} , INTERVAL {2} {0})) ", parameter3.MemberValue, parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({1} +  ({2}||'{0}')::INTERVAL) ", parameter3.MemberValue, parameter.MemberName, parameter2.MemberName);
         }
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" (DATE_ADD({1} INTERVAL {0} day)) ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" ({0} + ({1}||'day')::INTERVAL) ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string ToInt32(MethodCallExpressionModel model)

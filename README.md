@@ -1,4 +1,14 @@
-# SqlSugar 5.X  API 
+
+
+
+## 中文文档：
+
+世界上最简单的ORM，只需要配置连接字符串，F5运行控制台自动建库建表运行DEMO
+
+地址：http://www.codeisbug.com/Home/Doc
+
+
+# English documents
 
 Using SqlSugar is very simple ,And it's powerful.
 
@@ -6,7 +16,7 @@ SqlSugar=One object+One parameter=16 functions,
 
 Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 
 ## Contactinfomation  
-Email:610262374@qq.com 
+Email:610262374@qq.com  
 QQ Group:225982985
 
 ## Nuget 
@@ -17,12 +27,12 @@ QQ Group:225982985
  
 ## SqlSugar's 16 Functions
 There are 16 methods under SqlSugarClient
-![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190430/6369224056499802674782957.jpg?id=11 "sqlsugar")
+![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190430/6369224056499802674782957.jpg?id=111 "sqlsugar")
  
- 
+  
 
 ## Create SqlSugarClient
-All operations are based on SqlSugarClient
+All operations are based on SqlSugarClient 
 
 SqlSugarClient parameter and only one ConnectionConfig
 ```cs
@@ -68,7 +78,7 @@ public class Student
 
 ##  1. Queryable
 We use it to query
- ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=1 "Queryable")
+ ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=112 "Queryable")
  
 ##### Here are some examples
 ```cs
@@ -358,4 +368,4 @@ sdb.Update(obj);
 https://github.com/sunkaixuan/SoEasyPlatform
 
 # More APi 中文文档：
-http://www.codeisbug.com/Doc/8
+http://www.codeisbug.com/Doc/8 

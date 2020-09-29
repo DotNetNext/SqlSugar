@@ -10,6 +10,10 @@ namespace SqlSugar
         {
             int reval = 0;
             if (thisValue == null) return 0;
+            if (thisValue is Enum)
+            {
+                return (int)thisValue;
+            }
             if (thisValue != null && thisValue != DBNull.Value && int.TryParse(thisValue.ToString(), out reval))
             {
                 return reval;
@@ -20,6 +24,10 @@ namespace SqlSugar
         public static int ObjToInt(this object thisValue, int errorValue)
         {
             int reval = 0;
+            if (thisValue is Enum)
+            {
+                return (int)thisValue;
+            }
             if (thisValue != null && thisValue != DBNull.Value && int.TryParse(thisValue.ToString(), out reval))
             {
                 return reval;
