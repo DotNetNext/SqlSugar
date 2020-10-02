@@ -21,5 +21,6 @@ namespace SqlSugar
         public object Value { get; set; }
         public int DecimalDigits { get; set; }
         public int Scale { get; set; }
+        internal bool IsJson { get;  set; }
     }
 }

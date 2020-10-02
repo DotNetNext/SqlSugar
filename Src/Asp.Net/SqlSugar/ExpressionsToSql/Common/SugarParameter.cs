@@ -233,5 +233,6 @@ namespace SqlSugar
 
 
         public string TypeName { get; set; }
+        public bool IsJson { get;  set; }
     }
 }
