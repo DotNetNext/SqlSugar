@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace SqlSugar
 {
@@ -94,6 +95,10 @@ namespace SqlSugar
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
                 sqlParameter.Direction = parameter.Direction;
+                if (parameter.IsJson)
+                {
+                    sqlParameter.NpgsqlDbType = NpgsqlDbType.Json;
+                }
                 if (sqlParameter.Direction == 0)
                 {
                     sqlParameter.Direction = ParameterDirection.Input;

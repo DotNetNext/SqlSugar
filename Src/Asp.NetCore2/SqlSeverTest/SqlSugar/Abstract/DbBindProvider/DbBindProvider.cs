@@ -29,8 +29,11 @@ namespace SqlSugar
                 csharpTypeName = "long";
             if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
-            var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
-            return mappings.HasValue() ? mappings.First().Key : "varchar";
+            var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            if (mappings!=null&&mappings.Count>0) 
+                return mappings.First().Key;
+            else
+                return "varchar";
         }
         public string GetCsharpTypeName(string dbTypeName)
         {
