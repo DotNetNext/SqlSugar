@@ -137,6 +137,9 @@ namespace SqlSugar
             base.Start();
             parameter.BaseParameter.CommonTempData = parameter.CommonTempData;
             parameter.BaseParameter.ChildExpression = base.Expression;
+            //修改日期：风痕  日期：2020-10-10  纠正base.BaseParameter.ValueIsNul变化 ，parameter.BaseParameter.ValueIsNull未变化
+            parameter.BaseParameter.ValueIsNull = base.BaseParameter.ValueIsNull;
+
             parameter.CommonTempData = null;
         }
 
