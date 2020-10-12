@@ -488,6 +488,7 @@ namespace SqlSugar
                 }
                 if (column.IsJson)
                 {
+                    columnInfo.IsJson = true;
                     columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
                 }
                 var tranColumn = EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
@@ -530,7 +531,12 @@ namespace SqlSugar
                     {
                         continue;
                     }
-                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType));
+                    var parameter = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType);
+                    if (item.IsJson)
+                    {
+                        parameter.IsJson = true;
+                    }
+                    this.UpdateBuilder.Parameters.Add(parameter);
                 }
             }
 
