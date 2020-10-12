@@ -130,6 +130,12 @@ namespace SqlSugar
         }
         protected void AppendValue(ExpressionParameter parameter, bool? isLeft, object value)
         {
+              //修改日期：风痕  日期：2020-10-12  修复值结果为null是 sql结果为“= null”，正确为 “ is null”  报错问题 修复日期为2020-08-21  修改者;风痕
+            if (!(isLeft==true)&&value == null)
+            {
+                value = this.Context.DbMehtods.Null();
+                parameter.BaseParameter.ValueIsNull = true;
+            }
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
                 var oppoSiteExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
@@ -205,11 +211,19 @@ namespace SqlSugar
                 {
                     var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.Const + Context.ParameterIndex;
                     Context.ParameterIndex++;
-                    if (value != null && value.GetType().IsEnum())
+                    //修改日期2020-10-12 修复值结果为“NULL”是 sql结果为“is null”  修改者;风痕
+                     if (value.ObjToString() != "NULL" && !parameter.ValueIsNull)
                     {
-                        value = Convert.ToInt64(value);
+                        if (value != null && value.GetType().IsEnum())
+                        {
+                            value = Convert.ToInt64(value);
+                        }
+                        this.Context.Parameters.Add(new SugarParameter(appendValue, value));
                     }
-                    this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                    else
+                    {
+                        appendValue = value.ObjToString();
+                    }
                     appendValue = string.Format(" {0} ", appendValue);
                     if (isLeft == true)
                     {
