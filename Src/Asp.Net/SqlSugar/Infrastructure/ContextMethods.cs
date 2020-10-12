@@ -7,6 +7,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -277,7 +278,19 @@ namespace SqlSugar
                 var typeName = tType.Name;
                 if (item.PropertyType.IsClass())
                 {
-                    result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
+                    if (readerValues != null &&
+                        readerValues.Count == 1 &&
+                        readerValues.First().Key == name &&
+                        readerValues.First().Value!=null&&
+                        readerValues.First().Value.GetType()==UtilConstants.StringType&&
+                        Regex.IsMatch(readerValues.First().Value.ObjToString(), @"^\{.+\}$"))
+                    {
+                        result.Add(name, DeserializeObject<Dictionary<string,object>>(readerValues.First().Value.ObjToString()));
+                    }
+                    else
+                    {
+                        result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
+                    }
                 }
                 else
                 {
