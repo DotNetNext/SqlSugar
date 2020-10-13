@@ -99,6 +99,19 @@ namespace SqlSugar
                 {
                     sqlParameter.NpgsqlDbType = NpgsqlDbType.Json;
                 }
+                if (parameter.IsArray)
+                {
+                    //    sqlParameter.Value = this.Context.Utilities.SerializeObject(sqlParameter.Value);
+                    var type = sqlParameter.Value.GetType();
+                    if (ArrayMapping.ContainsKey(type))
+                    {
+                        sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
+                    }
+                    else
+                    {
+                        Check.Exception(true, sqlParameter.Value.GetType().Name + " No Support");
+                    }
+                }
                 if (sqlParameter.Direction == 0)
                 {
                     sqlParameter.Direction = ParameterDirection.Input;
@@ -114,5 +127,31 @@ namespace SqlSugar
             }
             return result;
         }
+
+
+        static readonly Dictionary<Type, NpgsqlDbType> ArrayMapping = new Dictionary<Type, NpgsqlDbType>()
+        {
+            { typeof(int[]),NpgsqlDbType.Integer},
+            { typeof(short[]),NpgsqlDbType.Smallint},
+            { typeof(long[]),NpgsqlDbType.Bigint},
+            { typeof(decimal[]),NpgsqlDbType.Numeric},
+            { typeof(char[]),NpgsqlDbType.Text},
+            { typeof(byte[]),NpgsqlDbType.Bytea},
+            { typeof(bool[]),NpgsqlDbType.Boolean},
+            {typeof(DateTime[]),NpgsqlDbType.Date},
+
+
+            { typeof(int?[]),NpgsqlDbType.Integer},
+            { typeof(short?[]),NpgsqlDbType.Smallint},
+            { typeof(long?[]),NpgsqlDbType.Bigint},
+            { typeof(decimal?[]),NpgsqlDbType.Numeric},
+            { typeof(char?[]),NpgsqlDbType.Text},
+            { typeof(byte?[]),NpgsqlDbType.Bytea},
+            { typeof(bool?[]),NpgsqlDbType.Boolean},
+            {typeof(DateTime?[]),NpgsqlDbType.Date},
+
+
+             { typeof(string[]), NpgsqlDbType.Text},
+        };
     }
 }

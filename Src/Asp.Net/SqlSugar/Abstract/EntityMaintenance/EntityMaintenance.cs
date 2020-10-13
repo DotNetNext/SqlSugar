@@ -194,6 +194,7 @@ namespace SqlSugar
                         column.DefaultValue = sugarColumn.DefaultValue;
                         column.IndexGroupNameList = sugarColumn.IndexGroupNameList;
                         column.IsOnlyIgnoreUpdate = sugarColumn.IsOnlyIgnoreUpdate;
+                        column.IsArray = sugarColumn.IsArray;
                     }
                     else
                     {
