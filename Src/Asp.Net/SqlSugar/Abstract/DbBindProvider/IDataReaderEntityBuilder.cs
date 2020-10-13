@@ -64,6 +64,7 @@ namespace SqlSugar
         private static readonly MethodInfo getOtherNull = typeof(IDataRecordExtensions).GetMethod("GetOtherNull");
         private static readonly MethodInfo getOther = typeof(IDataRecordExtensions).GetMethod("GetOther");
         private static readonly MethodInfo getJson = typeof(IDataRecordExtensions).GetMethod("GetJson");
+        private static readonly MethodInfo getArray = typeof(IDataRecordExtensions).GetMethod("GetArray");
         private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarProvider) });
 
         private delegate T Load(IDataRecord dataRecord);
@@ -150,6 +151,22 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldc_I4, i);
                 generator.Emit(OpCodes.Call, jsonMethod);
+                generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
+                generator.MarkLabel(endIfLabel);
+            }
+            if (columnInfo.IsArray)
+            {
+                MethodInfo arrayMehtod = getArray.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                int i = DataRecord.GetOrdinal(fieldName);
+                Label endIfLabel = generator.DefineLabel();
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldc_I4, i);
+                generator.Emit(OpCodes.Callvirt, isDBNullMethod);
+                generator.Emit(OpCodes.Brtrue, endIfLabel);
+                generator.Emit(OpCodes.Ldloc, result);
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldc_I4, i);
+                generator.Emit(OpCodes.Call, arrayMehtod);
                 generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
                 generator.MarkLabel(endIfLabel);
             }
