@@ -1470,7 +1470,7 @@ namespace SqlSugar
                     {
                        new ConditionalModel()
                       {
-                           FieldName=whereCol.DbColumnName,
+                           FieldName=this.SqlBuilder.GetTranslationColumnName(whereCol.DbColumnName),
                            ConditionalType= ConditionalType.In,
                            FieldValue=string.Join(",",inValues.Distinct())
                       }

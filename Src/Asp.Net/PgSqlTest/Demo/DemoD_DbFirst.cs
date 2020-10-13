@@ -17,7 +17,10 @@ namespace OrmTest
                 DbType = DbType.PostgreSQL,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
-                IsAutoCloseConnection = true
+                IsAutoCloseConnection = true,
+                MoreSettings=new ConnMoreSettings() {
+                     PgSqlIsAutoToLower=false
+                }
             });
 
             db.DbFirst.CreateClassFile("c:\\Demo\\1", "Models");
