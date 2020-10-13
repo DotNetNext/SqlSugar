@@ -131,6 +131,14 @@ namespace SqlSugar
                     {
                         parameterName = parameterName.Replace(".", "_");
                     }
+                    if (parameterName.Contains("["))
+                    {
+                        parameterName = parameterName.Replace("[", "_");
+                    }
+                    if (parameterName.Contains("]"))
+                    {
+                        parameterName = parameterName.Replace("]", "_");
+                    }
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
