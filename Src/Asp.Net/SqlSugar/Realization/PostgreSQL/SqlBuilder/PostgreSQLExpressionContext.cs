@@ -253,5 +253,10 @@ namespace SqlSugar
         {
             return "RANDOM()";
         }
+
+        public override string EqualTrue(string fieldName)
+        {
+            return "( " + fieldName + "=true )";
+        }
     }
 }
