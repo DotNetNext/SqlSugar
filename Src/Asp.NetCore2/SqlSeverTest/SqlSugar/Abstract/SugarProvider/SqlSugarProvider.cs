@@ -467,7 +467,14 @@ namespace SqlSugar
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
             var resulut = this.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable")).With(SqlWith.Null);
             resulut.AddParameters(allParameters);
-            return resulut.Select<T>(sqlBuilder.SqlSelectAll);
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle && sqlBuilder.SqlSelectAll == "*")
+            {
+                return resulut.Select<T>("unionTable.*");
+            }
+            else
+            {
+                return resulut.Select<T>(sqlBuilder.SqlSelectAll);
+            }
         }
         public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
@@ -495,7 +502,14 @@ namespace SqlSugar
             var allParameters = allItems.SelectMany(it => it.Value).ToArray();
             var resulut = this.Context.Queryable<ExpandoObject>().AS(UtilMethods.GetPackTable(allSql, "unionTable")).With(SqlWith.Null);
             resulut.AddParameters(allParameters);
-            return resulut.Select<T>(sqlBuilder.SqlSelectAll);
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle && sqlBuilder.SqlSelectAll == "*")
+            {
+                return resulut.Select<T>("unionTable.*");
+            }
+            else
+            {
+                return resulut.Select<T>(sqlBuilder.SqlSelectAll);
+            }
         }
         public virtual ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
