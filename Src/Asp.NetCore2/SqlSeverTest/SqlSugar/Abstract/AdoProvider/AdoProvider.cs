@@ -1341,7 +1341,7 @@ namespace SqlSugar
                     if (item.Value != null)
                     {
                         var type = item.Value.GetType();
-                        if ((type != UtilConstants.ByteArrayType && type.IsArray) || type.FullName.IsCollectionsList())
+                        if ((type != UtilConstants.ByteArrayType && type.IsArray && item.IsArray == false) || type.FullName.IsCollectionsList())
                         {
                             var newValues = new List<string>();
                             foreach (var inValute in item.Value as IEnumerable)
