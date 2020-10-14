@@ -322,6 +322,10 @@ namespace SqlSugar
                 properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
             }
             var dataType = dc.DataType;
+            if (properyTypeName == "boolean" && dataType == "bool")
+            {
+                return false;
+            }
             return properyTypeName != dataType;
         }
         #endregion

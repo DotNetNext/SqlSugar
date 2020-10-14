@@ -343,6 +343,10 @@ namespace SqlSugar
                     {
                         paramters.IsJson = true;
                     }
+                    if (item.IsArray)
+                    {
+                        paramters.IsArray = true;
+                    }
                     this.InsertBuilder.Parameters.Add(paramters);
                 }
             }
@@ -406,6 +410,10 @@ namespace SqlSugar
                 if (column.IsJson)
                 {
                     columnInfo.IsJson = true;
+                }
+                if (column.IsArray)
+                {
+                    columnInfo.IsArray = true;
                 }
                 if (columnInfo.PropertyType.IsEnum())
                 {

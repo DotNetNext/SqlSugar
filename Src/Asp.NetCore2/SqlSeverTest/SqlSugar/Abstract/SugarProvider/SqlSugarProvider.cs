@@ -15,7 +15,7 @@ namespace SqlSugar
     /// ** date：2017/1/2
     /// ** email:610262374@qq.com
     /// </summary>
-    public partial class SqlSugarProvider: ISqlSugarClient
+    public partial class SqlSugarProvider : ISqlSugarClient
     {
 
         #region Constructor
@@ -139,7 +139,7 @@ namespace SqlSugar
             this.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3,JoinQueryInfos>> joinExpression)
+        public virtual ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, JoinQueryInfos>> joinExpression)
         {
             InitMappingInfo<T, T2, T3>();
             var types = new Type[] { typeof(T2), typeof(T3) };
@@ -155,7 +155,7 @@ namespace SqlSugar
             this.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4,JoinQueryInfos>> joinExpression)
+        public virtual ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, JoinQueryInfos>> joinExpression)
         {
             InitMappingInfo<T, T2, T3, T4>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4) };
@@ -171,7 +171,7 @@ namespace SqlSugar
             this.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5,JoinQueryInfos>> joinExpression)
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, JoinQueryInfos>> joinExpression)
         {
             InitMappingInfo<T, T2, T3, T4, T5>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
@@ -268,7 +268,7 @@ namespace SqlSugar
             this.CreateQueryJoin(joinExpression, types, queryable);
             return queryable;
         }
-        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,JoinQueryInfos>> joinExpression)
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, JoinQueryInfos>> joinExpression)
         {
             InitMappingInfo<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>();
             var types = new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11) };
@@ -535,7 +535,7 @@ namespace SqlSugar
         }
         public virtual IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
-            if (insertObjs == null|| insertObjs.IsNullOrEmpty())
+            if (insertObjs == null || insertObjs.IsNullOrEmpty())
             {
                 insertObjs = new List<T>();
                 insertObjs.Add(default(T));
@@ -644,7 +644,7 @@ namespace SqlSugar
             result.UpdateParameterIsNull = true;
             return result;
         }
-  
+
 
         public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
@@ -810,7 +810,7 @@ namespace SqlSugar
 
         public async Task<int> SaveQueuesAsync(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return  this.Ado.ExecuteCommandAsync(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.ExecuteCommandAsync(sql, parameters); });
         }
         public List<T> SaveQueues<T>(bool isTran = true)
         {
@@ -818,7 +818,7 @@ namespace SqlSugar
         }
         public async Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => {  return  this.Ado.SqlQueryAsync<T>(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.SqlQueryAsync<T>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>> SaveQueues<T, T2>(bool isTran = true)
         {
@@ -826,7 +826,7 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return  this.Ado.SqlQueryAsync<T, T2>(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.SqlQueryAsync<T, T2>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>> SaveQueues<T, T2, T3>(bool isTran = true)
         {
@@ -834,7 +834,7 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return  this.Ado.SqlQueryAsync<T, T2, T3>(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.SqlQueryAsync<T, T2, T3>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>> SaveQueues<T, T2, T3, T4>(bool isTran = true)
         {
@@ -842,7 +842,7 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return  this.Ado.SqlQueryAsync<T, T2, T3, T4>(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.SqlQueryAsync<T, T2, T3, T4>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>> SaveQueues<T, T2, T3, T4, T5>(bool isTran = true)
         {
@@ -850,7 +850,7 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SaveQueuesAsync<T, T2, T3, T4, T5>(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return  this.Ado.SqlQueryAsync<T, T2, T3, T4, T5>(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.SqlQueryAsync<T, T2, T3, T4, T5>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SaveQueues<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
@@ -858,7 +858,7 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return  this.Ado.SqlQueryAsync<T, T2, T3, T4, T5, T6>(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.SqlQueryAsync<T, T2, T3, T4, T5, T6>(sql, parameters); });
         }
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
@@ -866,17 +866,17 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
-            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return  this.Ado.SqlQueryAsync<T, T2, T3, T4, T5, T6, T7>(sql, parameters); });
+            return await SaveQueuesProviderAsync(isTran, (sql, parameters) => { return this.Ado.SqlQueryAsync<T, T2, T3, T4, T5, T6, T7>(sql, parameters); });
         }
-        public void AddQueue(string sql, object parsmeters=null)
+        public void AddQueue(string sql, object parsmeters = null)
         {
             if (Queues == null)
             {
                 Queues = new QueueList();
             }
-            this.Queues.Add(sql,this.Context.Ado.GetParameters(parsmeters));
+            this.Queues.Add(sql, this.Context.Ado.GetParameters(parsmeters));
         }
-        public void AddQueue(string sql, SugarParameter  parsmeter)
+        public void AddQueue(string sql, SugarParameter parsmeter)
         {
             if (Queues == null)
             {
@@ -892,7 +892,7 @@ namespace SqlSugar
             }
             this.Queues.Add(sql, parsmeters);
         }
-        public QueueList Queues { get { if (_Queues == null) { _Queues = new QueueList(); } return _Queues; }  set { _Queues = value; } }
+        public QueueList Queues { get { if (_Queues == null) { _Queues = new QueueList(); } return _Queues; } set { _Queues = value; } }
 
 
 
@@ -936,7 +936,7 @@ namespace SqlSugar
                     }
                 }
                 this.Queues.Clear();
-                var result =await func(sqlBuilder.ToString(), parsmeters);
+                var result = await func(sqlBuilder.ToString(), parsmeters);
                 if (isTran) this.Ado.CommitTran();
                 return result;
             }
@@ -950,7 +950,8 @@ namespace SqlSugar
         {
             try
             {
-                if (this.CurrentConnectionConfig.DbType == DbType.Oracle) {
+                if (this.CurrentConnectionConfig.DbType == DbType.Oracle)
+                {
                     throw new Exception("Oracle no support SaveQueues");
                 }
                 if (this.Queues == null || this.Queues.Count == 0) return default(T);
@@ -984,7 +985,7 @@ namespace SqlSugar
                             .TrimEnd('\n')
                             .TrimEnd('\r')
                             .TrimEnd('\n')
-                            .TrimEnd(';')+";";
+                            .TrimEnd(';') + ";";
                         sqlBuilder.AppendLine(itemSql);
                         index++;
                     }

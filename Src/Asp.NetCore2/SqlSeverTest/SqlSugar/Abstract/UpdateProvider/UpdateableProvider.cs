@@ -448,6 +448,10 @@ namespace SqlSugar
             {
                 Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsJson", "SetColumns方式更新不支持IsJson，你可以使用db.Updateable(实体)的方式更新"));
             }
+            if (this.EntityInfo.Columns.Any(it => it.IsArray))
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsArray", "SetColumns方式更新不支持IsArray，你可以使用db.Updateable(实体)的方式更新"));
+            }
         }
         private void SetUpdateItemByDic(int i, T item, List<DbColumnInfo> updateItem)
         {
@@ -488,7 +492,12 @@ namespace SqlSugar
                 }
                 if (column.IsJson)
                 {
+                    columnInfo.IsJson = true;
                     columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
+                }
+                if (column.IsArray)
+                {
+                    columnInfo.IsArray = true;
                 }
                 var tranColumn = EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
                 if (tranColumn != null && columnInfo.Value.HasValue())
@@ -530,7 +539,16 @@ namespace SqlSugar
                     {
                         continue;
                     }
-                    this.UpdateBuilder.Parameters.Add(new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType));
+                    var parameter = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType);
+                    if (item.IsJson)
+                    {
+                        parameter.IsJson = true;
+                    }
+                    if (item.IsArray)
+                    {
+                        parameter.IsArray = true;
+                    }
+                    this.UpdateBuilder.Parameters.Add(parameter);
                 }
             }
 
