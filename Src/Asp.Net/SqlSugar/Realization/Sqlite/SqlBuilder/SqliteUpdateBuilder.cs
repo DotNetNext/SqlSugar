@@ -10,29 +10,32 @@ namespace SqlSugar
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             StringBuilder sb = new StringBuilder();
+            int i = 0;
             sb.AppendLine(string.Join("\r\n", groupList.Select(t =>
             {
                 var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
-                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(m)).ToArray());
+                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(i,m)).ToArray());
                 var pkList = t.Where(s => s.IsPrimarykey).ToList();
                 List<string> whereList = new List<string>();
                 foreach (var item in pkList)
                 {
                     var isFirst = pkList.First() == item;
                     var whereString = "";
-                    whereString += GetOracleUpdateColums(item);
+                    whereString += GetOracleUpdateColums(i,item);
                     whereList.Add(whereString);
                 }
+                i++;
                 return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("AND", whereList));
             }).ToArray()));
             return sb.ToString();
         }
 
-        private string GetOracleUpdateColums(DbColumnInfo m)
+        private string GetOracleUpdateColums(int i,DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i,m.DbColumnName,m.Value));
         }
-        public override object FormatValue(object value)
+
+        public  object FormatValue(int i,string name,object value)
         {
             if (value == null)
             {
@@ -56,8 +59,9 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
-                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
-                    return bytesString;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else if (type == UtilConstants.BoolType)
                 {

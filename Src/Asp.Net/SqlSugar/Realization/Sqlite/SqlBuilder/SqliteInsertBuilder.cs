@@ -57,10 +57,11 @@ namespace SqlSugar
                 batchInsetrSql.Append(columnsString);
                 batchInsetrSql.Append(") VALUES");
                 string insertColumns = "";
+                int i = 0;
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value)));
+                    insertColumns = string.Join(",", item.Select(it => FormatValue(i,it.DbColumnName,it.Value)));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {
@@ -70,6 +71,7 @@ namespace SqlSugar
                     {
                         batchInsetrSql.Append("),  ");
                     }
+                    i++;
                 }
 
                 batchInsetrSql.AppendLine(";SELECT LAST_INSERT_ROWID();");
@@ -77,7 +79,7 @@ namespace SqlSugar
                 return result;
             }
         }
-        public override object FormatValue(object value)
+        public object FormatValue(int i,string name,object value)
         {
             if (value == null)
             {
@@ -101,8 +103,9 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
-                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
-                    return bytesString;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else if (type == UtilConstants.BoolType)
                 {
