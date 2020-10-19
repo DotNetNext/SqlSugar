@@ -502,7 +502,7 @@ namespace SqlSugar
             }
             else
             {
-                if (name == "Parse" && TempParseType.IsIn(UtilConstants.GuidType))
+                if (name == "Parse" && TempParseType.IsIn(UtilConstants.GuidType)&&model.Args!=null&&model.Args.Count()>1)
                 {
                     name = "Equals";
                 }
