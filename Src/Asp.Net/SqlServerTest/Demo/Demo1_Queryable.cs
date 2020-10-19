@@ -222,6 +222,12 @@ namespace OrmTest
             var query2 = db.Queryable<Custom>();
             var list3=db.Queryable(query1, query2,JoinType.Left, (p1, p2) => p1.CustomId == p2.Id).Select<ViewOrder>().ToList();
 
+
+            var query3 = db.Union(
+                                   db.Queryable<Order>().Where(it => it.Name.Contains("a")), 
+                                   db.Queryable<Order>().Where(it => it.Name.Contains("b"))
+                                 ).ToList();
+
             Console.WriteLine("#### Join Table End ####");
         }
 
