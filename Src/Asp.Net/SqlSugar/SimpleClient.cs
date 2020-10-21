@@ -7,7 +7,7 @@ using System.Text;
 namespace SqlSugar
 {
     
-    public partial class SimpleClient<T> where T : class, new()
+    public partial class SimpleClient<T> : ISimpleClient<T> where T : class, new()
     {
         protected ISqlSugarClient Context { get; set; }
 
@@ -171,6 +171,7 @@ namespace SqlSugar
     }
 
 
+    [Obsolete("Use SimpleClient<T>")]
     public partial class SimpleClient
     {
         protected ISqlSugarClient Context { get; set; }
