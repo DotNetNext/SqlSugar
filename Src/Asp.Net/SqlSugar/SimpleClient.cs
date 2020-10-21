@@ -66,212 +66,212 @@ namespace SqlSugar
         #endregion
 
         #region Method
-        public T GetById(dynamic id)
+        public virtual T GetById(dynamic id)
         {
             return Context.Queryable<T>().InSingle(id);
         }
-        public List<T> GetList()
+        public virtual List<T> GetList()
         {
             return Context.Queryable<T>().ToList();
         }
 
-        public List<T> GetList(Expression<Func<T, bool>> whereExpression)
+        public virtual List<T> GetList(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().Where(whereExpression).ToList();
         }
-        public T GetSingle(Expression<Func<T, bool>> whereExpression)
+        public virtual T GetSingle(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().Single(whereExpression);
         }
-        public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page)
+        public virtual List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page)
         {
             int count = 0;
             var result = Context.Queryable<T>().Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
         }
-        public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
+        public virtual List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             int count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
         }
-        public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page)
+        public virtual List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page)
         {
             int count = 0;
             var result = Context.Queryable<T>().Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
         }
-        public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
+        public virtual List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             int count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
             page.PageCount = count;
             return result;
         }
-        public bool IsAny(Expression<Func<T, bool>> whereExpression)
+        public virtual bool IsAny(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().Where(whereExpression).Any();
         }
-        public int Count(Expression<Func<T, bool>> whereExpression)
+        public virtual int Count(Expression<Func<T, bool>> whereExpression)
         {
 
             return Context.Queryable<T>().Where(whereExpression).Count();
         }
 
-        public bool Insert(T insertObj)
+        public virtual bool Insert(T insertObj)
         {
             return this.Context.Insertable(insertObj).ExecuteCommand() > 0;
         }
-        public int InsertReturnIdentity(T insertObj)
+        public virtual int InsertReturnIdentity(T insertObj)
         {
             return this.Context.Insertable(insertObj).ExecuteReturnIdentity();
         }
-        public bool InsertRange(T[] insertObjs)
+        public virtual bool InsertRange(T[] insertObjs)
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
         }
-        public bool InsertRange(List<T> insertObjs)
+        public virtual bool InsertRange(List<T> insertObjs)
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
         }
-        public bool Update(T updateObj)
+        public virtual bool Update(T updateObj)
         {
             return this.Context.Updateable(updateObj).ExecuteCommand() > 0;
         }
-        public bool UpdateRange(T[] updateObjs)
+        public virtual bool UpdateRange(T[] updateObjs)
         {
             return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
         }
-        public bool UpdateRange(List<T> updateObjs)
+        public virtual bool UpdateRange(List<T> updateObjs)
         {
             return this.Context.Updateable(updateObjs).ExecuteCommand() > 0;
         }
-        public bool Update(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
+        public virtual bool Update(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
         {
             return this.Context.Updateable<T>().SetColumns(columns).Where(whereExpression).ExecuteCommand() > 0;
         }
-        public bool Delete(T deleteObj)
+        public virtual bool Delete(T deleteObj)
         {
             return this.Context.Deleteable<T>().Where(deleteObj).ExecuteCommand() > 0;
         }
-        public bool Delete(Expression<Func<T, bool>> whereExpression)
+        public virtual bool Delete(Expression<Func<T, bool>> whereExpression)
         {
             return this.Context.Deleteable<T>().Where(whereExpression).ExecuteCommand() > 0;
         }
-        public bool DeleteById(dynamic id)
+        public virtual bool DeleteById(dynamic id)
         {
             return this.Context.Deleteable<T>().In(id).ExecuteCommand() > 0;
         }
-        public bool DeleteByIds(dynamic[] ids)
+        public virtual bool DeleteByIds(dynamic[] ids)
         {
             return this.Context.Deleteable<T>().In(ids).ExecuteCommand() > 0;
         }
         #endregion
 
         #region Async Method
-        public Task<T> GetByIdAsync(dynamic id)
+        public virtual Task<T> GetByIdAsync(dynamic id)
         {
             return Context.Queryable<T>().InSingleAsync(id);
         }
-        public Task<List<T>> GetListAsync()
+        public virtual Task<List<T>> GetListAsync()
         {
             return Context.Queryable<T>().ToListAsync();
         }
 
-        public Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
+        public virtual Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().Where(whereExpression).ToListAsync();
         }
-        public Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression)
+        public virtual Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().SingleAsync(whereExpression);
         }
-        public Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page)
+        public virtual Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page)
         {
             RefAsync<int> count = 0;
             var result = Context.Queryable<T>().Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
             page.PageCount = count;
             return result;
         }
-        public Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
+        public virtual Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             RefAsync<int> count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize,  count);
             page.PageCount = count;
             return result;
         }
-        public Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page)
+        public virtual Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page)
         {
             RefAsync<int> count = 0;
             var result = Context.Queryable<T>().Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
             page.PageCount = count;
             return result;
         }
-        public Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
+        public virtual Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             RefAsync<int> count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
             page.PageCount = count;
             return result;
         }
-        public Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression)
+        public virtual Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().Where(whereExpression).AnyAsync();
         }
-        public Task<int> CountAsync(Expression<Func<T, bool>> whereExpression)
+        public virtual Task<int> CountAsync(Expression<Func<T, bool>> whereExpression)
         {
 
             return Context.Queryable<T>().Where(whereExpression).CountAsync();
         }
 
-        public async Task<bool> InsertAsync(T insertObj)
+        public virtual async Task<bool> InsertAsync(T insertObj)
         {
             return  await this.Context.Insertable(insertObj).ExecuteCommandAsync() > 0;
         }
-        public Task<int> InsertReturnIdentityAsync(T insertObj)
+        public virtual Task<int> InsertReturnIdentityAsync(T insertObj)
         {
             return this.Context.Insertable(insertObj).ExecuteReturnIdentityAsync();
         }
-        public async Task<bool> InsertRangeAsync(T[] insertObjs)
+        public virtual async Task<bool> InsertRangeAsync(T[] insertObjs)
         {
             return await this.Context.Insertable(insertObjs).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> InsertRangeAsync(List<T> insertObjs)
+        public virtual async Task<bool> InsertRangeAsync(List<T> insertObjs)
         {
             return await this.Context.Insertable(insertObjs).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> UpdateAsync(T updateObj)
+        public virtual async Task<bool> UpdateAsync(T updateObj)
         {
             return await this.Context.Updateable(updateObj).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> UpdateRangeAsync(T[] updateObjs)
+        public virtual async Task<bool> UpdateRangeAsync(T[] updateObjs)
         {
             return await this.Context.Updateable(updateObjs).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> UpdateRangeAsync(List<T> updateObjs)
+        public virtual async Task<bool> UpdateRangeAsync(List<T> updateObjs)
         {
             return await this.Context.Updateable(updateObjs).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
+        public virtual async Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
         {
             return await this.Context.Updateable<T>().SetColumns(columns).Where(whereExpression).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> DeleteAsync(T deleteObj)
+        public virtual async Task<bool> DeleteAsync(T deleteObj)
         {
             return await this.Context.Deleteable<T>().Where(deleteObj).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression)
+        public virtual async Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression)
         {
             return await this.Context.Deleteable<T>().Where(whereExpression).ExecuteCommandAsync() > 0;
         }
-        public async Task<bool> DeleteByIdAsync(dynamic id)
+        public virtual async Task<bool> DeleteByIdAsync(dynamic id)
         {
             return await this.Context.Deleteable<T>().In(id).ExecuteCommand() > 0;
         }
-        public async Task<bool> DeleteByIdsAsync(dynamic[] ids)
+        public virtual async Task<bool> DeleteByIdsAsync(dynamic[] ids)
         {
             return await this.Context.Deleteable<T>().In(ids).ExecuteCommandAsync() > 0;
         }
