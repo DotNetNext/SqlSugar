@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SqlSugar
 {
     
     public partial class SimpleClient<T> : ISimpleClient<T> where T : class, new()
     {
+        #region Interface
         protected ISqlSugarClient Context { get; set; }
 
         public ITenant AsTenant()
@@ -37,7 +39,7 @@ namespace SqlSugar
         {
             return Context.Insertable<T>(insertObj);
         }
-        public IInsertable<T> AsInsertable(T[] insertObjs) 
+        public IInsertable<T> AsInsertable(T[] insertObjs)
         {
             return Context.Insertable<T>(insertObjs);
         }
@@ -60,8 +62,10 @@ namespace SqlSugar
         public IDeleteable<T> AsDeleteable()
         {
             return Context.Deleteable<T>();
-        }
+        } 
+        #endregion
 
+        #region Method
         public T GetById(dynamic id)
         {
             return Context.Queryable<T>().InSingle(id);
@@ -165,6 +169,113 @@ namespace SqlSugar
         {
             return this.Context.Deleteable<T>().In(ids).ExecuteCommand() > 0;
         }
+        #endregion
+
+        #region Async Method
+        public Task<T> GetByIdAsync(dynamic id)
+        {
+            return Context.Queryable<T>().InSingleAsync(id);
+        }
+        public Task<List<T>> GetListAsync()
+        {
+            return Context.Queryable<T>().ToListAsync();
+        }
+
+        public Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
+        {
+            return Context.Queryable<T>().Where(whereExpression).ToListAsync();
+        }
+        public Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression)
+        {
+            return Context.Queryable<T>().SingleAsync(whereExpression);
+        }
+        public Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page)
+        {
+            RefAsync<int> count = 0;
+            var result = Context.Queryable<T>().Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
+            page.PageCount = count;
+            return result;
+        }
+        public Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
+        {
+            RefAsync<int> count = 0;
+            var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize,  count);
+            page.PageCount = count;
+            return result;
+        }
+        public Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page)
+        {
+            RefAsync<int> count = 0;
+            var result = Context.Queryable<T>().Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
+            page.PageCount = count;
+            return result;
+        }
+        public Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
+        {
+            RefAsync<int> count = 0;
+            var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
+            page.PageCount = count;
+            return result;
+        }
+        public Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression)
+        {
+            return Context.Queryable<T>().Where(whereExpression).AnyAsync();
+        }
+        public Task<int> CountAsync(Expression<Func<T, bool>> whereExpression)
+        {
+
+            return Context.Queryable<T>().Where(whereExpression).CountAsync();
+        }
+
+        public async Task<bool> InsertAsync(T insertObj)
+        {
+            return  await this.Context.Insertable(insertObj).ExecuteCommandAsync() > 0;
+        }
+        public Task<int> InsertReturnIdentityAsync(T insertObj)
+        {
+            return this.Context.Insertable(insertObj).ExecuteReturnIdentityAsync();
+        }
+        public async Task<bool> InsertRangeAsync(T[] insertObjs)
+        {
+            return await this.Context.Insertable(insertObjs).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> InsertRangeAsync(List<T> insertObjs)
+        {
+            return await this.Context.Insertable(insertObjs).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> UpdateAsync(T updateObj)
+        {
+            return await this.Context.Updateable(updateObj).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> UpdateRangeAsync(T[] updateObjs)
+        {
+            return await this.Context.Updateable(updateObjs).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> UpdateRangeAsync(List<T> updateObjs)
+        {
+            return await this.Context.Updateable(updateObjs).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
+        {
+            return await this.Context.Updateable<T>().SetColumns(columns).Where(whereExpression).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> DeleteAsync(T deleteObj)
+        {
+            return await this.Context.Deleteable<T>().Where(deleteObj).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression)
+        {
+            return await this.Context.Deleteable<T>().Where(whereExpression).ExecuteCommandAsync() > 0;
+        }
+        public async Task<bool> DeleteByIdAsync(dynamic id)
+        {
+            return await this.Context.Deleteable<T>().In(id).ExecuteCommand() > 0;
+        }
+        public async Task<bool> DeleteByIdsAsync(dynamic[] ids)
+        {
+            return await this.Context.Deleteable<T>().In(ids).ExecuteCommandAsync() > 0;
+        }
+        #endregion
 
         [Obsolete("Use AsSugarClient()")]
         public ISqlSugarClient FullClient { get { return this.Context; } }
