@@ -67,6 +67,7 @@
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
     <Compile Include="Demo\DemoF_Utilities.cs" />
     <Compile Include="Demo\DemoG_SimpleClient.cs" />
+    <Compile Include="Demo\student.cs" />
     <Compile Include="Models\Custom.cs" />
     <Compile Include="Models\EntityMapper.cs" />
     <Compile Include="Models\Mapper.cs" />
