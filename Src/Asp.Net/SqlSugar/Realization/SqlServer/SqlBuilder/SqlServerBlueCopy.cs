@@ -51,7 +51,15 @@ namespace SqlSugar
             {
                 this.Context.Ado.Connection.Open();
             }
-            bulkCopy.WriteToServer(dt);
+            try
+            {
+                bulkCopy.WriteToServer(dt);
+            }
+            catch (Exception ex)
+            {
+                this.Context.Ado.Connection.Close();
+                throw ex;
+            }
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
             {
                 this.Context.Ado.Connection.Close();
