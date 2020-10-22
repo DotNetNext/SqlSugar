@@ -33,6 +33,7 @@ namespace SqlSugar
         IInsertable<T> EnableDiffLogEvent(object businessData = null);
         IInsertable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
+        SqlServerBlueCopy UseSqlServer();
         void AddQueue();
 
         #region Obsolete

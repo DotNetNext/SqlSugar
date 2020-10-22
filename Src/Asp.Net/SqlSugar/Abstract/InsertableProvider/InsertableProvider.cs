@@ -228,6 +228,20 @@ namespace SqlSugar
             };
             return this;
         }
+
+        public SqlServerBlueCopy UseSqlServer()
+        {
+            PreToSql();
+            var currentType = this.Context.CurrentConnectionConfig.DbType;
+            Check.Exception(currentType != DbType.SqlServer, "UseSqlServer no support " + currentType);
+            SqlServerBlueCopy result = new SqlServerBlueCopy();
+            result.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
+            result.InsertBuilder = this.InsertBuilder;
+            result.Builder = this.SqlBuilder;
+            result.Context = this.Context;
+            return result;
+        }
+
         public IInsertable<T> EnableDiffLogEvent(object businessData = null)
         {
             Check.Exception(this.InsertObjs.HasValue() && this.InsertObjs.Count() > 1, "DiffLog does not support batch operations");

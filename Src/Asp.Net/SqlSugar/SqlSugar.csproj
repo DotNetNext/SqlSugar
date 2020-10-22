@@ -152,6 +152,7 @@
     <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLInsertBuilder.cs" />
     <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLQueryBuilder.cs" />
     <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLUpdateBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerBlueCopy.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
