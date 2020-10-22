@@ -17,24 +17,35 @@ namespace SqlSugar
         public int ExecuteBlueCopy()
         {
             if (DbColumnInfoList==null||DbColumnInfoList.Count == 0) return 0;
-            DataTable dt = new DataTable();
-            var columns = DbColumnInfoList.First().Select(it => it.DbColumnName ).ToList();
-            foreach (var item in columns)
-            {
-                dt.Columns.Add(item);
-            }
+            
+            var dt= this.Context.Ado.GetDataTable("select top 0 * from " + InsertBuilder.GetTableNameString);
             foreach (var rowInfos in DbColumnInfoList)
             {
                 var dr = dt.NewRow();
-                foreach (var item in rowInfos.ToList())
+                foreach (DataColumn item in dt.Columns)
                 {
-                    dr[item.DbColumnName] = item.Value;
+                    var rows= rowInfos.ToList();
+                    var value = rows.FirstOrDefault(it => 
+                                                             it.DbColumnName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase)||
+                                                             it.PropertyName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase)
+                                                        );
+                    if (value != null)
+                    {
+                        if (value.Value != null && UtilMethods.GetUnderType(value.Value.GetType()) == UtilConstants.DateType)
+                        {
+                            if (value.Value != null && value.Value.ToString() == DateTime.MinValue.ToString())
+                            {
+                                value.Value = Convert.ToDateTime("1753/01/01");
+                            }
+                        }
+                        dr[item.ColumnName] = value.Value;
+                    }
                 }
                 dt.Rows.Add(dr);
             }
             SqlBulkCopy bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection);
             //获取目标表的名称
-            bulkCopy.DestinationTableName = InsertBuilder.EntityInfo.EntityName;
+            bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
             //写入DataReader对象
             if (this.Context.Ado.Connection.State == ConnectionState.Closed)
             {

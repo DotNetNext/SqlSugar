@@ -31,7 +31,7 @@ namespace OrmTest
             });
 
             var insertObj = new Order() { Id = 1, Name = "order1",Price=0 };
-            var updateObjs = new List<Order> {
+            var insertObjs = new List<Order> {
                  new Order() { Id = 11, Name = "order11", Price=0 },
                  new Order() { Id = 12, Name = "order12" , Price=0}
             };
@@ -45,10 +45,16 @@ namespace OrmTest
             db.Insertable(insertObj).InsertColumns("Name", "Price").ExecuteReturnIdentity();
 
             //ignore null columns
-            db.Insertable(updateObjs).ExecuteCommand();//get change row count
+            db.Insertable(insertObjs).ExecuteCommand();//get change row count
 
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
+
+            insertObjs = new List<Order> {
+                 new Order() { Id = 11, Name = "order11", Price=1 },
+                 new Order() { Id = 12, Name = "order12" , Price=20, CreateTime=DateTime.Now, CustomId=1}
+            };
+            db.Insertable(insertObjs).UseSqlServer().ExecuteBlueCopy();
 
             Console.WriteLine("#### Insertable End ####");
         }
