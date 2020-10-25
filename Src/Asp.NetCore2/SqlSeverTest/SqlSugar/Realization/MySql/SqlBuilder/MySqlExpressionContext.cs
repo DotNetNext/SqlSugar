@@ -69,7 +69,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" (DATE_ADD({1} INTERVAL {0} day)) ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" (DATE_ADD({0}, INTERVAL {1} day)) ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string ToInt32(MethodCallExpressionModel model)

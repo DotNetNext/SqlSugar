@@ -228,6 +228,20 @@ namespace SqlSugar
             };
             return this;
         }
+
+        public SqlServerBlueCopy UseSqlServer()
+        {
+            PreToSql();
+            var currentType = this.Context.CurrentConnectionConfig.DbType;
+            Check.Exception(currentType != DbType.SqlServer, "UseSqlServer no support " + currentType);
+            SqlServerBlueCopy result = new SqlServerBlueCopy();
+            result.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
+            result.InsertBuilder = this.InsertBuilder;
+            result.Builder = this.SqlBuilder;
+            result.Context = this.Context;
+            return result;
+        }
+
         public IInsertable<T> EnableDiffLogEvent(object businessData = null)
         {
             Check.Exception(this.InsertObjs.HasValue() && this.InsertObjs.Count() > 1, "DiffLog does not support batch operations");
@@ -237,6 +251,32 @@ namespace SqlSugar
             diffModel.DiffType = DiffType.insert;
             return this;
         }
+
+        public ISubInsertable<T> AddSubList(Expression<Func<T, object>> items)
+        {
+            Check.Exception(GetPrimaryKeys().Count == 0, typeof(T).Name + " need Primary key");
+            Check.Exception(GetPrimaryKeys().Count > 1, typeof(T).Name + "Multiple primary keys are not supported");
+            //Check.Exception(this.InsertObjs.Count() > 1, "SubInserable No Support Insertable(List<T>)");
+            //Check.Exception(items.ToString().Contains(".First().")==false, items.ToString()+ " not supported ");
+            if (this.InsertObjs == null || this.InsertObjs.Count() == 0)
+            {
+                return new SubInsertable<T>();
+            }
+            string subMemberName;
+            object sublist;
+            SubInsertable<T> result = new SubInsertable<T>();
+            result.GetList(this.InsertObjs,items, out subMemberName, out sublist);
+            result.InsertObjects = this.InsertObjs;
+            result.Context = this.Context;
+            result.SubList = new Dictionary<string, object>();
+            result.SubList.Add(subMemberName, sublist);
+            result.InsertBuilder = this.InsertBuilder;
+            result.Pk = GetPrimaryKeys().First();
+            result.Entity = this.EntityInfo;
+            return result;
+        }
+
+  
         #endregion
 
         #region Protected Methods

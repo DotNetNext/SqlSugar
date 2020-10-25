@@ -44,7 +44,7 @@ namespace SqlSugar
 
         #region Other methods
         DateTime GetDate();
-        SimpleClient GetSimpleClient();
+        //SimpleClient GetSimpleClient();
         SimpleClient<T> GetSimpleClient<T>() where T : class, new();
         void InitMappingInfo(Type type);
         void InitMappingInfo<T>();

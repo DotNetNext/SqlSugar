@@ -61,11 +61,6 @@ namespace SqlSugar
         #endregion
 
         #region SimpleClient
-        public SimpleClient GetSimpleClient()
-        {
-            return this.Context.GetSimpleClient();
-        }
-
         public SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
             return this.Context.GetSimpleClient<T>();
@@ -901,6 +896,11 @@ namespace SqlSugar
         #endregion
 
         #region Obsolete
+        [Obsolete("Use GetSimpleClient<T>")]
+        public SimpleClient GetSimpleClient()
+        {
+            return this.Context.GetSimpleClient();
+        }
         [Obsolete("Use EntityMaintenance")]
         public EntityMaintenance EntityProvider { get { return this.Context.EntityProvider; } set { this.Context.EntityProvider = value; } }
         [Obsolete("Use Utilities")]

@@ -29,10 +29,12 @@ namespace SqlSugar
         IInsertable<T> IgnoreColumns(params string[]columns);
         IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false);
 
+        ISubInsertable<T> AddSubList(Expression<Func<T, object>> SubForeignKey);
 
         IInsertable<T> EnableDiffLogEvent(object businessData = null);
         IInsertable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
+        SqlServerBlueCopy UseSqlServer();
         void AddQueue();
 
         #region Obsolete

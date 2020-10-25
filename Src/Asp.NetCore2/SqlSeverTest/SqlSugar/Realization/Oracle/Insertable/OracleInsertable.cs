@@ -50,7 +50,15 @@ namespace SqlSugar
 
         private object GetSeqValue(string seqName)
         {
-            return Ado.GetScalar(" SELECT " + seqName + ".currval FROM DUAL");
+            try
+            {
+                return Ado.GetScalar(" SELECT " + seqName + ".currval FROM DUAL");
+            }
+            catch 
+            {
+                Ado.GetScalar(" SELECT " + seqName + ".nextval FROM DUAL");
+                return Ado.GetScalar(" SELECT " + seqName + ".currval-1 FROM DUAL");
+            }
         }
         protected override void PreToSql()
         {
