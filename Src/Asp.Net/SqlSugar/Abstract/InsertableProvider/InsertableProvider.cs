@@ -256,14 +256,17 @@ namespace SqlSugar
         {
             Check.Exception(GetPrimaryKeys().Count == 0, typeof(T).Name + " need Primary key");
             Check.Exception(GetPrimaryKeys().Count > 1, typeof(T).Name + "Multiple primary keys are not supported");
-            Check.Exception(this.InsertObjs.Count() > 1, "SubInserable No Support Insertable(List<T>)");
+            //Check.Exception(this.InsertObjs.Count() > 1, "SubInserable No Support Insertable(List<T>)");
             //Check.Exception(items.ToString().Contains(".First().")==false, items.ToString()+ " not supported ");
-
+            if (this.InsertObjs == null || this.InsertObjs.Count() == 0)
+            {
+                return new SubInsertable<T>();
+            }
             string subMemberName;
             object sublist;
             SubInsertable<T> result = new SubInsertable<T>();
             result.GetList(this.InsertObjs,items, out subMemberName, out sublist);
-            result.InsertObject = this.InsertObjs.First();
+            result.InsertObjects = this.InsertObjs;
             result.Context = this.Context;
             result.SubList = new Dictionary<string, object>();
             result.SubList.Add(subMemberName, sublist);
