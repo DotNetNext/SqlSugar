@@ -70,6 +70,7 @@
     <Compile Include="Models\Custom.cs" />
     <Compile Include="Models\EntityMapper.cs" />
     <Compile Include="Models\Mapper.cs" />
+    <Compile Include="Models\SubInsertTest.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\AttributeTable.cs" />
     <Compile Include="Models\Order.cs" />

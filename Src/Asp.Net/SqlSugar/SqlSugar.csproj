@@ -80,6 +80,8 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Interface\ISubInsertable.cs" />
+    <Compile Include="Abstract\InsertableProvider\SubInserable.cs" />
     <Compile Include="Abstract\SaveableProvider\SaveableProvider.cs" />
     <Compile Include="CacheScheme\CacheKeyBuider.cs" />
     <Compile Include="CacheScheme\CacheSchemeMain.cs" />

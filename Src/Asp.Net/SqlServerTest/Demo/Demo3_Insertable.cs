@@ -30,7 +30,7 @@ namespace OrmTest
                 }
             });
 
-            var insertObj = new Order() { Id = 1, Name = "order1",Price=0 };
+            var insertObj = new Order() { Id = 1, Name = "order1", Price = 0 };
             var insertObjs = new List<Order> {
                  new Order() { Id = 11, Name = "order11", Price=0 },
                  new Order() { Id = 12, Name = "order12" , Price=0}
@@ -56,7 +56,43 @@ namespace OrmTest
             };
             db.Insertable(insertObjs).UseSqlServer().ExecuteBlueCopy();
 
+            db.Insertable(new Order()
+            {
+                Name = "订单 1",
+                CustomId = 1,
+                Price = 100,
+                CreateTime = DateTime.Now,
+                Id = 0,
+                Items = new List<OrderItem>() {
+                      new OrderItem(){
+                           CreateTime=DateTime.Now,
+                           OrderId=0,
+                            Price=1,
+                             ItemId=1
+                       }
+                 }
+            })
+            .AddSubList(it => it.Items.First().OrderId).ExecuteReturnPrimaryKey();
+
+            db.CodeFirst.InitTables<SubInsertTest, SubInsertTestItem, SubInsertTestItem1, SubInsertTestItem2>();
+            db.Insertable(new SubInsertTest()
+            {
+                 Name="aa",
+                  SubInsertTestItem1=new SubInsertTestItem1() {
+                      a="nn"
+                  },
+                   SubInsertTestItem=new SubInsertTestItem()
+                   {
+                       Name ="item" ,
+                       TestId=2
+                   }
+            })
+           .AddSubList(it => it.SubInsertTestItem1)
+           .AddSubList(it => it.SubInsertTestItem.TestId)
+            .ExecuteReturnPrimaryKey();
+     
             Console.WriteLine("#### Insertable End ####");
+
         }
     }
 }

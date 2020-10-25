@@ -251,6 +251,29 @@ namespace SqlSugar
             diffModel.DiffType = DiffType.insert;
             return this;
         }
+
+        public ISubInsertable<T> AddSubList(Expression<Func<T, object>> items)
+        {
+            Check.Exception(GetPrimaryKeys().Count == 0, typeof(T).Name + " need Primary key");
+            Check.Exception(GetPrimaryKeys().Count > 1, typeof(T).Name + "Multiple primary keys are not supported");
+            Check.Exception(this.InsertObjs.Count() > 1, "SubInserable No Support Insertable(List<T>)");
+            //Check.Exception(items.ToString().Contains(".First().")==false, items.ToString()+ " not supported ");
+
+            string subMemberName;
+            object sublist;
+            SubInsertable<T> result = new SubInsertable<T>();
+            result.GetList(this.InsertObjs,items, out subMemberName, out sublist);
+            result.InsertObject = this.InsertObjs.First();
+            result.Context = this.Context;
+            result.SubList = new Dictionary<string, object>();
+            result.SubList.Add(subMemberName, sublist);
+            result.InsertBuilder = this.InsertBuilder;
+            result.Pk = GetPrimaryKeys().First();
+            result.Entity = this.EntityInfo;
+            return result;
+        }
+
+  
         #endregion
 
         #region Protected Methods
