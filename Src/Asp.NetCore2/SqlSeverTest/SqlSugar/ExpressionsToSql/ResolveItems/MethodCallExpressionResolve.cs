@@ -489,6 +489,7 @@ namespace SqlSugar
         {
             if (IsExtMethod(name))
             {
+                model.Expression = this.Expression;
                 DbType type = DbType.SqlServer;
                 if (this.Context is SqlServerExpressionContext)
                     type = DbType.SqlServer;

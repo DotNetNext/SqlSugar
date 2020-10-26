@@ -11,6 +11,7 @@ namespace SqlSugar
         public List<MethodCallExpressionArgs> Args { get; set; }
         public string Name { get; set; }
         public dynamic Data { get; set; }
+        public Expression Expression { get;  set; }
     }
 
     public class MethodCallExpressionArgs
