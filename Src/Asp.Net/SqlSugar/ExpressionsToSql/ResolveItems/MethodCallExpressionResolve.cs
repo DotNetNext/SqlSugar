@@ -568,6 +568,8 @@ namespace SqlSugar
                         return caResult2;
                     case "Equals":
                         return this.Context.DbMehtods.Equals(model);
+                    case "EqualsNull":
+                        return this.Context.DbMehtods.EqualsNull(model);
                     case "DateIsSame":
                         if (model.Args.Count == 2)
                             return this.Context.DbMehtods.DateIsSameDay(model);

@@ -22,6 +22,7 @@ namespace SqlSugar
         string ContainsArray(MethodCallExpressionModel model);
         string ContainsArrayUseSqlParameters(MethodCallExpressionModel model);
         string Equals(MethodCallExpressionModel model);
+        string EqualsNull(MethodCallExpressionModel model);
         string DateIsSameDay(MethodCallExpressionModel model);
         string DateIsSameByType(MethodCallExpressionModel model);
         string DateAddByType(MethodCallExpressionModel model);
