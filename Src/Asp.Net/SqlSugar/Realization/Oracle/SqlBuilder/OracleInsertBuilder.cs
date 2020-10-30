@@ -36,7 +36,7 @@ namespace SqlSugar
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
-            if (isSingle)
+            if (isSingle&&this.EntityInfo.EntityName!= "Dictionary`2")
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
                 if (identities.HasValue())
@@ -112,10 +112,6 @@ namespace SqlSugar
             }
             else
             {
-                if (value.GetType() == UtilConstants.StringType && value.ToString().Contains("{SugarSeq:=}"))
-                {
-                    return value.ToString().Replace("{SugarSeq:=}", "");
-                }
                 var type = UtilMethods.GetUnderType(value.GetType());
                 if (type == UtilConstants.DateType)
                 {
