@@ -204,7 +204,9 @@ namespace SqlSugar
                     continue;
                 if (!string.IsNullOrEmpty(item.OracleSequenceName)&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle)
                 {
-                    pkValue = "{SugarSeq:=}"+item.OracleSequenceName+ ".nextval{SugarSeq:=}";
+                    var value = "{SugarSeq:=}"+item.OracleSequenceName+ ".nextval{SugarSeq:=}";
+                    insertDictionary.Add(item.DbColumnName, value);
+                    continue;
                 }
                 if (item.PropertyInfo.Name == key)
                 {

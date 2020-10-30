@@ -72,6 +72,7 @@
     <Compile Include="Models\MyCustomAttributeTable.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\SubInsertTest.cs" />
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />

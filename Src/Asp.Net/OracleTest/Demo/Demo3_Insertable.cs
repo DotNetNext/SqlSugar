@@ -49,7 +49,56 @@ namespace OrmTest
 
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
+            Console.WriteLine("SubInsert Start");
 
+            db.Insertable(new Order()
+            {
+                Name = "订单 1",
+                CustomId = 1,
+                Price = 100,
+                CreateTime = DateTime.Now,
+                Id = 0,
+                Items = new List<OrderItem>() {
+                      new OrderItem(){
+                           CreateTime=DateTime.Now,
+                           OrderId=0,
+                            Price=1,
+                             ItemId=1
+                       }
+                 }
+            })
+            .AddSubList(it => it.Items.First().OrderId).ExecuteReturnPrimaryKey();
+            db.CodeFirst.InitTables<SubInsertTest, SubInsertTestItem, SubInsertTestItem1, SubInsertTestItem2>();
+            Console.WriteLine("SubInsert Start2");
+            db.Insertable(new List<SubInsertTest>() {
+                new SubInsertTest()
+            {
+                 Name="aa",
+                  SubInsertTestItem1=new SubInsertTestItem1() {
+                      a="nn"
+                  },
+                   SubInsertTestItem=new SubInsertTestItem()
+                   {
+                       Name ="item" ,
+                       TestId=2
+                   }
+            },
+                new SubInsertTest()
+            {
+                 Name="aa",
+                  SubInsertTestItem1=new SubInsertTestItem1() {
+                      a="nn"
+                  },
+                   SubInsertTestItem=new SubInsertTestItem()
+                   {
+                       Name ="item" ,
+                       TestId=2
+                   }
+            }
+            })
+           .AddSubList(it => it.SubInsertTestItem.TestId)
+           .AddSubList(it => it.SubInsertTestItem1)
+            .ExecuteReturnPrimaryKey();
             Console.WriteLine("#### Insertable End ####");
         }
     }
