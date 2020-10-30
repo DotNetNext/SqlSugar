@@ -114,7 +114,7 @@ namespace SqlSugar
             {
                 if (value.GetType() == UtilConstants.StringType && value.ToString().Contains("{SugarSeq:=}"))
                 {
-                    return value.ToString().Replace("\"{SugarSeq:=}", "").Replace("{SugarSeq:=}\"", "");
+                    return value.ToString().Replace("{SugarSeq:=}", "");
                 }
                 var type = UtilMethods.GetUnderType(value.GetType());
                 if (type == UtilConstants.DateType)
