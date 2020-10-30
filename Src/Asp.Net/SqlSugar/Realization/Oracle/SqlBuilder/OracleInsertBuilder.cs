@@ -96,11 +96,6 @@ namespace SqlSugar
                     batchInsetrSql.AppendLine("SELECT 1 FROM DUAL");
                 }
                 var result= batchInsetrSql.ToString();
-                if (result.Contains("{SugarSeq:=}"))
-                {
-                    result = result.Replace("\"{SugarSeq:=}", "");
-                    result = result.Replace("{SugarSeq:=}\"", "");
-                }
                 return result;
             }
         }
@@ -113,6 +108,10 @@ namespace SqlSugar
             else
             {
                 var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.StringType && value.ToString().Contains("{SugarSeq:=}"))
+                {
+                    return value.ToString().Replace("{SugarSeq:=}", "");
+                }
                 if (type == UtilConstants.DateType)
                 {
                     var date = value.ObjToDate();
