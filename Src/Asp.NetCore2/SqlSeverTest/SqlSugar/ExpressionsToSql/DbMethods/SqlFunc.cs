@@ -65,6 +65,10 @@ namespace SqlSugar
         {
             return thisValue.Equals(parameterValue);
         }
+        public new static bool EqualsNull(object thisValue, object parameterValue)
+        {
+            return thisValue.Equals(parameterValue);
+        }
         public static bool DateIsSame(DateTime date1, DateTime date2)
         {
             return date1.ToString("yyyy-MM-dd") == date2.ToString("yyyy-MM-dd");

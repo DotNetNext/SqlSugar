@@ -13,7 +13,8 @@ namespace SqlSugar
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
         private static bool IsTryPgSql = false;
-
+        private static bool IsTryDm = false;
+        private static bool IsTryKd = false;
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
@@ -108,6 +109,42 @@ namespace SqlSugar
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Microsoft.Data.Sqlite." + ex.Message,
                     "你需要引用Microsoft.Data.Sqlite,如果有版本兼容问题请先删除原有引用");
+                    throw new Exception(message);
+                }
+            }
+        }
+
+        public static void TryKdbndb()
+        {
+            if (!IsTryKd)
+            {
+                try
+                {
+                    KdbndpProvider db = new KdbndpProvider();
+                    var conn = db.GetAdapter();
+                    IsTryKd = true;
+                }
+                catch (Exception ex)
+                {
+                    var message = "需要引用Kdbndp.dll,Github搜索sqlsugar源码里面有";
+                    throw new Exception(message);
+                }
+            }
+        }
+
+        public static void TryDm()
+        {
+            if (!IsTryDm)
+            {
+                try
+                {
+                    DmProvider db = new DmProvider();
+                    var conn = db.GetAdapter();
+                    IsTryDm = true;
+                }
+                catch (Exception ex)
+                {
+                    var message = "需要引用DmProvider.dll,Github搜索sqlsugar源码里面有";
                     throw new Exception(message);
                 }
             }

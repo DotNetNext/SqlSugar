@@ -138,6 +138,19 @@ namespace SqlSugar
             return string.Format(" ({0} = {1}) ", parameter.MemberName, parameter2.MemberName); ;
         }
 
+        public virtual string EqualsNull(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            if (parameter2.MemberValue == null)
+            {
+                return string.Format(" ({0} is null) ", parameter.MemberName, parameter2.MemberName) ;
+            }
+            else
+            {
+                return string.Format(" ({0} = {1}) ", parameter.MemberName, parameter2.MemberName);
+            }
+        }
         public virtual string DateIsSameDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

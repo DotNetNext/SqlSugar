@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Dm;
+using Kdbndp;
+using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
 using Npgsql;
 using Oracle.ManagedDataAccess.Client;
@@ -613,6 +615,260 @@ namespace SqlSugar
                 ds = new DataSet();
             }
             using (NpgsqlDataReader dr = command.ExecuteReader())
+            {
+                do
+                {
+                    var dt = new DataTable();
+                    var columns = dt.Columns;
+                    var rows = dt.Rows;
+                    for (int i = 0; i < dr.FieldCount; i++)
+                    {
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.Contains(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    }
+
+                    while (dr.Read())
+                    {
+                        DataRow daRow = dt.NewRow();
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            daRow[columns[i].ColumnName] = dr.GetValue(i);
+                        }
+                        dt.Rows.Add(daRow);
+                    }
+                    ds.Tables.Add(dt);
+                } while (dr.NextResult());
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 数据填充器
+    /// </summary>
+    public class MyDmDataAdapter : IDataAdapter
+    {
+        private DmCommand command;
+        private string sql;
+        private DmConnection _sqlConnection;
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="command"></param>
+        public MyDmDataAdapter(DmCommand command)
+        {
+            this.command = command;
+        }
+
+        public MyDmDataAdapter()
+        {
+
+        }
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="_sqlConnection"></param>
+        public MyDmDataAdapter(string sql, DmConnection _sqlConnection)
+        {
+            this.sql = sql;
+            this._sqlConnection = _sqlConnection;
+        }
+
+        /// <summary>
+        /// SelectCommand
+        /// </summary>
+        public DmCommand SelectCommand
+        {
+            get
+            {
+                if (this.command == null)
+                {
+                    this.command = new DmCommand(this.sql, this._sqlConnection);
+                }
+                return this.command;
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="dt"></param>
+        public void Fill(DataTable dt)
+        {
+            if (dt == null)
+            {
+                dt = new DataTable();
+            }
+            var columns = dt.Columns;
+            var rows = dt.Rows;
+            using (DmDataReader dr = command.ExecuteReader())
+            {
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string name = dr.GetName(i).Trim();
+                    if (!columns.Contains(name))
+                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                }
+
+                while (dr.Read())
+                {
+                    DataRow daRow = dt.NewRow();
+                    for (int i = 0; i < columns.Count; i++)
+                    {
+                        daRow[columns[i].ColumnName] = dr.GetValue(i);
+                    }
+                    dt.Rows.Add(daRow);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Fill(DataSet ds)
+        {
+            if (ds == null)
+            {
+                ds = new DataSet();
+            }
+            using (DmDataReader dr = command.ExecuteReader())
+            {
+                do
+                {
+                    var dt = new DataTable();
+                    var columns = dt.Columns;
+                    var rows = dt.Rows;
+                    for (int i = 0; i < dr.FieldCount; i++)
+                    {
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.Contains(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    }
+
+                    while (dr.Read())
+                    {
+                        DataRow daRow = dt.NewRow();
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            daRow[columns[i].ColumnName] = dr.GetValue(i);
+                        }
+                        dt.Rows.Add(daRow);
+                    }
+                    ds.Tables.Add(dt);
+                } while (dr.NextResult());
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 数据填充器
+    /// </summary>
+    public class KdbndpDataAdapter : IDataAdapter
+    {
+        private KdbndpCommand command;
+        private string sql;
+        private KdbndpConnection _sqlConnection;
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="command"></param>
+        public KdbndpDataAdapter(KdbndpCommand command)
+        {
+            this.command = command;
+        }
+
+        public KdbndpDataAdapter()
+        {
+
+        }
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="_sqlConnection"></param>
+        public KdbndpDataAdapter(string sql, KdbndpConnection _sqlConnection)
+        {
+            this.sql = sql;
+            this._sqlConnection = _sqlConnection;
+        }
+
+        /// <summary>
+        /// SelectCommand
+        /// </summary>
+        public KdbndpCommand SelectCommand
+        {
+            get
+            {
+                if (this.command == null)
+                {
+                    this.command = new KdbndpCommand(this.sql, this._sqlConnection);
+                }
+                return this.command;
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="dt"></param>
+        public void Fill(DataTable dt)
+        {
+            if (dt == null)
+            {
+                dt = new DataTable();
+            }
+            var columns = dt.Columns;
+            var rows = dt.Rows;
+            using (KdbndpDataReader dr = command.ExecuteReader())
+            {
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string name = dr.GetName(i).Trim();
+                    if (!columns.Contains(name))
+                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                }
+
+                while (dr.Read())
+                {
+                    DataRow daRow = dt.NewRow();
+                    for (int i = 0; i < columns.Count; i++)
+                    {
+                        daRow[columns[i].ColumnName] = dr.GetValue(i);
+                    }
+                    dt.Rows.Add(daRow);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Fill(DataSet ds)
+        {
+            if (ds == null)
+            {
+                ds = new DataSet();
+            }
+            using (KdbndpDataReader dr = command.ExecuteReader())
             {
                 do
                 {

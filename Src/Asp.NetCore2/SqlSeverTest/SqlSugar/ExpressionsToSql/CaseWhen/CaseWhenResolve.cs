@@ -16,7 +16,7 @@ namespace SqlSugar
             this.context = context;
             var currentExpression = expression;
             allMethods.Add(currentExpression);
-            if (context.IsSingle && oppsiteExpression != null&& oppsiteExpression is MemberExpression)
+            if (context.IsSingle && oppsiteExpression != null && oppsiteExpression is MemberExpression)
             {
                 var childExpression = (oppsiteExpression as MemberExpression).Expression;
                 if ((childExpression as ParameterExpression) != null)
@@ -44,11 +44,11 @@ namespace SqlSugar
             foreach (var methodExp in allMethods)
             {
                 var isFirst = allMethods.First() == methodExp;
-                var isLast= allMethods.Last() == methodExp;
-                var sql= SubTools.GetMethodValue(this.context, methodExp.Arguments[0],this.context.IsSingle?ResolveExpressType.WhereSingle:ResolveExpressType.WhereMultiple);
+                var isLast = allMethods.Last() == methodExp;
+                var sql = SubTools.GetMethodValue(this.context, methodExp.Arguments[0], this.context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
                 sqls.Add(new KeyValuePair<string, string>(methodExp.Method.Name, sql));
             }
-            var result= this.context.DbMehtods.CaseWhen(sqls);
+            var result = this.context.DbMehtods.CaseWhen(sqls);
             return result;
         }
     }
