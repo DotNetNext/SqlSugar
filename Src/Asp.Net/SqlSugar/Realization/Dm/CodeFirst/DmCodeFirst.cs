@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class DmSQLCodeFirst : CodeFirstProvider
+    public class DmCodeFirst : CodeFirstProvider
     {
         public override void NoExistLogic(EntityInfo entityInfo)
         {

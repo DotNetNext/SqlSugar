@@ -149,19 +149,19 @@
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
     <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
     <Compile Include="IntegrationServices\SerializeService.cs" />
-    <Compile Include="Realization\Dm\CodeFirst\DmSQLCodeFirst.cs" />
+    <Compile Include="Realization\Dm\CodeFirst\DmCodeFirst.cs" />
     <Compile Include="Realization\Dm\DbBind\DmDbBind.cs" />
     <Compile Include="Realization\Dm\DbFirst\DmDbFirst.cs" />
     <Compile Include="Realization\Dm\DbMaintenance\DmDbMaintenance.cs" />
     <Compile Include="Realization\Dm\Insertable\DmInserttable.cs" />
     <Compile Include="Realization\Dm\DmProvider.cs" />
     <Compile Include="Realization\Dm\Queryable\DmQueryable.cs" />
-    <Compile Include="Realization\Dm\SqlBuilder\DmSQLBuilder.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmBuilder.cs" />
     <Compile Include="Realization\Dm\SqlBuilder\DmDeleteBuilder.cs" />
     <Compile Include="Realization\Dm\SqlBuilder\DmExpressionContext.cs" />
     <Compile Include="Realization\Dm\SqlBuilder\DmInsertBuilder.cs" />
     <Compile Include="Realization\Dm\SqlBuilder\DmQueryBuilder.cs" />
-    <Compile Include="Realization\Dm\SqlBuilder\DmSQLUpdateBuilder.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmUpdateBuilder.cs" />
     <Compile Include="Realization\PostgreSQL\CodeFirst\PostgreSQLCodeFirst.cs" />
     <Compile Include="Realization\PostgreSQL\DbBind\PostgreSQLDbBind.cs" />
     <Compile Include="Realization\PostgreSQL\DbFirst\PostgreSQLDbFirst.cs" />
@@ -335,9 +335,7 @@
     <Content Include="References\Oracle.ManagedDataAccess.dll" />
     <Content Include="References\System.Data.SQLite.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Realization\Kdbndp\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

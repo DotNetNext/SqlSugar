@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -12,63 +14,64 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT datname FROM pg_database";
+                throw new NotSupportedException();
             }
         }
         protected override string GetColumnInfosByTableNameSql
         {
             get
             {
-                string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
-                                pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
-                                pcolumn.character_maximum_length as Length,
-                                pcolumn.column_default as DefaultValue,
-                                col_description(pclass.oid, pcolumn.ordinal_position) as ColumnDescription,
-                                case when pkey.colname = pcolumn.column_name
-                                then true else false end as IsPrimaryKey,
-                                case when pcolumn.column_default like 'nextval%'
-                                then true else false end as IsIdentity,
-                                case when pcolumn.is_nullable = 'YES'
-                                then true else false end as IsNullable
-                                 from (select * from pg_tables where tablename = '{0}' and schemaname='public') ptables inner join pg_class pclass
-                                on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM information_schema.columns
-                                ) pcolumn on pcolumn.table_name = ptables.tablename
-                                left join (
-	                                select  pg_class.relname,pg_attribute.attname as colname from 
-	                                pg_constraint  inner join pg_class 
-	                                on pg_constraint.conrelid = pg_class.oid 
-	                                inner join pg_attribute on pg_attribute.attrelid = pg_class.oid 
-	                                and  pg_attribute.attnum = pg_constraint.conkey[1]
-	                                inner join pg_type on pg_type.oid = pg_attribute.atttypid
-	                                where pg_constraint.contype='p'
-                                ) pkey on pcolumn.table_name = pkey.relname
-                                order by ptables.tablename";
-                return sql;
+                throw new NotSupportedException();
             }
         }
         protected override string GetTableInfoListSql
         {
             get
             {
-                return @"select cast(relname as varchar) as Name,
-                        cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
-                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' order by relname";
+                return @"SELECT  table_name name from user_tables where
+                        table_name!='HELP' 
+                        AND table_name NOT LIKE '%$%'
+                        AND table_name NOT LIKE 'LOGMNRC_%'
+                        AND table_name!='LOGMNRP_CTAS_PART_MAP'
+                        AND table_name!='LOGMNR_LOGMNR_BUILDLOG'
+                        AND table_name!='SQLPLUS_PRODUCT_PROFILE'  
+                         ";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
-                         join pg_class on pg_description.objoid = pg_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='public')";
+                return @"select view_name name  from user_views 
+                                                WHERE VIEW_name NOT LIKE '%$%'
+                                                AND VIEW_NAME !='PRODUCT_PRIVS'
+                        AND VIEW_NAME NOT LIKE 'MVIEW_%' ";
             }
         }
         #endregion
 
         #region DDL
+        protected override string IsAnyIndexSql
+        {
+            get
+            {
+                return "select count(1) from user_ind_columns where index_name=('{0}')";
+            }
+        }
+        protected override string CreateIndexSql
+        {
+            get
+            {
+                return "CREATE INDEX Index_{0}_{2} ON {0}({1})";
+            }
+        }
+        protected override string AddDefaultValueSql
+        {
+            get
+            {
+                return "ALTER TABLE {0} MODIFY({1} DEFAULT '{2}')";
+            }
+        }
         protected override string CreateDataBaseSql
         {
             get
@@ -87,28 +90,28 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ADD COLUMN {1} {2}{3} {4} {5} {6}";
+                return "ALTER TABLE {0} ADD ({1} {2}{3} {4} {5} {6})";
             }
         }
         protected override string AlterColumnToTableSql
         {
             get
             {
-                return "alter table {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
+                return "ALTER TABLE {0} modify ({1} {2}{3} {4} {5} {6}) ";
             }
         }
         protected override string BackupDataBaseSql
         {
             get
             {
-                return "mysqldump.exe  {0} -uroot -p > {1}  ";
+                return @"USE master;BACKUP DATABASE {0} TO disk = '{1}'";
             }
         }
         protected override string CreateTableSql
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey)";
+                return "CREATE TABLE {0}(\r\n{1})";
             }
         }
         protected override string CreateTableColumn
@@ -129,7 +132,7 @@ namespace SqlSugar
         {
             get
             {
-                return "create table {0} as (select * from {1} limit {2} offset 0)";
+                return "create table {1} as select * from {2}  where ROWNUM<={0}";
             }
         }
         protected override string DropTableSql
@@ -150,52 +153,71 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} DROP CONSTRAINT {1}";
+                return "ALTER TABLE {0} DROP CONSTRAINT  {1}";
             }
         }
         protected override string RenameColumnSql
         {
             get
             {
-                return "ALTER TABLE {0} RENAME {1} TO {2}";
+                return "ALTER TABLE {0} rename   column  {1} to {2}";
             }
         }
-        protected override string AddColumnRemarkSql => "comment on column {1}.{0} is '{2}'";
-
-        protected override string DeleteColumnRemarkSql => "comment on column {1}.{0} is ''";
-
-        protected override string IsAnyColumnRemarkSql { get { throw new NotSupportedException(); } }
-
-        protected override string AddTableRemarkSql => "comment on table {0} is '{1}'";
-
-        protected override string DeleteTableRemarkSql => "comment on table {0} is ''";
-
-        protected override string IsAnyTableRemarkSql { get { throw new NotSupportedException(); } }
-
-        protected override string RenameTableSql => "alter table 表名 {0} to {1}";
-
-        protected override string CreateIndexSql
+        protected override string AddColumnRemarkSql
         {
             get
             {
-                return "CREATE INDEX Index_{0}_{2} ON {0} ({1})";
-            }
-        }
-        protected override string AddDefaultValueSql
-        {
-            get
-            {
-                return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT {2}";
-            }
-        }
-        protected override string IsAnyIndexSql
-        {
-            get
-            {
-                return "  Select count(1) from (SELECT to_regclass('Index_UnitCodeTest1_Id_CreateDate') as c ) t where t.c is not null";
+                return "comment on column {1}.{0} is '{2}'";
             }
         }
 
+        protected override string DeleteColumnRemarkSql
+        {
+            get
+            {
+                return "comment on column {1}.{0} is ''";
+            }
+        }
+
+        protected override string IsAnyColumnRemarkSql
+        {
+            get
+            {
+                return "select * from user_col_comments where Table_Name='{1}' AND COLUMN_NAME='{0}' order by column_name";
+            }
+        }
+
+        protected override string AddTableRemarkSql
+        {
+            get
+            {
+                return "comment on table {0}  is  '{1}'";
+            }
+        }
+
+        protected override string DeleteTableRemarkSql
+        {
+            get
+            {
+                return "comment on table {0}  is  ''";
+            }
+        }
+
+        protected override string IsAnyTableRemarkSql
+        {
+            get
+            {
+                return "select * from user_tab_comments where Table_Name='{0}'order by Table_Name";
+            }
+        }
+
+        protected override string RenameTableSql
+        {
+            get
+            {
+                return "alter table {0} rename to {1}";
+            }
+        }
         #endregion
 
         #region Check
@@ -203,7 +225,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select 1 from information_schema.columns limit 1 offset 0";
+                return "select  t.table_name from user_tables t  where rownum=1";
             }
         }
         #endregion
@@ -213,14 +235,14 @@ namespace SqlSugar
         {
             get
             {
-                return "DEFAULT NULL";
+                return "";
             }
         }
         protected override string CreateTableNotNull
         {
             get
             {
-                return "NOT NULL";
+                return "";
             }
         }
         protected override string CreateTablePirmaryKey
@@ -234,40 +256,52 @@ namespace SqlSugar
         {
             get
             {
-                return "serial";
+                return "IDENTITY(1,1)";
             }
         }
-          #endregion
+        #endregion
 
         #region Methods
-        /// <summary>
-        ///by current connection string
-        /// </summary>
-        /// <param name="databaseDirectory"></param>
-        /// <returns></returns>
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            if (columnInfo.DataType == "varchar" && columnInfo.Length == 0)
+            {
+                columnInfo.DataType = "varchar2";
+                columnInfo.Length = 50;
+            }
+            return base.AddColumn(tableName, columnInfo);
+        }
+        public override bool CreateIndex(string tableName, string[] columnNames)
+        {
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it => (it + "abc").Substring(0, 3))));
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
+            if (defaultValue.ToLower().IsIn("sysdate"))
+            {
+                var template = AddDefaultValueSql.Replace("'", "");
+                string sql = string.Format(template, tableName, columnName, defaultValue);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            else
+            {
+                return base.AddDefaultValue(tableName, columnName, defaultValue);
+            }
+        }
+        public override bool CreateDatabase(string databaseDirectory = null)
+        {
+            throw new NotSupportedException();
+        }
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            if (databaseDirectory != null)
-            {
-                if (!FileHelper.IsExistDirectory(databaseDirectory))
-                {
-                    FileHelper.CreateDirectory(databaseDirectory);
-                }
-            }
-            var oldDatabaseName = this.Context.Ado.Connection.Database;
-            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "postgres");
-            var newDb = new SqlSugarClient(new ConnectionConfig()
-            {
-                DbType = this.Context.CurrentConnectionConfig.DbType,
-                IsAutoCloseConnection = true,
-                ConnectionString = connection
-            });
-            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
-            }
-            return true;
+            throw new NotSupportedException();
         }
         public override bool AddRemark(EntityInfo entity)
         {
@@ -278,17 +312,131 @@ namespace SqlSugar
             {
                 if (item.ColumnDescription != null)
                 {
-                    db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
-
+                    //column remak
+                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper()))
+                    {
+                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper());
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                    }
+                    else
+                    {
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                    }
                 }
             }
+
             //table remak
             if (entity.TableDescription != null)
             {
-                db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                if (db.DbMaintenance.IsAnyTableRemark(entity.DbTableName))
+                {
+                    db.DbMaintenance.DeleteTableRemark(entity.DbTableName);
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
+                else
+                {
+                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                }
             }
             return true;
         }
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            cacheKey = GetCacheKey(cacheKey);
+            if (!isCache)
+                return GetColumnInfosByTableName(tableName);
+            else
+                return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                        () =>
+                        {
+                            return GetColumnInfosByTableName(tableName);
+
+                        });
+        }
+
+        private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            string sql = "select * from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            using (DbDataReader reader = (DbDataReader)this.Context.Ado.GetDataReader(sql))
+            {
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                List<DbColumnInfo> result = new List<DbColumnInfo>();
+                var schemaTable = reader.GetSchemaTable();
+                foreach (System.Data.DataRow row in schemaTable.Rows)
+                {
+                    DbColumnInfo column = new DbColumnInfo()
+                    {
+                        TableName = tableName,
+                        DataType = row["DataType"].ToString().Replace("System.", "").Trim(),
+                        IsNullable = (bool)row["AllowDBNull"],
+                        IsIdentity = (bool)row["IsIdentity"],
+                        ColumnDescription = GetFieldComment(tableName, row["ColumnName"].ToString()),
+                        DbColumnName = row["ColumnName"].ToString(),
+                        //DefaultValue = row["defaultValue"].ToString(),
+                        IsPrimarykey = GetPrimaryKeyByTableNames(tableName).Any(it => it.Equals(row["ColumnName"].ToString(), StringComparison.CurrentCultureIgnoreCase)),
+                        Length = row["ColumnSize"].ObjToInt(),
+                        Scale = row["numericscale"].ObjToInt()
+                    };
+                    result.Add(column);
+                }
+                return result;
+            }
+        }
+
+        private List<string> GetPrimaryKeyByTableNames(string tableName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            cacheKey = GetCacheKey(cacheKey);
+            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                    () =>
+                    {
+                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                        this.Context.Ado.IsEnableLogEvent = false;
+                        string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
+                            where cu.constraint_name = au.constraint_name
+                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper() + @"'";
+                        var pks = this.Context.Ado.SqlQuery<string>(sql);
+                        this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                        return pks;
+                    });
+        }
+
+        public string GetTableComment(string tableName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetTableComment." + tableName;
+            var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                          () =>
+                          {
+                              string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
+                              var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                              this.Context.Ado.IsEnableLogEvent = false;
+                              var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper() });
+                              this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                              return pks;
+                          });
+            return comments.HasValue() ? comments.First() : "";
+        }
+
+        public string GetFieldComment(string tableName, string filedName)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetFieldComment." + tableName;
+            var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                           () =>
+                           {
+                               string sql = "SELECT TVNAME AS TableName, COLNAME,COMMENT$ AS ColumnDescription   from SYSCOLUMNCOMMENTS   WHERE TVNAME='"+ tableName.ToUpper() + "' ORDER BY TVNAME";
+                               var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                               this.Context.Ado.IsEnableLogEvent = false;
+                               var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
+                               this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                               return pks;
+                           });
+            return comments.HasValue() ? comments.First(it => it.DbColumnName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
+
+        }
+
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
@@ -311,52 +459,6 @@ namespace SqlSugar
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
-        }
-        protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
-        {
-            List<string> columnArray = new List<string>();
-            Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
-            foreach (var item in columns)
-            {
-                string columnName = item.DbColumnName;
-                string dataType = item.DataType;
-                if (dataType == "varchar" && item.Length == 0)
-                {
-                    item.Length = 1;
-                }
-                if (dataType == "uuid")
-                {
-                    item.Length = 50;
-                    dataType = "varchar";
-                }
-                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
-                string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey = null;
-                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower()), dataType, dataSize, nullType, primaryKey, "");
-                if (item.IsIdentity)
-                {
-                    string length = dataType.Substring(dataType.Length - 1);
-                    string identityDataType = "serial" + length;
-                    addItem = addItem.Replace(dataType, identityDataType);
-                }
-                columnArray.Add(addItem);
-            }
-            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower()), string.Join(",\r\n", columnArray));
-            return tableString;
-        }
-        public override bool IsAnyConstraint(string constraintName)
-        {
-            throw new NotSupportedException("PgSql IsAnyConstraint NotSupportedException");
-        }
-        public override bool BackupDataBase(string databaseName, string fullFileName)
-        {
-            Check.ThrowNotSupportedException("PgSql BackupDataBase NotSupported");
-            return false;
-        }
-
-        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
-        {
-            return base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
         }
         #endregion
     }

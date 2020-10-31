@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.DbFirstExtensions"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgSqlTest", "PgSqlTest\PgSqlTest.csproj", "{86A55D46-B5F5-44B4-8B60-2AED1E2EDD99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DmTest", "DmTest\DmTest.csproj", "{68A45CBA-AD64-429C-9AF4-FE78658B73D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{86A55D46-B5F5-44B4-8B60-2AED1E2EDD99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86A55D46-B5F5-44B4-8B60-2AED1E2EDD99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86A55D46-B5F5-44B4-8B60-2AED1E2EDD99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68A45CBA-AD64-429C-9AF4-FE78658B73D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68A45CBA-AD64-429C-9AF4-FE78658B73D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68A45CBA-AD64-429C-9AF4-FE78658B73D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68A45CBA-AD64-429C-9AF4-FE78658B73D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

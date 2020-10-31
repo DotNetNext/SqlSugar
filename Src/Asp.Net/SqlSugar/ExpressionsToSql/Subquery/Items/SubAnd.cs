@@ -49,6 +49,10 @@ namespace SqlSugar
             {
                 regex = @"^AND  (\:Const\d+) $";
             }
+            if (this.Context is DmExpressionContext)
+            {
+                regex = @"^AND  (\:Const\d+) $";
+            }
             if (Regex.IsMatch(result, regex))
             {
                 result = "AND " + this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value).Value;

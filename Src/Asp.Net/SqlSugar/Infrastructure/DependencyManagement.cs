@@ -13,6 +13,7 @@ namespace SqlSugar
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
         private static bool IsTryPgSql = false;
+        private static bool IsTryDm = false;
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
@@ -107,6 +108,29 @@ namespace SqlSugar
                      "You need to refer to System.Data.SQLite.dll." + ex.Message,
                     "你需要引用System.Data.SQLite.dll,如果有版本兼容问题请先删除原有引用");
                     throw new Exception(message);
+                }
+            }
+        }
+
+        public static void TryKdbndb()
+        {
+            throw new Exception("Kdbndb只能在.NetCore版本下使用");
+        }
+
+        public static void TryDm()
+        {
+            if (!IsTryDm)
+            {
+                try
+                {
+                    DmProvider db = new DmProvider();
+                    var conn = db.GetAdapter();
+                    IsTryDm = true;
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("你需要引用DmProvider.dll");
                 }
             }
         }

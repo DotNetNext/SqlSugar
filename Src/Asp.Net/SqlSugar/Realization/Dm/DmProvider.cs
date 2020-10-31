@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dm;
  
@@ -12,7 +13,29 @@ namespace SqlSugar
 {
     public partial class DmProvider : AdoProvider
     {
-        public DmProvider() { }
+        public DmProvider() {
+            this.FormatSql = sql =>
+            {
+                var guid = Guid.NewGuid();
+                sql = sql.Replace("+@", "+:");
+                sql = sql.Replace("select @@identity", guid.ToString());
+                if (sql.HasValue() && sql.Contains("@"))
+                {
+                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'.*?\@.*?\'| [\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+");
+                    if (exceptionalCaseInfo != null)
+                    {
+                        foreach (var item in exceptionalCaseInfo.Cast<Match>())
+                        {
+                            sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
+                        }
+                    }
+                    sql = sql.Replace("@", ":");
+                    sql = sql.Replace(UtilConstants.ReplaceKey, "@");
+                }
+                sql = sql.Replace(guid.ToString(), "select @@identity");
+                return sql;
+            };
+        }
         public override IDbConnection Connection
         {
             get
@@ -94,11 +117,11 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
-                sqlParameter.Direction = parameter.Direction;
-                if (sqlParameter.Direction == 0)
+                if (parameter.Direction == 0)
                 {
-                    sqlParameter.Direction = ParameterDirection.Input;
+                    parameter.Direction = ParameterDirection.Input;
                 }
+                sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
                 if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
                 {

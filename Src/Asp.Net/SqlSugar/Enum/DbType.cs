@@ -11,6 +11,8 @@ namespace SqlSugar
         SqlServer,
         Sqlite,
         Oracle,
-        PostgreSQL
+        PostgreSQL,
+        Dm,
+        Kdbndp
     }
 }
