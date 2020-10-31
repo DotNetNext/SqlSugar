@@ -29,6 +29,16 @@ namespace SqlSugar
         protected abstract string GetDataBaseSql { get; }
         protected abstract string GetTableInfoListSql { get; }
         protected abstract string GetColumnInfosByTableNameSql { get; }
+
+        /// <summary>
+        /// 获取存储过程SQL
+        /// </summary>
+        protected abstract string GetProcedureInfoListSql { get; }
+
+        /// <summary>
+        /// 获取存储过程参数SQL
+        /// </summary>
+        protected abstract string GetParamInfosByProcedureNameSql { get; }
         #endregion
 
         #region DDL

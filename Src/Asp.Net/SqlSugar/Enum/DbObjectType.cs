@@ -9,6 +9,7 @@ namespace SqlSugar
     {
         Table = 0,
         View = 1,
-        All = 2
+        All = 2,
+        Procedure = 16
     }
 }

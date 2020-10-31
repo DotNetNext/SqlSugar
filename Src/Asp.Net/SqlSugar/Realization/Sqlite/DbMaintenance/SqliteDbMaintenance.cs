@@ -41,7 +41,29 @@ namespace SqlSugar
                 return @"select Name from sqlite_master where type='view'  order by name;";
             }
         }
-        #endregion
+        /// <summary>
+        /// 获取存储过程SQL
+        /// </summary>
+        protected override string GetProcedureInfoListSql
+        {
+            get
+            {
+                return @"";
+            }
+        }
+
+        /// <summary>
+        /// 获取存储过程参数SQL
+        /// </summary>
+        protected override string GetParamInfosByProcedureNameSql
+        {
+            get
+            {
+                return @"";
+            }
+        }
+
+        #endregion  DML
 
         #region DDL
         protected override string CreateDataBaseSql

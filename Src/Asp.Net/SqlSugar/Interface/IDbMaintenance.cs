@@ -13,6 +13,22 @@ namespace SqlSugar
         List<DbTableInfo> GetViewInfoList(bool isCache=true);
         List<DbTableInfo> GetTableInfoList(bool isCache=true);
         List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true);
+
+        /// <summary>
+        /// 获取存储过程信息列表
+        /// </summary>
+        /// <param name="isCache">是否缓存</param>
+        /// <returns></returns>
+        List<DbTableInfo> GetProcedureInfoList(bool isCache = true);
+
+        /// <summary>
+        /// 获取存储过程参数信息列表
+        /// </summary>
+        /// <param name="procedureName">存储过程名称</param>
+        /// <param name="isCache">是否缓存</param>
+        /// <returns></returns>
+        List<DbParamInfo> GetParamInfosByProcedureName(string procedureName, bool isCache = true);
+
         List<string> GetIsIdentities(string tableName);
         List<string> GetPrimaries(string tableName);
         #endregion

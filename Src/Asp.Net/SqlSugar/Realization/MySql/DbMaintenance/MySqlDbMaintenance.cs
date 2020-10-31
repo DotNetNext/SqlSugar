@@ -54,7 +54,34 @@ namespace SqlSugar
                          ";
             }
         }
-        #endregion
+        /// <summary>
+        /// 获取存储过程SQL
+        /// </summary>
+        protected override string GetProcedureInfoListSql
+        {
+            get
+            {
+                return @"select SPECIFIC_NAME as Name,ROUTINE_COMMENT as Description from information_schema.routines
+												 where ROUTINE_SCHEMA=(select database()) AND ROUTINE_TYPE='PROCEDURE'";
+            }
+        }
+
+        /// <summary>
+        /// 获取存储过程参数SQL
+        /// </summary>
+        protected override string GetParamInfosByProcedureNameSql
+        {
+            get
+            {
+                return @"select 
+PARAMETER_NAME as DbParamName,
+DATA_TYPE AS DataType,
+ifnull(CHARACTER_MAXIMUM_LENGTH,0) AS Length
+from Information_schema.PARAMETERS
+where  SPECIFIC_SCHEMA=(select database()) and SPECIFIC_NAME='{0}'";
+            }
+        }
+        #endregion  DML
 
         #region DDL
         protected override string CreateDataBaseSql

@@ -79,7 +79,41 @@ namespace SqlSugar
 					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  AND (tbp.Name='MS_Description' OR tbp.Name is null) WHERE s.xtype IN('V')  ";
             }
         }
-        #endregion
+
+        /// <summary>
+        /// 获取存储过程SQL
+        /// </summary>
+        protected override string GetProcedureInfoListSql
+        {
+            get
+            {
+                return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
+                            FROM sysobjects s
+					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  AND (tbp.Name='MS_Description' OR tbp.Name is null) 
+                WHERE s.xtype IN('P')  ";
+            }
+        }
+
+        /// <summary>
+        /// 获取存储过程参数SQL
+        /// </summary>
+        protected override string GetParamInfosByProcedureNameSql
+        {
+            get
+            {
+                return @"select 
+	syscolumns.name as [DbParamName],
+	systypes.name AS DataType,
+	syscolumns.length AS [Length]
+ from syscolumns 
+ LEFT JOIN sysobjects ON syscolumns.id = sysobjects.id
+INNER JOIN systypes ON syscolumns.xtype = systypes.xtype
+where  OBJECTPROPERTY(syscolumns.id, N'IsProcedure') = 1    
+   and sysobjects.name='{0}'";
+            }
+        }
+
+        #endregion  DML
 
         #region DDL
         protected override string CreateDataBaseSql

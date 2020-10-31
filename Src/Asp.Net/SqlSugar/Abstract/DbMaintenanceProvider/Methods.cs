@@ -55,6 +55,47 @@ namespace SqlSugar
                 return this.Context.Ado.SqlQuery<DbColumnInfo>(sql).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
 
         }
+
+        /// <summary>
+        /// 获取存储过程信息列表
+        /// </summary>
+        /// <param name="isCache">是否缓存</param>
+        /// <returns></returns>
+        public virtual List<DbTableInfo> GetProcedureInfoList(bool isCache = true)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetProcedureInfoList";
+            cacheKey = GetCacheKey(cacheKey);
+            var result = new List<DbTableInfo>();
+            if (isCache)
+                result = GetListOrCache<DbTableInfo>(cacheKey, this.GetProcedureInfoListSql);
+            else
+                result = this.Context.Ado.SqlQuery<DbTableInfo>(this.GetProcedureInfoListSql);
+            foreach (var item in result)
+            {
+                item.DbObjectType = DbObjectType.Procedure;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取存储过程参数信息列表
+        /// </summary>
+        /// <param name="procedureName">存储过程名称</param>
+        /// <param name="isCache">是否缓存</param>
+        /// <returns></returns>
+        public virtual List<DbParamInfo> GetParamInfosByProcedureName(string procedureName, bool isCache = true)
+        {
+            if (string.IsNullOrEmpty(procedureName)) return new List<DbParamInfo>();
+            string cacheKey = "DbMaintenanceProvider.GetParamInfosByProcedureName." + procedureName.ToLower();
+            cacheKey = GetCacheKey(cacheKey);
+            var sql = string.Format(this.GetParamInfosByProcedureNameSql, procedureName);
+            if (isCache)
+                return GetListOrCache<DbParamInfo>(cacheKey, sql);//.GroupBy(it => it.DbParamName).Select(it => it.First()).ToList();
+            else
+                return this.Context.Ado.SqlQuery<DbParamInfo>(sql);//.GroupBy(it => it.DbParamName).Select(it => it.First()).ToList();
+
+        }
+
         public virtual List<string> GetIsIdentities(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
