@@ -11,23 +11,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="dll\**" />
+    <EmbeddedResource Remove="dll\**" />
+    <None Remove="dll\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="2.2.4" />
     <PackageReference Include="MySql.Data" Version="8.0.22" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Npgsql" Version="3.2.7" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.18.3" />
+    <PackageReference Include="SqlSugarCore.Dm" Version="1.0.0" />
+    <PackageReference Include="SqlSugarCore.Kdbndp" Version="1.0.0" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DmProvider">
-      <HintPath>dll\DmProvider.dll</HintPath>
-    </Reference>
-    <Reference Include="Kdbndp">
-      <HintPath>dll\Kdbndp.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
