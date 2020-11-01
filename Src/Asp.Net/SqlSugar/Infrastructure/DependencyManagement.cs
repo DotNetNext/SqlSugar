@@ -130,7 +130,7 @@ namespace SqlSugar
                 catch (Exception ex)
                 {
 
-                    throw new Exception("你需要引用DmProvider.dll");
+                    throw new Exception("你需要引用DmProvider.dll，在https://github.com/sunkaixuan/SqlSugar 源码里面下载");
                 }
             }
         }
