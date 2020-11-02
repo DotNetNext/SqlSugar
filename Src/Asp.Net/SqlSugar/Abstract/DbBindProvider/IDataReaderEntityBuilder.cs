@@ -217,6 +217,10 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getConvertByte : getByte;
                 }
+                else if (bindPropertyType == UtilConstants.StringType&&dbTypeName?.ToLower()== "timestamp")
+                {
+                    method = getConvertValueMethod.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType); ;
+                }
                 else if (bindPropertyType == UtilConstants.StringType)
                 {
                     method = getString;
