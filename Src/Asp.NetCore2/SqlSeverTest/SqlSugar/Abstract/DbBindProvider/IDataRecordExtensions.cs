@@ -138,12 +138,23 @@ namespace SqlSugar
         }
         public static T GetConvertValue<T>(this IDataRecord dr, int i)
         {
-            if (dr.IsDBNull(i))
+            try
             {
-                return default(T);
+                if (dr.IsDBNull(i))
+                {
+                    return default(T);
+                }
+                var result = dr.GetValue(i);
+                return UtilMethods.To<T>(result);
             }
-            var result = dr.GetValue(i);
-            return UtilMethods.To<T>(result);
+            catch (Exception ex)
+            {
+                if (dr.GetFieldType(i) == UtilConstants.DateType)
+                {
+                    return UtilMethods.To<T>(dr.GetConvertDouble(i));
+                }
+                throw new Exception(ex.Message);
+            }
         }
 
         public static long? GetConvetInt64(this IDataRecord dr, int i)
