@@ -62,7 +62,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE INDEX Index_{0}_{2} ON {0}({1})";
+                return "CREATE {3} INDEX Index_{0}_{2} ON {0}({1})";
             }
         }
         protected override string AddDefaultValueSql
@@ -271,9 +271,9 @@ namespace SqlSugar
             }
             return base.AddColumn(tableName, columnInfo);
         }
-        public override bool CreateIndex(string tableName, string[] columnNames)
+        public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique = false)
         {
-            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it => (it + "abc").Substring(0, 3))));
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames.Select(it => (it + "abc").Substring(0, 3))), isUnique ? "UNIQUE" : "");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -348,11 +348,11 @@ namespace SqlSugar
                 return GetColumnInfosByTableName(tableName);
             else
                 return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                        () =>
-                        {
-                            return GetColumnInfosByTableName(tableName);
+                    () =>
+                    {
+                        return GetColumnInfosByTableName(tableName);
 
-                        });
+                    });
         }
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
@@ -360,7 +360,7 @@ namespace SqlSugar
             string sql = "select * from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
-            using (DbDataReader reader = (DbDataReader)this.Context.Ado.GetDataReader(sql))
+            using(DbDataReader reader = (DbDataReader) this.Context.Ado.GetDataReader(sql))
             {
                 this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 List<DbColumnInfo> result = new List<DbColumnInfo>();
@@ -371,8 +371,8 @@ namespace SqlSugar
                     {
                         TableName = tableName,
                         DataType = row["DataType"].ToString().Replace("System.", "").Trim(),
-                        IsNullable = (bool)row["AllowDBNull"],
-                        IsIdentity = (bool)row["IsIdentity"],
+                        IsNullable = (bool) row["AllowDBNull"],
+                        IsIdentity = (bool) row["IsIdentity"],
                         ColumnDescription = GetFieldComment(tableName, row["ColumnName"].ToString()),
                         DbColumnName = row["ColumnName"].ToString(),
                         //DefaultValue = row["defaultValue"].ToString(),
@@ -391,32 +391,32 @@ namespace SqlSugar
             string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
             cacheKey = GetCacheKey(cacheKey);
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                    () =>
-                    {
-                        var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
-                        this.Context.Ado.IsEnableLogEvent = false;
-                        string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
+                () =>
+                {
+                    var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                    this.Context.Ado.IsEnableLogEvent = false;
+                    string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
                             where cu.constraint_name = au.constraint_name
                             and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper() + @"'";
-                        var pks = this.Context.Ado.SqlQuery<string>(sql);
-                        this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
-                        return pks;
-                    });
+                    var pks = this.Context.Ado.SqlQuery<string>(sql);
+                    this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                    return pks;
+                });
         }
 
         public string GetTableComment(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetTableComment." + tableName;
             var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                          () =>
-                          {
-                              string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
-                              var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
-                              this.Context.Ado.IsEnableLogEvent = false;
-                              var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper() });
-                              this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
-                              return pks;
-                          });
+                () =>
+                {
+                    string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
+                    var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                    this.Context.Ado.IsEnableLogEvent = false;
+                    var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper() });
+                    this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                    return pks;
+                });
             return comments.HasValue() ? comments.First() : "";
         }
 
@@ -424,15 +424,15 @@ namespace SqlSugar
         {
             string cacheKey = "DbMaintenanceProvider.GetFieldComment." + tableName;
             var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                           () =>
-                           {
-                               string sql = "SELECT TVNAME AS TableName, COLNAME,COMMENT$ AS ColumnDescription   from SYSCOLUMNCOMMENTS   WHERE TVNAME='"+ tableName.ToUpper() + "' ORDER BY TVNAME";
-                               var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
-                               this.Context.Ado.IsEnableLogEvent = false;
-                               var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
-                               this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
-                               return pks;
-                           });
+                () =>
+                {
+                    string sql = "SELECT TVNAME AS TableName, COLNAME,COMMENT$ AS ColumnDescription   from SYSCOLUMNCOMMENTS   WHERE TVNAME='" + tableName.ToUpper() + "' ORDER BY TVNAME";
+                    var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+                    this.Context.Ado.IsEnableLogEvent = false;
+                    var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
+                    this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                    return pks;
+                });
             return comments.HasValue() ? comments.First(it => it.DbColumnName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
 
         }
