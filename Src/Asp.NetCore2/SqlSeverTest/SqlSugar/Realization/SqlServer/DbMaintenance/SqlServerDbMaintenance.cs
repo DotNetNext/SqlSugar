@@ -249,7 +249,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE NONCLUSTERED INDEX Index_{0}_{2} ON {0}({1})";
+                return "CREATE {3} NONCLUSTERED INDEX Index_{0}_{2} ON {0}({1})";
             }
         }
         protected override string AddDefaultValueSql
