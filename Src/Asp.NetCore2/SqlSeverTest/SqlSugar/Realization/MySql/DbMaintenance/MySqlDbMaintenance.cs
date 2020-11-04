@@ -250,7 +250,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE INDEX Index_{0}_{2} ON {0} ({1})";
+                return "CREATE {3} INDEX Index_{0}_{2} ON {0} ({1})";
             }
         }
 
