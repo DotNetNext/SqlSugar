@@ -128,6 +128,12 @@ namespace SqlSugar
             return string.Format(" CAST({0} AS VARCHAR2(4000))", parameter.MemberName);
         }
 
+        public override string ToDecimal(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" TO_NUMBER({0}) )", parameter.MemberName);
+        }
+
         public override string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
