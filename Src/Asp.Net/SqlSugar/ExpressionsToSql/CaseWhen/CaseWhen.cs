@@ -16,6 +16,10 @@ namespace SqlSugar
         {
             return default(T);
         }
+        public T End<T>()
+        {
+            return default(T);
+        }
     }
     public class CaseThen
     {
