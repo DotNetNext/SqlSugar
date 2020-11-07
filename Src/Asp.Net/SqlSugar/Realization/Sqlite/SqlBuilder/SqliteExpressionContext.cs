@@ -118,7 +118,7 @@ namespace SqlSugar
             var parameter3 = model.Args[2].MemberValue;
             if (parameter2.ObjToInt() < 0)
             {
-                return string.Format(" DATETIME(DATETIME({0}), '+{1} {2}s')", parameter, Math.Abs(parameter2.ObjToInt()), parameter3);
+                return string.Format(" DATETIME(DATETIME({0}), '-{1} {2}s')", parameter, Math.Abs(parameter2.ObjToInt()), parameter3);
             }
             else
             {
@@ -165,7 +165,7 @@ namespace SqlSugar
             var parameter = model.Args[0].MemberName;
             var parameter2 = model.Args[1].MemberName;
             int time = 1;
-            return string.Format(" Cast((JulianDay({0}) - JulianDay({1}))  *{2} As INTEGER)=0 ", parameter, parameter2, time);
+            return string.Format("  date({0}, 'localtime',  'start of day')= date({1}, 'localtime',  'start of day') ", parameter, parameter2, time);
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
