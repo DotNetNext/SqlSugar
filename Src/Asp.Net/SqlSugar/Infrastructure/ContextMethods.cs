@@ -281,11 +281,19 @@ namespace SqlSugar
                     if (readerValues != null &&
                         readerValues.Count == 1 &&
                         readerValues.First().Key == name &&
-                        readerValues.First().Value!=null&&
-                        readerValues.First().Value.GetType()==UtilConstants.StringType&&
+                        readerValues.First().Value != null &&
+                        readerValues.First().Value.GetType() == UtilConstants.StringType &&
                         Regex.IsMatch(readerValues.First().Value.ObjToString(), @"^\{.+\}$"))
                     {
-                        result.Add(name, DeserializeObject<Dictionary<string,object>>(readerValues.First().Value.ObjToString()));
+                        result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First().Value.ObjToString()));
+                    }
+                    else if (item.PropertyType.FullName.IsCollectionsList()&&
+                            readerValues.ContainsKey(item.Name.ToLower())&&
+                            readerValues[item.Name.ToLower()]!=null&&
+                            readerValues[item.Name.ToLower()].GetType()==UtilConstants.StringType&&
+                            Regex.IsMatch(readerValues[item.Name.ToLower()].ToString(), @"^\[{.+\}]$"))
+                    {
+                        result.Add(name, DeserializeObject<List<Dictionary<string, object>>>(readerValues[item.Name.ToLower()].ToString()));
                     }
                     else
                     {
