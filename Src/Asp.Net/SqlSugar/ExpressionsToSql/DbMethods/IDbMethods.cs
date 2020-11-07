@@ -65,5 +65,7 @@ namespace SqlSugar
         string GetDate();
         string GetRandom();
         string CharIndex(MethodCallExpressionModel model);
+        string BitwiseAnd(MethodCallExpressionModel model);
+        string BitwiseInclusiveOR(MethodCallExpressionModel model);
     }
 }
