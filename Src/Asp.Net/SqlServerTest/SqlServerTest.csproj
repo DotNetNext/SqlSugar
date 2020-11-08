@@ -79,6 +79,7 @@
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="_OldTest\BugTest\Bug2.cs" />
+    <Compile Include="_OldTest\BugTest\Bug4.cs" />
     <Compile Include="_OldTest\BugTest\BugModels\AccountsModel.cs" />
     <Compile Include="_OldTest\BugTest\BugModels\ClientsModel.cs" />
     <Compile Include="_OldTest\BugTest\BugModels\ExposureModel.cs" />
