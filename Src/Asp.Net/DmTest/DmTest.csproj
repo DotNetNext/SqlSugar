@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="BugTest\BugTest1.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Demo\Demo1_Queryable.cs" />
     <Compile Include="Demo\Demo2_Updateable.cs" />
