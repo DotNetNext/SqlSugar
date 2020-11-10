@@ -420,5 +420,17 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS VARCHAR(MAX))", parameter.MemberName);
         }
+        public  string BitwiseAnd(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} & {1}) ", parameter.MemberName, parameter2.MemberName); ;
+        }
+        public string BitwiseInclusiveOR(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} | {1}) ", parameter.MemberName, parameter2.MemberName); ;
+        }
     }
 }

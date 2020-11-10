@@ -664,6 +664,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.GetRandom();
                     case "CharIndex":
                         return this.Context.DbMehtods.CharIndex(model);
+                    case "BitwiseAnd":
+                        return this.Context.DbMehtods.BitwiseAnd(model);
+                    case "BitwiseInclusiveOR":
+                        return this.Context.DbMehtods.BitwiseInclusiveOR(model);
                     default:
                         break;
                 }

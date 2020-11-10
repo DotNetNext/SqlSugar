@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -61,7 +60,7 @@ namespace SqlSugar
                     if (customAttribute?.IsJson ?? false)
                     {
                         var paramterValue = ExpressionTool.DynamicInvoke(item);
-                        var parameterName = AppendParameter(JsonConvert.SerializeObject(paramterValue));
+                        var parameterName = AppendParameter(new SerializeService().SerializeObject(paramterValue));
                         this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
 
                         continue;

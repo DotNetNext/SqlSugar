@@ -127,6 +127,7 @@ namespace SqlSugar
             copyContext.RefreshMapping = this.RefreshMapping;
             copyContext.ParameterIndex = this.ParameterIndex;
             copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
+            copyContext.IsSingle = this.IsSingle;
             return copyContext;
         }
         public ExpressionContext GetCopyContextWithMapping()
@@ -141,6 +142,7 @@ namespace SqlSugar
             copyContext.InitMappingInfo = this.InitMappingInfo;
             copyContext.RefreshMapping = this.RefreshMapping;
             copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
+            copyContext.IsSingle = this.IsSingle;
             return copyContext;
         }
         #endregion

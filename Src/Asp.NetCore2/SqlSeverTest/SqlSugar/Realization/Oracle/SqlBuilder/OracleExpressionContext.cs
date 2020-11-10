@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace SqlSugar
         public SqlSugarProvider Context { get; set; }
         public OracleExpressionContext()
         {
-            base.DbMehtods = new OracleMethod();
+            base.DbMehtods = new OracleMethod(); 
         }
         public override string SqlParameterKeyWord
         {
@@ -40,6 +41,42 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        private void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action)
+        {
+            if (pageItems != null && pageItems.Any())
+            {
+                int totalRecord = pageItems.Count();
+                int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                for (int i = 1; i <= pageCount; i++)
+                {
+                    var list = pageItems.Skip((i - 1) * pageSize).Take(pageSize).ToList();
+                    action(list);
+                }
+            }
+        }
+        public override string ContainsArray(MethodCallExpressionModel model)
+        {
+            if (model.Args[0].MemberValue == null)
+            {
+                return base.ContainsArray(model);
+            }
+            var inValueIEnumerable = ((IEnumerable)model.Args[0].MemberValue).Cast<object>().ToArray();
+            if (inValueIEnumerable.Count() < 1000)
+            {
+                return base.ContainsArray(model);
+            }
+            else
+            {
+                string result = "";
+                PageEach(inValueIEnumerable, 999, it =>
+                {
+                    model.Args.First().MemberValue = it;
+                    result+= (base.ContainsArray(model) + " OR ");
+
+                });
+                return " ( "+result.TrimEnd(' ').TrimEnd('R').TrimEnd('O')+" ) ";
+            }
+        }
         public override string ToInt64(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -126,6 +163,12 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS VARCHAR2(4000))", parameter.MemberName);
+        }
+
+        public override string ToDecimal(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS Number)", parameter.MemberName);
         }
 
         public override string ToDate(MethodCallExpressionModel model)
