@@ -38,9 +38,9 @@ namespace OrmTest
             Ado();
             Queryable();
             QueryableAsync();
-            Thread();
-            Thread2();
-            Thread3();
+            //Thread();
+            //Thread2();
+            //Thread3();
         }
     }
 }
