@@ -109,6 +109,9 @@ namespace SqlSugar
                 }
             }
             var tableName = GetTableName(entityInfo);
+            this.Context.MappingTables.Add(entityInfo.EntityName,tableName);
+            entityInfo.DbTableName = tableName;
+            entityInfo.Columns.ForEach(it => { it.DbTableName = tableName; });
             var isAny = this.Context.DbMaintenance.IsAnyTable(tableName);
             if (isAny)
                 ExistLogic(entityInfo);
