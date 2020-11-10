@@ -29,6 +29,8 @@ namespace OrmTest.Test
              var id=Enumerable.Range(0, 100).ToList();
          //   id = null;
             Db.Queryable<Order>().Where(it => id.Contains(it.Id)).ToList();
+            Db.Insertable(new Order() { Name = "A", Price = 1, CustomId = 1, CreateTime = DateTime.Now }).ExecuteCommand();
+            var list= Db.Queryable<Order>().Where(it =>Convert.ToDecimal( 1.01) ==Convert.ToDecimal( 1.01)).ToList(); ;
         }
     }
 
