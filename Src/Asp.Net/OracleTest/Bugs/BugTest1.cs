@@ -32,6 +32,8 @@ namespace OrmTest.Test
             Db.Insertable(new Order() { Name = "A", Price = 1, CustomId = 1, CreateTime = DateTime.Now.AddDays(-2) }).ExecuteCommand();
             var list= Db.Queryable<Order>().Where(it =>Convert.ToDecimal( 1.01) ==Convert.ToDecimal( 1.01)).ToList(); ;
             var list2 = Db.Queryable<Order>().Where(it =>it.CreateTime> SqlFunc.DateAdd(SqlFunc.GetDate(),-3)).ToList(); ;
+
+            var x = Db.Ado.SqlQuery<Order>("select null as price from dual").ToList();
         }
     }
 

@@ -260,7 +260,10 @@ namespace SqlSugar
                         method = isNullableType ? getConvertBoolean : getBoolean;
                     break;
                 case CSharpDataType.@string:
-                    CheckType(bind.StringThrow, bindProperyTypeName, validPropertyName, propertyName);
+                    if (this.Context.CurrentConnectionConfig.DbType != DbType.Oracle)
+                    {
+                        CheckType(bind.StringThrow, bindProperyTypeName, validPropertyName, propertyName);
+                    }
                     method = getString;
                     if (bindProperyTypeName == "guid")
                     {
