@@ -64,7 +64,7 @@ namespace SqlSugar
         public async Task<int> ExecuteCommandAsync()
         {
             string sql = _ExecuteCommand();
-            var result =await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            var result = await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             After(sql);
             return result;
         }
@@ -119,7 +119,7 @@ namespace SqlSugar
 
 
 
-        public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false,bool ignoreAllDefaultValue = false)
+        public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false, bool ignoreAllDefaultValue = false)
         {
             Check.Exception(this.UpdateObjs.Count() > 1 && ignoreAllNullColumns, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
             UpdateBuilder.IsOffIdentity = isOffIdentity;
@@ -136,11 +136,11 @@ namespace SqlSugar
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.DbColumnName.ToLower())).ToList();
             return this;
         }
-        public IUpdateable<T> IgnoreColumns(string [] columns)
+        public IUpdateable<T> IgnoreColumns(string[] columns)
         {
             if (columns.HasValue())
             {
-                var ignoreColumns = columns.Select(it => it.ToLower()).ToList() ;
+                var ignoreColumns = columns.Select(it => it.ToLower()).ToList();
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName.ToLower())).ToList();
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.DbColumnName.ToLower())).ToList();
             }
@@ -156,7 +156,7 @@ namespace SqlSugar
             LambdaExpression lambda = setValueExpression as LambdaExpression;
             var expression = lambda.Body;
             Check.Exception(!(expression is BinaryExpression), "Expression  format error");
-            Check.Exception( (expression as BinaryExpression).NodeType!=ExpressionType.Equal, "Expression  format error");
+            Check.Exception((expression as BinaryExpression).NodeType != ExpressionType.Equal, "Expression  format error");
             var leftExpression = (expression as BinaryExpression).Left;
             Check.Exception(!(leftExpression is MemberExpression), "Expression  format error");
             var leftResultString = UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.FieldSingle).GetString();
@@ -234,8 +234,8 @@ namespace SqlSugar
                     UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), value));
                 }
             }
-            this.UpdateBuilder.DbColumnInfoList = UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull==false&&IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
-            CheckTranscodeing();
+            this.UpdateBuilder.DbColumnInfoList = UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
+            CheckTranscodeing(false);
             AppendSets();
             return this;
         }
@@ -261,7 +261,7 @@ namespace SqlSugar
                 UpdateColumns(columns);
             return this;
         }
-        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, string [] columns)
+        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, string[] columns)
         {
             if (isUpdateColumns)
                 UpdateColumns(columns);
@@ -385,7 +385,7 @@ namespace SqlSugar
             {
                 var keys = UpdateBuilder.SetValues.Select(it => SqlBuilder.GetNoTranslationColumnName(it.Key.ToLower())).ToList();
                 var addKeys = keys.Where(k => !this.UpdateBuilder.DbColumnInfoList.Any(it => it.PropertyName.ToLower() == k || it.DbColumnName.ToLower() == k)).ToList();
-                var addItems = this.EntityInfo.Columns.Where(it =>!GetPrimaryKeys().Any(p=>p.ToLower()==it.PropertyName?.ToLower()|| p.ToLower() == it.DbColumnName?.ToLower()) && addKeys.Any(k => it.PropertyName?.ToLower() == k || it.DbColumnName?.ToLower() == k)).ToList();
+                var addItems = this.EntityInfo.Columns.Where(it => !GetPrimaryKeys().Any(p => p.ToLower() == it.PropertyName?.ToLower() || p.ToLower() == it.DbColumnName?.ToLower()) && addKeys.Any(k => it.PropertyName?.ToLower() == k || it.DbColumnName?.ToLower() == k)).ToList();
                 this.UpdateBuilder.DbColumnInfoList.AddRange(addItems.Select(it => new DbColumnInfo() { PropertyName = it.PropertyName, DbColumnName = it.DbColumnName }));
             }
             SetColumnsIndex++;
@@ -438,13 +438,13 @@ namespace SqlSugar
                 ++i;
             }
         }
-        private void CheckTranscodeing()
+        private void CheckTranscodeing(bool checkIsJson = true)
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
             {
                 Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsTranscoding", "SetColumns方式更新不支持IsTranscoding，你可以使用db.Updateable(实体)的方式更新"));
             }
-            if (this.EntityInfo.Columns.Any(it => it.IsJson))
+            if (checkIsJson && this.EntityInfo.Columns.Any(it => it.IsJson))
             {
                 Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsJson", "SetColumns方式更新不支持IsJson，你可以使用db.Updateable(实体)的方式更新"));
             }
@@ -636,7 +636,7 @@ namespace SqlSugar
                 this.Context.MappingTables = OldMappingTableList;
             }
         }
- 
+
 
         private void ValidateVersion()
         {
@@ -723,7 +723,7 @@ namespace SqlSugar
         }
         private bool IsPrimaryKey(DbColumnInfo it)
         {
-            var result= GetPrimaryKeys().Any(p => p.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || p.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase));
+            var result = GetPrimaryKeys().Any(p => p.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || p.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase));
             return result;
         }
 
