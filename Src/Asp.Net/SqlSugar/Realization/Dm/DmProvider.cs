@@ -117,6 +117,11 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
+                if (sqlParameter.DbType == System.Data.DbType.Guid)
+                {
+                    sqlParameter.DbType = System.Data.DbType.String;
+                    sqlParameter.Value = sqlParameter.Value.ToString();
+                }
                 if (parameter.Direction == 0)
                 {
                     parameter.Direction = ParameterDirection.Input;
