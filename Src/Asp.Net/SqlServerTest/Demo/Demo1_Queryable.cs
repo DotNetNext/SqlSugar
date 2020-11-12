@@ -153,6 +153,11 @@ namespace OrmTest
                                      //Child=(select * from parent where ParentId=it.id)
                                      .Mapper(it => it.Child, it => it.Id, it => it.Parent.ParentId)
                                      .ToList();
+
+
+            db.Insertable(new Tree() { Id = 222, Name = "child11", ParentId = 11 }).ExecuteCommand();
+            var tree = db.Queryable<Tree>().ToTree(it=>it.Child,it=>it.ParentId,0);
+      
             //one to one
             var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
 

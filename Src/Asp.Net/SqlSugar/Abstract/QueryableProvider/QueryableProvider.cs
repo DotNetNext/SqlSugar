@@ -716,6 +716,23 @@ namespace SqlSugar
         {
             return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber), typeof(T));
         }
+        public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var list = this.ToList();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
+        }
+
+        public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var list =await this.ToListAsync();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list,rootValue);
+        }
 
         public virtual DataTable ToDataTable()
         {
@@ -1082,6 +1099,63 @@ namespace SqlSugar
         #endregion
 
         #region Private Methods
+        private List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list,object rootValue)
+        {
+            var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
+            var exp = (parentIdExpression as LambdaExpression).Body;
+            if (exp is UnaryExpression)
+            {
+                exp = (exp as UnaryExpression).Operand;
+            }
+            var parentIdName = (exp as MemberExpression).Member.Name;
+            var result = list.Where(it =>
+            {
+
+                var value = it.GetType().GetProperty(parentIdName).GetValue(it);
+                if (rootValue != null)
+                {
+                    return value.ObjToString() == rootValue.ObjToString();
+                }
+                else if (value == null || value.ObjToString() == "" || value.ObjToString() == "0" || value.ObjToString() == Guid.Empty.ToString())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }).ToList();
+            if (result != null && result.Count > 0)
+            {
+                foreach (var item in result)
+                {
+                    var pkValue = item.GetType().GetProperty(pk).GetValue(item);
+                    item.GetType().GetProperty(childName).SetValue(item, GetTreeChildList(list, pkValue, pk, childName, parentIdName));
+                }
+            }
+            return result;
+        }
+
+        public List<T> GetTreeChildList(List<T> alllist, object pkValue, string pkName, string childName, string parentIdName)
+        {
+            var result = alllist.Where(it =>
+            {
+
+                var value = it.GetType().GetProperty(parentIdName).GetValue(it);
+                return value.ObjToString() == pkValue.ObjToString();
+
+            }).ToList();
+            if (result != null && result.Count > 0)
+            {
+                foreach (var item in result)
+                {
+                    var itemPkValue = item.GetType().GetProperty(pkName).GetValue(item);
+                    item.GetType().GetProperty(childName).SetValue(item, GetTreeChildList(alllist, itemPkValue, pkName, childName, parentIdName));
+                }
+            }
+            return result;
+        }
+
         private void _CountEnd(MappingTableList expMapping)
         {
             RestoreMapping();
