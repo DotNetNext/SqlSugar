@@ -378,7 +378,7 @@ namespace SqlSugar
                         this.Context.Result.CurrentParameter = parameter;
                         this.Context.Result.IsLockCurrentParameter = true;
                         parameter.IsAppendTempDate();
-                        this.Expression = item;
+                        this.Expression = expression;
                         this.Start();
                         parameter.IsAppendResult();
                         this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
