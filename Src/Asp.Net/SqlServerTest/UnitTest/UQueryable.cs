@@ -84,6 +84,17 @@ namespace OrmTest
             var list8=Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
 
             var result2 = Db.Queryable<Unit_SYS_USER>().Where(o => o.XH == UserLoginInfo.XH).Select(o => o.XH).ToSql();
+
+            var x = Db.Queryable<BoolTest1>().Select(it => new BoolTest2()
+            {
+                a =it.a
+            }).ToSql();
+            UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest1] ", "Queryable");
+            x = Db.Queryable<BoolTest2>().Select(it => new BoolTest1()
+            {
+                a =  it.a.Value
+            }).ToSql();
+            UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest2] ", "Queryable");
         }
 
 
@@ -359,5 +370,19 @@ namespace OrmTest
         {
             public Guid? Id { get; set; }
         }
+    }
+
+    internal class BoolTest1
+    {
+        public BoolTest1()
+        {
+        }
+
+        public bool a { get; set; }
+    }
+
+    public class BoolTest2
+    {
+        public bool? a { get; set; }
     }
 }
