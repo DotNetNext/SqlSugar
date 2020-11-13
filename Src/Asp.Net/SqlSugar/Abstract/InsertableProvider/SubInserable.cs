@@ -267,6 +267,7 @@ namespace SqlSugar
             if (id.ObjToInt() == 0)
             {
                 var primaryProperty = entityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+                Check.Exception(primaryProperty == null, entityInfo.EntityName + " no primarykey");
                 pkValue = primaryProperty.PropertyInfo.GetValue(InsertObject);
             }
             else

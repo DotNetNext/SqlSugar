@@ -76,4 +76,33 @@ namespace OrmTest
         public int ProvinceId { get; set; }
         public string Name { get; set; }
     }
+
+
+    public class Country1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<Province1> Provinces { get; set; }
+    }
+
+    public class Province1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int CountryId { get; set; }
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<City1> citys { get; set; }
+    }
+
+    public class City1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
+        public int Id { get; set; }
+        public int ProvinceId { get; set; }
+        public string Name { get; set; }
+    }
 }
