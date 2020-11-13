@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class GetSubInsertTree
+    public class SubInsertTree
     {
         public object Expression { get; set; }
-        public List<GetSubInsertTree> ChildExpression { get; set; }
+        public List<SubInsertTree> ChildExpression { get; set; }
     }
 
     internal class SubInsertTreeExpression

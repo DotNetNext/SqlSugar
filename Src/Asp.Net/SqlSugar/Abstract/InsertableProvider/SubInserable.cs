@@ -23,7 +23,7 @@ namespace SqlSugar
             this.SubList.Add(new SubInsertTreeExpression() { Expression = items });
             return this;
         }
-        public ISubInsertable<T> AddSubList(Expression<Func<T, GetSubInsertTree>> tree)
+        public ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree)
         {
             var lamda = (tree as LambdaExpression);
             var memInit = lamda.Body as MemberInitExpression;
@@ -112,7 +112,13 @@ namespace SqlSugar
                     MemberExpression subMemberException;
                     string subMemberName = GetMemberName(item, out subMemberException);
                     string childName = GetChildName(item, subMemberException);
-                    var childList = insertObject.GetType().GetProperty(childName).GetValue(insertObject);
+                    var childListProperty = insertObject.GetType().GetProperty(childName);
+                    if (childListProperty == null)
+                    {
+                        childName = subMemberName;
+                        childListProperty = insertObject.GetType().GetProperty(childName);
+                    }
+                    var childList = childListProperty.GetValue(insertObject);
                     if (childList != null)
                     {
                         if (!(childList is IEnumerable<object>))
@@ -193,9 +199,13 @@ namespace SqlSugar
             {
                 listMember = (subMemberException.Expression as MemberExpression);
             }
-            if (listMember == null)
+            if (listMember == null&& item.Expression is LambdaExpression)
             {
                 listMember = (item.Expression as LambdaExpression).Body as MemberExpression;
+            }
+            if (listMember == null && item.Expression is MemberExpression)
+            {
+                listMember =  item.Expression  as MemberExpression;
             }
             childName = listMember.Member.Name;
             return childName;

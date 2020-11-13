@@ -18,7 +18,6 @@ namespace OrmTest
         [SqlSugar.SugarColumn(IsIgnore = true)]
         public List<TwoItem3> TwoItem3 { get; set; }
     }
-
     public class TwoItem
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
@@ -48,5 +47,33 @@ namespace OrmTest
         public int  Id { get; set; }
         public string Name { get; set; }
         public string TwoItem2Id { get; set; }
+    }
+
+    public class Country
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<Province> Provinces { get; set; }
+    }
+
+    public class Province
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey =true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int CountryId { get; set; }
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<City> citys { get; set; }
+    }
+
+    public class City
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public int ProvinceId { get; set; }
+        public string Name { get; set; }
     }
 }

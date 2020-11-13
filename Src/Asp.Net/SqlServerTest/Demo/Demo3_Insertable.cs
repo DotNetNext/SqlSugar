@@ -98,7 +98,8 @@ namespace OrmTest
                    TwoItem2=new TwoItem2() {
                       Id="1",
                        ThreeItem2=new List<ThreeItem2>(){
-                            new ThreeItem2(){ Name="a", TwoItem2Id="1" }
+                            new ThreeItem2(){ Name="a", TwoItem2Id="1" },
+                            new ThreeItem2(){ Id=2, Name="a2", TwoItem2Id="2" }
                         }
                    },
                    TwoItem=new TwoItem()
@@ -130,19 +131,95 @@ namespace OrmTest
             }
             })
            .AddSubList(it => it.TwoItem.RootId)
-           .AddSubList(it => new GetSubInsertTree()
+           .AddSubList(it => new SubInsertTree()
            {
                   Expression = it.TwoItem2.RootId,
-                  ChildExpression=new List<GetSubInsertTree>() {
-                       new GetSubInsertTree(){
+                  ChildExpression=new List<SubInsertTree>() {
+                       new SubInsertTree(){
                             Expression=it.TwoItem2.ThreeItem2.First().TwoItem2Id
                        }
                   }
            })
            .AddSubList(it => it.TwoItem3)
-         .ExecuteReturnPrimaryKey();
+           .ExecuteReturnPrimaryKey();
 
 
+            db.CodeFirst.InitTables<Country, Province, City>();
+            db.DbMaintenance.TruncateTable("Country");
+            db.DbMaintenance.TruncateTable("Province");
+            db.DbMaintenance.TruncateTable("City");
+            db.Insertable(new List<Country>()
+            {
+                 new Country(){
+                     Id=1,
+                      Name="中国",
+                       Provinces=new List<Province>(){
+                            new Province{
+                                 Id=1001,
+                                 Name="江苏",
+                                  citys=new List<City>(){
+                                       new City(){ Id=1001001, Name="南通" },
+                                       new City(){ Id=1001002, Name="南京" }
+                                  }
+                            },
+                           new Province{
+                                 Id=1002,
+                                 Name="上海",
+                                  citys=new List<City>(){
+                                       new City(){ Id=1002001, Name="徐汇" },
+                                       new City(){ Id=1002002, Name="普陀" }
+                                  }
+                            },
+                           new Province{
+                                 Id=1003,
+                                 Name="北京",
+                                 citys=new List<City>(){
+                                       new City(){ Id=1003001, Name="北京A" },
+                                       new City(){ Id=1003002, Name="北京B" }
+                                  }
+                            }
+                       }
+                 },
+                 new Country(){
+                      Name="美国",
+                      Id=2,
+                      Provinces=new List<Province>()
+                      {
+                          new Province(){
+                               Name="美国小A",
+                               Id=20001
+                          },
+                         new Province(){
+                               Name="美国小b",
+                               Id=20002
+                          }
+                      }
+                  },
+                 new Country(){
+                      Name="英国",
+                      Id=3
+                  }
+            })
+            .AddSubList(it => new SubInsertTree()
+            {
+                Expression = it.Provinces.First().CountryId,
+                ChildExpression = new List<SubInsertTree>() {
+                      new SubInsertTree(){
+                           Expression=it.Provinces.First().citys.First().ProvinceId
+                      }
+                 }
+            })
+            .ExecuteReturnPrimaryKey();
+
+            var list= db.Queryable<Country>()
+                                 .Mapper(it => it.Provinces, it => it.Provinces.First().CountryId)
+                                 .Mapper(it=> {
+                                     foreach (var item in it.Provinces)
+                                     {
+                                         item.citys = db.Queryable<City>().Where(y => y.ProvinceId == item.Id).ToList();
+                                     }
+                                 }) 
+                                 .ToList();
 
             Console.WriteLine("#### Insertable End ####");
 
