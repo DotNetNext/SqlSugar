@@ -25,16 +25,24 @@ namespace SqlSugar
         }
         public ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree)
         {
-            var lamda = (tree as LambdaExpression);
-            var memInit = lamda.Body as MemberInitExpression;
-            if (memInit.Bindings != null)
+            try
             {
- 
-                MemberAssignment memberAssignment = (MemberAssignment)memInit.Bindings[0];
-                SubList.Add(new SubInsertTreeExpression() {
-                     Expression= memberAssignment.Expression,
-                     Childs= GetSubInsertTree(((MemberAssignment)memInit.Bindings[1]).Expression)
-                });
+                var lamda = (tree as LambdaExpression);
+                var memInit = lamda.Body as MemberInitExpression;
+                if (memInit.Bindings != null)
+                {
+
+                    MemberAssignment memberAssignment = (MemberAssignment)memInit.Bindings[0];
+                    SubList.Add(new SubInsertTreeExpression()
+                    {
+                        Expression = memberAssignment.Expression,
+                        Childs = GetSubInsertTree(((MemberAssignment)memInit.Bindings[1]).Expression)
+                    });
+                }
+            }
+            catch  
+            {
+                Check.Exception(true, tree.ToString() + " format error ");
             }
             return this;
         }
