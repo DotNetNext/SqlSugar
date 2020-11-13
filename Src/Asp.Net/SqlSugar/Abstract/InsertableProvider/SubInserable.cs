@@ -75,7 +75,28 @@ namespace SqlSugar
 
         public object ExecuteReturnPrimaryKey()
         {
+            var isNoTrean = this.Context.Ado.Transaction == null;
+            try
+            {
+                if (isNoTrean)
+                    this.Context.Ado.BeginTran();
 
+                var result = Execute();
+
+                if (isNoTrean)
+                    this.Context.Ado.CommitTran();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                if (isNoTrean)
+                    this.Context.Ado.RollbackTran();
+                throw ex;
+            }
+        }
+
+        private object Execute()
+        {
             if (InsertObjects != null && InsertObjects.Count() > 0)
             {
                 var isIdEntity = IsIdEntity(this.Entity);
@@ -90,7 +111,7 @@ namespace SqlSugar
                     {
                         id = this.Context.Insertable(InsertObject).ExecuteReturnIdentity();
                     }
-                    var pk = GetPrimaryKey(this.Entity,InsertObject, id);
+                    var pk = GetPrimaryKey(this.Entity, InsertObject, id);
                     AddChildList(this.SubList, InsertObject, pk);
                 }
                 return InsertObjects.Count();
