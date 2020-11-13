@@ -262,21 +262,21 @@ namespace SqlSugar
             {
                 return new SubInsertable<T>();
             }
-            string subMemberName;
-            object sublist;
             SubInsertable<T> result = new SubInsertable<T>();
-            result.GetList(this.InsertObjs,items, out subMemberName, out sublist);
             result.InsertObjects = this.InsertObjs;
             result.Context = this.Context;
-            result.SubList = new Dictionary<string, object>();
-            result.SubList.Add(subMemberName, sublist);
+            result.SubList = new List<SubInsertTreeExpression>();
+            result.SubList.Add(new SubInsertTreeExpression() { Expression= items });
             result.InsertBuilder = this.InsertBuilder;
             result.Pk = GetPrimaryKeys().First();
             result.Entity = this.EntityInfo;
             return result;
         }
+        public ISubInsertable<T> AddSubList(Expression<Func<T, GetSubInsertTree>> tree)
+        {
+            return null;
+        }
 
-  
         #endregion
 
         #region Protected Methods

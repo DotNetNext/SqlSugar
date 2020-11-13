@@ -88,6 +88,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Entities\SubInsertTree.cs" />
     <Compile Include="Infrastructure\KdbndpInserttable.cs" />
     <Compile Include="Interface\ISubInsertable.cs" />
     <Compile Include="Abstract\InsertableProvider\SubInserable.cs" />

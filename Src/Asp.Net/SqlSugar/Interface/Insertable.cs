@@ -29,7 +29,8 @@ namespace SqlSugar
         IInsertable<T> IgnoreColumns(params string[]columns);
         IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false);
 
-        ISubInsertable<T> AddSubList(Expression<Func<T, object>> SubForeignKey);
+        ISubInsertable<T> AddSubList(Expression<Func<T, object>> subForeignKey);
+        ISubInsertable<T> AddSubList(Expression<Func<T, GetSubInsertTree>> tree);
 
         IInsertable<T> EnableDiffLogEvent(object businessData = null);
         IInsertable<T> RemoveDataCache();

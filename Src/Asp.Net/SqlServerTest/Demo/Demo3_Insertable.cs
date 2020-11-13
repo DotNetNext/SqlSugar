@@ -56,7 +56,13 @@ namespace OrmTest
             };
             db.Insertable(insertObjs).UseSqlServer().ExecuteBlueCopy();
 
-            db.CodeFirst.InitTables<SubInsertTest, SubInsertTestItem, SubInsertTestItem1, SubInsertTestItem2>();
+            db.CodeFirst.InitTables<RootTable0, TwoItem, TwoItem2, TwoItem3>();
+            db.CodeFirst.InitTables<ThreeItem2>();
+            db.DbMaintenance.TruncateTable("RootTable0");
+            db.DbMaintenance.TruncateTable("TwoItem");
+            db.DbMaintenance.TruncateTable("TwoItem2");
+            db.DbMaintenance.TruncateTable("TwoItem3");
+            db.DbMaintenance.TruncateTable("ThreeItem2");
             Console.WriteLine("SubInsert Start");
 
             db.Insertable(new Order()
@@ -72,41 +78,72 @@ namespace OrmTest
                            OrderId=0,
                             Price=1,
                              ItemId=1
+                       },
+                      new OrderItem(){
+                           CreateTime=DateTime.Now,
+                           OrderId=0,
+                            Price=2,
+                             ItemId=2
                        }
                  }
             })
             .AddSubList(it => it.Items.First().OrderId).ExecuteReturnPrimaryKey();
 
-            db.Insertable(new List<SubInsertTest>() {
-                new SubInsertTest()
+    
+
+            db.Insertable(new List<RootTable0>() {
+                new RootTable0()
             {
                  Name="aa",
-                  SubInsertTestItem1=new SubInsertTestItem1() {
-                      a="nn"
-                  },
-                   SubInsertTestItem=new SubInsertTestItem()
+                   TwoItem2=new TwoItem2() {
+                      Id="1",
+                       ThreeItem2=new List<ThreeItem2>(){
+                            new ThreeItem2(){ Name="a", TwoItem2Id="1" }
+                        }
+                   },
+                   TwoItem=new TwoItem()
                    {
-                       Name ="item" ,
-                       TestId=2
+                       Name ="itema" ,
+                       RootId=2
+                   },
+                   TwoItem3=new List<TwoItem3>(){
+                       new TwoItem3(){  Id=0, Name="a",Desc="" },
+
                    }
             },
-                new SubInsertTest()
+                new RootTable0()
             {
-                 Name="aa",
-                  SubInsertTestItem1=new SubInsertTestItem1() {
-                      a="nn"
+                 Name="bb",
+                   TwoItem2=new TwoItem2() {
+                      Id="2"
                   },
-                   SubInsertTestItem=new SubInsertTestItem()
+                    TwoItem=new TwoItem()
                    {
-                       Name ="item" ,
-                       TestId=2
+                       Name ="itemb" ,
+                       RootId=2,
+
+                   },
+                    TwoItem3=new List<TwoItem3>(){
+                       new TwoItem3(){ Id=1, Name="b",Desc="" },
+                              new TwoItem3(){ Id=2, Name="b1",Desc="1" },
                    }
             }
             })
-           .AddSubList(it => it.SubInsertTestItem.TestId)
-           .AddSubList(it => it.SubInsertTestItem1)
-            .ExecuteReturnPrimaryKey();
-     
+           .AddSubList(it => it.TwoItem.RootId)
+           .AddSubList(it => new GetSubInsertTree()
+           {
+                  Expression = it.TwoItem2.RootId,
+                  ChildExpression=new List<GetSubInsertTree>() {
+                       new GetSubInsertTree(){
+                            Expression=it.TwoItem2.ThreeItem2.First().TwoItem2Id
+                       }
+                  }
+           })
+           .AddSubList(it => it.TwoItem3)
+         .ExecuteReturnPrimaryKey();
+
+
+
             Console.WriteLine("#### Insertable End ####");
 
         }
