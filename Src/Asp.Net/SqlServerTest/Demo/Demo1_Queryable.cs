@@ -124,6 +124,11 @@ namespace OrmTest
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
             var index= db.Queryable<Order>().Select(it => SqlFunc.CharIndex("a", "cccacc")).First();
+            var list = db.Queryable<Order>().Select(it =>new ViewOrder()
+            {
+
+                Id = SqlFunc.AggregateSum(SqlFunc.IF(it.Id > 0).Return(1).End(0))
+            }).ToList();
 
             Console.WriteLine("#### SqlFunc  End ####");
         }
