@@ -36,4 +36,60 @@ namespace OrmTest
         public int  xid { get; set; }
         public string a { get; set; }
     }
+    public class Country
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<Province> Provinces { get; set; }
+    }
+
+    public class Province
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int CountryId { get; set; }
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<City> citys { get; set; }
+    }
+
+    public class City
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public int ProvinceId { get; set; }
+        public string Name { get; set; }
+    }
+
+
+    public class Country1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true,   OracleSequenceName = "seq_id")]
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<Province1> Provinces { get; set; }
+    }
+
+    public class Province1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, OracleSequenceName = "seq_id")]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int CountryId { get; set; }
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public List<City1> citys { get; set; }
+    }
+
+    public class City1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, OracleSequenceName ="seq_id")]
+        public int Id { get; set; }
+        public int ProvinceId { get; set; }
+        public string Name { get; set; }
+    }
 }

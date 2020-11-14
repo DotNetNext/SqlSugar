@@ -129,7 +129,7 @@ namespace SqlSugar
 
         private bool IsIdEntity(EntityInfo entity)
         {
-            return entity.Columns.Where(it => it.IsIdentity).Count() > 0;
+            return entity.Columns.Where(it => it.IsIdentity||it.OracleSequenceName.HasValue()).Count() > 0;
         }
 
         private void AddChildList(List<SubInsertTreeExpression> items, object insertObject, object pkValue)
@@ -183,6 +183,11 @@ namespace SqlSugar
                             if (isIdentity)
                             {
                                 id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
+                                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle&&id==0)
+                                {
+                                    var seqName=entityInfo.Columns.First(it => it.OracleSequenceName.HasValue())?.OracleSequenceName;
+                                    id = this.Context.Ado.GetInt("select "+seqName+".currval from dual");
+                                }
                             }
                             var entity = entityList[i];
                             var pk = GetPrimaryKey(entityInfo,entity, id);
