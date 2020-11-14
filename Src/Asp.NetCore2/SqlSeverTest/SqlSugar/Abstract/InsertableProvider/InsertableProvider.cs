@@ -262,21 +262,37 @@ namespace SqlSugar
             {
                 return new SubInsertable<T>();
             }
-            string subMemberName;
-            object sublist;
             SubInsertable<T> result = new SubInsertable<T>();
-            result.GetList(this.InsertObjs,items, out subMemberName, out sublist);
             result.InsertObjects = this.InsertObjs;
             result.Context = this.Context;
-            result.SubList = new Dictionary<string, object>();
-            result.SubList.Add(subMemberName, sublist);
+            result.SubList = new List<SubInsertTreeExpression>();
+            result.SubList.Add(new SubInsertTreeExpression() { Expression= items });
             result.InsertBuilder = this.InsertBuilder;
             result.Pk = GetPrimaryKeys().First();
             result.Entity = this.EntityInfo;
             return result;
         }
+        public ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree)
+        {
+            Check.Exception(GetPrimaryKeys().Count == 0, typeof(T).Name + " need Primary key");
+            Check.Exception(GetPrimaryKeys().Count > 1, typeof(T).Name + "Multiple primary keys are not supported");
+            //Check.Exception(this.InsertObjs.Count() > 1, "SubInserable No Support Insertable(List<T>)");
+            //Check.Exception(items.ToString().Contains(".First().")==false, items.ToString()+ " not supported ");
+            if (this.InsertObjs == null || this.InsertObjs.Count() == 0)
+            {
+                return new SubInsertable<T>();
+            }
+            SubInsertable<T> result = new SubInsertable<T>();
+            result.InsertObjects = this.InsertObjs;
+            result.Context = this.Context;
+            result.SubList = new List<SubInsertTreeExpression>();
+            result.InsertBuilder = this.InsertBuilder;
+            result.Pk = GetPrimaryKeys().First();
+            result.Entity = this.EntityInfo;
+            result.AddSubList(tree);
+            return result;
+        }
 
-  
         #endregion
 
         #region Protected Methods

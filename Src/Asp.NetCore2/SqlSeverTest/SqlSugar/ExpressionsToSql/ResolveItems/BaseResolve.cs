@@ -343,6 +343,10 @@ namespace SqlSugar
                     this.Context.Result.IsLockCurrentParameter = true;
                     parameter.IsAppendTempDate();
                     this.Expression = item;
+                    if (IsBoolValue(item))
+                    {
+                        this.Expression = (item as MemberExpression).Expression;
+                    }
                     this.Start();
                     parameter.IsAppendResult();
                     this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
@@ -378,7 +382,7 @@ namespace SqlSugar
                         this.Context.Result.CurrentParameter = parameter;
                         this.Context.Result.IsLockCurrentParameter = true;
                         parameter.IsAppendTempDate();
-                        this.Expression = item;
+                        this.Expression = expression;
                         this.Start();
                         parameter.IsAppendResult();
                         this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
@@ -491,6 +495,16 @@ namespace SqlSugar
                 Check.ThrowNotSupportedException(item.GetType().Name);
             }
         }
+
+        private static bool IsBoolValue(Expression item)
+        {
+            return item.Type == UtilConstants.BoolType &&
+                                   (item is MemberExpression) &&
+                                   (item as MemberExpression).Expression != null &&
+                                   (item as MemberExpression).Expression.Type == typeof(bool?) &&
+                                    (item as MemberExpression).Member.Name == "Value";
+        }
+
         protected static bool IsConvert(Expression item)
         {
             return item is UnaryExpression && item.NodeType == ExpressionType.Convert;

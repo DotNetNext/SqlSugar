@@ -79,6 +79,7 @@ namespace SqlSugar
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("character varying",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("geometry",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("name",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),

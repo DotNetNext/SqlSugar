@@ -133,7 +133,8 @@ namespace SqlSugar
         Task<string> ToJsonPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber);
         KeyValuePair<string, List<SugarParameter>> ToSql();
 
-
+        List<T> ToTree(Expression<Func<T,IEnumerable<object>>> childListExpression, Expression<Func<T,object>> parentIdExpression,object rootValue);
+        Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue);
         DataTable ToDataTable();
         Task<DataTable> ToDataTableAsync();
         DataTable ToDataTablePage(int pageIndex, int pageSize);

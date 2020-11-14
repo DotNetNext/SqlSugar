@@ -10,176 +10,220 @@ namespace SqlSugar
     public class SubInsertable<T> : ISubInsertable<T> where T : class, new()
     {
         internal EntityInfo Entity { get; set; }
-        internal Dictionary<string, object> SubList { get; set; }
+        internal List<SubInsertTreeExpression> SubList { get; set; }
         internal SqlSugarProvider Context { get; set; }
-        internal T [] InsertObjects { get; set; }
+        internal T[] InsertObjects { get; set; }
         internal InsertBuilder InsertBuilder { get; set; }
         internal string Pk { get; set; }
 
         public ISubInsertable<T> AddSubList(Expression<Func<T, object>> items)
         {
-            if (InsertObjects != null&&InsertObjects.Count() > 0)
+            if (this.SubList == null)
+                this.SubList = new List<SubInsertTreeExpression>();
+            this.SubList.Add(new SubInsertTreeExpression() { Expression = items });
+            return this;
+        }
+        public ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree)
+        {
+            try
             {
-                string subMemberName;
-                object sublist;
-                GetList(InsertObjects, items, out subMemberName, out sublist);
-                if (!this.SubList.ContainsKey(subMemberName))
+                var lamda = (tree as LambdaExpression);
+                var memInit = lamda.Body as MemberInitExpression;
+                if (memInit.Bindings != null)
                 {
-                    this.SubList.Add(subMemberName, sublist);
+
+                    MemberAssignment memberAssignment = (MemberAssignment)memInit.Bindings[0];
+                    SubList.Add(new SubInsertTreeExpression()
+                    {
+                        Expression = memberAssignment.Expression,
+                        Childs = GetSubInsertTree(((MemberAssignment)memInit.Bindings[1]).Expression)
+                    });
                 }
+            }
+            catch  
+            {
+                Check.Exception(true, tree.ToString() + " format error ");
             }
             return this;
         }
 
+        private List<SubInsertTreeExpression> GetSubInsertTree(Expression expression)
+        {
+            List<SubInsertTreeExpression> resul = new List<SubInsertTreeExpression>();
+          
+            if (expression is ListInitExpression)
+            {
+                ListInitExpression exp = expression as ListInitExpression;
+                foreach (var item in exp.Initializers)
+                {
+                    SubInsertTreeExpression tree = new SubInsertTreeExpression();
+                    var memInit = item.Arguments[0] as MemberInitExpression;
+                    if (memInit.Bindings != null)
+                    {
+                        MemberAssignment memberAssignment = (MemberAssignment)memInit.Bindings[0];
+                        tree.Expression = memberAssignment.Expression;
+                    }
+                    resul.Add(tree);
+                }
+            }
+            else
+            {
+                
+            }
+            return resul;
+        }
+
         public object ExecuteReturnPrimaryKey()
         {
-       
-            if (InsertObjects != null && InsertObjects.Count()>0)
+            var isNoTrean = this.Context.Ado.Transaction == null;
+            try
             {
-                int count = 1;
-                foreach (var InsertObject in InsertObjects)
-                {
-                    List<ConditionalModel> conModel = new List<ConditionalModel>();
-                    int id = this.Context.Insertable(InsertObject).ExecuteReturnIdentity();
-                    object pkValue = null;
-                    var qureyable = this.Context.Queryable<T>();
-                    if (id.ObjToInt() == 0)
-                    {
-                        var primaryProperty = this.Entity.Columns.FirstOrDefault(it =>
-                                                                                        it.PropertyName.Equals(this.Pk, StringComparison.CurrentCultureIgnoreCase) ||
-                                                                                        it.DbColumnName.Equals(this.Pk, StringComparison.CurrentCultureIgnoreCase)
-                                                                                     );
-                        pkValue = primaryProperty.PropertyInfo.GetValue(InsertObject);
-                        qureyable.In(pkValue);
-                    }
-                    else
-                    {
-                        qureyable.In(id);
-                        pkValue = id;
-                    }
-                    var data = qureyable.First();
-                    foreach (var item in this.SubList)
-                    {
+                if (isNoTrean)
+                    this.Context.Ado.BeginTran();
 
-                        Dictionary<string, object> insertDictionary = new Dictionary<string, object>();
-                        if (item.Value == null)
-                        {
-                            continue;
-                        }
-                        EntityInfo subEntity = null;
-                        if (item.Value is IEnumerable<object>)
-                        {
-                            var list = item.Value as IEnumerable<object>;
-                            if (list.Count() == 0)
-                            {
-                                continue;
-                            }
-                            var type = list.First().GetType();
-                            this.Context.InitMappingInfo(type);
-                            subEntity = this.Context.EntityMaintenance.GetEntityInfo(type);
-                            foreach (var sbItem in list)
-                            {
-                                SetItems(insertDictionary, sbItem, subEntity, item.Key, pkValue);
-                            }
-                        }
-                        else if (item.Value.GetType().IsClass())
-                        {
-                            var type = item.Value.GetType();
-                            this.Context.InitMappingInfo(type);
-                            subEntity = this.Context.EntityMaintenance.GetEntityInfo(type);
-                            SetItems(insertDictionary, item.Value, subEntity, item.Key, pkValue);
-                        }
-                        count += this.Context.Insertable(insertDictionary).AS(subEntity.DbTableName).ExecuteCommand();
-                    }
-                }
-                return count;
+                var result = Execute();
+
+                if (isNoTrean)
+                    this.Context.Ado.CommitTran();
+                return result;
             }
-            else
+            catch (Exception ex)
             {
-                return 0;
+                if (isNoTrean)
+                    this.Context.Ado.RollbackTran();
+                throw ex;
             }
-     
         }
-        public async Task<object> ExecuteReturnPrimaryKeyAsync()
-        {
 
+        private object Execute()
+        {
             if (InsertObjects != null && InsertObjects.Count() > 0)
             {
-                int count = 1;
+                var isIdEntity = IsIdEntity(this.Entity);
+                if (!isIdEntity)
+                {
+                    this.Context.Insertable(InsertObjects).ExecuteCommand();
+                }
                 foreach (var InsertObject in InsertObjects)
                 {
-                    List<ConditionalModel> conModel = new List<ConditionalModel>();
-                    int id = await this.Context.Insertable(InsertObject).ExecuteReturnIdentityAsync();
-                    object pkValue = null;
-                    var qureyable = this.Context.Queryable<T>();
-                    if (id.ObjToInt() == 0)
+                    int id = 0;
+                    if (isIdEntity)
                     {
-                        var primaryProperty = this.Entity.Columns.FirstOrDefault(it =>
-                                                                                        it.PropertyName.Equals(this.Pk, StringComparison.CurrentCultureIgnoreCase) ||
-                                                                                        it.DbColumnName.Equals(this.Pk, StringComparison.CurrentCultureIgnoreCase)
-                                                                                     );
-                        pkValue = primaryProperty.PropertyInfo.GetValue(InsertObject);
-                        qureyable.In(pkValue);
+                        id = this.Context.Insertable(InsertObject).ExecuteReturnIdentity();
                     }
-                    else
-                    {
-                        qureyable.In(id);
-                        pkValue = id;
-                    }
-                    var data =await qureyable.FirstAsync();
-                    foreach (var item in this.SubList)
-                    {
-
-                        Dictionary<string, object> insertDictionary = new Dictionary<string, object>();
-                        if (item.Value == null)
-                        {
-                            continue;
-                        }
-                        EntityInfo subEntity = null;
-                        if (item.Value is IEnumerable<object>)
-                        {
-                            var list = item.Value as IEnumerable<object>;
-                            if (list.Count() == 0)
-                            {
-                                continue;
-                            }
-                            var type = list.First().GetType();
-                            this.Context.InitMappingInfo(type);
-                            subEntity = this.Context.EntityMaintenance.GetEntityInfo(type);
-                            foreach (var sbItem in list)
-                            {
-                                SetItems(insertDictionary, sbItem, subEntity, item.Key, pkValue);
-                            }
-                        }
-                        else if (item.Value.GetType().IsClass())
-                        {
-                            var type = item.Value.GetType();
-                            this.Context.InitMappingInfo(type);
-                            subEntity = this.Context.EntityMaintenance.GetEntityInfo(type);
-                            SetItems(insertDictionary, item.Value, subEntity, item.Key, pkValue);
-                        }
-                        count +=await this.Context.Insertable(insertDictionary).AS(subEntity.DbTableName).ExecuteCommandAsync();
-                    }
+                    var pk = GetPrimaryKey(this.Entity, InsertObject, id);
+                    AddChildList(this.SubList, InsertObject, pk);
                 }
-                return count;
+                return InsertObjects.Count();
             }
             else
             {
                 return 0;
             }
-
         }
-        public void GetList(T[] inserts,Expression<Func<T, object>> items, out string subMemberName, out object sublist)
+
+        public Task<object> ExecuteReturnPrimaryKeyAsync()
         {
-            var lambdaExpression = (items as LambdaExpression).Body;
-            if (lambdaExpression is UnaryExpression)
+            return Task.FromResult(ExecuteReturnPrimaryKey());
+        }
+
+        private bool IsIdEntity(EntityInfo entity)
+        {
+            return entity.Columns.Where(it => it.IsIdentity||it.OracleSequenceName.HasValue()).Count() > 0;
+        }
+
+        private void AddChildList(List<SubInsertTreeExpression> items, object insertObject, object pkValue)
+        {
+            if (items != null)
             {
-                lambdaExpression = (lambdaExpression as UnaryExpression).Operand;
+                foreach (var item in items)
+                {
+                    MemberExpression subMemberException;
+                    string subMemberName = GetMemberName(item, out subMemberException);
+                    string childName = GetChildName(item, subMemberException);
+                    var childListProperty = insertObject.GetType().GetProperty(childName);
+                    if (childListProperty == null)
+                    {
+                        childName = subMemberName;
+                        childListProperty = insertObject.GetType().GetProperty(childName);
+                    }
+                    var childList = childListProperty.GetValue(insertObject);
+                    if (childList != null)
+                    {
+                        if (!(childList is IEnumerable<object>))
+                        {
+                            childList = new List<object>() { childList };
+                        }
+                        if (!string.IsNullOrEmpty(subMemberName) &&subMemberName!=childName)
+                        {
+                            foreach (var child in childList as IEnumerable<object>)
+                            {
+                                child.GetType().GetProperty(subMemberName).SetValue(child, pkValue);
+                            }
+                        }
+                        var type = (childList as IEnumerable<object>).First().GetType();
+                        this.Context.InitMappingInfo(type);
+                        var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
+                        var isIdentity = IsIdEntity(entityInfo);
+                        var tableName = entityInfo.DbTableName;
+                        List<Dictionary<string, object>> insertList = new List<Dictionary<string, object>>();
+                        var entityList = (childList as IEnumerable<object>).ToList();
+                        foreach (var child in entityList)
+                        {
+                            insertList.Add(GetInsertDictionary(child, entityInfo));
+                        }
+                        if (!isIdentity)
+                        {
+                            this.Context.Insertable(insertList).AS(tableName).ExecuteCommand();
+                        }
+                        int i = 0;
+                        foreach (var insert in insertList)
+                        {
+                            int id = 0;
+                            if (isIdentity)
+                            {
+                                id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
+                                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle&&id==0)
+                                {
+                                    var seqName=entityInfo.Columns.First(it => it.OracleSequenceName.HasValue())?.OracleSequenceName;
+                                    id = this.Context.Ado.GetInt("select "+seqName+".currval from dual");
+                                }
+                            }
+                            var entity = entityList[i];
+                            var pk = GetPrimaryKey(entityInfo,entity, id);
+                            AddChildList(item.Childs, entity, pk);
+                            ++i;
+                        }
+                    }
+                }
             }
-            MemberExpression subMemberException = lambdaExpression as MemberExpression;
-            subMemberName = subMemberException.Member.Name;
+        }
+        private Dictionary<string, object> GetInsertDictionary(object insetObject, EntityInfo subEntity)
+        {
+            Dictionary<string, object> insertDictionary = new Dictionary<string, object>();
+            foreach (var item in subEntity.Columns)
+            {
+                if (item.IsIdentity || item.IsIgnore)
+                {
+
+                }
+                else if (!string.IsNullOrEmpty(item.OracleSequenceName) && this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                {
+                    var value = "{SugarSeq:=}" + item.OracleSequenceName + ".nextval{SugarSeq:=}";
+                    insertDictionary.Add(item.DbColumnName, value);
+                    continue;
+                }
+                else
+                {
+                    insertDictionary.Add(item.DbColumnName, item.PropertyInfo.GetValue(insetObject));
+                }
+            }
+            return insertDictionary;
+        }
+        private static string GetChildName(SubInsertTreeExpression item, MemberExpression subMemberException)
+        {
+            string childName;
             MemberExpression listMember = null;
-            sublist = null;
             if (subMemberException.Expression is MethodCallExpression)
             {
                 listMember = (subMemberException.Expression as MethodCallExpression).Arguments.First() as MemberExpression;
@@ -189,34 +233,54 @@ namespace SqlSugar
             {
                 listMember = (subMemberException.Expression as MemberExpression);
             }
-            if (listMember == null)
+            if (listMember == null&& item.Expression is LambdaExpression)
             {
-                listMember = (items as LambdaExpression).Body as MemberExpression;
-                subMemberName = Guid.NewGuid().ToString();
+                listMember = (item.Expression as LambdaExpression).Body as MemberExpression;
             }
-            sublist = inserts.First().GetType().GetProperty(listMember.Member.Name).GetValue(inserts.First());
+            if (listMember == null && item.Expression is MemberExpression)
+            {
+                listMember =  item.Expression  as MemberExpression;
+            }
+            childName = listMember.Member.Name;
+            return childName;
         }
-        private void SetItems(Dictionary<string, object> insertDictionary, object sbItem, EntityInfo subEntity,string key,object pkValue)
+
+        private static string GetMemberName(SubInsertTreeExpression item, out MemberExpression subMemberException)
         {
-            foreach (var item in subEntity.Columns)
+            string subMemberName = null;
+            Expression lambdaExpression;
+            if (item.Expression is LambdaExpression)
             {
-                if (item.IsIdentity||item.IsIgnore)
-                    continue;
-                if (!string.IsNullOrEmpty(item.OracleSequenceName)&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle)
-                {
-                    var value = "{SugarSeq:=}"+item.OracleSequenceName+ ".nextval{SugarSeq:=}";
-                    insertDictionary.Add(item.DbColumnName, value);
-                    continue;
-                }
-                if (item.PropertyInfo.Name == key)
-                {
-                    insertDictionary.Add(item.DbColumnName, pkValue);
-                }
-                else
-                {
-                    insertDictionary.Add(item.DbColumnName, item.PropertyInfo.GetValue(sbItem));
-                }
+                lambdaExpression = (item.Expression as LambdaExpression).Body;
             }
+            else
+            {
+                lambdaExpression = item.Expression;
+            }
+            if (lambdaExpression is UnaryExpression)
+            {
+                lambdaExpression = (lambdaExpression as UnaryExpression).Operand;
+            }
+            subMemberException = lambdaExpression as MemberExpression;
+            subMemberName = subMemberException.Member.Name;
+            return subMemberName;
+        }
+
+        private object GetPrimaryKey(EntityInfo entityInfo,object InsertObject, int id)
+        {
+            object pkValue;
+            if (id.ObjToInt() == 0)
+            {
+                var primaryProperty = entityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+                Check.Exception(primaryProperty == null, entityInfo.EntityName + " no primarykey");
+                pkValue = primaryProperty.PropertyInfo.GetValue(InsertObject);
+            }
+            else
+            {
+                pkValue = id;
+            }
+
+            return pkValue;
         }
     }
 }

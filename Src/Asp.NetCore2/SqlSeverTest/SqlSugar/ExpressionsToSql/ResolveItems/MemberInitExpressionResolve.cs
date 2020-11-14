@@ -100,9 +100,9 @@ namespace SqlSugar
                 {
                     try
                     {
-                        parameter.Context.Result.Append(base.Context.GetEqString(memberName,AppendParameter(ExpressionTool.DynamicInvoke(item).ObjToBool())));
+                        parameter.Context.Result.Append(base.Context.GetEqString(memberName, AppendParameter(ExpressionTool.DynamicInvoke(item).ObjToBool())));
                     }
-                    catch  
+                    catch
                     {
                         throw new NotSupportedException(item.ToString());
                     }
@@ -123,7 +123,7 @@ namespace SqlSugar
                         this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     }
                 }
-                else if (IsConst(item)&&IsConvert(item)&&UtilMethods.IsNullable(item.Type) && UtilMethods.GetUnderType(item.Type)==UtilConstants.BoolType)
+                else if (IsConst(item) && IsConvert(item) && UtilMethods.IsNullable(item.Type) && UtilMethods.GetUnderType(item.Type) == UtilConstants.BoolType)
                 {
                     item = (item as UnaryExpression).Operand;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, GetNewExpressionValue(item)));
@@ -204,7 +204,8 @@ namespace SqlSugar
                     base.Expression = item;
                     base.Start();
                     var subSql = base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString());
-                    if (subSql.Contains(",")) {
+                    if (subSql.Contains(","))
+                    {
                         subSql = subSql.Replace(",", UtilConstants.ReplaceCommaKey);
                     }
                     if (ResolveExpressType.Update == this.Context.ResolveType)
@@ -220,7 +221,7 @@ namespace SqlSugar
                         }
                     }
                     parameter.Context.Result.Append(subSql);
-                });        
+                });
             }
             else
             {
