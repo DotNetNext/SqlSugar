@@ -38,12 +38,28 @@ namespace OrmTest
             //sql  
             var dt2 = db.Ado.GetDataTable("select * from [order] where @id>0  or name=@name", new { id = 1, name = "2" });
 
-            //Stored Procedure
-            //var dt3 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { name = "张三", age = 0 }); 
-            //var nameP = new SugarParameter("@name", "张三");
-            //var ageP = new SugarParameter("@age", null, true);//isOutput=true
-            //var dt4 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", nameP, ageP);
 
+            //create sp
+            db.Ado.ExecuteCommand(@"
+                    if object_id('up_user') is not null
+                    drop proc up_user;");
+            db.Ado.ExecuteCommand(@"     
+                    create proc up_user
+                    @id int,
+                    @name varchar(10) ='' output
+                    as
+               
+                    begin
+                       set @name='abc'
+                       select @id as id
+                    end
+                    ");
+            //get output
+            var dt3 = db.Ado.UseStoredProcedure().GetDataTable("up_user", new { name = "张三", id = 0 });
+            var IdP = new SugarParameter("@id", 1);
+            var NameP = new SugarParameter("@name", null, true);//isOutput=true
+            var dt4 = db.Ado.UseStoredProcedure().GetDataTable("up_user", IdP, NameP);
+            var outputValue = NameP.Value;
 
 
             //There are many methods to under db.ado

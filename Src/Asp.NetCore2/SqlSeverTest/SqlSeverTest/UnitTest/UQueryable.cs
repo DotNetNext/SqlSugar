@@ -9,6 +9,7 @@ namespace OrmTest
 {
     public partial class NewUnitTest
     {
+        public static Unit_SYS_USER UserLoginInfo => new Unit_SYS_USER() { XH = "10010" };
         public static void Queryable()
         {
 
@@ -78,8 +79,58 @@ namespace OrmTest
                 CheckMan = saleOrderInfo.CheckMan,
                 CheckTime = DateTime.Now
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+
+            var ids = Enumerable.Range(1, 11).ToList();
+            var list8=Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
+
+            var result2 = Db.Queryable<Unit_SYS_USER>().Where(o => o.XH == UserLoginInfo.XH).Select(o => o.XH).ToSql();
+
+            var x = Db.Queryable<BoolTest1>().Select(it => new BoolTest2()
+            {
+                a =it.a
+            }).ToSql();
+            UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest1] ", "Queryable");
+            x = Db.Queryable<BoolTest2>().Select(it => new BoolTest1()
+            {
+                a =  it.a.Value
+            }).ToSql();
+            UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest2] ", "Queryable");
         }
 
+
+        /// <summary>
+        /// 系统用户表实体模型类
+        /// </summary>
+        [SugarTable("Unit_SYS_USER")]
+
+        public class Unit_SYS_USER
+        {
+            /// <summary>
+            /// 序号
+            /// </summary>
+            private string _XH;
+
+            /// <summary>
+            /// 序号【主键唯一标识，自动生成】
+            /// </summary>
+            [SugarColumn(ColumnName = "XH",
+                ColumnDataType = "VARCHAR2",
+                IsPrimaryKey = true,
+                IsNullable = false,
+                Length = 50,
+                ColumnDescription = "序号【主键唯一标识，自动生成】")]
+            public string XH
+            {
+                get
+                {
+                    return _XH;
+                }
+                set
+                {
+                    _XH = value;
+                }
+            }
+        }
         public static class IEnumerbleContains
         {
             public static IEnumerable<Order> Data()
@@ -319,5 +370,19 @@ namespace OrmTest
         {
             public Guid? Id { get; set; }
         }
+    }
+
+    internal class BoolTest1
+    {
+        public BoolTest1()
+        {
+        }
+
+        public bool a { get; set; }
+    }
+
+    public class BoolTest2
+    {
+        public bool? a { get; set; }
     }
 }

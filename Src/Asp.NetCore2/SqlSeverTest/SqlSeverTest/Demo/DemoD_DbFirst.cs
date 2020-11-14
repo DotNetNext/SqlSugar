@@ -65,7 +65,7 @@ namespace OrmTest
             }
             db.DbFirst.IsCreateAttribute().CreateClassFile("c:\\Demo\\8", "Models");
 
-            db.DbFirst.WhereColumns(it => it.ToUpper()!="ID").CreateClassFile("c:\\Demo\\9", "Models");
+
             //Use Razor Template
             //db.DbFirst.UseRazorAnalysis(RazorFirst.DefaultRazorClassTemplate).CreateClassFile("");
 

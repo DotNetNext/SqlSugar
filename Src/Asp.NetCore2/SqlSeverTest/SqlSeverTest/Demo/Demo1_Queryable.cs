@@ -30,7 +30,7 @@ namespace OrmTest
             Console.WriteLine("#### Examples Start ####");
             var db = GetInstance();
             var dbTime = db.GetDate();
-            var getAll = db.Queryable<Order>().ToList();
+            var getAll = db.Queryable<Order>().Where(it=> SqlFunc.EqualsNull(it.Name,null)).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
@@ -124,6 +124,11 @@ namespace OrmTest
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
             var index= db.Queryable<Order>().Select(it => SqlFunc.CharIndex("a", "cccacc")).First();
+            var list = db.Queryable<Order>().Select(it =>new ViewOrder()
+            {
+
+                Id = SqlFunc.AggregateSum(SqlFunc.IF(it.Id > 0).Return(1).End(0))
+            }).ToList();
 
             Console.WriteLine("#### SqlFunc  End ####");
         }
@@ -153,6 +158,11 @@ namespace OrmTest
                                      //Child=(select * from parent where ParentId=it.id)
                                      .Mapper(it => it.Child, it => it.Id, it => it.Parent.ParentId)
                                      .ToList();
+
+
+            db.Insertable(new Tree() { Id = 222, Name = "child11", ParentId = 11 }).ExecuteCommand();
+            var tree = db.Queryable<Tree>().ToTree(it=>it.Child,it=>it.ParentId,0);
+      
             //one to one
             var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
 
@@ -221,6 +231,12 @@ namespace OrmTest
 
             var query2 = db.Queryable<Custom>();
             var list3=db.Queryable(query1, query2,JoinType.Left, (p1, p2) => p1.CustomId == p2.Id).Select<ViewOrder>().ToList();
+
+
+            var query3 = db.Union(
+                                   db.Queryable<Order>().Where(it => it.Name.Contains("a")), 
+                                   db.Queryable<Order>().Where(it => it.Name.Contains("b"))
+                                 ).ToList();
 
             Console.WriteLine("#### Join Table End ####");
         }
