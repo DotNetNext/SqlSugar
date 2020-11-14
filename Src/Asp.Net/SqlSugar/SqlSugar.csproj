@@ -89,7 +89,7 @@
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Entities\SubInsertTree.cs" />
-    <Compile Include="Infrastructure\KdbndpInserttable.cs" />
+    <Compile Include="OnlyNet\KdbndpInserttable.cs" />
     <Compile Include="Interface\ISubInsertable.cs" />
     <Compile Include="Abstract\InsertableProvider\SubInserable.cs" />
     <Compile Include="Abstract\SaveableProvider\SaveableProvider.cs" />
@@ -139,7 +139,7 @@
     <Compile Include="ExpressionsToSql\Subquery\SubResolve.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
     <Compile Include="ExternalServiceInterface\IRazorService.cs" />
-    <Compile Include="Infrastructure\DependencyManagement.cs" />
+    <Compile Include="OnlyNet\DependencyManagement.cs" />
     <Compile Include="ExternalServiceInterface\ISerializeService.cs" />
     <Compile Include="Entities\DefaultServices.cs" />
     <Compile Include="Infrastructure\Mapper.cs" />
