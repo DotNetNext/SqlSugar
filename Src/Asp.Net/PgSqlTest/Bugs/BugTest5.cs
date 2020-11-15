@@ -100,13 +100,11 @@ namespace OrmTest.Test
 
              });
 
-            db.Aop.OnError = (exp) =>//SQL报错
+            db.Aop.OnLogExecuted = (s,p) =>//SQL报错
 
             {
 
-                string sql = exp.Sql;
-
-                //exp.sql 这样可以拿到错误SQL
+                Console.WriteLine(s);
 
             };
 
@@ -154,9 +152,8 @@ namespace OrmTest.Test
 
                 {
 
-                    User = a,
-
-                    Items = a.UserDpt
+                    User = a ,
+                    de=a.UserDpt
 
                 }).ToList();
 
