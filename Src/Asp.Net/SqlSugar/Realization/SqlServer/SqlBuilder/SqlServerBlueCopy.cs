@@ -43,7 +43,16 @@ namespace SqlSugar
                 }
                 dt.Rows.Add(dr);
             }
-            SqlBulkCopy bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection);
+            SqlBulkCopy bulkCopy = null;
+            if (this.Context.Ado.Transaction != null)
+            {
+                var sqlTran = this.Context.Ado.Transaction as SqlTransaction;
+                bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection,SqlBulkCopyOptions.CheckConstraints, sqlTran);
+            }
+            else
+            {
+                bulkCopy=new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection);
+            }
             //获取目标表的名称
             bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
             //写入DataReader对象
