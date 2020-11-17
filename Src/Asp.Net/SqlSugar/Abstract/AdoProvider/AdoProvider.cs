@@ -40,6 +40,7 @@ namespace SqlSugar
         internal bool OldClearParameters { get; set; }
         public IDataParameterCollection DataReaderParameters { get; set; }
         public TimeSpan SqlExecutionTime { get { return AfterTime - BeforeTime; } }
+        public StackTraceInfo SqlStackTrace { get { return UtilMethods.GetStackTrace(); } }
         public bool IsDisableMasterSlaveSeparation { get; set; }
         internal DateTime BeforeTime = DateTime.MinValue;
         internal DateTime AfterTime = DateTime.MinValue;
