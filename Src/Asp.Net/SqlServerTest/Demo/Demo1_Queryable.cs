@@ -52,6 +52,12 @@ namespace OrmTest
             var db = GetInstance();
             List<Order> list = db.Queryable<Order>().ToList();
 
+            var x2=db.Ado.SqlQueryAsync<Order>("select * from [Order] ");
+            x2.Wait();
+            var x22 = db.Ado.GetScalarAsync("select * from [Order] ");
+            x22.Wait();
+            var x222 = db.Ado.ExecuteCommandAsync("select * from [Order] ");
+            x222.Wait();
             Order item = db.Queryable<Order>().First(it => it.Id == 1);
 
             DataTable dataTable = db.Queryable<Order>().Select(it => it.Id).ToDataTable();

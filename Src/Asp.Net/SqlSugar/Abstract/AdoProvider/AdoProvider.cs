@@ -313,7 +313,7 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite&& SugarCompatible.IsFramework)
                     sqlCommand.Dispose();
                 return sqlDataReader;
             }
@@ -456,7 +456,7 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
                 SetConnectionEnd(sql);
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite&&SugarCompatible.IsFramework)
                     sqlCommand.Dispose(); 
                 return sqlDataReader;
             }

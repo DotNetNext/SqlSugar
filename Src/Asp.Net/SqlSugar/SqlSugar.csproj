@@ -90,6 +90,7 @@
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Entities\StackTraceInfo.cs" />
     <Compile Include="Entities\SubInsertTree.cs" />
+    <Compile Include="OnlyNet\Compatible.cs" />
     <Compile Include="OnlyNet\KdbndpInserttable.cs" />
     <Compile Include="Interface\ISubInsertable.cs" />
     <Compile Include="Abstract\InsertableProvider\SubInserable.cs" />
