@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -24,7 +25,7 @@ namespace SqlSugar
         StackTraceInfo SqlStackTrace { get; }
         IDataParameterCollection DataReaderParameters { get; set; }
         CommandType CommandType { get; set; }
-
+        CancellationToken? CancellationToken { get; set; }
         bool IsDisableMasterSlaveSeparation { get; set; }
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
@@ -157,6 +158,7 @@ namespace SqlSugar
         Task<T> SqlQuerySingleAsync<T>(string sql, params SugarParameter[] parameters);
         Task<T> SqlQuerySingleAsync<T>(string sql, List<SugarParameter> parameters);
 
+        void RemoveCancellationToken();
 
         void Dispose();
         void Close();

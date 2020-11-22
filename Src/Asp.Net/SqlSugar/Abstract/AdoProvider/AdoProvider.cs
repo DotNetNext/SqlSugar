@@ -69,6 +69,7 @@ namespace SqlSugar
         public virtual Action<DiffLogModel> DiffLogEvent => this.Context.CurrentConnectionConfig.AopEvents?.OnDiffLogEvent;
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
+        public virtual CancellationToken? CancellationToken { get; set; }
         #endregion
 
         #region Connection
@@ -406,7 +407,11 @@ namespace SqlSugar
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
-                int count = await sqlCommand.ExecuteNonQueryAsync();
+                int count;
+                if (this.CancellationToken == null)
+                    count=await sqlCommand.ExecuteNonQueryAsync();
+                else
+                    count=await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
@@ -440,7 +445,11 @@ namespace SqlSugar
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
-                var sqlDataReader = await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+                DbDataReader sqlDataReader;
+                if(this.CancellationToken==null)
+                    sqlDataReader=await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+                else
+                    sqlDataReader=await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default,this.CancellationToken.Value);
                 if (isSp)
                     DataReaderParameters = sqlCommand.Parameters;
                 if (this.IsClearParameters)
@@ -472,7 +481,11 @@ namespace SqlSugar
                     ExecuteProcessingSQL(ref sql, parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
-                var scalar = await sqlCommand.ExecuteScalarAsync();
+                object scalar;
+                if(CancellationToken==null)
+                    scalar=await sqlCommand.ExecuteScalarAsync();
+                else
+                    scalar = await sqlCommand.ExecuteScalarAsync(this.CancellationToken.Value);
                 //scalar = (scalar == null ? 0 : scalar);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
@@ -1166,6 +1179,10 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
+        public virtual void RemoveCancellationToken()
+        {
+            this.CancellationToken = null;
+        }
         private void Async()
         {
             if (this.Context.Root != null & this.Context.Root.AsyncId == null)
