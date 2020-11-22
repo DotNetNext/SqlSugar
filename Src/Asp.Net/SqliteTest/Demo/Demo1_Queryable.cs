@@ -124,7 +124,16 @@ namespace OrmTest
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
             var index= db.Queryable<Order>().Select(it => SqlFunc.Contains("a", "cccacc")).First();
+            var list2 = db.Queryable<Order>().Select(it => new
+            {
+                date = SqlFunc.ToDateShort(it.CreateTime),
+                datetime = SqlFunc.ToDate(it.CreateTime)
+            }).ToList();
+            var list3 = db.Queryable<Order>().Select(it => new Order
+            {
+                CreateTime = SqlFunc.ToDateShort(it.CreateTime)
 
+            }).ToList();
             Console.WriteLine("#### SqlFunc  End ####");
         }
 

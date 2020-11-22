@@ -668,6 +668,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.BitwiseAnd(model);
                     case "BitwiseInclusiveOR":
                         return this.Context.DbMehtods.BitwiseInclusiveOR(model);
+                    case "ToDateShort":
+                        return this.Context.DbMehtods.ToDateShort(model);
                     default:
                         break;
                 }

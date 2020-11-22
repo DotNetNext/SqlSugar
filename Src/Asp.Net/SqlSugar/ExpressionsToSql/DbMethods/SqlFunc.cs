@@ -98,6 +98,7 @@ namespace SqlSugar
         /// <param name="value"></param>
         /// <returns></returns>
         public static DateTime ToDate(object value) { return value.ObjToDate(); }
+        public static DateTime ToDateShort(object value) { return value.ObjToDate(); }
         /// <summary>
         ///HH:mm:ss 
         /// </summary>
