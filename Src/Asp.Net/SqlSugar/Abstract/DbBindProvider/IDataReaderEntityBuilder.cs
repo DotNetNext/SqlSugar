@@ -124,6 +124,10 @@ namespace SqlSugar
                         {
                             BindField(generator, result, columnInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
+                        else if (this.ReaderKeys.Any(it => it.Equals(columnInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            BindField(generator, result, columnInfo, ReaderKeys.First(it => it.Equals(columnInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase)));
+                        }
                     }
                 }
             }

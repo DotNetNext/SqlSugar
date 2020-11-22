@@ -95,9 +95,117 @@ namespace OrmTest
                 a =  it.a.Value
             }).ToSql();
             UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest2] ", "Queryable");
+
+            var db = Db;
+            db.CodeFirst.InitTables<UserInfo, UserIpRuleInfo>();
+            db.Deleteable<UserInfo>().ExecuteCommand();
+            db.Deleteable<UserIpRuleInfo>().ExecuteCommand();
+            db.Insertable(new UserInfo()
+            {
+                Id = 1,
+                Password = "123",
+                UserName = "admin"
+            }).ExecuteCommand();
+            db.Insertable(new UserIpRuleInfo()
+            {
+                Addtime = DateTime.Now,
+                UserName = "a",
+                Id = 11,
+                UserId = 1,
+                Description = "xx",
+                IpRange = "1",
+                RuleType = 1
+            }).ExecuteCommand();
+            var vmList = db.Queryable<UserInfo, UserIpRuleInfo>(
+                (m1, m2) => m1.Id == m2.UserId
+            ).Where((m1, m2) => m1.Id > 0).Select((m1, m2) => new UserIpRuleInfo()
+            {
+
+                IpRange = m2.IpRange,
+                Addtime = m2.Addtime,
+                RuleType = m2.RuleType,
+            }).ToList();
+            if (string.IsNullOrEmpty (vmList.First().IpRange) )
+            {
+                throw new Exception("Queryable");
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [Serializable]
+        [SugarTable("users")]
+        public class UserInfo
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public int Id { get; set; }
 
+            /// <summary>
+            /// 
+            /// </summary>
+
+            public string UserName { get; set; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public string Password { get; set; }
+
+        }
+        /// <summary>
+        ///
+        ///</summary>
+        [Serializable]
+        [SugarTable("user_ip_rules")]
+        public class UserIpRuleInfo
+        {
+            /// <summary>
+            /// 自增Id
+            /// </summary>
+            public int Id { get; set; }
+
+
+            /// <summary>
+            /// 用户Id
+            /// </summary>
+            [SugarColumn(ColumnName = "user_id")]
+            public int UserId { get; set; }
+
+            /// <summary>
+            /// 用户名
+            /// </summary>
+            [SugarColumn(IsIgnore = true)]
+            public string UserName { get; set; }
+
+            /// <summary>
+            /// IP地址或范围
+            /// </summary>
+            [SugarColumn(ColumnName = "ip_range")]
+            public string IpRange { get; set; }
+
+
+            /// <summary>
+            /// 规则类型 0-黑名单 1-白名单
+            /// </summary>
+            [SugarColumn(ColumnName = "rule_type")]
+            public int RuleType { get; set; }
+
+
+            /// <summary>
+            /// 描述/备注
+            /// </summary>
+            public string Description { get; set; }
+
+
+            /// <summary>
+            /// 添加时间
+            /// </summary>
+            public DateTime Addtime { get; set; }
+
+        }
         /// <summary>
         /// 系统用户表实体模型类
         /// </summary>
