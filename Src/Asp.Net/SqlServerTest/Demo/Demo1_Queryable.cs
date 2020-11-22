@@ -135,10 +135,10 @@ namespace OrmTest
 
                 Id = SqlFunc.AggregateSum(SqlFunc.IF(it.Id > 0).Return(1).End(0))
             }).ToList();
-            var list2 = db.Queryable<Order>().Select(it => new
+            var list2 = db.Queryable<Order>().Where(it=>it.CreateTime.Date==it.CreateTime).Select(it => new
             {
-                date = SqlFunc.ToDateShort(it.CreateTime),
-                datetime = SqlFunc.ToDate(it.CreateTime)
+                date = it.CreateTime.Date,
+                datetime = DateTime.Now.Date
             }).ToList();
             Console.WriteLine("#### SqlFunc  End ####");
         }
