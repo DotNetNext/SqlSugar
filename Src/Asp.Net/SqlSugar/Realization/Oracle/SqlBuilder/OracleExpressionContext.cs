@@ -174,7 +174,12 @@ namespace SqlSugar
         public override string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" to_date({0},'yyyy-mm-dd hh24:mi:ss')", parameter.MemberName);
+            return string.Format(" cast({0} as TIMESTAMP)", parameter.MemberName);
+        }
+        public override string ToDateShort(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("  TRUNC({0},'dd') ", parameter.MemberName);
         }
         public override string Contains(MethodCallExpressionModel model)
         {
