@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
+    
     public class InstanceFactory
     {
         static Assembly assembly = Assembly.Load(UtilConstants.AssemblyName);
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
-
+        public static bool NoCache = false;
 
         public static void RemoveCache()
         {
@@ -343,6 +344,11 @@ namespace SqlSugar
 
         private static Restult CreateInstance<Restult>(string className, params Type[] types)
         {
+            return GetCacheInstance<Restult>(className, types);
+        }
+
+        private static Restult GetCacheInstance<Restult>(string className, Type[] types)
+        {
             var cacheKey = className + string.Join(",", types.Select(it => it.FullName));
             Type type;
             if (typeCache.ContainsKey(cacheKey))
@@ -364,7 +370,13 @@ namespace SqlSugar
             var result = (Restult)Activator.CreateInstance(type, true);
             return result;
         }
+
         public static T CreateInstance<T>(string className)
+        {
+            return GetCacheInstance<T>(className);
+        }
+
+        private static T GetCacheInstance<T>(string className)
         {
             Type type;
             if (typeCache.ContainsKey(className))
