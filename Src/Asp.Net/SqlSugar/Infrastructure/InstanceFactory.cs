@@ -344,7 +344,22 @@ namespace SqlSugar
 
         private static Restult CreateInstance<Restult>(string className, params Type[] types)
         {
-            return GetCacheInstance<Restult>(className, types);
+            try
+            {
+                if (NoCache)
+                {
+                    return NoCacheGetCacheInstance<Restult>(className, types);
+                }
+                else
+                {
+                    return GetCacheInstance<Restult>(className, types);
+                }
+            }
+            catch  
+            {
+                NoCache = true;
+                return NoCacheGetCacheInstance<Restult>(className, types);
+            }
         }
 
         private static Restult GetCacheInstance<Restult>(string className, Type[] types)
@@ -370,10 +385,31 @@ namespace SqlSugar
             var result = (Restult)Activator.CreateInstance(type, true);
             return result;
         }
+        private static Restult NoCacheGetCacheInstance<Restult>(string className, Type[] types)
+        {
+          
+            Type type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+            var result = (Restult)Activator.CreateInstance(type, true);
+            return result;
+        }
 
         public static T CreateInstance<T>(string className)
         {
-            return GetCacheInstance<T>(className);
+            try
+            {
+                if (NoCache)
+                {
+                    return NoCacheGetCacheInstance<T>(className);
+                }
+                else
+                {
+                    return GetCacheInstance<T>(className);
+                }
+            }
+            catch  
+            {
+                return NoCacheGetCacheInstance<T>(className);
+            }
         }
 
         private static T GetCacheInstance<T>(string className)
@@ -395,6 +431,12 @@ namespace SqlSugar
                     }
                 }
             }
+            var result = (T)Activator.CreateInstance(type, true);
+            return result;
+        }
+        private static T NoCacheGetCacheInstance<T>(string className)
+        {
+            Type  type = assembly.GetType(className);
             var result = (T)Activator.CreateInstance(type, true);
             return result;
         }
