@@ -16,17 +16,60 @@ namespace SqlSugar
         internal InsertBuilder InsertBuilder { get; set; }
         public int ExecuteBlueCopy()
         {
-            if (DbColumnInfoList==null||DbColumnInfoList.Count == 0) return 0;
-            
-            var dt= this.Context.Ado.GetDataTable("select top 0 * from " + InsertBuilder.GetTableNameString);
+            if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
+
+            DataTable dt;
+            SqlBulkCopy bulkCopy;
+            SetCopyData(out dt, out bulkCopy);
+            try
+            {
+                bulkCopy.WriteToServer(dt);
+            }
+            catch (Exception ex)
+            {
+                this.Context.Ado.Connection.Close();
+                throw ex;
+            }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
+            {
+                this.Context.Ado.Connection.Close();
+            }
+            return DbColumnInfoList.Count;
+        }
+        public async Task<int> ExecuteBlueCopyAsync()
+        {
+            if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
+
+            DataTable dt;
+            SqlBulkCopy bulkCopy;
+            SetCopyData(out dt, out bulkCopy);
+            try
+            {
+                await bulkCopy.WriteToServerAsync(dt);
+            }
+            catch (Exception ex)
+            {
+                this.Context.Ado.Connection.Close();
+                throw ex;
+            }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
+            {
+                this.Context.Ado.Connection.Close();
+            }
+            return DbColumnInfoList.Count;
+        }
+
+        private void SetCopyData(out DataTable dt, out SqlBulkCopy bulkCopy)
+        {
+            dt = this.Context.Ado.GetDataTable("select top 0 * from " + InsertBuilder.GetTableNameString);
             foreach (var rowInfos in DbColumnInfoList)
             {
                 var dr = dt.NewRow();
                 foreach (DataColumn item in dt.Columns)
                 {
-                    var rows= rowInfos.ToList();
-                    var value = rows.FirstOrDefault(it => 
-                                                             it.DbColumnName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase)||
+                    var rows = rowInfos.ToList();
+                    var value = rows.FirstOrDefault(it =>
+                                                             it.DbColumnName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase) ||
                                                              it.PropertyName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase)
                                                         );
                     if (value != null)
@@ -43,15 +86,15 @@ namespace SqlSugar
                 }
                 dt.Rows.Add(dr);
             }
-            SqlBulkCopy bulkCopy = null;
+            bulkCopy = null;
             if (this.Context.Ado.Transaction != null)
             {
                 var sqlTran = this.Context.Ado.Transaction as SqlTransaction;
-                bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection,SqlBulkCopyOptions.CheckConstraints, sqlTran);
+                bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection, SqlBulkCopyOptions.CheckConstraints, sqlTran);
             }
             else
             {
-                bulkCopy=new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection);
+                bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection);
             }
             //获取目标表的名称
             bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
@@ -60,20 +103,6 @@ namespace SqlSugar
             {
                 this.Context.Ado.Connection.Open();
             }
-            try
-            {
-                bulkCopy.WriteToServer(dt);
-            }
-            catch (Exception ex)
-            {
-                this.Context.Ado.Connection.Close();
-                throw ex;
-            }
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
-            {
-                this.Context.Ado.Connection.Close();
-            }
-            return DbColumnInfoList.Count;
         }
 
         private object AddParameter(int i,string dbColumnName, object value)
