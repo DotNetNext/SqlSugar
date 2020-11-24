@@ -373,7 +373,19 @@ namespace SqlSugar
                 var typeName = type.Name;
                 if (prop.PropertyType.IsClass())
                 {
-                    result.Add(name, DataReaderToDynamicList_Part(readerValues, prop, reval));
+                    var suagrColumn=prop.GetCustomAttribute<SugarColumn>();
+                    if (suagrColumn != null && suagrColumn.IsJson)
+                    {
+                        var key = (typeName + "." + name).ToLower();
+                        if (readerValues.ContainsKey(key)&& readerValues[key]!=null)
+                        {
+                            result.Add(name,this.DeserializeObject<List<Dictionary<string,object>>>(readerValues[key]+""));
+                        }
+                    }
+                    else
+                    {
+                        result.Add(name, DataReaderToDynamicList_Part(readerValues, prop, reval));
+                    }
                 }
                 else
                 {

@@ -97,6 +97,12 @@ namespace SqlSugar
             return string.Format(" DATETIME({0})", parameter.MemberName);
         }
 
+        public override string ToDateShort(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" strftime('%Y-%m-%d', {0})", parameter.MemberName);
+        }
+
         public override string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

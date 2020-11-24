@@ -438,26 +438,15 @@ namespace SqlSugar
                     }
                     if (property.PropertyType.IsClass())
                     {
-
+                        var comumnInfo=property.GetCustomAttribute<SugarColumn>();
+                        if (comumnInfo != null && comumnInfo.IsJson)
+                        {
+                            asName = GetAsName(item, shortName, property);
+                        }
                     }
                     else
                     {
-                        var propertyName = property.Name;
-                        var dbColumnName = propertyName;
-                        var mappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == item.Type.Name && it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-                        if (mappingInfo.HasValue())
-                        {
-                            dbColumnName = mappingInfo.DbColumnName;
-                        }
-                        asName = this.Context.GetTranslationText(item.Type.Name + "." + propertyName);
-                        if (Context.IsJoin)
-                        {
-                            this.Context.Result.Append(Context.GetAsString(asName, dbColumnName, shortName.ObjToString()));
-                        }
-                        else
-                        {
-                            this.Context.Result.Append(Context.GetAsString(asName, dbColumnName));
-                        }
+                        asName = GetAsName(item, shortName, property);
                     }
                 }
             }
@@ -494,6 +483,29 @@ namespace SqlSugar
             {
                 Check.ThrowNotSupportedException(item.GetType().Name);
             }
+        }
+
+        private string GetAsName(Expression item, object shortName, PropertyInfo property)
+        {
+            string asName;
+            var propertyName = property.Name;
+            var dbColumnName = propertyName;
+            var mappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == item.Type.Name && it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            if (mappingInfo.HasValue())
+            {
+                dbColumnName = mappingInfo.DbColumnName;
+            }
+            asName = this.Context.GetTranslationText(item.Type.Name + "." + propertyName);
+            if (Context.IsJoin)
+            {
+                this.Context.Result.Append(Context.GetAsString(asName, dbColumnName, shortName.ObjToString()));
+            }
+            else
+            {
+                this.Context.Result.Append(Context.GetAsString(asName, dbColumnName));
+            }
+
+            return asName;
         }
 
         private static bool IsBoolValue(Expression item)

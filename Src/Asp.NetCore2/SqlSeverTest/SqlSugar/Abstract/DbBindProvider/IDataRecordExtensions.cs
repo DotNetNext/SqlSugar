@@ -153,6 +153,18 @@ namespace SqlSugar
                 {
                     return UtilMethods.To<T>(dr.GetConvertDouble(i));
                 }
+                if (dr.GetFieldType(i) == UtilConstants.GuidType)
+                {
+                    var data = dr.GetString(i);
+                    if (data.ToString() == "")
+                    {
+                        return UtilMethods.To<T>(null);
+                    }
+                    else
+                    {
+                        return UtilMethods.To<T>(Guid.Parse(data.ToString()));
+                    }
+                }
                 throw new Exception(ex.Message);
             }
         }

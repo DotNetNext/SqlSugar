@@ -42,6 +42,7 @@ namespace SqlSugar
         string CaseWhen(List<KeyValuePair<string,string>> sqls);
         string Substring(MethodCallExpressionModel model);
         string ToDate(MethodCallExpressionModel model);
+        string ToDateShort(MethodCallExpressionModel model);
         string ToTime(MethodCallExpressionModel model);
         string ToDecimal(MethodCallExpressionModel model);
         string Length(MethodCallExpressionModel model);
