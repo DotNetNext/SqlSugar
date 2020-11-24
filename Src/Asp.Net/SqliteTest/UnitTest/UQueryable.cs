@@ -78,8 +78,20 @@ namespace OrmTest
                 CheckMan = saleOrderInfo.CheckMan,
                 CheckTime = DateTime.Now
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+
+            Db.CodeFirst.InitTables<UnitAbc121>();
+            Db.Insertable(new UnitAbc121() {  name="a" }).ExecuteCommand();
+            Db.Insertable(new UnitAbc121() { name = "a", uid=Guid.NewGuid() }).ExecuteCommand();
+            var list10= Db.Queryable<UnitAbc121>().ToList();
         }
 
+
+        public class UnitAbc121
+        {
+            [SugarColumn(IsNullable =true)]
+            public Guid? uid { get; set; }
+            public string name { get; set; }
+        }
         public static class IEnumerbleContains
         {
             public static IEnumerable<Order> Data()
