@@ -1374,7 +1374,14 @@ namespace SqlSugar
                             {
                                 sql = sql.Replace("@" + item.ParameterName.Substring(1), newValues.ToArray().ToJoinSqlInVals());
                             }
-                            sql = sql.Replace(item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
+                            if (item.ParameterName.Substring(0, 1) != this.SqlParameterKeyWord)
+                            {
+                                sql = sql.Replace(this.SqlParameterKeyWord+item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
+                            }
+                            else
+                            {
+                                sql = sql.Replace(item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
+                            }
                             item.Value = DBNull.Value;
                         }
                     }

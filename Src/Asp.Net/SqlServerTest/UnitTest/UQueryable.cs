@@ -54,7 +54,7 @@ namespace OrmTest
             UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
 
             var cts = IEnumerbleContains.Data();
-            var list2=Db.Queryable<Order>()
+            var list2 = Db.Queryable<Order>()
                     .Where(p => /*ids.*/cts.Select(c => c.Id).Contains(p.Id)).ToList();
 
             var cts2 = IEnumerbleContains.Data().ToList(); ;
@@ -81,18 +81,18 @@ namespace OrmTest
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
 
             var ids = Enumerable.Range(1, 11).ToList();
-            var list8=Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
+            var list8 = Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
 
             var result2 = Db.Queryable<Unit_SYS_USER>().Where(o => o.XH == UserLoginInfo.XH).Select(o => o.XH).ToSql();
 
             var x = Db.Queryable<BoolTest1>().Select(it => new BoolTest2()
             {
-                a =it.a
+                a = it.a
             }).ToSql();
             UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest1] ", "Queryable");
             x = Db.Queryable<BoolTest2>().Select(it => new BoolTest1()
             {
-                a =  it.a.Value
+                a = it.a.Value
             }).ToSql();
             UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest2] ", "Queryable");
 
@@ -125,10 +125,18 @@ namespace OrmTest
                 Addtime = m2.Addtime,
                 RuleType = m2.RuleType,
             }).ToList();
-            if (string.IsNullOrEmpty (vmList.First().IpRange) )
+            if (string.IsNullOrEmpty(vmList.First().IpRange))
             {
                 throw new Exception("Queryable");
             }
+
+            Db.Insertable(new Order() { CreateTime=DateTime.Now, CustomId=1, Name="a",Price=1 }).ExecuteCommand();
+            var sa = Db.SqlQueryable<Order>("SELECT * FroM [ORDER] where id in (@id) ");
+            sa.AddParameters(new List<SugarParameter>() {
+                new SugarParameter("id",new int[]{ 1})
+             });
+            int i = 0;
+            var salist= sa.ToPageList(1,2,ref i);
         }
 
         /// <summary>
