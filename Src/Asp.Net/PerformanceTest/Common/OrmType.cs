@@ -10,6 +10,7 @@ namespace PerformanceTest
     {
         SqlSugar,
         Dapper,
-        EF
+        EF,
+        FREE
     }
 }

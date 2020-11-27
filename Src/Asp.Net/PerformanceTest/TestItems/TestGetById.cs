@@ -33,6 +33,9 @@ namespace PerformanceTest.TestItems
                     case OrmType.EF:
                         EF(eachCount);
                         break;
+                    case OrmType.FREE:
+                        Free(eachCount);
+                        break;
                     default:
                         break;
                 }
@@ -50,11 +53,25 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlSugarClient conn = Config.GetSugarConn())
                 {
-                    var list2 = conn.Queryable<Test>().InSingle(1);
+                    var list2 = conn.Queryable<Test>().First(it=>it.Id==1);
                 }
             });
         }
+        private static void Free(int eachCount)
+        {
+            GC.Collect();//回收资源
+            System.Threading.Thread.Sleep(1);//休息1秒
 
+            PerHelper.Execute(eachCount, "free", () =>
+            {
+                IFreeSql fsql = new FreeSql.FreeSqlBuilder()
+ .UseConnectionString(FreeSql.DataType.SqlServer, Config.connectionString)
+ .UseAutoSyncStructure(false) //自动同步实体结构到数据库
+ .Build();
+                var list2 = fsql.Queryable<Test>().Where(it=>it.Id==1).First();
+                //用.First(it=>it.Id==1)报错
+            });
+        }
         private static void Dapper(int eachCount)
         {
             GC.Collect();//回收资源
