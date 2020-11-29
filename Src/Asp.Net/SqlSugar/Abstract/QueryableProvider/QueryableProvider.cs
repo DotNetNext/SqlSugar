@@ -1958,7 +1958,27 @@ namespace SqlSugar
         protected void CopyQueryBuilder(QueryBuilder asyncQueryableBuilder)
         {
             var pars = new List<SugarParameter>();
-            pars.AddRange(this.QueryBuilder.Parameters);
+            if (this.QueryBuilder.Parameters != null)
+            {
+                pars=this.QueryBuilder.Parameters.Select(it=>new SugarParameter(it.ParameterName,it.Value) {
+                       DbType=it.DbType,
+                       Value=it.Value,
+                       ParameterName=it.ParameterName,
+                       Direction=it.Direction,
+                       IsArray=it.IsArray,
+                       IsJson=it.IsJson,
+                       IsNullable=it.IsNullable,
+                       IsRefCursor=it.IsRefCursor,
+                       Size=it.Size,
+                       SourceColumn=it.SourceColumn,
+                       SourceColumnNullMapping=it.SourceColumnNullMapping,
+                       SourceVersion=it.SourceVersion,
+                       TempDate=it.TempDate,
+                       TypeName=it.TypeName,
+                       UdtTypeName=it.UdtTypeName,
+                       _Size=it._Size
+                }).ToList();
+            }
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;
             asyncQueryableBuilder.SelectValue = this.QueryBuilder.SelectValue;

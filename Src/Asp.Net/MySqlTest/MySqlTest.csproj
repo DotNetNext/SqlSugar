@@ -78,6 +78,14 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Models\Tree.cs" />
+    <Compile Include="Models\Unit\Custom1\EGoods.cs" />
+    <Compile Include="Models\Unit\Custom1\EGoodsBrand.cs" />
+    <Compile Include="Models\Unit\Custom1\EGoodsClass.cs" />
+    <Compile Include="Models\Unit\Custom1\EOrderAlbaran.cs" />
+    <Compile Include="Models\Unit\Custom1\EOrderAlbaranDetail.cs" />
+    <Compile Include="Models\Unit\Custom1\EOrderReturn.cs" />
+    <Compile Include="Models\Unit\Custom1\EOrderReturnDetail.cs" />
+    <Compile Include="Models\Unit\Custom1\PurchaseDetailModel.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="_OldTests\Demos\1_Query.cs" />

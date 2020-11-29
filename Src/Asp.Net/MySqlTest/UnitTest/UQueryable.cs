@@ -78,6 +78,10 @@ namespace OrmTest
                 CheckMan = saleOrderInfo.CheckMan,
                 CheckTime = DateTime.Now
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+
+
+            var task=CustomTest1.GetPurchaseDetailPageAsync(Db);
+            task.Wait();
         }
 
         public static class IEnumerbleContains
