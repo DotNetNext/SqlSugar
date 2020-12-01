@@ -254,6 +254,10 @@ namespace SqlSugar
             {
                 return new SqlServerDbBind();
             }
+            else if (currentConnectionConfig.DbType == DbType.MySql)
+            {
+                return new MySqlDbBind();
+            }
             else
             {
                 IDbBind result = CreateInstance<IDbBind>(GetClassName(currentConnectionConfig.DbType.ToString(), "DbBind"));
