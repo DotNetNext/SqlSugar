@@ -783,6 +783,38 @@ namespace SqlSugar
             return result;
         }
 
+        public Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
+        {
+            var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
+            var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
+            var result = this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToList().ToDictionary(it => it.Key.ObjToString(), it => it.Value);
+            return result;
+        }
+        public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
+        {
+            var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle);
+            var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle);
+            var list = await this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToListAsync();
+            var result =list.ToDictionary(it => it.Key.ObjToString(), it => it.Value);
+            return result;
+        }
+        public List<Dictionary<string, object>> ToDictionaryList()
+        {
+            var list = this.ToList();
+            if (list == null)
+                return null;
+            else
+                return this.Context.Utilities.DeserializeObject<List<Dictionary<string, object>>>(this.Context.Utilities.SerializeObject(list));
+        }
+        public async Task<List<Dictionary<string, object>>> ToDictionaryListAsync()
+        {
+            var list =await this.ToListAsync();
+            if (list == null)
+                return null;
+            else
+                return this.Context.Utilities.DeserializeObject<List<Dictionary<string, object>>>(this.Context.Utilities.SerializeObject(list));
+        }
+
         public virtual List<T> ToList()
         {
             InitMapping();

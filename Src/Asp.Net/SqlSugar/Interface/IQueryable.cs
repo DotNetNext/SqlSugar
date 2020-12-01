@@ -122,6 +122,12 @@ namespace SqlSugar
         Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression);
 
         List<T> ToList();
+
+        Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value);
+        Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value);
+        List<Dictionary<string, object>> ToDictionaryList();
+        Task<List<Dictionary<string, object>>> ToDictionaryListAsync();
+
         T[] ToArray();
         Task<List<T>> ToListAsync();
 
