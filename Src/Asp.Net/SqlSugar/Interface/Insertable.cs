@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IInsertable<T>
+    public partial interface IInsertable<T>
     {
         InsertBuilder InsertBuilder { get; set; }
         int ExecuteCommand();
