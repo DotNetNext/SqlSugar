@@ -286,6 +286,10 @@ namespace SqlSugar
                     {
                         result.Add(name, DeserializeObject<List<Dictionary<string, object>>>(readerValues[item.Name.ToLower()].ToString()));
                     }
+                    else if (IsBytes(readerValues, item))
+                    {
+                        result.Add(name,(byte[])readerValues[item.Name.ToLower()]);
+                    }
                     else
                     {
                         result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
@@ -333,6 +337,14 @@ namespace SqlSugar
             }
 
             return result;
+        }
+
+        private static bool IsBytes(Dictionary<string, object> readerValues, PropertyInfo item)
+        {
+            return item.PropertyType == UtilConstants.ByteArrayType && 
+                   readerValues.ContainsKey(item.Name.ToLower())&&
+                   (readerValues[item.Name.ToLower()]==null||
+                   readerValues[item.Name.ToLower()].GetType()==UtilConstants.ByteArrayType);
         }
 
         private static bool IsJsonItem(Dictionary<string, object> readerValues, string name)

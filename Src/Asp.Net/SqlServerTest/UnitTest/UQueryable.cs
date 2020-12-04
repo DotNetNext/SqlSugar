@@ -137,6 +137,24 @@ namespace OrmTest
              });
             int i = 0;
             var salist= sa.ToPageList(1,2,ref i);
+
+            db.CodeFirst.InitTables<UnitBytes11>();
+            db.Insertable(new UnitBytes11() { bytes = null, name = "a" }).ExecuteCommand();
+            db.Insertable(new UnitBytes11() { bytes=new byte[] { 1,2} , name="a"}).ExecuteCommand();
+            var bytes = db.Queryable<UnitBytes11>().Select(it => new
+            {
+                b = it.bytes,
+                name="a"
+            }).ToList();
+        }
+
+
+        
+        public class UnitBytes11
+        {
+            [SugarColumn(Length =200,IsNullable =true)]
+            public byte[] bytes { get; set; }
+            public string name{ get; set; }
         }
 
         /// <summary>
