@@ -102,6 +102,14 @@ namespace SqlSugar
         ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression)
             where T : class, new()
             where T2 : class, new();
+
+        ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3,
+          JoinType joinType1, Expression<Func<T, T2, bool>> joinExpression1,
+          JoinType joinType2, Expression<Func<T, T2, bool>> joinExpression2)
+           where T: class, new() 
+           where T2 : class, new() 
+           where T3 : class, new();
+
         ISugarQueryable<T> Queryable<T>();
         ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new();
         ISugarQueryable<T> Queryable<T>(string shortName);
