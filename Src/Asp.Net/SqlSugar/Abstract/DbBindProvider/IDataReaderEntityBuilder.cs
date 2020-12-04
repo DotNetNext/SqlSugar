@@ -332,6 +332,8 @@ namespace SqlSugar
                     if (bindProperyTypeName == "datetime")
                         method = isNullableType ? getConvertdatetimeoffsetDate : getdatetimeoffsetDate;
                     break;
+                case CSharpDataType.Single:
+                    break;
                 default:
                     method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
                     break;
