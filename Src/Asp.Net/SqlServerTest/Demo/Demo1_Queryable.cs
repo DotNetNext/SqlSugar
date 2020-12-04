@@ -44,6 +44,7 @@ namespace OrmTest
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
             var getDicionary = db.Queryable<Order>().ToDictionary(it => it.Id, it => it.Name);
             var getDicionaryList = db.Queryable<Order>().ToDictionaryList();
+            var getTest = db.Queryable<Order>().Where(it =>string.IsNullOrWhiteSpace( it.Name)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
