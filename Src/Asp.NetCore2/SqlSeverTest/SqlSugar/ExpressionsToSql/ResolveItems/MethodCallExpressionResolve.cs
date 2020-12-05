@@ -512,6 +512,10 @@ namespace SqlSugar
                 {
                     name = "To" + TempParseType.Name;
                 }
+                else if (name == "IsNullOrWhiteSpace")
+                {
+                    name = "IsNullOrEmpty";
+                }
                 switch (name)
                 {
                     case "IIF":
@@ -693,6 +697,10 @@ namespace SqlSugar
             if (IsParseMethod(expression))
                 return true;
             if (expression.Method.Name == "IsNullOrEmpty" && expression.Method.DeclaringType == UtilConstants.StringType)
+            {
+                return true;
+            }
+            if (expression.Method.Name == "IsNullOrWhiteSpace" && expression.Method.DeclaringType == UtilConstants.StringType)
             {
                 return true;
             }

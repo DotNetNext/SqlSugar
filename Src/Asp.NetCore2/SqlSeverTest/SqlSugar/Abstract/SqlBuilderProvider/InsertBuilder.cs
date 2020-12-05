@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 namespace SqlSugar
 {
-    public class InsertBuilder : IDMLBuilder
+    public partial class InsertBuilder : IDMLBuilder
     {
         #region  Init
         public InsertBuilder()

@@ -409,9 +409,9 @@ namespace SqlSugar
                 var sqlCommand = GetCommand(sql, parameters);
                 int count;
                 if (this.CancellationToken == null)
-                    count = await sqlCommand.ExecuteNonQueryAsync();
+                    count=await sqlCommand.ExecuteNonQueryAsync();
                 else
-                    count = await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value);
+                    count=await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 ExecuteAfter(sql, parameters);
@@ -446,10 +446,10 @@ namespace SqlSugar
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
                 DbDataReader sqlDataReader;
-                if (this.CancellationToken == null)
-                    sqlDataReader = await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
+                if(this.CancellationToken==null)
+                    sqlDataReader=await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
                 else
-                    sqlDataReader = await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default, this.CancellationToken.Value);
+                    sqlDataReader=await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default,this.CancellationToken.Value);
                 if (isSp)
                     DataReaderParameters = sqlCommand.Parameters;
                 if (this.IsClearParameters)
@@ -482,8 +482,8 @@ namespace SqlSugar
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
                 object scalar;
-                if (CancellationToken == null)
-                    scalar = await sqlCommand.ExecuteScalarAsync();
+                if(CancellationToken==null)
+                    scalar=await sqlCommand.ExecuteScalarAsync();
                 else
                     scalar = await sqlCommand.ExecuteScalarAsync(this.CancellationToken.Value);
                 //scalar = (scalar == null ? 0 : scalar);
@@ -898,7 +898,7 @@ namespace SqlSugar
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SqlQueryAsync<T, T2, T3, T4, T5, T6>(string sql, object parameters = null)
         {
-            var result = await SqlQueryAsync<T, T2, T3, T4, T5, T6, object>(sql, parameters);
+            var result =await SqlQueryAsync<T, T2, T3, T4, T5, T6, object>(sql, parameters);
             return new Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>(result.Item1, result.Item2, result.Item3, result.Item4, result.Item5, result.Item6);
         }
         public async Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SqlQueryAsync<T, T2, T3, T4, T5, T6, T7>(string sql, object parameters = null)
@@ -915,7 +915,7 @@ namespace SqlSugar
                 List<T> result = new List<T>();
                 if (DbReader.HasRows)
                 {
-                    result = await GetDataAsync<T>(typeof(T), dataReader);
+                    result =await GetDataAsync<T>(typeof(T), dataReader);
                 }
                 List<T2> result2 = null;
                 if (NextResult(dataReader))
@@ -1196,7 +1196,7 @@ namespace SqlSugar
             {
                 return dataReader.NextResult();
             }
-            catch
+            catch  
             {
                 return false;
             }
@@ -1361,7 +1361,7 @@ namespace SqlSugar
                     if (item.Value != null)
                     {
                         var type = item.Value.GetType();
-                        if ((type != UtilConstants.ByteArrayType && type.IsArray && item.IsArray == false) || type.FullName.IsCollectionsList())
+                        if ((type != UtilConstants.ByteArrayType && type.IsArray&&item.IsArray==false) || type.FullName.IsCollectionsList())
                         {
                             var newValues = new List<string>();
                             foreach (var inValute in item.Value as IEnumerable)
@@ -1378,7 +1378,7 @@ namespace SqlSugar
                             }
                             if (item.ParameterName.Substring(0, 1) != this.SqlParameterKeyWord)
                             {
-                                sql = sql.Replace(this.SqlParameterKeyWord + item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
+                                sql = sql.Replace(this.SqlParameterKeyWord+item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
                             }
                             else
                             {
@@ -1416,7 +1416,7 @@ namespace SqlSugar
             List<TResult> result;
             if (entityType == UtilConstants.DynamicType)
             {
-                result = await this.Context.Utilities.DataReaderToExpandoObjectListAsyncNoUsing(dataReader) as List<TResult>;
+                result =await this.Context.Utilities.DataReaderToExpandoObjectListAsyncNoUsing(dataReader) as List<TResult>;
             }
             else if (entityType == UtilConstants.ObjType)
             {
@@ -1425,11 +1425,11 @@ namespace SqlSugar
             }
             else if (entityType.IsAnonymousType())
             {
-                result = await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
+                result =await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
             }
             else
             {
-                result = await this.Context.Ado.DbBind.DataReaderToListNoUsingAsync<TResult>(entityType, dataReader);
+                result =await this.Context.Ado.DbBind.DataReaderToListNoUsingAsync<TResult>(entityType, dataReader);
             }
             return result;
         }
