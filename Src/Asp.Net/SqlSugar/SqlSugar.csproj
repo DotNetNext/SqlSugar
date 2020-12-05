@@ -339,7 +339,9 @@
     <Content Include="References\Oracle.ManagedDataAccess.dll" />
     <Content Include="References\System.Data.SQLite.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="SqlSugar.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
