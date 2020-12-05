@@ -17,9 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NugetTest", "NugetTest\Nuge
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgSqlTest", "PgSqlTest\PgSqlTest.csproj", "{B9005A73-5307-48FB-90EA-CC18FE6926E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DmOrmTest", "DmOrmTest\DmOrmTest.csproj", "{FBA1A5CC-1C9D-476F-B19D-FD5E2201C30A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DmOrmTest", "DmOrmTest\DmOrmTest.csproj", "{FBA1A5CC-1C9D-476F-B19D-FD5E2201C30A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KdbndpTest", "KdbndpTest\KdbndpTest.csproj", "{21744B61-74AB-4706-9A52-C9D0C4AAD19E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KdbndpTest", "KdbndpTest\KdbndpTest.csproj", "{21744B61-74AB-4706-9A52-C9D0C4AAD19E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheTest", "CacheTest\CacheTest.csproj", "{2EC6C9BD-6B8F-4EC3-B4ED-EAEFD8BB735C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{21744B61-74AB-4706-9A52-C9D0C4AAD19E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21744B61-74AB-4706-9A52-C9D0C4AAD19E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21744B61-74AB-4706-9A52-C9D0C4AAD19E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EC6C9BD-6B8F-4EC3-B4ED-EAEFD8BB735C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EC6C9BD-6B8F-4EC3-B4ED-EAEFD8BB735C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EC6C9BD-6B8F-4EC3-B4ED-EAEFD8BB735C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EC6C9BD-6B8F-4EC3-B4ED-EAEFD8BB735C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
