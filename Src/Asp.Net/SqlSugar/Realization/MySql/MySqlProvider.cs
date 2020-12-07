@@ -97,13 +97,17 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
-                sqlParameter.Direction = parameter.Direction;
-                if (sqlParameter.Direction == 0)
+                if (parameter.Direction == 0)
                 {
-                    sqlParameter.Direction = ParameterDirection.Input;
+                    parameter.Direction = ParameterDirection.Input; 
                 }
+                sqlParameter.Direction = parameter.Direction;
+                //if (sqlParameter.Direction == 0)
+                //{
+                //    sqlParameter.Direction = ParameterDirection.Input;
+                //}
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue))
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
                 {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
