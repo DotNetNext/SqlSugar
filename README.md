@@ -1,5 +1,10 @@
 
+## 果糖大数据科技（南通）有限公司 ##
+公司地址：南通太阳晶城大厦3幢125室
 
+联系人：qq 610262374  微信 sabimao
+
+服务项目：接收项目外包等服务，技术咨询，技术顾问
 
 ## 中文文档：
 
@@ -78,7 +83,7 @@ public class Student
 
 ##  1. Queryable
 We use it to query
- ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=112 "Queryable")
+ ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=1112 "Queryable")
  
 ##### Here are some examples
 ```cs
@@ -366,6 +371,4 @@ sdb.Update(obj);
 
 # Code generator
 https://github.com/sunkaixuan/SoEasyPlatform
-
-# More APi 中文文档：
-http://www.codeisbug.com/Doc/8 
+ 
