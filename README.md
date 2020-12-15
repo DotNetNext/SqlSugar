@@ -1,5 +1,5 @@
 
-# 公司：果糖大数据科技（南通）有限公司 #
+# 果糖大数据科技（南通）有限公司 #
 
 ## 中文文档：
 
@@ -366,6 +366,4 @@ sdb.Update(obj);
 
 # Code generator
 https://github.com/sunkaixuan/SoEasyPlatform
-
-# More APi 中文文档：
-http://www.codeisbug.com/Doc/8 
+ 
