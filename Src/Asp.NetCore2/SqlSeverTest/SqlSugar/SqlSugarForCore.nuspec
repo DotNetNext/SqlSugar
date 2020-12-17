@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>sqlSugarCore</id>
+    <id>SqlSugarCore</id>
     <version>5.0.1.6</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
