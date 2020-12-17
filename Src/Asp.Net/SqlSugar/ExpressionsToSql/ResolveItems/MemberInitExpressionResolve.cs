@@ -242,8 +242,26 @@ namespace SqlSugar
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
                 var memberName = memberAssignment.Member.Name;
                 var item = memberAssignment.Expression;
+                if (IsNullable(item) && item is UnaryExpression)
+                {
+                    var memtype = ExpressionTool.GetMemberInfoType(memberAssignment.Member);
+                    if (IsNullable(memtype) && UtilMethods.GetUnderType(memtype) == UtilMethods.GetUnderType(item.Type))
+                    {
+                        item = (item as UnaryExpression).Operand;
+                    }
+                }
                 ResolveNewExpressions(parameter, item, memberName);
             }
+        }
+
+        private static bool IsNullable(Type memtype)
+        {
+            return memtype.Name == "Nullable`1";
+        }
+
+        private static bool IsNullable(Expression item)
+        {
+            return item.Type.Name == "Nullable`1";
         }
 
         //private bool IsSubMethod(MethodCallExpression express)
