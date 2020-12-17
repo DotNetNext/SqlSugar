@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> .Net Core 2.0 SqlSugar ORM ,High-performance, lightweight https://github.com/sunkaixuan/SqlSugar</description>
+    <description> .Net Core/net5 SqlSugar ORM ,High-performance, lightweight https://github.com/sunkaixuan/SqlSugar</description>
     <copyright>Copyright 2016</copyright>
     <tags>Asp.net core orm</tags>
     <dependencies>
@@ -19,7 +19,7 @@
         <dependency id="Newtonsoft.Json" version="10.0.3" />
         <dependency id="Microsoft.Data.Sqlite" version="2.2.4" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
-        <dependency id="MySql.Data" version="8.0.22" />
+        <dependency id="MySql.Data" version="8.0.19" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
         <dependency id="Npgsql" version="3.2.7" />
 	    <dependency id="SqlSugarCore.Dm" version="1.0.0" />
