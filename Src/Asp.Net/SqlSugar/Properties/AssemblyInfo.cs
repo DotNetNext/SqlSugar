@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SqlSugar4")]
 [assembly: AssemblyDescription("author sunkaixuan Apache Licence 2.0")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("果糖大数据科技(南通)有限公司")]
 [assembly: AssemblyProduct("SqlSugar 4")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
  
