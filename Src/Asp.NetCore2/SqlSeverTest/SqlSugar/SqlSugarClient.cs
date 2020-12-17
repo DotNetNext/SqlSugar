@@ -297,14 +297,14 @@ namespace SqlSugar
             where T : class, new()
             where T2 : class, new()
         {
-            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinExpression);
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinExpression).With(SqlWith.Null);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression)
             where T : class, new()
             where T2 : class, new()
         {
-            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinType, joinExpression);
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinType, joinExpression).With(SqlWith.Null);
         }
 
 
@@ -315,7 +315,7 @@ namespace SqlSugar
       where T2 : class, new()
       where T3 : class, new()
         {
-            return this.Context.Queryable(joinQueryable1, joinQueryable2,joinQueryable3, joinType1, joinExpression1,joinType2,joinExpression2);
+            return this.Context.Queryable(joinQueryable1, joinQueryable2,joinQueryable3, joinType1, joinExpression1,joinType2,joinExpression2).With(SqlWith.Null);
         }
 
 
