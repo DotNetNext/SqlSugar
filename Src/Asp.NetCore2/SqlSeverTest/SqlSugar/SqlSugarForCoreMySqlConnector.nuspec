@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>SqlSugarCore</id>
+    <id>SqlSugarCore.MySqlConnector</id>
     <version>5.0.1.7</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
