@@ -59,7 +59,22 @@ namespace SqlSugar
             else
                 return value;
         }
-
+        public static Type GetMemberInfoType(MemberInfo member)
+        {
+            switch (member.MemberType)
+            {
+                case MemberTypes.Event:
+                    return ((EventInfo)member).EventHandlerType;
+                case MemberTypes.Field:
+                    return ((FieldInfo)member).FieldType;
+                case MemberTypes.Method:
+                    return ((MethodInfo)member).ReturnType;
+                case MemberTypes.Property:
+                    return ((PropertyInfo)member).PropertyType;
+                default:
+                    return null;
+            }
+        }
         public static bool IsLogicOperator(string operatorValue)
         {
             return operatorValue == "&&" || operatorValue == "||"||operatorValue == "AND" || operatorValue == "OR";
