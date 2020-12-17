@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>sqlSugar</id>
+    <id>SqlSugar</id>
     <version>5.0.1.6</version>
     <title>SqlSugar 5.0+ 使用 .Net Framework 4.5+ , SqlSugar 4.0+ 使用 .Net Framework 4.0</title>
     <authors>sun kaixuan</authors>

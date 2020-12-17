@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SqlSugar4")]
+[assembly: AssemblyTitle("果糖大数据科技(南通)有限公司")]
 [assembly: AssemblyDescription("author sunkaixuan Apache Licence 2.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("果糖大数据科技(南通)有限公司")]
-[assembly: AssemblyProduct("SqlSugar 4")]
+[assembly: AssemblyProduct("SqlSugar")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
  
 
