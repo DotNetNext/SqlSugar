@@ -9,6 +9,8 @@
     <PackageIconUrl></PackageIconUrl>
     <PackageId>SqlSugar</PackageId>
     <Description>果糖大数据科技（南通）有限公司</Description>
+    <Company>果糖大数据科技（南通）有限公司</Company>
+    <Authors>果糖大数据科技（南通）有限公司</Authors>
   </PropertyGroup>
 
   <ItemGroup>
