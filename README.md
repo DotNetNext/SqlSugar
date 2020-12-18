@@ -369,6 +369,6 @@ sdb.Update(obj);
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.SimpleClient ) 
   
 
-# Code generator
+## 🕹Code generator
 https://github.com/sunkaixuan/SoEasyPlatform
  
