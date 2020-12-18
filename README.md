@@ -12,7 +12,7 @@
 
 世界上最简单的ORM，只需要配置连接字符串，F5运行控制台自动建库建表运行DEMO
 
-地址：http://www.codeisbug.com/Home/Doc
+<font color=#00ffff size=72> 地址：</font> http://www.codeisbug.com/Home/Doc 
 
 
 # 👵English documents
