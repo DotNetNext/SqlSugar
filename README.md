@@ -1,19 +1,19 @@
 
-## 🌭 果糖大数据科技（南通）有限公司（永久免费开源） ##
+## 🌭果糖大数据科技（南通）有限公司（永久免费开源） ##
 公司地址：南通太阳晶城大厦3幢125室
 
 联系人：qq 610262374  微信 sabimao
 
 服务项目：接收项目外包等服务(高级程序员&需求分析&软件架构师)，技术咨询，技术顾问
 
-## 中文文档：
+## 👩中文文档：
 
 世界上最简单的ORM，只需要配置连接字符串，F5运行控制台自动建库建表运行DEMO
 
 地址：http://www.codeisbug.com/Home/Doc
 
 
-# English documents
+# 👵English documents
 
 Using SqlSugar is very simple ,And it's powerful.
 
@@ -24,7 +24,7 @@ Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大�
 Email:610262374@qq.com  
 QQ Group:225982985
 
-## Nuget 
+## 🍳Nuget 
 
 |.net |.net core |
 |---------| ---------|
