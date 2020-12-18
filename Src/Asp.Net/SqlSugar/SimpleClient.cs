@@ -269,7 +269,7 @@ namespace SqlSugar
         }
         public virtual async Task<bool> DeleteByIdAsync(dynamic id)
         {
-            return await this.Context.Deleteable<T>().In(id).ExecuteCommand() > 0;
+            return await this.Context.Deleteable<T>().In(id).ExecuteCommandAsync() > 0;
         }
         public virtual async Task<bool> DeleteByIdsAsync(dynamic[] ids)
         {
