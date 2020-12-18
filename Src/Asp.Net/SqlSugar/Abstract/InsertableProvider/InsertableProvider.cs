@@ -239,6 +239,7 @@ namespace SqlSugar
             result.InsertBuilder = this.InsertBuilder;
             result.Builder = this.SqlBuilder;
             result.Context = this.Context;
+            result.Inserts=this.InsertObjs;
             return result;
         }
 

@@ -14,9 +14,16 @@ namespace SqlSugar
         internal SqlSugarProvider Context { get;   set; }
         internal ISqlBuilder Builder { get; set; }
         internal InsertBuilder InsertBuilder { get; set; }
+        public object[] Inserts { get; internal set; }
+
         public int ExecuteBlueCopy()
         {
             if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
+
+            if (Inserts.First().GetType() == typeof(DataTable))
+            {
+                return WriteToServer();
+            }
 
             DataTable dt;
             SqlBulkCopy bulkCopy;
@@ -40,6 +47,11 @@ namespace SqlSugar
         {
             if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
 
+            if (Inserts.First().GetType() == typeof(DataTable))
+            {
+                return WriteToServer();
+            }
+
             DataTable dt;
             SqlBulkCopy bulkCopy;
             SetCopyData(out dt, out bulkCopy);
@@ -59,6 +71,31 @@ namespace SqlSugar
             return DbColumnInfoList.Count;
         }
 
+        private int WriteToServer()
+        {
+            SqlBulkCopy copy;
+            if (this.Context.Ado.Transaction == null)
+            {
+                copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection);
+            }
+            else
+            {
+                copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection, SqlBulkCopyOptions.CheckConstraints, (SqlTransaction)this.Context.Ado.Transaction);
+            }
+            var dt = this.Inserts.First() as DataTable;
+            if (dt == null)
+            {
+                return 0;
+            }
+            if (this.Context.Ado.Connection.State == ConnectionState.Closed)
+            {
+                this.Context.Ado.Connection.Open();
+            }
+            Check.Exception(dt.TableName=="Table","dt.TableName can't be null ");
+            copy.DestinationTableName =this.Builder.GetTranslationColumnName(dt.TableName);
+            copy.WriteToServer(dt);
+            return dt.Rows.Count;
+        }
         private void SetCopyData(out DataTable dt, out SqlBulkCopy bulkCopy)
         {
             dt = this.Context.Ado.GetDataTable("select top 0 * from " + InsertBuilder.GetTableNameString);
