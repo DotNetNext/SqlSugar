@@ -1,5 +1,5 @@
 
-## 😋 果糖大数据科技（南通）有限公司（永久免费开源） ##
+## 😋果糖大数据科技（南通）有限公司（永久免费开源） ##
 公司地址：南通太阳晶城大厦3幢125室
 
 |qq|微信|Email|QQ Group|
@@ -8,14 +8,14 @@
 
 服务项目：接收项目外包等服务(高级程序员&需求分析&软件架构师)，技术咨询，技术顾问
 
-## 👩 中文文档：
+## 👩中文文档：
 
 世界上最简单的ORM，只需要配置连接字符串，F5运行控制台自动建库建表运行DEMO
 
 地址：http://www.codeisbug.com/Home/Doc
 
 
-# 👵 English documents
+# 👵English documents
 
 Using SqlSugar is very simple ,And it's powerful.
 
@@ -24,13 +24,13 @@ SqlSugar=One object+One parameter=16 functions,
 Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 
  
 
-## ✨ Nuget 
+## ✨Nuget 
 
 |.net |.net core |
 |---------| ---------|
 |Install-Package sqlSugar |Install-Package sqlSugarCore|
  
-## 🎗SqlSugar's 16 Functions
+## 🎗 SqlSugar's 16 Functions
 There are 16 methods under SqlSugarClient
 ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190430/6369224056499802674782957.jpg?id=111 "sqlsugar")
  
