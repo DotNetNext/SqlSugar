@@ -81,6 +81,10 @@ namespace SqlSugar
                                 value.Value = Convert.ToDateTime("1753/01/01");
                             }
                         }
+                        if (value.Value == null)
+                        {
+                            value.Value = DBNull.Value;
+                        }
                         dr[item.ColumnName] = value.Value;
                     }
                 }
