@@ -14,7 +14,7 @@ namespace SqlSugar
         internal SqlSugarProvider Context { get;   set; }
         internal ISqlBuilder Builder { get; set; }
         internal InsertBuilder InsertBuilder { get; set; }
-        public object[] Inserts { get; internal set; }
+        internal object[] Inserts { get;  set; }
 
         public int ExecuteBlueCopy()
         {
@@ -24,10 +24,9 @@ namespace SqlSugar
             {
                 return WriteToServer();
             }
-
-            DataTable dt;
-            SqlBulkCopy bulkCopy;
-            SetCopyData(out dt, out bulkCopy);
+            DataTable dt = GetCopyData();
+            SqlBulkCopy bulkCopy = GetBulkCopyInstance();
+            bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
             try
             {
                 bulkCopy.WriteToServer(dt);
@@ -51,10 +50,9 @@ namespace SqlSugar
             {
                 return WriteToServer();
             }
-
-            DataTable dt;
-            SqlBulkCopy bulkCopy;
-            SetCopyData(out dt, out bulkCopy);
+            DataTable dt=GetCopyData();
+            SqlBulkCopy bulkCopy = GetBulkCopyInstance();
+            bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
             try
             {
                 await bulkCopy.WriteToServerAsync(dt);
@@ -73,6 +71,41 @@ namespace SqlSugar
 
         private int WriteToServer()
         {
+            var dt = this.Inserts.First() as DataTable;
+            if (dt == null)
+                return 0;
+            Check.Exception(dt.TableName == "Table", "dt.TableName can't be null ");
+            dt = GetCopyWriteDataTable(dt);
+            SqlBulkCopy copy = GetBulkCopyInstance();
+            copy.DestinationTableName = this.Builder.GetTranslationColumnName(dt.TableName);
+            copy.WriteToServer(dt);
+            return dt.Rows.Count;
+        }
+        private DataTable GetCopyWriteDataTable(DataTable dt)
+        {
+            var result = this.Context.Ado.GetDataTable("select top 0 * from " + this.Builder.GetTranslationColumnName(dt.TableName));
+            foreach (DataRow item in dt.Rows)
+            {
+                DataRow  dr= result.NewRow();
+                foreach (DataColumn column in result.Columns)
+                {
+
+                    if (dt.Columns.Cast<DataColumn>().Select(it => it.ColumnName.ToLower()).Contains(column.ColumnName.ToLower()))
+                    {
+                        dr[column.ColumnName] = item[column.ColumnName];
+                        if (dr[column.ColumnName] == null)
+                        {
+                            dr[column.ColumnName] = DBNull.Value;
+                        }
+                    }
+                }
+                result.Rows.Add(dr);
+            }
+            result.TableName = dt.TableName;
+            return result;
+        }
+        private SqlBulkCopy GetBulkCopyInstance()
+        {
             SqlBulkCopy copy;
             if (this.Context.Ado.Transaction == null)
             {
@@ -82,23 +115,15 @@ namespace SqlSugar
             {
                 copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection, SqlBulkCopyOptions.CheckConstraints, (SqlTransaction)this.Context.Ado.Transaction);
             }
-            var dt = this.Inserts.First() as DataTable;
-            if (dt == null)
-            {
-                return 0;
-            }
             if (this.Context.Ado.Connection.State == ConnectionState.Closed)
             {
                 this.Context.Ado.Connection.Open();
             }
-            Check.Exception(dt.TableName=="Table","dt.TableName can't be null ");
-            copy.DestinationTableName =this.Builder.GetTranslationColumnName(dt.TableName);
-            copy.WriteToServer(dt);
-            return dt.Rows.Count;
+            return copy;
         }
-        private void SetCopyData(out DataTable dt, out SqlBulkCopy bulkCopy)
+        private DataTable GetCopyData()
         {
-            dt = this.Context.Ado.GetDataTable("select top 0 * from " + InsertBuilder.GetTableNameString);
+            var dt = this.Context.Ado.GetDataTable("select top 0 * from " + InsertBuilder.GetTableNameString);
             foreach (var rowInfos in DbColumnInfoList)
             {
                 var dr = dt.NewRow();
@@ -127,25 +152,8 @@ namespace SqlSugar
                 }
                 dt.Rows.Add(dr);
             }
-            bulkCopy = null;
-            if (this.Context.Ado.Transaction != null)
-            {
-                var sqlTran = this.Context.Ado.Transaction as SqlTransaction;
-                bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection, SqlBulkCopyOptions.CheckConstraints, sqlTran);
-            }
-            else
-            {
-                bulkCopy = new SqlBulkCopy(this.Context.Ado.Connection as SqlConnection);
-            }
-            //获取目标表的名称
-            bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
-            //写入DataReader对象
-            if (this.Context.Ado.Connection.State == ConnectionState.Closed)
-            {
-                this.Context.Ado.Connection.Open();
-            }
+            return dt;
         }
-
         private object AddParameter(int i,string dbColumnName, object value)
         {
             var name =Builder.SqlParameterKeyWord+dbColumnName+i;
