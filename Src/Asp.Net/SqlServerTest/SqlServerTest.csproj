@@ -77,6 +77,8 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UInsert.cs" />
+    <Compile Include="UnitTest\UQueryable2.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="_OldTest\BugTest\Bug2.cs" />
     <Compile Include="_OldTest\BugTest\Bug5.cs" />

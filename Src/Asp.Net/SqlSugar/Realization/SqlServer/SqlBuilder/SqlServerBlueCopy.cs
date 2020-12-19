@@ -36,12 +36,10 @@ namespace SqlSugar
                 this.Context.Ado.Connection.Close();
                 throw ex;
             }
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
-            {
-                this.Context.Ado.Connection.Close();
-            }
+            CloseDb();
             return DbColumnInfoList.Count;
         }
+
         public async Task<int> ExecuteBlueCopyAsync()
         {
             if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
@@ -79,6 +77,7 @@ namespace SqlSugar
             SqlBulkCopy copy = GetBulkCopyInstance();
             copy.DestinationTableName = this.Builder.GetTranslationColumnName(dt.TableName);
             copy.WriteToServer(dt);
+            CloseDb();
             return dt.Rows.Count;
         }
         private DataTable GetCopyWriteDataTable(DataTable dt)
@@ -154,11 +153,12 @@ namespace SqlSugar
             }
             return dt;
         }
-        private object AddParameter(int i,string dbColumnName, object value)
+        private void CloseDb()
         {
-            var name =Builder.SqlParameterKeyWord+dbColumnName+i;
-            InsertBuilder.Parameters.Add(new SugarParameter(name,value));
-            return name;
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
+            {
+                this.Context.Ado.Connection.Close();
+            }
         }
     }
 }
