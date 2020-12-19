@@ -24,7 +24,7 @@ SqlSugar=One object+One parameter=16 functions,
 Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 
  
 
-## ✨Nuget 
+## 📮Nuget 
 
 |.net |.net core |
 |---------| ---------|
