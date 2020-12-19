@@ -553,6 +553,8 @@ namespace SqlSugar
             if (this._IsOpen)
                 this.Open();
             _Context.Ado.IsEnableLogEvent = isLog;
+            if (_CurrentConnectionConfig.AopEvents==null)
+                _CurrentConnectionConfig.AopEvents = new AopEvents();
         }
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
         {
@@ -565,6 +567,8 @@ namespace SqlSugar
             if (this._IsOpen)
                 this.Open();
             _Context.Ado.IsEnableLogEvent = isLog;
+            if (_CurrentConnectionConfig.AopEvents == null)
+                _CurrentConnectionConfig.AopEvents = new AopEvents();
         }
         public void BeginTran()
         {
