@@ -23,7 +23,7 @@ namespace SqlSugar
                            syscolumns.Id AS TableId,
                            syscolumns.name AS DbColumnName,
                            systypes.name AS DataType,
-                           COLUMNPROPERTY(syscolumns.id,syscolumns.name,'PRECISION') as length,
+                           COLUMNPROPERTY(syscolumns.id,syscolumns.name,'PRECISION') as [length],
                            isnull(COLUMNPROPERTY(syscolumns.id,syscolumns.name,'Scale'),0) as Scale, 
 						   isnull(COLUMNPROPERTY(syscolumns.id,syscolumns.name,'Scale'),0) as DecimalDigits,
                            sys.extended_properties.[value] AS [ColumnDescription],
