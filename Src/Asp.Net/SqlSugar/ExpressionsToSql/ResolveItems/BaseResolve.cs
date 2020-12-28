@@ -146,6 +146,22 @@ namespace SqlSugar
                     }
                     this.AppendOpreator(parameter, isLeft);
                 }
+                else if (value is MapperSql)
+                {
+                    var sql = ((MapperSql)value).Sql;
+                    if (isLeft == true)
+                    {
+                        sql += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
+                    }
+                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
+                    {
+                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, sql);
+                    }
+                    else
+                    {
+                        this.Context.Result.Append(sql);
+                    }
+                }
                 else if (oppoSiteExpression is MemberExpression)
                 {
                     string appendValue = Context.SqlParameterKeyWord
@@ -200,22 +216,6 @@ namespace SqlSugar
                     else
                     {
                         this.Context.Result.Append(appendValue);
-                    }
-                }
-                else if (value is MapperSql)
-                {
-                    var sql = ((MapperSql)value).Sql;
-                    if (isLeft == true)
-                    {
-                        sql += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
-                    }
-                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
-                    {
-                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, sql);
-                    }
-                    else
-                    {
-                        this.Context.Result.Append(sql);
                     }
                 }
                 else
