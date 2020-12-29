@@ -75,7 +75,6 @@ namespace SqlSugar
                     {
                         var inStr= BitConverter.ToString((byte[])item).Replace("-", "");
                         inValues.Add(inStr);
-                        isByteArray = true;
                     }
                     else
                     {
