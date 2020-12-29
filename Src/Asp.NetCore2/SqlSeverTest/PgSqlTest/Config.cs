@@ -16,16 +16,16 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "PORT=5432;DATABASE=SqlSugar4xTest;HOST=localhost;PASSWORD=jhl52771;USER ID=postgres";
+        public static string ConnectionString = "PORT=5432;DATABASE=SqlSugar4xTest;HOST=localhost;PASSWORD=haosql;USER ID=postgres";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString2 = "PORT=5432;DATABASE=SqlSugar4xTest2;HOST=localhost;PASSWORD=jhl52771;USER ID=postgres";
+        public static string ConnectionString2 = "PORT=5432;DATABASE=SqlSugar4xTest2;HOST=localhost;PASSWORD=haosql;USER ID=postgres";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString3 = "PORT=5432;DATABASE=SqlSugar4xTest3;HOST=localhost;PASSWORD=jhl52771;USER ID=postgres";
+        public static string ConnectionString3 = "PORT=5432;DATABASE=SqlSugar4xTest3;HOST=localhost;PASSWORD=haosql;USER ID=postgres";
     }
 }
