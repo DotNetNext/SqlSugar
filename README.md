@@ -1,37 +1,42 @@
 
+## 👨‍🎓果糖大数据科技（南通）有限公司（永久免费开源） ##
+公司地址：南通太阳晶城大厦3幢125室
 
+|qq|微信|Email|QQ Group|
+|---------| ---------|---------|---------|
+|610262374|  sabimao| 610262374@qq.com | 225982985|
 
-## 中文文档：
+服务项目：接收项目外包等服务(高级程序员&需求分析&软件架构师)，技术咨询，技术顾问
+
+## 👮‍♀️中文文档：
 
 世界上最简单的ORM，只需要配置连接字符串，F5运行控制台自动建库建表运行DEMO
 
-地址：http://www.codeisbug.com/Home/Doc
+<font color=#0099ff size=72> 地址：</font> http://donet5.com/Home/Doc 
 
 
-# English documents
+# 🕵️‍♀️English documents
 
 Using SqlSugar is very simple ,And it's powerful.
 
 SqlSugar=One object+One parameter=16 functions,
 
 Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 
-## Contactinfomation  
-Email:610262374@qq.com  
-QQ Group:225982985
+ 
 
-## Nuget 
+## 📮Nuget 
 
 |.net |.net core |
 |---------| ---------|
 |Install-Package sqlSugar |Install-Package sqlSugarCore|
  
-## SqlSugar's 16 Functions
+##  📑SqlSugar's 16 Functions
 There are 16 methods under SqlSugarClient
 ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190430/6369224056499802674782957.jpg?id=111 "sqlsugar")
  
   
 
-## Create SqlSugarClient
+## 🎀 Create SqlSugarClient
 All operations are based on SqlSugarClient 
 
 SqlSugarClient parameter and only one ConnectionConfig
@@ -76,11 +81,11 @@ public class Student
   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/0.SqlSugarClient) 
  
 
-##  1. Queryable
+## 🎉 1. Queryable
 We use it to query
- ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=112 "Queryable")
+ ![输入图片说明](http://www.codeisbug.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=1112 "Queryable")
  
-##### Here are some examples
+ Here are some examples
 ```cs
 //easy
 var getAll = db.Queryable<Student>().ToList();
@@ -115,7 +120,7 @@ var list4 = db.Queryable<Student, School>((st, sc) =>new  JoinQueryInfos(JoinTyp
  
 
 
- ##  2. Updateable
+ ## 🎊 2. Updateable
 We use it to Update
  ```cs
 //update reutrn Update Count
@@ -137,7 +142,7 @@ var t9 = db.Updateable(it=>new class() { name="a",createtime=p }).Where(it => it
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/2.Updateable) 
 
  
-##  3. Insertable
+## 🎃 3. Insertable
 We use it to Insert
  ```cs
 //Insert reutrn Insert Count
@@ -157,7 +162,7 @@ var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteC
 ```
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/3.Insertable) 
  
-##  4. Deleteable
+## 🎄 4. Deleteable
 We use it to Delete
 
  ```cs
@@ -177,7 +182,7 @@ db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/4.Deleteable ) 
 
 
- ##  5. SqlQueryable
+ ## 🎋 5. SqlQueryable
 ```cs
 var list = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
 var list2 = db.SqlQueryable<Student>("select * from student").Where(it=>it.Id==1).ToPageList(1, 2);
@@ -185,7 +190,7 @@ var list3= db.SqlQueryable<Student>("select * from student").Where("id=@id",new 
 ``` 
 [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/5.SqlQueryable ) 
  
-  ##  6. SaveQueues
+  ## 🎎 6. SaveQueues
   Perform multiple operations together with transactions
 ```cs
 var db = GetInstance();
@@ -207,7 +212,7 @@ var result2 = db.SaveQueues<Student, School, Student>();
 [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/6.queue ) 
 
 
-##  7.Ado
+## 🎫 7.Ado
 db.Ado.MethodName，Look at the following example
 ```cs
 var dt=db.Ado.GetDataTable("select * from table where id=@id and name=@name",new List<SugarParameter>(){
@@ -224,7 +229,7 @@ var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school",nameP,ageP);
 ```
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/7.ado ) 
  
- ##  8.Saveable
+ ## 🧶 8.Saveable
  Insert or Update
 ```cs
 db.Saveable<Student>(entity).ExecuteReturnEntity();
@@ -236,7 +241,7 @@ db.Saveable<Student>(new Student() { Name = "" })
 ```
 [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/8.saveable ) 
  
-  ##  9.EntityMain
+  ## 🛒 9.EntityMain
   ```cs
 var entityInfo=db.EntityMaintenance.GetEntityInfo<Student>();
 foreach (var column in entityInfo.Columns)
@@ -246,7 +251,7 @@ foreach (var column in entityInfo.Columns)
 ```
 [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/9.entityMain ) 
 
-  ##  10.DbMain
+  ## 🥼 10.DbMain
    ```cs
   var tables = db.DbMaintenance.GetTableInfoList();
   foreach (var table in tables)
@@ -257,7 +262,7 @@ foreach (var column in entityInfo.Columns)
   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/a.DbMain ) 
   
 
-  ##  11.Aop
+  ## 🦺 11.Aop
   ```cs
 db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
 {
@@ -279,7 +284,7 @@ db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-exe
 ```
   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/b.aop ) 
 
-  ##  12.QueryFilter
+  ## 🎁 12.QueryFilter
   ```cs
 
  //gobal filter
@@ -303,7 +308,7 @@ public static SqlSugarClient GetInstance()
  ```
    [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/c.GobalFilter ) 
  
-  ##  13.DbFirst
+  ## 🍔 13.DbFirst
   ```cs
 var db = GetInstance();
 //Create all class
@@ -335,14 +340,14 @@ db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
    [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/d.DbFirst ) 
 
 
-  ##  14.CodeFirst
+  ## 🥙 14.CodeFirst
 ```cs
 db.CodeFirst.SetStringDefaultLength(100).BackupTable().InitTables(typeof(CodeTable),typeof(CodeTable2)); //change entity backupTable
 db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(CodeTable2));
 ```
    [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/e.CodeFirst ) 
 
-  ##  15.Utilities
+  ## 🧈1 5.Utilities
   ```cs
 var list = db.Utilities.DataTableToList(datatable);
   ```
@@ -350,7 +355,7 @@ var list = db.Utilities.DataTableToList(datatable);
 [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities ) 
 
 
-  ##  16.SimpleClient
+  ## 🥫 16.SimpleClient
 ```cs
 var db = GetInstance();
 var sdb = db.GetSimpleClient<Student>();
@@ -364,8 +369,6 @@ sdb.Update(obj);
  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.SimpleClient ) 
   
 
-# Code generator
+## 🕹 Code generator
 https://github.com/sunkaixuan/SoEasyPlatform
-
-# More APi 中文文档：
-http://www.codeisbug.com/Doc/8 
+ 

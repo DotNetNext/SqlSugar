@@ -17,6 +17,10 @@ namespace SqlSugar
 
         public static void RemoveCache(ICacheService cacheService, string tableName)
         {
+            if (cacheService == null)
+            {
+                return;
+            }
             var keys = cacheService.GetAllKey<string>();
             if (keys.HasValue())
             {

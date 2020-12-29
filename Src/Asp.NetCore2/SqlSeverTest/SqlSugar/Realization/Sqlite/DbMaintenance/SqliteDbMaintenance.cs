@@ -230,7 +230,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return "alter table  {0} rename to {1}";
             }
         }
 

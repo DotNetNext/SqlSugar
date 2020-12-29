@@ -53,7 +53,7 @@ namespace SqlSugar
         public Guid ContextID { get { return this.Context.ContextID; } set { this.Context.ContextID = value; } }
 
 
-        public MappingTableList MappingTables { get { return _MappingTables; } set {  _MappingTables = value; } }
+        public MappingTableList MappingTables { get { return _MappingTables; } set { _MappingTables = value; } }
         public MappingColumnList MappingColumns { get { return _MappingColumns; } set { _MappingColumns = value; } }
         public IgnoreColumnList IgnoreColumns { get { return _IgnoreColumns; } set { _IgnoreColumns = value; } }
         public IgnoreColumnList IgnoreInsertColumns { get { return _IgnoreInsertColumns; } set { _IgnoreInsertColumns = value; } }
@@ -297,15 +297,27 @@ namespace SqlSugar
             where T : class, new()
             where T2 : class, new()
         {
-            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinExpression);
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinExpression).With(SqlWith.Null);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression)
             where T : class, new()
             where T2 : class, new()
         {
-            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinType, joinExpression);
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinType, joinExpression).With(SqlWith.Null);
         }
+
+
+        public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3,
+            JoinType joinType1, Expression<Func<T, T2, T3, bool>> joinExpression1,
+            JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2)
+      where T : class, new()
+      where T2 : class, new()
+      where T3 : class, new()
+        {
+            return this.Context.Queryable(joinQueryable1, joinQueryable2, joinQueryable3, joinType1, joinExpression1, joinType2, joinExpression2).With(SqlWith.Null);
+        }
+
 
         public ISugarQueryable<T> Queryable<T>()
         {
@@ -527,7 +539,7 @@ namespace SqlSugar
         public IDbFirst DbFirst => this.Context.DbFirst;
         public IDbMaintenance DbMaintenance => this.Context.DbMaintenance;
         public EntityMaintenance EntityMaintenance { get { return this.Context.EntityMaintenance; } set { this.Context.EntityMaintenance = value; } }
-        public QueryFilterProvider QueryFilter { get { return this.Context.QueryFilter; }set { this.Context.QueryFilter = value; } }
+        public QueryFilterProvider QueryFilter { get { return this.Context.QueryFilter; } set { this.Context.QueryFilter = value; } }
         #endregion
 
         #region TenantManager
@@ -541,6 +553,8 @@ namespace SqlSugar
             if (this._IsOpen)
                 this.Open();
             _Context.Ado.IsEnableLogEvent = isLog;
+            if (_CurrentConnectionConfig.AopEvents==null)
+                _CurrentConnectionConfig.AopEvents = new AopEvents();
         }
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
         {
@@ -553,6 +567,8 @@ namespace SqlSugar
             if (this._IsOpen)
                 this.Open();
             _Context.Ado.IsEnableLogEvent = isLog;
+            if (_CurrentConnectionConfig.AopEvents == null)
+                _CurrentConnectionConfig.AopEvents = new AopEvents();
         }
         public void BeginTran()
         {

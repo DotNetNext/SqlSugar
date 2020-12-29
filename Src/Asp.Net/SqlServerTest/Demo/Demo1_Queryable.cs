@@ -251,6 +251,17 @@ namespace OrmTest
                                    db.Queryable<Order>().Where(it => it.Name.Contains("b"))
                                  ).ToList();
 
+
+
+            var query4 = db.Queryable<Order,OrderItem,Custom>(
+                              db.Queryable<Order>().Where(it => it.Name.Contains("a")),
+                              db.Queryable<OrderItem>().Where(it => it.CreateTime>DateTime.Now),
+                              db.Queryable<Custom>().Where(it => it.Name.Contains("b")),
+                              JoinType.Left, (o, i, c) => o.Id==i.OrderId,
+                              JoinType.Left,(o,i,c)=>o.CustomId==c.Id
+
+                            ).Select(o=>o).ToList();
+
             Console.WriteLine("#### Join Table End ####");
         }
 

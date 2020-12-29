@@ -27,6 +27,7 @@ namespace SqlSugar
         SqlSugarProvider CopyContext(bool isCopyEvents = false);
         dynamic DataTableToDynamic(DataTable table);
         List<T> DataTableToList<T>(DataTable table);
+        DataTable ListToDataTable<T>(List<T> list);
         Dictionary<string, object> DataTableToDictionary(DataTable table);
         ICacheService GetReflectionInoCacheInstance();
         void RemoveCacheAll();

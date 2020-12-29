@@ -146,7 +146,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ORDER BY "+this.Builder.SqlDateNow+" ";
+                return "ORDER BY " + this.Builder.SqlDateNow + " ";
             }
         }
         public virtual string OrderByTemplate
@@ -216,7 +216,8 @@ namespace SqlSugar
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
-            if (resolveType.IsIn(ResolveExpressType.FieldSingle,ResolveExpressType.FieldMultiple,ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple) &&(expression is LambdaExpression)&& (expression as LambdaExpression).Body is BinaryExpression) {
+            if (resolveType.IsIn(ResolveExpressType.FieldSingle, ResolveExpressType.FieldMultiple, ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple) && (expression is LambdaExpression) && (expression as LambdaExpression).Body is BinaryExpression)
+            {
                 resolveType = resolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.FieldSingle) ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
             }
             this.LambdaExpressions.Clear();
@@ -246,7 +247,8 @@ namespace SqlSugar
             this.Parameters.AddRange(resolveExpress.Parameters);
             var result = resolveExpress.Result;
             var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
-            if (isSingleTableHasSubquery) {
+            if (isSingleTableHasSubquery)
+            {
                 Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name");
                 this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
             }
@@ -256,7 +258,7 @@ namespace SqlSugar
         {
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
-            var isIgnoreOrderBy = this.IsCount&&this.PartitionByValue.IsNullOrEmpty();
+            var isIgnoreOrderBy = this.IsCount && this.PartitionByValue.IsNullOrEmpty();
             AppendFilter();
             sql = new StringBuilder();
             if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
@@ -271,7 +273,7 @@ namespace SqlSugar
             if (isIgnoreOrderBy) { orderByValue = null; }
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
-            if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString();  }
+            if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
@@ -294,7 +296,7 @@ namespace SqlSugar
                 foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
                 {
                     var filterResult = item.FilterValue(this.Context);
-                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql+UtilConstants.Space));
+                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql + UtilConstants.Space));
                     var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
                     if (filterParamters.HasValue())
                     {
@@ -339,18 +341,18 @@ namespace SqlSugar
         public virtual string ToPageSql2(string sql, int? pageIndex, int? pageSize, bool isExternal = false)
         {
             string temp = isExternal ? ExternalPageTempalte : PageTempalte;
-            return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize+1, pageIndex * pageSize);
+            return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }
 
         public virtual string GetSelectByItems(List<KeyValuePair<string, object>> items)
         {
             var array = items.Select(it => {
                 dynamic dynamicObj = this.Context.Utilities.DeserializeObject<dynamic>(this.Context.Utilities.SerializeObject(it.Value));
-                var dbName =Builder.GetTranslationColumnName( (string)(dynamicObj.dbName));
+                var dbName = Builder.GetTranslationColumnName((string)(dynamicObj.dbName));
                 var asName = Builder.GetTranslationColumnName((string)(dynamicObj.asName));
-                return string.Format("{0}.{1} AS {2}",it.Key,dbName,asName);
+                return string.Format("{0}.{1} AS {2}", it.Key, dbName, asName);
             });
-            return  string.Join(",",array);
+            return string.Join(",", array);
         }
 
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
@@ -359,7 +361,7 @@ namespace SqlSugar
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
                 Builder.GetTranslationTableName(joinInfo.TableName) + UtilConstants.Space,
-                joinInfo.ShortName + UtilConstants.Space + TableWithString,
+                joinInfo.ShortName + UtilConstants.Space + (TableWithString == SqlWith.Null ? " " : TableWithString),
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
@@ -420,7 +422,7 @@ namespace SqlSugar
             }
             else
             {
-                if (expression is LambdaExpression && (expression as LambdaExpression).Body is MethodCallExpression&&this.Context.CurrentConnectionConfig.DbType==DbType.SqlServer&&this.OrderByValue.HasValue())
+                if (expression is LambdaExpression && (expression as LambdaExpression).Body is MethodCallExpression && this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && this.OrderByValue.HasValue())
                 {
                     result = result + " AS columnName";
                 }
@@ -441,7 +443,7 @@ namespace SqlSugar
                 var columns = this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore);
                 if (this.IgnoreColumns.HasValue())
                 {
-                    columns = columns.Where(c => !this.IgnoreColumns.Any(i=>c.PropertyName.Equals(i,StringComparison.CurrentCultureIgnoreCase)||c.DbColumnName.Equals(i,StringComparison.CurrentCultureIgnoreCase))).ToList();
+                    columns = columns.Where(c => !this.IgnoreColumns.Any(i => c.PropertyName.Equals(i, StringComparison.CurrentCultureIgnoreCase) || c.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase))).ToList();
                 }
                 result = string.Join(",", columns.Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
             }
@@ -488,7 +490,7 @@ namespace SqlSugar
                 {
                     result += (TableShortName + UtilConstants.Space);
                 }
-                if (this.TableWithString.HasValue()&&this.TableWithString!= SqlWith.Null)
+                if (this.TableWithString.HasValue() && this.TableWithString != SqlWith.Null)
                 {
                     result += TableWithString + UtilConstants.Space;
                 }
@@ -516,7 +518,7 @@ namespace SqlSugar
             get
             {
                 if (this.OrderByValue == null) return null;
-                if (IsCount&&this.PartitionByValue.IsNullOrEmpty()) return null;
+                if (IsCount && this.PartitionByValue.IsNullOrEmpty()) return null;
                 else
                 {
                     return this.OrderByValue;
@@ -528,7 +530,7 @@ namespace SqlSugar
             get
             {
                 if (this.GroupByValue == null) return null;
-                if (this.GroupByValue.Last() != ' ' )
+                if (this.GroupByValue.Last() != ' ')
                 {
                     return this.GroupByValue + UtilConstants.Space;
                 }
@@ -546,11 +548,12 @@ namespace SqlSugar
 
         public void CheckExpression(Expression expression, string methodName)
         {
-            if (IsSingle() == false&& this.JoinExpression!=null)
+            if (IsSingle() == false && this.JoinExpression != null)
             {
                 var jsoinParameters = (this.JoinExpression as LambdaExpression).Parameters;
                 var currentParametres = (expression as LambdaExpression).Parameters;
-                if ((expression as LambdaExpression).Body.ToString() == "True") {
+                if ((expression as LambdaExpression).Body.ToString() == "True")
+                {
                     return;
                 }
                 if (currentParametres != null && currentParametres.Count > 0)

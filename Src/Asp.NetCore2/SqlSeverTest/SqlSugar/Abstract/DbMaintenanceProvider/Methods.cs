@@ -80,6 +80,7 @@ namespace SqlSugar
         #region Check
         public virtual bool IsAnyTable(string tableName, bool isCache = true)
         {
+            Check.Exception(string.IsNullOrEmpty(tableName), "IsAnyTable tableName is not null");
             tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
             var tables = GetTableInfoList(isCache);
             if (tables == null) return false;
@@ -308,6 +309,12 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+        public virtual bool CreateUniqueIndex(string tableName, string[] columnNames)
+        {
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames)+"_Unique","UNIQUE" );
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public virtual bool IsAnyIndex(string indexName)
         {
             string sql = string.Format(this.IsAnyIndexSql, indexName);
@@ -366,6 +373,22 @@ namespace SqlSugar
                     if (!IsAnyIndex(indexName))
                     {
                         CreateIndex(entityInfo.DbTableName, columnNames);
+                    }
+                }
+            }
+
+
+            var uIndexColumns = columns.Where(it => it.UIndexGroupNameList.HasValue()).ToList();
+            if (uIndexColumns.HasValue())
+            {
+                var groups = uIndexColumns.SelectMany(it => it.UIndexGroupNameList).GroupBy(it => it).Select(it => it.Key).ToList();
+                foreach (var item in groups)
+                {
+                    var columnNames = uIndexColumns.Where(it => it.UIndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it => it.DbColumnName).ToArray();
+                    var indexName = string.Format("Index_{0}_{1}_Unique", entityInfo.DbTableName, string.Join("_", columnNames));
+                    if (!IsAnyIndex(indexName))
+                    {
+                        CreateUniqueIndex(entityInfo.DbTableName, columnNames);
                     }
                 }
             }

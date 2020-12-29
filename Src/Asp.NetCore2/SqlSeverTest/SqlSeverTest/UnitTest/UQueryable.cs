@@ -95,8 +95,27 @@ namespace OrmTest
                 a =  it.a.Value
             }).ToSql();
             UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest2] ", "Queryable");
+
+            Db.CodeFirst.InitTables<UnitDecimal>();
+
+            Db.Queryable<UnitDecimal>().Select(it =>
+
+            new UnitDecimal2
+            {
+                x1 = it.x1 * it.x2
+            }).ToList();
         }
 
+
+
+        public class UnitDecimal
+        {
+            public decimal x1 { get; set; }
+            public decimal x2 { get; set; }
+        }
+        public class UnitDecimal2 {
+          public decimal? x1 { get; set; }
+        }
 
         /// <summary>
         /// 系统用户表实体模型类

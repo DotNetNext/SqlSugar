@@ -80,6 +80,7 @@ namespace SqlSugar
         #region Check
         public virtual bool IsAnyTable(string tableName, bool isCache = true)
         {
+            Check.Exception(string.IsNullOrEmpty(tableName), "IsAnyTable tableName is not null");
             tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
             var tables = GetTableInfoList(isCache);
             if (tables == null) return false;

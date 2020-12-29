@@ -108,6 +108,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("nchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("long",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("nclob",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("rowid",CSharpDataType.@string),

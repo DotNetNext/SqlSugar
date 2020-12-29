@@ -101,7 +101,7 @@ namespace SqlSugar
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices?.RazorService != null)
             {
                 List<RazorTableInfo> razorList = new List<RazorTableInfo>();
-                var tables = this.Context.DbMaintenance.GetTableInfoList(false);
+                var tables = this.TableInfoList;
                 if (tables.HasValue())
                 {
                     foreach (var item in tables)

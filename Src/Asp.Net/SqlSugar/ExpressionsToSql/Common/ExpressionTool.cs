@@ -55,14 +55,29 @@ namespace SqlSugar
         {
             if (value == null) return value;
             var type = value.GetType();
-            if (type.IsEnum()&& type != typeof(DateType)&& type!=typeof(JoinType)&&type!=typeof(OrderByType)) return Convert.ToInt64(value);
+            if (type.IsEnum() && type != typeof(DateType) && type != typeof(JoinType) && type != typeof(OrderByType)) return Convert.ToInt64(value);
             else
                 return value;
         }
-
+        public static Type GetMemberInfoType(MemberInfo member)
+        {
+            switch (member.MemberType)
+            {
+                case MemberTypes.Event:
+                    return ((EventInfo)member).EventHandlerType;
+                case MemberTypes.Field:
+                    return ((FieldInfo)member).FieldType;
+                case MemberTypes.Method:
+                    return ((MethodInfo)member).ReturnType;
+                case MemberTypes.Property:
+                    return ((PropertyInfo)member).PropertyType;
+                default:
+                    return null;
+            }
+        }
         public static bool IsLogicOperator(string operatorValue)
         {
-            return operatorValue == "&&" || operatorValue == "||"||operatorValue == "AND" || operatorValue == "OR";
+            return operatorValue == "&&" || operatorValue == "||" || operatorValue == "AND" || operatorValue == "OR";
         }
 
         public static bool IsLogicOperator(Expression expression)
@@ -100,7 +115,7 @@ namespace SqlSugar
                         {
                             reval = GetPropertyValue(memberExpr);
                         }
-                        catch 
+                        catch
                         {
                             reval = null;
                         }
@@ -118,7 +133,8 @@ namespace SqlSugar
             }
             // fetch the root object reference:
             var constExpr = expression as ConstantExpression;
-            if (constExpr == null) {
+            if (constExpr == null)
+            {
                 return DynamicInvoke(rootExpression);
             }
             object objReference = constExpr.Value;
@@ -131,7 +147,7 @@ namespace SqlSugar
                     var objProp = objReference.GetType().GetProperty(mi.Name);
                     if (objProp == null)
                     {
-                        objReference = DynamicInvoke(expression, rootExpression==null?memberExpr: rootExpression);
+                        objReference = DynamicInvoke(expression, rootExpression == null ? memberExpr : rootExpression);
                     }
                     else
                     {
@@ -143,7 +159,7 @@ namespace SqlSugar
                     var objField = objReference.GetType().GetField(mi.Name);
                     if (objField == null)
                     {
-                        objReference = DynamicInvoke(expression, rootExpression==null?memberExpr: rootExpression);
+                        objReference = DynamicInvoke(expression, rootExpression == null ? memberExpr : rootExpression);
                     }
                     else
                     {
@@ -190,7 +206,7 @@ namespace SqlSugar
         public static bool IsConstExpression(MemberExpression memberExpr)
         {
             var result = false;
-            while (memberExpr!=null&&memberExpr.Expression != null)
+            while (memberExpr != null && memberExpr.Expression != null)
             {
                 var isConst = memberExpr.Expression is ConstantExpression;
                 if (isConst)
@@ -233,15 +249,26 @@ namespace SqlSugar
             return reval;
         }
 
-        public static object DynamicInvoke(Expression expression,MemberExpression memberExpression=null)
+        public static object DynamicInvoke(Expression expression, MemberExpression memberExpression = null)
         {
-            object value = Expression.Lambda(expression).Compile().DynamicInvoke();
-            if (value != null && value.GetType().IsClass() && value.GetType() != UtilConstants.StringType&& memberExpression!=null)
+            try
             {
-                value = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
-            }
+                object value = Expression.Lambda(expression).Compile().DynamicInvoke();
+                if (value != null && value.GetType().IsClass() && value.GetType() != UtilConstants.StringType && memberExpression != null)
+                {
+                    value = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
+                }
 
-            return value;
+                return value;
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new MapperExpressionResolve(expression,ex).GetSql(); ;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No support "+expression.ToString()+" "+ex.Message);
+            }
         }
 
         public static Type GetPropertyOrFieldType(MemberInfo propertyOrField)

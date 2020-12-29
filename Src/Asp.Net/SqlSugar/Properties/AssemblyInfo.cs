@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SqlSugar4")]
+[assembly: AssemblyTitle("果糖大数据科技(南通)有限公司")]
 [assembly: AssemblyDescription("author sunkaixuan Apache Licence 2.0")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SqlSugar 4")]
+[assembly: AssemblyCompany("果糖大数据科技(南通)有限公司")]
+[assembly: AssemblyProduct("SqlSugar")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
  
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("5.0.1.04")]
-[assembly: AssemblyFileVersion("5.0.1.04")]
+[assembly: AssemblyVersion("5.0.1.7")]
+[assembly: AssemblyFileVersion("5.0.1.7")]

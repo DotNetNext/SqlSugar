@@ -46,7 +46,7 @@ namespace SqlSugar
     {
 
     }
-    public class PostgreSqlQueryable<T, T2, T3, T4, T5, T6, T7, T8> : QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8>
+    public class PostgreSQLQueryable<T, T2, T3, T4, T5, T6, T7, T8> : QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8>
     {
 
     }
