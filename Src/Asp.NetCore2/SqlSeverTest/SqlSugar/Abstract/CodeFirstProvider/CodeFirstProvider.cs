@@ -304,7 +304,8 @@ namespace SqlSugar
             }
             else
             {
-                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+                var name = GetType(propertyType.Name);
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(name);
             }
         }
 
@@ -322,7 +323,8 @@ namespace SqlSugar
             }
             else
             {
-                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(propertyType.Name);
+                var name = GetType(propertyType.Name);
+                properyTypeName = this.Context.Ado.DbBind.GetDbTypeName(name);
             }
             var dataType = dc.DataType;
             if (properyTypeName == "boolean" && dataType == "bool")
@@ -331,6 +333,16 @@ namespace SqlSugar
             }
             return properyTypeName != dataType;
         }
+        private static string GetType(string name)
+        {
+            if (name.IsContainsIn("UInt32", "UInt16", "UInt64"))
+            {
+                name = name.TrimStart('U');
+            }
+
+            return name;
+        }
+
         #endregion
     }
 }

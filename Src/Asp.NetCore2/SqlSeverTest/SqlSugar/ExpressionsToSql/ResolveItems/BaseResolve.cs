@@ -133,7 +133,7 @@ namespace SqlSugar
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
                 var oppoSiteExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
-                if (parameter.CurrentExpression is MethodCallExpression||parameter.CurrentExpression is ConditionalExpression||parameter.CurrentExpression.NodeType==ExpressionType.Coalesce)
+                if (parameter.CurrentExpression is MethodCallExpression || parameter.CurrentExpression is ConditionalExpression || parameter.CurrentExpression.NodeType == ExpressionType.Coalesce)
                 {
                     var appendValue = value;
                     if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
@@ -145,6 +145,22 @@ namespace SqlSugar
                         this.Context.Result.Append(appendValue);
                     }
                     this.AppendOpreator(parameter, isLeft);
+                }
+                else if (value is MapperSql)
+                {
+                    var sql = ((MapperSql)value).Sql;
+                    if (isLeft == true)
+                    {
+                        sql += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
+                    }
+                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
+                    {
+                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, sql);
+                    }
+                    else
+                    {
+                        this.Context.Result.Append(sql);
+                    }
                 }
                 else if (oppoSiteExpression is MemberExpression)
                 {
@@ -174,7 +190,8 @@ namespace SqlSugar
                         this.Context.Result.Append(appendValue);
                     }
                 }
-                else if ((oppoSiteExpression is UnaryExpression && (oppoSiteExpression as UnaryExpression).Operand is MemberExpression)) {
+                else if ((oppoSiteExpression is UnaryExpression && (oppoSiteExpression as UnaryExpression).Operand is MemberExpression))
+                {
                     string appendValue = Context.SqlParameterKeyWord
                       + ((MemberExpression)(oppoSiteExpression as UnaryExpression).Operand).Member.Name
                       + Context.ParameterIndex;

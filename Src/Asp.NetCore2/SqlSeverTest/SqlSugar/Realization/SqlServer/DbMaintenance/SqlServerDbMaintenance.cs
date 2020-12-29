@@ -400,7 +400,7 @@ namespace SqlSugar
             string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
-        }
+        } 
         #endregion
     }
 }

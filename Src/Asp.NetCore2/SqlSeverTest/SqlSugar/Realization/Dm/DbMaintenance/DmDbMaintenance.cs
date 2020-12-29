@@ -433,7 +433,15 @@ namespace SqlSugar
                     this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                     return pks;
                 });
-            return comments.HasValue() ? comments.First(it => it.DbColumnName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
+            if (comments.HasValue())
+            {
+                var comment = comments.FirstOrDefault(it => it.DbColumnName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase));
+                return comment?.ColumnDescription;
+            }
+            else
+            {
+                return "";
+            }
 
         }
 

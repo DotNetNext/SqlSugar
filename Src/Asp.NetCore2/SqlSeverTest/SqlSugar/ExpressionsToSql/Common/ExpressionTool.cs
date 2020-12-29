@@ -251,13 +251,24 @@ namespace SqlSugar
 
         public static object DynamicInvoke(Expression expression, MemberExpression memberExpression = null)
         {
-            object value = Expression.Lambda(expression).Compile().DynamicInvoke();
-            if (value != null && value.GetType().IsClass() && value.GetType() != UtilConstants.StringType && memberExpression != null)
+            try
             {
-                value = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
-            }
+                object value = Expression.Lambda(expression).Compile().DynamicInvoke();
+                if (value != null && value.GetType().IsClass() && value.GetType() != UtilConstants.StringType && memberExpression != null)
+                {
+                    value = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
+                }
 
-            return value;
+                return value;
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new MapperExpressionResolve(expression,ex).GetSql(); ;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No support "+expression.ToString()+" "+ex.Message);
+            }
         }
 
         public static Type GetPropertyOrFieldType(MemberInfo propertyOrField)

@@ -9,6 +9,16 @@ namespace SqlSugar
 
     public class Subqueryable<T> where T : class, new()
     {
+
+        public Subqueryable<T> InnerJoin<JoinType>(Func<T, JoinType, bool> expression)
+        {
+            return this;
+        }
+        public Subqueryable<T> LeftJoin<JoinType>(Func<T, JoinType, bool> expression)
+        {
+            return this;
+        }
+   
         public Subqueryable<T> Where(string where)
         {
             return this;
