@@ -36,6 +36,7 @@ namespace SqlSugar
             }
         }
         public int SubQueryIndex { get; set; }
+        public int JoinIndex { get; set; }
         public int Index { get; set; }
         public int ParameterIndex { get; set; }
         public string SingleTableNameSubqueryShortName{ get;  set; }

@@ -15,6 +15,7 @@ namespace SqlSugar
         public Expression MappingField2Expression { get; set; }
         public SqlSugarProvider Context { get; set; }
         public QueryBuilder QueryBuilder { get;  set; }
+        public ISqlBuilder SqlBuilder { get;  set; }
     }
 
     public enum MapperExpressionType

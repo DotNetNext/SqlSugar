@@ -122,7 +122,11 @@ namespace OrmTest
                 customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
             }).ToList();
 
-            var list2 = db.Queryable<Order>().Where(it => SqlFunc.Subqueryable<OrderItem>().Where(i => i.OrderId == it.Id).Any()).ToList();
+            var list2 = db.Queryable<Order>().Where(it =>
+            SqlFunc.Subqueryable<OrderItem>() 
+             .LeftJoin<OrderItem>((i,y)=>i.ItemId==y.ItemId)
+             .Where<OrderItem>((i,y) => y.ItemId== it.Id).Any()
+            ).ToList();
 
             Console.WriteLine("#### Subquery End ####");
         }

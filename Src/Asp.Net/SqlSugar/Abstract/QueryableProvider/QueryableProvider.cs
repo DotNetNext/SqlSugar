@@ -132,7 +132,7 @@ namespace SqlSugar
             {
                 CallContext.MapperExpression.Value = new List<MapperExpression>();
             }
-            CallContext.MapperExpression.Value.Add(new MapperExpression() { QueryBuilder = this.QueryBuilder, Type=MapperExpressionType.oneToOne, FillExpression=mapperObject, MappingField1Expression= mapperField,Context=this.Context });
+            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder= SqlBuilder, QueryBuilder = this.QueryBuilder, Type=MapperExpressionType.oneToOne, FillExpression=mapperObject, MappingField1Expression= mapperField,Context=this.Context });
             return _Mapper<TObject>(mapperObject, mapperField);
         }
 

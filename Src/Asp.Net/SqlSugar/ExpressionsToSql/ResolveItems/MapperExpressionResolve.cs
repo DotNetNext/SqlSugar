@@ -12,6 +12,7 @@ namespace SqlSugar
         private InvalidOperationException ex;
         private SqlSugarProvider context;
         private QueryBuilder querybuiler;
+        private ISqlBuilder sqlBuilder;
         private string sql;
         public MapperExpressionResolve(Expression expression, InvalidOperationException ex)
         {
@@ -77,10 +78,13 @@ namespace SqlSugar
             {
                 pkColumn = selectInfo.EntityInfo.Columns.First();
             }
+            var tableName = sqlBuilder.GetTranslationTableName(fillInfo.EntityInfo.DbTableName);
+            var whereLeft = sqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName);
+            var whereRight = sqlBuilder.GetTranslationColumnName(mappingFild1Info.FieldString);
             this.sql = this.context.Queryable<object>()
-                                                        .AS(fillInfo.EntityInfo.DbTableName)
-                                                        .Where(string.Format(" {0}={1} ", pkColumn.DbColumnName, mappingFild1Info.FieldString))
-                                                        .Select(selectInfo.FieldName).ToSql().Key;
+                                                        .AS(tableName)
+                                                        .Where(string.Format(" {0}={1} ",whereLeft , whereRight))
+                                                        .Select(sqlBuilder.GetTranslationColumnName(selectInfo.FieldName)).ToSql().Key;
         }
 
         private void oneToMany()
@@ -160,6 +164,7 @@ namespace SqlSugar
         {
             this.querybuiler = mapper.QueryBuilder;
             this.context = mapper.Context;
+            this.sqlBuilder = mapper.SqlBuilder;
             if (this.querybuiler.TableShortName.IsNullOrEmpty())
             {
                 this.querybuiler.TableShortName = (childExpression as MemberExpression).Expression.ToString();
