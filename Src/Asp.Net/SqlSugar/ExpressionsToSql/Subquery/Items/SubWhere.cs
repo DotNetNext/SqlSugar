@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
-    public class SubWhere: ISubOperation
+    public class SubWhere : ISubOperation
     {
         public bool HasWhere
         {
@@ -34,14 +34,14 @@ namespace SqlSugar
 
         public ExpressionContext Context
         {
-            get;set;
+            get; set;
         }
 
         public string GetValue(Expression expression)
         {
             var exp = expression as MethodCallExpression;
-            var argExp= exp.Arguments[0];
-            var result= "WHERE "+SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
+            var argExp = exp.Arguments[0];
+            var result = "WHERE " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
 
 
             var regex = @"^WHERE  (\@Const\d+) $";
@@ -59,8 +59,9 @@ namespace SqlSugar
                 return result;
             }
 
-            var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name)+UtilConstants.Dot;
-            result = result.Replace(selfParameterName,SubTools.GetSubReplace(this.Context));
+            var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
+            if (this.Context.JoinIndex == 0)
+                result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }
     }

@@ -125,7 +125,9 @@ namespace OrmTest
             var list2 = db.Queryable<Order>().Where(it =>
             SqlFunc.Subqueryable<OrderItem>() 
              .LeftJoin<OrderItem>((i,y)=>i.ItemId==y.ItemId)
-             .Where<OrderItem>((i,y) => y.ItemId== it.Id).Any()
+             .InnerJoin<OrderItem>((i,z) => i.ItemId == z.ItemId)
+             .Where(i=>i.ItemId==1)
+              .Any()
             ).ToList();
 
             Console.WriteLine("#### Subquery End ####");

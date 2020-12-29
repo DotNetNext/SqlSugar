@@ -92,6 +92,7 @@
     <Compile Include="Entities\SubInsertTree.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperExpression.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MapperExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubInnerJoin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubLeftJoin.cs" />
     <Compile Include="OnlyNet\Compatible.cs" />
     <Compile Include="OnlyNet\KdbndpInserttable.cs" />
