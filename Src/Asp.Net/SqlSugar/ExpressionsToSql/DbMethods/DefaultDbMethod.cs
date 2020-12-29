@@ -71,6 +71,12 @@ namespace SqlSugar
                     {
                         inValues.Add(Convert.ToInt64(item));
                     }
+                    else if (item != null && item.GetType()==UtilConstants.ByteArrayType)
+                    {
+                        var inStr= BitConverter.ToString((byte[])item).Replace("-", "");
+                        inValues.Add(inStr);
+                        isByteArray = true;
+                    }
                     else
                     {
                         inValues.Add(item);
@@ -80,8 +86,8 @@ namespace SqlSugar
             var value = model.Args[1].MemberName;
             string inValueString = null;
             if (inValues != null && inValues.Count > 0)
-            {
-                inValueString = inValues.ToArray().ToJoinSqlInVals();
+            {            
+                    inValueString = inValues.ToArray().ToJoinSqlInVals();             
             }
             if (inValueString.IsNullOrEmpty())
             {
