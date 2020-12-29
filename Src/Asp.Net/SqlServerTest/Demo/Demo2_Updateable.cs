@@ -100,6 +100,12 @@ namespace OrmTest
             //Where Sql
             db.Updateable(updateObj).Where("id=@x", new { x = "1" }).ExecuteCommand();
 
+
+            var levelCode = "123213123131321";
+            db.Updateable<Order>(a => a.Name == "a")
+               .Where(a => SqlFunc.StartsWith(a.Name, levelCode))
+               .AddQueue();
+            db.SaveQueues();
             Console.WriteLine("#### Updateable End ####");
         }
 
