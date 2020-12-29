@@ -64,7 +64,10 @@ namespace OrmTest
             var result71 = db.Updateable<Order>().SetColumns(it => new Order() { Name = "a", CreateTime = DateTime.Now }).Where(it => it.Id == 11).ExecuteCommand();
             //only update name
             var result8 = db.Updateable<Order>(it => it.Name == "Name").Where(it => it.Id == 1).ExecuteCommand();
-            var result81 = db.Updateable<Order>().SetColumns(it => it.Name == "Name" ).Where(it => it.Id == 1).ExecuteCommand();
+            var result81 = db.Updateable<Order>()
+                .SetColumns(it => it.Name == "Name" )
+                  .SetColumns(it => it.CreateTime == DateTime.Now)
+                .Where(it => it.Id == 1).ExecuteCommand();
             //
 
 
