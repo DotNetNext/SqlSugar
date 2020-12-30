@@ -280,6 +280,8 @@ namespace SqlSugar
                         method = isNullableType ? getConvertDateTime : getDateTime;
                     if (bindProperyTypeName == "datetime" && dbTypeName.ToLower() == "time")
                         method = isNullableType ? getConvertTime : getTime;
+                    if (bindProperyTypeName == "datetimeoffset")
+                        method = isNullableType ? getConvertdatetimeoffset : getdatetimeoffset;
                     break;
                 case CSharpDataType.@decimal:
                     CheckType(bind.DecimalThrow, bindProperyTypeName, validPropertyName, propertyName);
