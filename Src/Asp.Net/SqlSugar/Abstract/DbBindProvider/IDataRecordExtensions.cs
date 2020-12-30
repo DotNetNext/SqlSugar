@@ -217,8 +217,16 @@ namespace SqlSugar
             {
                 return default(DateTimeOffset);
             }
-            var result = (DateTimeOffset)dr.GetValue(i);
-            return result;
+            var date = dr.GetValue(i);
+            if (date is DateTime)
+            {
+               return UtilMethods.GetDateTimeOffsetByDateTime((DateTime)(date));
+            }
+            else
+            {
+                var result = (DateTimeOffset)date;
+                return result;
+            }
         }
 
         public static DateTimeOffset? GetConvertdatetimeoffset(this IDataRecord dr, int i)
@@ -227,8 +235,16 @@ namespace SqlSugar
             {
                 return default(DateTimeOffset);
             }
-            var result = (DateTimeOffset)dr.GetValue(i);
-            return result;
+            var date = dr.GetValue(i);
+            if (date is DateTime)
+            {
+                return UtilMethods.GetDateTimeOffsetByDateTime((DateTime)(date));
+            }
+            else
+            {
+                var result = (DateTimeOffset)date;
+                return result;
+            }
         }
 
 

@@ -154,6 +154,13 @@ namespace SqlSugar
             return (T)Convert.ChangeType(obj, typeof(T));
         }
 
+        internal static DateTimeOffset GetDateTimeOffsetByDateTime(DateTime date)
+        {
+            date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+            DateTimeOffset utcTime2 = date;
+            return utcTime2;
+        }
+
         internal static void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex, string append = null)
         {
             if (appendSql.HasValue() && parameters.HasValue())
