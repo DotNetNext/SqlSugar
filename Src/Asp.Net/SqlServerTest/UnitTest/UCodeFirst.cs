@@ -10,9 +10,19 @@ namespace OrmTest
     {
         public static void CodeFirst()
         {
+            Db.CodeFirst.InitTables<UnitCodeFirstpks2>();
             if (Db.DbMaintenance.IsAnyTable("UnitCodeTest1", false))
                 Db.DbMaintenance.DropTable("UnitCodeTest1");
             Db.CodeFirst.InitTables<UnitCodeTest1>();
+            Db.CodeFirst.InitTables<UnitCodeFirstpks2>();
+        }
+
+        public class UnitCodeFirstpks2
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey =true)]
+            public string id { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public string id2 { get; set; }
         }
         public class UnitCodeTest1
         {
