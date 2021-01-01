@@ -116,6 +116,11 @@ namespace SqlSugar
         public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
         {
             Check.Exception(mapperObject.ReturnType.Name == "IList`1", "Mapper no support IList , Use List<T>");
+            if (CallContext.MapperExpression.Value == null)
+            {
+                CallContext.MapperExpression.Value = new List<MapperExpression>();
+            }
+            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder = SqlBuilder, QueryBuilder = this.QueryBuilder, Type = MapperExpressionType.oneToOne, FillExpression = mapperObject, MappingField1Expression = mainField, MappingField2Expression=childField, Context = this.Context });
             return _Mapper<TObject>(mapperObject, mainField, childField);
         }
         public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
