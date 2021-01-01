@@ -245,6 +245,10 @@ namespace SqlSugar
             var value = ExpressionTool.GetMemberValue(expression.Member, expression);
             if (isSetTempData)
             {
+                if (value is MapperSql)
+                {
+                    value = (value as MapperSql).Sql;
+                }
                 baseParameter.CommonTempData = value;
             }
             else
