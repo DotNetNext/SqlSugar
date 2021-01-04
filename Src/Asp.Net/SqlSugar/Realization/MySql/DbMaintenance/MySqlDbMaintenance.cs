@@ -61,7 +61,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE DATABASE {0}";
+                return "CREATE DATABASE {0} CHARACTER SET utf8 COLLATE utf8_general_ci ";
             }
         }
         protected override string AddPrimaryKeySql
