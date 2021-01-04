@@ -1083,7 +1083,9 @@ namespace SqlSugar
         }
         public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
+            var oldMapping = this.Context.MappingTables;
             totalNumber.Value = await this.Clone().CountAsync();
+            this.Context.MappingTables = oldMapping;
             return await this.Clone().ToPageListAsync(pageIndex, pageSize);
         }
         public async Task<string> ToJsonAsync()
@@ -1108,7 +1110,9 @@ namespace SqlSugar
         }
         public async Task<string> ToJsonPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
+            var oldMapping = this.Context.MappingTables;
             totalNumber.Value = await this.Clone().CountAsync();
+            this.Context.MappingTables = oldMapping;
             return await this.Clone().ToJsonPageAsync(pageIndex, pageSize);
         }
         public async Task<DataTable> ToDataTableAsync()
@@ -1135,7 +1139,9 @@ namespace SqlSugar
         }
         public async Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
+            var oldMapping = this.Context.MappingTables;
             totalNumber.Value = await this.Clone().CountAsync();
+            this.Context.MappingTables = oldMapping;
             return await this.Clone().ToDataTablePageAsync(pageIndex, pageSize);
         }
 
