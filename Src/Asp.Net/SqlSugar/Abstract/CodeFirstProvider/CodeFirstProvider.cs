@@ -347,7 +347,10 @@ namespace SqlSugar
             {
                 name = name.TrimStart('U');
             }
-
+            if (name == "char")
+            {
+                name = "string";
+            }
             return name;
         }
 
