@@ -72,7 +72,7 @@ private SqlSugarClient GetInstance()
 
 public class Student
 {
-    [SugarColumn(IsPrimaryKey = true, IsIdentity = true]
+    [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
     public int Id { get; set; }
     public int? SchoolId { get; set; }
     public string Name { get; set; }
