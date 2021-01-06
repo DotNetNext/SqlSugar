@@ -73,7 +73,15 @@ namespace SqlSugar
             {
                 foreach (var item in entityTypes)
                 {
-                    InitTables(item);
+                    try
+                    {
+                        InitTables(item);
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw new Exception(item.Name +" 创建失败,请认真检查 1、属性需要get set 2、特殊类型需要加Ignore 具体错误内容： "+ex.Message);
+                    }
                 }
             }
         }
