@@ -189,7 +189,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE {3} INDEX Index_{0}_{2} ON {0}({1})";
+                return "alter table  {0} rename to {1}";
             }
         }
 
@@ -197,7 +197,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT count(*) FROM sqlite_master WHERE name = '{0}'";
+                return "CREATE {3} INDEX Index_{0}_{2} ON {0}({1})";
             }
         }
         protected override string AddDefaultValueSql

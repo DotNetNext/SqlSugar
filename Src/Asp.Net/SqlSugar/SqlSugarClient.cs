@@ -543,7 +543,44 @@ namespace SqlSugar
         #endregion
 
         #region TenantManager
-        public void ChangeDatabase(string configId)
+        public void AddConnection(ConnectionConfig connection)
+        {
+            Check.ArgumentNullException(connection, "AddConnection.connection can't be null");
+            InitTenant();
+            var db = this._AllClients.FirstOrDefault(it => it.ConnectionConfig.ConfigId == connection.ConfigId);
+            if (db == null)
+            {
+                if (this._AllClients == null)
+                {
+                    this._AllClients = new List<SugarTenant>();
+                }
+                var provider = new SqlSugarProvider(connection);
+                if (connection.AopEvents != null)
+                {
+                    provider.Ado.IsEnableLogEvent = true;
+                }
+                this._AllClients.Add(new SugarTenant()
+                {
+                    ConnectionConfig = connection,
+                    Context = provider
+                });
+            }
+        }
+        public SqlSugarProvider GetConnection(dynamic configId)
+        {
+            InitTenant();
+            var db = this._AllClients.FirstOrDefault(it => it.ConnectionConfig.ConfigId == configId);
+            if (db == null)
+            {
+                Check.Exception(true, "ConfigId was not found {0}", configId);
+            }
+            if (db.Context == null)
+            {
+                db.Context = new SqlSugarProvider(db.ConnectionConfig);
+            }
+            return db.Context;
+        }
+        public void ChangeDatabase(dynamic configId)
         {
             var isLog = _Context.Ado.IsEnableLogEvent;
             Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
@@ -573,7 +610,7 @@ namespace SqlSugar
         public void BeginTran()
         {
             _IsAllTran = true;
-            this.Context.Ado.BeginTran();
+            AllClientEach(it => it.Ado.BeginTran());
         }
         public void CommitTran()
         {
@@ -747,6 +784,18 @@ namespace SqlSugar
                 {
                     return result;
                 }
+            }
+        }
+        private void InitTenant()
+        {
+            if (this._AllClients == null)
+            {
+                this._AllClients = new List<SugarTenant>();
+                this._AllClients.Add(new SugarTenant()
+                {
+                    ConnectionConfig = this.CurrentConnectionConfig,
+                    Context = this.Context
+                });
             }
         }
 
