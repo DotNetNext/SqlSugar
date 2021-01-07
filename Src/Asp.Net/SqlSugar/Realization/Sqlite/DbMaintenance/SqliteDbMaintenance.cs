@@ -189,7 +189,7 @@ namespace SqlSugar
         {
             get
             {
-                return "alter table  {0} rename to {1}";
+                return "CREATE {3} INDEX Index_{0}_{2} ON {0}({1})";
             }
         }
 
@@ -197,7 +197,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return "SELECT count(*) FROM sqlite_master WHERE name = '{0}'";
             }
         }
         protected override string AddDefaultValueSql
@@ -211,7 +211,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return "SELECT count(*) FROM sqlite_master WHERE name = '{0}'";
             }
         }
         #endregion
