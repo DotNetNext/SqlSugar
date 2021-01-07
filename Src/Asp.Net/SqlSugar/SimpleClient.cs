@@ -30,7 +30,10 @@ namespace SqlSugar
         {
             this.Context = context;
         }
-
+        public SimpleClient<ChangeType> Change<ChangeType>() where ChangeType : class, new()
+        {
+            return this.Context.GetSimpleClient<ChangeType>();
+        }
         public ISugarQueryable<T> AsQueryable()
         {
             return Context.Queryable<T>();
