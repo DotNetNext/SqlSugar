@@ -22,5 +22,6 @@ namespace SqlSugar
         ISaveable<T> UpdateIgnoreColumns(Expression<Func<T, object>> columns);
         ISaveable<T> UpdateWhereColumns(Expression<Func<T, object>> columns);
         ISaveable<T> EnableDiffLogEvent(object businessData = null);
+        ISaveable<T> RemoveDataCache();
     }
 }

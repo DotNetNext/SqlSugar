@@ -161,6 +161,18 @@ namespace SqlSugar
             return this;
         }
 
+        public ISaveable<T> RemoveDataCache()
+        {
+            if (this.insertable != null)
+            {
+                this.insertable.RemoveDataCache();
+            }
+            if (this.updateable != null)
+            {
+                this.updateable.RemoveDataCache();
+            }
+            return this;
+        }
         public ISaveable<T> InsertIgnoreColumns(Expression<Func<T, object>> columns)
         {
             LoadInsertable();
