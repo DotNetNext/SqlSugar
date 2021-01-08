@@ -191,13 +191,13 @@ namespace SqlSugar
         public override string ToInt32(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS SIGNED)", parameter.MemberName);
+            return string.Format(" CAST({0} AS INT4)", parameter.MemberName);
         }
 
         public override string ToInt64(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS SIGNED)", parameter.MemberName);
+            return string.Format(" CAST({0} AS INT8)", parameter.MemberName);
         }
 
         public override string ToString(MethodCallExpressionModel model)
@@ -221,7 +221,7 @@ namespace SqlSugar
         public override string ToBool(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS SIGNED)", parameter.MemberName);
+            return string.Format(" CAST({0} AS boolean)", parameter.MemberName);
         }
 
         public override string ToDecimal(MethodCallExpressionModel model)

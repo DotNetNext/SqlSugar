@@ -261,6 +261,27 @@ namespace SqlSugar
         #endregion
 
         #region Core
+        public virtual int ExecuteCommandWithGo(string sql, params SugarParameter[] parameters)
+        {
+            if (string.IsNullOrEmpty(sql))
+                return 0;
+            if (!sql.ToLower().Contains("go"))
+            {
+                return ExecuteCommand(sql);
+            }
+            System.Collections.ArrayList al = new System.Collections.ArrayList();
+            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex(@"^(\s*)go(\s*)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.ExplicitCapture);
+            al.AddRange(reg.Split(sql));
+            int count = 0;
+            foreach (string item in al)
+            {
+                if (item.HasValue())
+                {
+                    count += ExecuteCommand(item, parameters);
+                }
+            }
+            return count;
+        }
         public virtual int ExecuteCommand(string sql, params SugarParameter[] parameters)
         {
             try

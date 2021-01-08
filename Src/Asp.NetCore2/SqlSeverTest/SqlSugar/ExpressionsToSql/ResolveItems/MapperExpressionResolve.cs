@@ -54,7 +54,7 @@ namespace SqlSugar
 
             if (isExMapper)
             {
-                ExtMapper();
+                ExtMapper(fillInfo, mappingFild1Info, mappingFild1Info2, SelectInfo);
             }
             else if (isSameProperty)
             {
@@ -189,9 +189,15 @@ namespace SqlSugar
             return "";
         }
 
-        private void  ExtMapper()
+        private void  ExtMapper(MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2, MapperExpressionInfo selectInfo)
         {
-            throw new NotImplementedException();
+            var tableName = sqlBuilder.GetTranslationTableName(fillInfo.EntityInfo.DbTableName);
+            var whereLeft = sqlBuilder.GetTranslationColumnName(mappingFild1Info2.FieldName);
+            var whereRight = sqlBuilder.GetTranslationColumnName(mappingFild1Info.FieldString);
+            this.sql = this.context.Queryable<object>()
+                                                        .AS(tableName)
+                                                        .Where(string.Format(" {0}={1} ", whereLeft, whereRight))
+                                                        .Select(sqlBuilder.GetTranslationColumnName(selectInfo.FieldName)).ToSql().Key;
         }
 
         public MapperSql GetSql()

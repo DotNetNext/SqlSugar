@@ -55,7 +55,7 @@ namespace SqlSugar
             for (int i = 0; i < st.FrameCount; i++)
             {
                 var frame = st.GetFrame(i);
-                if (frame.GetMethod().Module.Name.ToLower() != "sqlsugar.dll" && frame.GetMethod().Name.First() != '<')
+                if (frame.GetMethod().Module.Name.ToLower() != "sqlsugar.dll"&& frame.GetMethod().Name.First()!='<')
                 {
                     info.MyStackTraceList.Add(new StackTraceInfoItem()
                     {
@@ -93,8 +93,8 @@ namespace SqlSugar
             itemSql = Regex.Replace(itemSql, string.Format(@"{0}\,", "\\" + itemParameter.ParameterName), newName + ",", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"{0}$", "\\" + itemParameter.ParameterName), newName, RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\+{0}\+", "\\" + itemParameter.ParameterName), "+" + newName + "+", RegexOptions.IgnoreCase);
-            itemSql = Regex.Replace(itemSql, string.Format(@"\+{0} ", "\\" + itemParameter.ParameterName), "+" + newName + " ", RegexOptions.IgnoreCase);
-            itemSql = Regex.Replace(itemSql, string.Format(@" {0}\+", "\\" + itemParameter.ParameterName), " " + newName + "+", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"\+{0} ", "\\" + itemParameter.ParameterName), "+" + newName +" ", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@" {0}\+", "\\" + itemParameter.ParameterName)," "+ newName + "+", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\|\|{0}\|\|", "\\" + itemParameter.ParameterName), "+" + newName + "+", RegexOptions.IgnoreCase);
             return itemSql;
         }

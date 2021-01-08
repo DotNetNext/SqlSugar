@@ -779,12 +779,6 @@ namespace SqlSugar
         #endregion
 
         #region Entity Maintenance
-        [Obsolete("Use SqlSugarClient.EntityMaintenance")]
-        public virtual EntityMaintenance EntityProvider
-        {
-            get { return this.Context.EntityMaintenance; }
-            set { this.Context.EntityMaintenance = value; }
-        }
         public virtual EntityMaintenance EntityMaintenance
         {
             get
@@ -831,12 +825,12 @@ namespace SqlSugar
         {
             return new SimpleClient<T>(this);
         }
-        public virtual SimpleClient GetSimpleClient()
-        {
-            if (this._SimpleClient == null)
-                this._SimpleClient = new SimpleClient(this);
-            return this._SimpleClient;
-        }
+        //public virtual SimpleClient GetSimpleClient()
+        //{
+        //    if (this._SimpleClient == null)
+        //        this._SimpleClient = new SimpleClient(this);
+        //    return this._SimpleClient;
+        //}
         #endregion
 
         #region Dispose OR Close

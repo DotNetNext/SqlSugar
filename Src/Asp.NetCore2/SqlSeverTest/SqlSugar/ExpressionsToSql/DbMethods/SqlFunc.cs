@@ -120,7 +120,7 @@ namespace SqlSugar
         public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateDistinctCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static TResult MappingColumn<TResult>(TResult oldColumnName,string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult MappingColumn<TResult>(TResult type,string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         /// <summary>
         ///Example: new NewT(){name=SqlFunc.GetSelfAndAutoFill(it)}  Generated SQL   it.*
         /// </summary>

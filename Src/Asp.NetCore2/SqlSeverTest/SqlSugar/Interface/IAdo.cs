@@ -70,6 +70,7 @@ namespace SqlSugar
         Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters);
         Task<object> GetScalarAsync(string sql, List<SugarParameter> parameters);
 
+        int ExecuteCommandWithGo(string sql, params SugarParameter[] parameters);
         int ExecuteCommand(string sql, object parameters);
         int ExecuteCommand(string sql, params SugarParameter[] parameters);
         int ExecuteCommand(string sql, List<SugarParameter> parameters);

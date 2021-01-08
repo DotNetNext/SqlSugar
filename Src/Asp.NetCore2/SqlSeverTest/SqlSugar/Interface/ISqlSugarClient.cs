@@ -160,14 +160,5 @@ namespace SqlSugar
         IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new();
         IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new(); 
         #endregion
-
-        #region Obsolete
-        [Obsolete("use Utilities")]
-        IContextMethods RewritableMethods { get; set; }
-        [Obsolete("use GetSimpleClient()")]
-        SimpleClient SimpleClient { get; }
-        [Obsolete("use EntityMaintenance")]
-        EntityMaintenance EntityProvider { get; set; }
-        #endregion
     }
 }

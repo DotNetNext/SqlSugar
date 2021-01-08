@@ -228,7 +228,10 @@ namespace SqlSugar
             };
             return this;
         }
-
+        public MySqlBlueCopy<T> UseMySql()
+        {
+            return new MySqlBlueCopy<T>(this.Context, this.SqlBuilder, InsertObjs);
+        }
         public SqlServerBlueCopy UseSqlServer()
         {
             PreToSql();
@@ -478,7 +481,8 @@ namespace SqlSugar
                 }
                 if (column.IsJson&& columnInfo.Value!=null)
                 {
-                    columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
+                    if(columnInfo.Value!=null)
+                       columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
                 }
                 var tranColumn=EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
                 if (tranColumn!=null&&columnInfo.Value.HasValue()) {

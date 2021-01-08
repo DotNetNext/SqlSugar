@@ -652,7 +652,7 @@ namespace SqlSugar
                     case "MappingColumn":
                         var mappingColumnResult = this.Context.DbMehtods.MappingColumn(model);
                         var isValid = model.Args[0].IsMember && model.Args[1].IsMember == false;
-                        Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
+                        //Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
                         return mappingColumnResult;
                     case "IsNull":

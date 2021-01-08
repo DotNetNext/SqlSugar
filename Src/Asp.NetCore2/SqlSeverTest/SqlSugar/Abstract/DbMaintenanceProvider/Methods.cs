@@ -179,7 +179,8 @@ namespace SqlSugar
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var columnName = string.Join(",", columnNames);
-            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(columnNames.First()), this.SqlBuilder.GetNoTranslationColumnName(columnNames.First())), columnName);
+            var pkName = string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName), columnName.Replace(",","_"));
+            string sql = string.Format(this.AddPrimaryKeySql, tableName,pkName, columnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }

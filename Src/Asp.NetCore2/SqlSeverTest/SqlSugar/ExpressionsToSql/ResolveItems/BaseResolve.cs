@@ -133,20 +133,8 @@ namespace SqlSugar
             if (parameter.BaseExpression is BinaryExpression || parameter.BaseExpression == null)
             {
                 var oppoSiteExpression = isLeft == true ? parameter.BaseParameter.RightExpression : parameter.BaseParameter.LeftExpression;
-                if (parameter.CurrentExpression is MethodCallExpression || parameter.CurrentExpression is ConditionalExpression || parameter.CurrentExpression.NodeType == ExpressionType.Coalesce)
-                {
-                    var appendValue = value;
-                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
-                    {
-                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue.ObjToString());
-                    }
-                    else
-                    {
-                        this.Context.Result.Append(appendValue);
-                    }
-                    this.AppendOpreator(parameter, isLeft);
-                }
-                else if (value is MapperSql)
+
+                if (value is MapperSql)
                 {
                     var sql = ((MapperSql)value).Sql;
                     if (isLeft == true)
@@ -161,6 +149,19 @@ namespace SqlSugar
                     {
                         this.Context.Result.Append(sql);
                     }
+                }
+                else if(parameter.CurrentExpression is MethodCallExpression || parameter.CurrentExpression is ConditionalExpression || parameter.CurrentExpression.NodeType == ExpressionType.Coalesce)
+                {
+                    var appendValue = value;
+                    if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
+                    {
+                        this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue.ObjToString());
+                    }
+                    else
+                    {
+                        this.Context.Result.Append(appendValue);
+                    }
+                    this.AppendOpreator(parameter, isLeft);
                 }
                 else if (oppoSiteExpression is MemberExpression)
                 {

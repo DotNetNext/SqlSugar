@@ -26,9 +26,9 @@ namespace SqlSugar
         /// </summary>
         public bool IsAutoCloseConnection { get; set; }
         /// <summary>
-        /// Default SystemTable,If you do not have system table permissions, use attribute
+        /// Default Attribute 
         /// </summary>
-        public InitKeyType InitKeyType = InitKeyType.SystemTable;
+        public InitKeyType InitKeyType = InitKeyType.Attribute;
         /// <summary>
         ///If true, there is only one connection instance in the same thread within the same connection string
         /// </summary>

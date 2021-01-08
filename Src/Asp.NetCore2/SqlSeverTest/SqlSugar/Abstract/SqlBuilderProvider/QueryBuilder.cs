@@ -486,6 +486,10 @@ namespace SqlSugar
             {
                 var result = Builder.GetTranslationTableName(EntityName);
                 result += UtilConstants.Space;
+                if (result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable"))
+                {
+                    TableShortName = null;
+                }
                 if (this.TableShortName.HasValue())
                 {
                     result += (TableShortName + UtilConstants.Space);
