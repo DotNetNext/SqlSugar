@@ -50,6 +50,15 @@ namespace OrmTest
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
 
+            db.Deleteable<Order>().ExecuteCommand();
+            db.Insertable(new Order()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 11,
+                Name = "11",
+                Price = 11
+            }).UseMySql().ExecuteBlueCopy();
+            var data = db.Queryable<Order>().ToList();
             Console.WriteLine("#### Insertable End ####");
         }
     }

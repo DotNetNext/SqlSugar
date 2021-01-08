@@ -825,12 +825,12 @@ namespace SqlSugar
         {
             return new SimpleClient<T>(this);
         }
-        public virtual SimpleClient GetSimpleClient()
-        {
-            if (this._SimpleClient == null)
-                this._SimpleClient = new SimpleClient(this);
-            return this._SimpleClient;
-        }
+        //public virtual SimpleClient GetSimpleClient()
+        //{
+        //    if (this._SimpleClient == null)
+        //        this._SimpleClient = new SimpleClient(this);
+        //    return this._SimpleClient;
+        //}
         #endregion
 
         #region Dispose OR Close
