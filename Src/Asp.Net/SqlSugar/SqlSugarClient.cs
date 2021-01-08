@@ -959,20 +959,5 @@ namespace SqlSugar
             this.CurrentConnectionConfig = Tenant.ConnectionConfig;
         }
         #endregion
-
-        #region Obsolete
-        [Obsolete("Use GetSimpleClient<T>")]
-        public SimpleClient GetSimpleClient()
-        {
-            return this.Context.GetSimpleClient();
-        }
-        [Obsolete("Use EntityMaintenance")]
-        public EntityMaintenance EntityProvider { get { return this.Context.EntityProvider; } set { this.Context.EntityProvider = value; } }
-        [Obsolete("Use Utilities")]
-        public IContextMethods RewritableMethods { get { return this.Context.RewritableMethods; } set { this.Context.RewritableMethods = value; } }
-        [Obsolete("Use GetSimpleClient")]
-        public SimpleClient SimpleClient { get { return this.Context.SimpleClient; } }
-        #endregion
-
     }
 }

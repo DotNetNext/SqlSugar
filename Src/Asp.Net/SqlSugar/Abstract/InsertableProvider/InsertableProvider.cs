@@ -228,7 +228,10 @@ namespace SqlSugar
             };
             return this;
         }
-
+        public MySqlBlueCopy<T> UseMySql()
+        {
+            return new MySqlBlueCopy<T>(this.Context, this.SqlBuilder, InsertObjs);
+        }
         public SqlServerBlueCopy UseSqlServer()
         {
             PreToSql();

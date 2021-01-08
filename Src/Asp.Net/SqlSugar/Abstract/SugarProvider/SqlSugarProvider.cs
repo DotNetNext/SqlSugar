@@ -779,12 +779,6 @@ namespace SqlSugar
         #endregion
 
         #region Entity Maintenance
-        [Obsolete("Use SqlSugarClient.EntityMaintenance")]
-        public virtual EntityMaintenance EntityProvider
-        {
-            get { return this.Context.EntityMaintenance; }
-            set { this.Context.EntityMaintenance = value; }
-        }
         public virtual EntityMaintenance EntityMaintenance
         {
             get

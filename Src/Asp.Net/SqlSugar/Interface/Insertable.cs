@@ -36,6 +36,7 @@ namespace SqlSugar
         IInsertable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
         SqlServerBlueCopy UseSqlServer();
+        MySqlBlueCopy<T> UseMySql();
         void AddQueue();
 
         #region Obsolete
