@@ -9,7 +9,7 @@ using System.Text;
 namespace SqlSugar
 {
 
-    public static class ReflectionExtensions
+    internal static class ReflectionExtensions
     {
         public static Type GetTypeInfo(this Type typeInfo)
         {

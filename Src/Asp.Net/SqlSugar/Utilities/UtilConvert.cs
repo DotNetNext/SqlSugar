@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 namespace SqlSugar
 {
-    public static class UtilConvert
+    internal static class UtilConvert
     {
         public static int ObjToInt(this object thisValue)
         {
