@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using SqlSugar;
 using System.Linq;
+using SqlSugar.Extensions;
+
 namespace OrmTest.UnitTest
 {
     public class UnitTestBase

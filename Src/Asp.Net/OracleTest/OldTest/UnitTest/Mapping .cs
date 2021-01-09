@@ -59,7 +59,7 @@ namespace OrmTest.UnitTest
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { InitKeyType = InitKeyType.Attribute, ConnectionString = Config.ConnectionString, DbType = DbType.Oracle, IsAutoCloseConnection = true });
             db.Aop.OnLogExecuting = (sql, pars) =>
             {
-                Console.WriteLine(sql + "\r\n" + db.RewritableMethods.SerializeObject(pars));
+                Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars));
                 Console.WriteLine();
             };
             return db;
