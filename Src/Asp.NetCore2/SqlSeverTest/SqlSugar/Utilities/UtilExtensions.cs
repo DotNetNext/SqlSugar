@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-namespace SqlSugar
+namespace SqlSugar.Extensions
 {
-    internal static class UtilConvert
+    /// <summary>
+    ///Common Extensions for external users
+    /// </summary>
+    public static class UtilExtensions
     {
         public static int ObjToInt(this object thisValue)
         {

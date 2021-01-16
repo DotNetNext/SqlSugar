@@ -92,7 +92,7 @@ namespace SqlSugar
         public override object FormatValue(object value)
         {
             var n = "N";
-            if (this.Context.CurrentConnectionConfig.MoreSettings != null&&this.Context.CurrentConnectionConfig.MoreSettings.MySqlDisableNarvchar)
+            if (this.Context.CurrentConnectionConfig.MoreSettings != null&&this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
             {
                 n = "";
             }

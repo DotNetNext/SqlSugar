@@ -154,6 +154,12 @@ namespace SqlSugar
             try
             {
                 var constValue = ExpressionTool.DynamicInvoke(express);
+                if (constValue is MapperSql)
+                {
+                    constValue = (constValue as MapperSql).Sql;
+                    base.AppendValue(parameter, isLeft, constValue);
+                    return;
+                }
                 parameter.BaseParameter.CommonTempData = constValue;
                 var parameterName = base.AppendParameter(constValue);
                 if (parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Result))

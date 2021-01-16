@@ -940,6 +940,11 @@ namespace SqlSugar
         }
         private void AllClientEach(Action<ISqlSugarClient> action)
         {
+            if (this._AllClients == null)
+            {
+                this._AllClients = new List<SugarTenant>();
+                this._AllClients.Add(new SugarTenant() { ConnectionConfig=this.CurrentConnectionConfig, Context=this.Context });
+            }
             if (_AllClients.HasValue())
             {
                 foreach (var item in _AllClients.Where(it => it.Context.HasValue()))

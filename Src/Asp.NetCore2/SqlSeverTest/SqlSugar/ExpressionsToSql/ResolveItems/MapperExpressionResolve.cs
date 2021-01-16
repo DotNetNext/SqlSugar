@@ -33,7 +33,19 @@ namespace SqlSugar
 
         private void ResolveList()
         {
-            throw new NotImplementedException();
+            var methodExpression = expression as MethodCallExpression;
+            var callName = methodExpression.Method.Name;
+            var exp= methodExpression.Arguments[0] as MemberExpression;
+            ThrowTrue(exp == null);
+            var childExpression = exp;
+            MapperExpression mapper = GetMapperMany(exp);
+            var fillInfo = GetFillInfoMany(childExpression, mapper);
+            var mappingFild1Info = GetMappingFild1ManyInfo(childExpression, mapper);
+            var mappingFild1Info2 = GetMappingFild2Info(childExpression, mapper);
+            //var SelectInfo = GetSelectInfo(expression);
+            this.context.InitMappingInfo(childExpression.Expression.Type);
+            var entity = this.context.EntityMaintenance.GetEntityInfo(childExpression.Expression.Type);
+            oneToMany(callName, entity, childExpression.Expression.ToString(), fillInfo, mappingFild1Info, mappingFild1Info2);
         }
 
         private void ResolveMember()
@@ -62,7 +74,7 @@ namespace SqlSugar
             }
             else if (isFillFild1SameType)
             {
-                oneToMany();
+                throw new NotSupportedException(expression.ToString());
             }
             else
             {
@@ -87,9 +99,31 @@ namespace SqlSugar
                                                         .Select(sqlBuilder.GetTranslationColumnName(selectInfo.FieldName)).ToSql().Key;
         }
 
-        private void oneToMany()
+        private void oneToMany(string methodName,EntityInfo mainEntity,string shortName,MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2)
         {
-            throw new NotImplementedException();
+            var pkColumn = mainEntity.Columns.FirstOrDefault(it=>it.IsPrimarykey==true);
+            if (pkColumn == null)
+            {
+                pkColumn = mainEntity.Columns.FirstOrDefault();
+            }
+            var tableName = sqlBuilder.GetTranslationTableName(fillInfo.EntityInfo.DbTableName);
+            var whereLeft = sqlBuilder.GetTranslationColumnName(mappingFild1Info.FieldString);
+            var whereRight = sqlBuilder.GetTranslationColumnName(shortName+"."+pkColumn.DbColumnName);
+
+            if (methodName == "Any")
+            {
+                this.sql = " ("+this.context.Queryable<object>()
+                                                            .AS(tableName)
+                                                            .Where(string.Format(" {0}={1} ", whereLeft, whereRight))
+                                                            .Select("COUNT(1)").ToSql().Key+")>0 ";
+            }
+            else
+            {
+                this.sql = this.context.Queryable<object>()
+                                                         .AS(tableName)
+                                                         .Where(string.Format(" {0}={1} ", whereLeft, whereRight))
+                                                         .Select("COUNT(1)").ToSql().Key;
+            }
         }
 
         private MapperExpressionInfo GetSelectInfo(Expression expression)
@@ -203,6 +237,55 @@ namespace SqlSugar
         public MapperSql GetSql()
         {
             return new MapperSql() { Sql = " (" + this.sql + ") " };
+        }
+
+        private MapperExpression GetMapperMany(MemberExpression exp)
+        {
+            var mapper = mappers.Where(it => it.Type == MapperExpressionType.oneToN)
+                .Reverse()
+                .Where(it => (it.FillExpression as LambdaExpression).Body.ToString() == exp.ToString()).FirstOrDefault();
+            ThrowTrue(mapper == null);
+            return mapper;
+        }
+        private MapperExpressionInfo GetFillInfoMany(Expression childExpression, MapperExpression mapper)
+        {
+            this.querybuiler = mapper.QueryBuilder;
+            this.context = mapper.Context;
+            this.sqlBuilder = mapper.SqlBuilder;
+            if (this.querybuiler.TableShortName.IsNullOrEmpty())
+            {
+                this.querybuiler.TableShortName = (childExpression as MemberExpression).Expression.ToString();
+            }
+            var type = (childExpression as MemberExpression).Type.GetGenericArguments()[0];
+            this.context.InitMappingInfo(type);
+            return new MapperExpressionInfo()
+            {
+                EntityInfo = this.context.EntityMaintenance.GetEntityInfo(type)
+            };
+        }
+        private MapperExpressionInfo GetMappingFild1ManyInfo(Expression childExpression, MapperExpression mapper)
+        {
+            var exp = mapper.MappingField1Expression;
+            var field = (exp as LambdaExpression).Body;
+            if (field is UnaryExpression)
+            {
+                field = (field as UnaryExpression).Operand;
+            }
+            var type = ((field as MemberExpression).Expression).Type;
+            this.context.InitMappingInfo(type);
+            var name = (field as MemberExpression).Member.Name;
+            var entity = this.context.EntityMaintenance.GetEntityInfo(type);
+            var fieldName = entity.Columns.First(it => it.PropertyName == name).DbColumnName;
+            //var array = (field as MemberExpression).ToString().Split('.').ToList();
+            //array[array.Count() - 1] = fieldName;
+            //var filedString = string.Join(".", array);
+            return new MapperExpressionInfo()
+            {
+                Type = type,
+                FieldName = fieldName,
+                FieldString = fieldName,
+                EntityInfo = entity
+            };
         }
 
         void Error01()

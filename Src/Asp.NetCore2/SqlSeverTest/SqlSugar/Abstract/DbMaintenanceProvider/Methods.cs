@@ -306,13 +306,13 @@ namespace SqlSugar
         }
         public virtual bool CreateIndex(string tableName, string[] columnNames, bool isUnique=false)
         {
-            string sql = string.Format(CreateIndexSql,tableName,string.Join(",",columnNames), string.Join("_", columnNames), isUnique ? "UNIQUE" : "");
+            string sql = string.Format(CreateIndexSql,tableName,string.Join(",",columnNames), string.Join("_", columnNames) + this.Context.CurrentConnectionConfig.IndexSuffix, isUnique ? "UNIQUE" : "");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
         public virtual bool CreateUniqueIndex(string tableName, string[] columnNames)
         {
-            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames)+"_Unique","UNIQUE" );
+            string sql = string.Format(CreateIndexSql, tableName, string.Join(",", columnNames), string.Join("_", columnNames) + this.Context.CurrentConnectionConfig.IndexSuffix + "_Unique","UNIQUE" );
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -370,7 +370,7 @@ namespace SqlSugar
                 foreach (var item in groups)
                 {
                     var columnNames = indexColumns.Where(it => it.IndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it=>it.DbColumnName).ToArray();
-                    var indexName = string.Format("Index_{0}_{1}",entityInfo.DbTableName, string.Join("_", columnNames));
+                    var indexName = string.Format("Index_{0}_{1}"+this.Context.CurrentConnectionConfig.IndexSuffix,entityInfo.DbTableName, string.Join("_", columnNames));
                     if (!IsAnyIndex(indexName))
                     {
                         CreateIndex(entityInfo.DbTableName, columnNames);
@@ -386,7 +386,7 @@ namespace SqlSugar
                 foreach (var item in groups)
                 {
                     var columnNames = uIndexColumns.Where(it => it.UIndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it => it.DbColumnName).ToArray();
-                    var indexName = string.Format("Index_{0}_{1}_Unique", entityInfo.DbTableName, string.Join("_", columnNames));
+                    var indexName = string.Format("Index_{0}_{1}_Unique" + this.Context.CurrentConnectionConfig.IndexSuffix, entityInfo.DbTableName, string.Join("_", columnNames));
                     if (!IsAnyIndex(indexName))
                     {
                         CreateUniqueIndex(entityInfo.DbTableName, columnNames);

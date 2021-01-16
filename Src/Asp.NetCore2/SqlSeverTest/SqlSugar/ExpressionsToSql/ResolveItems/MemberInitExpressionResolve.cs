@@ -154,6 +154,10 @@ namespace SqlSugar
                 else if (item is BinaryExpression)
                 {
                     var result = GetNewExpressionValue(item);
+                    if (result.HasValue())
+                    {
+                        result = result.Replace(",", UtilConstants.ReplaceCommaKey);
+                    }
                     this.Context.Result.Append(base.Context.GetEqString(memberName, result));
                 }
                 else if (item is MemberInitExpression)
@@ -181,6 +185,11 @@ namespace SqlSugar
                     {
                         throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
                     }
+                }
+                else if (item is ConditionalExpression)
+                {
+                    var result = GetNewExpressionValue(item);
+                    this.Context.Result.Append(base.Context.GetEqString(memberName, result));
                 }
             }
         }

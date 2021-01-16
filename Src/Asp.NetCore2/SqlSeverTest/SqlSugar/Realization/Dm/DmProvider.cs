@@ -109,6 +109,7 @@ namespace SqlSugar
             if (parameters == null || parameters.Length == 0) return null;
             DmParameter[] result = new DmParameter[parameters.Length];
             int index = 0;
+            var isVarchar = this.Context.IsVarchar();
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
@@ -133,6 +134,10 @@ namespace SqlSugar
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
+                }
+                if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
+                {
+                    sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
                 ++index;
             }

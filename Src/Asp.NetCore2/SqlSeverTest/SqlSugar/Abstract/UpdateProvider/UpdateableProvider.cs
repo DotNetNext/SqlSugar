@@ -315,68 +315,7 @@ namespace SqlSugar
             return this;
         }
 
-
-
-
-        #region delete obj
-        [Obsolete]
-        public IUpdateable<T> UpdateColumns(Expression<Func<T, bool>> columns)
-        {
-            return this.SetColumns(columns);
-        }
-        [Obsolete]
-        public IUpdateable<T> UpdateColumns(Expression<Func<T, T>> columns)
-        {
-            return this.SetColumns(columns);
-        }
-        [Obsolete]
-        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, T>> columns)
-        {
-            return this.SetColumnsIF(isUpdateColumns, columns);
-        }
-        [Obsolete]
-        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, bool>> columns)
-        {
-            return this.SetColumnsIF(isUpdateColumns, columns);
-        }
-        [Obsolete]
-        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Func<string, bool> updateColumMethod)
-        {
-            if (isUpdateColumns)
-                UpdateColumns(updateColumMethod);
-            return this;
-        }
-        [Obsolete]
-        public IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod)
-        {
-            List<string> primaryKeys = GetPrimaryKeys();
-            foreach (var item in this.UpdateBuilder.DbColumnInfoList)
-            {
-                var mappingInfo = primaryKeys.SingleOrDefault(i => item.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
-                if (mappingInfo != null && mappingInfo.Any())
-                {
-                    item.IsPrimarykey = true;
-                }
-            }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumMethod(it.PropertyName) || it.IsPrimarykey || it.IsIdentity).ToList();
-            return this;
-        }
-        [Obsolete]
-        public IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod)
-        {
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumMethod(it.PropertyName)).ToList();
-            return this;
-        }
-        [Obsolete("Use IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);")]
-        public IUpdateable<T> Where(bool isUpdateNull, bool IsOffIdentity = false)
-        {
-            UpdateBuilder.IsOffIdentity = IsOffIdentity;
-            if (this.UpdateBuilder.LambdaExpressions == null)
-                this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
-            this.UpdateBuilder.IsNoUpdateNull = isUpdateNull;
-            return this;
-        }
-        #endregion
+ 
 
         #region Helper
         private void AppendSets()

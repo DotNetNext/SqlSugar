@@ -129,6 +129,12 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mapperField)
         {
+            Check.Exception(mapperObject.ReturnType.Name == "IList`1", "Mapper no support IList , Use List<T>");
+            if (CallContext.MapperExpression.Value == null)
+            {
+                CallContext.MapperExpression.Value = new List<MapperExpression>();
+            }
+            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder = SqlBuilder, QueryBuilder = this.QueryBuilder, Type = MapperExpressionType.oneToN, FillExpression = mapperObject, MappingField1Expression = mapperField,Context = this.Context });
             return _Mapper<TObject>(mapperObject, mapperField);
         }
         public virtual ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mapperField)
@@ -609,15 +615,8 @@ namespace SqlSugar
             Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, "'Mapper’ needs to be written after ‘MergeTable’ ");
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Queryable.Select Method .");
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
-            ToSqlBefore();
-            var sql = QueryBuilder.ToSqlString();
-            var tableName = this.SqlBuilder.GetPackTable(sql, "MergeTable");
-            var mergeQueryable = this.Context.Queryable<ExpandoObject>();
-            mergeQueryable.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            mergeQueryable.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex + 1;
-            mergeQueryable.QueryBuilder.JoinIndex = QueryBuilder.JoinIndex + 1;
-            mergeQueryable.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex;
-            return mergeQueryable.AS(tableName).Select<T>("*");
+            var sqlobj = this.ToSql();
+            return this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
         }
 
         public ISugarQueryable<T> Distinct()
@@ -3387,6 +3386,41 @@ namespace SqlSugar
             _GroupBy(expression);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4,T5> Having(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4,T5> Having(string whereString, object whereObj)
+        {
+            base.Having(whereString, whereObj);
+            return this;
+        }
         #endregion
 
         #region Aggr
@@ -3772,6 +3806,46 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
         {
             _GroupBy(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Having(string whereString, object whereObj)
+        {
+            base.Having(whereString, whereObj);
             return this;
         }
         #endregion
