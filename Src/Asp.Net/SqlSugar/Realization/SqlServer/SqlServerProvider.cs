@@ -117,6 +117,7 @@ namespace SqlSugar
         /// <returns></returns>
         public SqlParameter[] GetSqlParameter(params SugarParameter[] parameters)
         {
+            var isVarchar = this.Context.IsVarchar();
             if (parameters == null || parameters.Length == 0) return null;
             SqlParameter[] result = new SqlParameter[parameters.Length];
             int index = 0;
@@ -150,6 +151,12 @@ namespace SqlSugar
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
                 }
+
+                if (isVarchar&&sqlParameter.DbType== System.Data.DbType.String)
+                {
+                    sqlParameter.DbType =System.Data.DbType.AnsiString;
+                }
+
                 ++index;
             }
             return result;

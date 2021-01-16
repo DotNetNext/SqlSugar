@@ -326,11 +326,19 @@ namespace SqlSugar
         internal string GetN()
         {
             var N = "N";
-            if (_Context.CurrentConnectionConfig.MoreSettings != null && _Context.CurrentConnectionConfig.MoreSettings.OracleDisableNvarchar)
+            if (_Context.CurrentConnectionConfig.MoreSettings != null && _Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
             {
                 N = "";
             }
             return N;
+        }
+        internal bool IsVarchar()
+        {
+            if (_Context.CurrentConnectionConfig.MoreSettings != null && _Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
+            {
+                return true;
+            }
+            return false;
         }
         private static void CheckDbDependency(ConnectionConfig config)
         {

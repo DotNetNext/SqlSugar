@@ -82,6 +82,7 @@ namespace SqlSugar
         /// <returns></returns>
         public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] parameters)
         {
+            var isVarchar = this.Context.IsVarchar();
             if (parameters == null || parameters.Length == 0) return null;
             SQLiteParameter[] result = new SQLiteParameter[parameters.Length];
             int index = 0;
@@ -107,7 +108,10 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.String;
                     sqlParameter.Value = sqlParameter.Value.ObjToString();
                 }
-
+                if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
+                {
+                    sqlParameter.DbType = System.Data.DbType.AnsiString;
+                }
                 ++index;
             }
             return result;
