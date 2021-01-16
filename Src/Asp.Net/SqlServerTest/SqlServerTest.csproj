@@ -81,6 +81,7 @@
     <Compile Include="UnitTest\UInsert.cs" />
     <Compile Include="UnitTest\UQueryable2.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
+    <Compile Include="UnitTest\UTran.cs" />
     <Compile Include="_OldTest\BugTest\Bug2.cs" />
     <Compile Include="_OldTest\BugTest\Bug5.cs" />
     <Compile Include="_OldTest\BugTest\Bug4.cs" />

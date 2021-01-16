@@ -3387,6 +3387,41 @@ namespace SqlSugar
             _GroupBy(expression);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4,T5> Having(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4,T5> Having(string whereString, object whereObj)
+        {
+            base.Having(whereString, whereObj);
+            return this;
+        }
         #endregion
 
         #region Aggr
@@ -3772,6 +3807,46 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
         {
             _GroupBy(expression);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression)
+        {
+            this._Having(expression);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Having(string whereString, object whereObj)
+        {
+            base.Having(whereString, whereObj);
             return this;
         }
         #endregion

@@ -496,6 +496,12 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        new ISugarQueryable<T, T2, T3, T4,T5> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4,T5> Having(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4,T5> Having(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4,T5> Having(Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, T3, T4,T5, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4,T5> Having(string whereString, object parameters = null);
         #endregion
 
         #region Aggr
@@ -594,6 +600,13 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> Having(string whereString, object parameters = null);
         #endregion
 
         #region Aggr
