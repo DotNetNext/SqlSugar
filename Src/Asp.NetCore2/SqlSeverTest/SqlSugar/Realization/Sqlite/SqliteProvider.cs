@@ -85,6 +85,7 @@ namespace SqlSugar
             if (parameters == null || parameters.Length == 0) return null;
             SqliteParameter[] result = new SqliteParameter[parameters.Length];
             int index = 0;
+            var isVarchar = this.Context.IsVarchar();
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
@@ -107,7 +108,10 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.String;
                     sqlParameter.Value = sqlParameter.Value.ObjToString();
                 }
-
+                if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
+                {
+                    sqlParameter.DbType = System.Data.DbType.AnsiString;
+                }
                 ++index;
             }
             return result;
