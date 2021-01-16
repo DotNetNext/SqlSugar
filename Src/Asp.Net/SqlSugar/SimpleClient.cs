@@ -132,6 +132,10 @@ namespace SqlSugar
         {
             return this.Context.Insertable(insertObj).ExecuteReturnIdentity();
         }
+        public virtual long InsertReturnBigIdentity(T insertObj)
+        {
+            return this.Context.Insertable(insertObj).ExecuteReturnBigIdentity();
+        }
         public virtual bool InsertRange(T[] insertObjs)
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
@@ -237,6 +241,10 @@ namespace SqlSugar
         public virtual Task<int> InsertReturnIdentityAsync(T insertObj)
         {
             return this.Context.Insertable(insertObj).ExecuteReturnIdentityAsync();
+        }
+        public virtual Task<long> InsertReturnBigIdentityAsync(T insertObj)
+        {
+            return this.Context.Insertable(insertObj).ExecuteReturnBigIdentityAsync();
         }
         public virtual async Task<bool> InsertRangeAsync(T[] insertObjs)
         {
