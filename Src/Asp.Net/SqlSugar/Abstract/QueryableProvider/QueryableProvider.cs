@@ -609,15 +609,8 @@ namespace SqlSugar
             Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, "'Mapper’ needs to be written after ‘MergeTable’ ");
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Queryable.Select Method .");
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
-            ToSqlBefore();
-            var sql = QueryBuilder.ToSqlString();
-            var tableName = this.SqlBuilder.GetPackTable(sql, "MergeTable");
-            var mergeQueryable = this.Context.Queryable<ExpandoObject>();
-            mergeQueryable.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            mergeQueryable.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex + 1;
-            mergeQueryable.QueryBuilder.JoinIndex = QueryBuilder.JoinIndex + 1;
-            mergeQueryable.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex;
-            return mergeQueryable.AS(tableName).Select<T>("*");
+            var sqlobj = this.ToSql();
+            return this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
         }
 
         public ISugarQueryable<T> Distinct()
