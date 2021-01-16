@@ -21,6 +21,17 @@ namespace OrmTest
                    .Where(it => it.A.Name == "a")
                    .ToList();
 
+
+            var list3 = Db.Queryable<Order>()
+                .Mapper(it => it.Items, it => it.Items.First().OrderId)
+                .Where(it => it.Items.Count() > 0)
+                .ToList();
+
+            var list6 = Db.Queryable<Order>()
+               .Mapper(it => it.Items, it => it.Items.First().OrderId)
+               .Where(it => it.Items.Any())
+               .ToList();
+
         }
     }
 }
