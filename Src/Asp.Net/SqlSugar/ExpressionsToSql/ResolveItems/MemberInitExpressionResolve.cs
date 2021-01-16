@@ -182,6 +182,11 @@ namespace SqlSugar
                         throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
                     }
                 }
+                else if (item is ConditionalExpression)
+                {
+                    var result = GetNewExpressionValue(item);
+                    this.Context.Result.Append(base.Context.GetEqString(memberName, result));
+                }
             }
         }
         private static bool IsConst(Expression item)
