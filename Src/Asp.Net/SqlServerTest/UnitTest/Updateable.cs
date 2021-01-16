@@ -93,6 +93,14 @@ namespace OrmTest
             Db.Updateable<Order>()
              .SetColumns(it => new Order { Name = "a", CreateTime = DateTime.Now })
              .SetColumns(it => new Order() { Price = 1 }).Where(it => it.Id == 1).ExecuteCommand();
+ 
+            Db.Updateable<Order>()
+           .SetColumns(it => new Order { Name= it.Id>0  ?"1":"2", CreateTime = DateTime.Now })
+            .Where(it => it.Id == 1).ExecuteCommand();
+
+            Db.Updateable<Order>()
+           .SetColumns(it => new Order { Name = SqlFunc.IsNull(it.Name,"a")+"b", CreateTime = DateTime.Now })
+           .Where(it => it.Id == 1).ExecuteCommand();
 
             Db.CodeFirst.InitTables<Unitbluecopy>();
             Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBlueCopy();
