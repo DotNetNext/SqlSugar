@@ -1,6 +1,4 @@
-﻿using OrmTest.PerformanceTesting;
-using OrmTest.UnitTest;
-using System;
+﻿using System;
 
 namespace OrmTest
 {

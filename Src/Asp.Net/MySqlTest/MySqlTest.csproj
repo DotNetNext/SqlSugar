@@ -88,53 +88,8 @@
     <Compile Include="Models\Unit\Custom1\PurchaseDetailModel.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
-    <Compile Include="_OldTests\Demos\1_Query.cs" />
-    <Compile Include="_OldTests\Demos\2_Update.cs" />
-    <Compile Include="_OldTests\Demos\3_Insert.cs" />
-    <Compile Include="_OldTests\Demos\4_Delete.cs" />
-    <Compile Include="_OldTests\Demos\5_CodeFirst.cs" />
-    <Compile Include="_OldTests\Demos\5_DbFirst.cs" />
-    <Compile Include="_OldTests\Demos\6_ComplexModel.cs" />
-    <Compile Include="_OldTests\Demos\7_Filter.cs" />
-    <Compile Include="_OldTests\Demos\8_JoinSql.cs" />
-    <Compile Include="_OldTests\Demos\A_MasterSlave.cs" />
-    <Compile Include="_OldTests\Demos\DemoBase.cs" />
-    <Compile Include="_OldTests\Demos\H_Queue.cs" />
-    <Compile Include="_OldTests\Demos\J_Encode.cs" />
-    <Compile Include="_OldTests\Models\DataTestInfo.cs" />
-    <Compile Include="_OldTests\Models\DataTestInfo2.cs" />
-    <Compile Include="_OldTests\Models\Enum.cs" />
-    <Compile Include="_OldTests\Models\School.cs" />
-    <Compile Include="_OldTests\Models\Student.cs" />
-    <Compile Include="_OldTests\Models\ViewModelStudent.cs" />
-    <Compile Include="_OldTests\OldTestMain.cs" />
-    <Compile Include="_OldTests\PerformanceTesting\PerformanceBase.cs" />
-    <Compile Include="_OldTests\PerformanceTesting\SqlSugarPerformance.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="_OldTests\T4\SugarTemplate1.cs" />
-    <Compile Include="_OldTests\T4\SugarTemplate2.cs">
-      <DependentUpon>SugarTemplate.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="_OldTests\UnitTest\DataTest.cs" />
-    <Compile Include="_OldTests\UnitTest\Delete.cs" />
-    <Compile Include="_OldTests\UnitTest\ExpressionTest\Field.cs" />
-    <Compile Include="_OldTests\UnitTest\ExpressionTest\Method.cs" />
-    <Compile Include="_OldTests\UnitTest\ExpressionTest\Select.cs" />
-    <Compile Include="_OldTests\UnitTest\ExpressionTest\Where.cs" />
-    <Compile Include="_OldTests\UnitTest\Insert.cs" />
-    <Compile Include="_OldTests\UnitTest\Mapping .cs" />
-    <Compile Include="_OldTests\UnitTest\Query\JoinQuery.cs" />
-    <Compile Include="_OldTests\UnitTest\Query\SelectQuery.cs" />
-    <Compile Include="_OldTests\UnitTest\Query\SingleQuery.cs" />
-    <Compile Include="_OldTests\UnitTest\Setting\Attribute.cs" />
-    <Compile Include="_OldTests\UnitTest\Setting\AutoClose.cs" />
-    <Compile Include="_OldTests\UnitTest\Setting\MapColumn.cs" />
-    <Compile Include="_OldTests\UnitTest\Setting\MapTable.cs" />
-    <Compile Include="_OldTests\UnitTest\UnitTestBase.cs" />
-    <Compile Include="_OldTests\UnitTest\Update.cs" />
     <Compile Include="UnitTest\Main.cs" />
     <Compile Include="UnitTest\UAdo.cs" />
     <Compile Include="UnitTest\UCodeFirst.cs" />
@@ -155,14 +110,6 @@
       <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
       <Name>SqlSugar</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="_OldTests\DataBase\sqlsugar4xtest.sql" />
-    <Content Include="_OldTests\OtherDll\SyntacticSugar.dll" />
-    <Content Include="_OldTests\T4\SugarTemplate.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SugarTemplate2.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

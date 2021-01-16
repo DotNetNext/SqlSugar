@@ -77,45 +77,8 @@
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
-    <Compile Include="OldTest\Demos\1_Query.cs" />
-    <Compile Include="OldTest\Demos\2_Update.cs" />
-    <Compile Include="OldTest\Demos\3_Insert.cs" />
-    <Compile Include="OldTest\Demos\4_Delete.cs" />
-    <Compile Include="OldTest\Demos\5_CodeFirst.cs" />
-    <Compile Include="OldTest\Demos\5_DbFirst.cs" />
-    <Compile Include="OldTest\Demos\6_ComplexModel.cs" />
-    <Compile Include="OldTest\Demos\7_Filter.cs" />
-    <Compile Include="OldTest\Demos\8_JoinSql.cs" />
-    <Compile Include="OldTest\Demos\DemoBase.cs" />
-    <Compile Include="OldTest\Models\DataTestInfo.cs" />
-    <Compile Include="OldTest\Models\DataTestInfo2.cs" />
-    <Compile Include="OldTest\Models\Enum.cs" />
-    <Compile Include="OldTest\Models\School.cs" />
-    <Compile Include="OldTest\Models\Student.cs" />
-    <Compile Include="OldTest\Models\ViewModelStudent.cs" />
-    <Compile Include="OldTest\PerformanceTesting\PerformanceBase.cs" />
-    <Compile Include="OldTest\PerformanceTesting\SqlSugarPerformance.cs" />
-    <Compile Include="OldTest\Program.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="OldTest\UnitTest\DataTest.cs" />
-    <Compile Include="OldTest\UnitTest\Delete.cs" />
-    <Compile Include="OldTest\UnitTest\EnumTest.cs" />
-    <Compile Include="OldTest\UnitTest\ExpressionTest\Field.cs" />
-    <Compile Include="OldTest\UnitTest\ExpressionTest\Method.cs" />
-    <Compile Include="OldTest\UnitTest\ExpressionTest\Select.cs" />
-    <Compile Include="OldTest\UnitTest\ExpressionTest\Where.cs" />
-    <Compile Include="OldTest\UnitTest\Insert.cs" />
-    <Compile Include="OldTest\UnitTest\Mapping .cs" />
-    <Compile Include="OldTest\UnitTest\Query\JoinQuery.cs" />
-    <Compile Include="OldTest\UnitTest\Query\SelectQuery.cs" />
-    <Compile Include="OldTest\UnitTest\Query\SingleQuery.cs" />
-    <Compile Include="OldTest\UnitTest\Setting\Attribute.cs" />
-    <Compile Include="OldTest\UnitTest\Setting\AutoClose.cs" />
-    <Compile Include="OldTest\UnitTest\Setting\MapColumn.cs" />
-    <Compile Include="OldTest\UnitTest\Setting\MapTable.cs" />
-    <Compile Include="OldTest\UnitTest\UnitTestBase.cs" />
-    <Compile Include="OldTest\UnitTest\Update.cs" />
     <Compile Include="UnitTest\Main.cs" />
     <Compile Include="UnitTest\UAdo.cs" />
     <Compile Include="UnitTest\UCodeFirst.cs" />
@@ -129,17 +92,12 @@
     <Compile Include="UnitTest\UValidate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OldTest\OtherDll\SyntacticSugar.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
       <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
       <Name>SqlSugar</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OldTest\DataBase\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
