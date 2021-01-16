@@ -52,6 +52,8 @@ namespace SqlSugar
         /// </summary>
         public SugarDebugger Debugger { get; set; }
 
+        public string IndexSuffix { get; set; }
+
         [JsonIgnore]
         public AopEvents AopEvents { get;set; }
     }
