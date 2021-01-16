@@ -89,27 +89,6 @@ namespace SqlSugar
         IUpdateable<T> RemoveDataCache();
         KeyValuePair<string,List<SugarParameter>> ToSql();
         void AddQueue();
-
-
-        #region delete obj
-
-        [Obsolete("Use IUpdateable<T> UpdateColumns(string [] columns)")]
-        IUpdateable<T> UpdateColumns(Func<string, bool> updateColumMethod);
-        [Obsolete("Use IUpdateable<T> IgnoreColumns(string [] columns)")]
-        IUpdateable<T> IgnoreColumns(Func<string, bool> ignoreColumMethod);
-        [Obsolete("Use IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false);")]
-        IUpdateable<T> Where(bool isNoUpdateNull, bool IsOffIdentity = false);
-        [Obsolete("Use IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns,string [] columns")]
-        IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Func<string, bool> updateColumMethod);
-        [Obsolete("Use SetColumns(Expression<Func<T, bool>> columns)")]
-        IUpdateable<T> UpdateColumns(Expression<Func<T, bool>> columns);
-        [Obsolete("Use SetColumns(Expression<Func<T, T>> columns")]
-        IUpdateable<T> UpdateColumns(Expression<Func<T, T>> columns);
-
-        [Obsolete("Use SetColumnsIF(bool isUpdateColumns, Expression<Func<T, T>> columns)")]
-        IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, T>> columns);
-        [Obsolete("Use SetColumnsIF(bool isUpdateColumns, Expression<Func<T, bool>> columns")]
-        IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, bool>> columns);
-        #endregion
+ 
     }
 }
