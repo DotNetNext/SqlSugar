@@ -370,7 +370,7 @@ namespace SqlSugar
                 foreach (var item in groups)
                 {
                     var columnNames = indexColumns.Where(it => it.IndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it=>it.DbColumnName).ToArray();
-                    var indexName = string.Format("Index_{0}_{1}",entityInfo.DbTableName, string.Join("_", columnNames));
+                    var indexName = string.Format("Index_{0}_{1}"+this.Context.CurrentConnectionConfig.ConfigId.ObjToString().Replace("-",""),entityInfo.DbTableName, string.Join("_", columnNames));
                     if (!IsAnyIndex(indexName))
                     {
                         CreateIndex(entityInfo.DbTableName, columnNames);
@@ -386,7 +386,7 @@ namespace SqlSugar
                 foreach (var item in groups)
                 {
                     var columnNames = uIndexColumns.Where(it => it.UIndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it => it.DbColumnName).ToArray();
-                    var indexName = string.Format("Index_{0}_{1}_Unique", entityInfo.DbTableName, string.Join("_", columnNames));
+                    var indexName = string.Format("Index_{0}_{1}_Unique" + this.Context.CurrentConnectionConfig.ConfigId.ObjToString().Replace("-", ""), entityInfo.DbTableName, string.Join("_", columnNames));
                     if (!IsAnyIndex(indexName))
                     {
                         CreateUniqueIndex(entityInfo.DbTableName, columnNames);
