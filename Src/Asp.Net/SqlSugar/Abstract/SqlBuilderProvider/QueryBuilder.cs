@@ -359,13 +359,16 @@ namespace SqlSugar
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
             var name = joinInfo.TableName;
-            if (this.AsTables.Any(it => it.Key == name))
+            if (this.AsTables.Any())
             {
                 if (this.Context.MappingTables != null && this.Context.MappingTables.Any(it => it.DbTableName == name))
                 {
                     name = this.Context.MappingTables.First(it => it.DbTableName == name).EntityName;
                 }
-                name = this.AsTables.First(it => it.Key == name).Value;
+                if (this.AsTables.Any(it => it.Key == name))
+                {
+                    name = this.AsTables.First(it => it.Key == name).Value;
+                }
             }
             return string.Format(
                 this.JoinTemplate,
