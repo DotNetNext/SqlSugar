@@ -114,6 +114,7 @@ namespace SqlSugar
         #endregion
 
         #region Sql Template
+        public Dictionary<string, string> AsTables=new Dictionary<string, string>();
         public virtual string SqlTemplate
         {
             get
@@ -357,10 +358,22 @@ namespace SqlSugar
 
         public virtual string ToJoinString(JoinQueryInfo joinInfo)
         {
+            var name = joinInfo.TableName;
+            if (this.AsTables.Any())
+            {
+                if (this.Context.MappingTables != null && this.Context.MappingTables.Any(it => it.DbTableName == name))
+                {
+                    name = this.Context.MappingTables.First(it => it.DbTableName == name).EntityName;
+                }
+                if (this.AsTables.Any(it => it.Key == name))
+                {
+                    name = this.AsTables.First(it => it.Key == name).Value;
+                }
+            }
             return string.Format(
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
-                Builder.GetTranslationTableName(joinInfo.TableName) + UtilConstants.Space,
+                Builder.GetTranslationTableName(name) + UtilConstants.Space,
                 joinInfo.ShortName + UtilConstants.Space + (TableWithString == SqlWith.Null ? " " : TableWithString),
                 joinInfo.JoinWhere);
         }
@@ -484,7 +497,12 @@ namespace SqlSugar
         {
             get
             {
-                var result = Builder.GetTranslationTableName(EntityName);
+                var name = EntityName;
+                if (this.AsTables.Any(it=>it.Key==EntityName))
+                {
+                    name = this.AsTables.FirstOrDefault(it => it.Key == EntityName).Value;
+                }
+                var result = Builder.GetTranslationTableName(name);
                 result += UtilConstants.Space;
                 if (result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable"))
                 {

@@ -1373,15 +1373,7 @@ namespace SqlSugar
         }
         protected ISugarQueryable<T> _As(string tableName, string entityName)
         {
-            IsAs = true;
-            OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
-            if (this.Context.MappingTables.Any(it => it.EntityName == entityName))
-            {
-                this.Context.MappingTables.Add(this.Context.MappingTables.First(it => it.EntityName == entityName).DbTableName, tableName);
-            }
-            this.Context.MappingTables.Add(entityName, tableName);
-            this.QueryableMappingTableList = this.Context.MappingTables;
+            this.QueryBuilder.AsTables.Add(entityName, tableName);
             return this;
         }
         protected void _Filter(string FilterName, bool isDisabledGobalFilter)
@@ -2048,6 +2040,7 @@ namespace SqlSugar
             asyncQueryableBuilder.HavingInfos = this.QueryBuilder.HavingInfos;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
             asyncQueryableBuilder.IgnoreColumns = this.QueryBuilder.IgnoreColumns;
+            asyncQueryableBuilder.AsTables = this.QueryBuilder.AsTables;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
