@@ -13,12 +13,12 @@ namespace OrmTest
         {
             Db.CodeFirst.InitTables(typeof(UnitUser));
             Db.DbMaintenance.TruncateTable<UnitUser>();
-            Db.Insertable(new UnitUser() { USER_ID=1,USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
-            Db.Updateable(new UnitUser() { USER_ID=1, PWD_LASTERRTIME = null }).WhereColumns(it=> new{ it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
+            Db.Insertable(new UnitUser() { USER_ID = 1, USER_ACCOUNT = "a", USER_PWD = "b", USER_NAME = "c", PWD_LASTCHTIME = DateTime.Now, PWD_ERRORCOUNT = 1, PWD_LASTERRTIME = DateTime.Now }).ExecuteCommand();
+            Db.Updateable(new UnitUser() { USER_ID = 1, PWD_LASTERRTIME = null }).WhereColumns(it => new { it.PWD_ERRORCOUNT, it.PWD_LASTERRTIME }).ExecuteCommand();
             Db.CodeFirst.InitTables(typeof(UnitBoolTest));
             var x = new UnitBoolTest();
-            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !it.BoolValue }).Where(it=>it.Id==1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue  ).Where(it=>it.Id==1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !it.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !it.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
@@ -26,7 +26,7 @@ namespace OrmTest
             Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).UpdateColumns(it => new { it.BoolValue }).ExecuteCommand();
 
 
 
@@ -49,7 +49,7 @@ namespace OrmTest
 
             sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
             {
-               TypeID = saveDiary.TypeID,
+                TypeID = saveDiary.TypeID,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
             UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
             [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
@@ -62,7 +62,7 @@ namespace OrmTest
             UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
             [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
 
-            sql=Db.Updateable<NullTest>().SetColumns(it => new NullTest()
+            sql = Db.Updateable<NullTest>().SetColumns(it => new NullTest()
             {
                 p = true
 
@@ -81,20 +81,39 @@ namespace OrmTest
             Db.Updateable<Order>()
                 .SetColumns(it => it.Name == "a")
                 .SetColumns(it => it.CreateTime == DateTime.Now)
-                .SetColumns(it=>it.Price==1).Where(it=>it.Id==1).ExecuteCommand();
+                .SetColumns(it => it.Price == 1).Where(it => it.Id == 1).ExecuteCommand();
 
 
             Db.Updateable<Order>()
-               .SetColumns(it =>new Order{ Name="a",CreateTime=DateTime.Now })
-               .SetColumns(it => it.Price==1).Where(it => it.Id == 1).ExecuteCommand();
+               .SetColumns(it => new Order { Name = "a", CreateTime = DateTime.Now })
+               .SetColumns(it => it.Price == 1).Where(it => it.Id == 1).ExecuteCommand();
 
 
 
             Db.Updateable<Order>()
              .SetColumns(it => new Order { Name = "a", CreateTime = DateTime.Now })
-             .SetColumns(it => new Order() { Price=1 }).Where(it => it.Id == 1).ExecuteCommand();
+             .SetColumns(it => new Order() { Price = 1 }).Where(it => it.Id == 1).ExecuteCommand();
+ 
+            Db.Updateable<Order>()
+           .SetColumns(it => new Order { Name= it.Id>0  ?"1":"2", CreateTime = DateTime.Now })
+            .Where(it => it.Id == 1).ExecuteCommand();
+
+            Db.Updateable<Order>()
+           .SetColumns(it => new Order { Name = SqlFunc.IsNull(it.Name,"a")+"b", CreateTime = DateTime.Now })
+           .Where(it => it.Id == 1).ExecuteCommand();
+
+            Db.CodeFirst.InitTables<Unitbluecopy>();
+            Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBlueCopy();
         }
     }
+
+    public class Unitbluecopy
+    {
+        public int Id { get; set; }
+        [SugarColumn(IsNullable =true)]
+        public decimal? x { get; set; }
+    }
+
     public class NullTest
     {
         public int id { get; set; }

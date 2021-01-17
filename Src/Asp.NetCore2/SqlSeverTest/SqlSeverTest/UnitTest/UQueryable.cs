@@ -54,7 +54,7 @@ namespace OrmTest
             UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
 
             var cts = IEnumerbleContains.Data();
-            var list2=Db.Queryable<Order>()
+            var list2 = Db.Queryable<Order>()
                     .Where(p => /*ids.*/cts.Select(c => c.Id).Contains(p.Id)).ToList();
 
             var cts2 = IEnumerbleContains.Data().ToList(); ;
@@ -81,42 +81,157 @@ namespace OrmTest
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
 
             var ids = Enumerable.Range(1, 11).ToList();
-            var list8=Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
+            var list8 = Db.Queryable<Order>().Where(it => SqlFunc.ContainsArrayUseSqlParameters(ids, it.Id)).ToList();
 
             var result2 = Db.Queryable<Unit_SYS_USER>().Where(o => o.XH == UserLoginInfo.XH).Select(o => o.XH).ToSql();
 
             var x = Db.Queryable<BoolTest1>().Select(it => new BoolTest2()
             {
-                a =it.a
+                a = it.a
             }).ToSql();
             UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest1] ", "Queryable");
             x = Db.Queryable<BoolTest2>().Select(it => new BoolTest1()
             {
-                a =  it.a.Value
+                a = it.a.Value
             }).ToSql();
             UValidate.Check(x.Key, "SELECT  [a] AS [a]  FROM [BoolTest2] ", "Queryable");
 
-            Db.CodeFirst.InitTables<UnitDecimal>();
-
-            Db.Queryable<UnitDecimal>().Select(it =>
-
-            new UnitDecimal2
+            var db = Db;
+            db.CodeFirst.InitTables<UserInfo, UserIpRuleInfo>();
+            db.Deleteable<UserInfo>().ExecuteCommand();
+            db.Deleteable<UserIpRuleInfo>().ExecuteCommand();
+            db.Insertable(new UserInfo()
             {
-                x1 = it.x1 * it.x2
+                Id = 1,
+                Password = "123",
+                UserName = "admin"
+            }).ExecuteCommand();
+            db.Insertable(new UserIpRuleInfo()
+            {
+                Addtime = DateTime.Now,
+                UserName = "a",
+                Id = 11,
+                UserId = 1,
+                Description = "xx",
+                IpRange = "1",
+                RuleType = 1
+            }).ExecuteCommand();
+            var vmList = db.Queryable<UserInfo, UserIpRuleInfo>(
+                (m1, m2) => m1.Id == m2.UserId
+            ).Where((m1, m2) => m1.Id > 0).Select((m1, m2) => new UserIpRuleInfo()
+            {
+
+                IpRange = m2.IpRange,
+                Addtime = m2.Addtime,
+                RuleType = m2.RuleType,
+            }).ToList();
+            if (string.IsNullOrEmpty(vmList.First().IpRange))
+            {
+                throw new Exception("Queryable");
+            }
+
+            Db.Insertable(new Order() { CreateTime=DateTime.Now, CustomId=1, Name="a",Price=1 }).ExecuteCommand();
+            var sa = Db.SqlQueryable<Order>("SELECT * FroM [ORDER] where id in (@id) ");
+            sa.AddParameters(new List<SugarParameter>() {
+                new SugarParameter("id",new int[]{ 1})
+             });
+            int i = 0;
+            var salist= sa.ToPageList(1,2,ref i);
+
+            db.CodeFirst.InitTables<UnitBytes11>();
+            db.Insertable(new UnitBytes11() { bytes = null, name = "a" }).ExecuteCommand();
+            db.Insertable(new UnitBytes11() { bytes=new byte[] { 1,2} , name="a"}).ExecuteCommand();
+            var bytes = db.Queryable<UnitBytes11>().Select(it => new
+            {
+                b = it.bytes,
+                name="a"
             }).ToList();
         }
 
 
-
-        public class UnitDecimal
+        
+        public class UnitBytes11
         {
-            public decimal x1 { get; set; }
-            public decimal x2 { get; set; }
-        }
-        public class UnitDecimal2 {
-          public decimal? x1 { get; set; }
+            [SugarColumn(Length =200,IsNullable =true)]
+            public byte[] bytes { get; set; }
+            public string name{ get; set; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [Serializable]
+        [SugarTable("users")]
+        public class UserInfo
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public int Id { get; set; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+
+            public string UserName { get; set; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public string Password { get; set; }
+
+        }
+        /// <summary>
+        ///
+        ///</summary>
+        [Serializable]
+        [SugarTable("user_ip_rules")]
+        public class UserIpRuleInfo
+        {
+            /// <summary>
+            /// 自增Id
+            /// </summary>
+            public int Id { get; set; }
+
+
+            /// <summary>
+            /// 用户Id
+            /// </summary>
+            [SugarColumn(ColumnName = "user_id")]
+            public int UserId { get; set; }
+
+            /// <summary>
+            /// 用户名
+            /// </summary>
+            [SugarColumn(IsIgnore = true)]
+            public string UserName { get; set; }
+
+            /// <summary>
+            /// IP地址或范围
+            /// </summary>
+            [SugarColumn(ColumnName = "ip_range")]
+            public string IpRange { get; set; }
+
+
+            /// <summary>
+            /// 规则类型 0-黑名单 1-白名单
+            /// </summary>
+            [SugarColumn(ColumnName = "rule_type")]
+            public int RuleType { get; set; }
+
+
+            /// <summary>
+            /// 描述/备注
+            /// </summary>
+            public string Description { get; set; }
+
+
+            /// <summary>
+            /// 添加时间
+            /// </summary>
+            public DateTime Addtime { get; set; }
+
+        }
         /// <summary>
         /// 系统用户表实体模型类
         /// </summary>

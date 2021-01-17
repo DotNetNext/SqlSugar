@@ -9,4 +9,8 @@
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UnitTest\models\" />
+  </ItemGroup>
+
 </Project>
