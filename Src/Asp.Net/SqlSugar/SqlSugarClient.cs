@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -748,8 +749,17 @@ namespace SqlSugar
             }
             else
             {
-                IsSingleInstance = true;
-                result = NoSameThread();
+                StackTrace st = new StackTrace(true);
+                var methods = st.GetFrames();
+                var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
+                if (isAsync)
+                {
+                    result = Synchronization();
+                }
+                else
+                {
+                    result = NoSameThread();
+                }
             }
             if (result.Root == null)
             {
