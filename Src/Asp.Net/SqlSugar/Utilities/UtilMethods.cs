@@ -69,6 +69,10 @@ namespace SqlSugar
             {
                 return true;
             }
+            if (name.Contains("OutputWaitEtwEvents"))
+            {
+                return true;
+            }
             Type attType = typeof(AsyncStateMachineAttribute); 
             var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(attType);
             return (attrib != null);
