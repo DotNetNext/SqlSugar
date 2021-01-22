@@ -64,6 +64,11 @@ namespace SqlSugar
             {
                 return false;
             }
+            var name= method.Name;
+            if (name.Contains("OutputAsyncCausalityEvents"))
+            {
+                return true;
+            }
             Type attType = typeof(AsyncStateMachineAttribute); 
             var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(attType);
             return (attrib != null);
