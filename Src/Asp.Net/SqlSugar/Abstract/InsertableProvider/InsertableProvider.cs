@@ -475,7 +475,7 @@ namespace SqlSugar
                 {
                     columnInfo.IsArray = true;
                 }
-                if (columnInfo.PropertyType.IsEnum())
+                if (columnInfo.PropertyType.IsEnum()&& columnInfo.Value!=null)
                 {
                     columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                 }

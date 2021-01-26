@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Enum();
             Tran();
             Insert();
             Queue();
