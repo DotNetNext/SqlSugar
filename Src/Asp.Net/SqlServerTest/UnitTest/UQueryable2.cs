@@ -78,6 +78,15 @@ namespace OrmTest
                 id1=x.Id,
                 name=y.Name
             }).ToList();
+
+            var qu3 = Db.Queryable<Order>().Select(it => new
+            {
+                id = it.Id,
+                name = it.Name
+            }).MergeTable()
+            .Where(it=>2>it.id).Select(it=> new Order() {
+                 Id=SqlFunc.IIF(2>it.id,1,2)
+            }).ToList();
         }
     }
 }
