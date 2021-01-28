@@ -21,7 +21,15 @@ namespace SqlSugar
     public class StorageableInfo<T> where T : class, new()
     {
         public T Item { get; set; }
-        public List<T> ExistData { get; set; }
+        public List<T> Database { get; set; }
+        public bool Any(Func<T,bool> expression)
+        {
+            return Database.Any(expression);
+        }
+        public bool NotAny(Func<T, bool> expression)
+        {
+            return !Database.Any(expression);
+        }
     }
 
     public class StorageableMessage<T> : StorageableInfo<T> where T : class, new()

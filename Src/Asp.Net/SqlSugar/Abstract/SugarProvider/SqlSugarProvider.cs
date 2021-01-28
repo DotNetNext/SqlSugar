@@ -741,7 +741,10 @@ namespace SqlSugar
         }
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
-            return new Storageable<T>(dataList,this); 
+            this.InitMappingInfo<T>();
+            var result= new Storageable<T>(dataList,this);
+            result.Builder = this._SqlBuilder;
+            return result;
         }
         #endregion
 
