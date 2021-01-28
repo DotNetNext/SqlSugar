@@ -360,7 +360,7 @@ namespace SqlSugar
                     this.UpdateBuilder.TableName = mappingInfo.DbTableName;
                 }
             }
-            Check.Exception(UpdateObjs == null || UpdateObjs.Count() == 0, "UpdateObjs is null");
+            //Check.Exception(UpdateObjs == null || UpdateObjs.Count() == 0, "UpdateObjs is null");
             int i = 0;
             foreach (var item in UpdateObjs)
             {

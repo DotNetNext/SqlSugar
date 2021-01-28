@@ -338,6 +338,11 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+
+        public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
+        {
+            return this.Context.Storageable(dataList);
+        }
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
             return this.Context.Saveable<T>(saveObjects);

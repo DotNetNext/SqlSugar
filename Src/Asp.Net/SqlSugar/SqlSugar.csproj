@@ -88,12 +88,14 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Abstract\SaveableProvider\IStorageable.cs" />
     <Compile Include="Entities\StackTraceInfo.cs" />
     <Compile Include="Entities\SubInsertTree.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperExpression.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MapperExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubInnerJoin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubLeftJoin.cs" />
+    <Compile Include="Interface\IStorageable.cs" />
     <Compile Include="OnlyNet\Compatible.cs" />
     <Compile Include="OnlyNet\KdbndpInserttable.cs" />
     <Compile Include="Interface\ISubInsertable.cs" />

@@ -11,6 +11,7 @@ namespace OrmTest
         public static void Insert()
         {
             var db = Db;
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
             db.CodeFirst.InitTables<UinitBlukTable>();
             db.Insertable(new List<UinitBlukTable>
             {
@@ -50,9 +51,34 @@ namespace OrmTest
             {
                 throw new Exception("Unit Insert");
             }
+            List<UinitBlukTable> list2 = new List<UinitBlukTable>();
+            for (int i = 0; i <= 20; i++)
+            {
+                UinitBlukTable data = new UinitBlukTable()
+                {
+                     Create=DateTime.Now.AddDays(-1),
+                     Id=i ,
+                     Name =i%3==0?"a":"b"
+                };
+                list2.Add(data);
+            }
+            list2.First().Name = null;
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+            var x=Db.Storageable(list2)
+                .SplitInsert(it => !string.IsNullOrEmpty(it.Item.Name))
+                .SplitUpdate(it =>  string.IsNullOrEmpty(it.Item.Name))
+                .SplitDelete(it=>it.Item.Id>10)
+                .SplitIgnore(it=>it.Item.Id==2)
+                .SplitError(it => it.Item.Id == 3,"id不能等于3")
+                .ToStorage();
+            x.AsDeleteable.ExecuteCommand();
+            x.AsInsertable.ExecuteCommand();
+            x.AsUpdateable.ExecuteCommand();
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
         }
         public class UinitBlukTable
         {
+            [SqlSugar.SugarColumn(IsPrimaryKey =true)]
             public int Id { get; set; }
             public string Name { get; set; }
             [SqlSugar.SugarColumn(IsNullable =true)]

@@ -674,7 +674,11 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new()
         {
-            Check.ArgumentNullException(UpdateObjs, "Updateable.UpdateObjs can't be null");
+            //Check.ArgumentNullException(UpdateObjs, "Updateable.UpdateObjs can't be null");
+            if (UpdateObjs == null)
+            {
+                UpdateObjs = new List<T>();
+            }
             return Updateable(UpdateObjs.ToArray());
         }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
@@ -734,6 +738,10 @@ namespace SqlSugar
         public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
         {
             return new SaveableProvider<T>(this, saveObject);
+        }
+        public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
+        {
+            return new Storageable<T>(dataList,this); 
         }
         #endregion
 
