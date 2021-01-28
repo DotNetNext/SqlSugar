@@ -77,7 +77,7 @@ namespace SqlSugar
             var update = datas.Where(it => it.StorageType == StorageType.Update).ToList();
             var inset = datas.Where(it => it.StorageType == StorageType.Insert).ToList();
             var error = datas.Where(it => it.StorageType == StorageType.Error).ToList();
-            var ignore = datas.Where(it => it.StorageType == StorageType.Ignore).ToList();
+            var ignore = datas.Where(it => it.StorageType == StorageType.Ignore||it.StorageType==null).ToList();
             var other = datas.Where(it => it.StorageType == StorageType.Other).ToList();
             StorageableResult<T> result = new StorageableResult<T>()
             {
