@@ -125,28 +125,33 @@ namespace SqlSugar
                     this.Context.Utilities.PageEach(allDatas, 300, itemList =>
                     {
                         List<IConditionalModel> conditList = new List<IConditionalModel>();
-                        var condition = new ConditionalCollections()
-                        {
-                            ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()
-                        };
-                        foreach (var dataItem in itemList)
-                        {
-                            foreach (var item in whereColumns)
-                            {
-                                conditList.Add(condition);
-                                condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType.And, new ConditionalModel()
-                                {
-                                    FieldName = item.DbColumnName,
-                                    ConditionalType = ConditionalType.Equal,
-                                    FieldValue = item.PropertyInfo.GetValue(dataItem,null)+""
-                                }));
-                            }
-                            var addItem = this.Context.Queryable<T>().Where(conditList).ToList();
-                            this.dbDataList.AddRange(addItem);
-                        }
+                        SetConditList(itemList, whereColumns, conditList);
+                        var addItem = this.Context.Queryable<T>().Where(conditList).ToList();
+                        this.dbDataList.AddRange(addItem);
                     });
                 }
                 return this;
+            }
+        }
+
+        private static void SetConditList(List<StorageableInfo<T>> itemList, List<EntityColumnInfo> whereColumns, List<IConditionalModel> conditList)
+        {
+            var condition = new ConditionalCollections()
+            {
+                ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()
+            };
+            foreach (var dataItem in itemList)
+            {
+                foreach (var item in whereColumns)
+                {
+                    conditList.Add(condition);
+                    condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType.And, new ConditionalModel()
+                    {
+                        FieldName = item.DbColumnName,
+                        ConditionalType = ConditionalType.Equal,
+                        FieldValue = item.PropertyInfo.GetValue(dataItem, null) + ""
+                    }));
+                }
             }
         }
 
