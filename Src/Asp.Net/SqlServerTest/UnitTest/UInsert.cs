@@ -65,8 +65,8 @@ namespace OrmTest
             list2.First().Name = null;
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
             var x=Db.Storageable(list2)
-                .SplitInsert(it => !string.IsNullOrEmpty(it.Item.Name))
-                .SplitUpdate(it =>  string.IsNullOrEmpty(it.Item.Name))
+                //.SplitInsert(it => !string.IsNullOrEmpty(it.Item.Name))
+                //.SplitUpdate(it =>  string.IsNullOrEmpty(it.Item.Name))
                 .SplitDelete(it=>it.Item.Id>10)
                 .SplitIgnore(it=>it.Item.Id==2)
                 .SplitError(it => it.Item.Id == 3,"id不能等于3")

@@ -53,6 +53,10 @@ namespace SqlSugar
         public virtual int ExecuteCommand()
         {
             string sql = _ExecuteCommand();
+            if (string.IsNullOrEmpty(sql))
+            {
+                return 0;
+            }
             var result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             After(sql);
             return result;
@@ -64,6 +68,10 @@ namespace SqlSugar
         public async Task<int> ExecuteCommandAsync()
         {
             string sql = _ExecuteCommand();
+            if (string.IsNullOrEmpty(sql))
+            {
+                return 0;
+            }
             var result = await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             After(sql);
             return result;

@@ -22,6 +22,10 @@ namespace SqlSugar
     {
         public T Item { get; set; }
         public List<T> ExistData { get; set; }
+    }
+
+    public class StorageableMessage<T> : StorageableInfo<T> where T : class, new()
+    {
         public string StorageMessage { get; set; }
         public StorageType? StorageType { get; set; }
     }
@@ -50,13 +54,13 @@ namespace SqlSugar
 
     public class StorageableResult<T> where T : class, new()
     {
-        public List<StorageableInfo<T>> TotalList { get; set; }
-        public List<StorageableInfo<T>> InsertList { get; set; }
-        public List<StorageableInfo<T>> UpdateList { get; set; }
-        public List<StorageableInfo<T>> DeleteList { get; set; }
-        public List<StorageableInfo<T>> ErrorList { get; set; }
-        public List<StorageableInfo<T>> IgnoreList { get; set; }
-        public List<StorageableInfo<T>> OtherList { get; set; }
+        public List<StorageableMessage<T>> TotalList { get; set; }
+        public List<StorageableMessage<T>> InsertList { get; set; }
+        public List<StorageableMessage<T>> UpdateList { get; set; }
+        public List<StorageableMessage<T>> DeleteList { get; set; }
+        public List<StorageableMessage<T>> ErrorList { get; set; }
+        public List<StorageableMessage<T>> IgnoreList { get; set; }
+        public List<StorageableMessage<T>> OtherList { get; set; }
         public IInsertable<T> AsInsertable { get; set; }
         public IUpdateable<T> AsUpdateable { get; set; }
         public IDeleteable<T> AsDeleteable { get; set; }

@@ -62,10 +62,13 @@ namespace SqlSugar
         {
             if (this.datas.Count == 0)
                 return new StorageableResult<T>();
+            var messageList = datas.Select(it => new StorageableMessage<T>() {
+                   Item=it.Item
+            }).ToList();
             foreach (var item in whereFuncs.OrderByDescending(it => (int)it.key))
             {
-                List<StorageableInfo<T>> whereList = datas.Where(it => it.StorageType == null).ToList();
-                Func<StorageableInfo<T>, bool> exp = item.value1;
+                List<StorageableMessage<T>> whereList = messageList.Where(it => it.StorageType == null).ToList();
+                Func<StorageableMessage<T>, bool> exp = item.value1;
                 var list = whereList.Where(exp).ToList();
                 foreach (var it in list)
                 {
@@ -73,12 +76,12 @@ namespace SqlSugar
                     it.StorageMessage = item.value2;
                 }
             }
-            var delete = datas.Where(it => it.StorageType == StorageType.Delete).ToList();
-            var update = datas.Where(it => it.StorageType == StorageType.Update).ToList();
-            var inset = datas.Where(it => it.StorageType == StorageType.Insert).ToList();
-            var error = datas.Where(it => it.StorageType == StorageType.Error).ToList();
-            var ignore = datas.Where(it => it.StorageType == StorageType.Ignore||it.StorageType==null).ToList();
-            var other = datas.Where(it => it.StorageType == StorageType.Other).ToList();
+            var delete = messageList.Where(it => it.StorageType == StorageType.Delete).ToList();
+            var update = messageList.Where(it => it.StorageType == StorageType.Update).ToList();
+            var inset = messageList.Where(it => it.StorageType == StorageType.Insert).ToList();
+            var error = messageList.Where(it => it.StorageType == StorageType.Error).ToList();
+            var ignore = messageList.Where(it => it.StorageType == StorageType.Ignore||it.StorageType==null).ToList();
+            var other = messageList.Where(it => it.StorageType == StorageType.Other).ToList();
             StorageableResult<T> result = new StorageableResult<T>()
             {
                 AsDeleteable = this.Context.Deleteable(delete.Select(it => it.Item).ToList()),
@@ -90,7 +93,7 @@ namespace SqlSugar
                 UpdateList = update,
                 ErrorList = error,
                 IgnoreList = ignore,
-                TotalList = datas
+                TotalList = messageList
             };
             return result;
         }
