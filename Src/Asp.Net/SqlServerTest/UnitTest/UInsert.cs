@@ -52,7 +52,7 @@ namespace OrmTest
                 throw new Exception("Unit Insert");
             }
             List<UinitBlukTable> list2 = new List<UinitBlukTable>();
-            for (int i = 0; i <= 20; i++)
+            for (int i = 1; i <= 20; i++)
             {
                 UinitBlukTable data = new UinitBlukTable()
                 {
@@ -70,15 +70,18 @@ namespace OrmTest
                 .SplitDelete(it=>it.Item.Id>10)
                 .SplitIgnore(it=>it.Item.Id==2)
                 .SplitError(it => it.Item.Id == 3,"id不能等于3")
+                .SplitError(it => it.Item.Id == 4, "id不能等于4")
+                .SplitError(it => it.Item.Id == 5, "id不能等于5")
+                .WhereColumns(it=>it.Id)
                 .ToStorage();
             x.AsDeleteable.ExecuteCommand();
             x.AsInsertable.ExecuteCommand();
-            x.AsUpdateable.ExecuteCommand();
+             x.AsUpdateable.ExecuteCommand();
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
         }
         public class UinitBlukTable
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey =true)]
+         
             public int Id { get; set; }
             public string Name { get; set; }
             [SqlSugar.SugarColumn(IsNullable =true)]

@@ -220,6 +220,15 @@ namespace SqlSugar
             return this;
         }
 
+        public IDeleteable<T> WhereColumns(Expression<Func<T, object>> columns)
+        {
+            if (columns != null)
+            {
+                tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
+            }
+            return this;
+        }
+
         public IDeleteable<T> RemoveDataCache()
         {
             this.RemoveCacheFunc = () =>

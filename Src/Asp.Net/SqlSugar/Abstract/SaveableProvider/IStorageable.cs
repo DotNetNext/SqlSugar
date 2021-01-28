@@ -84,7 +84,7 @@ namespace SqlSugar
             var other = messageList.Where(it => it.StorageType == StorageType.Other).ToList();
             StorageableResult<T> result = new StorageableResult<T>()
             {
-                AsDeleteable = this.Context.Deleteable(delete.Select(it => it.Item).ToList()),
+                AsDeleteable = this.Context.Deleteable<T>(),
                 AsUpdateable = this.Context.Updateable(update.Select(it => it.Item).ToList()),
                 AsInsertable = this.Context.Insertable(inset.Select(it => it.Item).ToList()),
                 OtherList = other,
@@ -95,6 +95,12 @@ namespace SqlSugar
                 IgnoreList = ignore,
                 TotalList = messageList
             };
+            if (this.columns != null)
+            {
+                result.AsUpdateable.WhereColumns(columns);
+                result.AsDeleteable.WhereColumns(columns);
+            }
+            result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
         }
 

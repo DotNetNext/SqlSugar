@@ -459,11 +459,16 @@ namespace SqlSugar
 
         private void PreToSql()
         {
+
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
             if (this.IsWhereColumns)
             {
                 foreach (var pkName in UpdateBuilder.PrimaryKeys)
                 {
+                    if (WhereColumnList != null&& WhereColumnList.Count()>0)
+                    {
+                        continue;
+                    }
                     var isContains = this.UpdateBuilder.DbColumnInfoList.Select(it => it.DbColumnName.ToLower()).Contains(pkName.ToLower());
                     Check.Exception(isContains == false, "Use UpdateColumns().WhereColumn() ,UpdateColumns need {0}", pkName);
                 }
