@@ -742,8 +742,9 @@ namespace SqlSugar
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
             this.InitMappingInfo<T>();
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             var result= new Storageable<T>(dataList,this);
-            result.Builder = this._SqlBuilder;
+            result.Builder = sqlBuilder;
             return result;
         }
         #endregion

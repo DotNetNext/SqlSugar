@@ -15,7 +15,7 @@ namespace SqlSugar
         List<StorageableInfo<T>> allDatas = new List<StorageableInfo<T>>();
         List<T> dbDataList = new List<T>();
         List<KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>> whereFuncs = new List<KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>>();
-        Expression<Func<T, object>> columns;
+        Expression<Func<T, object>> whereExpression;
         public Storageable(List<T> datas, SqlSugarProvider context)
         {
             this.Context = context;
@@ -64,6 +64,15 @@ namespace SqlSugar
         {
             if (this.allDatas.Count == 0)
                 return new StorageableResult<T>();
+            var pkInfos = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey);
+            if (whereExpression==null&&!pkInfos.Any())
+            {
+                Check.Exception(true, "Need primary key or WhereColumn");
+            }
+            if (whereExpression == null && pkInfos.Any())
+            {
+               
+            }
             var messageList = allDatas.Select(it => new StorageableMessage<T>()
             {
                 Item = it.Item,
@@ -99,10 +108,10 @@ namespace SqlSugar
                 IgnoreList = ignore,
                 TotalList = messageList
             };
-            if (this.columns != null)
+            if (this.whereExpression != null)
             {
-                result.AsUpdateable.WhereColumns(columns);
-                result.AsDeleteable.WhereColumns(columns);
+                result.AsUpdateable.WhereColumns(whereExpression);
+                result.AsDeleteable.WhereColumns(whereExpression);
             }
             result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
@@ -120,9 +129,13 @@ namespace SqlSugar
                                       it.DbColumnName.Equals(y, StringComparison.CurrentCultureIgnoreCase) ||
                                       it.PropertyName.Equals(y, StringComparison.CurrentCultureIgnoreCase))
                                   ).ToList();
+                if (whereColumns.Count == 0)
+                {
+                    whereColumns = dbColumns.Where(it => it.IsPrimarykey).ToList();
+                }
                 if (whereColumns.Count > 0)
                 {
-                    this.Context.Utilities.PageEach(allDatas, 300, itemList =>
+                    this.Context.Utilities.PageEach(allDatas, 200, itemList =>
                     {
                         List<IConditionalModel> conditList = new List<IConditionalModel>();
                         SetConditList(itemList, whereColumns, conditList);
@@ -130,27 +143,31 @@ namespace SqlSugar
                         this.dbDataList.AddRange(addItem);
                     });
                 }
+                this.whereExpression = columns;
                 return this;
             }
         }
 
         private static void SetConditList(List<StorageableInfo<T>> itemList, List<EntityColumnInfo> whereColumns, List<IConditionalModel> conditList)
         {
-            var condition = new ConditionalCollections()
-            {
-                ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()
-            };
+           ;
             foreach (var dataItem in itemList)
             {
+                var condition = new ConditionalCollections()
+                {
+                    ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()
+                };
+                conditList.Add(condition);
+                int i = 0;
                 foreach (var item in whereColumns)
                 {
-                    conditList.Add(condition);
-                    condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType.And, new ConditionalModel()
+                    condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or :WhereType.And, new ConditionalModel()
                     {
                         FieldName = item.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
-                        FieldValue = item.PropertyInfo.GetValue(dataItem, null) + ""
+                        FieldValue = item.PropertyInfo.GetValue(dataItem.Item, null) + ""
                     }));
+                    ++i;
                 }
             }
         }

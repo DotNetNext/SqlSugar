@@ -21,7 +21,7 @@ namespace SqlSugar
     public class StorageableInfo<T> where T : class, new()
     {
         public T Item { get; set; }
-        public List<T> Database { get; set; }
+        internal List<T> Database { get; set; }
         public bool Any(Func<T,bool> expression)
         {
             return Database.Any(expression);
