@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -296,15 +297,40 @@ namespace SqlSugar
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
                 foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
                 {
-                    var filterResult = item.FilterValue(this.Context);
-                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql + UtilConstants.Space));
-                    var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
-                    if (filterParamters.HasValue())
+                    if (item.GetType().Name.StartsWith("TableFilterItem"))
                     {
-                        this.Parameters.AddRange(filterParamters);
+                        AppendTableFilter(item);
+                    }
+                    else
+                    {
+                        var filterResult = item.FilterValue(this.Context);
+                        WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql + UtilConstants.Space));
+                        var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
+                        if (filterParamters.HasValue())
+                        {
+                            this.Parameters.AddRange(filterParamters);
+                        }
                     }
                 }
             }
+        }
+
+        private void AppendTableFilter(SqlFilterItem item)
+        {
+            BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic;
+            Type type = item.GetType();
+            PropertyInfo field = type.GetProperty("exp", flag);
+            Type ChildType = type.GetProperty("type", flag).GetValue(item,null) as Type;
+            var exp=field.GetValue(item,null) as Expression;
+            var isMain = ChildType == this.EntityType;
+            var isSingle = IsSingle();
+            var expValue = GetExpressionValue(exp, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            var sql = expValue.GetResultString();
+            if (!isSingle)
+            {
+
+            }
+            WhereInfos.Add(sql);
         }
 
         public virtual string GetExternalOrderBy(string externalOrderBy)
