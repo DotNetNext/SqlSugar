@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCore.MySqlConnector</id>
-    <version>5.0.2.2</version>
+    <version>5.0.2.3</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -24,6 +24,7 @@
         <dependency id="Npgsql" version="3.2.7" />
 	    <dependency id="SqlSugarCore.Dm" version="1.0.0" />
 	    <dependency id="SqlSugarCore.Kdbndp" version="1.0.0" />
+		<dependency id="Microsoft.Data.SqlClient" version="2.1.1" />
       </group>
     </dependencies>
   </metadata>
