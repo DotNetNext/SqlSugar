@@ -246,7 +246,7 @@ namespace SqlSugar
             var columnName= this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             string sql = GetUpdateColumnSql(tableName, columnInfo);
             this.Context.Ado.ExecuteCommand(sql);
-            var isnull = columnInfo.IsNullable?" SET NOT NULL ":" DROP NOT NULL ";
+            var isnull = columnInfo.IsNullable?" DROP NOT NULL ": " SET NOT NULL ";
             this.Context.Ado.ExecuteCommand(string.Format("alter table {0} alter {1} {2}",tableName,columnName, isnull));
             return true;
         }
@@ -257,6 +257,10 @@ namespace SqlSugar
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataSize = GetSize(columnInfo);
             string dataType = columnInfo.DataType;
+            if (!string.IsNullOrEmpty(dataType))
+            {
+                dataType = " type " + dataType;
+            }
             string nullType = "";
             string primaryKey = null;
             string identity = null;
