@@ -295,21 +295,23 @@ namespace SqlSugar
             if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.HasValue())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
-                foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
+
+                foreach (var item in gobalFilterList)
                 {
                     if (item.GetType().Name.StartsWith("TableFilterItem"))
                     {
                         AppendTableFilter(item);
                     }
-                    else
+                }
+
+                foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
+                {
+                    var filterResult = item.FilterValue(this.Context);
+                    WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql + UtilConstants.Space));
+                    var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
+                    if (filterParamters.HasValue())
                     {
-                        var filterResult = item.FilterValue(this.Context);
-                        WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql + UtilConstants.Space));
-                        var filterParamters = this.Context.Ado.GetParameters(filterResult.Parameters);
-                        if (filterParamters.HasValue())
-                        {
-                            this.Parameters.AddRange(filterParamters);
-                        }
+                        this.Parameters.AddRange(filterParamters);
                     }
                 }
             }
@@ -321,14 +323,46 @@ namespace SqlSugar
             Type type = item.GetType();
             PropertyInfo field = type.GetProperty("exp", flag);
             Type ChildType = type.GetProperty("type", flag).GetValue(item,null) as Type;
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(ChildType);
             var exp=field.GetValue(item,null) as Expression;
             var isMain = ChildType == this.EntityType;
             var isSingle = IsSingle();
             var expValue = GetExpressionValue(exp, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
             var sql = expValue.GetResultString();
-            if (!isSingle)
+            var itName = (exp as LambdaExpression).Parameters[0].Name;
+            itName = this.Builder.GetTranslationColumnName(itName) + ".";
+            var isEasyJoin = this.EasyJoinInfos.Count > 0;
+            if (WhereInfos.Count == 0)
+            {
+                sql =( " WHERE " + sql);
+            }else
+            {
+                sql = (" AND " + sql);
+            }
+            if (isSingle)
             {
 
+            }
+            else if (isMain)
+            {
+                var shortName = this.Builder.GetTranslationColumnName(TableShortName) + ".";
+                sql = sql.Replace(itName, shortName);
+            }
+            else if (isEasyJoin)
+            {
+                var easyInfo = EasyJoinInfos.FirstOrDefault(it =>
+                   it.Value.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
+                   it.Value.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
+                var shortName = this.Builder.GetTranslationColumnName(easyInfo.Key) + ".";
+                sql = sql.Replace(itName, shortName);
+            }
+            else
+            {
+                var easyInfo = JoinQueryInfos.FirstOrDefault(it =>
+                it.TableName.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
+                it.TableName.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
+                var shortName = this.Builder.GetTranslationColumnName(easyInfo.ShortName) + ".";
+                sql = sql.Replace(itName, shortName);
             }
             WhereInfos.Add(sql);
         }
