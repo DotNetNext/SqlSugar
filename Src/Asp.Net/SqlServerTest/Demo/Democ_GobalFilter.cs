@@ -25,8 +25,8 @@ namespace OrmTest
             //Order add filter  
             db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a")));
 
-             
-             db.Queryable<Order>().ToList();
+
+            db.Queryable<Order>().ToList();
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%') 
 
             db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
@@ -35,7 +35,7 @@ namespace OrmTest
             //SELECT i.* FROM [OrderDetail] i  ,[Order]  o  WHERE ( [i].[OrderId] = [o].[Id] )  AND ( [i].[OrderId] <> @OrderId0 )  AND  ([o].[Name] like '%'+@MethodConst1+'%')
 
             //no filter
-            db.Queryable<Order>().Filter(null, false).ToList();  
+            db.Queryable<Order>().Filter(null, false).ToList();
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]
         }
 
@@ -50,8 +50,20 @@ namespace OrmTest
                 {
                     //Writable logic
                     return new SqlFilterResult() { Sql = " name like '%a%' " };
-                }
+                },
+                IsJoinQuery = false // single query
             });
+            db2.QueryFilter.Add(new SqlFilterItem()
+            {
+                FilterName = "Myfilter1",
+                FilterValue = it =>
+                {
+                    //Writable logic
+                    return new SqlFilterResult() { Sql = " o.name like '%a%' " };
+                },
+                IsJoinQuery = true //join query
+            });
+
             db2.Queryable<Order>()
                              .Where(it => it.Name == "jack")
                              .Filter("Myfilter1")
@@ -60,6 +72,14 @@ namespace OrmTest
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order] 
             //WHERE ( [Name] = 'jack' )  AND  name like '%a%'
 
+
+            db2.Queryable<Order, OrderItem>((o, i) => o.Id == i.OrderId)
+                          .Where(o => o.Name == "jack")
+                          .Filter("Myfilter1")
+                          .Select(o => o)
+                          .ToList();
+            //SELECT o.* FROM[Order] o, [OrderDetail]  i WHERE ( [o].[Id] = [i].[OrderId])  
+            //AND([o].[Name] = 'jack')  AND o.name like '%a%'
 
             //no filter
             db2.Queryable<Order>().Filter(null, false).ToList();
