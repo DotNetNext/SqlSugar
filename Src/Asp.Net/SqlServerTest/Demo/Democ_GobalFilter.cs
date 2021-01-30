@@ -12,65 +12,68 @@ namespace OrmTest
         {
             Console.WriteLine("");
             Console.WriteLine("#### Filter Start ####");
-            var db = GetInstance();
 
+            TableFilterDemo();
 
-            var sql = db.Queryable<Order>().ToSql();
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM [Order]  WHERE  isDelete=0 
-            Console.WriteLine(sql);
+            NameFilterDemo();
 
-
-            var sql2 = db.Queryable<Order,OrderItem>((main,ot)=> main.Id==ot.OrderId).ToSql();
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM [Order] main  ,[OrderDetail]  ot  WHERE ( [main].[Id] = [ot].[OrderId] )  AND  main.isDelete=0 
-            Console.WriteLine(sql2);
-
-
-            var sql3 = db.Queryable<Order>().Filter("Myfilter").ToSql();// Myfilter+Gobal 
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM [Order]  WHERE Name='jack'    AND  isDelete=0 
-            Console.WriteLine(sql3);
-
-            var sql4 = db.Queryable<Order>().Filter("Myfilter",isDisabledGobalFilter:true).ToSql();//only Myfilter
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM [Order]  WHERE Name='jack'  
-            Console.WriteLine(sql4);
             Console.WriteLine("#### Filter End ####");
         }
-    
- 
+        private static void TableFilterDemo()
+        {
+            var db = GetInstance();
+            //Order add filter  
+            db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a")));
+
+             
+             db.Queryable<Order>().ToList();
+            //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%') 
+
+            db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
+                .Where(i => i.OrderId != 0)
+                .Select("i.*").ToList();
+            //SELECT i.* FROM [OrderDetail] i  ,[Order]  o  WHERE ( [i].[OrderId] = [o].[Id] )  AND ( [i].[OrderId] <> @OrderId0 )  AND  ([o].[Name] like '%'+@MethodConst1+'%')
+
+            //no filter
+            db.Queryable<Order>().Filter(null, false).ToList();  
+            //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]
+        }
+
+
+        private static void NameFilterDemo()
+        {
+            var db2 = GetInstance();
+            db2.QueryFilter.Add(new SqlFilterItem()
+            {
+                FilterName = "Myfilter1",
+                FilterValue = it =>
+                {
+                    //Writable logic
+                    return new SqlFilterResult() { Sql = " name like '%a%' " };
+                }
+            });
+            db2.Queryable<Order>()
+                             .Where(it => it.Name == "jack")
+                             .Filter("Myfilter1")
+                             //IF .Filter("Myfilter",false)  only execute Myfilter
+                             .ToList();
+            //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order] 
+            //WHERE ( [Name] = 'jack' )  AND  name like '%a%'
+
+
+            //no filter
+            db2.Queryable<Order>().Filter(null, false).ToList();
+            //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]
+        }
+
+
         public static SqlSugarClient GetInstance()
         {
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { DbType = DbType.SqlServer, ConnectionString = Config.ConnectionString, IsAutoCloseConnection = true });
-
-            //single table query gobal filter
-            db.QueryFilter.Add(new SqlFilterItem()
+            db.Aop.OnLogExecuted = (sql, p) =>
             {
-                FilterValue = filterDb =>
-                {
-                    //Writable logic
-                    return new SqlFilterResult() { Sql = " isDelete=0"  };//Global string perform best
-                }
-            });
-
-            //Multi-table query gobal filter
-            db.QueryFilter.Add(new SqlFilterItem()
-            {
-                FilterValue = filterDb =>
-                {
-                    //Writable logic
-                    return new SqlFilterResult() { Sql = " main.isDelete=0" };
-                },
-                IsJoinQuery=true
-            });
-
-            //Specific filters
-            db.QueryFilter.Add(new SqlFilterItem()
-            {
-                FilterName= "Myfilter",
-                FilterValue = filterDb =>
-                {
-                    //Writable logic
-                    return new SqlFilterResult() { Sql = "Name='jack'" };
-                }
-            });
+                Console.WriteLine(sql);
+            };
             return db;
         }
     }

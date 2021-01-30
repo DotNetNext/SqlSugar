@@ -303,8 +303,7 @@ namespace SqlSugar
                         AppendTableFilter(item);
                     }
                 }
-
-                foreach (var item in gobalFilterList.Where(it => it.IsJoinQuery == !IsSingle()))
+                foreach (var item in gobalFilterList.Where(it=>it.GetType().Name=="SqlFilterItem").Where(it => it.IsJoinQuery == !IsSingle()))
                 {
                     var filterResult = item.FilterValue(this.Context);
                     WhereInfos.Add(this.Builder.AppendWhereOrAnd(this.WhereInfos.IsNullOrEmpty(), filterResult.Sql + UtilConstants.Space));
@@ -353,7 +352,7 @@ namespace SqlSugar
                 var easyInfo = EasyJoinInfos.FirstOrDefault(it =>
                    it.Value.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
                    it.Value.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
-                var shortName = this.Builder.GetTranslationColumnName(easyInfo.Key) + ".";
+                var shortName = this.Builder.GetTranslationColumnName(easyInfo.Key.Trim()) + ".";
                 sql = sql.Replace(itName, shortName);
             }
             else
@@ -361,7 +360,7 @@ namespace SqlSugar
                 var easyInfo = JoinQueryInfos.FirstOrDefault(it =>
                 it.TableName.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
                 it.TableName.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
-                var shortName = this.Builder.GetTranslationColumnName(easyInfo.ShortName) + ".";
+                var shortName = this.Builder.GetTranslationColumnName(easyInfo.ShortName.Trim()) + ".";
                 sql = sql.Replace(itName, shortName);
             }
             WhereInfos.Add(sql);
