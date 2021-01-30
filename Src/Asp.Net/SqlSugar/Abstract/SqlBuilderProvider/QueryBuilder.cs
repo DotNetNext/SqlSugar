@@ -340,7 +340,10 @@ namespace SqlSugar
             }
             if (isSingle)
             {
-
+                if (ChildType != this.EntityType)
+                {
+                    return;
+                }
             }
             else if (isMain)
             {
@@ -352,6 +355,10 @@ namespace SqlSugar
                 var easyInfo = EasyJoinInfos.FirstOrDefault(it =>
                    it.Value.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
                    it.Value.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
+                if (easyInfo.Key==null)
+                {
+                    return;
+                }
                 var shortName = this.Builder.GetTranslationColumnName(easyInfo.Key.Trim()) + ".";
                 sql = sql.Replace(itName, shortName);
             }
@@ -360,6 +367,10 @@ namespace SqlSugar
                 var easyInfo = JoinQueryInfos.FirstOrDefault(it =>
                 it.TableName.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
                 it.TableName.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
+                if (easyInfo == null)
+                {
+                    return;
+                }
                 var shortName = this.Builder.GetTranslationColumnName(easyInfo.ShortName.Trim()) + ".";
                 sql = sql.Replace(itName, shortName);
             }
