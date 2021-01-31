@@ -87,9 +87,47 @@ namespace OrmTest
             IDemo1();
             IDemo2();
             IDemo3();
-
+            IDemo4();
         }
+        private static void IDemo4()
+        {
+            var db = Db;
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+           
+            List<UinitBlukTable> list2 = new List<UinitBlukTable>();
+            list2.Add(new UinitBlukTable() { Id = 1, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 2, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 3, Name = "a", Create = DateTime.Now.AddYears(-2) });
+            list2.Add(new UinitBlukTable() { Id = 4, Name ="", Create = DateTime.Now.AddYears(-2) });
 
+            db.Insertable(list2.First()).ExecuteCommand();//插入第一条
+
+            var x = Db.Storageable(list2)
+                                      .SplitError(it => string.IsNullOrEmpty(it.Item.Name), "名称不能为空")
+                                      .SplitError(it => it.Item.Create<DateTime.Now.AddYears(-1),"不是今年的数据")
+                                      .SplitUpdate(it => it.Any(y=>y.Id==it.Item.Id))//存在更新
+                                      .SplitInsert(it => true)//剩余的插入
+                                      .ToStorage();
+            Console.WriteLine(" 插入 {0}  更新{1}  错误数据{2} 不计算数据{3}  删除数据{4},总共{5}" ,
+                   x.InsertList.Count,
+                   x.UpdateList.Count,
+                   x.ErrorList.Count,
+                   x.IgnoreList.Count,
+                   x.DeleteList.Count,
+                   x.TotalList.Count
+                );
+            foreach (var item in x.ErrorList)
+            {
+                Console.WriteLine("id等于"+item.Item.Id+" : "+item.StorageMessage);
+            }
+
+            int i=x.AsInsertable.ExecuteCommand();
+            Console.WriteLine(1 + "条成功插入");
+            i=x.AsUpdateable.ExecuteCommand();
+            Console.WriteLine(1 + "条成功更新");
+
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+        }
         private static void IDemo3()
         {
             var db = Db;
