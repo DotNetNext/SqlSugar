@@ -84,8 +84,43 @@ namespace OrmTest
                 Console.Write(item.StorageMessage+" ");
             }
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
+            IDemo1();
             IDemo2();
+            IDemo3();
 
+        }
+
+        private static void IDemo3()
+        {
+            var db = Db;
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+            List<UinitBlukTable> list2 = new List<UinitBlukTable>();
+            list2.Add(new UinitBlukTable() { Id = 1, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 2, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 3, Name = "a", Create = DateTime.Now });
+
+            var x = Db.Storageable(list2)
+                                      .SplitUpdate(it => it.Item.Id == 1)
+                                      .SplitInsert(it => it.Item.Id == 2)
+                                      .SplitDelete(it => it.Item.Id == 3).ToStorage();
+                                
+            x.AsInsertable.ExecuteCommand();
+            x.AsUpdateable.ExecuteCommand();
+            x.AsDeleteable.ExecuteCommand();
+
+            if (x.InsertList.Count != 1)
+            {
+                throw new Exception("Unit Insert");
+            }
+            if (x.UpdateList.Count != 1)
+            {
+                throw new Exception("Unit Insert");
+            }
+            if (x.DeleteList.Count != 1)
+            {
+                throw new Exception("Unit Insert");
+            }
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
         }
 
         private static void IDemo1()
@@ -103,7 +138,14 @@ namespace OrmTest
             x.AsInsertable.ExecuteCommand();
             x.AsUpdateable.ExecuteCommand();
 
-
+            if (x.InsertList.Count > 1)
+            {
+                throw new Exception("Unit Insert");
+            }
+            if (x.UpdateList.Count !=2)
+            {
+                throw new Exception("Unit Insert");
+            }
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
         }
         private static void IDemo2()
@@ -121,6 +163,16 @@ namespace OrmTest
                                       .SplitInsert(it => it.NotAny(y => y.Id == it.Item.Id)).ToStorage();
             x.AsInsertable.ExecuteCommand();
             x.AsUpdateable.ExecuteCommand();
+
+
+            if (x.InsertList.Count!=2)
+            {
+                throw new Exception("Unit Insert");
+            }
+            if (x.UpdateList.Count != 1)
+            {
+                throw new Exception("Unit Insert");
+            }
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
         }
 
