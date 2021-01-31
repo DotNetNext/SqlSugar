@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -43,6 +44,42 @@ namespace SqlSugar
                     return Convert.ChangeType(value, destinationType, culture);
             }
             return value;
+        }
+        public static bool IsAnyAsyncMethod(StackFrame[] methods)
+        {
+            bool isAsync = false;
+            foreach (var item in methods)
+            {
+                if (UtilMethods.IsAsyncMethod(item.GetMethod()))
+                {
+                    isAsync = true;
+                }
+            }
+            return isAsync;
+        }
+
+        public static bool IsAsyncMethod(MethodBase method)
+        {
+            if (method == null)
+            {
+                return false;
+            }
+            var name= method.Name;
+            if (name.Contains("OutputAsyncCausalityEvents"))
+            {
+                return true;
+            }
+            if (name.Contains("OutputWaitEtwEvents"))
+            {
+                return true;
+            }
+            if (name.Contains("ExecuteAsync"))
+            {
+                return true;
+            }
+            Type attType = typeof(AsyncStateMachineAttribute); 
+            var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(attType);
+            return (attrib != null);
         }
 
         public static StackTraceInfo GetStackTrace()

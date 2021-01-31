@@ -237,9 +237,37 @@ namespace SqlSugar
                 return "serial";
             }
         }
-          #endregion
+        #endregion
 
         #region Methods
+        public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            var columnName= this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            string sql = GetUpdateColumnSql(tableName, columnInfo);
+            this.Context.Ado.ExecuteCommand(sql);
+            var isnull = columnInfo.IsNullable?" DROP NOT NULL ": " SET NOT NULL ";
+            this.Context.Ado.ExecuteCommand(string.Format("alter table {0} alter {1} {2}",tableName,columnName, isnull));
+            return true;
+        }
+
+        protected override string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
+            if (!string.IsNullOrEmpty(dataType))
+            {
+                dataType = " type " + dataType;
+            }
+            string nullType = "";
+            string primaryKey = null;
+            string identity = null;
+            string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
+        }
+
         /// <summary>
         ///by current connection string
         /// </summary>

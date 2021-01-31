@@ -220,6 +220,15 @@ namespace SqlSugar
             return this;
         }
 
+        public IDeleteable<T> WhereColumns(Expression<Func<T, object>> columns)
+        {
+            if (columns != null)
+            {
+                tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
+            }
+            return this;
+        }
+
         public IDeleteable<T> RemoveDataCache()
         {
             this.RemoveCacheFunc = () =>
@@ -445,7 +454,7 @@ namespace SqlSugar
                         DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                         addItem.Value = row[col.ColumnName];
                         addItem.ColumnName = col.ColumnName;
-                        addItem.ColumnDescription = this.EntityInfo.Columns.First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
+                        addItem.ColumnDescription = this.EntityInfo.Columns.Where(it=>it.DbColumnName!=null).First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
                         item.Columns.Add(addItem);
                     }
                     result.Add(item);

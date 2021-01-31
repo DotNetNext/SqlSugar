@@ -572,6 +572,29 @@ namespace SqlSugar
            return table.Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1]);
         }
 
+        public List<Dictionary<string, object>> DataTableToDictionaryList(DataTable dt)
+        {
+            List<Dictionary<string, object>> result = new List<Dictionary<string, object>>();
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    for (int i = 0; i < dr.Table.Columns.Count; i++)
+                    {
+                        var value = dr[dr.Table.Columns[i].ColumnName];
+                        if (value == DBNull.Value)
+                        {
+                            value = null;
+                        }
+                        dic.Add(dr.Table.Columns[i].ColumnName.ToString(), value);
+                    }
+                    result.Add(dic);
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region Cache

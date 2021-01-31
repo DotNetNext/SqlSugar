@@ -45,7 +45,7 @@ namespace SqlSugar
             //var SelectInfo = GetSelectInfo(expression);
             this.context.InitMappingInfo(childExpression.Expression.Type);
             var entity = this.context.EntityMaintenance.GetEntityInfo(childExpression.Expression.Type);
-            oneToMany(callName, entity, childExpression.Expression.ToString(), fillInfo, mappingFild1Info, mappingFild1Info2);
+            oneToMany(methodExpression, callName, entity, childExpression.Expression.ToString(), fillInfo, mappingFild1Info, mappingFild1Info2);
         }
 
         private void ResolveMember()
@@ -99,31 +99,58 @@ namespace SqlSugar
                                                         .Select(sqlBuilder.GetTranslationColumnName(selectInfo.FieldName)).ToSql().Key;
         }
 
-        private void oneToMany(string methodName,EntityInfo mainEntity,string shortName,MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2)
+        private void oneToMany(MethodCallExpression methodCallExpression,string methodName,EntityInfo mainEntity,string shortName,MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2)
         {
-            var pkColumn = mainEntity.Columns.FirstOrDefault(it=>it.IsPrimarykey==true);
+            var pkColumn = mainEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
             if (pkColumn == null)
             {
                 pkColumn = mainEntity.Columns.FirstOrDefault();
             }
             var tableName = sqlBuilder.GetTranslationTableName(fillInfo.EntityInfo.DbTableName);
             var whereLeft = sqlBuilder.GetTranslationColumnName(mappingFild1Info.FieldString);
-            var whereRight = sqlBuilder.GetTranslationColumnName(shortName+"."+pkColumn.DbColumnName);
-
+            var whereRight = sqlBuilder.GetTranslationColumnName(shortName + "." + pkColumn.DbColumnName);
+            string whereExpression = GetWhereExpression(methodCallExpression);
             if (methodName == "Any")
             {
-                this.sql = " ("+this.context.Queryable<object>()
+                this.sql = " (" + this.context.Queryable<object>()
                                                             .AS(tableName)
                                                             .Where(string.Format(" {0}={1} ", whereLeft, whereRight))
-                                                            .Select("COUNT(1)").ToSql().Key+")>0 ";
+                                                            .WhereIF(!string.IsNullOrEmpty(whereExpression), whereExpression)
+                                                            .Select("COUNT(1)").ToSql().Key + ")>0 ";
             }
             else
             {
                 this.sql = this.context.Queryable<object>()
                                                          .AS(tableName)
                                                          .Where(string.Format(" {0}={1} ", whereLeft, whereRight))
+                                                         .WhereIF(!string.IsNullOrEmpty(whereExpression), whereExpression)
                                                          .Select("COUNT(1)").ToSql().Key;
             }
+        }
+
+        private string GetWhereExpression(MethodCallExpression methodCallExpression)
+        {
+            if (methodCallExpression.Arguments.Count <= 1)
+                return null;
+            var exp= methodCallExpression.Arguments[1];
+            var querybuiler=InstanceFactory.GetQueryBuilder(this.context.CurrentConnectionConfig);
+            querybuiler.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.context.CurrentConnectionConfig);
+            querybuiler.Builder = InstanceFactory.GetSqlbuilder(this.context.CurrentConnectionConfig);
+            querybuiler.Builder.Context = querybuiler.Context;
+            querybuiler.Builder.QueryBuilder = querybuiler;
+            querybuiler.Context = this.context;
+            var expValue=querybuiler.GetExpressionValue(exp, ResolveExpressType.WhereMultiple);
+            var paramterName = (exp as LambdaExpression).Parameters[0].Name;
+            var sql = expValue.GetResultString();
+            sql = sql.Replace(querybuiler.Builder.GetTranslationColumnName(paramterName) + ".", "");
+            if (querybuiler.Parameters != null && querybuiler.Parameters.Count > 0)
+            {
+                foreach (var item in querybuiler.Parameters)
+                {
+                    sql = sql.Replace(item.ParameterName,item.Value.ObjToString().ToSqlValue());
+                }
+            }
+            return sql;
         }
 
         private MapperExpressionInfo GetSelectInfo(Expression expression)

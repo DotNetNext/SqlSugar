@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -337,6 +338,11 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+
+        public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
+        {
+            return this.Context.Storageable(dataList);
+        }
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
             return this.Context.Saveable<T>(saveObjects);
@@ -748,8 +754,17 @@ namespace SqlSugar
             }
             else
             {
-                IsSingleInstance = true;
-                result = NoSameThread();
+                StackTrace st = new StackTrace(true);
+                var methods = st.GetFrames();
+                var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
+                if (isAsync)
+                {
+                    result = Synchronization();
+                }
+                else
+                {
+                    result = NoSameThread();
+                }
             }
             if (result.Root == null)
             {

@@ -9,6 +9,21 @@ namespace SqlSugar
     {
         public BinaryExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
+            switch (parameter.Context.ResolveType)
+            {
+                case ResolveExpressType.FieldSingle:
+                case ResolveExpressType.FieldMultiple:
+                    var sql = base.GetNewExpressionValue(this.Expression);
+                    this.Context.Result.Append(sql);
+                    break;
+                default:
+                    Other(parameter);
+                    break;
+            }
+        }
+
+        private void Other(ExpressionParameter parameter)
+        {
             var expression = this.Expression as BinaryExpression;
             var operatorValue = parameter.OperatorValue = ExpressionTool.GetOperator(expression.NodeType);
             var isEqual = expression.NodeType == ExpressionType.Equal;
@@ -32,15 +47,15 @@ namespace SqlSugar
             {
                 base.Context.Result.Replace(ExpressionConst.FormatSymbol, ExpressionConst.LeftParenthesis + ExpressionConst.FormatSymbol);
             }
-            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand is UnaryExpression&& (leftExpression as UnaryExpression).NodeType == ExpressionType.Convert)
+            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand is UnaryExpression && (leftExpression as UnaryExpression).NodeType == ExpressionType.Convert)
             {
                 leftExpression = (leftExpression as UnaryExpression).Operand;
             }
-            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand.Type == UtilConstants.BoolType && (leftExpression as UnaryExpression).NodeType == ExpressionType.Convert&&rightExpression.Type==UtilConstants.BoolTypeNull)
+            if (leftExpression is UnaryExpression && (leftExpression as UnaryExpression).Operand.Type == UtilConstants.BoolType && (leftExpression as UnaryExpression).NodeType == ExpressionType.Convert && rightExpression.Type == UtilConstants.BoolTypeNull)
             {
                 leftExpression = (leftExpression as UnaryExpression).Operand;
             }
-            if (rightExpression is UnaryExpression&& (rightExpression as UnaryExpression).Operand.Type==UtilConstants.BoolType&& (rightExpression as UnaryExpression).NodeType == ExpressionType.Convert)
+            if (rightExpression is UnaryExpression && (rightExpression as UnaryExpression).Operand.Type == UtilConstants.BoolType && (rightExpression as UnaryExpression).NodeType == ExpressionType.Convert)
             {
                 rightExpression = (rightExpression as UnaryExpression).Operand;
             }
@@ -49,7 +64,7 @@ namespace SqlSugar
             base.Expression = leftExpression;
             base.IsLeft = true;
             base.Start();
-            if (leftExpression is UnaryExpression && leftExpression.Type == UtilConstants.BoolType&&!this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
+            if (leftExpression is UnaryExpression && leftExpression.Type == UtilConstants.BoolType && !this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
             {
                 this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
             }

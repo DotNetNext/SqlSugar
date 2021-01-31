@@ -53,6 +53,10 @@ namespace SqlSugar
         public virtual int ExecuteCommand()
         {
             string sql = _ExecuteCommand();
+            if (string.IsNullOrEmpty(sql))
+            {
+                return 0;
+            }
             var result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             After(sql);
             return result;
@@ -64,6 +68,10 @@ namespace SqlSugar
         public async Task<int> ExecuteCommandAsync()
         {
             string sql = _ExecuteCommand();
+            if (string.IsNullOrEmpty(sql))
+            {
+                return 0;
+            }
             var result = await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             After(sql);
             return result;
@@ -360,7 +368,7 @@ namespace SqlSugar
                     this.UpdateBuilder.TableName = mappingInfo.DbTableName;
                 }
             }
-            Check.Exception(UpdateObjs == null || UpdateObjs.Count() == 0, "UpdateObjs is null");
+            //Check.Exception(UpdateObjs == null || UpdateObjs.Count() == 0, "UpdateObjs is null");
             int i = 0;
             foreach (var item in UpdateObjs)
             {
@@ -425,7 +433,7 @@ namespace SqlSugar
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     TableId = i
                 };
-                if (columnInfo.PropertyType.IsEnum())
+                if (columnInfo.PropertyType.IsEnum()&& columnInfo.Value!=null)
                 {
                     columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                 }
@@ -451,11 +459,16 @@ namespace SqlSugar
 
         private void PreToSql()
         {
+
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
             if (this.IsWhereColumns)
             {
                 foreach (var pkName in UpdateBuilder.PrimaryKeys)
                 {
+                    if (WhereColumnList != null&& WhereColumnList.Count()>0)
+                    {
+                        continue;
+                    }
                     var isContains = this.UpdateBuilder.DbColumnInfoList.Select(it => it.DbColumnName.ToLower()).Contains(pkName.ToLower());
                     Check.Exception(isContains == false, "Use UpdateColumns().WhereColumn() ,UpdateColumns need {0}", pkName);
                 }

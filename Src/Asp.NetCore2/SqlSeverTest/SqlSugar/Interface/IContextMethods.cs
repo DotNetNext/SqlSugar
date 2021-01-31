@@ -29,6 +29,7 @@ namespace SqlSugar
         List<T> DataTableToList<T>(DataTable table);
         DataTable ListToDataTable<T>(List<T> list);
         Dictionary<string, object> DataTableToDictionary(DataTable table);
+        List<Dictionary<string, object>> DataTableToDictionaryList(DataTable table);
         ICacheService GetReflectionInoCacheInstance();
         void RemoveCacheAll();
         void RemoveCacheAll<T>();
