@@ -32,7 +32,10 @@ namespace OrmTest
                .Mapper(it => it.Items, it => it.Items.First().OrderId)
                .Where(it => it.Items.Any())
                .ToList();
-
+            var list7= Db.Queryable<Order>()
+               .Mapper(it => it.Items, it => it.Items.First().OrderId)
+               .Where(it => it.Items.Any(y => y.ItemId == 1))
+               .ToList();
 
             var sql=Db.Queryable<Order>().AS("[order]").ToList();
 
