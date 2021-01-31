@@ -84,7 +84,46 @@ namespace OrmTest
                 Console.Write(item.StorageMessage+" ");
             }
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
+            IDemo2();
+
         }
+
+        private static void IDemo1()
+        {
+            var db = Db;
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+            List<UinitBlukTable> list2 = new List<UinitBlukTable>();
+            list2.Add(new UinitBlukTable() { Id = 1, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 2, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 0, Name = "a", Create = DateTime.Now });
+
+            var x = Db.Storageable(list2)
+                                      .SplitUpdate(it => it.Item.Id > 0)
+                                      .SplitInsert(it => it.Item.Id == 0).ToStorage();
+            x.AsInsertable.ExecuteCommand();
+            x.AsUpdateable.ExecuteCommand();
+
+
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+        }
+        private static void IDemo2()
+        {
+            var db = Db;
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+            List<UinitBlukTable> list2 = new List<UinitBlukTable>();
+            list2.Add(new UinitBlukTable() { Id = 1, Name = "a1", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 2, Name = "a2", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 3, Name = "a3", Create = DateTime.Now });
+            db.Insertable(list2[1]).ExecuteCommand();
+
+            var x = Db.Storageable(list2)
+                                      .SplitUpdate(it => it.Any(y=>y.Id==it.Item.Id))
+                                      .SplitInsert(it => it.NotAny(y => y.Id == it.Item.Id)).ToStorage();
+            x.AsInsertable.ExecuteCommand();
+            x.AsUpdateable.ExecuteCommand();
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+        }
+
         public class UinitBlukTable
         {
             [SqlSugar.SugarColumn(IsPrimaryKey =true)]

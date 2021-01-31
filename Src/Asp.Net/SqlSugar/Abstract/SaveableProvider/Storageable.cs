@@ -71,7 +71,10 @@ namespace SqlSugar
             }
             if (whereExpression == null && pkInfos.Any())
             {
-               
+                this.Context.Utilities.PageEach(allDatas, 300, item => {
+                 var addItems=this.Context.Queryable<T>().WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToList();
+                    dbDataList.AddRange(addItems);
+                });
             }
             var messageList = allDatas.Select(it => new StorageableMessage<T>()
             {
