@@ -19,8 +19,8 @@ namespace PerformanceTest
         {
              InitData();
 
-            var type = DemoType.Like;
-            var ormType = OrmType.FREE;
+            var type = DemoType.OneToMany;
+            var ormType = OrmType.SqlSugar;
             switch (type)
             {
                 case DemoType.GetAll:
@@ -38,7 +38,7 @@ namespace PerformanceTest
                 case DemoType.Like:
                     new TestLike().Init(ormType);
                     break;
-                case DemoType.OnToN:
+                case DemoType.OneToMany:
                     new TestOneToMany().Init(ormType);
                     break;
                 default:
@@ -78,16 +78,19 @@ namespace PerformanceTest
                 }
             }
             conn.CodeFirst.InitTables<Group>();
-            conn.DbMaintenance.TruncateTable<Group>();
+            // conn.DbMaintenance.TruncateTable<Group>();
             conn.CodeFirst.InitTables<User>();
-            conn.DbMaintenance.TruncateTable<User>();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    conn.Insertable(new Group { Id=i,Name=i+Guid.NewGuid().ToString() }).ExecuteCommand();
-            //    conn.Insertable(new User() { AGroupId = i, Id = i + 1 }).ExecuteCommand();
-            //    conn.Insertable(new User() { AGroupId = i, Id = i + 200000 }).ExecuteCommand();
-            //}
-            conn.Insertable(test).ExecuteCommand();
+            //conn.DbMaintenance.TruncateTable<User>();
+            if (conn.Queryable<Group>().Count() < 500)
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    conn.Insertable(new Group { Id = i, Name = i + Guid.NewGuid().ToString() }).ExecuteCommand();
+                    conn.Insertable(new User() { AGroupId = i, Id = i + 1 }).ExecuteCommand();
+                    conn.Insertable(new User() { AGroupId = i, Id = i + 200000 }).ExecuteCommand();
+                }
+                conn.Insertable(test).ExecuteCommand();
+            }
         }
 
         enum DemoType
@@ -97,7 +100,7 @@ namespace PerformanceTest
             GetSql,
             Insert,
             Like,
-            OnToN
+            OneToMany
         }
     }
 }
