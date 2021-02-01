@@ -45,14 +45,14 @@ namespace PerformanceTest.TestItems
         {
             GC.Collect();//回收资源
             System.Threading.Thread.Sleep(1);//休息1秒
-
+            IFreeSql fsql = new FreeSql.FreeSqlBuilder()
+.UseConnectionString(FreeSql.DataType.SqlServer, Config.connectionString)
+.UseAutoSyncStructure(false) //自动同步实体结构到数据库
+.Build();
             PerHelper.Execute(eachCount, "Free like ", () =>
             {
-                IFreeSql fsql = new FreeSql.FreeSqlBuilder()
-      .UseConnectionString(FreeSql.DataType.SqlServer,Config.connectionString)
-      .UseAutoSyncStructure(false) //自动同步实体结构到数据库
-      .Build();
-             var list2 = fsql.Queryable<Test>().Where(it => it.F_String.Contains("abc")).ToList();
+                var x = "abc";
+             var list2 = fsql.Queryable<Test>().Where(it => it.F_String.Contains(x)).ToList();
             });
         }
 

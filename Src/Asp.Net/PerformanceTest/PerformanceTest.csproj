@@ -49,12 +49,11 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FreeSql, Version=2.0.101.0, Culture=neutral, PublicKeyToken=a33928e5d4a4b39c, processorArchitecture=MSIL">
-      <HintPath>..\packages\FreeSql.2.0.101\lib\net45\FreeSql.dll</HintPath>
+    <Reference Include="FreeSql, Version=2.0.105.0, Culture=neutral, PublicKeyToken=a33928e5d4a4b39c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSql.2.0.105\lib\net45\FreeSql.dll</HintPath>
     </Reference>
-    <Reference Include="FreeSql.Provider.SqlServer, Version=2.0.101.0, Culture=neutral, PublicKeyToken=d313b98af285bd88, processorArchitecture=MSIL">
-      <HintPath>..\packages\FreeSql.Provider.SqlServer.2.0.101\lib\net451\FreeSql.Provider.SqlServer.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="FreeSql.Provider.SqlServer, Version=2.0.105.0, Culture=neutral, PublicKeyToken=d313b98af285bd88, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSql.Provider.SqlServer.2.0.105\lib\net451\FreeSql.Provider.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="SyntacticSugar, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SyntacticSugar.2.4.1\lib\net40\SyntacticSugar.dll</HintPath>
@@ -80,6 +79,8 @@
     <Compile Include="Common\OrmType.cs" />
     <Compile Include="Common\PerHelper.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Models\ModelTest.cs" />
+    <Compile Include="TestItems\TestOneToMany.cs" />
     <Compile Include="TestItems\TestGetById.cs" />
     <Compile Include="TestItems\TestGetAll.cs" />
     <Compile Include="Models\TestEntity.cs" />

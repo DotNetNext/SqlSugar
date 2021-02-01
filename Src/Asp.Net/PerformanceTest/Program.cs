@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PerformanceTest.Models;
 using PerformanceTest.TestItems;
 using SqlSugar;
 
@@ -16,10 +17,10 @@ namespace PerformanceTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            InitData();
+             InitData();
 
-            var type = DemoType.GetById;
-            var ormType = OrmType.SqlSugar;
+            var type = DemoType.Like;
+            var ormType = OrmType.FREE;
             switch (type)
             {
                 case DemoType.GetAll:
@@ -36,6 +37,9 @@ namespace PerformanceTest
                     break;
                 case DemoType.Like:
                     new TestLike().Init(ormType);
+                    break;
+                case DemoType.OnToN:
+                    new TestOneToMany().Init(ormType);
                     break;
                 default:
                     break;
@@ -73,6 +77,16 @@ namespace PerformanceTest
                     });
                 }
             }
+            conn.CodeFirst.InitTables<Group>();
+            conn.DbMaintenance.TruncateTable<Group>();
+            conn.CodeFirst.InitTables<User>();
+            conn.DbMaintenance.TruncateTable<User>();
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    conn.Insertable(new Group { Id=i,Name=i+Guid.NewGuid().ToString() }).ExecuteCommand();
+            //    conn.Insertable(new User() { AGroupId = i, Id = i + 1 }).ExecuteCommand();
+            //    conn.Insertable(new User() { AGroupId = i, Id = i + 200000 }).ExecuteCommand();
+            //}
             conn.Insertable(test).ExecuteCommand();
         }
 
@@ -82,7 +96,8 @@ namespace PerformanceTest
             GetById,
             GetSql,
             Insert,
-            Like
+            Like,
+            OnToN
         }
     }
 }
