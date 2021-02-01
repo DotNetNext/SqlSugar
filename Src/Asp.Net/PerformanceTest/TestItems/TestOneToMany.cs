@@ -54,12 +54,9 @@ namespace PerformanceTest.TestItems
             {
                 using (SqlSugarClient conn = Config.GetSugarConn())
                 {
-                    conn.Aop.OnLogExecuted = (s, p) =>
-                    {
-                        Console.WriteLine(conn.Ado.SqlExecutionTime.TotalMilliseconds);
-                    };
+              
                     var list2 = conn.Queryable<PerformanceTest.Models2.Group>()
-                    .Mapper(it => it.AUsers, it => it.AUsers.First().AGroupId).Where(it=>it.AUsers.Any()).ToList();
+                    .Mapper(it => it.AUsers, it => it.AUsers.First().AGroupId).Take(20).ToList();
                    
                 }
             });
@@ -75,7 +72,7 @@ namespace PerformanceTest.TestItems
             PerHelper.Execute(eachCount, "free", () =>
             {
 
-                var list2 = fsql.Queryable<Group>().IncludeMany(it => it.AUsers).Where(it=>it.AUsers.AsSelect().Any()).ToList();
+                var list2 = fsql.Queryable<Group>().IncludeMany(it => it.AUsers).Take(20).ToList();
                 //用.First(it=>it.Id==1)报错
             });
         }
