@@ -683,6 +683,8 @@ namespace SqlSugar
             var index = QueryBuilder.WhereIndex+1;
             var result= this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
             result.QueryBuilder.WhereIndex = index;
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
+            result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
             return result;
         }
 
