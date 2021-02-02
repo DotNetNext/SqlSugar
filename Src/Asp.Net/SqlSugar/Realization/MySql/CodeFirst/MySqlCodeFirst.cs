@@ -18,6 +18,10 @@ namespace SqlSugar
                 {
                     if (item.IsIgnore)
                         continue;
+                    if (item.PropertyInfo!=null&&UtilMethods.GetUnderType(item.PropertyInfo.PropertyType) == UtilConstants.GuidType && item.Length == 0&&item.DataType==null)
+                    {
+                        item.Length = Guid.NewGuid().ToString().Length;
+                    }
                     DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
