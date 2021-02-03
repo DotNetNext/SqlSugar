@@ -33,7 +33,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                this.Context.Ado.Connection.Close();
+                CloseDb();
                 throw ex;
             }
             CloseDb();
@@ -57,13 +57,10 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                this.Context.Ado.Connection.Close();
+                CloseDb();
                 throw ex;
             }
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
-            {
-                this.Context.Ado.Connection.Close();
-            }
+            CloseDb();
             return DbColumnInfoList.Count;
         }
 
