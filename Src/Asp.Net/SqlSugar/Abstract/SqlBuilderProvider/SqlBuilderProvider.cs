@@ -143,6 +143,10 @@ namespace SqlSugar
                     {
                         parameterName = parameterName.Replace("]", "_");
                     }
+                    if (parameterName.Contains(this.SqlTranslationLeft))
+                    {
+                        parameterName = parameterName.Replace(this.SqlTranslationLeft, "_");
+                    }
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
