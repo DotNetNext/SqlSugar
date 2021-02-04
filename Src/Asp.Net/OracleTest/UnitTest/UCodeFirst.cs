@@ -13,6 +13,17 @@ namespace OrmTest
             if (Db.DbMaintenance.IsAnyTable("UnitCodeTest1", false))
                 Db.DbMaintenance.DropTable("UnitCodeTest1");
             Db.CodeFirst.InitTables<UnitCodeTest1>();
+            Db.CodeFirst.InitTables<Unitasdfa1>();
+            Db.Insertable(new Unitasdfa1() { t1 = 1, t2 = 1 }).ExecuteCommand();
+            var x = Db.Queryable<Unitasdfa1>().ToList();
+        }
+        public class Unitasdfa1
+        {
+            [SqlSugar.SugarColumn(ColumnDataType = "number(8,2)")]
+            public decimal t2 { get; set; }
+
+            [SqlSugar.SugarColumn(ColumnDataType ="number(8,2)")]
+            public decimal? t1 { get; set; }
         }
         public class UnitCodeTest1
         {

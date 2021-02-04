@@ -37,7 +37,7 @@ namespace SqlSugar
         private static readonly MethodInfo getInt32 = typeof(IDataRecord).GetMethod("GetInt32", new Type[] { typeof(int) });
         private static readonly MethodInfo getInt64 = typeof(IDataRecord).GetMethod("GetInt64", new Type[] { typeof(int) });
         private static readonly MethodInfo getString = typeof(IDataRecord).GetMethod("GetString", new Type[] { typeof(int) });
-        private static readonly MethodInfo getConvertValueMethod = typeof(IDataRecordExtensions).GetMethod("GetConvertValue");
+        //private static readonly MethodInfo getConvertValueMethod = typeof(IDataRecordExtensions).GetMethod("GetConvertValue");
         private static readonly MethodInfo getdatetimeoffset = typeof(IDataRecordExtensions).GetMethod("Getdatetimeoffset");
         private static readonly MethodInfo getdatetimeoffsetDate = typeof(IDataRecordExtensions).GetMethod("GetdatetimeoffsetDate");
         private static readonly MethodInfo getStringGuid = typeof(IDataRecordExtensions).GetMethod("GetStringGuid");
@@ -223,7 +223,7 @@ namespace SqlSugar
                 }
                 else if (bindPropertyType == UtilConstants.StringType&&dbTypeName?.ToLower()== "timestamp")
                 {
-                    method = getConvertValueMethod.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType); ;
+                    method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }
                 else if (bindPropertyType == UtilConstants.StringType)
                 {
@@ -231,7 +231,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    method = getConvertValueMethod.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                    method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }
 
                 if (method.IsVirtual)
@@ -301,11 +301,11 @@ namespace SqlSugar
                     }
                     if (bindPropertyType == UtilConstants.DecType)
                     {
-                        method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                        method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                     }
                     if (bindPropertyType == UtilConstants.IntType)
                     {
-                        method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                        method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                     }
                     break;
                 case CSharpDataType.Guid:
@@ -337,7 +337,7 @@ namespace SqlSugar
                 case CSharpDataType.Single:
                     break;
                 default:
-                    method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                    method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                     break;
             }
             if (method == null && bindPropertyType == UtilConstants.StringType)
@@ -346,7 +346,7 @@ namespace SqlSugar
             }
             if (bindPropertyType == UtilConstants.ObjType)
             {
-                method = getConvertValueMethod.MakeGenericMethod(bindPropertyType);
+                method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
             }
             if (method == null)
                 method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
