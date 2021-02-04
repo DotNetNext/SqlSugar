@@ -443,5 +443,25 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" ({0} | {1}) ", parameter.MemberName, parameter2.MemberName); ;
         }
+
+        public string Oracle_ToDate(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" to_date({0},{1}) ", parameter.MemberName, parameter2.MemberName); ;
+        }
+        public string Oracle_ToChar(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format("to_char({0},{1}) ", parameter.MemberName, parameter2.MemberName); ;
+        }
+        public string SqlServer_DateDiff(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName); ;
+        }
     }
 }

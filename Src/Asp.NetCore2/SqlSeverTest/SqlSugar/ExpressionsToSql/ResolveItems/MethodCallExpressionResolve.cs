@@ -680,6 +680,12 @@ namespace SqlSugar
                         return this.Context.DbMehtods.BitwiseInclusiveOR(model);
                     case "ToDateShort":
                         return this.Context.DbMehtods.ToDateShort(model);
+                    case "Oracle_ToChar":
+                        return this.Context.DbMehtods.Oracle_ToChar(model);
+                    case "Oracle_ToDate":
+                        return this.Context.DbMehtods.Oracle_ToDate(model);
+                    case "SqlServer_DateDiff":
+                        return this.Context.DbMehtods.SqlServer_DateDiff(model);
                     default:
                         break;
                 }

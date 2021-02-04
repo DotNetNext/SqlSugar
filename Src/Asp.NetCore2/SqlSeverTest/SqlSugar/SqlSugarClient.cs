@@ -343,6 +343,10 @@ namespace SqlSugar
         {
             return this.Context.Storageable(dataList);
         }
+        public IStorageable<T> Storageable<T>(T data) where T : class, new()
+        {
+            return this.Context.Storageable(new List<T> { data});
+        }
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
             return this.Context.Saveable<T>(saveObjects);

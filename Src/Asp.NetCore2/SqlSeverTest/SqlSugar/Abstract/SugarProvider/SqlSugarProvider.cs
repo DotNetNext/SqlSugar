@@ -747,6 +747,10 @@ namespace SqlSugar
             result.Builder = sqlBuilder;
             return result;
         }
+        public IStorageable<T> Storageable<T>(T data) where T : class, new()
+        {
+            return Storageable(new List<T>() { data });
+        }
         #endregion
 
         #region DbFirst

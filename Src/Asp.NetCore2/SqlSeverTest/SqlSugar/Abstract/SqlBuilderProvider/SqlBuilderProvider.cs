@@ -143,6 +143,10 @@ namespace SqlSugar
                     {
                         parameterName = parameterName.Replace("]", "_");
                     }
+                    if (parameterName.Contains(this.SqlTranslationLeft))
+                    {
+                        parameterName = parameterName.Replace(this.SqlTranslationLeft, "_");
+                    }
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
@@ -198,7 +202,7 @@ namespace SqlSugar
                             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                             break;
                         case ConditionalType.IsNullOrEmpty:
-                            builder.AppendFormat("{0} ({1}) OR ({2}) ", type, item.FieldName.ToSqlFilter() + " IS NULL ", item.FieldName.ToSqlFilter() + " = '' ");
+                            builder.AppendFormat(" {0} (({1}) OR ({2})) ", type, item.FieldName.ToSqlFilter() + " IS NULL ", item.FieldName.ToSqlFilter() + " = '' ");
                             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                             break;
                         case ConditionalType.IsNot:

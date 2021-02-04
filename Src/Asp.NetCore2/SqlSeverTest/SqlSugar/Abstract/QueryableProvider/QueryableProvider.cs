@@ -2284,6 +2284,22 @@ namespace SqlSugar
         {
             return _Avg<TResult>(expression);
         }
+        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _MaxAsync<TResult>(expression);
+        }
+        public Task<TResult> MinAsync<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _MinAsync<TResult>(expression);
+        }
+        public Task<TResult> SumAsync<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _SumAsync<TResult>(expression);
+        }
+        public Task<TResult> AvgAsync<TResult>(Expression<Func<T, T2, TResult>> expression)
+        {
+            return _AvgAsync<TResult>(expression);
+        }
         #endregion
 
         #region In
@@ -2629,6 +2645,22 @@ namespace SqlSugar
         public TResult Avg<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
             return _Avg<TResult>(expression);
+        }
+        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {
+            return _MaxAsync<TResult>(expression);
+        }
+        public Task<TResult> MinAsync<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {
+            return _MinAsync<TResult>(expression);
+        }
+        public Task<TResult> SumAsync<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {
+            return _SumAsync<TResult>(expression);
+        }
+        public Task<TResult> AvgAsync<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
+        {
+            return _AvgAsync<TResult>(expression);
         }
         #endregion
 

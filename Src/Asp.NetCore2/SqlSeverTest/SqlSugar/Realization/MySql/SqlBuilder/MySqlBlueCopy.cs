@@ -91,7 +91,6 @@ namespace SqlSugar
                 {
                     File.Delete(fileName);
                 }
-                conn.Close();
             }
             catch (MySqlException ex)
             {
@@ -99,7 +98,7 @@ namespace SqlSugar
             }
             finally
             {
-                this.Context.Ado.Close();
+                CloseDb();
             }
             return IsBulkLoad; ;
         }
@@ -107,6 +106,15 @@ namespace SqlSugar
         public Task<bool> ExecuteBlueCopyAsync()
         {
             return Task.FromResult(ExecuteBlueCopy());
+        }
+
+
+        private void CloseDb()
+        {
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
+            {
+                this.Context.Ado.Connection.Close();
+            }
         }
 
         /// <summary>
