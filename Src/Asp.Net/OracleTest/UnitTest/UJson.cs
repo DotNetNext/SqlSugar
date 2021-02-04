@@ -28,7 +28,7 @@ namespace OrmTest
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
-        [SqlSugar.SugarColumn(ColumnDataType = "varchar(max)", IsJson = true)]
+        [SqlSugar.SugarColumn(ColumnDataType = "varchar(2000)", IsJson = true)]
         public Order Order { get; set; }
     }
 }
