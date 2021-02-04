@@ -80,7 +80,7 @@ namespace OrmTest
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
 
             Db.CodeFirst.InitTables<UnitAbc121>();
-            Db.Insertable(new UnitAbc121() {  name="a" }).ExecuteCommand();
+            Db.Insertable(new UnitAbc121() {  name="a",uid=null }).ExecuteCommand();
             Db.Insertable(new UnitAbc121() { name = "a", uid=Guid.NewGuid() }).ExecuteCommand();
             var list10= Db.Queryable<UnitAbc121>().ToList();
         }

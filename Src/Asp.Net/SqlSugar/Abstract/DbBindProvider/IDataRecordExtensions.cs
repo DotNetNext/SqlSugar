@@ -332,7 +332,7 @@ namespace SqlSugar
                 var data = dr.GetString(i);
                 if (data.ToString() == "")
                 {
-                    return UtilMethods.To<T>(null);
+                    return UtilMethods.To<T>(default(T));
                 }
                 else
                 {
