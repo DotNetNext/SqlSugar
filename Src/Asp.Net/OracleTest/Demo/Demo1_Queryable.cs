@@ -132,7 +132,8 @@ namespace OrmTest
                      datetime=it.CreateTime
                 })
                .ToList();
-
+            var list3 = db.Queryable<Order>().Where(it => it.CreateTime.Date == SqlFunc.Oracle_ToDate("2021-1-21", "yyyy-MM-dd")).ToList();
+            var list4 = db.Queryable<Order>().Select(it => SqlFunc.Oracle_ToChar(DateTime.Now, "yyyy-MM-dd")).ToList();
             Console.WriteLine("#### SqlFunc  End ####");
         }
 

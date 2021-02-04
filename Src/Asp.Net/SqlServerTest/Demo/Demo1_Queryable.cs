@@ -130,6 +130,8 @@ namespace OrmTest
               .Any()
             ).ToList();
 
+            var list3=db.Queryable<Order>().Select(it => SqlFunc.SqlServer_DateDiff("day", DateTime.Now.AddDays(-1), DateTime.Now)).ToList();
+
             Console.WriteLine("#### Subquery End ####");
         }
 
