@@ -461,7 +461,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberName); ;
+            return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName); ;
         }
     }
 }
