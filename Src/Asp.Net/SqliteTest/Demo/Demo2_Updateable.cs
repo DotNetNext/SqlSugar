@@ -98,7 +98,7 @@ namespace OrmTest
             db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
 
             //Where Sql
-            db.Updateable(updateObj).Where("id=@x", new { x = "1" }).ExecuteCommand();
+            //db.Updateable(updateObj).Where("id=@x", new { x = "1" }).ExecuteCommand();
 
             Console.WriteLine("#### Updateable End ####");
         }
