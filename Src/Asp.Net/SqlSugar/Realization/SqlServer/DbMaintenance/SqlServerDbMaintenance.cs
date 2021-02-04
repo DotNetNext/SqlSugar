@@ -187,7 +187,7 @@ namespace SqlSugar
         {
             get
             {
-                return "EXEC sp_dropextendedproperty 'MS_Description','user',dbo,'table','{1}','column',{0}";
+                return "EXEC sp_dropextendedproperty 'MS_Description','user',dbo,'table','{1}','column','{0}'";
             }
 
         }
