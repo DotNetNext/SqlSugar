@@ -69,8 +69,8 @@ namespace SqlSugar
         string BitwiseAnd(MethodCallExpressionModel model);
         string BitwiseInclusiveOR(MethodCallExpressionModel model);
 
-        DateTime Oracle_ToDate(MethodCallExpressionModel model);
+        string Oracle_ToDate(MethodCallExpressionModel model);
         string Oracle_ToChar(MethodCallExpressionModel model);
-        int SqlServer_DateDiff(MethodCallExpressionModel model);
+        string SqlServer_DateDiff(MethodCallExpressionModel model);
     }
 }
