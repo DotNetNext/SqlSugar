@@ -172,9 +172,11 @@ namespace SqlSugar
             return this;
         }
 
+        #region Update by object
 
         public IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
+            ThrowUpdateByExpression();
             this.IsWhereColumns = true;
             UpdateBuilder.IsWhereColumns = true;
             Check.Exception(UpdateParameterIsNull == true, "Updateable<T>().Updateable is error,Use Updateable(obj).WhereColumns");
@@ -188,12 +190,15 @@ namespace SqlSugar
         }
         public IUpdateable<T> WhereColumns(string columnName)
         {
+
+            ThrowUpdateByExpression();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             this.WhereColumnList.Add(columnName);
             return this;
         }
         public IUpdateable<T> WhereColumns(string[] columnNames)
         {
+            ThrowUpdateByExpression();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var columnName in columnNames)
             {
@@ -202,9 +207,9 @@ namespace SqlSugar
             return this;
         }
 
-
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
+            ThrowUpdateByExpression();
             var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             List<string> primaryKeys = GetPrimaryKeys();
             foreach (var item in this.UpdateBuilder.DbColumnInfoList)
@@ -220,12 +225,30 @@ namespace SqlSugar
         }
         public IUpdateable<T> UpdateColumns(string[] columns)
         {
+            ThrowUpdateByExpression();
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
             return this;
         }
+        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> columns)
+        {
+            ThrowUpdateByExpression();
+            if (isUpdateColumns)
+                UpdateColumns(columns);
+            return this;
+        }
+        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, string[] columns)
+        {
+            ThrowUpdateByExpression();
+            if (isUpdateColumns)
+                UpdateColumns(columns);
+            return this;
+        }
+        #endregion
 
+        #region Update by expression
         public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
         {
+            ThrowUpdateByObject();
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
             var resultArray = expResult.GetResultArray();
             Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
@@ -247,9 +270,9 @@ namespace SqlSugar
             AppendSets();
             return this;
         }
-
         public IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
         {
+            ThrowUpdateByObject();
             CheckTranscodeing();
             var binaryExp = columns.Body as BinaryExpression;
             Check.Exception(!binaryExp.NodeType.IsIn(ExpressionType.Equal), "No support {0}", columns.ToString());
@@ -262,37 +285,24 @@ namespace SqlSugar
             AppendSets();
             return this;
         }
-
-        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> columns)
-        {
-            if (isUpdateColumns)
-                UpdateColumns(columns);
-            return this;
-        }
-        public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, string[] columns)
-        {
-            if (isUpdateColumns)
-                UpdateColumns(columns);
-            return this;
-        }
-
-
         public IUpdateable<T> SetColumnsIF(bool isUpdateColumns, Expression<Func<T, bool>> columns)
         {
+            ThrowUpdateByObject();
             if (isUpdateColumns)
                 SetColumns(columns);
             return this;
         }
         public IUpdateable<T> SetColumnsIF(bool isUpdateColumns, Expression<Func<T, T>> columns)
         {
+            ThrowUpdateByObject();
             if (isUpdateColumns)
                 SetColumns(columns);
             return this;
         }
 
-
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
+            ThrowUpdateByObject();
             var expResult = UpdateBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
             var whereString = expResult.GetResultString();
             if (expression.ToString().Contains("Subqueryable()"))
@@ -304,6 +314,7 @@ namespace SqlSugar
         }
         public IUpdateable<T> Where(string whereSql, object parameters = null)
         {
+            ThrowUpdateByObject();
             if (whereSql.HasValue())
             {
                 UpdateBuilder.WhereValues.Add(whereSql);
@@ -316,14 +327,14 @@ namespace SqlSugar
         }
         public IUpdateable<T> Where(string fieldName, string conditionalType, object fieldValue)
         {
+            ThrowUpdateByObject();
             var whereSql = this.SqlBuilder.GetWhere(fieldName, conditionalType, 0);
             this.Where(whereSql);
             string parameterName = this.SqlBuilder.SqlParameterKeyWord + fieldName + "0";
             this.UpdateBuilder.Parameters.Add(new SugarParameter(parameterName, fieldValue));
             return this;
-        }
-
- 
+        } 
+        #endregion
 
         #region Helper
         private void AppendSets()
@@ -705,6 +716,15 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private void ThrowUpdateByExpression()
+        {
+            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage("db.Updateable(obj) no support SetColumns() and Where()", "根据对象进行更新 db.Updateable(现有集合对象、实体、字典) 禁止使用 SetColumns和Where , 只有db.Updateable<T>()或者db.Updateable(Expression)的方式才支持"));
+        }
+        private void ThrowUpdateByObject()
+        {
+            Check.Exception(UpdateParameterIsNull == false, ErrorMessage.GetThrowMessage("db.Updateable<T>() and db.Updateable<T>(Expression) no support UpdateColumns() and WhereColumns()", "根据表达式更新 db.Updateable<T>()和db.Updateable(Expression) 禁止使用 UpdateColumns和WhereColumns , 只有db.Updateable(实体或集合)的方式才支持"));
         }
         #endregion
     }
