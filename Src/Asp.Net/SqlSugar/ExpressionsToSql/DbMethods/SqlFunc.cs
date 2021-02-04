@@ -140,5 +140,8 @@ namespace SqlSugar
         public static int CharIndex(string findChar,string searchValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseAnd(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseInclusiveOR(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static DateTime Oracle_ToDate(object date,string format) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string Oracle_ToChar(object date, string format) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int SqlServer_DateDiff(string dateType,DateTime date1,DateTime date2) { throw new NotSupportedException("Can only be used in expressions"); }
     }
 }
