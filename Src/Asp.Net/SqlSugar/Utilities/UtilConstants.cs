@@ -44,9 +44,7 @@ namespace SqlSugar
 
         public static Type SugarType = typeof(SqlSugarProvider);
 
-        /// <summary>
-        /// 数值类型
-        /// </summary>
+
         internal static Type[] NumericalTypes = new Type[]
         {
             typeof(int),
