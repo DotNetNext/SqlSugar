@@ -15,8 +15,32 @@ namespace SqlSugar
             }
             else
             {
-                return string.Join(",", array.Where(c => c != null).Select(it => (it + "").ToSqlValue()));
+                return string.Join(",", array.Where(c => c != null).Select(it => it.ToSqlValue()));
             }
+        }
+
+        /// <summary>
+        /// 数值类型
+        /// </summary>
+        static Type[] NumericalTypes = new Type[]
+        {
+            typeof(int),
+            typeof(uint),
+            typeof(byte),
+            typeof(sbyte),
+            typeof(long),
+            typeof(ulong),
+            typeof(short),
+            typeof(ushort),
+        };
+
+        public static string ToSqlValue(this object value)
+        {
+            if (NumericalTypes.Contains(value.GetType()))
+                return value.ToString();
+
+            var str = value + "";
+            return str.ToSqlValue();
         }
 
         public static string ToSqlValue(this string value)
