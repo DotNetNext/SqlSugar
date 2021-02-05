@@ -19,24 +19,9 @@ namespace SqlSugar
             }
         }
 
-        /// <summary>
-        /// 数值类型
-        /// </summary>
-        static Type[] NumericalTypes = new Type[]
-        {
-            typeof(int),
-            typeof(uint),
-            typeof(byte),
-            typeof(sbyte),
-            typeof(long),
-            typeof(ulong),
-            typeof(short),
-            typeof(ushort),
-        };
-
         public static string ToSqlValue(this object value)
         {
-            if (NumericalTypes.Contains(value.GetType()))
+            if (value!=null&& UtilConstants.NumericalTypes.Contains(value.GetType()))
                 return value.ToString();
 
             var str = value + "";

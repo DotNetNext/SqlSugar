@@ -43,5 +43,20 @@ namespace SqlSugar
         internal static Type DicArraySO = typeof(Dictionary<string, object>);
 
         public static Type SugarType = typeof(SqlSugarProvider);
+
+        /// <summary>
+        /// 数值类型
+        /// </summary>
+        internal static Type[] NumericalTypes = new Type[]
+        {
+            typeof(int),
+            typeof(uint),
+            typeof(byte),
+            typeof(sbyte),
+            typeof(long),
+            typeof(ulong),
+            typeof(short),
+            typeof(ushort),
+        };
     }
 }
