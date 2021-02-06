@@ -207,6 +207,13 @@ namespace SqlSugar
                 return "{0} IN ({1}) ";
             }
         }
+        public virtual string EqualTemplate
+        {
+            get
+            {
+                return "{0} = {1} ";
+            }
+        }
         #endregion
 
         #region Common Methods

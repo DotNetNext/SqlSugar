@@ -409,7 +409,7 @@ namespace SqlSugar
                     var whereIndex = QueryBuilder.WhereIndex;
                     string parameterName = this.SqlBuilder.SqlParameterKeyWord + "InPara" + whereIndex;
                     this.AddParameters(new SugarParameter(parameterName, inValues[0]));
-                    this.Where(string.Format(QueryBuilder.InTemplate, filed, parameterName));
+                    this.Where(string.Format(QueryBuilder.EqualTemplate, filed, parameterName));
                     QueryBuilder.WhereIndex++;
                 }
                 else
@@ -578,9 +578,9 @@ namespace SqlSugar
             {
                 return default(T);
             }
-            else if (result.Count == 2)
+            else if (result.Count >= 2)
             {
-                Check.Exception(true, ".Single()  result must not exceed one . You can use.First()");
+                Check.Exception(true, ErrorMessage.GetThrowMessage(".Single()  result must not exceed one . You can use.First()", "使用single查询结果集不能大于1，适合主键查询，如果大于1你可以使用Queryable.First"));
                 return default(T);
             }
             else
