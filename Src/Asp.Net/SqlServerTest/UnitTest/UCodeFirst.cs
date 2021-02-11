@@ -22,10 +22,13 @@ namespace OrmTest
             };
             Db.CodeFirst.InitTables<UnitCodeFirstpks3>();
         }
-        [SqlSugar.SugarTable("UnitCodeFirstpks3",IsDisabledDelete = true)]
+        [SqlSugar.SugarTable("UnitCodeFirstpks31","备注"  )]
         public class UnitCodeFirstpks3
         {
             public int id { get; set; }
+            public string name2 { get; set; }
+
+
  
         }
         public class UnitCodeFirstpks2
