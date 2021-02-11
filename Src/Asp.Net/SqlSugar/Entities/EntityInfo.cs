@@ -15,5 +15,7 @@ namespace SqlSugar
         public string TableDescription { get; set; }
         public Type Type { get; set; }
         public List<EntityColumnInfo> Columns { get; set; }
+        public bool IsDisabledDelete { get;  set; }
+        public bool IsDisabledUpdateAll { get; set; }
     }
 }
