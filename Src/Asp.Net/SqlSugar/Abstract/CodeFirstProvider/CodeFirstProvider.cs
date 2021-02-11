@@ -106,6 +106,10 @@ namespace SqlSugar
         protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType);
+            if (entityInfo.IsDisabledUpdateAll)
+            {
+                return;
+            }
             if (this.DefultLength > 0)
             {
                 foreach (var item in entityInfo.Columns)
