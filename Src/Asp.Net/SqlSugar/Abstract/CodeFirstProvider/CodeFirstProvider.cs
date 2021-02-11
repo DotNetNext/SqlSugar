@@ -106,10 +106,6 @@ namespace SqlSugar
         protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType);
-            if (entityInfo.IsDisabledUpdateAll)
-            {
-                return;
-            }
             if (this.DefultLength > 0)
             {
                 foreach (var item in entityInfo.Columns)
@@ -125,6 +121,10 @@ namespace SqlSugar
             entityInfo.DbTableName = tableName;
             entityInfo.Columns.ForEach(it => { it.DbTableName = tableName; });
             var isAny = this.Context.DbMaintenance.IsAnyTable(tableName);
+            if (isAny&&entityInfo.IsDisabledUpdateAll)
+            {
+                return;
+            }
             if (isAny)
                 ExistLogic(entityInfo);
             else
