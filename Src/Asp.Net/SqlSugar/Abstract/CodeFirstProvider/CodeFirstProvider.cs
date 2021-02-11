@@ -184,7 +184,7 @@ namespace SqlSugar
                     this.Context.DbMaintenance.AddColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
                     isChange = true;
                 }
-                if (entityInfo.IsDisabledDelete)
+                if (entityInfo.IsDisabledDelete==false)
                 {
                     foreach (var item in dropColumns)
                     {
