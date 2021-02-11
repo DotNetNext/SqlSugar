@@ -302,7 +302,7 @@ namespace SqlSugar
 
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
-            ThrowUpdateByObject();
+            Check.Exception(UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("insert List no support where","集合插入不支持Where请使用WhereColumns"));
             var expResult = UpdateBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
             var whereString = expResult.GetResultString();
             if (expression.ToString().Contains("Subqueryable()"))
@@ -314,7 +314,7 @@ namespace SqlSugar
         }
         public IUpdateable<T> Where(string whereSql, object parameters = null)
         {
-            ThrowUpdateByObject();
+            Check.Exception(UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("insert List no support where", "集合插入不支持Where请使用WhereColumns"));
             if (whereSql.HasValue())
             {
                 UpdateBuilder.WhereValues.Add(whereSql);
@@ -327,7 +327,7 @@ namespace SqlSugar
         }
         public IUpdateable<T> Where(string fieldName, string conditionalType, object fieldValue)
         {
-            ThrowUpdateByObject();
+            Check.Exception(UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("insert List no support where", "集合插入不支持Where请使用WhereColumns"));
             var whereSql = this.SqlBuilder.GetWhere(fieldName, conditionalType, 0);
             this.Where(whereSql);
             string parameterName = this.SqlBuilder.SqlParameterKeyWord + fieldName + "0";
