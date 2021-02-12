@@ -30,6 +30,8 @@ namespace SqlSugar
             var IsBulkLoad = false;
             if (Entitys == null || Entitys.Length <= 0)
                 return IsBulkLoad;
+            if (Entitys.First() == null && Entitys.Length ==1)
+                return IsBulkLoad;
             DataTable dt = new DataTable();
             Type type = typeof(T);
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
