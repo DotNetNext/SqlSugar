@@ -89,7 +89,94 @@ namespace OrmTest
             IDemo2();
             IDemo3();
             IDemo4();
+            IDemo5();
+            IDemo6();
         }
+
+        private static void IDemo6()
+        {
+            var db = Db;
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+
+            List<UinitBlukTable> list2 = new List<UinitBlukTable>();
+            list2.Add(new UinitBlukTable() { Id = 1, Name = "a" });
+            list2.Add(new UinitBlukTable() { Id = 2, Name = "a" });
+            list2.Add(new UinitBlukTable() { Id = 3, Name = "a" });
+            list2.Add(new UinitBlukTable() { Id = 4, Name = "" });
+
+            db.Insertable(list2.First()).ExecuteCommand();//插入第一条
+
+            var x = Db.Storageable(list2)
+                                      .SplitUpdate(it => it.Any())
+                                      .SplitInsert(it => true)
+                                      .ToStorage();
+
+            //var x2 = Db.Storageable(list2)
+            //                     .Saveable()
+            //                    .ToStorage();
+            Console.WriteLine(" 插入 {0}  更新{1}  错误数据{2} 不计算数据{3}  删除数据{4},总共{5}",
+                   x.InsertList.Count,
+                   x.UpdateList.Count,
+                   x.ErrorList.Count,
+                   x.IgnoreList.Count,
+                   x.DeleteList.Count,
+                   x.TotalList.Count
+                );
+            foreach (var item in x.ErrorList)
+            {
+                Console.WriteLine("id等于" + item.Item.Id + " : " + item.StorageMessage);
+            }
+
+            int i = x.AsInsertable.ExecuteCommand();
+            Console.WriteLine(i + "条成功插入");
+            i = x.AsUpdateable.ExecuteCommand();
+            Console.WriteLine(i + "条成功更新");
+
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+        }
+        private static void IDemo5()
+        {
+            var db = Db;
+            db.CodeFirst.InitTables<UinitBlukTable3>();
+            db.DbMaintenance.TruncateTable<UinitBlukTable3>();
+
+            List<UinitBlukTable3> list2 = new List<UinitBlukTable3>();
+            list2.Add(new UinitBlukTable3() { Id = 1, Name = "a"  });
+            list2.Add(new UinitBlukTable3() { Id = 2, Name = "a" });
+            list2.Add(new UinitBlukTable3() { Id = 3, Name = "a" });
+            list2.Add(new UinitBlukTable3() { Id = 4, Name = ""  });
+
+            db.Insertable(list2.First()).ExecuteCommand();//插入第一条
+
+            var x = Db.Storageable(list2)
+                                      .SplitUpdate(it=>it.Any())
+                                      .SplitInsert(it => true)
+                                      .ToStorage();
+
+            //var x2 = Db.Storageable(list2)
+            //                     .Saveable()
+            //                    .ToStorage();
+            Console.WriteLine(" 插入 {0}  更新{1}  错误数据{2} 不计算数据{3}  删除数据{4},总共{5}",
+                   x.InsertList.Count,
+                   x.UpdateList.Count,
+                   x.ErrorList.Count,
+                   x.IgnoreList.Count,
+                   x.DeleteList.Count,
+                   x.TotalList.Count
+                );
+            foreach (var item in x.ErrorList)
+            {
+                Console.WriteLine("id等于" + item.Item.Id + " : " + item.StorageMessage);
+            }
+
+            int i = x.AsInsertable.ExecuteCommand();
+            Console.WriteLine(i + "条成功插入");
+            i = x.AsUpdateable.ExecuteCommand();
+            Console.WriteLine(i + "条成功更新");
+
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+        }
+
         private static void IDemo4()
         {
             var db = Db;
@@ -228,7 +315,20 @@ namespace OrmTest
         {
             public string Name { get; set; }
             public int Id { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public DateTime? Create { get; set; }
         }
- 
+
+        [SqlSugar.SugarTable("UinitBlukTable4")]
+        public class UinitBlukTable3
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public string Name { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public DateTime? Create { get; set; }
+        }
+
     }
 }

@@ -11,6 +11,7 @@ namespace SqlSugar
         IStorageable<T> WhereColumns(Expression<Func<T, object>> columns);
         IStorageable<T> SplitInsert(Func<StorageableInfo<T>, bool> conditions, string message=null);
         IStorageable<T> SplitUpdate(Func<StorageableInfo<T>, bool> conditions, string message = null);
+        IStorageable<T> Saveable(string inserMessage = null, string updateMessage = null);
         IStorageable<T> SplitError(Func<StorageableInfo<T>, bool> conditions, string message = null);
         IStorageable<T> SplitIgnore(Func<StorageableInfo<T>, bool> conditions, string message = null);
         IStorageable<T> SplitDelete(Func<StorageableInfo<T>, bool> conditions, string message = null);
