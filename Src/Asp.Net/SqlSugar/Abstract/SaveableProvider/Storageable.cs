@@ -62,6 +62,7 @@ namespace SqlSugar
 
         public StorageableResult<T> ToStorage()
         {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             if (this.allDatas.Count == 0)
                 return new StorageableResult<T>();
             var pkInfos = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey);
@@ -76,10 +77,12 @@ namespace SqlSugar
                     dbDataList.AddRange(addItems);
                 });
             }
+            var pkProperties = GetPkProperties(pkInfos, entity);
             var messageList = allDatas.Select(it => new StorageableMessage<T>()
             {
                 Item = it.Item,
-                Database = dbDataList
+                Database = dbDataList,
+                PkFields= pkProperties
             }).ToList();
             foreach (var item in whereFuncs.OrderByDescending(it => (int)it.key))
             {
@@ -118,6 +121,12 @@ namespace SqlSugar
             }
             result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
+        }
+
+        private string[] GetPkProperties(IEnumerable<EntityColumnInfo> pkInfos,EntityInfo entity)
+        {
+            return entity.Columns
+                         .Where(it => it.IsPrimarykey||pkInfos.Any(y=>y.PropertyName==it.PropertyName)).Select(it => it.PropertyName).ToArray();
         }
 
         public IStorageable<T> WhereColumns(Expression<Func<T, object>> columns)

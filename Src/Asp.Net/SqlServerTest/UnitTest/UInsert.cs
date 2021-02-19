@@ -11,8 +11,9 @@ namespace OrmTest
         public static void Insert()
         {
             var db = Db;
-            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+
             db.CodeFirst.InitTables<UinitBlukTable>();
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
             db.Insertable(new List<UinitBlukTable>
             {
                  new UinitBlukTable(){ Id=1,Create=DateTime.Now, Name="00" },
@@ -66,8 +67,8 @@ namespace OrmTest
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
             db.Insertable(new UinitBlukTable() { Id = 2, Name = "b", Create = DateTime.Now }).ExecuteCommand();
             var x=Db.Storageable(list2)
-                .SplitInsert(it => it.NotAny(y=>y.Id==it.Item.Id))
-                .SplitUpdate(it => it.Any(y => y.Id == it.Item.Id))
+                .SplitInsert(it => it.NotAny())
+                .SplitUpdate(it => it.Any())
                 .SplitDelete(it=>it.Item.Id>10)
                 .SplitIgnore(it=>it.Item.Id==1)
                 .SplitError(it => it.Item.Id == 3,"id不能等于3")
