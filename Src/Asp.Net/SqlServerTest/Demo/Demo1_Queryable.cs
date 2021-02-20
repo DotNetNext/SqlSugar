@@ -45,6 +45,8 @@ namespace OrmTest
             var getDicionary = db.Queryable<Order>().ToDictionary(it => it.Id, it => it.Name);
             var getDicionaryList = db.Queryable<Order>().ToDictionaryList();
             var getTest = db.Queryable<Order>().Where(it =>string.IsNullOrWhiteSpace( it.Name)).ToList();
+
+
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -183,7 +185,10 @@ namespace OrmTest
 
             db.Insertable(new Tree() { Id = 222, Name = "child11", ParentId = 11 }).ExecuteCommand();
             var tree = db.Queryable<Tree>().ToTree(it=>it.Child,it=>it.ParentId,0);
-      
+            var parentList = db.Queryable<Tree>().ToParentList(it => it.ParentId, 22);
+            var parentList2 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 222);
+            var parentList3 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 2);
+
             //one to one
             var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
 
