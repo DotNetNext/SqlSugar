@@ -800,7 +800,7 @@ namespace SqlSugar
             List<T> result = new List<T>() { };
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var parentIdName = (parentIdExpression as MemberExpression).Member.Name;
+            var parentIdName =UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
             var parentPropertyName= ParentInfo.DbColumnName;
             var current = this.Context.Queryable<T>().InSingle(primaryKeyValue);
@@ -825,7 +825,7 @@ namespace SqlSugar
             List<T> result = new List<T>() { };
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var parentIdName = (parentIdExpression as MemberExpression).Member.Name;
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
             var parentPropertyName = ParentInfo.DbColumnName;
             var current =await this.Context.Queryable<T>().InSingleAsync(primaryKeyValue);

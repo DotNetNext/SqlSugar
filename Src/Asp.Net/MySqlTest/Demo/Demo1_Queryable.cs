@@ -145,7 +145,7 @@ namespace OrmTest
             db.Insertable(new Tree() { Id = 12, Name = "child2",ParentId=1 }).ExecuteCommand();
             db.Insertable(new Tree() { Id = 2, Name = "root" }).ExecuteCommand();
             db.Insertable(new Tree() { Id = 22, Name = "child3", ParentId = 2 }).ExecuteCommand();
-
+            db.Insertable(new Tree() { Id = 222, Name = "child222", ParentId = 22 }).ExecuteCommand();
             // Same property name mapping,Both entities have parentId
             var list = db.Queryable<Tree>().Mapper(it => it.Parent, it => it.ParentId).ToList();
 
@@ -184,6 +184,11 @@ namespace OrmTest
                 itemModel.Items = allItems.Where(it => it.OrderId==itemModel.Id).ToList();//Every time it's executed
             }).ToList();
 
+
+            var tree = db.Queryable<Tree>().ToTree(it => it.Child, it => it.ParentId, 0);
+            var parentList = db.Queryable<Tree>().ToParentList(it => it.ParentId, 22);
+            var parentList2 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 222);
+            var parentList3 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 2);
             Console.WriteLine("#### End Start ####");
         }
 
