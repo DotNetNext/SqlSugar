@@ -70,7 +70,18 @@ namespace SqlSugar
         public StorageableResult<T> ToStorage()
         {
             if (this.allDatas.Count == 0)
-                return new StorageableResult<T>();
+                return new StorageableResult<T>() {
+                    AsDeleteable = this.Context.Deleteable<T>().Where(it => false),
+                    AsInsertable = this.Context.Insertable(new List<T>()),
+                    AsUpdateable = this.Context.Updateable(new List<T>()),
+                    InsertList = new List<StorageableMessage<T>>(),
+                    UpdateList = new List<StorageableMessage<T>>(),
+                    DeleteList = new List<StorageableMessage<T>>(),
+                    ErrorList = new List<StorageableMessage<T>>(),
+                    IgnoreList = new List<StorageableMessage<T>>(),
+                    OtherList=new List<StorageableMessage<T>>(),
+                    TotalList=new List<StorageableMessage<T>>()
+                };
             var pkInfos = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey);
             if (whereExpression==null&&!pkInfos.Any())
             {
