@@ -242,7 +242,7 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return " NOT NULL ";
             }
         }
         protected override string CreateTablePirmaryKey
