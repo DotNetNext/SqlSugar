@@ -173,6 +173,20 @@ namespace SqlSugar
         }
 
         #region Update by object
+        public IUpdateable<T> CallEntityMethod(Expression<Action<T>> method)
+        {
+            ThrowUpdateByExpression();
+            if (this.UpdateObjs.HasValue())
+            {
+                var expression = (LambdaExpression.Lambda(method).Body as LambdaExpression).Body;
+                Check.Exception(!(expression is MethodCallExpression), method.ToString() + " is not method");
+                var callExpresion = expression as MethodCallExpression;
+                UtilMethods.DataInoveByExpresson(this.UpdateObjs, callExpresion);
+                this.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
+                Init();
+            }
+            return this;
+        }
 
         public IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns)
         {

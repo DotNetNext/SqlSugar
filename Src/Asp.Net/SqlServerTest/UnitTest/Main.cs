@@ -33,6 +33,7 @@ namespace OrmTest
         {
             Filter();
             Insert();
+            Insert2();
             Enum();
             Tran();
             Queue();

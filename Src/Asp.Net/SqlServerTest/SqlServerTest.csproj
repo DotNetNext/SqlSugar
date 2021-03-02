@@ -80,6 +80,7 @@
     <Compile Include="UnitTest\Test01.cs" />
     <Compile Include="UnitTest\UEnum.cs" />
     <Compile Include="UnitTest\UFilter.cs" />
+    <Compile Include="UnitTest\UInsert2.cs" />
     <Compile Include="UnitTest\UInsert.cs" />
     <Compile Include="UnitTest\UQueryable2.cs" />
     <Compile Include="UnitTest\UQueue.cs" />

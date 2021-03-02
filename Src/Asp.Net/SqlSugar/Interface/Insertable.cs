@@ -32,6 +32,8 @@ namespace SqlSugar
         ISubInsertable<T> AddSubList(Expression<Func<T, object>> subForeignKey);
         ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree);
 
+        IInsertable<T> CallEntityMethod(Expression<Action<T>> method);
+
         IInsertable<T> EnableDiffLogEvent(object businessData = null);
         IInsertable<T> RemoveDataCache();
         KeyValuePair<string, List<SugarParameter>> ToSql();
