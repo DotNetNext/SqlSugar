@@ -22,7 +22,7 @@ namespace SqlSugar
         public ISqlBuilder SqlBuilder { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public MappingTableList QueryableMappingTableList { get; set; }
-        public Action<T> MapperAction { get; set; }
+        public List<Action<T>> MapperAction { get; set; }
         public Action<T, MapperCache<T>> MapperActionWithCache { get; set; }
         public List<Action<List<T>>> Mappers { get; set; }
         public bool IsCache { get; set; }
@@ -105,7 +105,12 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction)
         {
-            this.MapperAction = mapperAction;
+            this.MapperAction=UtilMethods.IsNullReturnNew(this.MapperAction);
+            this.MapperAction.Add(mapperAction);
+            return this;
+        }
+        public ISugarQueryable<T> Mapper<MappingType>(Expression<Func<MappingType, ManyToMany>> expression) 
+        {
             return this;
         }
         public virtual ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction)
@@ -1608,7 +1613,10 @@ namespace SqlSugar
                 {
                     if (typeof(TResult) == typeof(T))
                     {
-                        this.MapperAction((T)(item as object));
+                        foreach (var mapper in this.MapperAction)
+                        {
+                            mapper((T)(item as object));
+                        }
                     }
                     else
                     {

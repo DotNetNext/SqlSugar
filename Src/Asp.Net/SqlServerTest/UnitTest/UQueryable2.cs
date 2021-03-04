@@ -93,6 +93,15 @@ namespace OrmTest
 
 
             var qu4 = Db.Queryable<Order>().OrderBy(it=>it.Id+it.Id).ToList();
+
+            var list11 = Db.Queryable<A>()
+        
+            .ToList();
+
+            //var list8 = Db.Queryable<A>()
+            //.Mapper<ABMapping>(it=>ManyToMany.Config(it.A,it.AId,it.B,it.BId))
+            //.ToList();
+
         }
     }
 }
