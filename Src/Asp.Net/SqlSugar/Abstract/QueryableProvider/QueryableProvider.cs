@@ -130,11 +130,13 @@ namespace SqlSugar
 
             //A
             var aEntity = this.Context.EntityMaintenance.GetEntityInfo(aType);
-            var aPropertyName = aEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true).PropertyName;
+            var aPropertyName = aEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.PropertyName;
+            Check.Exception(aPropertyName == null, aEntity.EntityName + " no primary key");
 
             //B
             var bEntity = this.Context.EntityMaintenance.GetEntityInfo(bType);
-            var bProperty = bEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true).PropertyName;
+            var bProperty = bEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.PropertyName;
+            Check.Exception(bProperty == null, bEntity.EntityName + " no primary key");
             var bDbFiled = bEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true).DbColumnName;
             this.Mapper((it,cache) =>
             {

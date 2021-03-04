@@ -102,6 +102,43 @@ namespace OrmTest
             .Mapper<A,B,ABMapping>(it => ManyToMany.Config(it.AId,it.BId))
             .ToList();
 
+            Db.CodeFirst.InitTables<ABMap, TableA, TableB>();
+            Db.DbMaintenance.TruncateTable("TableA");
+            Db.DbMaintenance.TruncateTable("Tableb");
+            Db.DbMaintenance.TruncateTable("ABMap");
+            Db.Insertable(new TableA() { id=1, Name = "A1" }).ExecuteCommand();
+            Db.Insertable(new TableA() {id=2, Name = "A1" }).ExecuteCommand();
+            Db.Insertable(new TableB() { id=1, Name = "B1" }).ExecuteCommand();
+            Db.Insertable(new TableB() { id=2, Name = "B2" }).ExecuteCommand();
+            Db.Insertable(new ABMap() {  Aid=1,Bid=1 }).ExecuteCommand();
+            Db.Insertable(new ABMap() { Aid = 1, Bid = 2 }).ExecuteCommand();
+            Db.Insertable(new ABMap() { Aid = 2, Bid = 1 }).ExecuteCommand();
+            Db.Insertable(new ABMap() { Aid = 2, Bid =2 }).ExecuteCommand();
+            var list9= Db.Queryable<TableA>()
+                .Mapper<TableA, TableB, ABMap>(it => ManyToMany.Config(it.Aid, it.Bid)).ToList();
+        }
+
+
+        public class ABMap{ 
+            public int Aid { get; set; }
+            public int Bid { get; set; }
+        }
+
+        public class  TableA{ 
+        
+            [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+            public int id { get; set; }
+            public string Name { get; set; }
+            [SugarColumn(IsIgnore =true)]
+            public List<TableB> Childlist { get; set; }
+        }
+
+
+        public class TableB
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int id { get; set; }
+            public string Name { get; set; }
         }
     }
 }
