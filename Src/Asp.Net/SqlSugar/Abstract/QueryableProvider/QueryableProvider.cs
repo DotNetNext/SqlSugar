@@ -109,10 +109,91 @@ namespace SqlSugar
             this.MapperAction.Add(mapperAction);
             return this;
         }
-        public ISugarQueryable<T> Mapper<MappingType>(Expression<Func<MappingType, ManyToMany>> expression) 
+        public ISugarQueryable<T> Mapper<AType, BType, MappingType>(Expression<Func<MappingType, ManyToMany>> expression)
         {
+            var args = ((expression as LambdaExpression).Body as MethodCallExpression).Arguments;
+
+            Type aType = typeof(AType);
+            Type bType = typeof(BType);
+            Type bListType = typeof(List<BType>);
+
+            this.Context.InitMappingInfo(aType);
+            this.Context.InitMappingInfo(bType);
+            this.Context.InitMappingInfo(typeof(MappingType));
+
+            //Mapping 
+            var mappingEntity = this.Context.EntityMaintenance.GetEntityInfo(typeof(MappingType));
+            string m_aPropertyName = (args[0] as MemberExpression).Member.Name;
+            string m_bPropertyName= (args[1] as MemberExpression).Member.Name;
+            var m_aDbField = mappingEntity.Columns.First(it => it.PropertyName == m_aPropertyName).DbColumnName;
+            var m_bDbField = mappingEntity.Columns.First(it => it.PropertyName == m_bPropertyName).DbColumnName;
+
+            //A
+            var aEntity = this.Context.EntityMaintenance.GetEntityInfo(aType);
+            var aPropertyName = aEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true).PropertyName;
+
+            //B
+            var bEntity = this.Context.EntityMaintenance.GetEntityInfo(bType);
+            var bProperty = bEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true).PropertyName;
+            var bDbFiled = bEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true).DbColumnName;
+            this.Mapper((it,cache) =>
+            {
+               var list= cache.Get<Dictionary<object, List<BType>>>(oldList=> {
+
+
+                   //query mapping by a
+                   var cons = new List<IConditionalModel>() {
+                     new ConditionalModel(){      
+                                                   ConditionalType=ConditionalType.In,
+                                                   FieldName= m_aDbField,
+                                                   FieldValue=string.Join(",",oldList.Select(z=>UtilMethods.GetPropertyValue(z,aPropertyName)).Distinct())
+                                                  }
+                   };
+                   var mappingList = this.Context.Queryable<MappingType>().Where(cons).ToList();
+                   var bids = mappingList.Select(z => UtilMethods.GetPropertyValue(z, m_bPropertyName)).Distinct().ToList();
+
+                   //queryable b by mapping
+                   cons = new List<IConditionalModel>() {
+                     new ConditionalModel(){
+                                                   ConditionalType=ConditionalType.In,
+                                                   FieldName= bDbFiled,
+                                                   FieldValue=string.Join(",",mappingList.Select(z=>UtilMethods.GetPropertyValue(z,m_bPropertyName)).Distinct())
+                                                  }
+                   };
+                   var bList = this.Context.Queryable<BType>().Where(cons).ToList();
+
+                   //get result
+                   Dictionary<object, List<BType>> result = new Dictionary<object, List<BType>>();
+                   var group = mappingList.GroupBy(z => UtilMethods.GetPropertyValue(z, m_aPropertyName));
+                   foreach (var item in group)
+                   {
+                       var currentBids = item.Select(z => UtilMethods.GetPropertyValue(z, m_bPropertyName)).ToList();
+                       result.Add(item.Key, bList.Where(z => currentBids.Contains(UtilMethods.GetPropertyValue(z, bProperty))).ToList());
+                   }
+                   return result;
+
+               }, expression.ToString());
+               foreach (var item in aEntity.Columns)
+               {
+                    var aid = UtilMethods.GetPropertyValue(it, aPropertyName);
+                    if (list.ContainsKey(aid))
+                    {
+                        if (item.PropertyInfo.PropertyType == bType)
+                        {
+                           var b=UtilMethods.ChangeType<BType>(list[aid].FirstOrDefault());
+                            item.PropertyInfo.SetValue(it, b);
+                        }
+                        else if (item.PropertyInfo.PropertyType == bListType)
+                        {
+                            var bList = UtilMethods.ChangeType<List<BType>>(list[aid]);
+                            item.PropertyInfo.SetValue(it, bList);
+                        }
+                    }
+               }
+            });
             return this;
         }
+
         public virtual ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction)
         {
             this.MapperActionWithCache = mapperAction;

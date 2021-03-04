@@ -98,9 +98,9 @@ namespace OrmTest
         
             .ToList();
 
-            //var list8 = Db.Queryable<A>()
-            //.Mapper<ABMapping>(it=>ManyToMany.Config(it.A,it.AId,it.B,it.BId))
-            //.ToList();
+            var list8 = Db.Queryable<A>()
+            .Mapper<A,B,ABMapping>(it => ManyToMany.Config(it.AId,it.BId))
+            .ToList();
 
         }
     }

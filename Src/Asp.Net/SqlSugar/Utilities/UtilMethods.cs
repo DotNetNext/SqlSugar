@@ -244,7 +244,10 @@ namespace SqlSugar
         {
             return Convert.ToInt64(string.Join("", bytes).PadRight(20, '0'));
         }
-
+        public static object GetPropertyValue<T>(T t, string PropertyName)
+        {
+            return t.GetType().GetProperty(PropertyName).GetValue(t, null);
+        }
         internal static string GetMD5(string myString)
         {
             MD5 md5 = new MD5CryptoServiceProvider();
