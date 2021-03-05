@@ -316,7 +316,7 @@ namespace SqlSugar
 
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
-            Check.Exception(UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where","集合更新不支持Where请使用WhereColumns"));
+            Check.Exception(UpdateObjectNotWhere()&&UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where","集合更新不支持Where请使用WhereColumns"));
             var expResult = UpdateBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
             var whereString = expResult.GetResultString();
             if (expression.ToString().Contains("Subqueryable()"))
@@ -328,7 +328,7 @@ namespace SqlSugar
         }
         public IUpdateable<T> Where(string whereSql, object parameters = null)
         {
-            Check.Exception(UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where", "集合更新不支持Where请使用WhereColumns"));
+            Check.Exception(UpdateObjectNotWhere() && UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where", "集合更新不支持Where请使用WhereColumns"));
             if (whereSql.HasValue())
             {
                 UpdateBuilder.WhereValues.Add(whereSql);
@@ -341,16 +341,22 @@ namespace SqlSugar
         }
         public IUpdateable<T> Where(string fieldName, string conditionalType, object fieldValue)
         {
-            Check.Exception(UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where", "集合更新不支持Where请使用WhereColumns"));
+            Check.Exception(UpdateObjectNotWhere() && UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where", "集合更新不支持Where请使用WhereColumns"));
             var whereSql = this.SqlBuilder.GetWhere(fieldName, conditionalType, 0);
             this.Where(whereSql);
             string parameterName = this.SqlBuilder.SqlParameterKeyWord + fieldName + "0";
             this.UpdateBuilder.Parameters.Add(new SugarParameter(parameterName, fieldValue));
             return this;
-        } 
+        }
         #endregion
 
         #region Helper
+
+        private bool UpdateObjectNotWhere()
+        {
+            return this.Context.CurrentConnectionConfig.DbType != DbType.MySql && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer;
+        }
+
         private void AppendSets()
         {
             if (SetColumnsIndex > 0)
