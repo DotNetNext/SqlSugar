@@ -22,7 +22,7 @@ namespace SqlSugar
         public ISqlBuilder SqlBuilder { get; set; }
         public MappingTableList OldMappingTableList { get; set; }
         public MappingTableList QueryableMappingTableList { get; set; }
-        public Action<T> MapperAction { get; set; }
+        public List<Action<T>> MapperAction { get; set; }
         public Action<T, MapperCache<T>> MapperActionWithCache { get; set; }
         public List<Action<List<T>>> Mappers { get; set; }
         public bool IsCache { get; set; }
@@ -105,9 +105,97 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction)
         {
-            this.MapperAction = mapperAction;
+            this.MapperAction=UtilMethods.IsNullReturnNew(this.MapperAction);
+            this.MapperAction.Add(mapperAction);
             return this;
         }
+        public ISugarQueryable<T> Mapper<AType, BType, MappingType>(Expression<Func<MappingType, ManyToMany>> expression)
+        {
+            var args = ((expression as LambdaExpression).Body as MethodCallExpression).Arguments;
+
+            Type aType = typeof(AType);
+            Type bType = typeof(BType);
+            Type bListType = typeof(List<BType>);
+
+            this.Context.InitMappingInfo(aType);
+            this.Context.InitMappingInfo(bType);
+            this.Context.InitMappingInfo(typeof(MappingType));
+
+            //Mapping 
+            var mappingEntity = this.Context.EntityMaintenance.GetEntityInfo(typeof(MappingType));
+            string m_aPropertyName = (args[0] as MemberExpression).Member.Name;
+            string m_bPropertyName= (args[1] as MemberExpression).Member.Name;
+            var m_aDbField = mappingEntity.Columns.First(it => it.PropertyName == m_aPropertyName).DbColumnName;
+            var m_bDbField = mappingEntity.Columns.First(it => it.PropertyName == m_bPropertyName).DbColumnName;
+
+            //A
+            var aEntity = this.Context.EntityMaintenance.GetEntityInfo(aType);
+            var aPropertyName = aEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.PropertyName;
+            Check.Exception(aPropertyName == null, aEntity.EntityName + " no primary key");
+
+            //B
+            var bEntity = this.Context.EntityMaintenance.GetEntityInfo(bType);
+            var bProperty = bEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.PropertyName;
+            Check.Exception(bProperty == null, bEntity.EntityName + " no primary key");
+            var bDbFiled = bEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true).DbColumnName;
+            this.Mapper((it,cache) =>
+            {
+               var list= cache.Get<Dictionary<object, List<BType>>>(oldList=> {
+
+
+                   //query mapping by a
+                   var cons = new List<IConditionalModel>() {
+                     new ConditionalModel(){      
+                                                   ConditionalType=ConditionalType.In,
+                                                   FieldName= m_aDbField,
+                                                   FieldValue=string.Join(",",oldList.Select(z=>UtilMethods.GetPropertyValue(z,aPropertyName)).Distinct())
+                                                  }
+                   };
+                   var mappingList = this.Context.Queryable<MappingType>().Where(cons).ToList();
+                   var bids = mappingList.Select(z => UtilMethods.GetPropertyValue(z, m_bPropertyName)).Distinct().ToList();
+
+                   //queryable b by mapping
+                   cons = new List<IConditionalModel>() {
+                     new ConditionalModel(){
+                                                   ConditionalType=ConditionalType.In,
+                                                   FieldName= bDbFiled,
+                                                   FieldValue=string.Join(",",mappingList.Select(z=>UtilMethods.GetPropertyValue(z,m_bPropertyName)).Distinct())
+                                                  }
+                   };
+                   var bList = this.Context.Queryable<BType>().Where(cons).ToList();
+
+                   //get result
+                   Dictionary<object, List<BType>> result = new Dictionary<object, List<BType>>();
+                   var group = mappingList.GroupBy(z => UtilMethods.GetPropertyValue(z, m_aPropertyName));
+                   foreach (var item in group)
+                   {
+                       var currentBids = item.Select(z => UtilMethods.GetPropertyValue(z, m_bPropertyName)).ToList();
+                       result.Add(item.Key, bList.Where(z => currentBids.Contains(UtilMethods.GetPropertyValue(z, bProperty))).ToList());
+                   }
+                   return result;
+
+               }, expression.ToString());
+               foreach (var item in aEntity.Columns)
+               {
+                    var aid = UtilMethods.GetPropertyValue(it, aPropertyName);
+                    if (list.ContainsKey(aid))
+                    {
+                        if (item.PropertyInfo.PropertyType == bType)
+                        {
+                           var b=UtilMethods.ChangeType<BType>(list[aid].FirstOrDefault());
+                            item.PropertyInfo.SetValue(it, b);
+                        }
+                        else if (item.PropertyInfo.PropertyType == bListType)
+                        {
+                            var bList = UtilMethods.ChangeType<List<BType>>(list[aid]);
+                            item.PropertyInfo.SetValue(it, bList);
+                        }
+                    }
+               }
+            });
+            return this;
+        }
+
         public virtual ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction)
         {
             this.MapperActionWithCache = mapperAction;
@@ -120,7 +208,7 @@ namespace SqlSugar
             {
                 CallContext.MapperExpression.Value = new List<MapperExpression>();
             }
-            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder = SqlBuilder, QueryBuilder = this.QueryBuilder, Type = MapperExpressionType.oneToOne, FillExpression = mapperObject, MappingField1Expression = mainField, MappingField2Expression=childField, Context = this.Context });
+            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder = SqlBuilder, QueryBuilder = this.QueryBuilder, Type = MapperExpressionType.oneToOne, FillExpression = mapperObject, MappingField1Expression = mainField, MappingField2Expression = childField, Context = this.Context });
             return _Mapper<TObject>(mapperObject, mainField, childField);
         }
         public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, List<TObject>>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
@@ -134,7 +222,7 @@ namespace SqlSugar
             {
                 CallContext.MapperExpression.Value = new List<MapperExpression>();
             }
-            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder = SqlBuilder, QueryBuilder = this.QueryBuilder, Type = MapperExpressionType.oneToN, FillExpression = mapperObject, MappingField1Expression = mapperField,Context = this.Context });
+            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder = SqlBuilder, QueryBuilder = this.QueryBuilder, Type = MapperExpressionType.oneToN, FillExpression = mapperObject, MappingField1Expression = mapperField, Context = this.Context });
             return _Mapper<TObject>(mapperObject, mapperField);
         }
         public virtual ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mapperField)
@@ -143,7 +231,7 @@ namespace SqlSugar
             {
                 CallContext.MapperExpression.Value = new List<MapperExpression>();
             }
-            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder= SqlBuilder, QueryBuilder = this.QueryBuilder, Type=MapperExpressionType.oneToOne, FillExpression=mapperObject, MappingField1Expression= mapperField,Context=this.Context });
+            CallContext.MapperExpression.Value.Add(new MapperExpression() { SqlBuilder = SqlBuilder, QueryBuilder = this.QueryBuilder, Type = MapperExpressionType.oneToOne, FillExpression = mapperObject, MappingField1Expression = mapperField, Context = this.Context });
             return _Mapper<TObject>(mapperObject, mapperField);
         }
 
@@ -197,7 +285,7 @@ namespace SqlSugar
         {
             return WhereClass(new List<ClassType>() { whereClass }, ignoreDefaultValue);
         }
-        public ISugarQueryable<T> WhereClassByPrimaryKey(List<T> list)  
+        public ISugarQueryable<T> WhereClassByPrimaryKey(List<T> list)
         {
             _WhereClassByPrimaryKey(list);
             return this;
@@ -213,7 +301,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClassTypes"></param>
         /// <returns></returns>
-        public ISugarQueryable<T> _WhereClassByPrimaryKey(List<T> whereClassTypes) 
+        public ISugarQueryable<T> _WhereClassByPrimaryKey(List<T> whereClassTypes)
         {
 
             if (whereClassTypes.HasValue())
@@ -580,7 +668,7 @@ namespace SqlSugar
             }
             else if (result.Count >= 2)
             {
-                Check.Exception(true,ErrorMessage.GetThrowMessage(".Single()  result must not exceed one . You can use.First()","使用single查询结果集不能大于1，适合主键查询，如果大于1你可以使用Queryable.First"));
+                Check.Exception(true, ErrorMessage.GetThrowMessage(".Single()  result must not exceed one . You can use.First()", "使用single查询结果集不能大于1，适合主键查询，如果大于1你可以使用Queryable.First"));
                 return default(T);
             }
             else
@@ -680,8 +768,8 @@ namespace SqlSugar
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Queryable.Select Method .");
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
             var sqlobj = this.ToSql();
-            var index = QueryBuilder.WhereIndex+1;
-            var result= this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
+            var index = QueryBuilder.WhereIndex + 1;
+            var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
             result.QueryBuilder.WhereIndex = index;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
@@ -778,7 +866,7 @@ namespace SqlSugar
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
                 var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () =>
                 {
-                    return this.Context.Utilities.SerializeObject(this.ToList(),typeof(T));
+                    return this.Context.Utilities.SerializeObject(this.ToList(), typeof(T));
                 }, CacheTime, this.Context);
                 return result;
             }
@@ -794,6 +882,56 @@ namespace SqlSugar
         public virtual string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
             return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber), typeof(T));
+        }
+        public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
+        {
+            List<T> result = new List<T>() { };
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var parentIdName =UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName= ParentInfo.DbColumnName;
+            var current = this.Context.Queryable<T>().InSingle(primaryKeyValue);
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current,null);
+                int i = 0;
+                while (parentId!=null&&this.Context.Queryable<T>().In(parentId).Any())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = this.Context.Queryable<T>().InSingle(parentId);
+                    result.Add(parent);
+                    parentId= ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+        public async Task<List<T>> ToParentListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
+        {
+            List<T> result = new List<T>() { };
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var current =await this.Context.Queryable<T>().InSingleAsync(primaryKeyValue);
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null &&await this.Context.Queryable<T>().In(parentId).AnyAsync())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent =await this.Context.Queryable<T>().InSingleAsync(parentId);
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
         }
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
@@ -1558,7 +1696,10 @@ namespace SqlSugar
                 {
                     if (typeof(TResult) == typeof(T))
                     {
-                        this.MapperAction((T)(item as object));
+                        foreach (var mapper in this.MapperAction)
+                        {
+                            mapper((T)(item as object));
+                        }
                     }
                     else
                     {

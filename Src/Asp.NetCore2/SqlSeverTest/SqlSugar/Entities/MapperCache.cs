@@ -34,6 +34,21 @@ namespace SqlSugar
                 return result;
             }
         }
+        public Result Get<Result>(Func<List<T>, Result> action,string cachekey)
+        {
+            GetIndex++;
+            string key = "Get" + typeof(Result) + action.GetHashCode() + action.Method.Name+ cachekey;
+            if (caches.ContainsKey(key))
+            {
+                return (Result)caches[key];
+            }
+            else
+            {
+                var result = action(_list);
+                caches.Add(key, result);
+                return result;
+            }
+        }
         public List<Result> GetListByPrimaryKeys<Result>(Func<T, double?> action) where Result : class, new()
         {
             {

@@ -1206,7 +1206,7 @@ namespace SqlSugar
         }
         private void Async()
         {
-            if (this.Context.Root != null & this.Context.Root.AsyncId == null)
+            if (this.Context.Root != null && this.Context.Root.AsyncId == null)
             {
                 this.Context.Root.AsyncId = Guid.NewGuid(); ;
             }

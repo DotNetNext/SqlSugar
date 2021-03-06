@@ -11,6 +11,7 @@ namespace SqlSugar
         IStorageable<T> WhereColumns(Expression<Func<T, object>> columns);
         IStorageable<T> SplitInsert(Func<StorageableInfo<T>, bool> conditions, string message=null);
         IStorageable<T> SplitUpdate(Func<StorageableInfo<T>, bool> conditions, string message = null);
+        IStorageable<T> Saveable(string inserMessage = null, string updateMessage = null);
         IStorageable<T> SplitError(Func<StorageableInfo<T>, bool> conditions, string message = null);
         IStorageable<T> SplitIgnore(Func<StorageableInfo<T>, bool> conditions, string message = null);
         IStorageable<T> SplitDelete(Func<StorageableInfo<T>, bool> conditions, string message = null);
@@ -22,6 +23,7 @@ namespace SqlSugar
     {
         public T Item { get; set; }
         internal List<T> Database { get; set; }
+        internal string[] PkFields { get; set; }
         public bool Any(Func<T,bool> expression)
         {
             return Database.Any(expression);
@@ -29,6 +31,19 @@ namespace SqlSugar
         public bool NotAny(Func<T, bool> expression)
         {
             return !Database.Any(expression);
+        }
+        public bool Any()
+        {
+            var  list = Database.Where(it=>true);
+            foreach (var pk in PkFields)
+            {
+                list = list.Where(it => it.GetType().GetProperty(pk).GetValue(it, null).ObjToString() == Item.GetType().GetProperty(pk).GetValue(Item, null).ObjToString());
+            }
+            return list.Any();
+        }
+        public bool NotAny()
+        {
+            return !Any();
         }
     }
 

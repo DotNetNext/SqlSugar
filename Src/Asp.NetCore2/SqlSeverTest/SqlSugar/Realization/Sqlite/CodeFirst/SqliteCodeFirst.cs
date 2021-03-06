@@ -9,7 +9,7 @@ namespace SqlSugar
     {
         public override void ExistLogic(EntityInfo entityInfo)
         {
-            if (entityInfo.Columns.HasValue())
+            if (entityInfo.Columns.HasValue()&&entityInfo.IsDisabledUpdateAll==false)
             {
                 Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
 

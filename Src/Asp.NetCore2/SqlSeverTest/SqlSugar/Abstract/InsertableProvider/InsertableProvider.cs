@@ -667,6 +667,20 @@ namespace SqlSugar
             }
 
         }
+
+        public IInsertable<T> CallEntityMethod(Expression<Action<T>> method)
+        {
+            if (this.InsertObjs.HasValue())
+            {
+                var expression = (LambdaExpression.Lambda(method).Body as LambdaExpression).Body;
+                Check.Exception(!(expression is MethodCallExpression), method.ToString() + " is not method");
+                var callExpresion = expression as MethodCallExpression;
+                UtilMethods.DataInoveByExpresson(this.InsertObjs,callExpresion);
+                this.InsertBuilder.DbColumnInfoList = new List<DbColumnInfo>();
+                Init();
+            }
+            return this;
+        }
         #endregion
 
     }
