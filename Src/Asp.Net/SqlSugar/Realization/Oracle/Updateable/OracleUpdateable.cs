@@ -17,6 +17,10 @@ namespace SqlSugar
             {
                 return base.ExecuteCommand();
             }
+            else if (base.UpdateObjs.Count() == 0)
+            {
+                return 0;
+            }
             else
             {
                 base.ExecuteCommand();
