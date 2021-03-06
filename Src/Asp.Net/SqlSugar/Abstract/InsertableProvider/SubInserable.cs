@@ -72,8 +72,13 @@ namespace SqlSugar
             }
             return resul;
         }
+        [Obsolete("use ExecuteCommand")]
+        public object ExecuteReturnPrimaryKey() 
+        {
+            return ExecuteCommand();
+        }
 
-        public object ExecuteReturnPrimaryKey()
+        public object ExecuteCommand()
         {
             var isNoTrean = this.Context.Ado.Transaction == null;
             try
