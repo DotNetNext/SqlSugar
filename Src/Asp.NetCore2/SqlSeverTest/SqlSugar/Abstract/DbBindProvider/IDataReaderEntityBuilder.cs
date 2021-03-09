@@ -278,7 +278,7 @@ namespace SqlSugar
                     CheckType(bind.DateThrow, bindProperyTypeName, validPropertyName, propertyName);
                     if (bindProperyTypeName == "datetime")
                         method = isNullableType ? getConvertDateTime : getDateTime;
-                    if (bindProperyTypeName == "datetime" && dbTypeName.ToLower() == "time")
+                    if (bindProperyTypeName == "datetime" && (dbTypeName.ToLower() == "time" || dbTypeName.ToLower() == "time with time zone" || dbTypeName.ToLower() == "time without time zone"))
                         method = isNullableType ? getConvertTime : getTime;
                     if (bindProperyTypeName == "datetimeoffset")
                         method = isNullableType ? getConvertdatetimeoffset : getdatetimeoffset;
