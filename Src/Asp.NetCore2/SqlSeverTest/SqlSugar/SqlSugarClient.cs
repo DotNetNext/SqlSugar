@@ -588,6 +588,7 @@ namespace SqlSugar
             {
                 db.Context = new SqlSugarProvider(db.ConnectionConfig);
             }
+            var intiAop=db.Context.Aop;
             return db.Context;
         }
         public void ChangeDatabase(dynamic configId)
