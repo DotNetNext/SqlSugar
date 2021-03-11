@@ -392,6 +392,12 @@ namespace SqlSugar
             }
             return true;
         }
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
+        {
+            tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
+            var result= base.GetColumnInfosByTableName(tableName, isCache);
+            return result;
+        }
         public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);

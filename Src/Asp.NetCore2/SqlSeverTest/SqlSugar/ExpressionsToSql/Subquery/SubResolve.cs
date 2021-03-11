@@ -63,6 +63,11 @@ namespace SqlSugar
                         context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
                     }
                 }
+                else if (context.RootExpression!=null&&context.Expression.GetType().Name == "SimpleBinaryExpression")
+                {
+                    var name = (this.context.RootExpression as LambdaExpression).Parameters[0].Name;
+                    context.SingleTableNameSubqueryShortName = name;
+                }
                 else
                 {
                     Check.Exception(true, "I'm sorry I can't parse the current expression");
