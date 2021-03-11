@@ -21,6 +21,17 @@ namespace OrmTest
                 Console.WriteLine(s);
             };
             Db.CodeFirst.InitTables<UnitCodeFirstpks3>();
+            Db.CodeFirst.InitTables<UnitCodeFirstpks32>();
+        }
+
+        [SqlSugar.SugarTable("[dbo].[UnitCodeFirstpks3aaa122]")]
+        public class UnitCodeFirstpks32
+        {
+            public int id { get; set; }
+            public string name2 { get; set; }
+
+
+
         }
         [SqlSugar.SugarTable("UnitCodeFirstpks31","备注"  )]
         public class UnitCodeFirstpks3
