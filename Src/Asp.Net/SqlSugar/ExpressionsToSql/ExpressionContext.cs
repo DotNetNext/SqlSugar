@@ -45,6 +45,7 @@ namespace SqlSugar
         public IgnoreColumnList IgnoreComumnList { get; set; }
         public bool PgSqlIsAutoToLower { get; set; }
         public List<SqlFuncExternal> SqlFuncServices { get; set; }
+        public Expression RootExpression { get; set; }
         public bool IsSingle
         {
             get
@@ -129,6 +130,7 @@ namespace SqlSugar
             copyContext.ParameterIndex = this.ParameterIndex;
             copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
             copyContext.IsSingle = this.IsSingle;
+            copyContext.RootExpression = this.RootExpression;
             return copyContext;
         }
         public ExpressionContext GetCopyContextWithMapping()
@@ -144,6 +146,7 @@ namespace SqlSugar
             copyContext.RefreshMapping = this.RefreshMapping;
             copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
             copyContext.IsSingle = this.IsSingle;
+            copyContext.RootExpression = this.RootExpression;
             return copyContext;
         }
         #endregion

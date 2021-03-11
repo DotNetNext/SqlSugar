@@ -27,6 +27,7 @@ namespace SqlSugar
          Action<Type> InitMappingInfo { get; set; }
          Action RefreshMapping { get; set; }
         bool PgSqlIsAutoToLower { get; set; }
+        Expression RootExpression { get; set; }
 
         string GetAsString(string fieldName, string fieldValue);
         void Resolve(Expression expression, ResolveExpressType resolveType);

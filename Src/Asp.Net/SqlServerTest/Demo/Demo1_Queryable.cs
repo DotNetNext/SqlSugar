@@ -124,6 +124,11 @@ namespace OrmTest
                 customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
             }).ToList();
 
+            var list1 = db.Queryable<Order>().Select(it => new
+            {
+                id = SqlFunc.Subqueryable<Custom>().Where(s => s.Id == 1).Sum(s => s.Id) * 1
+            }).ToList();
+
             var list2 = db.Queryable<Order>().Where(it =>
             SqlFunc.Subqueryable<OrderItem>() 
              .LeftJoin<OrderItem>((i,y)=>i.ItemId==y.ItemId)
