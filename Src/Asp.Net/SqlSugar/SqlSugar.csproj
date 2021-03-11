@@ -341,7 +341,6 @@
   <ItemGroup>
     <Content Include="References\DmProvider.dll" />
     <Content Include="References\Kdbndp.dll" />
-    <Content Include="References\MySql.Data.dll" />
     <Content Include="References\Newtonsoft.Json.dll" />
     <Content Include="References\Npgsql.dll" />
     <Content Include="References\Oracle.ManagedDataAccess.dll" />
