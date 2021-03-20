@@ -159,45 +159,41 @@ namespace SqlSugar
                         {
                             childList = new List<object>() { childList };
                         }
-                        if (!string.IsNullOrEmpty(subMemberName) &&subMemberName!=childName)
-                        {
-                            foreach (var child in childList as IEnumerable<object>)
-                            {
-                                child.GetType().GetProperty(subMemberName).SetValue(child, pkValue);
-                            }
-                        }
-                        var type = (childList as IEnumerable<object>).First().GetType();
-                        this.Context.InitMappingInfo(type);
-                        var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
-                        var isIdentity = IsIdEntity(entityInfo);
-                        var tableName = entityInfo.DbTableName;
-                        List<Dictionary<string, object>> insertList = new List<Dictionary<string, object>>();
-                        var entityList = (childList as IEnumerable<object>).ToList();
-                        foreach (var child in entityList)
-                        {
-                            insertList.Add(GetInsertDictionary(child, entityInfo));
-                        }
-                        if (!isIdentity)
-                        {
-                            this.Context.Insertable(insertList).AS(tableName).ExecuteCommand();
-                        }
-                        int i = 0;
-                        foreach (var insert in insertList)
-                        {
-                            int id = 0;
-                            if (isIdentity)
-                            {
-                                id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
-                                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle&&id==0)
-                                {
-                                    var seqName=entityInfo.Columns.First(it => it.OracleSequenceName.HasValue())?.OracleSequenceName;
-                                    id = this.Context.Ado.GetInt("select "+seqName+".currval from dual");
+                        if ((childList as IEnumerable<object>).Count() > 0) {
+
+                            if (!string.IsNullOrEmpty(subMemberName) && subMemberName != childName) {
+                                foreach (var child in childList as IEnumerable<object>) {
+                                    child.GetType().GetProperty(subMemberName).SetValue(child, pkValue);
                                 }
                             }
-                            var entity = entityList[i];
-                            var pk = GetPrimaryKey(entityInfo,entity, id);
-                            AddChildList(item.Childs, entity, pk);
-                            ++i;
+                            var type = (childList as IEnumerable<object>).First().GetType();
+                            this.Context.InitMappingInfo(type);
+                            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
+                            var isIdentity = IsIdEntity(entityInfo);
+                            var tableName = entityInfo.DbTableName;
+                            List<Dictionary<string, object>> insertList = new List<Dictionary<string, object>>();
+                            var entityList = (childList as IEnumerable<object>).ToList();
+                            foreach (var child in entityList) {
+                                insertList.Add(GetInsertDictionary(child, entityInfo));
+                            }
+                            if (!isIdentity) {
+                                this.Context.Insertable(insertList).AS(tableName).ExecuteCommand();
+                            }
+                            int i = 0;
+                            foreach (var insert in insertList) {
+                                int id = 0;
+                                if (isIdentity) {
+                                    id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
+                                    if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle && id == 0) {
+                                        var seqName = entityInfo.Columns.First(it => it.OracleSequenceName.HasValue())?.OracleSequenceName;
+                                        id = this.Context.Ado.GetInt("select " + seqName + ".currval from dual");
+                                    }
+                                }
+                                var entity = entityList[i];
+                                var pk = GetPrimaryKey(entityInfo, entity, id);
+                                AddChildList(item.Childs, entity, pk);
+                                ++i;
+                            }
                         }
                     }
                 }
