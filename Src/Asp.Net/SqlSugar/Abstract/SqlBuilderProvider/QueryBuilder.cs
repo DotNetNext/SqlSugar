@@ -40,6 +40,7 @@ namespace SqlSugar
         public int ExternalPageIndex { get; set; }
         public int ExternalPageSize { get; set; }
         public int? Take { get; set; }
+        public bool DisableTop { get; set; }
         public string OrderByValue { get; set; }
         public object SelectValue { get; set; }
         public string SelectCacheKey { get; set; }

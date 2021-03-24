@@ -544,6 +544,7 @@ namespace SqlSugar
             List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
             foreach (var item in queryables)
             {
+                item.QueryBuilder.DisableTop = true;
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
                 UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");

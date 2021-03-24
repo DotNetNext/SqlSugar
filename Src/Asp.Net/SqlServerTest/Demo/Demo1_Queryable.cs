@@ -45,8 +45,11 @@ namespace OrmTest
             var getDicionary = db.Queryable<Order>().ToDictionary(it => it.Id, it => it.Name);
             var getDicionaryList = db.Queryable<Order>().ToDictionaryList();
             var getTest = db.Queryable<Order>().Where(it =>string.IsNullOrWhiteSpace( it.Name)).ToList();
-
-
+            var test01 = db.Queryable<Order>().PartitionBy(it => it.Id).ToList();
+            var q1 = db.Queryable<Order>().Take(1);
+            var q2 = db.Queryable<Order>().Take(2);
+            var test02 = db.Union(q1, q2).ToList();
+            var test03 = db.Queryable<Order>().Take(1).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

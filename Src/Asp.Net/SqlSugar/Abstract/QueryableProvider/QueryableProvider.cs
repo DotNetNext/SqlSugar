@@ -622,6 +622,7 @@ namespace SqlSugar
             if (QueryBuilder.Take == null)
                 QueryBuilder.Take = 1;
             _PartitionBy(expression);
+            QueryBuilder.DisableTop = true;
             return this;
         }
         public virtual ISugarQueryable<T> PartitionBy(string groupFileds)
