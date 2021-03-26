@@ -1009,8 +1009,8 @@ namespace SqlSugar
         }
         public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
-            var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle);
-            var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle);
+            var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
+            var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
             var list = await this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToListAsync();
             var result =list.ToDictionary(it => it.Key.ObjToString(), it => it.Value);
             return result;
