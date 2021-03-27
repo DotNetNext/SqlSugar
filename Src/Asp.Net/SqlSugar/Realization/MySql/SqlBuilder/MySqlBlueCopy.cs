@@ -25,12 +25,11 @@ namespace SqlSugar
             this.Builder = builder;
             this.Entitys = entitys;
         }
-        public bool ExecuteBlueCopy(string chara) 
+        public bool ExecuteBlueCopy(string characterSet) 
         {
-            this.Chara = chara;
+            this.Chara = characterSet;
             return ExecuteBlueCopy();
         }
-
 
         public bool ExecuteBlueCopy()
         {
@@ -112,27 +111,28 @@ namespace SqlSugar
             return IsBulkLoad; ;
         }
 
+        public Task<bool> ExecuteBlueCopyAsync()
+        {
+            return Task.FromResult(ExecuteBlueCopy());
+        }
+
+        public Task<bool> ExecuteBlueCopyAsync(string characterSet)
+        {
+            this.Chara = characterSet;
+            return Task.FromResult(ExecuteBlueCopy());
+        }
+
+        #region  Helper
         private string GetChara()
         {
             if (this.Chara == null)
             {
                 return "UTF8";
             }
-            else 
+            else
             {
                 return this.Chara;
             }
-        }
-
-        public Task<bool> ExecuteBlueCopyAsync()
-        {
-            return Task.FromResult(ExecuteBlueCopy());
-        }
-
-        public Task<bool> ExecuteBlueCopyAsync(string chara)
-        {
-            this.Chara = chara;
-            return Task.FromResult(ExecuteBlueCopy());
         }
 
         private void CloseDb()
@@ -169,6 +169,7 @@ namespace SqlSugar
                 sb.AppendLine();
             }
             return sb.ToString();
-        }
+        } 
+        #endregion
     }
 }
