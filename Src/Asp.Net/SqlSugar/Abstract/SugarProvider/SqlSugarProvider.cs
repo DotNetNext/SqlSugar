@@ -1069,5 +1069,21 @@ namespace SqlSugar
         }
 
         #endregion
+
+        #region Cache
+        public SugarCacheProvider DataCache 
+        { 
+            get {
+                var services=this.CurrentConnectionConfig.ConfigureExternalServices;
+                if (services == null)
+                    return new SugarCacheProvider();
+                if (services.DataInfoCacheService == null)
+                    return new SugarCacheProvider();
+                SugarCacheProvider cache = new SugarCacheProvider();
+                cache.Servie=services.DataInfoCacheService;
+                return cache;
+            }
+        }
+        #endregion
     }
 }

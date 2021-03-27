@@ -718,6 +718,13 @@ namespace SqlSugar
 
         #endregion
 
+        #region Cache
+        public SugarCacheProvider DataCache 
+        { 
+            get { return this.Context.DataCache; } 
+        }
+        #endregion
+
         #region Other method
         public DateTime GetDate()
         {
