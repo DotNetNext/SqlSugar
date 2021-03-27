@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -13,6 +14,10 @@ namespace SqlSugar
             result.Database = context.Context.Ado.Connection.Database;
             AddTables(context, queryBuilder, result);
             AddIdentificationList(queryBuilder, result);
+            if (queryBuilder.ResultType!=null) 
+            {
+                result.IdentificationList.Add(queryBuilder.ResultType.FullName);
+            }
             return result;
         }
 

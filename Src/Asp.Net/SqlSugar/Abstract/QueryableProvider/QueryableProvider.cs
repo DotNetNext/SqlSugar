@@ -954,6 +954,7 @@ namespace SqlSugar
 
         public virtual DataTable ToDataTable()
         {
+            QueryBuilder.ResultType = typeof(DataTable);
             InitMapping();
             var sqlObj = this.ToSql();
             RestoreMapping();
@@ -1324,6 +1325,7 @@ namespace SqlSugar
         }
         public async Task<DataTable> ToDataTableAsync()
         {
+            QueryBuilder.ResultType = typeof(DataTable);
             InitMapping();
             var sqlObj = this.ToSql();
             RestoreMapping();

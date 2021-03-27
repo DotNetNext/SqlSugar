@@ -48,6 +48,7 @@ namespace SqlSugar
 
 
         public Type EntityType { get; set; }
+        public Type ResultType { get; set; }
         public string TableWithString { get; set; }
         public string GroupByValue { get; set; }
         public string PartitionByValue { get; set; }
