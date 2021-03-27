@@ -233,7 +233,7 @@ namespace SqlSugar
             this.RemoveCacheFunc = () =>
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                CacheSchemeMain.RemoveCache(cacheService, likeString);
+                CacheSchemeMain.RemoveCacheByLike(cacheService, likeString);
             };
             return this;
         }
