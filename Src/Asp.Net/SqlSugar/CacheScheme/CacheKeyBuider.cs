@@ -63,4 +63,17 @@ namespace SqlSugar
             }
         }
     }
+
+    internal class SugarCacheDictionary
+    {
+    
+    }
+    internal class SugarCacheDictionaryList
+    {
+
+    }
+    internal class SugarCacheDataTable
+    {
+
+    }
 }

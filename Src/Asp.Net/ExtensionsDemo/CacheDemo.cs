@@ -33,21 +33,16 @@ namespace ExtensionsDemo
                 }
             });
 
-
-            for (int i = 0; i < 10000; i++)
+            db.Aop.OnLogExecuted = (s, p) =>
             {
-                db.Queryable<Student>().Where(it => it.Id > 0).WithCache().ToList();
-            }
+                Console.WriteLine(s);
+            };
 
+            db.CodeFirst.InitTables<Student>();
+            db.Insertable(new Student() { CreateTime = DateTime.Now, Name= "a",SchoolId=0 }).ExecuteCommand();
 
-            db.Queryable<Student, Student>((s1, s2) => s1.Id == s2.Id).Select(s1 => s1).WithCache().ToList();
-
-
-            db.Queryable<Student, Student>((s1, s2) => new object[] {
-                JoinType.Left,s1.Id==s2.Id
-            }).Select(s1 => s1).WithCache().ToList();
-
-
+            var x=db.Queryable<Student>().WithCache().ToDictionaryList();
+          //  db.Queryable<Student>().Select("1 as idx").WithCache().ToList();
             Console.WriteLine("Cache Key Count:" + myCache.GetAllKey<string>().Count());
 
             foreach (var item in myCache.GetAllKey<string>())
@@ -56,6 +51,7 @@ namespace ExtensionsDemo
                 Console.WriteLine(item);
                 Console.WriteLine();
             }
+    
 
             db.Deleteable<Student>().Where(it => it.Id == 1).RemoveDataCache().ExecuteCommand();
 

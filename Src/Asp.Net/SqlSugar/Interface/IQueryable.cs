@@ -14,6 +14,8 @@ namespace SqlSugar
         SqlSugarProvider Context { get; set; }
         ISqlBuilder SqlBuilder { get; set; }
         QueryBuilder QueryBuilder { get; set; }
+        bool IsCache { get; set; }
+        int CacheTime { get; set; }
         ISugarQueryable<T> Clone();
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
