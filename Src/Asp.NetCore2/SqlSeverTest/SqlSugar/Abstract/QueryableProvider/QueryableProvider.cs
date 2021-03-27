@@ -622,6 +622,7 @@ namespace SqlSugar
             if (QueryBuilder.Take == null)
                 QueryBuilder.Take = 1;
             _PartitionBy(expression);
+            QueryBuilder.DisableTop = true;
             return this;
         }
         public virtual ISugarQueryable<T> PartitionBy(string groupFileds)
@@ -750,6 +751,9 @@ namespace SqlSugar
             var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
             result.Context = this.Context;
             result.SqlBuilder = this.SqlBuilder;
+            result.QueryBuilder.ResultType = this.QueryBuilder.ResultType;
+            result.IsCache = this.IsCache;
+            result.CacheTime = this.CacheTime;
             QueryBuilder.SelectValue = selectValue;
             if (this.IsAs)
             {
@@ -953,6 +957,7 @@ namespace SqlSugar
 
         public virtual DataTable ToDataTable()
         {
+            QueryBuilder.ResultType = typeof(SugarCacheDataTable);
             InitMapping();
             var sqlObj = this.ToSql();
             RestoreMapping();
@@ -1001,6 +1006,7 @@ namespace SqlSugar
 
         public Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
+            this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);
             var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
             var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
             var result = this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToList().ToDictionary(it => it.Key.ObjToString(), it => it.Value);
@@ -1008,8 +1014,9 @@ namespace SqlSugar
         }
         public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
-            var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle);
-            var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle);
+            this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);
+            var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
+            var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
             var list = await this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToListAsync();
             var result =list.ToDictionary(it => it.Key.ObjToString(), it => it.Value);
             return result;
@@ -1323,6 +1330,7 @@ namespace SqlSugar
         }
         public async Task<DataTable> ToDataTableAsync()
         {
+            QueryBuilder.ResultType = typeof(SugarCacheDataTable);
             InitMapping();
             var sqlObj = this.ToSql();
             RestoreMapping();

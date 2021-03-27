@@ -9,7 +9,7 @@ namespace SqlSugar
     
     public class InstanceFactory
     {
-        static Assembly assembly = Assembly.Load(UtilConstants.AssemblyName);
+        static Assembly assembly = Assembly.GetExecutingAssembly();
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
         public static bool NoCache = false;
 

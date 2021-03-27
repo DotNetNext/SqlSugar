@@ -166,6 +166,10 @@ namespace SqlSugar
                                 child.GetType().GetProperty(subMemberName).SetValue(child, pkValue);
                             }
                         }
+                        if (!(childList as IEnumerable<object>).Any())
+                        {
+                            continue;
+                        }
                         var type = (childList as IEnumerable<object>).First().GetType();
                         this.Context.InitMappingInfo(type);
                         var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);

@@ -160,7 +160,11 @@ namespace SqlSugar
         IUpdateable<T> Updateable<T>(Expression<Func<T, T>> columns) where T : class, new();
         IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new();
         IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new();
-        IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new(); 
+        IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new();
+        #endregion
+
+        #region Cache
+        SugarCacheProvider DataCache { get; }
         #endregion
     }
 }
