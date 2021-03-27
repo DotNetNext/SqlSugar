@@ -60,9 +60,9 @@ namespace SqlSugar
                     var name = p.Name;
                     if (entity.Columns.Any(it => it.PropertyName == name))
                     {
-                        name=entity.Columns.First(it => it.PropertyName == name).DbColumnName;
+                        name = entity.Columns.First(it => it.PropertyName == name).DbColumnName;
                     }
-                    row[name] = p.GetValue(item, null);
+                    row[name] = GetValue(p, item);
                 });
                 dt.Rows.Add(row);
             }
@@ -169,7 +169,22 @@ namespace SqlSugar
                 sb.AppendLine();
             }
             return sb.ToString();
-        } 
+        }
+
+
+        private static object GetValue(PropertyInfo p, T item)
+        {
+            var result= p.GetValue(item, null);
+            if (result != null && UtilMethods.GetUnderType(p.PropertyType) == UtilConstants.BoolType) 
+            {
+                if (result.ObjToBool() == false) 
+                {
+                    result = null;
+                }
+            }
+            return result;
+        }
+
         #endregion
     }
 }

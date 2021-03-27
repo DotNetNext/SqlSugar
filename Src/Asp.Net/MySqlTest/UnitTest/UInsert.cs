@@ -11,9 +11,9 @@ namespace OrmTest
     {
         public class Unit4ASDF
         {
-            [SqlSugar.SugarColumn(ColumnDataType = " bigint(20)",IsNullable =true)]
+            [SqlSugar.SugarColumn(ColumnDataType = " bigint(20)", IsNullable = true)]
             public long? Id { get; set; }
-            [SqlSugar.SugarColumn(ColumnDataType = " bigint(20)" )]
+            [SqlSugar.SugarColumn(ColumnDataType = " bigint(20)")]
             public long Id2 { get; set; }
         }
         public static void Insert()
@@ -72,6 +72,12 @@ namespace OrmTest
                 }
 
             }
+
+            Db.CodeFirst.InitTables<Testdbbool>();
+            Db.DbMaintenance.TruncateTable("Testdbbool");
+            Db.Insertable(new Testdbbool() { isok=true }).UseMySql().ExecuteBlueCopy();
+            Db.Insertable(new Testdbbool() { isok = false }).UseMySql().ExecuteBlueCopy();
+            var x=Db.Queryable<Testdbbool>().ToList();
         }
 
         public class testdb
@@ -80,6 +86,13 @@ namespace OrmTest
 
             public string id { get; set; }
 
+        }
+
+        public class Testdbbool
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
+            public int id { get; set; }
+            public bool isok { get; set; }
         }
     }
 }
