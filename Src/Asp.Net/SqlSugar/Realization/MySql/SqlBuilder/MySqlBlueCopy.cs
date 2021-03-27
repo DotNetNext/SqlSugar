@@ -74,7 +74,7 @@ namespace SqlSugar
             }
             var fileName = dllPath + "\\" + Guid.NewGuid().ToString() + ".csv";
             var dataTableToCsv = DataTableToCsvString(dt);
-            File.WriteAllText(fileName, dataTableToCsv, Encoding.UTF8);
+            File.WriteAllText(fileName, dataTableToCsv, new UTF8Encoding(false));
             MySqlConnection conn = this.Context.Ado.Connection as MySqlConnection;
             try
             {

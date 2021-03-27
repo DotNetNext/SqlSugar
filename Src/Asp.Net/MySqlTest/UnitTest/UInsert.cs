@@ -24,6 +24,62 @@ namespace OrmTest
                    new Unit4ASDF() { Id=2, Id2=1 }}).UseMySql().ExecuteBlueCopy();
 
             var list = Db.Queryable<Unit4ASDF>().ToList();
+
+            Db.CodeFirst.InitTables<testdb>();
+            Db.DbMaintenance.TruncateTable("testdb");
+            var list1 = new List<testdb>();
+
+
+
+            for (int i = 0; i < 10; i++)
+
+            {
+
+                var id = i.ToString();
+
+                list1.Add(new testdb
+
+                {
+
+                    id = id,
+
+                });
+
+                Console.WriteLine(id + " Length：" + id.Length);
+
+            }
+
+
+
+            Db.Insertable(list1).UseMySql().ExecuteBlueCopy();
+
+
+
+            var queryList = Db.Queryable<testdb>().ToList();
+
+
+
+            foreach (var item in queryList)
+
+            {
+
+                if (item.id.Length != 1)
+
+                {
+
+                    throw new Exception("blue copy");
+
+                }
+
+            }
+        }
+
+        public class testdb
+
+        {
+
+            public string id { get; set; }
+
         }
     }
 }
