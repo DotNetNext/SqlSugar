@@ -228,6 +228,15 @@ namespace SqlSugar
             };
             return this;
         }
+        public IInsertable<T> RemoveDataCache(string likeString)
+        {
+            this.RemoveCacheFunc = () =>
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                CacheSchemeMain.RemoveCache(cacheService, likeString);
+            };
+            return this;
+        }
         public MySqlBlueCopy<T> UseMySql()
         {
             return new MySqlBlueCopy<T>(this.Context, this.SqlBuilder, InsertObjs);

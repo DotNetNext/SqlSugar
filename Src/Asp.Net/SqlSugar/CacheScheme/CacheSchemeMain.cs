@@ -33,5 +33,23 @@ namespace SqlSugar
                 }
             }
         }
+        public static void RemoveCacheByLike(ICacheService cacheService, string likeString)
+        {
+            if (cacheService == null)
+            {
+                return;
+            }
+            var keys = cacheService.GetAllKey<string>();
+            if (keys.HasValue())
+            {
+                foreach (var item in keys)
+                {
+                    if (item.ToLower().Contains(likeString))
+                    {
+                        cacheService.Remove<string>(item);
+                    }
+                }
+            }
+        }
     }
 }
