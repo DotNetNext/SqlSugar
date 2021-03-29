@@ -76,6 +76,20 @@ namespace OrmTest
             .Where(o=>o.name=="")
                 .Select("o.*").ToSql();
             UValidate.Check(s13.Key, "SELECT o.* FROM [UnitFilterClass2] o Left JOIN [UnitFilterClass1] i ON ( [o].[id] = [i].[id] )   WHERE ( [o].[name] = @name0 )  AND ( [i].[id] > @id1 )  AND ( [o].[id] = @id2 )", "UnitFilter");
+
+            db.QueryFilter.Clear();
+            db.QueryFilter.Add(new SqlFilterItem()
+            {
+              
+                FilterValue = it =>
+                {
+                    //Writable logic
+                    return new SqlFilterResult() { Sql = " id=@id ", Parameters= new { id=1} };
+                },
+                IsJoinQuery = false //单表查询生效
+            });
+            var s14 = db.Queryable<Order>().ToPageListAsync(1,2,3);
+            s14.Wait();
         }
         public class UnitFilterClass1
         {
