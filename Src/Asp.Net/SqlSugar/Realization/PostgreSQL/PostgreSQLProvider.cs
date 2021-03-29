@@ -144,6 +144,7 @@ namespace SqlSugar
             { typeof(byte[]),NpgsqlDbType.Bytea},
             { typeof(bool[]),NpgsqlDbType.Boolean},
             {typeof(DateTime[]),NpgsqlDbType.Date},
+            {typeof(float[]),NpgsqlDbType.Real},
 
 
             { typeof(int?[]),NpgsqlDbType.Integer},
@@ -157,6 +158,7 @@ namespace SqlSugar
 
 
              { typeof(string[]), NpgsqlDbType.Text},
+             {typeof(float?[]),NpgsqlDbType.Real},
         };
     }
 }
