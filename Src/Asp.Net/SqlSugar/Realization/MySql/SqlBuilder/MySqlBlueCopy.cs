@@ -48,7 +48,7 @@ namespace SqlSugar
             Array.ForEach(entity.Columns.ToArray(), p => {
                 if (!p.IsIgnore&& !p.IsOnlyIgnoreInsert)
                 {
-                    pList.Add(p.PropertyInfo); dt.Columns.Add(p.PropertyName);
+                    pList.Add(p.PropertyInfo); dt.Columns.Add(p.DbColumnName);
                 }
             });
             DataRow row = null;
