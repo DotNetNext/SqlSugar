@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 namespace SqlSugar
@@ -41,12 +42,12 @@ namespace SqlSugar
             }
         }
 
-        internal static string GetThrowMessage(string enMessage, string cnMessage, params string[] args)
+        internal static string GetThrowMessage(string enMessage, string cnMessage)
         {
-            List<string> formatArgs = new List<string>() { enMessage, cnMessage };
-            formatArgs.AddRange(args);
-            return string.Format(@"English Message : {0}
-Chinese Message : {1}", formatArgs.ToArray());
+            if (CultureInfo.CurrentCulture.Name.StartsWith("zh"))
+                return cnMessage;
+            else
+                return enMessage;
         }
     }
 }
