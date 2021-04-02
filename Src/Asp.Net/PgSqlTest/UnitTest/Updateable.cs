@@ -54,7 +54,19 @@ namespace OrmTest
             UValidate.Check(sql.Key, @"UPDATE ""diary""  SET
             ""typeid"" = @Const0   WHERE ( ""id"" = @ID1 )", "Updateable");
 
+            Db.Updateable<OrderModel>().SetColumns(it => new OrderModel()
+            {
+                CreateTime = null
+            }).Where(it => it.Id == 1).ExecuteCommand();
+
         }
+    }
+    [SugarTable("order")]
+    public class OrderModel 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public int Id { get; set; }
+        public DateTime? CreateTime { get; set; }
     }
     public class UnitSaveDiary
     {

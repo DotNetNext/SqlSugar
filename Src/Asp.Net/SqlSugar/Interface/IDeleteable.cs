@@ -32,6 +32,7 @@ namespace SqlSugar
         IDeleteable<T> WhereColumns(Expression<Func<T, object>> columns);
         IDeleteable<T> EnableDiffLogEvent(object businessData = null);
         IDeleteable<T> RemoveDataCache();
+        IDeleteable<T> RemoveDataCache(string likeString);
         KeyValuePair<string, List<SugarParameter>> ToSql();
         void AddQueue();
     }

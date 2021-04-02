@@ -25,12 +25,11 @@ namespace SqlSugar
             this.Builder = builder;
             this.Entitys = entitys;
         }
-        public bool ExecuteBlueCopy(string chara) 
+        public bool ExecuteBlueCopy(string characterSet) 
         {
-            this.Chara = chara;
+            this.Chara = characterSet;
             return ExecuteBlueCopy();
         }
-
 
         public bool ExecuteBlueCopy()
         {
@@ -49,7 +48,7 @@ namespace SqlSugar
             Array.ForEach(entity.Columns.ToArray(), p => {
                 if (!p.IsIgnore&& !p.IsOnlyIgnoreInsert)
                 {
-                    pList.Add(p.PropertyInfo); dt.Columns.Add(p.PropertyName);
+                    pList.Add(p.PropertyInfo); dt.Columns.Add(p.DbColumnName);
                 }
             });
             DataRow row = null;
@@ -61,9 +60,9 @@ namespace SqlSugar
                     var name = p.Name;
                     if (entity.Columns.Any(it => it.PropertyName == name))
                     {
-                        name=entity.Columns.First(it => it.PropertyName == name).DbColumnName;
+                        name = entity.Columns.First(it => it.PropertyName == name).DbColumnName;
                     }
-                    row[name] = p.GetValue(item, null);
+                    row[name] = GetValue(p, item);
                 });
                 dt.Rows.Add(row);
             }
@@ -75,7 +74,7 @@ namespace SqlSugar
             }
             var fileName = dllPath + "\\" + Guid.NewGuid().ToString() + ".csv";
             var dataTableToCsv = DataTableToCsvString(dt);
-            File.WriteAllText(fileName, dataTableToCsv, Encoding.UTF8);
+            File.WriteAllText(fileName, dataTableToCsv, new UTF8Encoding(false));
             MySqlConnection conn = this.Context.Ado.Connection as MySqlConnection;
             try
             {
@@ -112,27 +111,28 @@ namespace SqlSugar
             return IsBulkLoad; ;
         }
 
+        public Task<bool> ExecuteBlueCopyAsync()
+        {
+            return Task.FromResult(ExecuteBlueCopy());
+        }
+
+        public Task<bool> ExecuteBlueCopyAsync(string characterSet)
+        {
+            this.Chara = characterSet;
+            return Task.FromResult(ExecuteBlueCopy());
+        }
+
+        #region  Helper
         private string GetChara()
         {
             if (this.Chara == null)
             {
                 return "UTF8";
             }
-            else 
+            else
             {
                 return this.Chara;
             }
-        }
-
-        public Task<bool> ExecuteBlueCopyAsync()
-        {
-            return Task.FromResult(ExecuteBlueCopy());
-        }
-
-        public Task<bool> ExecuteBlueCopyAsync(string chara)
-        {
-            this.Chara = chara;
-            return Task.FromResult(ExecuteBlueCopy());
         }
 
         private void CloseDb()
@@ -170,5 +170,21 @@ namespace SqlSugar
             }
             return sb.ToString();
         }
+
+
+        private static object GetValue(PropertyInfo p, T item)
+        {
+            var result= p.GetValue(item, null);
+            if (result != null && UtilMethods.GetUnderType(p.PropertyType) == UtilConstants.BoolType) 
+            {
+                if (result.ObjToBool() == false) 
+                {
+                    result = null;
+                }
+            }
+            return result;
+        }
+
+        #endregion
     }
 }

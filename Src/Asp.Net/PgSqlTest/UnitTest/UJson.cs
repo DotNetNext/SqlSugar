@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,10 +21,17 @@ namespace OrmTest
             list= Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
             var list2 = Db.Queryable<UnitJsonTest>().ToList();
+            Db.CodeFirst.InitTables<UnitArray2>();
+            Db.Insertable(new UnitArray2() { MenuIds = new float[] { 1, 2 } }).ExecuteCommand();
+            var x=Db.Queryable<UnitArray2>().ToList();
         }
     }
 
-
+    public class UnitArray2 
+    {
+        [SugarColumn(ColumnDataType = "real []", IsArray = true)]
+        public float[] MenuIds { get; set; }
+    }
     public class UnitJsonTest
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]

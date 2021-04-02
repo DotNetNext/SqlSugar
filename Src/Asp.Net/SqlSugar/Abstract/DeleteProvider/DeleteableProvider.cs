@@ -238,7 +238,15 @@ namespace SqlSugar
             };
             return this;
         }
-
+        public IDeleteable<T> RemoveDataCache(string likeString)
+        {
+            this.RemoveCacheFunc = () =>
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                CacheSchemeMain.RemoveCacheByLike(cacheService, likeString);
+            };
+            return this;
+        }
         public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
         {
             if (primaryKeyValues == null || primaryKeyValues.Count() == 0)

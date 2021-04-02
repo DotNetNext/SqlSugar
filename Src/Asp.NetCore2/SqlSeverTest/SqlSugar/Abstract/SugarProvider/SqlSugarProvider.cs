@@ -544,6 +544,7 @@ namespace SqlSugar
             List<KeyValuePair<string, List<SugarParameter>>> allItems = new List<KeyValuePair<string, List<SugarParameter>>>();
             foreach (var item in queryables)
             {
+                item.QueryBuilder.DisableTop = true;
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
                 UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");
@@ -1067,6 +1068,22 @@ namespace SqlSugar
             }
         }
 
+        #endregion
+
+        #region Cache
+        public SugarCacheProvider DataCache 
+        { 
+            get {
+                var services=this.CurrentConnectionConfig.ConfigureExternalServices;
+                if (services == null)
+                    return new SugarCacheProvider();
+                if (services.DataInfoCacheService == null)
+                    return new SugarCacheProvider();
+                SugarCacheProvider cache = new SugarCacheProvider();
+                cache.Servie=services.DataInfoCacheService;
+                return cache;
+            }
+        }
         #endregion
     }
 }

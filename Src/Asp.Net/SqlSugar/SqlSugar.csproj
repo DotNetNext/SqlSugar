@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\AopProvider\AopProvider.cs" />
+    <Compile Include="Abstract\CacheProvider\CacheProvider.cs" />
     <Compile Include="Abstract\CodeFirstProvider\CodeFirstProvider.cs" />
     <Compile Include="Abstract\AdoProvider\AdoAccessory.cs" />
     <Compile Include="Abstract\DbBindProvider\DbBindAccessory.cs" />

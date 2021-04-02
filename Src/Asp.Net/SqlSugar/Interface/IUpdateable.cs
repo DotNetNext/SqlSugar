@@ -87,6 +87,7 @@ namespace SqlSugar
         IUpdateable<T> EnableDiffLogEvent(object businessData = null);
         IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
         IUpdateable<T> RemoveDataCache();
+        IUpdateable<T> RemoveDataCache(string likeString);
         IUpdateable<T> CallEntityMethod(Expression<Action<T>> method);
         KeyValuePair<string,List<SugarParameter>> ToSql();
         void AddQueue();
