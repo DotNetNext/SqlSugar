@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SqlSugar
 {
     
-    public partial class SimpleClient<T> : ISimpleClient<T> where T : class, new()
+    public partial class SimpleClient<T> : ISugarRepository,ISimpleClient<T> where T : class, new()
     {
         #region Interface
-        protected ISqlSugarClient Context { get; set; }
+        public ISqlSugarClient Context { get; set; }
 
         public ITenant AsTenant()
         {
@@ -33,6 +34,17 @@ namespace SqlSugar
         public SimpleClient<ChangeType> Change<ChangeType>() where ChangeType : class, new()
         {
             return this.Context.GetSimpleClient<ChangeType>();
+        }
+        public RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository
+        {
+            Type type = typeof(RepositoryType);
+            object o = Activator.CreateInstance(type,new string[]{ null});
+            var result= (RepositoryType)o;
+            if (result.Context == null)
+            {
+                result.Context = this.Context;
+            }
+            return result;
         }
         public ISugarQueryable<T> AsQueryable()
         {
@@ -290,5 +302,10 @@ namespace SqlSugar
 
         [Obsolete("Use AsSugarClient()")]
         public ISqlSugarClient FullClient { get { return this.Context; } }
+    }
+
+    public interface ISugarRepository 
+    {
+         ISqlSugarClient Context { get; set; }
     }
 }
