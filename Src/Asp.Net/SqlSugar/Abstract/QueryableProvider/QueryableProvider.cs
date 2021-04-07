@@ -460,6 +460,10 @@ namespace SqlSugar
 
         public virtual T InSingle(object pkValue)
         {
+            if (pkValue == null) 
+            {
+                pkValue = -1;
+            }
             Check.Exception(this.QueryBuilder.SelectValue.HasValue(), "'InSingle' and' Select' can't be used together,You can use .Select(it=>...).Single(it.id==1)");
             var list = In(pkValue).ToList();
             if (list == null) return default(T);
