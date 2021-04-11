@@ -50,6 +50,8 @@ namespace OrmTest
             var q2 = db.Queryable<Order>().Take(2);
             var test02 = db.Union(q1, q2).ToList();
             var test03 = db.Queryable<Order>().Take(1).ToList();
+            var dp = DateTime.Now;
+            var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month==  dp.Month).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
