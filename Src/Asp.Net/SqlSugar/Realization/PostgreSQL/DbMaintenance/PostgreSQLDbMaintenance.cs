@@ -192,7 +192,7 @@ namespace SqlSugar
         {
             get
             {
-                return "  Select count(1) from (SELECT to_regclass('Index_UnitCodeTest1_Id_CreateDate') as c ) t where t.c is not null";
+                return "  Select count(1) from (SELECT to_regclass('{0}') as c ) t where t.c is not null";
             }
         }
 
