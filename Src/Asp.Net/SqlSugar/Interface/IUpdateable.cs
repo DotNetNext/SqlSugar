@@ -42,7 +42,7 @@ namespace SqlSugar
         /// <returns></returns>
         IUpdateable<T> WhereColumns(Expression<Func<T, object>> columns);
         IUpdateable<T> WhereColumns(string columnName);
-        IUpdateable<T> WhereColumns(string [] columnNames);
+        IUpdateable<T> WhereColumns(params string [] columnNames);
 
         /// <summary>
         /// .UpdateColumns(it=>new{ it.Name,it.Price})
