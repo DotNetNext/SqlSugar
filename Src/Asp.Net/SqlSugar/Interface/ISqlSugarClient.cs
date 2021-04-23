@@ -13,7 +13,7 @@ namespace SqlSugar
         IgnoreColumnList IgnoreColumns { get; set; }
         IgnoreColumnList IgnoreInsertColumns { get; set; }
         Dictionary<string, object> TempItems { get; set; }
-
+        SqlConfigTable SqlConfigTable { get; set; }
 
         bool IsSystemTablesConfig { get; }
         Guid ContextID { get; set; }

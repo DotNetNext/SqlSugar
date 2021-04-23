@@ -89,10 +89,12 @@
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\SaveableProvider\Storageable.cs" />
+    <Compile Include="Entities\ConfigQuery.cs" />
     <Compile Include="Entities\ManyToManyConfig.cs" />
     <Compile Include="Entities\StackTraceInfo.cs" />
     <Compile Include="Entities\SubInsertTree.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperExpression.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\SqlFuncExtendsion.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MapperExpressionResolve.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubInnerJoin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubLeftJoin.cs" />

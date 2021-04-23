@@ -171,6 +171,25 @@ namespace SqlSugar
             return reval;
         }
 
+        internal static object GetExpressionValue(Expression expression)
+        {
+            try
+            {
+                if (expression is ConstantExpression)
+                {
+                    return (expression as ConstantExpression).Value;
+                }
+                else
+                {
+                    return GetMemberValue((expression as MemberExpression).Member, expression);
+                }
+            }
+            catch  
+            {
+                return LambdaExpression.Lambda(expression).Compile().DynamicInvoke();
+            }
+        }
+
         public static object GetFiledValue(MemberExpression memberExpr)
         {
             if (!(memberExpr.Member is FieldInfo))

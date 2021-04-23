@@ -31,6 +31,20 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public IgnoreColumnList IgnoreColumns { get; set; }
         public IgnoreColumnList IgnoreInsertColumns { get; set; }
+        public SqlConfigTable SqlConfigTable { 
+            get 
+            {
+                if (_SqlConfigTable==null) 
+                {
+                    _SqlConfigTable = new SqlConfigTable() { Context = this.Context }; 
+                }
+                return _SqlConfigTable; 
+             }
+            set 
+            {
+                _SqlConfigTable = value;
+            }
+       }
 
 
         #endregion
@@ -46,6 +60,7 @@ namespace SqlSugar
         protected IContextMethods _RewritableMethods;
         protected IDbMaintenance _DbMaintenance;
         protected QueryFilterProvider _QueryFilterProvider;
+        protected SqlConfigTable _SqlConfigTable;
         //protected SimpleClient _SimpleClient;
         protected IAdo ContextAdo
         {

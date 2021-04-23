@@ -5,7 +5,6 @@ using System.Data;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
-
 namespace OrmTest
 {
     public class Demo1_Queryable
@@ -22,6 +21,45 @@ namespace OrmTest
             SqlFuncTest();
             Subquery();
             ReturnType();
+            ConfiQuery();
+        }
+
+        private static void ConfiQuery()
+        {
+            var db = GetInstance();
+            db.SqlConfigTable.SetKeyValue<Order>(it=>it.Id ,it=>it.Name,"01",it=>it.Id>1);
+            db.SqlConfigTable.SetKeyValue<Order>(it => it.Id, it => it.Name, "02", it => it.Id > 2);
+            db.SqlConfigTable.SetKeyValue<Order>(it => it.Id, it => it.Name,null);
+            var list = db.Queryable<OrderItem>().Select(it => new OrderItem
+            {
+                ItemId = SqlFunc.GetSelfAndAutoFill(it.ItemId),
+                OrderName = it.OrderId.GetConfigValue<Order>("01")
+            }).ToList();
+            var list2 = db.Queryable<OrderItem>().Select(it => new OrderItem
+            {
+                ItemId = SqlFunc.GetSelfAndAutoFill(it.ItemId),
+                OrderName = it.OrderId.GetConfigValue<Order>("02")
+            }).ToList();
+            var list3 = db.Queryable<OrderItem>().Select(it => new OrderItem
+            {
+                ItemId = SqlFunc.GetSelfAndAutoFill(it.ItemId),
+                OrderName = it.OrderId.GetConfigValue<Order>()
+            }).ToList();
+
+            var list4 = db.Queryable<OrderItem>().Select(it => new OrderItem
+            {
+                ItemId = SqlFunc.GetSelfAndAutoFill(it.ItemId),
+                OrderName = it.OrderId.GetConfigValue<Order>()
+            })
+            .Where(it=>it.OrderId.GetConfigValue<Order>()=="jack")
+            .OrderBy(it=>it.OrderId.GetConfigValue<Order>()).ToList();
+
+            var list5 = db.Queryable<Order, OrderItem, Custom>((o, i, c) => o.Id == i.OrderId && c.Id == o.CustomId)
+                        .Select<ViewOrder>((o,i,c)=>new ViewOrder() { 
+                           Id=SqlFunc.GetSelfAndAutoFill(o.Id),
+                           Name=i.OrderId.GetConfigValue<Order>()
+                        })
+                        .ToList();
         }
 
         private static void EasyExamples()

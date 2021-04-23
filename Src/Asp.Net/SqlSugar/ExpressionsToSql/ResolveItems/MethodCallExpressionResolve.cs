@@ -46,6 +46,11 @@ namespace SqlSugar
                 this.Context.Result.Append(this.Context.DbMehtods.GuidNew());
                 return;
             }
+            else if (methodName == "GetConfigValue") 
+            {
+                GetConfigValue(express,parameter);
+                return;
+            }
             else if (IsSubMethod(express, methodName))
             {
                 //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
@@ -92,6 +97,58 @@ namespace SqlSugar
             else
             {
                 SqlFuncMethod(parameter, express, isLeft);
+            }
+        }
+
+        private void GetConfigValue(MethodCallExpression express,ExpressionParameter parameter)
+        {
+            var exp = express.Arguments[0];
+            var name =Regex.Match(express.Method.ToString(), @"GetConfigValue\[(.+)\]").Groups[1].Value;
+            string code = null;
+            if (express.Arguments.Count > 1) 
+            {
+                code=ExpressionTool.GetExpressionValue(express.Arguments[1])+"";
+            }
+            var entity= SqlFuncExtendsion.TableInfos.FirstOrDefault(y => y.Type.Name == name&&y.Code== code);
+            Check.Exception(entity == null,string.Format( "GetConfigValue no configuration  Entity={0} UniqueCode={1}",name,code));
+            string sql = " (SELECT {0} FROM {1} WHERE {2}={3}";
+            if (ExpressionTool.IsUnConvertExpress(exp)) 
+            {
+                exp = (exp as UnaryExpression).Operand;
+            }
+            var member = exp as MemberExpression;
+            var it = member.Expression;
+            var type = it.Type;
+            var properyName =member.Member.Name;
+            var eqName = string.Format("{0}.{1}",this.Context.GetTranslationColumnName(it.ToString()), this.Context.GetDbColumnName(type.Name,properyName));
+            if (this.Context.IsSingle)
+            {
+                this.Context.SingleTableNameSubqueryShortName = it.ToString();
+            }
+            sql = string.Format(sql,entity.Value,this.Context.GetTranslationColumnName(entity.TableName),entity.Key, eqName);
+            if (entity.Parameter != null)
+            {
+                foreach (var item in entity.Parameter)
+                {
+                    var oldName = item.ParameterName;
+                    item.ParameterName = oldName + "_con_" + this.Context.ParameterIndex;
+                    entity.Where = entity.Where.Replace(oldName, item.ParameterName);
+                }
+                this.Context.ParameterIndex++;
+                this.Context.Parameters.AddRange(entity.Parameter);
+            }
+            if (entity.Where.HasValue())
+            {
+                sql += " AND " + entity.Where;
+            }
+            sql += " )";
+            if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle, ResolveExpressType.Update))
+            {
+                parameter.BaseParameter.CommonTempData = sql;
+            }
+            else 
+            {
+                AppendMember(parameter, parameter.IsLeft, sql);
             }
         }
 
