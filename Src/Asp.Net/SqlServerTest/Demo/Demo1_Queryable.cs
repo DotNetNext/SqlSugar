@@ -27,9 +27,12 @@ namespace OrmTest
         private static void ConfiQuery()
         {
             var db = GetInstance();
-            db.ConfigQuery.SetTable<Order>(it=>it.Id ,it=>it.Name,"01",it=>it.Id>1);
-            db.ConfigQuery.SetTable<Order>(it => it.Id, it => it.Name, "02", it => it.Id > 2);
-            db.ConfigQuery.SetTable<Order>(it => it.Id, it => it.Name,null);
+            if (!db.ConfigQuery.Any())
+            {
+                db.ConfigQuery.SetTable<Order>(it => it.Id, it => it.Name, "01", it => it.Id > 1);
+                db.ConfigQuery.SetTable<Order>(it => it.Id, it => it.Name, "02", it => it.Id > 2);
+                db.ConfigQuery.SetTable<Order>(it => it.Id, it => it.Name, null);
+            }
             var list = db.Queryable<OrderItem>().Select(it => new OrderItem
             {
                 ItemId = it.ItemId.SelectAll(),
