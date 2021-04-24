@@ -16,8 +16,7 @@ namespace OrmTest
             Console.WriteLine("#### SimpleClient Start ####");
             var rep1=new Repository<C1Table>();
             rep1.GetList();
-            var rep2 = new Repository<C2Table>();
-            rep2.GetList();
+            var rep2 = rep1.ChangeRepository<Repository<C2Table>>();
             Console.WriteLine("#### SimpleClient End ####");
         }
       
