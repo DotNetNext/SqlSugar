@@ -277,7 +277,7 @@ namespace SqlSugar
         }
         protected void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
-            if (name == "GetSelfAndAutoFill")
+            if (name.IsIn("GetSelfAndAutoFill","SelectAll"))
             {
                 var memberValue = (args.First() as MemberExpression).Expression.ToString();
                 model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberValue, IsMember = true, MemberName = memberValue });
@@ -722,6 +722,7 @@ namespace SqlSugar
                         return this.Context.DbMehtods.IsNull(model);
                     case "MergeString":
                         return this.Context.DbMehtods.MergeString(model.Args.Select(it => it.MemberName.ObjToString()).ToArray());
+                    case "SelectAll":
                     case "GetSelfAndAutoFill":
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
                         return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
@@ -761,6 +762,10 @@ namespace SqlSugar
         }
         private bool CheckMethod(MethodCallExpression expression)
         {
+            if (expression.Method.Name=="SelectAll") 
+            {
+                return true;
+            }
             if (IsExtMethod(expression.Method.Name))
                 return true;
             if (IsParseMethod(expression))

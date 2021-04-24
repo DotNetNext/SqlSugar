@@ -18,5 +18,10 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+
+        public static FieldType SelectAll<FieldType>(this FieldType field)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
     }
 }

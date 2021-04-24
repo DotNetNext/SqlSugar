@@ -52,7 +52,7 @@ namespace SqlSugar
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
         public ConnectionConfig CurrentConnectionConfig { get { return _CurrentConnectionConfig; } set { _CurrentConnectionConfig = value; } }
         public Guid ContextID { get { return this.Context.ContextID; } set { this.Context.ContextID = value; } }
-        public SqlConfigTable SqlConfigTable { get { return this.Context.SqlConfigTable; } set { this.Context.SqlConfigTable = value; } }
+        public ConfigQuery ConfigQuery { get { return this.Context.ConfigQuery; } set { this.Context.ConfigQuery = value; } }
 
         public MappingTableList MappingTables { get { return _MappingTables; } set { _MappingTables = value; } }
         public MappingColumnList MappingColumns { get { return _MappingColumns; } set { _MappingColumns = value; } }

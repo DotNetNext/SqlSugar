@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar 
 {
-    public class SqlConfigTable
+    public class ConfigQuery
     {
         public SqlSugarProvider Context { get; set; }
-        public void SetKeyValue<T>(Expression<Func<T, object>> keyExpression, Expression<Func<T, object>> valueExpression, string uniqueCode = null, Expression<Func<T, object>> whereExpression=null) 
+        public void SetTable<T>(Expression<Func<T, object>> keyExpression, Expression<Func<T, object>> valueTextExpression, string uniqueCode = null, Expression<Func<T, object>> whereExpression=null) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             ExpressionContext context = new ExpressionContext();
             var query = Context.Queryable<T>().QueryBuilder;
             var keyValue= query.GetExpressionValue(keyExpression, ResolveExpressType.FieldSingle).GetString();
-            var ValueValue = query.GetExpressionValue(valueExpression, ResolveExpressType.FieldSingle).GetString();
+            var ValueValue = query.GetExpressionValue(valueTextExpression, ResolveExpressType.FieldSingle).GetString();
             string where = null;
             if (whereExpression != null) 
             {
@@ -40,9 +40,9 @@ namespace SqlSugar
                 Check.Exception(true, "SetKeyValue error , entity & uniqueCode already exist");
             }
         }
-        public void SetKeyValue<T>(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
+        public void SetTable<T>(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
-            SetKeyValue<T>(key,value, null,null);
+            SetTable<T>(key,value, null,null);
         }
     }
 

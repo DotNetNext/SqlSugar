@@ -31,12 +31,12 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public IgnoreColumnList IgnoreColumns { get; set; }
         public IgnoreColumnList IgnoreInsertColumns { get; set; }
-        public SqlConfigTable SqlConfigTable { 
+        public ConfigQuery ConfigQuery { 
             get 
             {
                 if (_SqlConfigTable==null) 
                 {
-                    _SqlConfigTable = new SqlConfigTable() { Context = this.Context }; 
+                    _SqlConfigTable = new ConfigQuery() { Context = this.Context }; 
                 }
                 return _SqlConfigTable; 
              }
@@ -60,7 +60,7 @@ namespace SqlSugar
         protected IContextMethods _RewritableMethods;
         protected IDbMaintenance _DbMaintenance;
         protected QueryFilterProvider _QueryFilterProvider;
-        protected SqlConfigTable _SqlConfigTable;
+        protected ConfigQuery _SqlConfigTable;
         //protected SimpleClient _SimpleClient;
         protected IAdo ContextAdo
         {
