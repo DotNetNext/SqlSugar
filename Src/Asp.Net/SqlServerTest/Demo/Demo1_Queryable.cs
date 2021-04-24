@@ -94,6 +94,14 @@ namespace OrmTest
             var test03 = db.Queryable<Order>().Take(1).ToList();
             var dp = DateTime.Now;
             var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month==  dp.Month).ToList();
+            var test06 = db.Queryable<Order>()
+                   .ToPivotTable(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
+
+            var test07 = db.Queryable<Order>()
+            .ToPivotList(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
+
+            var test08 = db.Queryable<Order>()
+            .ToPivotJson(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
             Console.WriteLine("#### Examples End ####");
         }
 
