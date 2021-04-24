@@ -44,6 +44,11 @@ namespace SqlSugar
         {
             SetTable<T>(key,value, null,null);
         }
+
+        public bool Any() 
+        {
+            return SqlFuncExtendsion.TableInfos.Any();
+        }
     }
 
     public class ConfigTableInfo 
