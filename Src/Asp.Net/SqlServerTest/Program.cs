@@ -30,9 +30,9 @@ namespace OrmTest
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
-
+            DemoH_Tenant.Init();
             //Unit test
-             //NewUnitTest.Init();
+            //NewUnitTest.Init();
 
             //Rest Data
             NewUnitTest.RestData();
