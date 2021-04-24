@@ -19,7 +19,7 @@ namespace SqlSugar
 
         #region Check
         bool IsAnyTable(string tableName, bool isCache = true);
-        bool IsAnyColumn(string tableName, string column);
+        bool IsAnyColumn(string tableName, string column, bool isCache = true);
         bool IsPrimaryKey(string tableName, string column);
         bool IsIdentity(string tableName, string column);
         bool IsAnyConstraint(string ConstraintName);
