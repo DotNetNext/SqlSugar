@@ -102,6 +102,9 @@ namespace OrmTest
 
             var test08 = db.Queryable<Order>()
             .ToPivotJson(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
+
+            var test09 = db.Queryable<Order>().PartitionBy(it=>it.Id).ToPageListAsync(1,2,0);
+            test09.Wait();
             Console.WriteLine("#### Examples End ####");
         }
 

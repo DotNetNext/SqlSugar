@@ -2276,6 +2276,7 @@ namespace SqlSugar
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
             asyncQueryableBuilder.IgnoreColumns = this.QueryBuilder.IgnoreColumns;
             asyncQueryableBuilder.AsTables = this.QueryBuilder.AsTables;
+            asyncQueryableBuilder.DisableTop = this.QueryBuilder.DisableTop;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
