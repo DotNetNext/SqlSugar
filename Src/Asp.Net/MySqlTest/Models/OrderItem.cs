@@ -14,5 +14,7 @@ namespace OrmTest
         public decimal? Price { get; set; }
         [SqlSugar.SugarColumn(IsNullable = true)]
         public DateTime? CreateTime { get; set; }
+        [SqlSugar.SugarColumn(IsIgnore  = true)]
+        public string OrderName { get; internal set; }
     }
 }
