@@ -891,6 +891,19 @@ namespace SqlSugar
         {
             return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber), typeof(T));
         }
+        public virtual DataTable ToPivotTable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector) 
+        {
+            return this.ToList().ToPivotTable(columnSelector,rowSelector,dataSelector);
+        }
+        public virtual List<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return this.ToList().ToPivotList(columnSelector, rowSelector, dataSelector);
+        }
+        public virtual string ToPivotJson<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            var list= this.ToPivotList(columnSelector, rowSelector, dataSelector);
+            return this.Context.Utilities.SerializeObject(list);
+        }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             List<T> result = new List<T>() { };
