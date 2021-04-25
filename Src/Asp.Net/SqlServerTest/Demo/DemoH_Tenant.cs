@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrmTest 
+namespace OrmTest
 {
     public class DemoH_Tenant
     {
@@ -19,15 +19,15 @@ namespace OrmTest
         }
         public class C1Service : Repository<C1Table>
         {
-            public void Test() 
+            public void Test()
             {
-                base.GetList(); 
-                base.ChangeRepository<C2Service>().GetList();
-            }
-        }
-        public class C2Service : Repository<C2Table>
-        {
+                base.AsTenant().BeginTran();
 
+                base.GetList(); //调用内部仓储方法
+                base.ChangeRepository<Repository<C2Table>>().GetList();//调用外部仓储
+
+                base.AsTenant().CommitTran();
+            }
         }
 
 
@@ -40,7 +40,7 @@ namespace OrmTest
                     var db = new SqlSugarClient(new List<ConnectionConfig> {
                                                         new ConnectionConfig()
                                                     {
-                                                        ConfigId=1,
+                                                        ConfigId="1",
                                                         DbType = SqlSugar.DbType.SqlServer,
                                                         IsAutoCloseConnection = true,
                                                         ConnectionString = Config.ConnectionString
@@ -53,13 +53,10 @@ namespace OrmTest
                                                         ConnectionString = Config.ConnectionString2
                                                     }
                     });
+                    base.Context = db;
                     var configId = typeof(T).GetCustomAttribute<TenantAttribute>().configId;
-                    base.Context = db.GetConnection(configId);
-                    base.Context.CodeFirst.InitTables<T>();
-                    db.Aop.OnLogExecuting = (s, p) =>
-                    {
-                        Console.WriteLine(s);
-                    };
+                    db.ChangeDatabase(configId);
+
                 }
             }
 
@@ -76,9 +73,9 @@ namespace OrmTest
         }
 
         [TenantAttribute("1")]
-        public class C1Table 
+        public class C1Table
         {
-           public string Id { get; set; }
+            public string Id { get; set; }
         }
         [TenantAttribute("2")]
         public class C2Table
