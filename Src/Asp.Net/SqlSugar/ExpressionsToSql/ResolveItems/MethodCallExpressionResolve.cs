@@ -815,7 +815,26 @@ namespace SqlSugar
             formatString = formatString.Replace("yy", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
             parameters.Args.Last().MemberValue = DateType.Month;
-            formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            if (IsMySql())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("LPAD(" + this.GetMethodValue("DateValue", parameters).ObjToString() + ",2,0)") + end);
+            }
+            else if (IsSqlite())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("SUBSTR('00' ||" + this.GetMethodValue("DateValue", parameters).ObjToString() + ", -2, 2)") + end);
+            }
+            else if (IsPg())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("lpad(cast(" + this.GetMethodValue("DateValue", parameters).ObjToString() + " as varchar(20)),2,'0')") + end);
+            }
+            else if (IsOracle())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("lpad(cast(" + this.GetMethodValue("DateValue", parameters).ObjToString() + " as varchar(20)),2,'0')") + end);
+            }
+            else
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            }
             formatString = formatString.Replace("M", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
             parameters.Args.Last().MemberValue = DateType.Day;
@@ -834,8 +853,12 @@ namespace SqlSugar
             formatString = formatString.Replace("ss", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
             formatString = formatString.Replace("s", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
-            parameters.Args.Last().MemberValue = DateType.Millisecond;
-            formatString = formatString.Replace("ms", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            if (!IsSqlite())
+            {
+                parameters.Args.Last().MemberValue = DateType.Millisecond;
+                formatString = formatString.Replace("ms", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            }
+
             var items = Regex.Matches(formatString, @"\^\d+\$").Cast<Match>().ToList();
             foreach (var item in items)
             {
@@ -867,5 +890,23 @@ namespace SqlSugar
             }
             return this.GetMethodValue("MergeString", joinStringParameter).ObjToString();
         }
+
+        private bool IsMySql()
+        {
+            return this.Context is MySqlExpressionContext;
+        }
+        private bool IsSqlite()
+        {
+            return this.Context is SqliteExpressionContext;
+        }
+        private bool IsPg()
+        {
+            return this.Context is PostgreSQLExpressionContext;
+        }
+        private bool IsOracle()
+        {
+            return this.Context is OracleExpressionContext;
+        }
+
     }
 }
