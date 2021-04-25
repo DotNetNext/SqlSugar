@@ -32,6 +32,9 @@ namespace SqlSugar
         }
         public override string GetTranslationColumnName(string columnName)
         {
+            if (columnName.Contains(":"))
+                return base.GetTranslationColumnName(columnName);
+            else
             return base.GetTranslationColumnName(columnName).ToUpper();
         }
         public override string GetDbColumnName(string entityName, string propertyName)
