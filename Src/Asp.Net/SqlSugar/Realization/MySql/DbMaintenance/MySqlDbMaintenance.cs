@@ -31,7 +31,9 @@ namespace SqlSugar
                                     THEN true ELSE false END AS `IsPrimaryKey`,
                                     CASE WHEN EXTRA='auto_increment' THEN true ELSE false END as IsIdentity,
                                     CASE WHEN is_nullable = 'YES'
-                                    THEN true ELSE false END AS `IsNullable`
+                                    THEN true ELSE false END AS `IsNullable`,
+                                    numeric_scale as Scale,
+                                    numeric_scale as DecimalDigits
                                     FROM
                                     Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY TABLE_NAME";
                 return sql;
