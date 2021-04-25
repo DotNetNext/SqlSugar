@@ -192,4 +192,15 @@ namespace SqlSugar
 
     }
 
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    public class TenantAttribute :Attribute
+    {
+        public object configId { get; set; }
+        public TenantAttribute(object configId) 
+        {
+            this.configId = configId;
+        }
+    }
+
 }

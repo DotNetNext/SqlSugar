@@ -166,6 +166,9 @@ namespace SqlSugar
         void AddQueue();
         ISugarQueryable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         ISugarQueryable<T> IgnoreColumns(params string[] columns);
+        DataTable ToPivotTable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector,Expression<Func<T, TRow>> rowSelector,Func<IEnumerable<T>, TData> dataSelector);
+        List<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector);
+        string ToPivotJson<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector);
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {

@@ -139,8 +139,16 @@ namespace SqlSugar
                     if (addItem.Value == null && dataType == UtilConstants.DateType)
                     {
                         addItem.DbType = System.Data.DbType.Date;
-
                     }
+                    if (addItem.Value == null && dataType.IsIn(UtilConstants.FloatType,UtilConstants.IntType,UtilConstants.LongType,UtilConstants.DecType,UtilConstants.DobType))
+                    {
+                        addItem.DbType = System.Data.DbType.Int32;
+                    }
+                    if (addItem.Value == null && dataType == UtilConstants.BoolType)
+                    {
+                        addItem.DbType = System.Data.DbType.Boolean;
+                    }
+
                     this.Context.Parameters.Add(addItem);
                     this.Context.ParameterIndex++;
                 }

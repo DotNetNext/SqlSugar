@@ -34,6 +34,7 @@ namespace SqlSugar
         public DiffLogModel diffModel { get; set; }
         private Action RemoveCacheFunc { get; set; }
         private int SetColumnsIndex { get; set; }
+        private List<DbColumnInfo> columns { get; set; }
         #endregion
 
         #region Core
@@ -207,6 +208,7 @@ namespace SqlSugar
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var item in whereColumns)
             {
+                _WhereColumn(item);
                 this.WhereColumnList.Add(item);
             }
             return this;
@@ -216,15 +218,18 @@ namespace SqlSugar
 
             ThrowUpdateByExpression();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
+            _WhereColumn(columnName);
             this.WhereColumnList.Add(columnName);
             return this;
         }
+
         public IUpdateable<T> WhereColumns(string[] columnNames)
         {
             ThrowUpdateByExpression();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var columnName in columnNames)
             {
+                _WhereColumn(columnName);
                 this.WhereColumnList.Add(columnName);
             }
             return this;
@@ -302,6 +307,10 @@ namespace SqlSugar
             Check.Exception(!(binaryExp.Left is MemberExpression) && !(binaryExp.Left is UnaryExpression), "No support {0}", columns.ToString());
             Check.Exception(ExpressionTool.IsConstExpression(binaryExp.Left as MemberExpression), "No support {0}", columns.ToString());
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.WhereSingle).GetResultString().Replace(")", " )").Replace("(", "( ").Trim().TrimStart('(').TrimEnd(')');
+            if (expResult.EndsWith(" IS NULL  ")) 
+            {
+                expResult = Regex.Split(expResult, " IS NULL  ")[0]+" = NULL ";
+            }
             string key = SqlBuilder.GetNoTranslationColumnName(expResult);
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), expResult));
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
@@ -388,6 +397,16 @@ namespace SqlSugar
             Before(sql);
             return sql;
         }
+
+        private void _WhereColumn(string columnName)
+        {
+            var columnInfos = columns.Where(it => it.DbColumnName.Equals(columnName, StringComparison.OrdinalIgnoreCase) || it.PropertyName.Equals(columnName, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!this.UpdateBuilder.DbColumnInfoList.Any(y => y.DbColumnName == columnInfos.First().DbColumnName))
+            {
+                this.UpdateBuilder.DbColumnInfoList.AddRange(columnInfos);
+            }
+        }
+
         private void AutoRemoveDataCache()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
@@ -424,6 +443,7 @@ namespace SqlSugar
                 }
                 ++i;
             }
+            this.columns = this.UpdateBuilder.DbColumnInfoList;
         }
         private void CheckTranscodeing(bool checkIsJson = true)
         {

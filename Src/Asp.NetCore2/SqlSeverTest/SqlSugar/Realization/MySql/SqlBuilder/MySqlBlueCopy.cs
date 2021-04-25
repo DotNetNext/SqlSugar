@@ -48,7 +48,7 @@ namespace SqlSugar
             Array.ForEach(entity.Columns.ToArray(), p => {
                 if (!p.IsIgnore&& !p.IsOnlyIgnoreInsert)
                 {
-                    pList.Add(p.PropertyInfo); dt.Columns.Add(p.PropertyName);
+                    pList.Add(p.PropertyInfo); dt.Columns.Add(p.DbColumnName);
                 }
             });
             DataRow row = null;
@@ -66,13 +66,13 @@ namespace SqlSugar
                 });
                 dt.Rows.Add(row);
             }
-            var dllPath = AppDomain.CurrentDomain.BaseDirectory + "failFiles";
+            var dllPath =Path.Combine(AppDomain.CurrentDomain.BaseDirectory , "failFiles");
             DirectoryInfo dir = new DirectoryInfo(dllPath);
             if (!dir.Exists)
             {
                 dir.Create();
             }
-            var fileName = dllPath + "\\" + Guid.NewGuid().ToString() + ".csv";
+            var fileName =Path.Combine( dllPath , Guid.NewGuid().ToString() + ".csv");
             var dataTableToCsv = DataTableToCsvString(dt);
             File.WriteAllText(fileName, dataTableToCsv, new UTF8Encoding(false));
             MySqlConnection conn = this.Context.Ado.Connection as MySqlConnection;

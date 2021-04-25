@@ -828,16 +828,16 @@ namespace SqlSugar
         #endregion
 
         #region SimpleClient
-        [Obsolete("Use SqlSugarClient.GetSimpleClient() Or SqlSugarClient.GetSimpleClient<T>() ")]
-        public virtual SimpleClient SimpleClient
-        {
-            get
-            {
-                if (this._SimpleClient == null)
-                    this._SimpleClient = new SimpleClient(this);
-                return this._SimpleClient;
-            }
-        }
+        //[Obsolete("Use SqlSugarClient.GetSimpleClient() Or SqlSugarClient.GetSimpleClient<T>() ")]
+        //public virtual SimpleClient SimpleClient
+        //{
+        //    get
+        //    {
+        //        if (this._SimpleClient == null)
+        //            this._SimpleClient = new SimpleClient(this);
+        //        return this._SimpleClient;
+        //    }
+        //}
         public virtual SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
             return new SimpleClient<T>(this);

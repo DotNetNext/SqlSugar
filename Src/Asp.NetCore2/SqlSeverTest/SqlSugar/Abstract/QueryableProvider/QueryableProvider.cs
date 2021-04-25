@@ -460,6 +460,10 @@ namespace SqlSugar
 
         public virtual T InSingle(object pkValue)
         {
+            if (pkValue == null) 
+            {
+                pkValue = -1;
+            }
             Check.Exception(this.QueryBuilder.SelectValue.HasValue(), "'InSingle' and' Select' can't be used together,You can use .Select(it=>...).Single(it.id==1)");
             var list = In(pkValue).ToList();
             if (list == null) return default(T);
@@ -886,6 +890,19 @@ namespace SqlSugar
         public virtual string ToJsonPage(int pageIndex, int pageSize, ref int totalNumber)
         {
             return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber), typeof(T));
+        }
+        public virtual DataTable ToPivotTable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector) 
+        {
+            return this.ToList().ToPivotTable(columnSelector,rowSelector,dataSelector);
+        }
+        public virtual List<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return this.ToList().ToPivotList(columnSelector, rowSelector, dataSelector);
+        }
+        public virtual string ToPivotJson<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            var list= this.ToPivotList(columnSelector, rowSelector, dataSelector);
+            return this.Context.Utilities.SerializeObject(list);
         }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
@@ -2259,6 +2276,7 @@ namespace SqlSugar
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
             asyncQueryableBuilder.IgnoreColumns = this.QueryBuilder.IgnoreColumns;
             asyncQueryableBuilder.AsTables = this.QueryBuilder.AsTables;
+            asyncQueryableBuilder.DisableTop = this.QueryBuilder.DisableTop;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {

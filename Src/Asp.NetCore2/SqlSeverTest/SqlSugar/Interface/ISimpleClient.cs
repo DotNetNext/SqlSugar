@@ -8,6 +8,7 @@ namespace SqlSugar
     public interface ISimpleClient<T> where T : class, new()
     {
         SimpleClient<ChangeType> Change<ChangeType>() where ChangeType : class, new();
+        RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository ;
         IDeleteable<T> AsDeleteable();
         IInsertable<T> AsInsertable(List<T> insertObjs);
         IInsertable<T> AsInsertable(T insertObj);

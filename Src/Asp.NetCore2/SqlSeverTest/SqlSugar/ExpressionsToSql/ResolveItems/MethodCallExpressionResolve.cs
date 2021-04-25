@@ -46,6 +46,11 @@ namespace SqlSugar
                 this.Context.Result.Append(this.Context.DbMehtods.GuidNew());
                 return;
             }
+            else if (methodName == "GetConfigValue") 
+            {
+                GetConfigValue(express,parameter);
+                return;
+            }
             else if (IsSubMethod(express, methodName))
             {
                 //Check.Exception(!(parameter.BaseExpression is BinaryExpression), "Current expressions are not supported");
@@ -92,6 +97,58 @@ namespace SqlSugar
             else
             {
                 SqlFuncMethod(parameter, express, isLeft);
+            }
+        }
+
+        private void GetConfigValue(MethodCallExpression express,ExpressionParameter parameter)
+        {
+            var exp = express.Arguments[0];
+            var name =Regex.Match(express.Method.ToString(), @"GetConfigValue\[(.+)\]").Groups[1].Value;
+            string code = null;
+            if (express.Arguments.Count > 1) 
+            {
+                code=ExpressionTool.GetExpressionValue(express.Arguments[1])+"";
+            }
+            var entity= SqlFuncExtendsion.TableInfos.FirstOrDefault(y => y.Type.Name == name&&y.Code== code);
+            Check.Exception(entity == null,string.Format( "GetConfigValue no configuration  Entity={0} UniqueCode={1}",name,code));
+            string sql = " (SELECT {0} FROM {1} WHERE {2}={3}";
+            if (ExpressionTool.IsUnConvertExpress(exp)) 
+            {
+                exp = (exp as UnaryExpression).Operand;
+            }
+            var member = exp as MemberExpression;
+            var it = member.Expression;
+            var type = it.Type;
+            var properyName =member.Member.Name;
+            var eqName = string.Format("{0}.{1}",this.Context.GetTranslationColumnName(it.ToString()), this.Context.GetDbColumnName(type.Name,properyName));
+            if (this.Context.IsSingle)
+            {
+                this.Context.SingleTableNameSubqueryShortName = it.ToString();
+            }
+            sql = string.Format(sql,entity.Value,this.Context.GetTranslationColumnName(entity.TableName),entity.Key, eqName);
+            if (entity.Parameter != null)
+            {
+                foreach (var item in entity.Parameter)
+                {
+                    var oldName = item.ParameterName;
+                    item.ParameterName = oldName + "_con_" + this.Context.ParameterIndex;
+                    entity.Where = entity.Where.Replace(oldName, item.ParameterName);
+                }
+                this.Context.ParameterIndex++;
+                this.Context.Parameters.AddRange(entity.Parameter);
+            }
+            if (entity.Where.HasValue())
+            {
+                sql += " AND " + entity.Where;
+            }
+            sql += " )";
+            if (this.Context.ResolveType.IsIn(ResolveExpressType.SelectMultiple, ResolveExpressType.SelectSingle, ResolveExpressType.Update))
+            {
+                parameter.BaseParameter.CommonTempData = sql;
+            }
+            else 
+            {
+                AppendMember(parameter, parameter.IsLeft, sql);
             }
         }
 
@@ -220,7 +277,7 @@ namespace SqlSugar
         }
         protected void Select(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
-            if (name == "GetSelfAndAutoFill")
+            if (name.IsIn("GetSelfAndAutoFill","SelectAll"))
             {
                 var memberValue = (args.First() as MemberExpression).Expression.ToString();
                 model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberValue, IsMember = true, MemberName = memberValue });
@@ -665,6 +722,7 @@ namespace SqlSugar
                         return this.Context.DbMehtods.IsNull(model);
                     case "MergeString":
                         return this.Context.DbMehtods.MergeString(model.Args.Select(it => it.MemberName.ObjToString()).ToArray());
+                    case "SelectAll":
                     case "GetSelfAndAutoFill":
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
                         return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
@@ -704,6 +762,10 @@ namespace SqlSugar
         }
         private bool CheckMethod(MethodCallExpression expression)
         {
+            if (expression.Method.Name=="SelectAll") 
+            {
+                return true;
+            }
             if (IsExtMethod(expression.Method.Name))
                 return true;
             if (IsParseMethod(expression))
@@ -753,7 +815,26 @@ namespace SqlSugar
             formatString = formatString.Replace("yy", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
             parameters.Args.Last().MemberValue = DateType.Month;
-            formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            if (IsMySql())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("LPAD(" + this.GetMethodValue("DateValue", parameters).ObjToString() + ",2,0)") + end);
+            }
+            else if (IsSqlite())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("SUBSTR('00' ||" + this.GetMethodValue("DateValue", parameters).ObjToString() + ", -2, 2)") + end);
+            }
+            else if (IsPg())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("lpad(cast(" + this.GetMethodValue("DateValue", parameters).ObjToString() + " as varchar(20)),2,'0')") + end);
+            }
+            else if (IsOracle())
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers("lpad(cast(" + this.GetMethodValue("DateValue", parameters).ObjToString() + " as varchar(20)),2,'0')") + end);
+            }
+            else
+            {
+                formatString = formatString.Replace("MM", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            }
             formatString = formatString.Replace("M", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
             parameters.Args.Last().MemberValue = DateType.Day;
@@ -772,8 +853,12 @@ namespace SqlSugar
             formatString = formatString.Replace("ss", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
             formatString = formatString.Replace("s", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
-            parameters.Args.Last().MemberValue = DateType.Millisecond;
-            formatString = formatString.Replace("ms", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            if (!IsSqlite())
+            {
+                parameters.Args.Last().MemberValue = DateType.Millisecond;
+                formatString = formatString.Replace("ms", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
+            }
+
             var items = Regex.Matches(formatString, @"\^\d+\$").Cast<Match>().ToList();
             foreach (var item in items)
             {
@@ -805,5 +890,23 @@ namespace SqlSugar
             }
             return this.GetMethodValue("MergeString", joinStringParameter).ObjToString();
         }
+
+        private bool IsMySql()
+        {
+            return this.Context is MySqlExpressionContext;
+        }
+        private bool IsSqlite()
+        {
+            return this.Context is SqliteExpressionContext;
+        }
+        private bool IsPg()
+        {
+            return this.Context is PostgreSQLExpressionContext;
+        }
+        private bool IsOracle()
+        {
+            return this.Context is OracleExpressionContext;
+        }
+
     }
 }

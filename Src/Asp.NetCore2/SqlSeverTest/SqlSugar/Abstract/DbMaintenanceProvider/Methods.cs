@@ -86,13 +86,13 @@ namespace SqlSugar
             if (tables == null) return false;
             else return tables.Any(it => it.Name.Equals(tableName, StringComparison.CurrentCultureIgnoreCase));
         }
-        public virtual bool IsAnyColumn(string tableName, string columnName)
+        public virtual bool IsAnyColumn(string tableName, string columnName, bool isCache = true)
         {
             columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
             tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
-            var isAny = IsAnyTable(tableName);
+            var isAny = IsAnyTable(tableName,isCache);
             Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
-            var columns = GetColumnInfosByTableName(tableName);
+            var columns = GetColumnInfosByTableName(tableName,isCache);
             if (columns.IsNullOrEmpty()) return false;
             return columns.Any(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
         }

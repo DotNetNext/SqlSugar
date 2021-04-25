@@ -134,6 +134,7 @@ namespace SqlSugar
             itemSql = Regex.Replace(itemSql, string.Format(@"\+{0} ", "\\" + itemParameter.ParameterName), "+" + newName +" ", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@" {0}\+", "\\" + itemParameter.ParameterName)," "+ newName + "+", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\|\|{0}\|\|", "\\" + itemParameter.ParameterName), "+" + newName + "+", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"\={0}\+", "\\" + itemParameter.ParameterName), "=" + newName + "+", RegexOptions.IgnoreCase);
             return itemSql;
         }
         internal static Type GetRootBaseType(Type entityType)
@@ -338,8 +339,17 @@ namespace SqlSugar
                     List<object> methodParameters = new List<object>();
                     foreach (var callItem in callExpresion.Arguments)
                     {
-                        var parameter = callItem.GetType().GetProperties().First(it => it.Name == "Value").GetValue(callItem, null);
-                        methodParameters.Add(parameter);
+                        var parameter = callItem.GetType().GetProperties().FirstOrDefault(it => it.Name == "Value");
+                        if (parameter == null)
+                        {
+                            var value = LambdaExpression.Lambda(callItem).Compile().DynamicInvoke();
+                            methodParameters.Add(value);
+                        }
+                        else
+                        {
+                            var value = parameter.GetValue(callItem, null);
+                            methodParameters.Add(value);
+                        }
                     }
                     methodInfo.Invoke(item, methodParameters.ToArray());
                 }

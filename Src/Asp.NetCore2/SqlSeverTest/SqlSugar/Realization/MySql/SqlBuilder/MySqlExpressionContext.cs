@@ -18,7 +18,14 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" {0}({1}) ", parameter2.MemberValue, parameter.MemberName);
+            if (parameter.MemberName != null && parameter.MemberName is DateTime)
+            {
+                return string.Format(" {0}('{1}') ", parameter2.MemberValue, parameter.MemberName);
+            }
+            else
+            {
+                return string.Format(" {0}({1}) ", parameter2.MemberValue, parameter.MemberName);
+            }
         }
 
         public override string Contains(MethodCallExpressionModel model)
