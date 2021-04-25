@@ -14,12 +14,23 @@ namespace OrmTest
         {
             Console.WriteLine("");
             Console.WriteLine("#### SimpleClient Start ####");
-            var rep1=new Repository<C1Table>();
-            rep1.GetList();
-            var rep2 = rep1.ChangeRepository<Repository<C2Table>>();
+            new C1Service().Test();
             Console.WriteLine("#### SimpleClient End ####");
         }
-      
+        public class C1Service : Repository<C1Table>
+        {
+            public void Test() 
+            {
+                base.GetList(); 
+                base.ChangeRepository<C2Service>().GetList();
+            }
+        }
+        public class C2Service : Repository<C2Table>
+        {
+
+        }
+
+
         public class Repository<T> : SimpleClient<T> where T : class, new()
         {
             public Repository(ISqlSugarClient context = null) : base(context)//注意这里要有默认值等于null
@@ -31,7 +42,6 @@ namespace OrmTest
                                                     {
                                                         ConfigId=1,
                                                         DbType = SqlSugar.DbType.SqlServer,
-                                                        InitKeyType = InitKeyType.Attribute,
                                                         IsAutoCloseConnection = true,
                                                         ConnectionString = Config.ConnectionString
                                                     },
@@ -39,7 +49,6 @@ namespace OrmTest
                                                     {
                                                         ConfigId="2",
                                                         DbType = SqlSugar.DbType.SqlServer,
-                                                        InitKeyType = InitKeyType.Attribute,
                                                         IsAutoCloseConnection = true,
                                                         ConnectionString = Config.ConnectionString2
                                                     }
