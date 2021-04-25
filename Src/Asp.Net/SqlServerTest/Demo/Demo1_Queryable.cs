@@ -27,6 +27,38 @@ namespace OrmTest
         private static void ConfiQuery()
         {
             var db = GetInstance();
+            List<DataDictionary> datas = new List<DataDictionary>();
+            datas.Add(new DataDictionary() { Code="1", Name="男",Type="sex" });
+            datas.Add(new DataDictionary() { Code = "2", Name = "女", Type = "sex" });
+            datas.Add(new DataDictionary() { Code = "1", Name = "南通市", Type = "city" });
+            datas.Add(new DataDictionary() { Code = "2", Name = "苏州市", Type = "city" });
+            datas.Add(new DataDictionary() { Code = "1", Name = "江苏省", Type = "province" });
+            datas.Add(new DataDictionary() { Code = "2", Name = "湖南省", Type = "province" });
+
+            db.CodeFirst.InitTables<DataDictionary>();
+            db.CodeFirst.InitTables<Person>();
+            db.Insertable(datas).ExecuteCommand();
+
+            if (!db.ConfigQuery.Any()) 
+            {
+                var types= db.Queryable<DataDictionary>().Select(it => it.Type).Distinct().ToList();
+                foreach (var type in types)
+                {
+                    db.ConfigQuery.SetTable<DataDictionary>(it => it.Code, it => it.Name, type, it => it.Type == type);
+                }
+            }
+
+
+            var res=db.Queryable<Person>().Select(it => new Person()
+            {
+                 Id=it.Id.SelectAll(),
+                 SexName=it.SexId.GetConfigValue<DataDictionary>("sex"),
+                 ProviceName = it.SexId.GetConfigValue<DataDictionary>("province"),
+                 CityName = it.SexId.GetConfigValue<DataDictionary>("city"),
+            }).ToList();//也支持支持写在Where或者Orderby
+
+
+            db.DbMaintenance.TruncateTable("DataDictionary");
             if (!db.ConfigQuery.Any())
             {
                 db.ConfigQuery.SetTable<Order>(it => it.Id, it => it.Name, "01", it => it.Id > 1);
