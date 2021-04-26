@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar 
@@ -18,7 +19,11 @@ namespace SqlSugar
     Func<IEnumerable<T>, TData> dataSelector)
         {
             DataTable table = new DataTable();
-            var rowName = ((MemberExpression)rowSelector.Body).Member.Name;
+            var rowName = "";
+            if (rowSelector.Body is MemberExpression)
+                rowName = ((MemberExpression)rowSelector.Body).Member.Name;
+            else
+                rowName =string.Join(UtilConstants.ReplaceKey, ((NewExpression)rowSelector.Body).Arguments.Select(it=>it as MemberExpression).Select(it=>it.Member.Name));
             table.Columns.Add(new DataColumn(rowName));
             var columns = source.Select(columnSelector).Distinct();
 
@@ -44,7 +49,28 @@ namespace SqlSugar
                 dataRow.ItemArray = items.ToArray();
                 table.Rows.Add(dataRow);
             }
-
+            var firstName = table.Columns[0]?.ColumnName;
+            if (firstName.ObjToString().Contains(UtilConstants.ReplaceKey)) 
+            {
+                int i = 0;
+                foreach (var item in Regex.Split(firstName,UtilConstants.ReplaceKey))
+                {
+                    i++;
+                    table.Columns.Add(item);
+                    table.Columns[item].SetOrdinal(i);
+                }
+                foreach (DataRow row in table.Rows)
+                {
+                    var json =row[firstName];
+                    var list = json.ToString().TrimStart('{').TrimEnd('}').Split(',').Select(it=>it.Split('=')).ToList();
+                    foreach (var item in Regex.Split(firstName, UtilConstants.ReplaceKey))
+                    {
+                        var x = list.First(it => it.First().Trim() == item.Trim());
+                        row[item] =x[1] ;
+                    }
+                }
+                table.Columns.Remove(firstName);
+            }
             return table;
         }
         public static List<dynamic> ToPivotList<T, TColumn, TRow, TData>(
