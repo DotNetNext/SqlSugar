@@ -69,8 +69,8 @@ namespace SqlSugar
                         row[item] =x[1] ;
                     }
                 }
+                table.Columns.Remove(firstName);
             }
-            table.Columns.Remove(firstName);
             return table;
         }
         public static List<dynamic> ToPivotList<T, TColumn, TRow, TData>(
