@@ -70,6 +70,7 @@ namespace SqlSugar
             switch (parameter.Context.ResolveType)
             {
                 case ResolveExpressType.Update:
+                case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.SelectSingle:
                     fieldName = GetSingleName(parameter, expression, isLeft);
                     if (isSetTempData)
@@ -77,6 +78,7 @@ namespace SqlSugar
                     else
                         base.Context.Result.Append(fieldName);
                     break;
+                case ResolveExpressType.FieldMultiple:
                 case ResolveExpressType.SelectMultiple:
                     fieldName = GetMultipleName(parameter, expression, isLeft);
                     if (isSetTempData)
@@ -87,14 +89,6 @@ namespace SqlSugar
                 case ResolveExpressType.WhereSingle:
                 case ResolveExpressType.WhereMultiple:
                     ResolveWhereLogic(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
-                    break;
-                case ResolveExpressType.FieldSingle:
-                    fieldName = GetSingleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
-                    break;
-                case ResolveExpressType.FieldMultiple:
-                    fieldName = GetMultipleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
                     break;
                 case ResolveExpressType.ArrayMultiple:
                 case ResolveExpressType.ArraySingle:
