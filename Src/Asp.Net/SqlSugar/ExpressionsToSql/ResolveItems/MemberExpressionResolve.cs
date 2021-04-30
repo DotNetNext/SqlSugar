@@ -90,11 +90,27 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.FieldSingle:
                     fieldName = GetSingleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
+                    var fieldIsCommonTemp = IsFieldIsCommonTemp(isSetTempData,parameter);
+                    if (fieldIsCommonTemp)
+                    {
+                        baseParameter.CommonTempData = fieldName;
+                    }
+                    else
+                    {
+                        base.Context.Result.Append(fieldName);
+                    }
                     break;
                 case ResolveExpressType.FieldMultiple:
                     fieldName = GetMultipleName(parameter, expression, isLeft);
-                    base.Context.Result.Append(fieldName);
+                    var fieldIsCommonTemp2= IsFieldIsCommonTemp(isSetTempData, parameter);
+                    if(fieldIsCommonTemp2)
+                    {
+                        baseParameter.CommonTempData = fieldName;
+                    }
+                    else
+                    {
+                      base.Context.Result.Append(fieldName);
+                    }
                     break;
                 case ResolveExpressType.ArrayMultiple:
                 case ResolveExpressType.ArraySingle:
@@ -104,6 +120,15 @@ namespace SqlSugar
                 default:
                     break;
             }
+        }
+
+        private bool IsFieldIsCommonTemp(bool isSetTempData, ExpressionParameter parameter)
+        {
+            if (parameter.BaseParameter == null)
+                return false;
+            var childExpression= parameter.BaseParameter.ChildExpression.ObjToString();
+            var expression=parameter.BaseParameter.CurrentExpression.ObjToString();
+            return isSetTempData&&((childExpression+".Date")==expression);
         }
 
         #endregion
