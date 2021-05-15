@@ -35,8 +35,11 @@ namespace SqlSugar
         #region Core
         public void AddQueue()
         {
-            var sqlObj = this.ToSql();
-            this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
+            if (this.InsertObjs!=null&&this.InsertObjs.Length > 0&& this.InsertObjs[0]!=null)
+            {
+                var sqlObj = this.ToSql();
+                this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
+            }
         }
         public virtual int ExecuteCommand()
         {
