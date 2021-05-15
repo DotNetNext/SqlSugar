@@ -34,9 +34,9 @@ namespace OrmTest
             datas.Add(new DataDictionary() { Code = "2", Name = "苏州市", Type = "city" });
             datas.Add(new DataDictionary() { Code = "1", Name = "江苏省", Type = "province" });
             datas.Add(new DataDictionary() { Code = "2", Name = "湖南省", Type = "province" });
-
             db.CodeFirst.InitTables<DataDictionary>();
             db.CodeFirst.InitTables<Person>();
+            db.DbMaintenance.TruncateTable<DataDictionary>();
             db.Insertable(datas).ExecuteCommand();
 
             if (!db.ConfigQuery.Any()) 
@@ -62,7 +62,8 @@ namespace OrmTest
             }).ToList();//也支持支持写在Where或者Orderby
 
 
-            db.DbMaintenance.TruncateTable("DataDictionary");
+            db.AddQueue("");
+            db.SaveQueues();
       
             var list = db.Queryable<OrderItem>().Select(it => new OrderItem
             {
