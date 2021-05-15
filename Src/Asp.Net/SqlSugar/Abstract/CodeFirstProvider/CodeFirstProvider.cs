@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public partial class CodeFirstProvider : ICodeFirst
@@ -113,6 +115,16 @@ namespace SqlSugar
                     if (item.PropertyInfo.PropertyType == UtilConstants.StringType && item.DataType.IsNullOrEmpty() && item.Length == 0)
                     {
                         item.Length = DefultLength;
+                    }
+                    if (item.DataType!=null&&item.DataType.Contains(",")&& !Regex.IsMatch(item.DataType,@"\d\,\d")) 
+                    {
+                        var types = item.DataType.Split(',').Select(it => it.ToLower()).ToList();
+                        var mapingTypes=this.Context.Ado.DbBind.MappingTypes.Select(it=>it.Key.ToLower()).ToList();
+                        var mappingType=types.FirstOrDefault(it => mapingTypes.Contains(it));
+                        if (mappingType != null) 
+                        {
+                            item.DataType = mappingType;
+                        }
                     }
                 }
             }

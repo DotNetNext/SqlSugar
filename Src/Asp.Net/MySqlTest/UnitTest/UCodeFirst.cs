@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +35,13 @@ namespace OrmTest
                 id=it.a,
                 b=it.b
             }).ToList();
+            Db.CodeFirst.InitTables<UnitTest012213>();
+        }
+        public class UnitTest012213
+        {
+
+            [SugarColumn(ColumnDataType = "image,longblob")]
+            public byte[] x { get; set; }
         }
         public class UnitCodeTest1
         {

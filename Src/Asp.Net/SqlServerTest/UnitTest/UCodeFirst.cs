@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,8 +23,14 @@ namespace OrmTest
             };
             Db.CodeFirst.InitTables<UnitCodeFirstpks3>();
             Db.CodeFirst.InitTables<UnitCodeFirstpks32>();
+            db.CodeFirst.InitTables<UnitTest0122132>();
         }
+        public class UnitTest0122132
+        {
 
+            [SugarColumn(ColumnDataType = "image,longblob")]
+            public byte[] x { get; set; }
+        }
         [SqlSugar.SugarTable("[dbo].[UnitCodeFirstpks3aaa122]")]
         public class UnitCodeFirstpks32
         {
