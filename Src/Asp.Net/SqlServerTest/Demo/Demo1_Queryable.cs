@@ -60,11 +60,7 @@ namespace OrmTest
                  ProviceName = it.SexId.GetConfigValue<DataDictionary>("province"),
                  CityName = it.SexId.GetConfigValue<DataDictionary>("city"),
             }).ToList();//也支持支持写在Where或者Orderby
-
-
-            db.AddQueue("");
-            db.SaveQueues();
-      
+ 
             var list = db.Queryable<OrderItem>().Select(it => new OrderItem
             {
                 ItemId = it.ItemId.SelectAll(),
