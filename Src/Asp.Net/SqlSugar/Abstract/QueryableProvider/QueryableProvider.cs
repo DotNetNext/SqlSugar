@@ -1067,21 +1067,10 @@ namespace SqlSugar
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
-            _RestoreMapping = false;
-            List<T> result = null;
-            int count = this.Count();
-            _RestoreMapping = true;
-            QueryBuilder.IsDisabledGobalFilter = UtilMethods.GetOldValue(QueryBuilder.IsDisabledGobalFilter, () =>
-            {
-                QueryBuilder.IsDisabledGobalFilter = true;
-                if (count == 0)
-                    result = new List<T>();
-                else
-                    result = ToPageList(pageIndex, pageSize);
-
-            });
-            totalNumber = count;
-            return result;
+            var oldMapping = this.Context.MappingTables;
+            totalNumber =  this.Clone().Count();
+            this.Context.MappingTables = oldMapping;
+            return  this.Clone().ToPageList(pageIndex, pageSize);
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber, ref int totalPage)
         {
