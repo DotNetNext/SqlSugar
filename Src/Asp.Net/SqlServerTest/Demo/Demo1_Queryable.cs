@@ -133,6 +133,9 @@ namespace OrmTest
 
             var test09 = db.Queryable<Order>().PartitionBy(it=>it.Id).ToPageListAsync(1,2,0);
             test09.Wait();
+
+            int c = 0;
+            var test10 = db.Queryable<Order>().ToPageList(1, 2, ref c);
             Console.WriteLine("#### Examples End ####");
         }
 
