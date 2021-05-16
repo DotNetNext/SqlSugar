@@ -148,7 +148,7 @@ namespace SqlSugar
                     break;
                 case DateType.Day:
                     parameter2 = "%d";
-                    break;
+                    return string.Format(" CAST(STRFTIME('{1}', DATETIME(DATETIME(strftime('%Y-%m-%d', {0})), 'LOCALTIME')) AS INTEGER)", parameter.MemberName, parameter2);
                 case DateType.Hour:
                     parameter2 = "%H";
                     break;

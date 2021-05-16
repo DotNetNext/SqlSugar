@@ -593,9 +593,10 @@ namespace SqlSugar
         }
         public void ChangeDatabase(dynamic configId)
         {
+            configId =Convert.ToString(configId);
             var isLog = _Context.Ado.IsEnableLogEvent;
-            Check.Exception(!_AllClients.Any(it => it.ConnectionConfig.ConfigId == configId), "ConfigId was not found {0}", configId);
-            InitTenant(_AllClients.First(it => it.ConnectionConfig.ConfigId == configId));
+            Check.Exception(!_AllClients.Any(it =>Convert.ToString( it.ConnectionConfig.ConfigId) == configId), "ConfigId was not found {0}", configId);
+            InitTenant(_AllClients.First(it => Convert.ToString(it.ConnectionConfig.ConfigId )== configId));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
             if (this._IsOpen)
