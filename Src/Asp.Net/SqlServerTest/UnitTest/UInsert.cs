@@ -38,7 +38,7 @@ namespace OrmTest
                  new UinitBlukTable2(){    Id=8, Name="88" }
 
             }).UseSqlServer().ExecuteBlueCopy();
-            var task= db.Insertable(new List<UinitBlukTable2>
+            var task = db.Insertable(new List<UinitBlukTable2>
             {
                  new UinitBlukTable2(){   Id=9,  Name="9" },
                  new UinitBlukTable2(){    Id=10, Name="10" }
@@ -57,32 +57,32 @@ namespace OrmTest
             {
                 UinitBlukTable data = new UinitBlukTable()
                 {
-                     Create=DateTime.Now.AddDays(-1),
-                     Id=i ,
-                     Name =i%3==0?"a":"b"
+                    Create = DateTime.Now.AddDays(-1),
+                    Id = i,
+                    Name = i % 3 == 0 ? "a" : "b"
                 };
                 list2.Add(data);
             }
             list2.First().Name = null;
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
             db.Insertable(new UinitBlukTable() { Id = 2, Name = "b", Create = DateTime.Now }).ExecuteCommand();
-            var x=Db.Storageable(list2)
+            var x = Db.Storageable(list2)
                 .SplitInsert(it => it.NotAny())
                 .SplitUpdate(it => it.Any())
-                .SplitDelete(it=>it.Item.Id>10)
-                .SplitIgnore(it=>it.Item.Id==1)
-                .SplitError(it => it.Item.Id == 3,"id不能等于3")
+                .SplitDelete(it => it.Item.Id > 10)
+                .SplitIgnore(it => it.Item.Id == 1)
+                .SplitError(it => it.Item.Id == 3, "id不能等于3")
                 .SplitError(it => it.Item.Id == 4, "id不能等于4")
                 .SplitError(it => it.Item.Id == 5, "id不能等于5")
-                .SplitError(it => it.Item.Name==null, "name不能等于")
-                .WhereColumns(it=> new { it.Id })
+                .SplitError(it => it.Item.Name == null, "name不能等于")
+                .WhereColumns(it => new { it.Id })
                 .ToStorage();
-             x.AsDeleteable.ExecuteCommand();
-             x.AsInsertable.ExecuteCommand();
-             x.AsUpdateable.ExecuteCommand();
+            x.AsDeleteable.ExecuteCommand();
+            x.AsInsertable.ExecuteCommand();
+            x.AsUpdateable.ExecuteCommand();
             foreach (var item in x.ErrorList)
             {
-                Console.Write(item.StorageMessage+" ");
+                Console.Write(item.StorageMessage + " ");
             }
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
             IDemo1();
@@ -91,8 +91,44 @@ namespace OrmTest
             IDemo4();
             IDemo5();
             IDemo6();
+            IDemo7();
         }
 
+        private static void IDemo7()
+        {
+            List<OrderItemx> list = new List<OrderItemx>();
+            list.Add(new OrderItemx()
+            {
+                h = DateTime.Now,
+                x = 1,
+                z = 1,
+                xa = 100
+            });
+            list.Add(new OrderItemx()
+            {
+                h = DateTime.Now,
+                x = 2,
+                z = 2,
+                xa = 1001
+            });
+            var x= Db.Storageable(list).As("OrderDetail").Saveable().ToStorage();
+            x.AsInsertable.ExecuteCommand();
+            x.AsUpdateable.ExecuteCommand();
+        }
+
+     
+        public class OrderItemx
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true,ColumnName = "ItemId")]
+            public int x { get; set; }
+            [SqlSugar.SugarColumn( ColumnName = "OrderId")]
+            public int z { get; set; }
+            [SqlSugar.SugarColumn(ColumnName = "Price")]
+            public decimal? xa { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true,ColumnName = "CreateTime")]
+            public DateTime? h { get; set; }
+          
+        }
         private static void IDemo6()
         {
             var db = Db;
