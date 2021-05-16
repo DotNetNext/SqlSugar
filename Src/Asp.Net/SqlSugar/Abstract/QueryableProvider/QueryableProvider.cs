@@ -85,6 +85,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> AS(string tableName)
         {
+            if (tableName == null) return this;
             var entityName = typeof(T).Name;
             return _As(tableName, entityName);
         }

@@ -16,6 +16,7 @@ namespace SqlSugar
         List<T> dbDataList = new List<T>();
         List<KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>> whereFuncs = new List<KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>>();
         Expression<Func<T, object>> whereExpression;
+        private string asname { get; set; }
         public Storageable(List<T> datas, SqlSugarProvider context)
         {
             this.Context = context;
@@ -71,9 +72,9 @@ namespace SqlSugar
         {
             if (this.allDatas.Count == 0)
                 return new StorageableResult<T>() {
-                    AsDeleteable = this.Context.Deleteable<T>().Where(it => false),
-                    AsInsertable = this.Context.Insertable(new List<T>()),
-                    AsUpdateable = this.Context.Updateable(new List<T>()),
+                    AsDeleteable = this.Context.Deleteable<T>().AS(asname).Where(it => false),
+                    AsInsertable = this.Context.Insertable(new List<T>()).AS(asname),
+                    AsUpdateable = this.Context.Updateable(new List<T>()).AS(asname),
                     InsertList = new List<StorageableMessage<T>>(),
                     UpdateList = new List<StorageableMessage<T>>(),
                     DeleteList = new List<StorageableMessage<T>>(),
@@ -90,7 +91,7 @@ namespace SqlSugar
             if (whereExpression == null && pkInfos.Any())
             {
                 this.Context.Utilities.PageEach(allDatas, 300, item => {
-                 var addItems=this.Context.Queryable<T>().WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToList();
+                 var addItems=this.Context.Queryable<T>().AS(asname).WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToList();
                     dbDataList.AddRange(addItems);
                 });
             }
@@ -120,9 +121,9 @@ namespace SqlSugar
             var other = messageList.Where(it => it.StorageType == StorageType.Other).ToList();
             StorageableResult<T> result = new StorageableResult<T>()
             {
-                AsDeleteable = this.Context.Deleteable<T>(),
-                AsUpdateable = this.Context.Updateable(update.Select(it => it.Item).ToList()),
-                AsInsertable = this.Context.Insertable(inset.Select(it => it.Item).ToList()),
+                AsDeleteable = this.Context.Deleteable<T>().AS(asname),
+                AsUpdateable = this.Context.Updateable(update.Select(it => it.Item).ToList()).AS(asname),
+                AsInsertable = this.Context.Insertable(inset.Select(it => it.Item).ToList()).AS(asname),
                 OtherList = other,
                 InsertList = inset,
                 DeleteList = delete,
@@ -175,7 +176,7 @@ namespace SqlSugar
                     {
                         List<IConditionalModel> conditList = new List<IConditionalModel>();
                         SetConditList(itemList, whereColumns, conditList);
-                        var addItem = this.Context.Queryable<T>().Where(conditList).ToList();
+                        var addItem = this.Context.Queryable<T>().AS(asname).Where(conditList).ToList();
                         this.dbDataList.AddRange(addItem);
                     });
                 }
@@ -237,6 +238,12 @@ namespace SqlSugar
             this.Parameters.AddRange(resolveExpress.Parameters);
             var result = resolveExpress.Result;
             return result;
+        }
+
+        public IStorageable<T> As(string tableName)
+        {
+            this.asname = tableName;
+            return this;
         }
     }
 }

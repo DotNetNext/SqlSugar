@@ -62,6 +62,7 @@ namespace SqlSugar
         }
         public IDeleteable<T> AS(string tableName)
         {
+            if (tableName == null) return this;
             var entityName = typeof(T).Name;
             IsAs = true;
             OldMappingTableList = this.Context.MappingTables;
