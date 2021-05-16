@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar</id>
-    <version>5.0.2.9</version>
+    <version>5.0.3</version>
     <title>SqlSugar 5.0+ 使用 .Net Framework 4.5+ , SqlSugar 4.0+ 使用 .Net Framework 4.0</title>
     <authors>sun kaixuan</authors>
     <owners>landa</owners>
