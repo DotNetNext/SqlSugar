@@ -120,10 +120,19 @@ namespace SqlSugar
                     {
                         var types = item.DataType.Split(',').Select(it => it.ToLower()).ToList();
                         var mapingTypes=this.Context.Ado.DbBind.MappingTypes.Select(it=>it.Key.ToLower()).ToList();
-                        var mappingType = types.FirstOrDefault(it => mapingTypes.Any(it.StartsWith));
+                        // var mappingType = types.FirstOrDefault(it => mapingTypes.Any(it.StartsWith));
+                        var mappingType = types.FirstOrDefault(it => mapingTypes.Contains(it));
                         if (mappingType != null) 
                         {
                             item.DataType = mappingType;
+                        }
+                        else
+                        {
+                            mappingType = types.FirstOrDefault(it => mapingTypes.Any(it.StartsWith));
+                            if (mappingType != null)
+                            {
+                                item.DataType = mappingType;
+                            }
                         }
                     }
                 }
