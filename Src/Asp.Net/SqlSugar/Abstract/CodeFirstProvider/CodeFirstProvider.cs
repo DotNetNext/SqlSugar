@@ -92,6 +92,22 @@ namespace SqlSugar
             var types = Assembly.Load(entitiesNamespace).GetTypes();
             InitTables(types);
         }
+
+        public virtual void InitTables(string assemblyName, string entitiesNamespace)
+        {
+            var types = Assembly.Load(assemblyName).GetTypes().Where(t => t.Namespace == entitiesNamespace).ToArray();
+            InitTables(types);
+        }
+
+        public virtual void InitTables(Dictionary<string, string> namespaces)
+        {
+            foreach (var keyValueNamespace in namespaces)
+            {
+                var types = Assembly.Load(keyValueNamespace.Key).GetTypes().Where(t => t.Namespace == keyValueNamespace.Value).ToArray();
+                InitTables(types);
+            }
+        }
+
         public virtual void InitTables(params string[] entitiesNamespaces)
         {
             if (entitiesNamespaces.HasValue())

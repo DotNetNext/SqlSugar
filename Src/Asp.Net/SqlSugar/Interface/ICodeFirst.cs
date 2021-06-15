@@ -10,6 +10,8 @@ namespace SqlSugar
         ICodeFirst BackupTable(int maxBackupDataRows = int.MaxValue);
         ICodeFirst SetStringDefaultLength(int length);
         void InitTables(string entitiesNamespace);
+        void InitTables(string assemblyName, string entitiesNamespace);
+        void InitTables(Dictionary<string, string> namespaces);
         void InitTables(string[] entitiesNamespaces);
         void InitTables(params Type[] entityTypes);
         void InitTables(Type entityType);
