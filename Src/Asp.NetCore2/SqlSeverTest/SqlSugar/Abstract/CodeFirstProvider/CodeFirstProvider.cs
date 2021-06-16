@@ -102,6 +102,20 @@ namespace SqlSugar
                 }
             }
         }
+
+        public virtual void InitTables(string assemblyName, string entitiesNamespace)
+        {
+            var types = Assembly.Load(assemblyName).GetTypes().Where(t => t.Namespace == entitiesNamespace).ToArray();
+            InitTables(types);
+        }
+
+        public virtual void InitTables(Dictionary<string, string> namespaces)
+        {
+            foreach (var keyValueNamespace in namespaces)
+            {
+                InitTables(keyValueNamespace.Key, keyValueNamespace.Value);
+            }
+        }
         #endregion
 
         #region Core Logic

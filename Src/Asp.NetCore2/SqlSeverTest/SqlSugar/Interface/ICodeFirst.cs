@@ -11,6 +11,8 @@ namespace SqlSugar
         ICodeFirst SetStringDefaultLength(int length);
         void InitTables(string entitiesNamespace);
         void InitTables(string[] entitiesNamespaces);
+        void InitTables(string assemblyName, string entitiesNamespace);
+        void InitTables(Dictionary<string, string> namespaces);
         void InitTables(params Type[] entityTypes);
         void InitTables(Type entityType);
         void InitTables<T>();
