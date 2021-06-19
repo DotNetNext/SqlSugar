@@ -50,7 +50,7 @@ namespace SqlSugar
             var joinString =string.Format(" {2} INNER JOIN {1} {0} ",
                  this.Context.GetTranslationColumnName(parameter.Name), 
                  tableName,
-                 this.Context.JoinIndex==0?name:"");
+                 this.Context.JoinIndex==1?name:"");
             var result = joinString+ "ON " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
             //var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             this.Context.JoinIndex++;

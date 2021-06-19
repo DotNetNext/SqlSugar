@@ -49,7 +49,10 @@ namespace SqlSugar
                 this.Context.InitMappingInfo(entityType);
                 this.Context.RefreshMapping();
             }
-            return SubTools.GetMethodValue(this.Context, exp.Arguments[0],ResolveExpressType.FieldSingle);
+            if(this.Context.JoinIndex==0)
+               return SubTools.GetMethodValue(this.Context, exp.Arguments[0],ResolveExpressType.FieldSingle);
+            else
+              return SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldMultiple);
         }
     }
 }
