@@ -563,6 +563,8 @@ namespace SqlSugar
                     type = DbType.Sqlite;
                 else if (this.Context is OracleExpressionContext)
                     type = DbType.Oracle;
+                else if (this.Context is PostgreSQLExpressionContext)
+                    type = DbType.PostgreSQL;
                 return this.Context.SqlFuncServices.First(it => it.UniqueMethodName == name).MethodValue(model, type, this.Context);
             }
             else
