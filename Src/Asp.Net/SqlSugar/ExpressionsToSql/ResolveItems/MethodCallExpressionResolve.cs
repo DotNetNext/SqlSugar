@@ -559,10 +559,14 @@ namespace SqlSugar
                     type = DbType.SqlServer;
                 else if (this.Context is MySqlExpressionContext)
                     type = DbType.MySql;
+                else if (this.Context is MyCatExpressionContext)
+                    type = DbType.MyCat;
                 else if (this.Context is SqliteExpressionContext)
                     type = DbType.Sqlite;
                 else if (this.Context is OracleExpressionContext)
                     type = DbType.Oracle;
+                else if (this.Context is PostgreSQLExpressionContext)
+                    type = DbType.PostgreSQL;
                 return this.Context.SqlFuncServices.First(it => it.UniqueMethodName == name).MethodValue(model, type, this.Context);
             }
             else
@@ -907,6 +911,9 @@ namespace SqlSugar
         {
             return this.Context is OracleExpressionContext;
         }
-
+		private bool IsMycat()
+		{
+			return this.Context is MyCatExpressionContext;
+		}
     }
 }

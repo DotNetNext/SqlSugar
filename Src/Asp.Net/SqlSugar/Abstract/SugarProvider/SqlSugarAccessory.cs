@@ -362,6 +362,9 @@ namespace SqlSugar
                 case DbType.MySql:
                     DependencyManagement.TryMySqlData();
                     break;
+                case DbType.MyCat:
+                    DependencyManagement.TryMyCatData();
+                    break;
                 case DbType.SqlServer:
                     break;
                 case DbType.Sqlite:

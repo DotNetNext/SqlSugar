@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SqlSugar</RootNamespace>
     <AssemblyName>SqlSugar</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -56,12 +56,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
+    <Reference Include="Pomelo.Data.MyCat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Pomelo.Data.MyCat.1.0.0-prerelease-20160822\lib\net451\Pomelo.Data.MyCat.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.102.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -158,6 +163,19 @@
     <Compile Include="Interface\ISqlSugarClient.cs" />
     <Compile Include="Interface\ITenant.cs" />
     <Compile Include="Interface\ISimpleClient.cs" />
+    <Compile Include="Realization\MyCat\CodeFirst\MyCatCodeFirst.cs" />
+    <Compile Include="Realization\MyCat\DbBind\MyCatDbBind.cs" />
+    <Compile Include="Realization\MyCat\DbFirst\MyCatDbFirst.cs" />
+    <Compile Include="Realization\MyCat\DbMaintenance\MyCatDbMaintenance.cs" />
+    <Compile Include="Realization\MyCat\MyCatProvider.cs" />
+    <Compile Include="Realization\MyCat\Queryable\MyCatQueryable.cs" />
+    <Compile Include="Realization\MyCat\SqlBuilder\MyCatBlueCopy.cs" />
+    <Compile Include="Realization\MyCat\SqlBuilder\MyCatBuilder.cs" />
+    <Compile Include="Realization\MyCat\SqlBuilder\MyCatDeleteBuilder.cs" />
+    <Compile Include="Realization\MyCat\SqlBuilder\MyCatExpressionContext.cs" />
+    <Compile Include="Realization\MyCat\SqlBuilder\MyCatInsertBuilder.cs" />
+    <Compile Include="Realization\MyCat\SqlBuilder\MyCatQueryBuilder.cs" />
+    <Compile Include="Realization\MyCat\SqlBuilder\MyCatUpdateBuilder.cs" />
     <Compile Include="Realization\MySql\SqlBuilder\MySqlBlueCopy.cs" />
     <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
     <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />

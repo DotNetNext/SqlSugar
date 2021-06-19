@@ -10,6 +10,7 @@ namespace SqlSugar
     {
         private static bool IsTryJsonNet = false;
         private static bool IsTryMySqlData = false;
+        private static bool IsTryMyCatData = false;
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
         private static bool IsTryPgSql = false;
@@ -51,7 +52,25 @@ namespace SqlSugar
                 }
             }
         }
-
+        public static void TryMyCatData()
+        {
+            if (!IsTryMyCatData)
+            {
+                try
+                {
+                    MyCatProvider db = new MyCatProvider();
+                    var conn = db.GetAdapter();
+                    IsTryMyCatData = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to MySql.Data.dll",
+                     " MySql.Data.dll  未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的MySql.Data.dll和SqlSugar，检查引用中是否还存在,存在直接删掉引用，然后Nuget重新安装即可 ，注意.NET 4.52版本以下用户只能用MySql.Data 6.9.12 版本 记住 6.9.12 或者6.9之前的版本 ， .NET 4.52及以上用最新的");
+                    throw new Exception(message);
+                }
+            }
+        }
         public static void TryPostgreSQL()
         {
             if (!IsTryPgSql)

@@ -373,7 +373,7 @@ namespace SqlSugar
 
         private bool UpdateObjectNotWhere()
         {
-            return this.Context.CurrentConnectionConfig.DbType != DbType.MySql && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer;
+            return this.Context.CurrentConnectionConfig.DbType != DbType.MySql && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer && this.Context.CurrentConnectionConfig.DbType != DbType.MyCat;
         }
 
         private void AppendSets()

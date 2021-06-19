@@ -29,6 +29,10 @@ namespace SqlSugar
             {
                 return new MySqlQueryable<T>();
             }
+            else  if (currentConnectionConfig.DbType == DbType.MyCat)
+            {
+                return new MyCatQueryable<T>();
+            }
             else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 return new PostgreSQLQueryable<T>();
@@ -148,6 +152,10 @@ namespace SqlSugar
             {
                 return new MySqlQueryBuilder();
             }
+            else if (currentConnectionConfig.DbType == DbType.MyCat)
+            {
+                return new MyCatQueryBuilder();
+            }
             else
             {
                 QueryBuilder result = CreateInstance<QueryBuilder>(GetClassName(currentConnectionConfig.DbType.ToString(), "QueryBuilder"));
@@ -180,6 +188,10 @@ namespace SqlSugar
             {
                 return new MySqlExpressionContext();
             }
+            else if (currentConnectionConfig.DbType == DbType.MyCat)
+            {
+                return new MyCatExpressionContext();
+            }
             else
             {
                 ILambdaExpressions result = CreateInstance<ILambdaExpressions>(GetClassName(currentConnectionConfig.DbType.ToString(), "ExpressionContext"));
@@ -196,6 +208,10 @@ namespace SqlSugar
             else if (currentConnectionConfig.DbType == DbType.MySql)
             {
                 return new MySqlBuilder();
+            }
+            else if (currentConnectionConfig.DbType == DbType.MyCat)
+            {
+                return new MyCatBuilder();
             }
             else
             {
@@ -257,6 +273,9 @@ namespace SqlSugar
             else if (currentConnectionConfig.DbType == DbType.MySql)
             {
                 return new MySqlDbBind();
+            }else if (currentConnectionConfig.DbType == DbType.MyCat)
+            {
+                return new MyCatDbBind();
             }
             else
             {
