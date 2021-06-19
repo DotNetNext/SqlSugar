@@ -49,6 +49,15 @@ namespace SqlSugar
             {
                 argExp = ((argExp as LambdaExpression).Body as UnaryExpression).Operand;
             }
+            var argLambda = argExp as LambdaExpression;
+            if (this.Context.InitMappingInfo != null && argLambda != null && argLambda.Parameters.Count > 0)
+            {
+                foreach (var item in argLambda.Parameters)
+                {
+                    this.Context.InitMappingInfo(item.Type);
+                }
+                this.Context.RefreshMapping();
+            }
             var result = "MIN(" + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple) + ")";
             var selfParameterName = Context.GetTranslationColumnName(parametres.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));

@@ -135,11 +135,17 @@ namespace SqlSugar
             }
             isubList = isubList.OrderBy(it => it.Sort).ToList();
             var isHasWhere = isubList.Where(it => it is SubWhere).Any();
+            var isJoin = isubList.Any(it => it is SubInnerJoin || it is SubLeftJoin);
+            if (isJoin)
+            {
+                this.context.JoinIndex++;
+            }
             List<string> result = isubList.Select(it =>
             {
                 it.HasWhere = isHasWhere;
                 return it.GetValue(it.Expression);
             }).ToList();
+            this.context.JoinIndex = 0;
             return result;
         }
     }

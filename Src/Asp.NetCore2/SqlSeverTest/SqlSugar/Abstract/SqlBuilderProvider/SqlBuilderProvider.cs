@@ -35,6 +35,10 @@ namespace SqlSugar
             {
                 return name;
             }
+            if (Context.MappingTables == null) 
+            {
+                return name;
+            }
             var context = this.Context;
             var mappingInfo = context
                 .MappingTables

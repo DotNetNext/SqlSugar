@@ -323,9 +323,16 @@ namespace SqlSugar
         {
             if (databaseDirectory != null)
             {
-                if (!FileHelper.IsExistDirectory(databaseDirectory))
+                try
                 {
-                    FileHelper.CreateDirectory(databaseDirectory);
+                    if (!FileHelper.IsExistDirectory(databaseDirectory))
+                    {
+                        FileHelper.CreateDirectory(databaseDirectory);
+                    }
+                }
+                catch  
+                {
+                    //Databases and sites are not in the same service
                 }
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;

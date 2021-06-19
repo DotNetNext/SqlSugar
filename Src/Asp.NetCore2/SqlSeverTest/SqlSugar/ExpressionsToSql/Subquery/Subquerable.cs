@@ -27,6 +27,22 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T> Where<Main, Join1>(Func<Main, Join1, bool> expression)
+        {
+            return this;
+        }
+        public Subqueryable<T> Where<Main, Join1, Join2>(Func<Main, Join1, Join2, bool> expression)
+        {
+            return this;
+        }
+        public Subqueryable<T> Where<Main, Join1, Join2, Join3>(Func<Main, Join1, Join2, Join3, bool> expression)
+        {
+            return this;
+        }
+        public Subqueryable<T> Where<Main, Join1, Join2, Join3, Join4>(Func<Main, Join1, Join2, Join3, Join4, bool> expression)
+        {
+            return this;
+        }
         public Subqueryable<T> WhereIF(bool isWhere,Func<T, bool> expression)
         {
             return this;
