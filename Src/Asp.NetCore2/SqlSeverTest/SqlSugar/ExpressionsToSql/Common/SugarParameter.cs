@@ -14,6 +14,7 @@ namespace SqlSugar
         {
             this.Value = value;
             this.ParameterName = name;
+            this.Direction = ParameterDirection.Input;
             if (value != null)
             {
                 SettingDataType(value.GetType());
@@ -23,6 +24,7 @@ namespace SqlSugar
         {
             this.Value = value;
             this.ParameterName = name;
+            this.Direction = ParameterDirection.Input;
             SettingDataType(type);
         }
         public SugarParameter(string name, object value, Type type, ParameterDirection direction)
@@ -47,12 +49,14 @@ namespace SqlSugar
             this.Value = value;
             this.ParameterName = name;
             this.DbType = type;
+            this.Direction = ParameterDirection.Input;
         }
         public SugarParameter(string name, DataTable value, string SqlServerTypeName)
         {
             this.Value = value;
             this.ParameterName = name;
             this.TypeName = SqlServerTypeName;
+            this.Direction = ParameterDirection.Input;
         }
         public SugarParameter(string name, object value, System.Data.DbType type, ParameterDirection direction)
         {
