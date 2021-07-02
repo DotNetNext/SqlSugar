@@ -135,6 +135,7 @@ namespace SqlSugar
             itemSql = Regex.Replace(itemSql, string.Format(@" {0}\+", "\\" + itemParameter.ParameterName)," "+ newName + "+", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\|\|{0}\|\|", "\\" + itemParameter.ParameterName), "+" + newName + "+", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\={0}\+", "\\" + itemParameter.ParameterName), "=" + newName + "+", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"{0}\|\|", "\\" + itemParameter.ParameterName),   newName + "+", RegexOptions.IgnoreCase);
             return itemSql;
         }
         internal static Type GetRootBaseType(Type entityType)
