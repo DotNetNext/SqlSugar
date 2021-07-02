@@ -880,6 +880,15 @@ namespace SqlSugar
             else
                 return null;
         }
+        public async virtual Task<T[]> ToArrayAsync()
+        {
+
+            var result =await this.ToListAsync();
+            if (result.HasValue())
+                return result.ToArray();
+            else
+                return null;
+        }
         public virtual string ToJson()
         {
             if (IsCache)

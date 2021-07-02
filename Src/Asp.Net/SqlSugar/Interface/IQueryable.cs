@@ -133,6 +133,7 @@ namespace SqlSugar
         Task<List<Dictionary<string, object>>> ToDictionaryListAsync();
 
         T[] ToArray();
+        Task<T[]> ToArrayAsync();
         Task<List<T>> ToListAsync();
 
         string ToJson();
