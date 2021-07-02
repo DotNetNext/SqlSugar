@@ -782,6 +782,10 @@ namespace SqlSugar
             result.QueryBuilder.WhereIndex = index;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+            {
+                result.Select("MergeTable.*");
+            }
             return result;
         }
 
