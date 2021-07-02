@@ -330,12 +330,13 @@ namespace SqlSugar
                                 WhereType = WhereType.Or;
                             }
                         }
-                        cons.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
+                        var data = new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
                         {
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
                             FieldValue = value.ObjToString()
-                        }));
+                        });
+                        cons.ConditionalList.Add(data);
                     }
                     if (cons.HasValue())
                     {
