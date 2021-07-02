@@ -14,8 +14,36 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitSysMenu>();
             Db.DbMaintenance.TruncateTable<UnitSysMenu>();
             Db.Saveable<UnitSysMenu>(new UnitSysMenu() { ID="aa", ButtonList="", CreateName="a", CreateTime=DateTime.Now, ImageUrl="", IsDel=true, MenuCode="a", NavigateUrl="a", UpdateName="", Remark="", UpdateTime=DateTime.Now }).ExecuteReturnEntity();
+            var db = Db;
+            db.CodeFirst.InitTables<UinitBlukTable>();
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+            List<UinitBlukTable> list2 = new List<UinitBlukTable>();
+            list2.Add(new UinitBlukTable() { Id = 1, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 2, Name = "a", Create = DateTime.Now });
+            list2.Add(new UinitBlukTable() { Id = 0, Name = "a", Create = DateTime.Now });
+            db.Insertable(list2[0]).ExecuteCommand();
+            var x = Db.Storageable(list2)
+                                      .Saveable()
+                                      .ToStorage();
+            x.AsInsertable.ExecuteCommand();
+            x.AsUpdateable.ExecuteCommand();
+
+            
+            db.DbMaintenance.TruncateTable<UinitBlukTable>();
+
         }
     }
+    internal class UinitBlukTable
+    {
+        public UinitBlukTable()
+        {
+        }
+        [SugarColumn(IsPrimaryKey =true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime Create { get; set; }
+    }
+
     public class BaseEntity 
     {
         /// <summary>

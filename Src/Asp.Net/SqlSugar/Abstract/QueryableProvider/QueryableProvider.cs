@@ -336,6 +336,13 @@ namespace SqlSugar
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
                             FieldValue = value.ObjToString()
                         });
+                        if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
+                        {
+                            data.Value.FieldValueConvertFunc = it =>
+                            {
+                                return UtilMethods.ChangeType2(it, value.GetType());
+                            };
+                        }
                         cons.ConditionalList.Add(data);
                     }
                     if (cons.HasValue())
