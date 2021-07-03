@@ -1560,7 +1560,7 @@ namespace SqlSugar
         }
         private void _ToOffsetPage(int pageIndex, int pageSize)
         {
-            QueryBuilder.Offset = $" offset {(pageIndex - 1) * pageSize} rows fetch next {pageSize} rows only";
+            QueryBuilder.Offset = $" OFFSET {(pageIndex - 1) * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY";
         }
 
         private int _PageList(int pageIndex, int pageSize)
