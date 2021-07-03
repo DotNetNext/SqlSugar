@@ -2343,6 +2343,7 @@ namespace SqlSugar
             asyncQueryableBuilder.IgnoreColumns = this.QueryBuilder.IgnoreColumns;
             asyncQueryableBuilder.AsTables = this.QueryBuilder.AsTables;
             asyncQueryableBuilder.DisableTop = this.QueryBuilder.DisableTop;
+            asyncQueryableBuilder.Offset = this.QueryBuilder.Offset;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
