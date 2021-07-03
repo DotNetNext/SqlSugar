@@ -155,6 +155,10 @@ namespace SqlSugar
         DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber,ref int totalPage);
         Task<DataTable> ToDataTablePageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber);
 
+        List<T> ToOffsetPage(int pageIndex,int pageSize);
+        List<T> ToOffsetPage(int pageIndex, int pageSize,ref int totalNumber);
+        Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize);
+        Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber);
         List<T> ToPageList(int pageIndex, int pageSize);
         Task<List<T>> ToPageListAsync(int pageIndex, int pageSize);
         List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber);

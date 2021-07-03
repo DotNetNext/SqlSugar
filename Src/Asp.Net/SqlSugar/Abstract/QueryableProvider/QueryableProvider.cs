@@ -1082,6 +1082,56 @@ namespace SqlSugar
             InitMapping();
             return _ToList<T>();
         }
+        public List<T> ToOffsetPage(int pageIndex, int pageSize) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return this.ToPageList(pageIndex, pageSize);
+            }
+            else
+            {
+                _ToOffsetPage(pageIndex, pageSize);
+                return this.ToList();
+            }
+        }
+        public List<T> ToOffsetPage(int pageIndex, int pageSize, ref int totalNumber) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return this.ToPageList(pageIndex, pageSize, ref totalNumber);
+            }
+            else 
+            {
+                totalNumber = this.Clone().Count();
+               _ToOffsetPage(pageIndex, pageSize);
+                return this.Clone().ToList();
+            }
+        }
+        public Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return this.ToPageListAsync(pageIndex, pageSize);
+            }
+            else
+            {
+                _ToOffsetPage(pageIndex, pageSize);
+                return this.ToListAsync();
+            }
+        }
+        public async Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
+            }
+            else 
+            {
+                totalNumber =await this.Clone().CountAsync();
+                _ToOffsetPage(pageIndex, pageSize);
+                return await this.Clone().ToListAsync();
+            }
+        }
         public virtual List<T> ToPageList(int pageIndex, int pageSize)
         {
             pageIndex = _PageList(pageIndex, pageSize);
@@ -1508,6 +1558,11 @@ namespace SqlSugar
                 return this;
             }
         }
+        private void _ToOffsetPage(int pageIndex, int pageSize)
+        {
+            QueryBuilder.Offset = $" offset {(pageIndex - 1) * pageSize} rows fetch next {pageSize} rows only";
+        }
+
         private int _PageList(int pageIndex, int pageSize)
         {
             if (pageIndex == 0)

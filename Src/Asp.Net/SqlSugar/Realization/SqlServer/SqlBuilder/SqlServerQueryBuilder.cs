@@ -48,6 +48,10 @@ namespace SqlSugar
                 result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
             }
             this.OrderByValue = oldOrderBy;
+            if (!string.IsNullOrEmpty(this.Offset)) 
+            {
+                result += this.Offset;
+            }
             return result;
         }
     }
