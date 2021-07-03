@@ -754,6 +754,32 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Reportable
+        public IReportable<T> Reportable<T>(T data)  
+        {
+            var result = new ReportableProvider<T>(data);
+            result.formatBuilder = InstanceFactory.GetInsertBuilder(this.Context.CurrentConnectionConfig);
+            result.Context = this;
+            return result;
+        }
+        public IReportable<T> Reportable<T>(List<T> list)  
+        {
+            var result = new ReportableProvider<T>(list);
+            result.formatBuilder = InstanceFactory.GetInsertBuilder(this.Context.CurrentConnectionConfig);
+            result.Context = this;
+            return result;
+        }
+        public IReportable<T> Reportable<T>(T [] list)
+        {
+            if (list == null)
+                list = new T[] { };
+            var result = new ReportableProvider<T>(list.ToList());
+            result.formatBuilder = InstanceFactory.GetInsertBuilder(this.Context.CurrentConnectionConfig);
+            result.Context = this;
+            return result;
+        }
+        #endregion
+
         #region DbFirst
         public virtual IDbFirst DbFirst
         {

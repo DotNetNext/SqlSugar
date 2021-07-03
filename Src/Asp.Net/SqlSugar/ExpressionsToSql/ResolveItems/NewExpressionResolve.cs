@@ -42,8 +42,16 @@ namespace SqlSugar
                 case ResolveExpressType.ArraySingle:
                     foreach (var item in expression.Arguments)
                     {
-                        base.Expression = item;
-                        base.Start();
+                        if (IsDateValue(item))
+                        {
+                            var value = GetNewExpressionValue(item);
+                            base.Context.Result.Append(value);
+                        }
+                        else
+                        {
+                            base.Expression = item;
+                            base.Start();
+                        }
                     }
                     break;
                 case ResolveExpressType.Join:
@@ -73,6 +81,25 @@ namespace SqlSugar
                 default:
                     break;
             }
+        }
+
+        private bool IsDateValue(Expression item)
+        {
+            var isMember = item is MemberExpression;
+            if (isMember) 
+            {
+                var m = (item as MemberExpression);
+                var isInt= m.Type == UtilConstants.IntType;
+                if (m.Expression != null && isInt&& m.Expression is MemberExpression)
+                {
+                    var mm = (m.Expression as MemberExpression);
+                    if (m.Member.Name.IsIn("Year", "Day", "Month")&&mm.Type==UtilConstants.DateType) 
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void NewValueType(ExpressionParameter parameter, NewExpression expression)
