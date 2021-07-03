@@ -52,7 +52,7 @@ namespace SqlSugar
             {
                 if (this.OrderByValue.IsNullOrEmpty()) 
                 {
-                    result += " ORDER BY getdate() ";
+                    result += " ORDER BY GETDATE() ";
                 }
                 result += this.Offset;
             }

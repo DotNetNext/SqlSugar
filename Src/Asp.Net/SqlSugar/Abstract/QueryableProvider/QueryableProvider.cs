@@ -1127,7 +1127,7 @@ namespace SqlSugar
             }
             else 
             {
-                totalNumber =await this.Clone().CountAsync();
+                totalNumber.Value =await this.Clone().CountAsync();
                 _ToOffsetPage(pageIndex, pageSize);
                 return await this.Clone().ToListAsync();
             }
