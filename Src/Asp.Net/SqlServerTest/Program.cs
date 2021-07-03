@@ -31,6 +31,7 @@ namespace OrmTest
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
             DemoH_Tenant.Init();
+            DemoJ_Report.Init()
             //Unit test
             //NewUnitTest.Init();
 
