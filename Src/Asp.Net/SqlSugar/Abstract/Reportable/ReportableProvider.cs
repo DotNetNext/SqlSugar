@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -91,7 +93,8 @@ namespace SqlSugar
         {
             var columns = new StringBuilder();
             var entity=this.Context.EntityMaintenance.GetEntityInfo<T>();
-            columns.Append(string.Join(",",entity.Columns.Select(it=>GetSelect(it,data))));
+            columns.Append(string.Join(",",entity.Columns.Where(it=>it.IsIgnore==false).Select(it=>GetSelect(it,data))));
+            columns.Append(",null as NoCacheColumn");
             sb.AppendLine(" SELECT " + columns.ToString());
             sb.Append(GetNextSql);
             if (!isLast)
@@ -102,12 +105,13 @@ namespace SqlSugar
 
         private object GetSelect<Y>(EntityColumnInfo it,Y  data)
         {
-            return string.Format(" {0} AS {1} ",formatBuilder.FormatValue(it.PropertyInfo.GetValue(data,null)),it.PropertyName);
+
+            return string.Format(" {0} AS {1} ", FormatValue(it.PropertyInfo.GetValue(data,null)),it.PropertyName);
         }
 
         private void NoClassMethod<Y>(Y data, StringBuilder sb,bool isLast)
         {
-            sb.AppendLine(" SELECT "+ formatBuilder.FormatValue(data));
+            sb.AppendLine(" SELECT "+  FormatValue(data));
             sb.Append(" AS ColumnName ");
             sb.Append(GetNextSql);
             if (!isLast)
@@ -187,6 +191,33 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+        private object FormatValue(object value)
+        {
+            if (value == null)
+                return "null";
+            var type =UtilMethods.GetUnderType(value.GetType());
+            if (type.IsIn(typeof(int), typeof(uint), typeof(long), typeof(ulong), typeof(short), typeof(ushort)))
+            {
+                return value;
+            }
+            else if (type.IsIn(typeof(decimal), typeof(double)))
+            {
+                return value;
+            }
+            else if (type.IsIn(typeof(DateTime))) 
+            {
+                Expression<Func<SingleColumnEntity, object>> exp= it => Convert.ToDateTime(it.ColumnName);
+                var result= this.Context.Queryable<object>().QueryBuilder.GetExpressionValue(exp,ResolveExpressType.WhereSingle).GetResultString();
+                result = Regex.Replace(result, @"\[ColumnName\]", formatBuilder.FormatValue(value)+"",RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, @"\`ColumnName\`", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, @"""ColumnName""", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
+                return result;
+            }
+            else
+            {
+                return formatBuilder.FormatValue(value);
+            }
         }
 
     }
