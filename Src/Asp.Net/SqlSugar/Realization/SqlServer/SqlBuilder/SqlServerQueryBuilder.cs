@@ -50,6 +50,10 @@ namespace SqlSugar
             this.OrderByValue = oldOrderBy;
             if (!string.IsNullOrEmpty(this.Offset)) 
             {
+                if (this.OrderByValue.IsNullOrEmpty()) 
+                {
+                    result += " ORDER BY getdate() ";
+                }
                 result += this.Offset;
             }
             return result;
