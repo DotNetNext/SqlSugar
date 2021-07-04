@@ -330,12 +330,20 @@ namespace SqlSugar
                                 WhereType = WhereType.Or;
                             }
                         }
-                        cons.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
+                        var data = new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
                         {
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
                             FieldValue = value.ObjToString()
-                        }));
+                        });
+                        if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
+                        {
+                            data.Value.FieldValueConvertFunc = it =>
+                            {
+                                return UtilMethods.ChangeType2(it, value.GetType());
+                            };
+                        }
+                        cons.ConditionalList.Add(data);
                     }
                     if (cons.HasValue())
                     {
@@ -782,6 +790,10 @@ namespace SqlSugar
             result.QueryBuilder.WhereIndex = index;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+            {
+                result.Select("MergeTable.*");
+            }
             return result;
         }
 
@@ -863,6 +875,15 @@ namespace SqlSugar
         {
 
             var result = this.ToList();
+            if (result.HasValue())
+                return result.ToArray();
+            else
+                return null;
+        }
+        public async virtual Task<T[]> ToArrayAsync()
+        {
+
+            var result =await this.ToListAsync();
             if (result.HasValue())
                 return result.ToArray();
             else
@@ -1060,6 +1081,56 @@ namespace SqlSugar
         {
             InitMapping();
             return _ToList<T>();
+        }
+        public List<T> ToOffsetPage(int pageIndex, int pageSize) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return this.ToPageList(pageIndex, pageSize);
+            }
+            else
+            {
+                _ToOffsetPage(pageIndex, pageSize);
+                return this.ToList();
+            }
+        }
+        public List<T> ToOffsetPage(int pageIndex, int pageSize, ref int totalNumber) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return this.ToPageList(pageIndex, pageSize, ref totalNumber);
+            }
+            else 
+            {
+                totalNumber = this.Clone().Count();
+               _ToOffsetPage(pageIndex, pageSize);
+                return this.Clone().ToList();
+            }
+        }
+        public Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return this.ToPageListAsync(pageIndex, pageSize);
+            }
+            else
+            {
+                _ToOffsetPage(pageIndex, pageSize);
+                return this.ToListAsync();
+            }
+        }
+        public async Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                return await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
+            }
+            else 
+            {
+                totalNumber.Value =await this.Clone().CountAsync();
+                _ToOffsetPage(pageIndex, pageSize);
+                return await this.Clone().ToListAsync();
+            }
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize)
         {
@@ -1487,6 +1558,11 @@ namespace SqlSugar
                 return this;
             }
         }
+        private void _ToOffsetPage(int pageIndex, int pageSize)
+        {
+            QueryBuilder.Offset = $" OFFSET {(pageIndex - 1) * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+        }
+
         private int _PageList(int pageIndex, int pageSize)
         {
             if (pageIndex == 0)
@@ -2267,6 +2343,7 @@ namespace SqlSugar
             asyncQueryableBuilder.IgnoreColumns = this.QueryBuilder.IgnoreColumns;
             asyncQueryableBuilder.AsTables = this.QueryBuilder.AsTables;
             asyncQueryableBuilder.DisableTop = this.QueryBuilder.DisableTop;
+            asyncQueryableBuilder.Offset = this.QueryBuilder.Offset;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {

@@ -131,7 +131,7 @@ namespace SqlSugar
                 foreach (var item in entity.Parameter)
                 {
                     var oldName = item.ParameterName;
-                    item.ParameterName = oldName + "_con_" + this.Context.ParameterIndex;
+                    item.ParameterName = Regex.Split(oldName,"_con_").First() + "_con_" + this.Context.ParameterIndex;
                     entity.Where = entity.Where.Replace(oldName, item.ParameterName);
                 }
                 this.Context.ParameterIndex++;

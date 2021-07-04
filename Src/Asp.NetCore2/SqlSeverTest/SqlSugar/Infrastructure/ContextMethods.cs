@@ -288,7 +288,11 @@ namespace SqlSugar
                     }
                     else if (IsBytes(readerValues, item))
                     {
-                        result.Add(name,(byte[])readerValues[item.Name.ToLower()]);
+                        result.Add(name, (byte[])readerValues[item.Name.ToLower()]);
+                    }
+                    else if (item.PropertyType == typeof(object)) 
+                    {
+                        result.Add(name, readerValues[item.Name.ToLower()]);
                     }
                     else
                     {

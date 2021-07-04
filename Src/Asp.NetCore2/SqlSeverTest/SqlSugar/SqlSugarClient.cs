@@ -358,6 +358,21 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Reportable
+        public IReportable<T> Reportable<T>(T data)  
+        {
+            return this.Context.Reportable(data);
+        }
+        public IReportable<T> Reportable<T>(List<T> list)  
+        {
+            return this.Context.Reportable(list);
+        }
+        public IReportable<T> Reportable<T>(T [] array)
+        {
+            return  this.Context.Reportable(array);
+        }
+        #endregion
+
         #region Queue
         public QueueList Queues { get { return this.Context.Queues; } set { this.Context.Queues = value; } }
         public void AddQueue(string sql, object parsmeters = null)
