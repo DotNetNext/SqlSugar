@@ -24,7 +24,7 @@ namespace OrmTest
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
-
+            DemoJ_Report.Init();
             //Unit test
             //NewUnitTest.Init();
 
