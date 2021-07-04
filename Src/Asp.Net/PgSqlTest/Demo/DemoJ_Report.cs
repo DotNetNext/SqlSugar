@@ -91,7 +91,7 @@ namespace OrmTest
             var list= db.Queryable(queryableLeft, queryableRight, JoinType.Left,
                 (x1, x2) => x2.operate_time.ToString("yyyy-MM")==x1.ColumnName.ToString("yyyy-MM"))
                 .GroupBy((x1,x2)=>x1.ColumnName)
-                .Where(x1=>SqlFunc.Between(x1.ColumnName,"2021-01-01",DateTime.Now))
+                .Where(x1=>SqlFunc.Between(x1.ColumnName,DateTime.Now.AddYears(-1),DateTime.Now))
                 .Select((x1, x2) => new
                 {
                     count=SqlFunc.AggregateSum(SqlFunc.IIF(x2.id>0,1,0)) ,
