@@ -38,7 +38,7 @@ namespace OrmTest
         {
             var list = new List<int>() { 1, 2, 3 };
             var query1 = db.Queryable<Order>();
-            var queryable2 = db.Reportable(list).ToSingleColumnQueryable();
+            var queryable2 = db.Reportable(list).ToQueryable<int>();
             var x = db.Queryable(query1, queryable2, (x1, x2) => x1.Id.Equals(x2.ColumnName))
                 .Select((x1, x2) => new { x = x1.Id, x2 = x2.ColumnName }).ToList();
         }
@@ -86,16 +86,16 @@ namespace OrmTest
             }).ExecuteCommand();
 
 
-            var queryableLeft = db.Reportable(ReportableDateType.MonthsInLast1years).ToSingleColumnQueryable();
+            var queryableLeft = db.Reportable(ReportableDateType.MonthsInLast1years).ToQueryable<DateTime>();
             var queryableRight = db.Queryable<operateinfo>();
             var list= db.Queryable(queryableLeft, queryableRight, JoinType.Left,
-                (x1, x2) => x2.operate_time.ToString("yyyy-MM")==SqlFunc.ToDate(x1.ColumnName).ToString("yyyy-MM"))
+                (x1, x2) => x2.operate_time.ToString("yyyy-MM")== x1.ColumnName .ToString("yyyy-MM"))
                 .GroupBy((x1,x2)=>x1.ColumnName)
                 .Where(x1=>SqlFunc.Between(x1.ColumnName,"2021-01-01",DateTime.Now))
                 .Select((x1, x2) => new
                 {
                     count=SqlFunc.AggregateSum(SqlFunc.IIF(x2.id>0,1,0)) ,
-                    date=SqlFunc.ToDate(x1.ColumnName).ToString("yyyy-MM")
+                    date=x1.ColumnName.ToString("yyyy-MM")
                     
                 }).ToList();
         }

@@ -29,10 +29,10 @@ namespace SqlSugar
             Init();
         }
 
-        public IReportable<T> MakeUp(Func<T, object> auto)
-        {
-            throw new NotImplementedException();
-        }
+        //public IReportable<T> MakeUp(Func<T, object> auto)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public ISugarQueryable<T> ToQueryable()
         {
@@ -67,6 +67,10 @@ namespace SqlSugar
             }
             return this.Context.SqlQueryable<object>(sb.ToString()).Select<T>();
         }
+        public ISugarQueryable<SingleColumnEntity<Y>> ToQueryable<Y>()
+        {
+            return ToQueryable().Select<SingleColumnEntity<Y>>();
+        }
 
         private void Each<Y>(StringBuilder sb, List<Y> list)
         {
@@ -83,11 +87,6 @@ namespace SqlSugar
                     NoClassMethod(item, sb, isLast);
                 }
             }
-        }
-
-        public ISugarQueryable<SingleColumnEntity> ToSingleColumnQueryable() 
-        {
-            return ToQueryable().Select<SingleColumnEntity>();
         }
 
         private void ClassMethod<Y>(Y data, StringBuilder sb,bool isLast)

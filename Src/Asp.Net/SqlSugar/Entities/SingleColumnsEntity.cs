@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class SingleColumnEntity
+    public class SingleColumnEntity<T>
     {
-        public object ColumnName { get; set; }
+        public T ColumnName { get; set; }
     }
 }
