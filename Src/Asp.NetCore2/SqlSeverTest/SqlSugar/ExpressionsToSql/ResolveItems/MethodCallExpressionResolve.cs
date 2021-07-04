@@ -109,8 +109,42 @@ namespace SqlSugar
             {
                 code=ExpressionTool.GetExpressionValue(express.Arguments[1])+"";
             }
-            var entity= SqlFuncExtendsion.TableInfos.FirstOrDefault(y => y.Type.Name == name&&y.Code== code);
-            Check.Exception(entity == null,string.Format( "GetConfigValue no configuration  Entity={0} UniqueCode={1}",name,code));
+            var entityDb= SqlFuncExtendsion.TableInfos.FirstOrDefault(y => y.Type.Name == name&&y.Code== code);
+            Check.Exception(entityDb == null,string.Format( "GetConfigValue no configuration  Entity={0} UniqueCode={1}",name,code));
+            var entity = new ConfigTableInfo()
+            {
+                Code = entityDb.Code,
+                TableName = entityDb.TableName,
+                Key = entityDb.Key,
+                Parameter = new List<SugarParameter>(),
+                Type = entityDb.Type,
+                Value = entityDb.Value,
+                Where = entityDb.Where
+            };
+            if (entityDb.Parameter != null && entityDb.Parameter.Any())
+            {
+                foreach (var item in entityDb.Parameter)
+                {
+                    entity.Parameter.Add(new SugarParameter("", null) { 
+                     DbType=item.DbType,
+                      Direction=item.Direction,
+                       IsArray=item.IsArray,
+                        IsJson=item.IsJson,
+                         IsNullable=item.IsNullable,
+                          IsRefCursor=item.IsRefCursor,
+                           ParameterName=item.ParameterName,
+                            Size=item.Size,
+                             SourceColumn=item.SourceColumn,
+                              SourceColumnNullMapping=item.SourceColumnNullMapping,
+                               SourceVersion=item.SourceVersion,
+                                TempDate=item.TempDate,
+                                 TypeName=item.TypeName,
+                                  Value=item.Value,
+                                   _Size=item._Size
+                    
+                    });
+                }
+            }
             string sql = " (SELECT {0} FROM {1} WHERE {2}={3}";
             if (ExpressionTool.IsUnConvertExpress(exp)) 
             {
