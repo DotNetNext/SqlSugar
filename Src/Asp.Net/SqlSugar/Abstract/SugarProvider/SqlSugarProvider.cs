@@ -760,6 +760,7 @@ namespace SqlSugar
             var result = new ReportableProvider<T>(data);
             result.formatBuilder = InstanceFactory.GetInsertBuilder(this.Context.CurrentConnectionConfig);
             result.Context = this;
+            result.formatBuilder.Context = this;
             return result;
         }
         public IReportable<T> Reportable<T>(List<T> list)  
@@ -767,6 +768,7 @@ namespace SqlSugar
             var result = new ReportableProvider<T>(list);
             result.formatBuilder = InstanceFactory.GetInsertBuilder(this.Context.CurrentConnectionConfig);
             result.Context = this;
+            result.formatBuilder.Context = this;
             return result;
         }
         public IReportable<T> Reportable<T>(T [] list)
@@ -776,6 +778,7 @@ namespace SqlSugar
             var result = new ReportableProvider<T>(list.ToList());
             result.formatBuilder = InstanceFactory.GetInsertBuilder(this.Context.CurrentConnectionConfig);
             result.Context = this;
+            result.formatBuilder.Context = this;
             return result;
         }
         #endregion
