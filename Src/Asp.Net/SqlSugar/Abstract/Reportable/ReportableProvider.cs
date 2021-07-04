@@ -207,7 +207,7 @@ namespace SqlSugar
             }
             else if (type.IsIn(typeof(DateTime))) 
             {
-                Expression<Func<SingleColumnEntity, object>> exp= it => Convert.ToDateTime(it.ColumnName);
+                Expression<Func<SingleColumnEntity<object>, object>> exp= it => Convert.ToDateTime(it.ColumnName);
                 var result= queryBuilder.GetExpressionValue(exp,ResolveExpressType.WhereSingle).GetResultString();
                 result = Regex.Replace(result, @"\[ColumnName\]", formatBuilder.FormatValue(value)+"",RegexOptions.IgnoreCase);
                 result = Regex.Replace(result, @"\`ColumnName\`", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
