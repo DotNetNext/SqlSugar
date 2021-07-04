@@ -109,8 +109,18 @@ namespace SqlSugar
             {
                 code=ExpressionTool.GetExpressionValue(express.Arguments[1])+"";
             }
-            var entity= SqlFuncExtendsion.TableInfos.FirstOrDefault(y => y.Type.Name == name&&y.Code== code);
-            Check.Exception(entity == null,string.Format( "GetConfigValue no configuration  Entity={0} UniqueCode={1}",name,code));
+            var entityDb= SqlFuncExtendsion.TableInfos.FirstOrDefault(y => y.Type.Name == name&&y.Code== code);
+            Check.Exception(entityDb == null,string.Format( "GetConfigValue no configuration  Entity={0} UniqueCode={1}",name,code));
+            var entity = new ConfigTableInfo()
+            {
+                Code = entityDb.Code,
+                TableName = entityDb.TableName,
+                Key = entityDb.Key,
+                Parameter = entityDb.Parameter,
+                Type = entityDb.Type,
+                Value = entityDb.Value,
+                Where = entityDb.Where
+            };
             string sql = " (SELECT {0} FROM {1} WHERE {2}={3}";
             if (ExpressionTool.IsUnConvertExpress(exp)) 
             {
