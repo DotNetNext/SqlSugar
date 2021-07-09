@@ -10,13 +10,15 @@ namespace SqlSugar
     public class ScopedClient : ISqlSugarClient, ITenant
     {
         private SqlSugarClient db;
+        private Action<SqlSugarClient> configAction;
         private ScopedClient()
         {
 
         }
-        public ScopedClient(SqlSugarClient context)
+        public ScopedClient(SqlSugarClient context,Action<SqlSugarClient> configAction)
         {
             this.db = context;
+            this.configAction = configAction;
         }
         public SqlSugarClient ScopedContext
         {
@@ -28,6 +30,10 @@ namespace SqlSugar
                 {
                     CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(db._allConfigs));
                     result = CallContextAsync<SqlSugarClient>.GetData(key);
+                    if (this.configAction != null) 
+                    {
+                        this.configAction(result);
+                    }
                 }
                 return result;
             }
