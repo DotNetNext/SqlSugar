@@ -390,57 +390,57 @@ namespace SqlSugar
             where T2 : class, new()
             where T3 : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinQueryable1, joinQueryable2, joinQueryable3,joinType1,joinExpression1,joinType2,joinExpression2);
         }
 
         public ISugarQueryable<T> Queryable<T>()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable<T>();
         }
 
         public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(queryable);
         }
 
         public ISugarQueryable<T> Queryable<T>(string shortName)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable<T>(shortName);
         }
 
         public IReportable<T> Reportable<T>(T data)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Reportable(data);
         }
 
         public IReportable<T> Reportable<T>(List<T> list)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Reportable(list);
         }
 
         public IReportable<T> Reportable<T>(T[] array)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Reportable(array);
         }
 
         public void RollbackTran()
         {
-            throw new NotImplementedException();
+             ScopedContext.RollbackTran();
         }
 
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Saveable(saveObjects);
         }
 
         public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Saveable(saveObject);
         }
 
         public int SaveQueues(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues(isTran);
         }
 
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
