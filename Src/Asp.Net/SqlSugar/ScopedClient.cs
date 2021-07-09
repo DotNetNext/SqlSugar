@@ -178,7 +178,7 @@ namespace SqlSugar
 
         public IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
-            return ScopedContext.Insertable<T>(insertDynamicObject);
+            return ScopedContext.Insertable<T>((object)insertDynamicObject);
         }
 
         public IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
@@ -203,186 +203,186 @@ namespace SqlSugar
 
         public ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(tableName,shortName);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Queryable<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Queryable<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6> Queryable<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5> Queryable<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(Expression<Func<T, T2, T3, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, bool>> joinExpression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, JoinQueryInfos>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(Expression<Func<T, T2, object[]>> joinExpression)
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinExpression);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression)
             where T : class, new()
             where T2 : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinQueryable1,joinQueryable2, joinExpression);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression)
             where T : class, new()
             where T2 : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Queryable(joinQueryable1, joinQueryable2, joinType, joinExpression);
         }
 
         public ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3, JoinType joinType1, Expression<Func<T, T2, T3, bool>> joinExpression1, JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2)
