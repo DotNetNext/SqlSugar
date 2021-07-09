@@ -137,8 +137,8 @@ namespace SqlSugar
         {
             if (datas.Count == 1) 
             {
-                isDates = true;
                var data=datas.First();
+                isDates = data is ReportableDateType;
                 if (data is ReportableDateType) 
                 {
                     var type = UtilMethods.ChangeType2(data, typeof(ReportableDateType));
