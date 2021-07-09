@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SqlSugar</RootNamespace>
     <AssemblyName>SqlSugar</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -196,6 +196,7 @@
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerBlueCopy.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
+    <Compile Include="Utilities\CallContextAsync.cs" />
     <Compile Include="Utilities\DataTableExtensions.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
     <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
@@ -263,6 +264,7 @@
     <Compile Include="Utilities\Check.cs" />
     <Compile Include="Utilities\DbExtensions.cs" />
     <Compile Include="Utilities\ErrorMessage.cs" />
+    <Compile Include="ScopedClient.cs" />
     <Compile Include="Utilities\UtilExtensions.cs" />
     <Compile Include="Utilities\UtilRandom.cs" />
     <Compile Include="Utilities\ValidateExtensions.cs" />
