@@ -15,6 +15,24 @@ namespace SqlSugar
         {
 
         }
+        public ScopedClient(ConnectionConfig config)
+        {
+            this.db = new SqlSugarClient(config);
+        }
+        public ScopedClient(List<ConnectionConfig> configs)
+        {
+            this.db = new SqlSugarClient(configs);
+        }
+        public ScopedClient(ConnectionConfig config, Action<SqlSugarClient> configAction)
+        {
+            this.db = new SqlSugarClient(config);
+            this.configAction = configAction;
+        }
+        public ScopedClient(List<ConnectionConfig> configs, Action<SqlSugarClient> configAction)
+        {
+            this.db = new SqlSugarClient(configs);
+            this.configAction = configAction;
+        }
         public ScopedClient(SqlSugarClient context,Action<SqlSugarClient> configAction)
         {
             this.db = context;
