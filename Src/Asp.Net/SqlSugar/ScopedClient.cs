@@ -32,173 +32,173 @@ namespace SqlSugar
                 return result;
             }
         }
-        public MappingTableList MappingTables { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public MappingColumnList MappingColumns { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IgnoreColumnList IgnoreColumns { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IgnoreColumnList IgnoreInsertColumns { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Dictionary<string, object> TempItems { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ConfigQuery ConfigQuery { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public MappingTableList MappingTables { get => ScopedContext.MappingTables; set => ScopedContext.MappingTables = value; }
+        public MappingColumnList MappingColumns { get => ScopedContext.MappingColumns; set => ScopedContext.MappingColumns=value; }
+        public IgnoreColumnList IgnoreColumns { get => ScopedContext.IgnoreColumns; set => ScopedContext.IgnoreColumns=value; }
+        public IgnoreColumnList IgnoreInsertColumns { get => ScopedContext.IgnoreInsertColumns; set => ScopedContext.IgnoreInsertColumns=value; }
+        public Dictionary<string, object> TempItems { get => ScopedContext.TempItems; set => ScopedContext.TempItems=value; }
+        public ConfigQuery ConfigQuery { get => ScopedContext.ConfigQuery; set => ScopedContext.ConfigQuery = value; }
 
-        public bool IsSystemTablesConfig => throw new NotImplementedException();
+        public bool IsSystemTablesConfig => ScopedContext.IsSystemTablesConfig;
 
-        public Guid ContextID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ConnectionConfig CurrentConnectionConfig { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Guid ContextID { get => ScopedContext.ContextID; set => ScopedContext.ContextID=value; }
+        public ConnectionConfig CurrentConnectionConfig { get => ScopedContext.CurrentConnectionConfig; set => ScopedContext.CurrentConnectionConfig=value; }
 
-        public IAdo Ado => throw new NotImplementedException();
+        public IAdo Ado => ScopedContext.Ado;
 
-        public AopProvider Aop => throw new NotImplementedException();
+        public AopProvider Aop => ScopedContext.Aop;
 
-        public ICodeFirst CodeFirst => throw new NotImplementedException();
+        public ICodeFirst CodeFirst => ScopedContext.CodeFirst;
 
-        public IDbFirst DbFirst => throw new NotImplementedException();
+        public IDbFirst DbFirst => ScopedContext.DbFirst;
 
-        public IDbMaintenance DbMaintenance => throw new NotImplementedException();
+        public IDbMaintenance DbMaintenance => ScopedContext.DbMaintenance;
 
-        public EntityMaintenance EntityMaintenance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public QueryFilterProvider QueryFilter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IContextMethods Utilities { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public QueueList Queues { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public EntityMaintenance EntityMaintenance { get => ScopedContext.EntityMaintenance; set => ScopedContext.EntityMaintenance=value; }
+        public QueryFilterProvider QueryFilter { get => ScopedContext.QueryFilter; set => ScopedContext.QueryFilter=value; }
+        public IContextMethods Utilities { get => ScopedContext.Utilities; set => ScopedContext.Utilities=value; }
+        public QueueList Queues { get => ScopedContext.Queues; set => ScopedContext.Queues=value; }
 
-        public SugarCacheProvider DataCache => throw new NotImplementedException();
+        public SugarCacheProvider DataCache => ScopedContext.DataCache;
 
         public void AddConnection(ConnectionConfig connection)
         {
-            throw new NotImplementedException();
+            ScopedContext.AddConnection(connection);
         }
 
         public void AddQueue(string sql, object parsmeters = null)
         {
-            throw new NotImplementedException();
+            ScopedContext.AddQueue(sql, parsmeters);
         }
 
         public void AddQueue(string sql, List<SugarParameter> parsmeters)
         {
-            throw new NotImplementedException();
+            ScopedContext.AddQueue(sql,parsmeters);
         }
 
         public void AddQueue(string sql, SugarParameter parsmeter)
         {
-            throw new NotImplementedException();
+            ScopedContext.AddQueue(sql,parsmeter);
         }
 
         public void BeginTran()
         {
-            throw new NotImplementedException();
+            ScopedContext.BeginTran();
         }
 
         public void ChangeDatabase(dynamic configId)
         {
-            throw new NotImplementedException();
+            ScopedContext.ChangeDatabase(configId);
         }
 
         public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
         {
-            throw new NotImplementedException();
+            ScopedContext.ChangeDatabase(changeExpression);
         }
 
         public void Close()
         {
-            throw new NotImplementedException();
+            ScopedContext.Close();
         }
 
         public void CommitTran()
         {
-            throw new NotImplementedException();
+            ScopedContext.CommitTran();
         }
 
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
-            throw new NotImplementedException();
+           return ScopedContext.Deleteable<T>();
         }
 
         public IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Deleteable(primaryKeyValue);
         }
 
         public IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Deleteable<T>(primaryKeyValues);
         }
 
         public IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Deleteable(expression);
         }
 
         public IDeleteable<T> Deleteable<T>(List<dynamic> pkValue) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Deleteable<T>(pkValue);
         }
 
         public IDeleteable<T> Deleteable<T>(List<T> deleteObjs) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Deleteable(deleteObjs);
         }
 
         public IDeleteable<T> Deleteable<T>(T deleteObj) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Deleteable(deleteObj);
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            ScopedContext.Dispose();
         }
 
         public SqlSugarProvider GetConnection(dynamic configId)
         {
-            throw new NotImplementedException();
+            return ScopedContext.GetConnection(configId);
         }
 
         public DateTime GetDate()
         {
-            throw new NotImplementedException();
+            return ScopedContext.GetDate();
         }
 
         public SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.GetSimpleClient<T>();
         }
 
         public void InitMappingInfo(Type type)
         {
-            throw new NotImplementedException();
+            ScopedContext.InitMappingInfo(type);
         }
 
         public void InitMappingInfo<T>()
         {
-            throw new NotImplementedException();
+            ScopedContext.InitMappingInfo<T>();
         }
 
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Insertable<T>(columnDictionary);
         }
 
         public IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Insertable<T>(insertDynamicObject);
         }
 
         public IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Insertable(insertObjs);
         }
 
         public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Insertable(insertObj);
         }
 
         public IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Insertable(insertObjs);
         }
 
         public void Open()
         {
-            throw new NotImplementedException();
+            ScopedContext.Open();
         }
 
         public ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
