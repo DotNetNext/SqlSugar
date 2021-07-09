@@ -445,172 +445,172 @@ namespace SqlSugar
 
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SaveQueues<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues<T, T2, T3, T4, T5, T6, T7>(isTran);
         }
 
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>> SaveQueues<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues<T, T2, T3, T4, T5, T6>(isTran);
         }
 
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>> SaveQueues<T, T2, T3, T4, T5>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues<T, T2, T3, T4, T5>(isTran);
         }
 
         public Tuple<List<T>, List<T2>, List<T3>, List<T4>> SaveQueues<T, T2, T3, T4>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues<T, T2, T3, T4>(isTran);
         }
 
         public Tuple<List<T>, List<T2>, List<T3>> SaveQueues<T, T2, T3>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues<T, T2, T3>(isTran);
         }
 
         public Tuple<List<T>, List<T2>> SaveQueues<T, T2>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues<T, T2>(isTran);
         }
 
         public List<T> SaveQueues<T>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueues<T>(isTran);
         }
 
         public Task<int> SaveQueuesAsync(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync(isTran);
         }
 
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync<T, T2, T3, T4, T5, T6, T7>(isTran);
         }
 
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>> SaveQueuesAsync<T, T2, T3, T4, T5, T6>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync<T, T2, T3, T4, T5, T6>(isTran);
         }
 
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>>> SaveQueuesAsync<T, T2, T3, T4, T5>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync<T, T2, T3, T4, T5>(isTran);
         }
 
         public Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync<T, T2, T3, T4>(isTran);
         }
 
         public Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync<T, T2, T3>(isTran);
         }
 
         public Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync<T, T2>(isTran);
         }
 
         public Task<List<T>> SaveQueuesAsync<T>(bool isTran = true)
         {
-            throw new NotImplementedException();
+            return ScopedContext.SaveQueuesAsync<T>(isTran);
         }
 
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.SqlQueryable<T>(sql);
         }
 
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Storageable(dataList);
         }
 
         public IStorageable<T> Storageable<T>(T data) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Storageable(data);
         }
 
         public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Union(queryables);
         }
 
         public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Union(queryables);
         }
 
         public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.UnionAll(queryables);
         }
 
         public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.UnionAll(queryables);
         }
 
         public IUpdateable<T> Updateable<T>() where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable<T>();
         }
 
         public IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable<T>(columnDictionary);
         }
 
         public IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable<T>((object)updateDynamicObject);
         }
 
         public IUpdateable<T> Updateable<T>(Expression<Func<T, bool>> columns) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable(columns);
         }
 
         public IUpdateable<T> Updateable<T>(Expression<Func<T, T>> columns) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable(columns);
         }
 
         public IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable(UpdateObjs);
         }
 
         public IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable(UpdateObj);
         }
 
         public IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
-            throw new NotImplementedException();
+            return ScopedContext.Updateable(UpdateObjs);
         }
 
         public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
         {
-            throw new NotImplementedException();
+            return ScopedContext.UseTran(action,errorCallBack);
         }
 
         public DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null)
         {
-            throw new NotImplementedException();
+            return ScopedContext.UseTran(action,errorCallBack);
         }
 
         public Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null)
         {
-            throw new NotImplementedException();
+            return ScopedContext.UseTranAsync(action, errorCallBack);
         }
 
         public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
         {
-            throw new NotImplementedException();
+            return ScopedContext.UseTranAsync(action, errorCallBack);
         }
     }
 }
