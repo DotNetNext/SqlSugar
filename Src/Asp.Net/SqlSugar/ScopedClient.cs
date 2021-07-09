@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq.Expressions;
 using System.Text;
@@ -33,29 +34,63 @@ namespace SqlSugar
             this.db = new SqlSugarClient(configs);
             this.configAction = configAction;
         }
-        public ScopedClient(SqlSugarClient context,Action<SqlSugarClient> configAction)
-        {
-            this.db = context;
-            this.configAction = configAction;
-        }
+        //public ScopedClient(SqlSugarClient context,Action<SqlSugarClient> configAction)
+        //{
+        //    this.db = context;
+        //    this.configAction = configAction;
+        //}
         public SqlSugarClient ScopedContext
         {
             get
             {
+                SqlSugarClient result = null;
                 var key = db.GetHashCode().ToString();
-                SqlSugarClient result = CallContextAsync<SqlSugarClient>.GetData(key);
-                if (result == null)
+                StackTrace st = new StackTrace(true);
+                var methods = st.GetFrames();
+                var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
+                if (isAsync)
                 {
-                    CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(db._allConfigs));
-                    result = CallContextAsync<SqlSugarClient>.GetData(key);
-                    if (this.configAction != null) 
-                    {
-                        this.configAction(result);
-                    }
+                    result=GetAsyncContext(key);
+                }
+                else 
+                {
+                    result = GetThreadContext(key);
                 }
                 return result;
             }
         }
+
+        private SqlSugarClient GetAsyncContext(string key)
+        {
+            SqlSugarClient result = CallContextAsync<SqlSugarClient>.GetData(key);
+            if (result == null)
+            {
+                CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(db._allConfigs));
+                result = CallContextAsync<SqlSugarClient>.GetData(key);
+                if (this.configAction != null)
+                {
+                    this.configAction(result);
+                }
+            }
+
+            return result;
+        }
+
+        private SqlSugarClient GetThreadContext(string key)
+        {
+            SqlSugarClient result = CallContextThread<SqlSugarClient>.GetData(key);
+            if (result == null)
+            {
+                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(db._allConfigs));
+                result = CallContextThread<SqlSugarClient>.GetData(key);
+                if (this.configAction != null)
+                {
+                    this.configAction(result);
+                }
+            }
+            return result;
+        }
+
         public MappingTableList MappingTables { get => ScopedContext.MappingTables; set => ScopedContext.MappingTables = value; }
         public MappingColumnList MappingColumns { get => ScopedContext.MappingColumns; set => ScopedContext.MappingColumns=value; }
         public IgnoreColumnList IgnoreColumns { get => ScopedContext.IgnoreColumns; set => ScopedContext.IgnoreColumns=value; }
