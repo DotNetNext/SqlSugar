@@ -25,21 +25,18 @@ namespace SqlSugar
         private IgnoreColumnList _IgnoreInsertColumns;
         internal Guid? AsyncId { get; set; }
         internal bool? IsSingleInstance { get; set; }
-        internal List<ConnectionConfig> _allConfigs { get; set; }
 
         #endregion
 
         #region Constructor
         public SqlSugarClient(ConnectionConfig config)
         {
-            _allConfigs = new  List<ConnectionConfig>() { config };
             Check.Exception(config == null, "ConnectionConfig config is null");
             InitContext(config);
         }
 
         public SqlSugarClient(List<ConnectionConfig> configs)
         {
-            _allConfigs = configs;
             Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null");
             InitConfigs(configs);
             var config = configs.First();
