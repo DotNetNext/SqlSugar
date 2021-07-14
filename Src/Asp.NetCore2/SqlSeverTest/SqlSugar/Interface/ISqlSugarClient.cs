@@ -163,6 +163,12 @@ namespace SqlSugar
         IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new();
         #endregion
 
+        #region Reportable
+        IReportable<T> Reportable<T>(T data);
+        IReportable<T> Reportable<T>(List<T> list);
+        IReportable<T> Reportable<T>(T[] array);
+        #endregion
+
         #region Cache
         SugarCacheProvider DataCache { get; }
         #endregion

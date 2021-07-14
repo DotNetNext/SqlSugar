@@ -70,6 +70,10 @@ namespace SqlSugar
 
         public StorageableResult<T> ToStorage()
         {
+            if (whereFuncs == null || whereFuncs.Count == 0)
+            {
+                return this.Saveable().ToStorage();
+            }
             if (this.allDatas.Count == 0)
                 return new StorageableResult<T>() {
                     AsDeleteable = this.Context.Deleteable<T>().AS(asname).Where(it => false),
