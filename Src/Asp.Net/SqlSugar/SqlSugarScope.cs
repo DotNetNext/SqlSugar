@@ -8,28 +8,28 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class SqlSugarScoped: ISqlSugarClient, ITenant
+    public class SqlSugarScope: ISqlSugarClient, ITenant
     {
         private List<ConnectionConfig> _configs;
         private Action<SqlSugarClient> _configAction;
-        private SqlSugarScoped()
+        private SqlSugarScope()
         {
 
         }
-        public SqlSugarScoped(ConnectionConfig config)
+        public SqlSugarScope(ConnectionConfig config)
         {
            _configs=new List<ConnectionConfig>() { config};
         }
-        public SqlSugarScoped(List<ConnectionConfig> configs)
+        public SqlSugarScope(List<ConnectionConfig> configs)
         {
             _configs = configs;
         }
-        public SqlSugarScoped(ConnectionConfig config, Action<SqlSugarClient> configAction)
+        public SqlSugarScope(ConnectionConfig config, Action<SqlSugarClient> configAction)
         {
             _configs = new List<ConnectionConfig>() { config };
             this._configAction = configAction;
         }
-        public SqlSugarScoped(List<ConnectionConfig> configs, Action<SqlSugarClient> configAction)
+        public SqlSugarScope(List<ConnectionConfig> configs, Action<SqlSugarClient> configAction)
         {
             _configs = configs;
             this._configAction = configAction;

@@ -264,7 +264,7 @@
     <Compile Include="Utilities\Check.cs" />
     <Compile Include="Utilities\DbExtensions.cs" />
     <Compile Include="Utilities\ErrorMessage.cs" />
-    <Compile Include="SqlSugarScoped.cs" />
+    <Compile Include="SqlSugarScope.cs" />
     <Compile Include="Utilities\UtilExtensions.cs" />
     <Compile Include="Utilities\UtilRandom.cs" />
     <Compile Include="Utilities\ValidateExtensions.cs" />
