@@ -54,6 +54,7 @@ namespace SqlSugar
                 if (UtilMethods.IsAsyncMethod(item.GetMethod()))
                 {
                     isAsync = true;
+                    break;
                 }
             }
             return isAsync;
@@ -65,7 +66,14 @@ namespace SqlSugar
             {
                 return false;
             }
-            var name= method.Name;
+            if (method.DeclaringType != null)
+            {
+                if (method.DeclaringType.GetInterfaces().Contains(typeof(IAsyncStateMachine)))
+                {
+                    return true;
+                }
+            }
+            var name = method.Name;
             if (name.Contains("OutputAsyncCausalityEvents"))
             {
                 return true;
@@ -78,7 +86,7 @@ namespace SqlSugar
             {
                 return true;
             }
-            Type attType = typeof(AsyncStateMachineAttribute); 
+            Type attType = typeof(AsyncStateMachineAttribute);
             var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(attType);
             return (attrib != null);
         }
@@ -93,7 +101,7 @@ namespace SqlSugar
             for (int i = 0; i < st.FrameCount; i++)
             {
                 var frame = st.GetFrame(i);
-                if (frame.GetMethod().Module.Name.ToLower() != "sqlsugar.dll"&& frame.GetMethod().Name.First()!='<')
+                if (frame.GetMethod().Module.Name.ToLower() != "sqlsugar.dll" && frame.GetMethod().Name.First() != '<')
                 {
                     info.MyStackTraceList.Add(new StackTraceInfoItem()
                     {
@@ -131,11 +139,11 @@ namespace SqlSugar
             itemSql = Regex.Replace(itemSql, string.Format(@"{0}\,", "\\" + itemParameter.ParameterName), newName + ",", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"{0}$", "\\" + itemParameter.ParameterName), newName, RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\+{0}\+", "\\" + itemParameter.ParameterName), "+" + newName + "+", RegexOptions.IgnoreCase);
-            itemSql = Regex.Replace(itemSql, string.Format(@"\+{0} ", "\\" + itemParameter.ParameterName), "+" + newName +" ", RegexOptions.IgnoreCase);
-            itemSql = Regex.Replace(itemSql, string.Format(@" {0}\+", "\\" + itemParameter.ParameterName)," "+ newName + "+", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"\+{0} ", "\\" + itemParameter.ParameterName), "+" + newName + " ", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@" {0}\+", "\\" + itemParameter.ParameterName), " " + newName + "+", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\|\|{0}\|\|", "\\" + itemParameter.ParameterName), "+" + newName + "+", RegexOptions.IgnoreCase);
             itemSql = Regex.Replace(itemSql, string.Format(@"\={0}\+", "\\" + itemParameter.ParameterName), "=" + newName + "+", RegexOptions.IgnoreCase);
-            itemSql = Regex.Replace(itemSql, string.Format(@"{0}\|\|", "\\" + itemParameter.ParameterName),   newName + "+", RegexOptions.IgnoreCase);
+            itemSql = Regex.Replace(itemSql, string.Format(@"{0}\|\|", "\\" + itemParameter.ParameterName), newName + "+", RegexOptions.IgnoreCase);
             return itemSql;
         }
         internal static Type GetRootBaseType(Type entityType)
@@ -183,7 +191,7 @@ namespace SqlSugar
             }
             return returnObj;
         }
-        public static object  ChangeType2(object value, Type type)
+        public static object ChangeType2(object value, Type type)
         {
             if (value == null && type.IsGenericType) return Activator.CreateInstance(type);
             if (value == null) return null;
