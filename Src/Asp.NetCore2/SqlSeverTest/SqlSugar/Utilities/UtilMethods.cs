@@ -54,6 +54,7 @@ namespace SqlSugar
                 if (UtilMethods.IsAsyncMethod(item.GetMethod()))
                 {
                     isAsync = true;
+                    break;
                 }
             }
             return isAsync;
@@ -64,6 +65,13 @@ namespace SqlSugar
             if (method == null)
             {
                 return false;
+            }
+            if (method.DeclaringType != null)
+            {
+                if (method.DeclaringType.GetInterfaces().Contains(typeof(IAsyncStateMachine)))
+                {
+                    return true;
+                }
             }
             var name= method.Name;
             if (name.Contains("OutputAsyncCausalityEvents"))
