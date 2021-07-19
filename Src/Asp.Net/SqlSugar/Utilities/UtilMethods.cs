@@ -252,6 +252,31 @@ namespace SqlSugar
             return string.Format(" ({0}) {1} ", sql, shortName);
         }
 
+        public static Func<string, object> GetTypeConvert(object value)
+        {
+            if (value is int || value is uint || value is int? || value is uint?)
+            {
+                return x => Convert.ToInt32(x);
+            }
+            else if (value is short || value is ushort || value is short? || value is ushort?)
+            {
+                return x => Convert.ToInt16(x);
+            }
+            else if (value is long || value is long? || value is ulong? || value is long?)
+            {
+                return x => Convert.ToInt64(x);
+            }
+            else if (value is DateTime|| value is DateTime?)
+            {
+                return x => Convert.ToDateTime(x);
+            }
+            else if (value is bool||value is bool?)
+            {
+                return x => Convert.ToBoolean(x);
+            }
+            return null;
+        }
+
         internal static string GetParenthesesValue(string dbTypeName)
         {
             if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
