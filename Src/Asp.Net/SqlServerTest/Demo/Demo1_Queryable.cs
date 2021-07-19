@@ -136,6 +136,8 @@ namespace OrmTest
 
             int c = 0;
             var test10 = db.Queryable<Order>().ToPageList(1, 2, ref c);
+            var test11 = db.Queryable<Order>().GroupBy(it=>new { it.CreateTime.Year }).Select(it=>it.CreateTime.Year).ToList();
+            var test12 = db.Queryable<Order>().GroupBy(it =>  it.CreateTime.Date ).Select(it => it.CreateTime.Date).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

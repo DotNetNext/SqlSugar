@@ -128,7 +128,8 @@ namespace SqlSugar
                 return false;
             var childExpression= parameter.BaseParameter.ChildExpression.ObjToString();
             var expression=parameter.BaseParameter.CurrentExpression.ObjToString();
-            return isSetTempData&&((childExpression+".Date")==expression);
+            var datevaluelist = UtilConstants.DateTypeStringList.Select(it => childExpression+"." + it);
+            return isSetTempData&& datevaluelist.Contains(expression);
         }
 
         #endregion
