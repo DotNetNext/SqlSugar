@@ -36,7 +36,7 @@ namespace OrmTest
 
         private static void Demo1(SqlSugarClient db)
         {
-            var list = new List<int>() { 1, 2, 3 };
+            var list = new List<int>() { 1, 2, 3,1,2 };
             var query1 = db.Queryable<Order>();
             var queryable2 = db.Reportable(list).ToQueryable<int>();
             var x = db.Queryable(query1, queryable2, (x1, x2) => x1.Id.Equals(x2.ColumnName))
