@@ -138,6 +138,17 @@ namespace OrmTest
             var test10 = db.Queryable<Order>().ToPageList(1, 2, ref c);
             var test11 = db.Queryable<Order>().GroupBy(it=>new { it.CreateTime.Year }).Select(it=>it.CreateTime.Year).ToList();
             var test12 = db.Queryable<Order>().GroupBy(it =>  it.CreateTime.Date ).Select(it => it.CreateTime.Date).ToList();
+            var test13 = db.Queryable<Order>().GroupBy(it => new { it.CreateTime.Date ,it.CreateTime.Year,it.CreateTime.Minute })
+                .Select(it => new { it.CreateTime.Date, it.CreateTime.Year, it.CreateTime.Minute }).ToList();
+            var test14 = db.Queryable<Order>()
+                .GroupBy(it =>   it.CreateTime.Year )
+                 .GroupBy(it => it.CreateTime.Second)
+                     .GroupBy(it => it.CreateTime.Date)
+                .Select(it => new {
+                    it.CreateTime.Year,
+                    it.CreateTime.Second,
+                    it.CreateTime.Date
+                }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
