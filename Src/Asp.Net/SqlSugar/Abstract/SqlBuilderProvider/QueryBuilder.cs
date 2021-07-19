@@ -357,6 +357,8 @@ namespace SqlSugar
             }
             else if (isMain)
             {
+                if (TableShortName == null)
+                    return;
                 var shortName = this.Builder.GetTranslationColumnName(TableShortName) + ".";
                 sql = sql.Replace(itName, shortName);
             }
