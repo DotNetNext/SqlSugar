@@ -149,6 +149,10 @@ namespace OrmTest
                     it.CreateTime.Second,
                     it.CreateTime.Date
                 }).ToList();
+            var test15 = db.Queryable<Order, Order>((o, i) => new JoinQueryInfos(
+              JoinType.Left, o.Name == SqlFunc.ToString(SqlFunc.MergeString(",", i.Name, ","))
+            ))
+            .Select<ViewOrder>().ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
