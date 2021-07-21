@@ -1031,9 +1031,9 @@ namespace SqlSugar
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {
             _RestoreMapping = false;
-            totalNumber = this.Count();
+            totalNumber = this.Clone().Count();
             _RestoreMapping = true;
-            var result = ToDataTablePage(pageIndex, pageSize);
+            var result = this.Clone().ToDataTablePage(pageIndex, pageSize);
             return result;
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber, ref int totalPage)
