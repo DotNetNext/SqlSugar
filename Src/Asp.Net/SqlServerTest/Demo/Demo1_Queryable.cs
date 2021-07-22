@@ -295,7 +295,10 @@ namespace OrmTest
 
 
             db.Insertable(new Tree() { Id = 222, Name = "child11", ParentId = 11 }).ExecuteCommand();
-            var tree = db.Queryable<Tree>().ToTree(it=>it.Child,it=>it.ParentId,0);
+            var tree = db.Queryable<Tree>().ToTree(it => it.Child, it => it.ParentId, 0); 
+            var allchilds= db.Queryable<Tree>().ToChildList(it => it.ParentId, 0);
+            var allchilds1 = db.Queryable<Tree>().ToChildList(it => it.ParentId, 1);
+            var allchilds2= db.Queryable<Tree>().ToChildList(it => it.ParentId, 2);
             var parentList = db.Queryable<Tree>().ToParentList(it => it.ParentId, 22);
             var parentList2 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 222);
             var parentList3 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 2);
