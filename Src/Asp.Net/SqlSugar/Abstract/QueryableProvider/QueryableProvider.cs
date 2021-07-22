@@ -926,6 +926,22 @@ namespace SqlSugar
             var list= this.ToPivotList(columnSelector, rowSelector, dataSelector);
             return this.Context.Utilities.SerializeObject(list);
         }
+        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue) 
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var list = this.ToList();
+            return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
+        }
+        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue) 
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var list = await this.ToListAsync();
+            return GetChildList(parentIdExpression,pk,list, primaryKeyValue);
+        }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             List<T> result = new List<T>() { };
@@ -1440,6 +1456,41 @@ namespace SqlSugar
         #endregion
 
         #region Private Methods
+        private List<T> GetChildList(Expression<Func<T, object>> parentIdExpression, string pkName, List<T> list, object rootValue,bool isRoot=true)
+        {
+            var exp = (parentIdExpression as LambdaExpression).Body;
+            if (exp is UnaryExpression)
+            {
+                exp = (exp as UnaryExpression).Operand;
+            }
+            var parentIdName = (exp as MemberExpression).Member.Name;
+            List<T> result = list.Where(it =>
+            {
+                var parentValue = it.GetType().GetProperty(parentIdName).GetValue(it);
+                return  parentValue.ObjToString() == rootValue.ObjToString();
+
+            }).ToList();
+            if (result != null && result.Count > 0)
+            {
+                List<T> childList = new List<T>();
+                foreach (var item in result)
+                {
+                    var pkValue = item.GetType().GetProperty(pkName).GetValue(item);
+                    childList.AddRange(GetChildList(parentIdExpression, pkName, list, pkValue,false));
+                }
+                result.AddRange(childList);
+            }
+            if (isRoot)
+            {
+                result.AddRange(list.Where(it =>
+                {
+                    var pkValue = it.GetType().GetProperty(pkName).GetValue(it);
+                    return pkValue.ObjToString() == rootValue.ObjToString();
+
+                }).ToList());
+            }
+            return result;
+        }
         private List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list,object rootValue)
         {
             var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
