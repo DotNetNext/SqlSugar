@@ -313,6 +313,21 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
+            var template = AddDefaultValueSql;
+            if (defaultValue != null && defaultValue.ToLower() == "getdate()") 
+            {
+                template = template.Replace("'{2}'", "{2}");
+            }
+            string sql = string.Format(template, tableName, columnName, defaultValue);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
 
         /// <summary>
         ///by current connection string
