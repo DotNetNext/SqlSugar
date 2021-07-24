@@ -27,6 +27,11 @@ namespace SqlSugar
             }
             else if (propertyTypes == null || propertyTypes.Count() == 0)
             {
+                if (dbTypeName.StartsWith("_"))
+                {
+                    var dbTypeName2 = dbTypeName.TrimStart('_');
+                    return MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName2  || it.Key.ToLower() == dbTypeName2).Select(it => it.Value + "[]").First();
+                }
                 Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
                 return null;
             }
