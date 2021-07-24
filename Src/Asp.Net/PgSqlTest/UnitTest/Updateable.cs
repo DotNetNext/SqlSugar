@@ -59,8 +59,25 @@ namespace OrmTest
                 CreateTime = null
             }).Where(it => it.Id == 1).ExecuteCommand();
 
+            Db.CodeFirst.InitTables<BoolTest1>();
+            Db.Updateable<BoolTest1>()
+            .SetColumns(it => it.a == !it.a)
+            .Where(it => it.a)
+            .ExecuteCommand();
+
+            Db.Updateable<BoolTest1>()
+              .SetColumns(it => new BoolTest1() { a = !it.a })
+              .Where(it => it.a)
+      .ExecuteCommand();
+
         }
     }
+
+    public class BoolTest1
+    {
+        public bool a { get; set; } 
+    }
+
     [SugarTable("order")]
     public class OrderModel 
     {

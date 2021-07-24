@@ -104,6 +104,16 @@ namespace OrmTest
 
             Db.CodeFirst.InitTables<Unitbluecopy>();
             Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBlueCopy();
+            Db.CodeFirst.InitTables<BoolTest1>();
+            Db.Updateable<BoolTest1>()
+                .SetColumns(it =>it.a== !it.a)
+                .Where(it=>it.a)
+                .ExecuteCommand();
+
+            Db.Updateable<BoolTest1>()
+              .SetColumns(it=>new BoolTest1() { a = !it.a })
+              .Where(it => it.a)
+      .ExecuteCommand();
         }
     }
 

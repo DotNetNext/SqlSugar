@@ -146,12 +146,16 @@ namespace OrmTest
                 b = it.bytes,
                 name="a"
             }).ToList();
+
+            db.CodeFirst.InitTables<BoolTest1>();
+            db.CodeFirst.InitTables<BoolTest2>();
+            db.Queryable<BoolTest1>().Where(it => !it.a).ToList();
         }
 
 
         
         public class UnitBytes11
-        {
+        { 
             [SugarColumn(Length =200,IsNullable =true)]
             public byte[] bytes { get; set; }
             public string name{ get; set; }
