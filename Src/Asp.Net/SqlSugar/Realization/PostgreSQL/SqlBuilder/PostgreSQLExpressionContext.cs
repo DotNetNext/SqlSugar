@@ -96,6 +96,19 @@ namespace SqlSugar
     }
     public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
     {
+        public override string IIF(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            if (parameter.Type == UtilConstants.BoolType) 
+            {
+                parameter.MemberName = parameter.MemberName.ToString().Replace("=1", "=true");
+                parameter2.MemberName = false;
+                parameter3.MemberName = true;
+            }
+            return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+        }
         public override string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
