@@ -150,6 +150,8 @@ namespace OrmTest
             db.CodeFirst.InitTables<BoolTest1>();
             db.CodeFirst.InitTables<BoolTest2>();
             db.Queryable<BoolTest1>().Where(it => !it.a).ToList();
+            var test01= db.Queryable<SaleOrder>().GroupBy(it => new { it.CheckTime.Value.Date })
+                .Select(it => new { x = it.CheckTime.Value.Date }).ToList();
         }
 
 
