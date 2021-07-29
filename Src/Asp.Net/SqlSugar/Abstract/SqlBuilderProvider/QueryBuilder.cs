@@ -648,6 +648,10 @@ namespace SqlSugar
 
         private string GetTableName(string entityName)
         {
+            if (this.AsTables != null && this.AsTables.Any(it=>it.Key==entityName)) 
+            {
+                entityName = this.AsTables.First(it => it.Key == entityName).Value;
+            }
             var result = this.Context.EntityMaintenance.GetTableName(entityName);
             return this.Builder.GetTranslationTableName(result);
         }

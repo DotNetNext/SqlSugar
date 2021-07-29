@@ -146,7 +146,10 @@ namespace OrmTest
                 .ToList();
 
 
-
+            var sql12 = Db.Queryable<Order, OrderItem, Custom>((o, i, c) => true)
+         .AS("[aa]")
+         .AS<OrderItem>("[xx]")
+         .AS<Custom>("[yy]").ToSql();
 
 
             _db.QueryFilter.Clear();
