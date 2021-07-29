@@ -2391,8 +2391,8 @@ namespace SqlSugar
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
             asyncQueryableBuilder.HavingInfos = this.QueryBuilder.HavingInfos;
             asyncQueryableBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
-            asyncQueryableBuilder.IgnoreColumns = this.QueryBuilder.IgnoreColumns;
-            asyncQueryableBuilder.AsTables = this.QueryBuilder.AsTables;
+            asyncQueryableBuilder.IgnoreColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.IgnoreColumns);
+            asyncQueryableBuilder.AsTables = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AsTables);
             asyncQueryableBuilder.DisableTop = this.QueryBuilder.DisableTop;
             asyncQueryableBuilder.Offset = this.QueryBuilder.Offset;
         }

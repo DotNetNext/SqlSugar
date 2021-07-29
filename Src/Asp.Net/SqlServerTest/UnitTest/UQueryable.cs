@@ -152,6 +152,14 @@ namespace OrmTest
             db.Queryable<BoolTest1>().Where(it => !it.a).ToList();
             var test01= db.Queryable<SaleOrder>().GroupBy(it => new { it.CheckTime.Value.Date })
                 .Select(it => new { x = it.CheckTime.Value.Date }).ToList();
+            var q1 = db.Queryable<BoolTest1>();
+            var x1 = q1.Clone().AS("BoolTest11");
+            var x2 = q1.Clone().AS("BoolTest12");
+            var q2= db.UnionAll(x1,x2).ToSql();
+            if (!q2.Key.Contains("BoolTest11")|| !q2.Key.Contains("BoolTest12")) 
+            {
+                throw new Exception("unit query error");
+            }
         }
 
 
