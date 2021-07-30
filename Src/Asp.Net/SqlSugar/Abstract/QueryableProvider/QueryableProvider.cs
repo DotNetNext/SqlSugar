@@ -1582,6 +1582,10 @@ namespace SqlSugar
             result.SqlBuilder = this.SqlBuilder;
             result.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
             result.SqlBuilder.QueryBuilder.SelectValue = expression;
+            if (this.IsCache) 
+            {
+                result.WithCache(this.CacheTime);
+            }
             return result;
         }
         protected void _Where(Expression expression)
