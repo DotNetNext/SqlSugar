@@ -395,12 +395,20 @@ namespace SqlSugar
                                 }
 
                             }
-                            cons.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
+                            var data = new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
                             {
                                 ConditionalType = ConditionalType.Equal,
                                 FieldName = column.DbColumnName,
                                 FieldValue = value.ObjToString()
-                            }));
+                            });
+                            cons.ConditionalList.Add(data);
+                            if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                            {
+                                data.Value.FieldValueConvertFunc = it =>
+                                {
+                                    return UtilMethods.ChangeType2(it, value.GetType());
+                                };
+                            }
                         }
                     }
                     if (cons.HasValue())
