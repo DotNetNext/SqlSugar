@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+
             Filter();
             Insert();
             Insert2();
@@ -44,6 +45,7 @@ namespace OrmTest
             Queryable();
             Queryable2();
             QueryableAsync();
+            AopTest();
             //Thread();
             //Thread2();
             //Thread3();
