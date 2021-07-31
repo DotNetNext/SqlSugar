@@ -85,7 +85,62 @@ namespace SqlSugar
             return result;
         }
 
-
+        public virtual long ExecuteReturnSnowflakeId() 
+        {
+            var id = SnowFlakeSingle.instance.getID();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty=entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty==null, "The entity sets the primary key and is long");
+            foreach (var item in this.InsertObjs)
+            {
+                snowProperty.PropertyInfo.SetValue(item,id);
+            }
+            this.ExecuteCommand();
+            return id;
+        }
+        public List<long>  ExecuteReturnSnowflakeIdList() 
+        {
+            List<long> result = new List<long>();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
+            foreach (var item in InsertObjs)
+            {
+                var id = SnowFlakeSingle.instance.getID();;
+                snowProperty.PropertyInfo.SetValue(item, id);
+                result.Add(id);
+            }
+            this.ExecuteCommand();
+            return result;
+        }
+        public async Task<long> ExecuteReturnSnowflakeIdAsync() 
+        {
+            var id = SnowFlakeSingle.instance.getID();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
+            foreach (var item in this.InsertObjs)
+            {
+                snowProperty.PropertyInfo.SetValue(item, id);
+            }
+            await this.ExecuteCommandAsync();
+            return id;
+        }
+        public async Task<List<long>> ExecuteReturnSnowflakeIdListAsync() 
+        {
+            List<long> result = new List<long>();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
+            foreach (var item in InsertObjs)
+            {
+                var id = SnowFlakeSingle.instance.getID(); ;
+                snowProperty.PropertyInfo.SetValue(item, id);
+                result.Add(id);
+            }
+            await this.ExecuteCommandAsync();
+            return result;
+        }
 
         public virtual T ExecuteReturnEntity()
         {

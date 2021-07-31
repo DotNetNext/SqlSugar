@@ -12,6 +12,10 @@ namespace SqlSugar
         InsertBuilder InsertBuilder { get; set; }
         int ExecuteCommand();
         Task<int> ExecuteCommandAsync();
+        long ExecuteReturnSnowflakeId();
+        List<long> ExecuteReturnSnowflakeIdList();
+        Task<long> ExecuteReturnSnowflakeIdAsync();
+        Task<List<long>> ExecuteReturnSnowflakeIdListAsync();
         int ExecuteReturnIdentity();
         Task<int> ExecuteReturnIdentityAsync();
         T ExecuteReturnEntity();
