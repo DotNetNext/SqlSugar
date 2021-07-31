@@ -69,6 +69,7 @@
     <Compile Include="Demo\DemoG_SimpleClient.cs" />
     <Compile Include="Demo\DemoH_Tenant.cs" />
     <Compile Include="Demo\DemoJ_Report.cs" />
+    <Compile Include="Demo\DemoL_Snowflake.cs" />
     <Compile Include="Models\DataDictionary.cs" />
     <Compile Include="Models\Custom.cs" />
     <Compile Include="Models\EntityMapper.cs" />

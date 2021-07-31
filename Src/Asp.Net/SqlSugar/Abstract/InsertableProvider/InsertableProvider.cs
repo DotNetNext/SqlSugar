@@ -91,9 +91,10 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var snowProperty=entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
             Check.Exception(snowProperty==null, "The entity sets the primary key and is long");
-            foreach (var item in this.InsertObjs)
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in  this.InsertBuilder.DbColumnInfoList.Where(it=>it.PropertyName==snowProperty.PropertyName))
             {
-                snowProperty.PropertyInfo.SetValue(item,id);
+                item.Value = id;
             }
             this.ExecuteCommand();
             return id;
@@ -104,10 +105,11 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
             Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
-            foreach (var item in InsertObjs)
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
             {
-                var id = SnowFlakeSingle.instance.getID();;
-                snowProperty.PropertyInfo.SetValue(item, id);
+                var id = SnowFlakeSingle.instance.getID();
+                item.Value = id;
                 result.Add(id);
             }
             this.ExecuteCommand();
@@ -119,9 +121,10 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
             Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
-            foreach (var item in this.InsertObjs)
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
             {
-                snowProperty.PropertyInfo.SetValue(item, id);
+                item.Value = id;
             }
             await this.ExecuteCommandAsync();
             return id;
@@ -132,10 +135,11 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
             Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
-            foreach (var item in InsertObjs)
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
             {
-                var id = SnowFlakeSingle.instance.getID(); ;
-                snowProperty.PropertyInfo.SetValue(item, id);
+                var id = SnowFlakeSingle.instance.getID();
+                item.Value = id;
                 result.Add(id);
             }
             await this.ExecuteCommandAsync();
