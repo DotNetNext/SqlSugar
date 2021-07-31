@@ -753,6 +753,10 @@ namespace SqlSugar
                         var isValid = model.Args[0].IsMember && model.Args[1].IsMember == false;
                         //Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[1].MemberName.ObjToString());
+                        if (mappingColumnResult == "") 
+                        {
+                            return model.Args[1].MemberName.ObjToString().TrimStart('\'').TrimEnd('\'');
+                        }
                         return mappingColumnResult;
                     case "IsNull":
                         return this.Context.DbMehtods.IsNull(model);
@@ -780,6 +784,11 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Oracle_ToDate(model);
                     case "SqlServer_DateDiff":
                         return this.Context.DbMehtods.SqlServer_DateDiff(model);
+                    case "Format":
+                        var xx=base.BaseParameter;
+                        var result = this.Context.DbMehtods.Format(model);
+                        this.Context.Parameters.RemoveAll(it => model.Args.Select(x=>x.MemberName.ObjToString()).Contains(it.ParameterName) );
+                        return result;
                     default:
                         break;
                 }
@@ -799,6 +808,10 @@ namespace SqlSugar
         private bool CheckMethod(MethodCallExpression expression)
         {
             if (expression.Method.Name=="SelectAll") 
+            {
+                return true;
+            }
+            if (expression.Method.Name == "Format" && expression.Method.DeclaringType == UtilConstants.StringType)
             {
                 return true;
             }
