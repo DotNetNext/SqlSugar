@@ -110,9 +110,9 @@ namespace OrmTest
             var data4 = orderDb.GetSingle(it => it.Id == 1);
             var p = new PageModel() { PageIndex = 1, PageSize = 2 };
             var data5 = orderDb.GetPageList(it => it.Name == "xx", p);
-            Console.Write(p.PageCount);
+            Console.Write(p.TotalCount);
             var data6 = orderDb.GetPageList(it => it.Name == "xx", p, it => it.Name, OrderByType.Asc);
-            Console.Write(p.PageCount);
+            Console.Write(p.TotalCount);
             List<IConditionalModel> conModels = new List<IConditionalModel>();
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
             var data7 = orderDb.GetPageList(conModels, p, it => it.Name, OrderByType.Asc);

@@ -102,28 +102,28 @@ namespace SqlSugar
         {
             int count = 0;
             var result = Context.Queryable<T>().Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             int count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageList(page.PageIndex, page.PageSize, ref count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page)
         {
             int count = 0;
             var result = Context.Queryable<T>().Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             int count = 0;
             var result = Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageList(page.PageIndex, page.PageSize, ref count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual bool IsAny(Expression<Func<T, bool>> whereExpression)
@@ -212,28 +212,28 @@ namespace SqlSugar
         {
             RefAsync<int> count = 0;
             var result =await Context.Queryable<T>().Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual async Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             RefAsync<int> count = 0;
             var result =await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize,  count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page)
         {
             RefAsync<int> count = 0;
             var result =await Context.Queryable<T>().Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             RefAsync<int> count = 0;
             var result =await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
-            page.PageCount = count;
+            page.TotalCount = count;
             return result;
         }
         public virtual Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression)
