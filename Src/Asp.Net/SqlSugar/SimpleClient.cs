@@ -148,6 +148,22 @@ namespace SqlSugar
         {
             return this.Context.Insertable(insertObj).ExecuteReturnBigIdentity();
         }
+        public virtual long InsertReturnSnowflakeId(T insertObj)
+        {
+            return this.Context.Insertable(insertObj).ExecuteReturnSnowflakeId();
+        }
+        public virtual List<long> InsertReturnSnowflakeId(List<T> insertObjs)
+        {
+            return this.Context.Insertable(insertObjs).ExecuteReturnSnowflakeIdList();
+        }
+        public virtual Task<long> InsertReturnSnowflakeIdAsync(T insertObj)
+        {
+            return   this.Context.Insertable(insertObj).ExecuteReturnSnowflakeIdAsync();
+        }
+        public virtual Task<List<long>> InsertReturnSnowflakeIdAsync(List<T> insertObjs)
+        {
+            return   this.Context.Insertable(insertObjs).ExecuteReturnSnowflakeIdListAsync();
+        }
         public virtual bool InsertRange(T[] insertObjs)
         {
             return this.Context.Insertable(insertObjs).ExecuteCommand() > 0;
