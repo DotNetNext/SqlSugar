@@ -152,6 +152,24 @@ namespace OrmTest
          .AS<Custom>("[yy]").ToSql();
 
 
+
+            var list12 = Db.Queryable<Order>()
+           .Select(it => new
+           {
+               name = it.Name,
+               customName = SqlFunc.MappingColumn(default(string), " (select top 1 id from [Order] ) ")
+           }).ToList();
+
+            var p1 = "1";
+            var p2 = "2";
+          var list13 = Db.Queryable<Order>()
+            .Select(it => new
+            {
+               name = it.Name,
+               customName = SqlFunc.MappingColumn(default(string), $" (select top 1 id from [Order] where id={p1} or id={p2} ) ")
+            }).ToList();
+       
+
             _db.QueryFilter.Clear();
 
 
