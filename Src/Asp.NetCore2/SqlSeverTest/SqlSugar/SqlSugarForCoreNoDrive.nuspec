@@ -13,7 +13,7 @@
     <copyright>Copyright 2016</copyright>
     <tags>Asp.net core orm</tags>
     <dependencies>
-      <group targetFramework=".NETStandard2.0">
+      <group targetFramework=".NETStandard2.1">
         <dependency id="System.Data.Common" version="4.3.0" />
         <dependency id="System.Data.SqlClient" version="4.4.0" />
         <dependency id="Newtonsoft.Json" version="10.0.3" />
@@ -22,6 +22,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\NugetCore\SqlSugar.dll" target="lib\netstandard2.0"></file>
+    <file src="C:\NugetCore\SqlSugar.dll" target="lib\netstandard2.1"></file>
   </files>
 </package>
