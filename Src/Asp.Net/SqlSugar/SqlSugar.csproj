@@ -96,6 +96,7 @@
     <Compile Include="Entities\SingleColumnsEntity.cs" />
     <Compile Include="Entities\StackTraceInfo.cs" />
     <Compile Include="Entities\SubInsertTree.cs" />
+    <Compile Include="Enum\DataFilterType.cs" />
     <Compile Include="Enum\ReportableDateType.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperExpression.cs" />
     <Compile Include="ExpressionsToSql\DbMethods\SqlFuncExtendsion.cs" />

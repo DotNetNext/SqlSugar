@@ -440,12 +440,26 @@ namespace SqlSugar
                 }
                 else
                 {
+                    DataAop(item);
                     SetUpdateItemByEntity(i, item, updateItem);
                 }
                 ++i;
             }
             this.columns = this.UpdateBuilder.DbColumnInfoList;
         }
+
+        private void DataAop(T item)
+        {
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (dataEvent != null && item != null)
+            {
+                foreach (var columnInfo in this.EntityInfo.Columns)
+                {
+                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                }
+            }
+        }
+
         private void CheckTranscodeing(bool checkIsJson = true)
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))

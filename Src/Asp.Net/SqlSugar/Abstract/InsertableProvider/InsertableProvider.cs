@@ -498,12 +498,26 @@ namespace SqlSugar
                 }
                 else
                 {
+                    DataAop(item);
                     SetInsertItemByEntity(i, item, insertItem);
                 }
                 this.InsertBuilder.DbColumnInfoList.AddRange(insertItem);
                 ++i;
             }
         }
+
+        private void DataAop(T item)
+        {
+            var dataEvent=this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (dataEvent != null && item != null)
+            {
+                foreach (var columnInfo in this.EntityInfo.Columns)
+                {
+                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject,EntityValue=item, EntityColumnInfo = columnInfo });
+                }
+            }
+        }
+
         private void SetInsertItemByDic(int i, T item, List<DbColumnInfo> insertItem)
         {
             foreach (var column in item as Dictionary<string, object>)
