@@ -47,7 +47,7 @@ namespace SqlSugar
                 {
                     externalOrderBy = " ORDER BY "+ this.Builder.SqlDateNow + " ";
                 }
-                result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy), result);
+                result = string.Format("SELECT ExternalTable.*,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy), result);
                 result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
             }
             this.OrderByValue = oldOrderBy;

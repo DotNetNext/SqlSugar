@@ -390,6 +390,7 @@ namespace SqlSugar
             ILambdaExpressions expressionContext = sqlBuilder.QueryBuilder.LambdaExpressions;
             expressionContext.MappingColumns = this.MappingColumns;
             expressionContext.MappingTables = this.MappingTables;
+            expressionContext.IsSingle = false;
             if (this.Context.CurrentConnectionConfig.MoreSettings != null)
             {
                 expressionContext.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;

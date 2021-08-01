@@ -74,9 +74,11 @@ namespace SqlSugar
 
         private void Each<Y>(StringBuilder sb, List<Y> list)
         {
+            int i = 0;
             foreach (var item in list)
             {
-                var isLast = list.IndexOf(item) == list.Count - 1;
+                ++i;
+                var isLast = i == list.Count ;
                 var isClass = typeof(T).IsClass();
                 if (isClass)
                 {

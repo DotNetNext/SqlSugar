@@ -65,6 +65,8 @@ namespace SqlSugar
         public Action<string, SugarParameter[]> OnLogExecuting { get; set; }
         public Action<string, SugarParameter[]> OnLogExecuted { get; set; }
         public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> OnExecutingChangeSql { get; set; }
+        public  Action<object, DataFilterModel> DataExecuting { get; set; }
+
     }
     public class ConfigureExternalServices
     {

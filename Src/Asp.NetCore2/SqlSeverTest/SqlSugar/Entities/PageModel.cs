@@ -13,6 +13,6 @@ namespace SqlSugar
         /// <summary>
         /// output
         /// </summary>
-        public int PageCount { get; set; }
+        public int TotalCount { get; set; }
     }
 }

@@ -28,7 +28,10 @@ namespace SqlSugar
         {
             get
             {
-                return @"SELECT  table_name name from user_tables where
+                return @"SELECT  table_name name ,
+                                 (select COMMENTS from user_tab_comments where t.table_name=table_name )          as Description
+                                                 
+                        from user_tables t where
                         table_name!='HELP' 
                         AND table_name NOT LIKE '%$%'
                         AND table_name NOT LIKE 'LOGMNRC_%'

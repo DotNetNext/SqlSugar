@@ -189,7 +189,7 @@ namespace SqlSugar
             }
         }
 
-        private static void SetConditList(List<StorageableInfo<T>> itemList, List<EntityColumnInfo> whereColumns, List<IConditionalModel> conditList)
+        private  void SetConditList(List<StorageableInfo<T>> itemList, List<EntityColumnInfo> whereColumns, List<IConditionalModel> conditList)
         {
            ;
             foreach (var dataItem in itemList)
@@ -202,11 +202,14 @@ namespace SqlSugar
                 int i = 0;
                 foreach (var item in whereColumns)
                 {
+                    var value = item.PropertyInfo.GetValue(dataItem.Item, null);
                     condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or :WhereType.And, new ConditionalModel()
                     {
                         FieldName = item.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
-                        FieldValue = item.PropertyInfo.GetValue(dataItem.Item, null) + ""
+                        FieldValue = value + "",
+                        FieldValueConvertFunc=this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL? 
+                                               UtilMethods.GetTypeConvert(value):null
                     }));
                     ++i;
                 }

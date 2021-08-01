@@ -53,6 +53,14 @@ namespace SqlSugar
             else if (isMapping)
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
+
+                var tableName = mappingInfo.DbTableName+"";
+                if (tableName.Contains("."))
+                {
+                    tableName = string.Join(UtilConstants.Dot, tableName.Split(UtilConstants.DotChar).Select(it => GetTranslationText(it)));
+                    return tableName;
+                }
+
                 return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToLower(isAutoToLower) + SqlTranslationRight;
             }
             else if (isComplex)
@@ -96,6 +104,19 @@ namespace SqlSugar
     }
     public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
     {
+        public override string IIF(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            if (parameter.Type == UtilConstants.BoolType) 
+            {
+                parameter.MemberName = parameter.MemberName.ToString().Replace("=1", "=true");
+                parameter2.MemberName = false;
+                parameter3.MemberName = true;
+            }
+            return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+        }
         public override string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

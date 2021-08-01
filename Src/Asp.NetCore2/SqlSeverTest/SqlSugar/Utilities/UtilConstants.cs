@@ -56,5 +56,18 @@ namespace SqlSugar
             typeof(short),
             typeof(ushort),
         };
+
+
+        internal static string[] DateTypeStringList = new string[]
+        {
+                "Year",
+                "Month",
+                "Day",
+                "Hour",
+                "Second" ,
+                "Minute",
+                "Millisecond",
+                "Date"
+        };
     }
 }

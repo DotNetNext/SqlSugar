@@ -671,5 +671,10 @@ namespace SqlSugar
         {
             return ScopedContext.UseTranAsync(action, errorCallBack);
         }
+
+        public bool IsAnyConnection(dynamic configId)
+        {
+            return ScopedContext.IsAnyConnection(configId);
+        }
     }
 }

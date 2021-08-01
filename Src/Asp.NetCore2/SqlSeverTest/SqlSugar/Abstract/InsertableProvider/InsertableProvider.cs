@@ -85,7 +85,66 @@ namespace SqlSugar
             return result;
         }
 
-
+        public virtual long ExecuteReturnSnowflakeId() 
+        {
+            var id = SnowFlakeSingle.instance.getID();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty=entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty==null, "The entity sets the primary key and is long");
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in  this.InsertBuilder.DbColumnInfoList.Where(it=>it.PropertyName==snowProperty.PropertyName))
+            {
+                item.Value = id;
+            }
+            this.ExecuteCommand();
+            return id;
+        }
+        public List<long>  ExecuteReturnSnowflakeIdList() 
+        {
+            List<long> result = new List<long>();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
+            {
+                var id = SnowFlakeSingle.instance.getID();
+                item.Value = id;
+                result.Add(id);
+            }
+            this.ExecuteCommand();
+            return result;
+        }
+        public async Task<long> ExecuteReturnSnowflakeIdAsync() 
+        {
+            var id = SnowFlakeSingle.instance.getID();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
+            {
+                item.Value = id;
+            }
+            await this.ExecuteCommandAsync();
+            return id;
+        }
+        public async Task<List<long>> ExecuteReturnSnowflakeIdListAsync() 
+        {
+            List<long> result = new List<long>();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
+            Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
+            {
+                var id = SnowFlakeSingle.instance.getID();
+                item.Value = id;
+                result.Add(id);
+            }
+            await this.ExecuteCommandAsync();
+            return result;
+        }
 
         public virtual T ExecuteReturnEntity()
         {
@@ -439,12 +498,26 @@ namespace SqlSugar
                 }
                 else
                 {
+                    DataAop(item);
                     SetInsertItemByEntity(i, item, insertItem);
                 }
                 this.InsertBuilder.DbColumnInfoList.AddRange(insertItem);
                 ++i;
             }
         }
+
+        private void DataAop(T item)
+        {
+            var dataEvent=this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (dataEvent != null && item != null)
+            {
+                foreach (var columnInfo in this.EntityInfo.Columns)
+                {
+                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject,EntityValue=item, EntityColumnInfo = columnInfo });
+                }
+            }
+        }
+
         private void SetInsertItemByDic(int i, T item, List<DbColumnInfo> insertItem)
         {
             foreach (var column in item as Dictionary<string, object>)

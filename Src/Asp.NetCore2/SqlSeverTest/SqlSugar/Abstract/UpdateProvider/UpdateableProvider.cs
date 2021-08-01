@@ -345,14 +345,6 @@ namespace SqlSugar
             UpdateBuilder.WhereValues.Add(whereString);
             return this;
         }
-        public IUpdateable<T> Where(List<IConditionalModel> conditionalModels)
-        {
-            Check.Exception(UpdateObjectNotWhere() && UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where", "集合更新不支持Where请使用WhereColumns"));
-            var sql = this.Context.Queryable<T>().SqlBuilder.ConditionalModelToSql(conditionalModels);
-            var result = this;
-            result.Where(sql.Key, sql.Value);
-            return result;
-        }
         public IUpdateable<T> Where(string whereSql, object parameters = null)
         {
             Check.Exception(UpdateObjectNotWhere() && UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where", "集合更新不支持Where请使用WhereColumns"));
@@ -448,12 +440,26 @@ namespace SqlSugar
                 }
                 else
                 {
+                    DataAop(item);
                     SetUpdateItemByEntity(i, item, updateItem);
                 }
                 ++i;
             }
             this.columns = this.UpdateBuilder.DbColumnInfoList;
         }
+
+        private void DataAop(T item)
+        {
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (dataEvent != null && item != null)
+            {
+                foreach (var columnInfo in this.EntityInfo.Columns)
+                {
+                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                }
+            }
+        }
+
         private void CheckTranscodeing(bool checkIsJson = true)
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))

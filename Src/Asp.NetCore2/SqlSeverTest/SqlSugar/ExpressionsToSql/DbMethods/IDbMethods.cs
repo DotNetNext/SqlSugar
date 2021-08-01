@@ -72,5 +72,6 @@ namespace SqlSugar
         string Oracle_ToDate(MethodCallExpressionModel model);
         string Oracle_ToChar(MethodCallExpressionModel model);
         string SqlServer_DateDiff(MethodCallExpressionModel model);
+        string Format(MethodCallExpressionModel model);
     }
 }

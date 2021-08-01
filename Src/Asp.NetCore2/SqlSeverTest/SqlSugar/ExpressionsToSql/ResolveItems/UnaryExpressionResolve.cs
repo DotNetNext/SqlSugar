@@ -150,7 +150,7 @@ namespace SqlSugar
             var result= this.Context.DbMehtods.IIF(new MethodCallExpressionModel()
             {
                 Args = new List<MethodCallExpressionArgs>() {
-                                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=parameter.CommonTempData.ObjToString()+"=1" },
+                                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=parameter.CommonTempData.ObjToString()+"=1",Type=UtilConstants.BoolType },
                                   new MethodCallExpressionArgs(){ IsMember=true,MemberName=AppendParameter(0)  },
                                   new MethodCallExpressionArgs(){ IsMember=true, MemberName=AppendParameter(1)  }
                            }
