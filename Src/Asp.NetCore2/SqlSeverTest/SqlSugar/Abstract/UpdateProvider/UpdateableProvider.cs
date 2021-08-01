@@ -367,6 +367,14 @@ namespace SqlSugar
             this.UpdateBuilder.Parameters.Add(new SugarParameter(parameterName, fieldValue));
             return this;
         }
+        public IUpdateable<T> Where(List<IConditionalModel> conditionalModels)
+        {
+            Check.Exception(UpdateObjectNotWhere() && UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where", "集合更新不支持Where请使用WhereColumns"));
+            var sql = this.Context.Queryable<T>().SqlBuilder.ConditionalModelToSql(conditionalModels);
+            var result = this;
+            result.Where(sql.Key, sql.Value);
+            return result;
+        }
         #endregion
 
         #region Helper
