@@ -20,6 +20,7 @@ namespace SqlSugar
         Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null);
         void AddConnection(ConnectionConfig connection);
         SqlSugarProvider GetConnection(dynamic configId);
+        bool IsAnyConnection(dynamic configId);
 
         void Close();
         void Open();

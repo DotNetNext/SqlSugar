@@ -610,6 +610,13 @@ namespace SqlSugar
             }
             return db.Context;
         }
+        public bool IsAnyConnection(dynamic configId)
+        {
+            InitTenant();
+            var db = this._AllClients.FirstOrDefault(it => Convert.ToString(it.ConnectionConfig.ConfigId) == Convert.ToString(configId));
+            return db != null;
+             
+        }
         public void ChangeDatabase(dynamic configId)
         {
             configId =Convert.ToString(configId);
