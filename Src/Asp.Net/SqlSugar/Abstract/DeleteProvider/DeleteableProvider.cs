@@ -220,6 +220,13 @@ namespace SqlSugar
             DeleteBuilder.Parameters.AddRange(parameters);
             return this;
         }
+        public IDeleteable<T> Where(List<IConditionalModel> conditionalModels)
+        {
+            var sql = this.Context.Queryable<T>().SqlBuilder.ConditionalModelToSql(conditionalModels);
+            var result = this;
+            result.Where(sql.Key, sql.Value);
+            return result;
+        }
 
         public IDeleteable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
