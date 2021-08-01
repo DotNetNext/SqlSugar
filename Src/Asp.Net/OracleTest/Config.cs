@@ -10,6 +10,6 @@ namespace OrmTest
     {
         public static string ConnectionString = "Data Source=103.195.220.62/orcl;User ID=sugar;Password=sugar;";
         public static string ConnectionString2 = "Data Source=103.195.220.62/orcl;User ID=sugar;Password=sugar;";
-        public static string ConnectionString3= "Data Source=103.195.220.62/orcl;User ID=sugar;Password=jhl52sugar771;";
+        public static string ConnectionString3= "Data Source=103.195.220.62/orcl;User ID=sugar;Password=sugar;";
     }
 }
