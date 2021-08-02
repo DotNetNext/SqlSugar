@@ -958,16 +958,16 @@ namespace SqlSugar
             var parentIdName =UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
             var parentPropertyName= ParentInfo.DbColumnName;
-            var current = this.Context.Queryable<T>().InSingle(primaryKeyValue);
+            var current = this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingle(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current,null);
                 int i = 0;
-                while (parentId!=null&&this.Context.Queryable<T>().In(parentId).Any())
+                while (parentId!=null&&this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).In(parentId).Any())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().InSingle(parentId);
+                    var parent = this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingle(parentId);
                     result.Add(parent);
                     parentId= ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
