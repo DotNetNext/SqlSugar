@@ -54,7 +54,7 @@ namespace SqlSugar
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
 
-                var tableName = mappingInfo.DbTableName+"";
+                var tableName = mappingInfo?.DbTableName+"";
                 if (tableName.Contains("."))
                 {
                     tableName = string.Join(UtilConstants.Dot, tableName.Split(UtilConstants.DotChar).Select(it => GetTranslationText(it)));
