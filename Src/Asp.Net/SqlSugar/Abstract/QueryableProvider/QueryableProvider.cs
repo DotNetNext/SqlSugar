@@ -1177,11 +1177,16 @@ namespace SqlSugar
 
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            InitMapping();
-            ToSqlBefore();
-            string sql = QueryBuilder.ToSqlString();
-            RestoreMapping();
-            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+            if (!QueryBuilder.IsClone) 
+            {
+                var newQueryable = this.Clone();
+                newQueryable.QueryBuilder.IsClone = true;
+                return newQueryable.ToSql();
+            }
+            else
+            {
+                return _ToSql();
+            }
         }
         public ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
         {
@@ -1464,6 +1469,14 @@ namespace SqlSugar
         #endregion
 
         #region Private Methods
+        public virtual KeyValuePair<string, List<SugarParameter>> _ToSql()
+        {
+            InitMapping();
+            ToSqlBefore();
+            string sql = QueryBuilder.ToSqlString();
+            RestoreMapping();
+            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+        }
         private List<T> GetChildList(Expression<Func<T, object>> parentIdExpression, string pkName, List<T> list, object rootValue,bool isRoot=true)
         {
             var exp = (parentIdExpression as LambdaExpression).Body;

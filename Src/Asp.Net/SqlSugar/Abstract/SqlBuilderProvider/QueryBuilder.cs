@@ -646,6 +646,10 @@ namespace SqlSugar
 
         #endregion
 
+        #region NoCopy
+        internal bool IsClone { get; set; }
+        #endregion
+
         private string GetTableName(string entityName)
         {
             if (this.AsTables != null && this.AsTables.Any(it=>it.Key==entityName)) 

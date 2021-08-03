@@ -22,7 +22,6 @@ namespace OrmTest
             public void Test()
             {
                 base.db.BeginTran();
-
                 base.GetList(); //调用内部仓储方法
                 base.ChangeRepository<Repository<C2Table>>().GetList();//调用外部仓储
 
@@ -57,7 +56,8 @@ namespace OrmTest
                  
                     var configId = typeof(T).GetCustomAttribute<TenantAttribute>().configId;
                     Context = db.GetConnection(configId);
-                    this.db = db; 
+                    this.db = db;
+                    this.db.CodeFirst.InitTables<T>();
                 }
             }
 
