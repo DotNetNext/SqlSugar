@@ -203,6 +203,7 @@ namespace SqlSugar
                     {
                         column.IsIgnore = true;
                         column.NoSerialize = sugarColumn.NoSerialize;
+                        column.ColumnDescription = sugarColumn.ColumnDescription;
                     }
                 }
                 if (this.Context.MappingColumns.HasValue())
