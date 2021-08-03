@@ -454,6 +454,12 @@ namespace SqlSugar
                 ++i;
             }
             this.columns = this.UpdateBuilder.DbColumnInfoList;
+
+            var ignoreColumns = EntityInfo.Columns.Where(it => it.IsOnlyIgnoreUpdate).ToList();
+            if (ignoreColumns != null && ignoreColumns.Any())
+            {
+                this.IgnoreColumns(ignoreColumns.Select(it => it.PropertyName).ToArray());
+            }
         }
 
         private void DataAop(T item)
