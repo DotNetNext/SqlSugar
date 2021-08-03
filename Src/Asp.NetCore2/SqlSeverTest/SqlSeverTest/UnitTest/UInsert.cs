@@ -11,6 +11,7 @@ namespace OrmTest
         public static void Insert()
         {
             var db = Db;
+            db.CodeFirst.InitTables<UinitBlukTable>();
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
             db.CodeFirst.InitTables<UinitBlukTable>();
             db.Insertable(new List<UinitBlukTable>
