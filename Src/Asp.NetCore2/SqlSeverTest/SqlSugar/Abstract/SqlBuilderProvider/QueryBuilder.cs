@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -256,7 +255,7 @@ namespace SqlSugar
                 resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             };
             resolveExpress.Resolve(expression, resolveType);
-            this.Parameters.AddRange(resolveExpress.Parameters.Select(it=>new SugarParameter(it.ParameterName, it.Value)));
+            this.Parameters.AddRange(resolveExpress.Parameters.Select(it => new SugarParameter(it.ParameterName, it.Value)));
             var result = resolveExpress.Result;
             var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
             if (isSingleTableHasSubquery)
@@ -644,6 +643,10 @@ namespace SqlSugar
         }
 
 
+        #endregion
+
+        #region NoCopy
+        internal bool IsClone { get; set; }
         #endregion
 
         private string GetTableName(string entityName)

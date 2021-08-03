@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -958,16 +957,16 @@ namespace SqlSugar
             var parentIdName =UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
             var parentPropertyName= ParentInfo.DbColumnName;
-            var current = this.Context.Queryable<T>().InSingle(primaryKeyValue);
+            var current = this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingle(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current,null);
                 int i = 0;
-                while (parentId!=null&&this.Context.Queryable<T>().In(parentId).Any())
+                while (parentId!=null&&this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).In(parentId).Any())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().InSingle(parentId);
+                    var parent = this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingle(parentId);
                     result.Add(parent);
                     parentId= ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
@@ -1177,11 +1176,16 @@ namespace SqlSugar
 
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
-            InitMapping();
-            ToSqlBefore();
-            string sql = QueryBuilder.ToSqlString();
-            RestoreMapping();
-            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+            if (!QueryBuilder.IsClone) 
+            {
+                var newQueryable = this.Clone();
+                newQueryable.QueryBuilder.IsClone = true;
+                return newQueryable.ToSql();
+            }
+            else
+            {
+                return _ToSql();
+            }
         }
         public ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
         {
@@ -1464,6 +1468,14 @@ namespace SqlSugar
         #endregion
 
         #region Private Methods
+        public virtual KeyValuePair<string, List<SugarParameter>> _ToSql()
+        {
+            InitMapping();
+            ToSqlBefore();
+            string sql = QueryBuilder.ToSqlString();
+            RestoreMapping();
+            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+        }
         private List<T> GetChildList(Expression<Func<T, object>> parentIdExpression, string pkName, List<T> list, object rootValue,bool isRoot=true)
         {
             var exp = (parentIdExpression as LambdaExpression).Body;
