@@ -218,7 +218,7 @@ namespace OrmTest
                       }
                  }
             })
-            .ExecuteReturnPrimaryKey();
+            .ExecuteCommand();
 
             var list = db.Queryable<Country>()
                                  .Mapper(it => it.Provinces, it => it.Provinces.First().CountryId)
@@ -298,7 +298,7 @@ namespace OrmTest
                       }
                  }
             })
-            .ExecuteReturnPrimaryKey();
+            .ExecuteCommand();
 
             var list = db.Queryable<Country1>()
                                  .Mapper(it => it.Provinces, it => it.Provinces.First().CountryId)
