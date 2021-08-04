@@ -225,6 +225,13 @@ namespace SqlSugar
         #endregion
 
         #region Setting
+
+        public IParameterInsertable<T> UseParameter()
+        {
+            var result = new ParameterInsertable<T>();
+            result.Inserable = this;
+            return result;
+        }
         public IInsertable<T> AS(string tableName)
         {
             if (tableName == null) return this;
@@ -768,6 +775,7 @@ namespace SqlSugar
             }
             return this;
         }
+
         #endregion
 
     }

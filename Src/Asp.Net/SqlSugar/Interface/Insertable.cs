@@ -35,7 +35,7 @@ namespace SqlSugar
 
         ISubInsertable<T> AddSubList(Expression<Func<T, object>> subForeignKey);
         ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree);
-
+        IParameterInsertable<T> UseParameter();
         IInsertable<T> CallEntityMethod(Expression<Action<T>> method);
 
         IInsertable<T> EnableDiffLogEvent(object businessData = null);

@@ -88,6 +88,8 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Interface\IParameterInsertable.cs" />
+    <Compile Include="Abstract\InsertableProvider\ParameterInsertable.cs" />
     <Compile Include="Abstract\Reportable\ReportableProvider.cs" />
     <Compile Include="Abstract\SaveableProvider\Storageable.cs" />
     <Compile Include="DistributedSystem\Snowflake\SnowFlakeSingle.cs" />
