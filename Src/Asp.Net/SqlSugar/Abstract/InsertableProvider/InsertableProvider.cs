@@ -29,7 +29,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
-        private Action RemoveCacheFunc { get; set; }
+        internal Action RemoveCacheFunc { get; set; }
 
 
         #region Core
@@ -229,6 +229,7 @@ namespace SqlSugar
         public IParameterInsertable<T> UseParameter()
         {
             var result = new ParameterInsertable<T>();
+            result.Context= this.Context;
             result.Inserable = this;
             return result;
         }

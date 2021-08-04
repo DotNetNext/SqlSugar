@@ -2,6 +2,6 @@
 {
     public interface IParameterInsertable<T>
     {
-        InsertableProvider<T> Inserable { get; set; }
+        int ExecuteCommand();
     }
 }
