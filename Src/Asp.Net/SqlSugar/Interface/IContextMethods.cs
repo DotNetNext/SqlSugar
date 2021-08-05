@@ -35,5 +35,6 @@ namespace SqlSugar
         void RemoveCacheAll<T>();
         void RemoveCache<T>(string key);
         void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action);
+        Task PageEachAsync<T>(IEnumerable<T> pageItems, int pageSize, Func<List<T>, Task> action);
     }
 }

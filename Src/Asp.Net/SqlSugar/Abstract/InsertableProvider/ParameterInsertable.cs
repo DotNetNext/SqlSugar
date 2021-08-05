@@ -32,5 +32,26 @@ namespace SqlSugar
             });
             return 0;
         }
+        public async Task<int> ExecuteCommandAsync()
+        {
+            var inserable = Inserable as InsertableProvider<T>;
+            var columns = inserable.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(it => it.Key).Distinct().ToList();
+            var tableWithString = inserable.InsertBuilder.TableWithString;
+            var removeCacheFunc = inserable.RemoveCacheFunc;
+            var objects = inserable.InsertObjs;
+            await this.Context.Utilities.PageEachAsync(objects, 60, pagelist =>
+            {
+                foreach (var item in pagelist)
+                {
+                    var itemable = this.Context.Insertable(item);
+                    itemable.InsertBuilder.DbColumnInfoList = itemable.InsertBuilder.DbColumnInfoList.Where(it => columns.Contains(it.DbColumnName)).ToList();
+                    itemable.InsertBuilder.TableWithString = tableWithString;
+                    (itemable as InsertableProvider<T>).RemoveCacheFunc = removeCacheFunc;
+                    itemable.AddQueue();
+                }
+                return this.Context.SaveQueuesAsync(false);
+            });
+            return objects.Length;
+        }
     }
 }
