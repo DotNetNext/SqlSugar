@@ -66,6 +66,9 @@ namespace OrmTest
             var list= db.Ado.SqlQuery<Order>("select * from [order] ");
             var intValue=db.Ado.SqlQuerySingle<int>("select 1");
             db.Ado.ExecuteCommand("delete [order] where id>1000");
+
+            db.SqlQueryable<Custom>(@"select * 
+from custom").ToList();
             //db.Ado.xxx
             Console.WriteLine("#### Ado End ####");
         }

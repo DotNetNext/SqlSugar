@@ -480,7 +480,7 @@ namespace SqlSugar
         {
             if (this.IsSqlQuery && (Skip == null && Take == null))
             {
-                result = System.Text.RegularExpressions.Regex.Match(result, @"^SELECT t\.\* FROM  \((.*)\) t  $").Groups[1].Value;
+                result = System.Text.RegularExpressions.Regex.Match(result, @"^SELECT .* FROM  \(((.|\n|\r)*)\) t  $").Groups[1].Value;
             }
 
             return result;
