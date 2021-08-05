@@ -482,10 +482,10 @@ namespace SqlSugar
             if (this.IsSqlQuery && (Skip == null && Take == null))
             {
                 result = System.Text.RegularExpressions.Regex.Match(result, @"^SELECT .* FROM  \(((.|\n|\r)*)\) t  $").Groups[1].Value;
-            }
-            if (string.IsNullOrEmpty(result)) 
-            {
-                result = old;
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = old;
+                }
             }
             return result;
         }
