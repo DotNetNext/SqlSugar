@@ -478,9 +478,9 @@ namespace SqlSugar
         }
         public string GetSqlQuerySql(string result)
         {
-            var old = result;
             if (this.IsSqlQuery && (Skip == null && Take == null))
             {
+                var old = result;
                 result = System.Text.RegularExpressions.Regex.Match(result, @"^SELECT .* FROM  \(((.|\n|\r)*)\) t  $").Groups[1].Value;
                 if (string.IsNullOrEmpty(result))
                 {
