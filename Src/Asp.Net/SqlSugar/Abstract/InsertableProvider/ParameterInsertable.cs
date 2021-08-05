@@ -20,6 +20,8 @@ namespace SqlSugar
             var objects = inserable.InsertObjs;
             this.Context.Utilities.PageEach(objects, 60, pagelist =>
             {
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                    this.Context.AddQueue("begin");
                 foreach (var item in pagelist)
                 {
                     var itemable = this.Context.Insertable(item);
@@ -28,9 +30,13 @@ namespace SqlSugar
                     (itemable as InsertableProvider<T>).RemoveCacheFunc = removeCacheFunc;
                     itemable.AddQueue();
                 }
-                result+=this.Context.SaveQueues(false);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                    this.Context.AddQueue("end \r\n");
+                result +=this.Context.SaveQueues(false);
             });
-            return 0;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                return objects.Length;
+            return result;
         }
         public async Task<int> ExecuteCommandAsync()
         {
@@ -42,6 +48,8 @@ namespace SqlSugar
             var objects = inserable.InsertObjs;
             await this.Context.Utilities.PageEachAsync<T,int>(objects, 60,async pagelist =>
             {
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                    this.Context.AddQueue("Begin");
                 foreach (var item in pagelist)
                 {
                     var itemable = this.Context.Insertable(item);
@@ -50,7 +58,11 @@ namespace SqlSugar
                     (itemable as InsertableProvider<T>).RemoveCacheFunc = removeCacheFunc;
                     itemable.AddQueue();
                 }
-                result+= await this.Context.SaveQueuesAsync(false);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+                    this.Context.AddQueue("End");
+                result += await this.Context.SaveQueuesAsync(false);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                    return objects.Length;
                 return result;
             });
             return result;
