@@ -34,12 +34,13 @@ namespace SqlSugar
         }
         public async Task<int> ExecuteCommandAsync()
         {
+            int result = 0;
             var inserable = Inserable as InsertableProvider<T>;
             var columns = inserable.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(it => it.Key).Distinct().ToList();
             var tableWithString = inserable.InsertBuilder.TableWithString;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
-            await this.Context.Utilities.PageEachAsync(objects, 60, pagelist =>
+            await this.Context.Utilities.PageEachAsync<T,int>(objects, 60,async pagelist =>
             {
                 foreach (var item in pagelist)
                 {
@@ -49,9 +50,10 @@ namespace SqlSugar
                     (itemable as InsertableProvider<T>).RemoveCacheFunc = removeCacheFunc;
                     itemable.AddQueue();
                 }
-                return this.Context.SaveQueuesAsync(false);
+                result+= await this.Context.SaveQueuesAsync(false);
+                return result;
             });
-            return objects.Length;
+            return result;
         }
     }
 }
