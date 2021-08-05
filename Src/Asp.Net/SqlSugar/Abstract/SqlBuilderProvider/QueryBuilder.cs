@@ -482,7 +482,7 @@ namespace SqlSugar
             {
                 var old = result;
                 var regex = @"^SELECT .* FROM  \(((.|\n|\r)*)\) t  $";
-                if (this.Context.CurrentConnectionConfig.DbType .IsIn( DbType.MySql,DbType.PostgreSQL)) 
+                if (this.Context.CurrentConnectionConfig.DbType .IsIn( DbType.MySql,DbType.PostgreSQL,DbType.Sqlite)) 
                 {
                     result = result.Substring(0,result.Length-1);
                 }
