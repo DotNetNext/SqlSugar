@@ -51,6 +51,7 @@ namespace SqlSugar
                 result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
             }
             this.OrderByValue = oldOrderBy;
+            result = GetSqlQuerySql(result);
             return result;
         }
         public override string ToPageSql(string sql, int? take, int? skip, bool isExternal = false)

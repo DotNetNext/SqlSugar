@@ -35,6 +35,7 @@ namespace SqlSugar
         #region Splicing basic
         public List<string> IgnoreColumns { get; set; }
         public bool IsCount { get; set; }
+        public bool IsSqlQuery { get; set; }
         public int? Skip { get; set; }
         public int ExternalPageIndex { get; set; }
         public int ExternalPageSize { get; set; }
@@ -474,6 +475,15 @@ namespace SqlSugar
         public virtual bool IsComplexModel(string sql)
         {
             return Regex.IsMatch(sql, @"AS \[\w+\.\w+\]");
+        }
+        public string GetSqlQuerySql(string result)
+        {
+            if (this.IsSqlQuery && (Skip == null && Take == null))
+            {
+                result = System.Text.RegularExpressions.Regex.Match(result, @"^SELECT t\.\* FROM  \((.*)\) t  $").Groups[1].Value;
+            }
+
+            return result;
         }
         #endregion
 

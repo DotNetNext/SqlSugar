@@ -28,7 +28,7 @@ namespace SqlSugar
             {
                 this.OrderByValue = this.PartitionByValue + this.OrderByValue;
             }
-            var isFirst = (Skip == 0 || Skip == null) && Take == 1&&DisableTop==false;
+            var isFirst = (Skip == 0 || Skip == null) && Take == 1 && DisableTop == false;
             var isRowNumber = (Skip != null || Take != null) && !isFirst;
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
@@ -48,14 +48,15 @@ namespace SqlSugar
                 result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
             }
             this.OrderByValue = oldOrderBy;
-            if (!string.IsNullOrEmpty(this.Offset)) 
+            if (!string.IsNullOrEmpty(this.Offset))
             {
-                if (this.OrderByValue.IsNullOrEmpty()) 
+                if (this.OrderByValue.IsNullOrEmpty())
                 {
                     result += " ORDER BY GETDATE() ";
                 }
                 result += this.Offset;
             }
+            result = GetSqlQuerySql(result);
             return result;
         }
     }

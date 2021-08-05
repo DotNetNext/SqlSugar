@@ -2419,6 +2419,7 @@ namespace SqlSugar
             asyncQueryableBuilder.AsTables = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AsTables);
             asyncQueryableBuilder.DisableTop = this.QueryBuilder.DisableTop;
             asyncQueryableBuilder.Offset = this.QueryBuilder.Offset;
+            asyncQueryableBuilder.IsSqlQuery = this.QueryBuilder.IsSqlQuery;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
