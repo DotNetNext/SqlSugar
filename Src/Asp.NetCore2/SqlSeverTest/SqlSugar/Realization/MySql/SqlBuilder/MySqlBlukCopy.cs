@@ -9,29 +9,29 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class MySqlBlueCopy<T> 
+    public class MySqlBlukCopy<T> 
     {
         internal SqlSugarProvider Context { get; set; }
         internal ISqlBuilder Builder { get; set; }
         internal T[] Entitys { get; set; }
         internal string Chara { get; set; }
-        private MySqlBlueCopy()
+        private MySqlBlukCopy()
         {
 
         }
-        public MySqlBlueCopy(SqlSugarProvider context, ISqlBuilder builder, T []entitys)
+        public MySqlBlukCopy(SqlSugarProvider context, ISqlBuilder builder, T []entitys)
         {
             this.Context = context;
             this.Builder = builder;
             this.Entitys = entitys;
         }
-        public bool ExecuteBlueCopy(string characterSet) 
+        public bool ExecuteBlukCopy(string characterSet) 
         {
             this.Chara = characterSet;
-            return ExecuteBlueCopy();
+            return ExecuteBlukCopy();
         }
 
-        public bool ExecuteBlueCopy()
+        public bool ExecuteBlukCopy()
         {
             var IsBulkLoad = false;
             if (Entitys == null || Entitys.Length <= 0)
@@ -111,15 +111,15 @@ namespace SqlSugar
             return IsBulkLoad; ;
         }
 
-        public Task<bool> ExecuteBlueCopyAsync()
+        public Task<bool> ExecuteBlukCopyAsync()
         {
-            return Task.FromResult(ExecuteBlueCopy());
+            return Task.FromResult(ExecuteBlukCopy());
         }
 
-        public Task<bool> ExecuteBlueCopyAsync(string characterSet)
+        public Task<bool> ExecuteBlukCopyAsync(string characterSet)
         {
             this.Chara = characterSet;
-            return Task.FromResult(ExecuteBlueCopy());
+            return Task.FromResult(ExecuteBlukCopy());
         }
 
         #region  Helper

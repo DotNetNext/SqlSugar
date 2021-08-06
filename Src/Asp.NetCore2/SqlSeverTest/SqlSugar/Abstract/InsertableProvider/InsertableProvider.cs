@@ -29,7 +29,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
-        private Action RemoveCacheFunc { get; set; }
+        internal Action RemoveCacheFunc { get; set; }
 
 
         #region Core
@@ -222,9 +222,44 @@ namespace SqlSugar
             After(sql, result);
             return result;
         }
+        public OracleBlukCopy UseOracle()
+
+        {
+
+            PreToSql();
+
+            var currentType = this.Context.CurrentConnectionConfig.DbType;
+
+            Check.Exception(currentType != DbType.Oracle, "UseSqlServer no support " + currentType);
+
+            OracleBlukCopy result = new OracleBlukCopy();
+
+            result.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
+
+            result.InsertBuilder = this.InsertBuilder;
+
+            result.Builder = this.SqlBuilder;
+
+            result.Context = this.Context;
+
+            result.Inserts = this.InsertObjs;
+
+            return result;
+
+        }
+
+
         #endregion
 
         #region Setting
+
+        public IParameterInsertable<T> UseParameter()
+        {
+            var result = new ParameterInsertable<T>();
+            result.Context= this.Context;
+            result.Inserable = this;
+            return result;
+        }
         public IInsertable<T> AS(string tableName)
         {
             if (tableName == null) return this;
@@ -301,16 +336,16 @@ namespace SqlSugar
             };
             return this;
         }
-        public MySqlBlueCopy<T> UseMySql()
+        public MySqlBlukCopy<T> UseMySql()
         {
-            return new MySqlBlueCopy<T>(this.Context, this.SqlBuilder, InsertObjs);
+            return new MySqlBlukCopy<T>(this.Context, this.SqlBuilder, InsertObjs);
         }
-        public SqlServerBlueCopy UseSqlServer()
+        public SqlServerBlukCopy UseSqlServer()
         {
             PreToSql();
             var currentType = this.Context.CurrentConnectionConfig.DbType;
             Check.Exception(currentType != DbType.SqlServer, "UseSqlServer no support " + currentType);
-            SqlServerBlueCopy result = new SqlServerBlueCopy();
+            SqlServerBlukCopy result = new SqlServerBlukCopy();
             result.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             result.InsertBuilder = this.InsertBuilder;
             result.Builder = this.SqlBuilder;
@@ -768,6 +803,7 @@ namespace SqlSugar
             }
             return this;
         }
+
         #endregion
 
     }

@@ -397,7 +397,9 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
         {
             var sqlobj = queryable.ToSql();
-            return this.SqlQueryable<T>(sqlobj.Key).AddParameters(sqlobj.Value);
+            var result = this.SqlQueryable<T>(sqlobj.Key).AddParameters(sqlobj.Value);
+            result.QueryBuilder.IsSqlQuery = false;
+            return result;
         }
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
      ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
@@ -578,7 +580,9 @@ namespace SqlSugar
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            return this.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).With(SqlWith.Null).Select(sqlBuilder.GetDefaultShortName() + ".*");
+            var result= this.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).With(SqlWith.Null).Select(sqlBuilder.GetDefaultShortName() + ".*");
+            result.QueryBuilder.IsSqlQuery = true;
+            return result;
         }
         #endregion
 
@@ -1048,10 +1052,10 @@ namespace SqlSugar
         {
             try
             {
-                if (this.CurrentConnectionConfig.DbType == DbType.Oracle)
-                {
-                    throw new Exception("Oracle no support SaveQueues");
-                }
+                //if (this.CurrentConnectionConfig.DbType == DbType.Oracle)
+                //{
+                //    throw new Exception("Oracle no support SaveQueues");
+                //}
                 if (this.Queues == null || this.Queues.Count == 0) return default(T);
                 isTran = isTran && this.Ado.Transaction == null;
                 if (isTran) this.Ado.BeginTran();
@@ -1084,6 +1088,10 @@ namespace SqlSugar
                             .TrimEnd('\r')
                             .TrimEnd('\n')
                             .TrimEnd(';') + ";";
+                        if (itemSql == "begin;"   ) 
+                        {
+                            itemSql = itemSql.TrimEnd(';')+"\n";
+                        }
                         sqlBuilder.AppendLine(itemSql);
                         index++;
                     }

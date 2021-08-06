@@ -306,11 +306,6 @@ namespace SqlSugar
             sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
             sqlBuilder.Context = result.SqlBuilder.UpdateBuilder.Context = this;
             result.Init();
-            var ignoreColumns = result.EntityInfo.Columns.Where(it => it.IsOnlyIgnoreUpdate).ToList();
-            if (ignoreColumns!=null&&ignoreColumns.Any())
-            {
-                result = (UpdateableProvider<T>)result.IgnoreColumns(ignoreColumns.Select(it=>it.PropertyName).ToArray());
-            }
             return result;
         }
 

@@ -61,6 +61,7 @@ namespace SqlSugar
                 result= sql.ToString();
             }
             this.OrderByValue = oldOrderBy;
+            result = GetSqlQuerySql(result);
             return result;
         }
         

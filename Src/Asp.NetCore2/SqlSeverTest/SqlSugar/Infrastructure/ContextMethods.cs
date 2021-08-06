@@ -638,6 +638,33 @@ namespace SqlSugar
                 }
             }
         }
+
+        public async Task PageEachAsync<T>(IEnumerable<T> pageItems, int pageSize, Func<List<T>,Task> action)
+        {
+            if (pageItems != null && pageItems.Any())
+            {
+                int totalRecord = pageItems.Count();
+                int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                for (int i = 1; i <= pageCount; i++)
+                {
+                    var list = pageItems.Skip((i - 1) * pageSize).Take(pageSize).ToList();
+                    await action(list);
+                }
+            }
+        }
+        public async Task PageEachAsync<T, ResultType>(IEnumerable<T> pageItems, int pageSize, Func<List<T>, Task<ResultType>> action)
+        {
+            if (pageItems != null && pageItems.Any())
+            {
+                int totalRecord = pageItems.Count();
+                int pageCount = (totalRecord + pageSize - 1) / pageSize;
+                for (int i = 1; i <= pageCount; i++)
+                {
+                    var list = pageItems.Skip((i - 1) * pageSize).Take(pageSize).ToList();
+                    await action(list);
+                }
+            }
+        }
         #endregion
     }
 }

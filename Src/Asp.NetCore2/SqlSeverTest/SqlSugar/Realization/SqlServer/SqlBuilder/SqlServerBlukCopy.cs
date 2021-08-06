@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class SqlServerBlueCopy
+    public class SqlServerBlukCopy
     {
         internal List<IGrouping<int, DbColumnInfo>> DbColumnInfoList { get;   set; }
         internal SqlSugarProvider Context { get;   set; }
@@ -16,7 +16,7 @@ namespace SqlSugar
         internal InsertBuilder InsertBuilder { get; set; }
         internal object[] Inserts { get;  set; }
 
-        public int ExecuteBlueCopy()
+        public int ExecuteBlukCopy()
         {
             if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
 
@@ -40,7 +40,7 @@ namespace SqlSugar
             return DbColumnInfoList.Count;
         }
 
-        public async Task<int> ExecuteBlueCopyAsync()
+        public async Task<int> ExecuteBlukCopyAsync()
         {
             if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
 

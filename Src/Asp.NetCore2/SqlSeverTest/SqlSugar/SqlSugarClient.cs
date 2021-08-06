@@ -327,7 +327,13 @@ namespace SqlSugar
 
         public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
         {
-            return this.Context.Queryable<T>(queryable);
+            
+            var result= this.Context.Queryable<T>(queryable);
+            var QueryBuilder = queryable.QueryBuilder;
+            result.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex++;
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
+            result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            return result;
         }
 
         public ISugarQueryable<T> Queryable<T>(string shortName)
