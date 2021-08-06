@@ -103,7 +103,7 @@ namespace OrmTest
            .Where(it => it.Id == 1).ExecuteCommand();
 
             Db.CodeFirst.InitTables<Unitbluecopy>();
-            Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBlueCopy();
+            Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBlukCopy();
         }
     }
 
