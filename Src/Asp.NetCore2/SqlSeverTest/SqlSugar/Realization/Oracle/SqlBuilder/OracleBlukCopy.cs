@@ -15,304 +15,302 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
- 
-        public class OracleBlukCopy
+
+    public class OracleBlukCopy
+
+    {
+
+        internal List<IGrouping<int, DbColumnInfo>> DbColumnInfoList { get; set; }
+
+        internal SqlSugarProvider Context { get; set; }
+
+        internal ISqlBuilder Builder { get; set; }
+
+        internal InsertBuilder InsertBuilder { get; set; }
+
+        internal object[] Inserts { get; set; }
+
+
+
+        public int ExecuteBlukCopy()
 
         {
 
-            internal List<IGrouping<int, DbColumnInfo>> DbColumnInfoList { get; set; }
-
-            internal SqlSugarProvider Context { get; set; }
-
-            internal ISqlBuilder Builder { get; set; }
-
-            internal InsertBuilder InsertBuilder { get; set; }
-
-            internal object[] Inserts { get; set; }
+            if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
 
 
 
-            public int ExecuteBlueCopy()
+            if (Inserts.First().GetType() == typeof(DataTable))
 
             {
 
-                if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
-
-
-
-                if (Inserts.First().GetType() == typeof(DataTable))
-
-                {
-
-                    return WriteToServer();
-
-                }
-
-                DataTable dt = GetCopyData();
-
-                OracleBulkCopy bulkCopy = GetBulkCopyInstance();
-
-                bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
-
-                try
-
-                {
-
-                    bulkCopy.WriteToServer(dt);
-
-                }
-
-                catch (Exception ex)
-
-                {
-
-                    CloseDb();
-
-                    throw ex;
-
-                }
-
-                CloseDb();
-
-                return DbColumnInfoList.Count;
+                return WriteToServer();
 
             }
 
+            DataTable dt = GetCopyData();
 
+            OracleBulkCopy bulkCopy = GetBulkCopyInstance();
 
-            public async Task<int> ExecuteBlueCopyAsync()
+            bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
+
+            try
 
             {
 
-                if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
-
-
-
-                if (Inserts.First().GetType() == typeof(DataTable))
-
-                {
-
-                    return WriteToServer();
-
-                }
-
-                DataTable dt = GetCopyData();
-
-                OracleBulkCopy bulkCopy = GetBulkCopyInstance();
-
-                bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
-
-                try
-
-                {
-
-                    await Task.Run(() => bulkCopy.WriteToServer(dt));
-
-                }
-
-                catch (Exception ex)
-
-                {
-
-                    CloseDb();
-
-                    throw ex;
-
-                }
-
-                CloseDb();
-
-                return DbColumnInfoList.Count;
+                bulkCopy.WriteToServer(dt);
 
             }
 
-
-
-            private int WriteToServer()
+            catch (Exception ex)
 
             {
-
-                var dt = this.Inserts.First() as DataTable;
-
-                if (dt == null)
-
-                    return 0;
-
-                Check.Exception(dt.TableName == "Table", "dt.TableName can't be null ");
-
-                dt = GetCopyWriteDataTable(dt);
-
-                OracleBulkCopy copy = GetBulkCopyInstance();
-
-                copy.DestinationTableName = this.Builder.GetTranslationColumnName(dt.TableName);
-
-                copy.WriteToServer(dt);
 
                 CloseDb();
 
-                return dt.Rows.Count;
+                throw ex;
 
             }
 
-            private DataTable GetCopyWriteDataTable(DataTable dt)
+            CloseDb();
+
+            return DbColumnInfoList.Count;
+
+        }
+
+
+
+        public async Task<int> ExecuteBlukCopyAsync()
+
+        {
+
+            if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
+
+
+
+            if (Inserts.First().GetType() == typeof(DataTable))
 
             {
 
-                var result = this.Context.Ado.GetDataTable("select * from " + this.Builder.GetTranslationColumnName(dt.TableName) + " where 1 > 2 ");
+                return WriteToServer();
 
-                foreach (DataRow item in dt.Rows)
+            }
+
+            DataTable dt = GetCopyData();
+
+            OracleBulkCopy bulkCopy = GetBulkCopyInstance();
+
+            bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
+
+            try
+
+            {
+
+                await Task.Run(() => bulkCopy.WriteToServer(dt));
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                CloseDb();
+
+                throw ex;
+
+            }
+
+            CloseDb();
+
+            return DbColumnInfoList.Count;
+
+        }
+
+
+
+        private int WriteToServer()
+
+        {
+
+            var dt = this.Inserts.First() as DataTable;
+
+            if (dt == null)
+
+                return 0;
+
+            Check.Exception(dt.TableName == "Table", "dt.TableName can't be null ");
+
+            dt = GetCopyWriteDataTable(dt);
+
+            OracleBulkCopy copy = GetBulkCopyInstance();
+
+            copy.DestinationTableName = this.Builder.GetTranslationColumnName(dt.TableName);
+
+            copy.WriteToServer(dt);
+
+            CloseDb();
+
+            return dt.Rows.Count;
+
+        }
+
+        private DataTable GetCopyWriteDataTable(DataTable dt)
+
+        {
+
+            var result = this.Context.Ado.GetDataTable("select * from " + this.Builder.GetTranslationColumnName(dt.TableName) + " where 1 > 2 ");
+
+            foreach (DataRow item in dt.Rows)
+
+            {
+
+                DataRow dr = result.NewRow();
+
+                foreach (DataColumn column in result.Columns)
 
                 {
 
-                    DataRow dr = result.NewRow();
 
-                    foreach (DataColumn column in result.Columns)
+
+                    if (dt.Columns.Cast<DataColumn>().Select(it => it.ColumnName.ToLower()).Contains(column.ColumnName.ToLower()))
 
                     {
 
+                        dr[column.ColumnName] = item[column.ColumnName];
 
-
-                        if (dt.Columns.Cast<DataColumn>().Select(it => it.ColumnName.ToLower()).Contains(column.ColumnName.ToLower()))
+                        if (dr[column.ColumnName] == null)
 
                         {
 
-                            dr[column.ColumnName] = item[column.ColumnName];
-
-                            if (dr[column.ColumnName] == null)
-
-                            {
-
-                                dr[column.ColumnName] = DBNull.Value;
-
-                            }
+                            dr[column.ColumnName] = DBNull.Value;
 
                         }
 
                     }
 
-                    result.Rows.Add(dr);
-
                 }
 
-                result.TableName = dt.TableName;
-
-                return result;
+                result.Rows.Add(dr);
 
             }
 
-            private OracleBulkCopy GetBulkCopyInstance()
+            result.TableName = dt.TableName;
+
+            return result;
+
+        }
+
+        private OracleBulkCopy GetBulkCopyInstance()
+
+        {
+            if (this.Context.Ado.Connection.State == ConnectionState.Closed)
 
             {
 
-                OracleBulkCopy copy;
-
-                if (this.Context.Ado.Transaction == null)
-
-                {
-
-                    copy = new OracleBulkCopy((OracleConnection)this.Context.Ado.Connection, Oracle.ManagedDataAccess.Client.OracleBulkCopyOptions.Default);
-
-                }
-
-                else
-
-                {
-
-                    copy = new OracleBulkCopy((OracleConnection)this.Context.Ado.Connection, OracleBulkCopyOptions.UseInternalTransaction);
-
-                }
-
-                if (this.Context.Ado.Connection.State == ConnectionState.Closed)
-
-                {
-
-                    this.Context.Ado.Connection.Open();
-
-                }
-
-                return copy;
+                this.Context.Ado.Connection.Open();
 
             }
 
-            private DataTable GetCopyData()
+            OracleBulkCopy copy;
+
+            if (this.Context.Ado.Transaction == null)
 
             {
 
-                var dt = this.Context.Ado.GetDataTable("select  * from " + InsertBuilder.GetTableNameString + " where 1 > 2 ");
+                copy = new OracleBulkCopy((OracleConnection)this.Context.Ado.Connection, Oracle.ManagedDataAccess.Client.OracleBulkCopyOptions.Default);
 
-                foreach (var rowInfos in DbColumnInfoList)
+            }
+
+            else
+
+            {
+
+                copy = new OracleBulkCopy((OracleConnection)this.Context.Ado.Connection, OracleBulkCopyOptions.UseInternalTransaction);
+
+            }
+            return copy;
+
+        }
+
+        private DataTable GetCopyData()
+
+        {
+
+            var dt = this.Context.Ado.GetDataTable("select  * from " + InsertBuilder.GetTableNameString + " where 1 > 2 ");
+
+            foreach (var rowInfos in DbColumnInfoList)
+
+            {
+
+                var dr = dt.NewRow();
+
+                foreach (DataColumn item in dt.Columns)
 
                 {
 
-                    var dr = dt.NewRow();
+                    var rows = rowInfos.ToList();
 
-                    foreach (DataColumn item in dt.Columns)
+                    var value = rows.FirstOrDefault(it =>
+
+                                                             it.DbColumnName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase) ||
+
+                                                             it.PropertyName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase)
+
+                                                        );
+
+                    if (value != null)
 
                     {
 
-                        var rows = rowInfos.ToList();
-
-                        var value = rows.FirstOrDefault(it =>
-
-                                                                 it.DbColumnName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase) ||
-
-                                                                 it.PropertyName.Equals(item.ColumnName, StringComparison.CurrentCultureIgnoreCase)
-
-                                                            );
-
-                        if (value != null)
+                        if (value.Value != null && UtilMethods.GetUnderType(value.Value.GetType()) == UtilConstants.DateType)
 
                         {
 
-                            if (value.Value != null && UtilMethods.GetUnderType(value.Value.GetType()) == UtilConstants.DateType)
+                            if (value.Value != null && value.Value.ToString() == DateTime.MinValue.ToString())
 
                             {
 
-                                if (value.Value != null && value.Value.ToString() == DateTime.MinValue.ToString())
-
-                                {
-
-                                    value.Value = Convert.ToDateTime("1900/01/01");
-
-                                }
+                                value.Value = Convert.ToDateTime("1900/01/01");
 
                             }
-
-                            if (value.Value == null)
-
-                            {
-
-                                value.Value = DBNull.Value;
-
-                            }
-
-                            dr[item.ColumnName] = value.Value;
 
                         }
 
-                    }
+                        if (value.Value == null)
 
-                    dt.Rows.Add(dr);
+                        {
+
+                            value.Value = DBNull.Value;
+
+                        }
+
+                        dr[item.ColumnName] = value.Value;
+
+                    }
 
                 }
 
-                return dt;
+                dt.Rows.Add(dr);
 
             }
 
-            private void CloseDb()
+            return dt;
+
+        }
+
+        private void CloseDb()
+
+        {
+
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
 
             {
 
-                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
-
-                {
-
-                    this.Context.Ado.Connection.Close();
-
-                }
+                this.Context.Ado.Connection.Close();
 
             }
 
         }
+
+    }
 }
