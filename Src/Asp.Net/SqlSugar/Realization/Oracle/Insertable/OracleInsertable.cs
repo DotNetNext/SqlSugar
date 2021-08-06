@@ -122,7 +122,7 @@ namespace SqlSugar
             var identities = GetSeqNames();
             var insertCount = InsertObjs.Count();
             InsertBuilder.OracleSeqInfoList = new Dictionary<string, int>();
-            if (identities.HasValue() && insertCount > 1)
+            if ((identities.HasValue() && insertCount > 1)|| InsertBuilder.IsBlukCopy)
             {
                 Check.Exception(identities.Count != identities.Distinct().Count(), "The field sequence needs to be unique");
                 foreach (var seqName in identities)
