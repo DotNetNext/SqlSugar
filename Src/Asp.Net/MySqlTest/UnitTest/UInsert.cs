@@ -21,7 +21,7 @@ namespace OrmTest
             Db.CodeFirst.InitTables<Unit4ASDF>();
             Db.Insertable(new List<Unit4ASDF>() {
                  new Unit4ASDF() { Id=null, Id2=1 },
-                   new Unit4ASDF() { Id=2, Id2=1 }}).UseMySql().ExecuteBlueCopy();
+                   new Unit4ASDF() { Id=2, Id2=1 }}).UseMySql().ExecuteBlukCopy();
 
             var list = Db.Queryable<Unit4ASDF>().ToList();
 
@@ -51,7 +51,7 @@ namespace OrmTest
 
 
 
-            Db.Insertable(list1).UseMySql().ExecuteBlueCopy();
+            Db.Insertable(list1).UseMySql().ExecuteBlukCopy();
 
 
 
@@ -75,8 +75,8 @@ namespace OrmTest
 
             Db.CodeFirst.InitTables<Testdbbool>();
             Db.DbMaintenance.TruncateTable("Testdbbool");
-            Db.Insertable(new Testdbbool() { isok=true }).UseMySql().ExecuteBlueCopy();
-            Db.Insertable(new Testdbbool() { isok = false }).UseMySql().ExecuteBlueCopy();
+            Db.Insertable(new Testdbbool() { isok=true }).UseMySql().ExecuteBlukCopy();
+            Db.Insertable(new Testdbbool() { isok = false }).UseMySql().ExecuteBlukCopy();
             var x=Db.Queryable<Testdbbool>().ToList();
         }
 
