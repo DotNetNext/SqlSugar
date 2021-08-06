@@ -36,6 +36,10 @@ namespace OrmTest
                  new Order() { Id = 12, Name = "order12" , Price=0}
             };
 
+
+            //blukcopy
+            db.Insertable(updateObjs).UseOracle().ExecuteBlukCopy();
+
             //Ignore  CreateTime
             db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
             db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnIdentity();

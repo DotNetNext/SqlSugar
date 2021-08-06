@@ -293,7 +293,19 @@ namespace SqlSugar
                 dt.Rows.Add(dr);
 
             }
-
+            if (this.InsertBuilder.OracleSeqInfoList != null && this.InsertBuilder.OracleSeqInfoList.Any()) 
+            {
+                var ids = this.InsertBuilder.OracleSeqInfoList.Select(it => it.Value).ToList();
+                var columnInfo = this.InsertBuilder.EntityInfo.Columns.Where(it => !string.IsNullOrEmpty(it.OracleSequenceName)).First();
+                var identityName = columnInfo.DbColumnName;
+                ids.Add(this.Context.Ado.GetInt(" select " + columnInfo.OracleSequenceName + ".nextval from dual"));
+                int i = 0;
+                foreach (DataRow item in dt.Rows)
+                {
+                    item[identityName] = ids[i];
+                    ++i;
+                }
+            }
             return dt;
 
         }
