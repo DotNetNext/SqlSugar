@@ -397,7 +397,9 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
         {
             var sqlobj = queryable.ToSql();
-            return this.SqlQueryable<T>(sqlobj.Key).AddParameters(sqlobj.Value);
+            var result = this.SqlQueryable<T>(sqlobj.Key).AddParameters(sqlobj.Value);
+            result.QueryBuilder.IsSqlQuery = false;
+            return result;
         }
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
      ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
