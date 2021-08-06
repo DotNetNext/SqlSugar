@@ -57,7 +57,7 @@ namespace OrmTest
                 CustomId = 11,
                 Name = "11",
                 Price = 11
-            }).UseMySql().ExecuteBlueCopy();
+            }).UseMySql().ExecuteBlukCopy();
             var data = db.Queryable<Order>().ToList();
             Console.WriteLine("#### Insertable End ####");
         }
