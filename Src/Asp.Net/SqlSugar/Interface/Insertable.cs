@@ -42,8 +42,8 @@ namespace SqlSugar
         IInsertable<T> RemoveDataCache();
         IInsertable<T> RemoveDataCache(string likeString);
         KeyValuePair<string, List<SugarParameter>> ToSql();
-        SqlServerBlueCopy UseSqlServer();
-        MySqlBlueCopy<T> UseMySql();
+        SqlServerBlukCopy UseSqlServer();
+        MySqlBlukCopy<T> UseMySql();
         void AddQueue();
 
     }

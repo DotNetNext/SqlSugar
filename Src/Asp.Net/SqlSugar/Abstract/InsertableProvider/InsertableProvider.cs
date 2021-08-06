@@ -309,16 +309,16 @@ namespace SqlSugar
             };
             return this;
         }
-        public MySqlBlueCopy<T> UseMySql()
+        public MySqlBlukCopy<T> UseMySql()
         {
-            return new MySqlBlueCopy<T>(this.Context, this.SqlBuilder, InsertObjs);
+            return new MySqlBlukCopy<T>(this.Context, this.SqlBuilder, InsertObjs);
         }
-        public SqlServerBlueCopy UseSqlServer()
+        public SqlServerBlukCopy UseSqlServer()
         {
             PreToSql();
             var currentType = this.Context.CurrentConnectionConfig.DbType;
             Check.Exception(currentType != DbType.SqlServer, "UseSqlServer no support " + currentType);
-            SqlServerBlueCopy result = new SqlServerBlueCopy();
+            SqlServerBlukCopy result = new SqlServerBlukCopy();
             result.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             result.InsertBuilder = this.InsertBuilder;
             result.Builder = this.SqlBuilder;
