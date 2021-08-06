@@ -222,6 +222,33 @@ namespace SqlSugar
             After(sql, result);
             return result;
         }
+        public OracleBlukCopy UseOracle()
+
+        {
+
+            PreToSql();
+
+            var currentType = this.Context.CurrentConnectionConfig.DbType;
+
+            Check.Exception(currentType != DbType.Oracle, "UseSqlServer no support " + currentType);
+
+            OracleBlukCopy result = new OracleBlukCopy();
+
+            result.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
+
+            result.InsertBuilder = this.InsertBuilder;
+
+            result.Builder = this.SqlBuilder;
+
+            result.Context = this.Context;
+
+            result.Inserts = this.InsertObjs;
+
+            return result;
+
+        }
+
+
         #endregion
 
         #region Setting

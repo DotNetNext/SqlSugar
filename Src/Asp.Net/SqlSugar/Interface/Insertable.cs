@@ -44,6 +44,7 @@ namespace SqlSugar
         KeyValuePair<string, List<SugarParameter>> ToSql();
         SqlServerBlukCopy UseSqlServer();
         MySqlBlukCopy<T> UseMySql();
+        OracleBlukCopy UseOracle();
         void AddQueue();
 
     }
