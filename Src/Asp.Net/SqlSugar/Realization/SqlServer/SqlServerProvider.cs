@@ -138,6 +138,10 @@ namespace SqlSugar
                         sqlParameter.Value = Convert.ToDateTime("1753/01/01");
                     }
                 }
+                if (parameter.Direction == 0) 
+                {
+                    parameter.Direction = ParameterDirection.Input;
+                }
                 sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
                 if (parameter.TypeName.HasValue()) {
