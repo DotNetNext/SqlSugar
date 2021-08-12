@@ -662,12 +662,12 @@ namespace SqlSugar
             return ScopedContext.UseTran(action,errorCallBack);
         }
 
-        public Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null)
+        public Task<DbResult<bool>> UseTranAsync(Func<Task> action, Action<Exception> errorCallBack = null)
         {
             return ScopedContext.UseTranAsync(action, errorCallBack);
         }
 
-        public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
+        public Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null)
         {
             return ScopedContext.UseTranAsync(action, errorCallBack);
         }
