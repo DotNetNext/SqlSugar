@@ -46,7 +46,7 @@ namespace SqlSugar
         void AddIndex(EntityInfo entityInfo);
         void AddDefaultValue(EntityInfo entityInfo);
         bool IsAnyDefaultValue(string tableName, string columnName);
-        bool IsAnyIndex(string indexName);
+        bool IsAnyIndex(string indexName, string databaseName);
         bool AddColumnRemark(string columnName,string tableName,string description);
         bool DeleteColumnRemark(string columnName, string tableName);
         bool IsAnyColumnRemark(string columnName, string tableName);

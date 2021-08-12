@@ -316,10 +316,10 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
-        public virtual bool IsAnyIndex(string indexName)
+        public virtual bool IsAnyIndex(string indexName, string databaseName)
         {
-            string sql = string.Format(this.IsAnyIndexSql, indexName);
-            return this.Context.Ado.GetInt(sql)>0;
+            string sql = string.Format(this.IsAnyIndexSql, indexName, databaseName);
+            return this.Context.Ado.GetInt(sql) > 0;
         }
         public virtual bool AddRemark(EntityInfo entity)
         {
@@ -371,7 +371,7 @@ namespace SqlSugar
                 {
                     var columnNames = indexColumns.Where(it => it.IndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it=>it.DbColumnName).ToArray();
                     var indexName = string.Format("Index_{0}_{1}"+this.Context.CurrentConnectionConfig.IndexSuffix,entityInfo.DbTableName, string.Join("_", columnNames));
-                    if (!IsAnyIndex(indexName))
+                    if (!IsAnyIndex(indexName, db.Ado.Connection.Database))
                     {
                         CreateIndex(entityInfo.DbTableName, columnNames);
                     }
@@ -387,7 +387,7 @@ namespace SqlSugar
                 {
                     var columnNames = uIndexColumns.Where(it => it.UIndexGroupNameList.Any(i => i.Equals(item, StringComparison.CurrentCultureIgnoreCase))).Select(it => it.DbColumnName).ToArray();
                     var indexName = string.Format("Index_{0}_{1}_Unique" + this.Context.CurrentConnectionConfig.IndexSuffix, entityInfo.DbTableName, string.Join("_", columnNames));
-                    if (!IsAnyIndex(indexName))
+                    if (!IsAnyIndex(indexName, db.Ado.Connection.Database))
                     {
                         CreateUniqueIndex(entityInfo.DbTableName, columnNames);
                     }
