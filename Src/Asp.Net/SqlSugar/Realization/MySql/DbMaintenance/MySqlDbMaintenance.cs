@@ -63,7 +63,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE DATABASE `{0}` CHARACTER SET utf8 COLLATE utf8_general_ci ";
+                return "CREATE DATABASE {0} CHARACTER SET utf8 COLLATE utf8_general_ci ";
             }
         }
         protected override string AddPrimaryKeySql
@@ -252,7 +252,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE {3} INDEX Index_{0}_{2} ON {0} ({1})";
+                return "CREATE {3} INDEX `Index_{0}_{2}` ON `{0}` (`{1}`)";
             }
         }
 
