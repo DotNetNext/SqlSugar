@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -111,12 +111,12 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp with local time zone",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
-                  new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
 
                   new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@decimal),
 
                   new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("long raw",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("longraw",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("raw",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("bfile",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray) };
