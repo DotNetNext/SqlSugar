@@ -289,7 +289,7 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "mysql");
+            connection = connection.Replace($"database={oldDatabaseName}", "database=mysql");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
