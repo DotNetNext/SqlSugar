@@ -35,7 +35,7 @@ namespace SqlSugar
                                     numeric_scale as Scale,
                                     numeric_scale as DecimalDigits
                                     FROM
-                                    Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY TABLE_NAME";
+                                    Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY ordinal_position";
                 return sql;
             }
         }
