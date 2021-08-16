@@ -826,32 +826,33 @@ namespace SqlSugar
             {
                 result = NoSameThreadAndShard();
             }
-            else if (IsSynchronization())
+            else 
             {
                 result = Synchronization();
             }
-            else if (IsSingleInstanceAsync())
-            {
-                result = Synchronization();//Async no support  Single Instance
-            }
-            else if (IsAsync())
-            {
-                result = Synchronization();
-            }
-            else
-            {
-                StackTrace st = new StackTrace(true);
-                var methods = st.GetFrames();
-                var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
-                if (isAsync)
-                {
-                    result = Synchronization();
-                }
-                else
-                {
-                    result = NoSameThread();
-                }
-            }
+            ///Because SqlSugarScope implements thread safety
+            //else if (IsSingleInstanceAsync())
+            //{
+            //    result = Synchronization();//Async no support  Single Instance
+            //}
+            //else if (IsAsync())
+            //{
+            //    result = Synchronization();
+            //}
+            //else
+            //{
+            //    StackTrace st = new StackTrace(true);
+            //    var methods = st.GetFrames();
+            //    var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
+            //    if (isAsync)
+            //    {
+            //        result = Synchronization();
+            //    }
+            //    else
+            //    {
+            //        result = NoSameThread();
+            //    }
+            //}
             if (result.Root == null)
             {
                 result.Root = this;
