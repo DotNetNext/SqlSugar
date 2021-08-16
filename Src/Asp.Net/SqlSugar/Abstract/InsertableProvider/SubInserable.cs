@@ -201,7 +201,15 @@ namespace SqlSugar
                             int id = 0;
                             if (isIdentity)
                             {
-                                id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
+                                if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                                {
+                                    var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
+                                    id = this.Context.Ado.GetInt(sqlobj.Key+ "  "+ entityInfo.Columns.First(it=>isIdentity).DbColumnName, sqlobj.Value);
+                                }
+                                else
+                                {
+                                    id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
+                                }
                                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle&&id==0)
                                 {
                                     var seqName=entityInfo.Columns.First(it => it.OracleSequenceName.HasValue())?.OracleSequenceName;
