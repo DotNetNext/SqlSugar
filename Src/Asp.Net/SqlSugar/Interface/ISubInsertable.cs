@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace SqlSugar
 {
@@ -10,5 +11,6 @@ namespace SqlSugar
         [Obsolete("use ExecuteCommand")]
         object ExecuteReturnPrimaryKey();
         object ExecuteCommand();
+        Task<object> ExecuteCommandAsync();
     }
 }
