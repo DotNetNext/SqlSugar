@@ -21,8 +21,10 @@ namespace SqlSugar
             {
                 string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
                                 pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
-                                pcolumn.character_maximum_length as Length,
+                                CASE WHEN pcolumn.numeric_scale >0 THEN pcolumn.numeric_precision ELSE pcolumn.character_maximum_length END   as Length,
                                 pcolumn.column_default as DefaultValue,
+                                pcolumn.numeric_scale as DecimalDigits,
+                                pcolumn.numeric_scale as Scale,
                                 col_description(pclass.oid, pcolumn.ordinal_position) as ColumnDescription,
                                 case when pkey.colname = pcolumn.column_name
                                 then true else false end as IsPrimaryKey,

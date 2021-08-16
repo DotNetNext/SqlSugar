@@ -35,7 +35,7 @@ namespace SqlSugar
                                     numeric_scale as Scale,
                                     numeric_scale as DecimalDigits
                                     FROM
-                                    Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY TABLE_NAME";
+                                    Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY ordinal_position";
                 return sql;
             }
         }
@@ -63,7 +63,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE DATABASE {0} CHARACTER SET utf8 COLLATE utf8_general_ci ";
+                return "CREATE DATABASE `{0}` CHARACTER SET utf8 COLLATE utf8_general_ci ";
             }
         }
         protected override string AddPrimaryKeySql
@@ -252,7 +252,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE {3} INDEX Index_{0}_{2} ON {0} ({1})";
+                return "CREATE {3} INDEX `Index_{0}_{2}` ON `{0}` ({1})";
             }
         }
 

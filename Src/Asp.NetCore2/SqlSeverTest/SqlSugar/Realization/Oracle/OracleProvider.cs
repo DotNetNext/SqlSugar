@@ -1,9 +1,8 @@
-﻿using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -88,6 +87,7 @@ namespace SqlSugar
             sqlCommand.BindByName = true;
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
+            sqlCommand.InitialLONGFetchSize = -1;
             if (this.Transaction != null)
             {
                 sqlCommand.Transaction = (OracleTransaction)this.Transaction;
