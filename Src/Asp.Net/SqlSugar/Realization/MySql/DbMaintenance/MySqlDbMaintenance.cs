@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -289,6 +290,7 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
+            Check.Exception(Regex.Split(connection,oldDatabaseName).Length > 2, "The user name and password cannot be the same as the database name ");
             connection = connection.Replace(oldDatabaseName, "mysql");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
