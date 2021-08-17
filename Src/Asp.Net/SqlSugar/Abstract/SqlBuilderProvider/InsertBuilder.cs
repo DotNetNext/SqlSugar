@@ -206,6 +206,10 @@ namespace SqlSugar
                 {
                     return "N'" + value.ToString().ToSqlFilter() + "'";
                 }
+                else if (type == UtilConstants.FloatType) 
+                {
+                    return "N'" +Convert.ToDouble(value).ToString() + "'";
+                }
                 else
                 {
                     return "N'" + value.ToString() + "'";
