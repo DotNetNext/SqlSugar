@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -16,6 +17,7 @@ namespace SqlSugar
     {
         List<MethodCallExpression> allMethods = new List<MethodCallExpression>();
         private ExpressionContext context = null;
+        private string subKey = "$SubAs:";
         private bool hasWhere;
         public SubResolve(MethodCallExpression expression, ExpressionContext context, Expression oppsiteExpression)
         {
@@ -85,12 +87,30 @@ namespace SqlSugar
                 currentExpression = addItem;
             }
         }
-
         public string GetSql()
         {
             List<string> subItems = GetSubItems();
-            var sql = string.Join(UtilConstants.Space, subItems);
+            var sqlItems = subItems.Where(it => !it.StartsWith(subKey)).ToList();
+            var asItems = subItems.Where(it => it.StartsWith(subKey)).ToList();
+            if (asItems.Any())
+            {
+                GetSubAs(sqlItems, asItems);
+            }
+            var sql = string.Join(UtilConstants.Space, sqlItems);
             return this.context.DbMehtods.Pack(sql);
+        }
+
+        private void GetSubAs(List<string> sqlItems, List<string> asItems)
+        {
+            for (int i = 0; i < sqlItems.Count; i++)
+            {
+                if (sqlItems[i].StartsWith("FROM " + this.context.SqlTranslationLeft))
+                {
+                    var asName = this.context.GetTranslationTableName(asItems.First().Replace(subKey, ""), false);
+                    var repKey = $"\\{this.context.SqlTranslationLeft}.+\\{this.context.SqlTranslationRight}";
+                    sqlItems[i] = Regex.Replace(sqlItems[i], repKey, asName);
+                }
+            }
         }
 
         private List<string> GetSubItems()

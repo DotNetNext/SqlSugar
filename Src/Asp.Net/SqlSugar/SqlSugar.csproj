@@ -88,6 +88,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAs.cs" />
     <Compile Include="Interface\IParameterInsertable.cs" />
     <Compile Include="Abstract\InsertableProvider\ParameterInsertable.cs" />
     <Compile Include="Abstract\Reportable\ReportableProvider.cs" />
