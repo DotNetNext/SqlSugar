@@ -174,7 +174,16 @@ namespace OrmTest
             _db.QueryFilter.Clear();
 
 
+            Db.CodeFirst.InitTables<UnitEnumTest>();
+            Db.Insertable(new UnitEnumTest() { type = null }).ExecuteCommand();
+            Db.Insertable(new UnitEnumTest() { type = DbType.MySql }).ExecuteCommand();
+            var xx = Db.Queryable<UnitEnumTest>().ToList();
+        }
 
+        public class UnitEnumTest 
+        {
+            [SqlSugar.SugarColumn(IsNullable =true)]
+            public DbType? type { get; set; }
         }
 
         public class Dat_WorkBill
