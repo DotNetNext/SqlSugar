@@ -434,7 +434,8 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels)
         {
             if (conditionalModels.IsNullOrEmpty()) return this;
-            var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels);
+            var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels,this.QueryBuilder.WhereIndex);
+            this.QueryBuilder.WhereIndex++;
             return this.Where(sqlObj.Key, sqlObj.Value);
         }
 

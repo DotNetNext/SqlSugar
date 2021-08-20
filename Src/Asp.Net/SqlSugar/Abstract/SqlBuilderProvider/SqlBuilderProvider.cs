@@ -122,12 +122,13 @@ namespace SqlSugar
             StringBuilder builder = new StringBuilder();
             List<SugarParameter> parameters = new List<SugarParameter>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            var mainIndex = 0;
             foreach (var model in models)
             {
                 if (model is ConditionalModel)
                 {
                     var item = model as ConditionalModel;
-                    var index = models.IndexOf(item) + beginIndex;
+                    var index = mainIndex + beginIndex;
                     var type = index == 0 ? "" : "AND";
                     if (beginIndex > 0)
                     {
@@ -231,6 +232,19 @@ namespace SqlSugar
                                 parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
                             }
                             break;
+                        case ConditionalType.InLike:
+                            var array =(item.FieldValue+"").Split(',').ToList();
+                            List<string> sqls = new List<string>();
+                            int i = 0;
+                            foreach (var val in array)
+                            {
+                                var itemParameterName = $"{ parameterName}{index}{i}";
+                                sqls.Add(item.FieldName.ToSqlFilter()+ " LIKE " + itemParameterName);
+                                parameters.Add(new SugarParameter(itemParameterName, "%" + val + "%"));
+                                i++;
+                            }
+                            builder.Append($" ({string.Join(" OR ", sqls)}) ");
+                            break;
                         default:
                             break;
                     }
@@ -275,6 +289,7 @@ namespace SqlSugar
                         }
                     }
                 }
+                mainIndex++;
             }
             return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
         }
