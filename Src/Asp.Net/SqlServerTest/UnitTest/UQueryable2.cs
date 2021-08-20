@@ -178,12 +178,20 @@ namespace OrmTest
             Db.Insertable(new UnitEnumTest() { type = null }).ExecuteCommand();
             Db.Insertable(new UnitEnumTest() { type = DbType.MySql }).ExecuteCommand();
             var xx = Db.Queryable<UnitEnumTest>().ToList();
+            var xxx= Db.Storageable(new UnitEnumTest()
+            {
+                Name = "a",
+                 type=DbType.Sqlite
+            }).WhereColumns(it => it.type).ToStorage();
+            xxx.AsUpdateable.ExecuteCommand();
         }
 
         public class UnitEnumTest 
         {
             [SqlSugar.SugarColumn(IsNullable =true)]
             public DbType? type { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public string Name { get; set; }
         }
 
         public class Dat_WorkBill
