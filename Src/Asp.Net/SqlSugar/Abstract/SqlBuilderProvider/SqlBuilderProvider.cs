@@ -134,7 +134,7 @@ namespace SqlSugar
                         type = null;
                     }
                     string temp = " {0} {1} {2} {3}  ";
-                    string parameterName = string.Format("{0}Conditional{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
+                    string parameterName = string.Format("{0}Condit{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
                     if (parameterName.Contains("."))
                     {
                         parameterName = parameterName.Replace(".", "_");
