@@ -66,7 +66,7 @@ namespace SqlSugar
         {
             return this.ExecuteCommand() > 0;
         }
-        public async Task<int> ExecuteCommandAsync()
+        public virtual async Task<int> ExecuteCommandAsync()
         {
             string sql = _ExecuteCommand();
             if (string.IsNullOrEmpty(sql))

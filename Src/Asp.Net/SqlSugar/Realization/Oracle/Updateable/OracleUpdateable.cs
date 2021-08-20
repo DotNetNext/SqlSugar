@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SqlSugar
 {
@@ -24,6 +25,22 @@ namespace SqlSugar
             else
             {
                 base.ExecuteCommand();
+                return base.UpdateObjs.Count();
+            }
+        }
+        public async override  Task<int> ExecuteCommandAsync()
+        {
+            if (base.UpdateObjs.Count() == 1)
+            {
+                return await base.ExecuteCommandAsync();
+            }
+            else if (base.UpdateObjs.Count() == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                await base.ExecuteCommandAsync();
                 return base.UpdateObjs.Count();
             }
         }
