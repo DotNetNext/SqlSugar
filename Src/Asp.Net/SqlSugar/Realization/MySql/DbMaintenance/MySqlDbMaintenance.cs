@@ -261,7 +261,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT '{2}'";
+                return "ALTER TABLE `{0}` ALTER COLUMN `{1}` SET DEFAULT '{2}'";
             }
         }
         protected override string IsAnyIndexSql
