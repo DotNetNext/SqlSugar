@@ -319,9 +319,4 @@ namespace SqlSugar
         [Obsolete("Use AsSugarClient()")]
         public ISqlSugarClient FullClient { get { return this.Context; } }
     }
-
-    public interface ISugarRepository 
-    {
-         ISqlSugarClient Context { get; set; }
-    }
 }

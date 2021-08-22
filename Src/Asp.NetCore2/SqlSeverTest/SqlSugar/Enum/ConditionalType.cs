@@ -22,5 +22,6 @@ namespace SqlSugar
         IsNot=12,
         NoLike = 13,
         EqualNull = 14,
+        InLike=15
     }
 }

@@ -203,6 +203,10 @@ namespace SqlSugar
                 foreach (var item in whereColumns)
                 {
                     var value = item.PropertyInfo.GetValue(dataItem.Item, null);
+                    if (value != null&&value.GetType().IsEnum()) 
+                    {
+                        value = Convert.ToInt64(value);
+                    }
                     condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or :WhereType.And, new ConditionalModel()
                     {
                         FieldName = item.DbColumnName,

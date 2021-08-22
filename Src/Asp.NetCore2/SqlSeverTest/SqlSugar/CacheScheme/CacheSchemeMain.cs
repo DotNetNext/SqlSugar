@@ -7,9 +7,10 @@ namespace SqlSugar
 {
     internal class CacheSchemeMain
     {
-        public static T GetOrCreate<T>(ICacheService cacheService, QueryBuilder queryBuilder, Func<T> getData, int cacheDurationInSeconds, SqlSugarProvider context)
+        public static T GetOrCreate<T>(ICacheService cacheService, QueryBuilder queryBuilder, Func<T> getData, int cacheDurationInSeconds, SqlSugarProvider context,string cacheKey)
         {
             CacheKey key = CacheKeyBuider.GetKey(context, queryBuilder);
+            key.AppendKey = cacheKey;
             string keyString = key.ToString();
             var result = cacheService.GetOrCreate(keyString, getData, cacheDurationInSeconds);
             return result;

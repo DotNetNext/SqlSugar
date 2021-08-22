@@ -26,6 +26,7 @@ namespace SqlSugar
         public List<Action<List<T>>> Mappers { get; set; }
         public bool IsCache { get; set; }
         public int CacheTime { get; set; }
+        public string CacheKey { get; set; }
         public bool IsAs { get; set; }
         public QueryBuilder QueryBuilder
         {
@@ -434,7 +435,7 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels)
         {
             if (conditionalModels.IsNullOrEmpty()) return this;
-            var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels);
+            var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels,0);
             return this.Where(sqlObj.Key, sqlObj.Value);
         }
 
@@ -817,7 +818,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<int>(cacheService, this.QueryBuilder, () => { return GetCount(); }, CacheTime, this.Context);
+                result = CacheSchemeMain.GetOrCreate<int>(cacheService, this.QueryBuilder, () => { return GetCount(); }, CacheTime, this.Context,CacheKey);
             }
             else
             {
@@ -904,7 +905,7 @@ namespace SqlSugar
                 var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () =>
                 {
                     return this.Context.Utilities.SerializeObject(this.ToList(), typeof(T));
-                }, CacheTime, this.Context);
+                }, CacheTime, this.Context,CacheKey);
                 return result;
             }
             else
@@ -1027,7 +1028,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context);
+                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context,CacheKey);
             }
             else
             {
@@ -1187,6 +1188,15 @@ namespace SqlSugar
                 return _ToSql();
             }
         }
+        public ISugarQueryable<T> WithCache(string cacheKey, int cacheDurationInSeconds = int.MaxValue)
+        {
+            cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
+            Check.ArgumentNullException(this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService, "Use Cache ConnectionConfig.ConfigureExternalServices.DataInfoCacheService is required ");
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
+            this.CacheKey = cacheKey;
+            return this;
+        }
         public ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
         {
             cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
@@ -1322,7 +1332,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<int>(cacheService, this.QueryBuilder, () => { return GetCount(); }, CacheTime, this.Context);
+                result = CacheSchemeMain.GetOrCreate<int>(cacheService, this.QueryBuilder, () => { return GetCount(); }, CacheTime, this.Context,CacheKey);
             }
             else
             {
@@ -1415,7 +1425,7 @@ namespace SqlSugar
                 var result = CacheSchemeMain.GetOrCreate<string>(cacheService, this.QueryBuilder, () =>
                 {
                     return this.Context.Utilities.SerializeObject(this.ToList(), typeof(T));
-                }, CacheTime, this.Context);
+                }, CacheTime, this.Context,CacheKey);
                 return result;
             }
             else
@@ -1444,7 +1454,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context);
+                result = CacheSchemeMain.GetOrCreate<DataTable>(cacheService, this.QueryBuilder, () => { return this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray()); }, CacheTime, this.Context,CacheKey);
             }
             else
             {
@@ -1798,7 +1808,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context);
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context,CacheKey);
             }
             else
             {
@@ -1815,7 +1825,7 @@ namespace SqlSugar
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context);
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context,CacheKey);
             }
             else
             {

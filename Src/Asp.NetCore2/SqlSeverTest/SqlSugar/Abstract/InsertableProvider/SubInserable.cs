@@ -125,6 +125,7 @@ namespace SqlSugar
                     if (isIdEntity)
                     {
                         id = this.Context.Insertable(InsertObject).ExecuteReturnIdentity();
+                        this.Entity.Columns.First(it => it.IsIdentity || it.OracleSequenceName.HasValue()).PropertyInfo.SetValue(InsertObject, id);
                     }
                     var pk = GetPrimaryKey(this.Entity, InsertObject, id);
                     AddChildList(this.SubList, InsertObject, pk);
