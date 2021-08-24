@@ -662,7 +662,14 @@ namespace SqlSugar
             AllClientEach(it =>
             {
 
-                it.Ado.CommitTran();
+                try
+                {
+                    it.Ado.CommitTran();
+                }
+                catch 
+                {
+                    SugarRetry.Execute(() => it.Ado.CommitTran(), new TimeSpan(0, 0, 5), 3);
+                }
                 
             });
             _IsAllTran = false;
@@ -774,7 +781,14 @@ namespace SqlSugar
             AllClientEach(it => 
             {
 
-                it.Ado.RollbackTran();
+                try
+                {
+                    it.Ado.RollbackTran();
+                }
+                catch 
+                {
+                    SugarRetry.Execute(() => it.Ado.RollbackTran(), new TimeSpan(0, 0, 5), 3);
+                }
 
             });
             _IsAllTran = false;
