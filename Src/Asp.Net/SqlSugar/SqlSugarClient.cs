@@ -659,7 +659,12 @@ namespace SqlSugar
         public void CommitTran()
         {
             this.Context.Ado.CommitTran();
-            AllClientEach(it => it.Ado.CommitTran());
+            AllClientEach(it =>
+            {
+
+                it.Ado.CommitTran();
+                
+            });
             _IsAllTran = false;
         }
         public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
@@ -766,7 +771,12 @@ namespace SqlSugar
         public void RollbackTran()
         {
             this.Context.Ado.RollbackTran();
-            AllClientEach(it => it.Ado.RollbackTran());
+            AllClientEach(it => 
+            {
+
+                it.Ado.RollbackTran();
+
+            });
             _IsAllTran = false;
         }
         public void Close()
