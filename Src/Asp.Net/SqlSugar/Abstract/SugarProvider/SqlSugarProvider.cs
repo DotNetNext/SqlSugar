@@ -684,7 +684,9 @@ namespace SqlSugar
             {
                 UpdateObjs = new List<T>();
             }
-            return Updateable(UpdateObjs.ToArray());
+            var result= (UpdateableProvider<T>)Updateable(UpdateObjs.ToArray());
+            result.UpdateBuilder.IsListUpdate = true;
+            return result;
         }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
         {
