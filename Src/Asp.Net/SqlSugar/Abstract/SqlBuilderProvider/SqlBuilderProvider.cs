@@ -243,7 +243,7 @@ namespace SqlSugar
                                 parameters.Add(new SugarParameter(itemParameterName, "%" + val + "%"));
                                 i++;
                             }
-                            builder.Append($" ({string.Join(" OR ", sqls)}) ");
+                            builder.Append($" {type} ({string.Join(" OR ", sqls)}) ");
                             break;
                         default:
                             break;
