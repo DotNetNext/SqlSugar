@@ -37,6 +37,11 @@ namespace SqlSugar
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length
             };
+            if (propertyType == UtilConstants.DecType) 
+            {
+                result.Scale = item.DecimalDigits;
+                result.DecimalDigits = item.DecimalDigits;
+            }
             GetDbType(item, propertyType, result);
             if (result.DataType.Equals("varchar", StringComparison.CurrentCultureIgnoreCase) && result.Length == 0)
             {
