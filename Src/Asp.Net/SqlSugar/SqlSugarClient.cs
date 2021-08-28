@@ -759,6 +759,7 @@ namespace SqlSugar
                 if (action != null)
                     data = await action();
                 this.CommitTran();
+                result.IsSuccess = true;
                 result.Data = data;
             }
             catch (Exception ex)
