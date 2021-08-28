@@ -13,9 +13,9 @@ namespace OrmTest
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### SimpleClient Start ####");
+            Console.WriteLine("#### DemoH_Tenant Start ####");
             new C1Service().Test();
-            Console.WriteLine("#### SimpleClient End ####");
+            Console.WriteLine("#### DemoH_Tenant End ####");
         }
         public class C1Service : Repository<C1Table>
         {

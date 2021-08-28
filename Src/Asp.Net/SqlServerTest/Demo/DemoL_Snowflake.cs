@@ -12,7 +12,7 @@ namespace OrmTest
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### Utilities Start ####");
+            Console.WriteLine("#### DemoL_Snowflake ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {

@@ -12,7 +12,7 @@ namespace OrmTest
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### Utilities Start ####");
+            Console.WriteLine("#### DemoJ_Report Start ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {

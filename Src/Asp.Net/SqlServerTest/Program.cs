@@ -33,6 +33,7 @@ namespace OrmTest
             DemoH_Tenant.Init();
             DemoJ_Report.Init();
             DemoL_Snowflake.Init();
+            DemoM_UnitOfWork.Init();
             //Unit test
             //NewUnitTest.Init();
 

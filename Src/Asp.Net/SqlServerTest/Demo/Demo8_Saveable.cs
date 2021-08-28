@@ -32,15 +32,11 @@ namespace OrmTest
 
 
             //insert or update
-            db.Saveable<Order>(new Order() { Id=1, Name="jack" }).ExecuteReturnEntity();
+            var x= db.Storageable<Order>(new Order() { Id=1, Name="jack" }).ToStorage();
+            x.AsUpdateable.ExecuteCommand();
+            x.AsInsertable.ExecuteCommand();
 
-
-            //insert or update
-            db.Saveable<Order>(new Order() { Id = 1000, Name = "jack", CreateTime=DateTime.Now })
-                  .InsertColumns(it => new { it.Name,it.CreateTime, it.Price})//if insert  into name,CreateTime,Price
-                  .UpdateColumns(it => new { it.Name, it.CreateTime })//if update set name CreateTime
-                  .ExecuteReturnEntity();
-
+           
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }
