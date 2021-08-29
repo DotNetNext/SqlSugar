@@ -244,9 +244,29 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
+        public async Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null)
         {
-            return Task.FromResult(UseTran(action, errorCallBack));
+            var result = new DbResult<T>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    result.Data = await action();
+                this.CommitTran();
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+                if (errorCallBack != null)
+                {
+                    errorCallBack(ex);
+                }
+            }
+            return result;
         }
 
         public IAdo UseStoredProcedure()
