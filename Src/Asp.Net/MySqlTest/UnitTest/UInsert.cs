@@ -77,9 +77,38 @@ namespace OrmTest
             Db.DbMaintenance.TruncateTable("Testdbbool");
             Db.Insertable(new Testdbbool() { isok=true }).UseMySql().ExecuteBlukCopy();
             Db.Insertable(new Testdbbool() { isok = false }).UseMySql().ExecuteBlukCopy();
-            var x=Db.Queryable<Testdbbool>().ToList();
-        }
 
+            Db.CodeFirst.InitTables<MicroBlog>();
+
+            var x= Db.Storageable(new List<MicroBlog>()
+            {
+                new MicroBlog(){ Mid="1" },
+                new MicroBlog(){ Mid="2" }
+            })
+             .SplitInsert(it=>!it.Any())
+             .WhereColumns(it=>it.Mid).ToStorage();
+
+            x.AsInsertable.ExecuteCommand();
+        }
+        public class MicroBlog
+        {
+            //[SugarColumn(IsPrimaryKey = true, IsIdentity = true)]//如果是主键，此处必须指定，否则会引发InSingle(id)方法异常。
+            public string Mid { get; set; }
+            //public int id { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public string uid { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public string nick { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public DateTime SendTime { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public string content { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public string ForwardHtml { get; set; }
+            [SqlSugar.SugarColumn(IsNullable =true)]
+            public string MediaHtml { get; set; }
+            //public DateTime CreatedAt { get; set; }
+        }
         public class testdb
 
         {
