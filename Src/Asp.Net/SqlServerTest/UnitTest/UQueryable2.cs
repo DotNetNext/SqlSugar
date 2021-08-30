@@ -184,6 +184,13 @@ namespace OrmTest
                  type=DbType.Sqlite
             }).WhereColumns(it => it.type).ToStorage();
             xxx.AsUpdateable.ExecuteCommand();
+
+            var getOrderBy2 = Db
+              .Queryable<Order>()
+              .Select(it => new Order { Name = it.Name.Replace("0", "1") }).MergeTable().Select<Order>().Where(it => it.Name.Equals("2"))
+              .ToList();
+
+
         }
 
         public class UnitEnumTest 
