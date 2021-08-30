@@ -25,13 +25,13 @@ namespace SqlSugar
             this.Builder = builder;
             this.Entitys = entitys;
         }
-        public bool ExecuteBlukCopy(string characterSet) 
+        public bool ExecuteBulkCopy(string characterSet) 
         {
             this.Chara = characterSet;
-            return ExecuteBlukCopy();
+            return ExecuteBulkCopy();
         }
 
-        public bool ExecuteBlukCopy()
+        public bool ExecuteBulkCopy()
         {
             var IsBulkLoad = false;
             if (Entitys == null || Entitys.Length <= 0)
@@ -111,15 +111,15 @@ namespace SqlSugar
             return IsBulkLoad; ;
         }
 
-        public Task<bool> ExecuteBlukCopyAsync()
+        public Task<bool> ExecuteBulkCopyAsync()
         {
-            return Task.FromResult(ExecuteBlukCopy());
+            return Task.FromResult(ExecuteBulkCopy());
         }
 
-        public Task<bool> ExecuteBlukCopyAsync(string characterSet)
+        public Task<bool> ExecuteBulkCopyAsync(string characterSet)
         {
             this.Chara = characterSet;
-            return Task.FromResult(ExecuteBlukCopy());
+            return Task.FromResult(ExecuteBulkCopy());
         }
 
         #region  Helper

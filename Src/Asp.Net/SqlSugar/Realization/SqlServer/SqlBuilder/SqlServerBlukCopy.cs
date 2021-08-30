@@ -16,7 +16,7 @@ namespace SqlSugar
         internal InsertBuilder InsertBuilder { get; set; }
         internal object[] Inserts { get;  set; }
 
-        public int ExecuteBlukCopy()
+        public int ExecuteBulkCopy()
         {
             if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
 
@@ -40,7 +40,7 @@ namespace SqlSugar
             return DbColumnInfoList.Count;
         }
 
-        public async Task<int> ExecuteBlukCopyAsync()
+        public async Task<int> ExecuteBulkCopyAsync()
         {
             if (DbColumnInfoList == null || DbColumnInfoList.Count == 0) return 0;
 
