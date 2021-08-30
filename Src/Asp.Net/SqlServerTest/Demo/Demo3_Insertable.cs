@@ -56,10 +56,10 @@ namespace OrmTest
                  new Order() { Id = 11, Name = "order11", Price=1 },
                  new Order() { Id = 12, Name = "order12" , Price=20, CreateTime=DateTime.Now, CustomId=1}
             };
-            db.Insertable(insertObjs).UseSqlServer().ExecuteBlukCopy();
+            db.Insertable(insertObjs).UseSqlServer().ExecuteBulkCopy();
             var dt = db.Queryable<Order>().Take(5).ToDataTable();
             dt.TableName = "Order";
-            db.Insertable(dt).UseSqlServer().ExecuteBlukCopy();
+            db.Insertable(dt).UseSqlServer().ExecuteBulkCopy();
             db.CodeFirst.InitTables<RootTable0, TwoItem, TwoItem2, TwoItem3>();
             db.CodeFirst.InitTables<ThreeItem2>();
             db.DbMaintenance.TruncateTable("RootTable0");
