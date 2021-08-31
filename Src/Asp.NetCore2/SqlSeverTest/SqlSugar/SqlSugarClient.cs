@@ -351,6 +351,7 @@ namespace SqlSugar
         }
         public IStorageable<T> Storageable<T>(T data) where T : class, new()
         {
+            Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");
             return this.Context.Storageable(new List<T> { data});
         }
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
