@@ -86,6 +86,7 @@ namespace SqlSugar
 
         public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
+            Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");
             return this.Context.Insertable<T>(insertObj);
         }
 
