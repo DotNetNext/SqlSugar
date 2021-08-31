@@ -101,7 +101,7 @@ namespace SqlSugar
         {
             if (this.Transaction != null)
             {
-                this.Transaction.Commit();
+                this.Transaction.Rollback();
                 this.Transaction = null;
             }
             if (this.Connection != null && this.Connection.State != ConnectionState.Open)
