@@ -99,15 +99,15 @@ namespace SqlSugar
         }
         public virtual void Dispose()
         {
-            if (this.Transaction != null)
-            {
-                this.Transaction.Commit();
-                this.Transaction = null;
-            }
-            if (this.Connection != null && this.Connection.State != ConnectionState.Open)
-            {
-                this.Connection.Close();
-            }
+            //if (this.Transaction != null)
+            //{
+            //    this.Transaction.Commit();
+            //    this.Transaction = null;
+            //}
+            //if (this.Connection != null && this.Connection.State != ConnectionState.Open)
+            //{
+            //    this.Connection.Close();
+            //}
             if (this.Connection != null)
             {
                 this.Connection.Dispose();

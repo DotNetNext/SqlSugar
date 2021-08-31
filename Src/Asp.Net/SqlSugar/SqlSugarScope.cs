@@ -140,9 +140,9 @@ namespace SqlSugar
             ScopedContext.AddQueue(sql,parsmeter);
         }
 
-        public void BeginTran()
+        public ISugarTransaction BeginTran()
         {
-            ScopedContext.BeginTran();
+            return ScopedContext.BeginTran();
         }
 
         public void ChangeDatabase(dynamic configId)

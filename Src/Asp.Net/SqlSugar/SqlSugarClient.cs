@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.Internal;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
@@ -651,10 +652,11 @@ namespace SqlSugar
             if (_CurrentConnectionConfig.AopEvents == null)
                 _CurrentConnectionConfig.AopEvents = new AopEvents();
         }
-        public void BeginTran()
+        public ISugarTransaction BeginTran()
         {
             _IsAllTran = true;
             AllClientEach(it => it.Ado.BeginTran());
+            return new SqlSguarTransaction(this);
         }
         public void CommitTran()
         {
@@ -1065,7 +1067,7 @@ namespace SqlSugar
                 }
             }
         }
-        private void AllClientEach(Action<ISqlSugarClient> action)
+        internal void AllClientEach(Action<ISqlSugarClient> action)
         {
             if (this._AllClients == null)
             {

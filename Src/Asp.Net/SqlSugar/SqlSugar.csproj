@@ -110,6 +110,8 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubLeftJoin.cs" />
     <Compile Include="Interface\IReportable.cs" />
     <Compile Include="Interface\IStorageable.cs" />
+    <Compile Include="Internal\SqlSguarTransaction.cs" />
+    <Compile Include="ISugarTransaction.cs" />
     <Compile Include="OnlyNet\OracleBlukCopy.cs" />
     <Compile Include="OnlyNet\Compatible.cs" />
     <Compile Include="OnlyNet\KdbndpInserttable.cs" />
