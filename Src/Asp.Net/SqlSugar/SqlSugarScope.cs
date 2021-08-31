@@ -172,7 +172,7 @@ namespace SqlSugar
 
         public IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
         {
-            return ScopedContext.Deleteable(primaryKeyValue);
+            return ScopedContext.Deleteable<T>(primaryKeyValue);
         }
 
         public IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new()
