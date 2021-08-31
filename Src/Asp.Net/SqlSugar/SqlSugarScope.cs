@@ -651,7 +651,10 @@ namespace SqlSugar
         {
             return ScopedContext.Updateable(UpdateObjs);
         }
-
+        public SqlSguarTransaction UseTran()
+        {
+            return ScopedContext.UseTran();
+        }
         public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
         {
             return ScopedContext.UseTran(action,errorCallBack);

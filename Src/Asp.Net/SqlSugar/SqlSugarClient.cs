@@ -575,6 +575,10 @@ namespace SqlSugar
         #endregion
 
         #region TenantManager
+        public SqlSguarTransaction UseTran() 
+        {
+            return new SqlSguarTransaction(this);
+        }
         public void AddConnection(ConnectionConfig connection)
         {
             Check.ArgumentNullException(connection, "AddConnection.connection can't be null");
