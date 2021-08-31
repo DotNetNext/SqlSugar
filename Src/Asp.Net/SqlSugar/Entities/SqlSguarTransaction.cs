@@ -15,6 +15,14 @@ namespace SqlSugar
             context = client;
             context.BeginTran();
         }
+        public void CommitTran()
+        {
+            context.CommitTran();
+        }
+        public void RollbackTran()
+        {
+            context.RollbackTran();
+        }
         public void Dispose()
         {
             context.RollbackTran();

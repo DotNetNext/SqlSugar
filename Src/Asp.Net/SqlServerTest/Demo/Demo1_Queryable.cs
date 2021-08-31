@@ -27,7 +27,15 @@ namespace OrmTest
         private static void ConfiQuery()
         {
             var db = GetInstance();
-            List<DataDictionary> datas = new List<DataDictionary>();
+            using (var tran = db.UseTran())
+            {
+
+
+                tran.CommitTran();
+            }
+
+
+                List<DataDictionary> datas = new List<DataDictionary>();
             datas.Add(new DataDictionary() { Code="1", Name="男",Type="sex" });
             datas.Add(new DataDictionary() { Code = "2", Name = "女", Type = "sex" });
             datas.Add(new DataDictionary() { Code = "1", Name = "南通市", Type = "city" });
