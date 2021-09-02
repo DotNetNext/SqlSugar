@@ -34,62 +34,7 @@ namespace SqlSugar
             _configs = configs;
             this._configAction = configAction;
         }
-        //public ScopedClient(SqlSugarClient context,Action<SqlSugarClient> configAction)
-        //{
-        //    this.db = context;
-        //    this.configAction = configAction;
-        //}
-        public SqlSugarClient ScopedContext
-        {
-            get
-            {
-                SqlSugarClient result = null;
-                var key = _configs.GetHashCode().ToString();
-                StackTrace st = new StackTrace(true);
-                var methods = st.GetFrames();
-                var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
-                if (isAsync)
-                {
-                    result=GetAsyncContext(key);
-                }
-                else 
-                {
-                    result = GetThreadContext(key);
-                }
-                return result;
-            }
-        }
-
-        private SqlSugarClient GetAsyncContext(string key)
-        {
-            SqlSugarClient result = CallContextAsync<SqlSugarClient>.GetData(key);
-            if (result == null)
-            {
-                CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
-                result = CallContextAsync<SqlSugarClient>.GetData(key);
-                if (this._configAction != null)
-                {
-                    this._configAction(result);
-                }
-            }
-
-            return result;
-        }
-
-        private SqlSugarClient GetThreadContext(string key)
-        {
-            SqlSugarClient result = CallContextThread<SqlSugarClient>.GetData(key);
-            if (result == null)
-            {
-                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
-                result = CallContextThread<SqlSugarClient>.GetData(key);
-                if (this._configAction != null)
-                {
-                    this._configAction(result);
-                }
-            }
-            return result;
-        }
+        public SqlSugarClient ScopedContext{ get{ return GetContext();}}
 
         public MappingTableList MappingTables { get => ScopedContext.MappingTables; set => ScopedContext.MappingTables = value; }
         public MappingColumnList MappingColumns { get => ScopedContext.MappingColumns; set => ScopedContext.MappingColumns=value; }
@@ -678,6 +623,55 @@ namespace SqlSugar
         public bool IsAnyConnection(dynamic configId)
         {
             return ScopedContext.IsAnyConnection(configId);
+        }
+
+        private SqlSugarClient GetContext()
+        {
+            SqlSugarClient result = null;
+            var key = _configs.GetHashCode().ToString();
+            StackTrace st = new StackTrace(true);
+            var methods = st.GetFrames();
+            var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
+            if (isAsync)
+            {
+                result = GetAsyncContext(key);
+            }
+            else
+            {
+                result = GetThreadContext(key);
+            }
+            return result;
+        }
+
+        private SqlSugarClient GetAsyncContext(string key)
+        {
+            SqlSugarClient result = CallContextAsync<SqlSugarClient>.GetData(key);
+            if (result == null)
+            {
+                CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
+                result = CallContextAsync<SqlSugarClient>.GetData(key);
+                if (this._configAction != null)
+                {
+                    this._configAction(result);
+                }
+            }
+
+            return result;
+        }
+
+        private SqlSugarClient GetThreadContext(string key)
+        {
+            SqlSugarClient result = CallContextThread<SqlSugarClient>.GetData(key);
+            if (result == null)
+            {
+                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
+                result = CallContextThread<SqlSugarClient>.GetData(key);
+                if (this._configAction != null)
+                {
+                    this._configAction(result);
+                }
+            }
+            return result;
         }
     }
 }
