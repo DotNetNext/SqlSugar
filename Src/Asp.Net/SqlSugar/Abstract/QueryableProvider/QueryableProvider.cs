@@ -1448,7 +1448,7 @@ namespace SqlSugar
         {
             QueryBuilder.ResultType = typeof(SugarCacheDataTable);
             InitMapping();
-            var sqlObj = this.ToSql();
+            var sqlObj = this._ToSql();
             RestoreMapping();
             DataTable result = null;
             if (IsCache)
