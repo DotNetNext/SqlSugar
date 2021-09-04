@@ -32,7 +32,7 @@ namespace SqlSugar
 
 
 
-        public int ExecuteBlukCopy()
+        public int ExecuteBulkCopy()
 
         {
 
@@ -80,7 +80,7 @@ namespace SqlSugar
 
 
 
-        public async Task<int> ExecuteBlukCopyAsync()
+        public async Task<int> ExecuteBulkCopyAsync()
 
         {
 
