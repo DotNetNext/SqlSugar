@@ -1821,7 +1821,7 @@ namespace SqlSugar
         protected async Task<List<TResult>> _ToListAsync<TResult>()
         {
             List<TResult> result = null;
-            var sqlObj = this.ToSql();
+            var sqlObj = this._ToSql();
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
