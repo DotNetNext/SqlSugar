@@ -474,7 +474,7 @@ namespace SqlSugar
         }
         public virtual bool IsComplexModel(string sql)
         {
-            return Regex.IsMatch(sql, @"AS \[\w+\.\w+\]");
+            return Regex.IsMatch(sql, @"AS \[\w+\.\w+\]")|| Regex.IsMatch(sql, @"AS \[\w+\.\w+\.\w+\]");
         }
         public string GetSqlQuerySql(string result)
         {

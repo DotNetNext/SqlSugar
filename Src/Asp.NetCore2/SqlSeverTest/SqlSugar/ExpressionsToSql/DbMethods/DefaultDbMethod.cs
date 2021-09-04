@@ -477,5 +477,18 @@ namespace SqlSugar
             var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue).ToArray();
              return string.Format("'"+str+ "'", array);
         }
+
+        public string Abs(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" ABS({0}) ", parameter.MemberName);
+        }
+
+        public string Round(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2= model.Args[1];
+            return string.Format("  ROUND({0},{1}) ", parameter.MemberName, parameter2.MemberName);
+        }
     }
 }

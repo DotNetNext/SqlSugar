@@ -175,6 +175,17 @@ namespace SqlSugar
                 }
                 else
                 {
+                    if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType)) 
+                    {
+                        if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                        {
+                            column.DataType = "json";
+                        }
+                        else
+                        {
+                            column.DataType = "varchar(4000)";
+                        }
+                    }
                     if (sugarColumn.IsIgnore == false)
                     {
                         column.DbColumnName = sugarColumn.ColumnName.IsNullOrEmpty() ? property.Name : sugarColumn.ColumnName;

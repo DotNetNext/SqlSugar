@@ -792,7 +792,7 @@ namespace SqlSugar
             Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, "'Mapper’ needs to be written after ‘MergeTable’ ");
             Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Queryable.Select Method .");
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
-            var sqlobj = this.ToSql();
+            var sqlobj = this._ToSql();
             var index = QueryBuilder.WhereIndex + 1;
             var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
             result.QueryBuilder.WhereIndex = index;
@@ -1448,7 +1448,7 @@ namespace SqlSugar
         {
             QueryBuilder.ResultType = typeof(SugarCacheDataTable);
             InitMapping();
-            var sqlObj = this.ToSql();
+            var sqlObj = this._ToSql();
             RestoreMapping();
             DataTable result = null;
             if (IsCache)
@@ -1821,7 +1821,7 @@ namespace SqlSugar
         protected async Task<List<TResult>> _ToListAsync<TResult>()
         {
             List<TResult> result = null;
-            var sqlObj = this.ToSql();
+            var sqlObj = this._ToSql();
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;

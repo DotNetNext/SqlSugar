@@ -101,7 +101,7 @@ namespace SqlSugar
         {
             if (this.Transaction != null)
             {
-                this.Transaction.Commit();
+                this.Transaction.Rollback();
                 this.Transaction = null;
             }
             if (this.Connection != null && this.Connection.State != ConnectionState.Open)
@@ -214,9 +214,29 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null)
+        public async Task<DbResult<bool>> UseTranAsync(Func<Task> action, Action<Exception> errorCallBack = null)
         {
-            return Task.FromResult(UseTran(action, errorCallBack));
+            var result = new DbResult<bool>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    await action();
+                this.CommitTran();
+                result.Data = result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+                if (errorCallBack != null)
+                {
+                    errorCallBack(ex);
+                }
+            }
+            return result;
         }
 
         public DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null)
@@ -244,9 +264,29 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null)
+        public async Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null)
         {
-            return Task.FromResult(UseTran(action, errorCallBack));
+            var result = new DbResult<T>();
+            try
+            {
+                this.BeginTran();
+                if (action != null)
+                    result.Data = await action();
+                this.CommitTran();
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorException = ex;
+                result.ErrorMessage = ex.Message;
+                result.IsSuccess = false;
+                this.RollbackTran();
+                if (errorCallBack != null)
+                {
+                    errorCallBack(ex);
+                }
+            }
+            return result;
         }
 
         public IAdo UseStoredProcedure()

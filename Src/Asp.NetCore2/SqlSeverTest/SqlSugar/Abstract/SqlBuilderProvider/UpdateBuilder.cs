@@ -32,6 +32,7 @@ namespace SqlSugar
         public List<string> PrimaryKeys { get; set; }
         public bool IsOffIdentity { get; set; }
         public bool IsWhereColumns { get; set; }
+        public  bool? IsListUpdate { get; set; }
 
         public virtual string SqlTemplate
         {
@@ -112,6 +113,7 @@ namespace SqlSugar
             }
         }
 
+
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType, bool isMapping = true)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;
@@ -156,7 +158,7 @@ namespace SqlSugar
             }
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
-            if (isSingle)
+            if (isSingle&&this.IsListUpdate==null)
             {
                 return ToSingleSqlString(groupList);
             }

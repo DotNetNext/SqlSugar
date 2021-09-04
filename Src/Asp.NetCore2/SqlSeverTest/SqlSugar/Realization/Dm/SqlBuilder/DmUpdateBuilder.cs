@@ -27,7 +27,12 @@ namespace SqlSugar
                 i++;
                 return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("AND", whereList));
             }).ToArray()));
-            return sb.ToString();
+            var result= sb.ToString();
+            if (result == "\r\n") 
+            {
+                return null;
+            }
+            return result;
         }
 
         private string GetOracleUpdateColums(int i, DbColumnInfo m)

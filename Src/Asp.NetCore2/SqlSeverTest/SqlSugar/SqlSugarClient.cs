@@ -86,6 +86,7 @@ namespace SqlSugar
 
         public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
+            Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");
             return this.Context.Insertable<T>(insertObj);
         }
 
@@ -575,6 +576,10 @@ namespace SqlSugar
         #endregion
 
         #region TenantManager
+        public SqlSguarTransaction UseTran() 
+        {
+            return new SqlSguarTransaction(this);
+        }
         public void AddConnection(ConnectionConfig connection)
         {
             Check.ArgumentNullException(connection, "AddConnection.connection can't be null");
@@ -660,7 +665,19 @@ namespace SqlSugar
         public void CommitTran()
         {
             this.Context.Ado.CommitTran();
-            AllClientEach(it => it.Ado.CommitTran());
+            AllClientEach(it =>
+            {
+
+                try
+                {
+                    it.Ado.CommitTran();
+                }
+                catch 
+                {
+                    SugarRetry.Execute(() => it.Ado.CommitTran(), new TimeSpan(0, 0, 5), 3);
+                }
+                
+            });
             _IsAllTran = false;
         }
         public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
@@ -748,6 +765,7 @@ namespace SqlSugar
                 if (action != null)
                     data = await action();
                 this.CommitTran();
+                result.IsSuccess = true;
                 result.Data = data;
             }
             catch (Exception ex)
@@ -767,7 +785,19 @@ namespace SqlSugar
         public void RollbackTran()
         {
             this.Context.Ado.RollbackTran();
-            AllClientEach(it => it.Ado.RollbackTran());
+            AllClientEach(it => 
+            {
+
+                try
+                {
+                    it.Ado.RollbackTran();
+                }
+                catch 
+                {
+                    SugarRetry.Execute(() => it.Ado.RollbackTran(), new TimeSpan(0, 0, 5), 3);
+                }
+
+            });
             _IsAllTran = false;
         }
         public void Close()

@@ -360,6 +360,10 @@ namespace SqlSugar
                     dataType = "varchar";
                 }
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+                if (item.DecimalDigits > 0&&item.Length>0 && dataType == "numeric") 
+                {
+                    dataSize = $"({item.Length},{item.DecimalDigits})";
+                }
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower()), dataType, dataSize, nullType, primaryKey, "");

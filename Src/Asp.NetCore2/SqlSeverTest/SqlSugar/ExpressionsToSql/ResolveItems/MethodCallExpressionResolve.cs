@@ -789,6 +789,10 @@ namespace SqlSugar
                         var result = this.Context.DbMehtods.Format(model);
                         this.Context.Parameters.RemoveAll(it => model.Args.Select(x=>x.MemberName.ObjToString()).Contains(it.ParameterName) );
                         return result;
+                    case "Abs":
+                        return this.Context.DbMehtods.Abs(model);
+                    case "Round":
+                        return this.Context.DbMehtods.Round(model);
                     default:
                         break;
                 }

@@ -130,6 +130,12 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
+                var isTime = parameter.DbType == System.Data.DbType.Time;
+                if (isTime) 
+                {
+                   sqlParameter.SqlDbType = SqlDbType.Time;
+                   sqlParameter.Value=DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
+                }
                 if (sqlParameter.Value!=null&& sqlParameter.Value != DBNull.Value && sqlParameter.DbType == System.Data.DbType.DateTime)
                 {
                     var date = Convert.ToDateTime(sqlParameter.Value);
@@ -138,7 +144,7 @@ namespace SqlSugar
                         sqlParameter.Value = Convert.ToDateTime("1753/01/01");
                     }
                 }
-                if (parameter.Direction == 0)
+                if (parameter.Direction == 0) 
                 {
                     parameter.Direction = ParameterDirection.Input;
                 }
