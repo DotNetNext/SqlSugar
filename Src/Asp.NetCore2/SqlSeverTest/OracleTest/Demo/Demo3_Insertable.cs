@@ -38,7 +38,7 @@ namespace OrmTest
 
 
             //blukcopy
-            db.Insertable(updateObjs).UseOracle().ExecuteBlukCopy();
+            db.Insertable(updateObjs).UseOracle().ExecuteBulkCopy();
 
             //Ignore  CreateTime
             db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity

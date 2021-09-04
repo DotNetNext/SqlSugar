@@ -54,7 +54,7 @@ namespace OrmTest
                  new Order() { Id = 11, Name = "order11", Price=1 },
                  new Order() { Id = 12, Name = "order12" , Price=20, CreateTime=DateTime.Now, CustomId=1}
             };
-            db.Insertable(insertObjs).UseSqlServer().ExecuteBlukCopy();
+            db.Insertable(insertObjs).UseSqlServer().ExecuteBulkCopy();
 
             db.CodeFirst.InitTables<RootTable0, TwoItem, TwoItem2, TwoItem3>();
             db.CodeFirst.InitTables<ThreeItem2>();
