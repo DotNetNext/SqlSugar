@@ -443,6 +443,9 @@ namespace SqlSugar
             }
             else if (item.Type.IsClass())
             {
+                var mappingKeys = GetMappingColumns(parameter.CurrentExpression);
+                var isSameType = mappingKeys.Keys.Count>0;
+                CallContextThread<Dictionary<string,string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 this.Expression = item;
                 this.Start();
                 var shortName = parameter.CommonTempData;
@@ -462,7 +465,11 @@ namespace SqlSugar
                             asName = GetAsName(item, shortName, property);
                         }
                     }
-                    else
+                    else if (isSameType)
+                    {
+                        asName = GetAsNameAndShortName(item, shortName, property);
+                    }
+                    else 
                     {
                         asName = GetAsName(item, shortName, property);
                     }
@@ -503,6 +510,61 @@ namespace SqlSugar
             }
         }
 
+        private Dictionary<string, string> GetMappingColumns(Expression currentExpression)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            if (currentExpression == null) 
+            {
+                return result;
+            }
+            List<Type> types = new List<Type>();
+            int i = 0;
+            if (currentExpression is NewExpression)
+            {
+                i = (currentExpression as NewExpression).Arguments.Count;
+                foreach (var item in (currentExpression as NewExpression).Arguments)
+                {
+                    if (item.Type.IsClass()) 
+                    {
+                        types.Add(item.Type);
+                    }
+                }
+            }
+            else if (currentExpression is MemberInitExpression) 
+            {
+                i = (currentExpression as MemberInitExpression).Bindings.Count;
+                foreach (var item in (currentExpression as MemberInitExpression).Bindings)
+                {
+                    MemberAssignment memberAssignment = (MemberAssignment)item;
+                    if (memberAssignment.Expression.Type.IsClass()) 
+                    {
+                        types.Add(memberAssignment.Expression.Type);
+                    }
+                }
+            }
+            if (types.Count == i) 
+            {
+                return result;
+            }
+            var array = currentExpression.ToString().Split(',');
+            foreach (var item in array)
+            {
+                var itemArray = item.Split('=').ToArray();
+                var last = itemArray.Last().Trim().Split('.').First().TrimEnd(')').TrimEnd('}');
+                var first = itemArray.First().Trim();
+                if (first.Contains("{")) 
+                {
+                    first = first.Split('{').Last().Trim();
+                }
+                if (first.Contains("("))
+                {
+                    first = first.Split('(').Last().Trim();
+                }
+                result.Add(first,last);
+            }
+            return result; ;
+        }
+
         private string GetAsName(Expression item, object shortName, PropertyInfo property)
         {
             string asName;
@@ -525,7 +587,28 @@ namespace SqlSugar
 
             return asName;
         }
+        private string GetAsNameAndShortName(Expression item, object shortName, PropertyInfo property)
+        {
+            string asName;
+            var propertyName = property.Name;
+            var dbColumnName = propertyName;
+            var mappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName == item.Type.Name && it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
+            if (mappingInfo.HasValue())
+            {
+                dbColumnName = mappingInfo.DbColumnName;
+            }
+            asName = this.Context.GetTranslationText(shortName+"."+item.Type.Name + "." + propertyName);
+            if (Context.IsJoin)
+            {
+                this.Context.Result.Append(Context.GetAsString(asName, dbColumnName, shortName.ObjToString()));
+            }
+            else
+            {
+                this.Context.Result.Append(Context.GetAsString(asName, dbColumnName));
+            }
 
+            return asName;
+        }
         private static bool IsBoolValue(Expression item)
         {
             return item.Type == UtilConstants.BoolType &&

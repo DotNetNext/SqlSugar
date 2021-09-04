@@ -190,7 +190,28 @@ namespace OrmTest
               .Select(it => new Order { Name = it.Name.Replace("0", "1") }).MergeTable().Select<Order>().Where(it => it.Name.Equals("2"))
               .ToList();
 
+            var list14 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+                        new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+                        )
+            .Select((o1, o2, o3) => new
+            {
+                id = o1.Id,
+                x = o1,
+                x2 = o2,
+                x3 = o3
+            }).ToList();
 
+
+            var list15 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+              new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+            )
+            .Select((o1, o2, o3) => new TestModel1
+            {
+                id = o1.Id.SelectAll(),
+                x = o1,
+                x2 = o2,
+                x3 = o3
+            }).ToList();
         }
 
         public class UnitEnumTest 
@@ -236,5 +257,15 @@ namespace OrmTest
             public int id { get; set; }
             public string Name { get; set; }
         }
+        public class TestModel1
+        {
+            public int id { get; set; }
+            public Order x { get; set; }
+            public Order x2 { get; set; }
+            public Order x3 { get; set; }
+            public string name { get; set; }
+        }
     }
+
+
 }

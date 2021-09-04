@@ -271,6 +271,7 @@ namespace SqlSugar
         private Dictionary<string, object> DataReaderToList<T>(IDataReader reader, Type tType, List<PropertyInfo> classProperties, List<T> reval)
         {
             var readerValues = DataReaderToDictionary(reader, tType);
+            var mappingKeys = CallContextThread<Dictionary<string, string>>.GetData("Exp_Select_Mapping_Key");
             var result = new Dictionary<string, object>();
             foreach (var item in classProperties)
             {
@@ -296,7 +297,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval));
+                        result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval, mappingKeys));
                     }
                 }
                 else
@@ -370,7 +371,7 @@ namespace SqlSugar
                                         Regex.IsMatch(readerValues[item.Name.ToLower()].ToString(), @"^\[{.+\}]$");
         }
 
-        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval)
+        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval, Dictionary<string, string> mappingKeys=null)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             var type = item.PropertyType;
@@ -407,6 +408,11 @@ namespace SqlSugar
                 {
                     var key = typeName + "." + name;
                     var info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    if (mappingKeys.ContainsKey(item.Name)) 
+                    {
+                        key = mappingKeys[item.Name]+"."+typeName + "." + name;
+                        info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    }
                     if (info != null)
                     {
                         var addItem = readerValues[info];
