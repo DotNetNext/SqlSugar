@@ -271,6 +271,10 @@ namespace SqlSugar
             {
                 path = Regex.Match(connString, @"\/.+\/").Value;
             }
+            if (path.IsNullOrEmpty())
+            {
+                path = Regex.Match(connString, @"[a-z,A-Z]\:\\").Value;
+            }
             if (!FileHelper.IsExistDirectory(path))
             {
                 FileHelper.CreateDirectory(path);
