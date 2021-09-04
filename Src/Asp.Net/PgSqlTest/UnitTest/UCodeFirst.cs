@@ -18,8 +18,20 @@ namespace OrmTest
             Db.DbMaintenance.TruncateTable<UnitCodeTest22>();
             Db.CodeFirst.InitTables<UnitCodeTest3>();
             Db.Insertable(new UnitCodeTest22() {  id=1}).ExecuteCommand();
+            Db.CodeFirst.InitTables<UnitTimeSpan2>();
+            Db.Insertable(new UnitTimeSpan2()
+            {
+                 Id=new TimeSpan(),
+                  id2=new TimeSpan(11,2,1)
+            }).ExecuteCommand();
+            var x= Db.Queryable<UnitTimeSpan2>().ToList();
         }
- 
+        public class UnitTimeSpan2
+        {
+            [SqlSugar.SugarColumn(ColumnDataType ="time")]
+            public TimeSpan Id { get; set; }
+            public TimeSpan id2 { get; set; }
+        }
         public class UnitCodeTest22 {
              [SqlSugar.SugarColumn(IsNullable =true)]
              public decimal? id { get; set; }

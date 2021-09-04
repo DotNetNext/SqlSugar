@@ -24,6 +24,19 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitCodeFirstpks3>();
             Db.CodeFirst.InitTables<UnitCodeFirstpks32>();
             db.CodeFirst.InitTables<UnitTest0122132>();
+            Db.CodeFirst.InitTables<UnitTimeSpan2>();
+            Db.Insertable(new UnitTimeSpan2()
+            {
+                Id = new TimeSpan(),
+                id2 = new TimeSpan(11, 2, 1)
+            }).ExecuteCommand();
+            var x = Db.Queryable<UnitTimeSpan2>().ToList();
+        }
+        public class UnitTimeSpan2
+        {
+            [SqlSugar.SugarColumn(ColumnDataType = "time")]
+            public TimeSpan Id { get; set; }
+            public TimeSpan id2 { get; set; }
         }
         public class UnitTest0122132
         {

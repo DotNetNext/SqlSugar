@@ -126,8 +126,7 @@ namespace SqlSugar
             }
             else if (type == UtilConstants.TimeSpanType)
             {
-                if (this.Value != null)
-                    this.Value = this.Value.ToString();
+                this.DbType = System.Data.DbType.Time;
             }
             else if (type!=null&&type.IsEnum())
             {
