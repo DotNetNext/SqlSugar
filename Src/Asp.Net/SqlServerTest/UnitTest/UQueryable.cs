@@ -160,6 +160,7 @@ namespace OrmTest
             {
                 throw new Exception("unit query error");
             }
+            db.Queryable<Order>().Where(it => SqlFunc.Round(it.Id, 2) == SqlFunc.Abs(it.Id)).ToList();
         }
 
 

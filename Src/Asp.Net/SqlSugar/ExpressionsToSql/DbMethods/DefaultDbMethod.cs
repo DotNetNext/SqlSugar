@@ -487,7 +487,8 @@ namespace SqlSugar
         public string Round(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format("  ROUND({0},{1}) ", parameter.MemberName);
+            var parameter2= model.Args[1];
+            return string.Format("  ROUND({0},{1}) ", parameter.MemberName, parameter2.MemberName);
         }
     }
 }
