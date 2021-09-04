@@ -13,7 +13,7 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", GetIdentityKeys().FirstOrDefault());
+            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey",this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()));
             RestoreMapping();
             var result = Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()).ObjToInt();
             return result;
@@ -22,7 +22,7 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", GetIdentityKeys().FirstOrDefault());
+            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()));
             RestoreMapping();
             var obj = await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = obj.ObjToInt();
