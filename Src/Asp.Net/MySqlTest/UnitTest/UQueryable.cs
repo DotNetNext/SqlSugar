@@ -82,6 +82,29 @@ namespace OrmTest
 
             var task=CustomTest1.GetPurchaseDetailPageAsync(Db);
             task.Wait();
+
+            var list14 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+                       new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+                       )
+           .Select((o1, o2, o3) => new
+           {
+               id = o1.Id,
+               x = o1,
+               x2 = o2,
+               x3 = o3
+           }).ToList();
+
+
+            var list15 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+              new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+            )
+            .Select((o1, o2, o3) => new TestModel1
+            {
+                id = o1.Id.SelectAll(),
+                x = o1,
+                x2 = o2,
+                x3 = o3
+            }).ToList();
         }
 
         public static class IEnumerbleContains
@@ -323,5 +346,14 @@ namespace OrmTest
         {
             public Guid? Id { get; set; }
         }
+    }
+
+    public class TestModel1
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public Order x { get; set; }
+        public Order x2 { get; set; }
+        public Order x3 { get; set; }
     }
 }
