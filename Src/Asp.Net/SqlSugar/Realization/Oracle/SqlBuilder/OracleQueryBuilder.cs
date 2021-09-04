@@ -11,7 +11,7 @@ namespace SqlSugar
     {
         public override bool IsComplexModel(string sql)
         {
-            return Regex.IsMatch(sql, @"AS ""\w+\.\w+""");
+            return Regex.IsMatch(sql, @"AS ""\w+\.\w+""")|| Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
         }
         public override string SqlTemplate
         {
