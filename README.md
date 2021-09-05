@@ -21,7 +21,7 @@ Using SqlSugar is very simple , And it's powerful.
 
 SqlSugar=One object+One parameter=16 functions,
 
- Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 、神舟通用 
+ Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 、神通数据库
  
 
 ## 📮Nuget 
