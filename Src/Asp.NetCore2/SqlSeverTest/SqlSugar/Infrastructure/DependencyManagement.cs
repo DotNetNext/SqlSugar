@@ -15,6 +15,7 @@ namespace SqlSugar
         private static bool IsTryPgSql = false;
         private static bool IsTryDm = false;
         private static bool IsTryKd = false;
+        private static bool IsTryOscar = false;
         public static void TryJsonNet()
         {
             if (!IsTryJsonNet)
@@ -145,6 +146,24 @@ namespace SqlSugar
                 catch (Exception ex)
                 {
                     var message = "需要引用DmProvider.dll,Github搜索sqlsugar源码里面有";
+                    throw new Exception(message);
+                }
+            }
+        }
+
+        public static void TryOscar()
+        {
+            if (!IsTryOscar)
+            {
+                try
+                {
+                    OscarProvider db = new OscarProvider();
+                    var conn = db.GetAdapter();
+                    IsTryOscar = true;
+                }
+                catch (Exception ex)
+                {
+                    var message = "需要引用Oscar.Data.SqlClient.dll,Github搜索sqlsugar源码里面有";
                     throw new Exception(message);
                 }
             }
