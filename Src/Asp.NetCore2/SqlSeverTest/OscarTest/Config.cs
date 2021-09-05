@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace OrmTest
 {
     /// <summary>
-    /// Setting up the database name does not require you to create the database
-    /// 设置好数据库名不需要你去手动建库
+    /// 配置好连接字符串，不需要建表
     /// </summary>
     public class Config
     {
