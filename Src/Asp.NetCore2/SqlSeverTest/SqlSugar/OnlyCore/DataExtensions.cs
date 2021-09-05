@@ -11,6 +11,8 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Data.OscarClient;
+
 namespace SqlSugar
 {
 
@@ -869,6 +871,133 @@ namespace SqlSugar
                 ds = new DataSet();
             }
             using (KdbndpDataReader dr = command.ExecuteReader())
+            {
+                do
+                {
+                    var dt = new DataTable();
+                    var columns = dt.Columns;
+                    var rows = dt.Rows;
+                    for (int i = 0; i < dr.FieldCount; i++)
+                    {
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.Contains(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    }
+
+                    while (dr.Read())
+                    {
+                        DataRow daRow = dt.NewRow();
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            daRow[columns[i].ColumnName] = dr.GetValue(i);
+                        }
+                        dt.Rows.Add(daRow);
+                    }
+                    ds.Tables.Add(dt);
+                } while (dr.NextResult());
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 数据填充器
+    /// </summary>
+    public class OscarDataAdapter : IDataAdapter
+    {
+        private OscarCommand command;
+        private string sql;
+        private OscarConnection _sqlConnection;
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="command"></param>
+        public OscarDataAdapter(OscarCommand command)
+        {
+            this.command = command;
+        }
+
+        public OscarDataAdapter()
+        {
+
+        }
+
+        /// <summary>
+        /// SqlDataAdapter
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="_sqlConnection"></param>
+        public OscarDataAdapter(string sql, OscarConnection _sqlConnection)
+        {
+            this.sql = sql;
+            this._sqlConnection = _sqlConnection;
+        }
+
+        /// <summary>
+        /// SelectCommand
+        /// </summary>
+        public OscarCommand SelectCommand
+        {
+            get
+            {
+                if (this.command == null)
+                {
+                    this.command = new OscarCommand(this.sql, this._sqlConnection);
+                }
+                return this.command;
+            }
+            set
+            {
+                this.command = value;
+            }
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="dt"></param>
+        public void Fill(DataTable dt)
+        {
+            if (dt == null)
+            {
+                dt = new DataTable();
+            }
+            var columns = dt.Columns;
+            var rows = dt.Rows;
+            using (OscarDataReader dr = command.ExecuteReader())
+            {
+                for (int i = 0; i < dr.FieldCount; i++)
+                {
+                    string name = dr.GetName(i).Trim();
+                    if (!columns.Contains(name))
+                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                }
+
+                while (dr.Read())
+                {
+                    DataRow daRow = dt.NewRow();
+                    for (int i = 0; i < columns.Count; i++)
+                    {
+                        daRow[columns[i].ColumnName] = dr.GetValue(i);
+                    }
+                    dt.Rows.Add(daRow);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Fill
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Fill(DataSet ds)
+        {
+            if (ds == null)
+            {
+                ds = new DataSet();
+            }
+            using (OscarDataReader dr = command.ExecuteReader())
             {
                 do
                 {
