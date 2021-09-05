@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -19,33 +20,18 @@ namespace SqlSugar
         {
             get
             {
-                string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
-                                pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
-                                CASE WHEN pcolumn.numeric_scale >0 THEN pcolumn.numeric_precision ELSE pcolumn.character_maximum_length END   as Length,
-                                pcolumn.column_default as DefaultValue,
-                                pcolumn.numeric_scale as DecimalDigits,
-                                pcolumn.numeric_scale as Scale,
-                                col_description(pclass.oid, pcolumn.ordinal_position) as ColumnDescription,
-                                case when pkey.colname = pcolumn.column_name
-                                then true else false end as IsPrimaryKey,
-                                case when pcolumn.column_default like 'nextval%'
+                string sql = @"SELECT 
+COLUMN_NAME AS DbColumnName,
+TABLE_NAME AS TableName,
+DATA_TYPE AS DataType,
+ case when  DATA_DEFAULT like 'NEXTVAL%'
                                 then true else false end as IsIdentity,
-                                case when pcolumn.is_nullable = 'YES'
-                                then true else false end as IsNullable
-                                 from (select * from sys_tables where tablename = '{0}' and schemaname='public') ptables inner join sys_class pclass
-                                on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM INFO_SCHEM.ALL_TAB_COLUMNS
-                                ) pcolumn on pcolumn.table_name = ptables.tablename
-                                left join (
-	                                select  sys_class.relname,sys_attribute.attname as colname from 
-	                                sys_constraint  inner join sys_class 
-	                                on sys_constraint.conrelid = sys_class.oid 
-	                                inner join sys_attribute on sys_attribute.attrelid = sys_class.oid 
-	                                and  sys_attribute.attnum = sys_constraint.conkey[1]
-	                                inner join sys_type on sys_type.oid = sys_attribute.atttypid
-	                                where sys_constraint.contype='p'
-                                ) pkey on pcolumn.table_name = pkey.relname
-                                order by ptables.tablename";
+  case when NULLABLE = 'Y'
+                                then true else false end as IsNullable                                
+FROM
+INFO_SCHEM.ALL_TAB_COLUMNS WHERE upper(TABLE_NAME)=upper('{0}')
+ 
+";
                 return sql;
             }
         }
@@ -69,10 +55,17 @@ namespace SqlSugar
         {
             get
             {
-                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from sys_description
-                         join sys_class on sys_description.objoid = sys_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from sys_views  
-                         WHERE schemaname ='public')";
+                return @"select cast(relname as varchar(500)) as Name ,
+                        '' AS DESCRIPTION 
+                        from sys_class c 
+                        where  relkind = 'v' 
+                        and relname not like 'SYS_%'
+                        and relname not like 'V_SYS_%' 
+                        and relname not like 'sql_%' 
+                        and relname not like 'AQ$%' 
+                        AND relvbase=1
+                        AND relname NOT IN('LOGIN_FORBIDDEN_RULE','DBMS_LOCK_ALLOCATED','DUAL'，'_OBJ_BINLOG_SHOW_EVENTS_','USER_LOGIN_HISTORY','LOGIN_ALLOW_IPLIST')
+                        order by relname";
             }
         }
         #endregion
@@ -377,10 +370,20 @@ namespace SqlSugar
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
-            var result= base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
-            if (result == null || result.Count() == 0)
+            var result= base.GetColumnInfosByTableName(tableName.TrimStart('"').TrimEnd('"'), isCache);
+            string sql = "select * from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            using (DbDataReader reader = (DbDataReader)this.Context.Ado.GetDataReader(sql))
             {
-                result = base.GetColumnInfosByTableName(tableName, isCache);
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                var schemaTable = reader.GetSchemaTable();
+                foreach (System.Data.DataRow row in schemaTable.Rows)
+                {
+                    var name = row["columnname"] + "";
+                    var data = result.First(it => it.DbColumnName.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    data.IsPrimarykey= row["iskey"].ToString() =="True"? true : false;
+                }
             }
             return result;
         }
