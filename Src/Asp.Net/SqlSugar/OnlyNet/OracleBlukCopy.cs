@@ -14,14 +14,14 @@ namespace SqlSugar
         public SqlSugarProvider Context { get;  set; }
         public object[] Inserts { get;  set; }
 
-        public int ExecuteBlueCopy()
+        public int ExecuteBulkCopy()
         {
 
             throw new Exception("Only.net CORE is supported");
 
         }
 
-        public async Task<int> ExecuteBlueCopyAsync()
+        public async Task<int> ExecuteBulkCopyAsync()
         {
             await Task.Delay(0);
             throw new Exception("Only.net CORE is supported");
