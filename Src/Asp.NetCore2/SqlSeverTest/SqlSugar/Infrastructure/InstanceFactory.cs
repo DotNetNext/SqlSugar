@@ -242,6 +242,10 @@ namespace SqlSugar
             {
                 return new KdbndpInserttable<T>();
             }
+            else if (currentConnectionConfig.DbType == DbType.Oscar)
+            {
+                return new KdbndpInserttable<T>();
+            }
             else
             {
                 return new InsertableProvider<T>();

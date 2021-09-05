@@ -133,5 +133,10 @@ namespace SqlSugar
                 }
             }
         }
+
+        public static void TryOscar()
+        {
+            throw new Exception("Oscar.NetCore版本下使用");
+        }
     }
 }
