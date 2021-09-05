@@ -29,22 +29,22 @@ namespace OrmTest
                     }
                 }
             });
-            db.Insertable<Order>(new Order() { Name = "a" }).AddQueue();
-            db.Insertable<Order>(new Order() { Name = "b" }).AddQueue();
-            db.SaveQueues();
+    //        db.Insertable<Order>(new Order() { Name = "a" }).AddQueue();
+    //        db.Insertable<Order>(new Order() { Name = "b" }).AddQueue();
+    //        db.SaveQueues();
 
 
-            db.Insertable<Order>(new Order() { Name = "a" }).AddQueue();
-            db.Insertable<Order>(new Order() { Name = "b" }).AddQueue();
-            db.Insertable<Order>(new Order() { Name = "c" }).AddQueue();
-            db.Insertable<Order>(new Order() { Name = "d" }).AddQueue();
-            var ar = db.SaveQueuesAsync();
-            ar.Wait();
+    //        db.Insertable<Order>(new Order() { Name = "a" }).AddQueue();
+    //        db.Insertable<Order>(new Order() { Name = "b" }).AddQueue();
+    //        db.Insertable<Order>(new Order() { Name = "c" }).AddQueue();
+    //        db.Insertable<Order>(new Order() { Name = "d" }).AddQueue();
+    //        var ar = db.SaveQueuesAsync();
+    //        ar.Wait();
 
-            db.Queryable<Order>().AddQueue();
-            db.Queryable<Order>().AddQueue();
-            db.AddQueue("select * from `order` where id=@id", new { id = 10000 });
-    /*        var result2 = db.SaveQueues<Order, Order, Order>()*/;
+    //        db.Queryable<Order>().AddQueue();
+    //        db.Queryable<Order>().AddQueue();
+    //        db.AddQueue("select * from  order  where id=@id", new { id = 10000 });
+    ///*        var result2 = db.SaveQueues<Order, Order, Order>()*/;
 
             Console.WriteLine("#### Queue End ####");
         }

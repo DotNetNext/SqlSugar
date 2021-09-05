@@ -16,7 +16,7 @@ namespace OrmTest
             SqlSugarClient();//Create db
             DbContext();//Optimizing SqlSugarClient usage
             SingletonPattern();//Singleten Pattern
-            DistributedTransactionExample();
+            //DistributedTransactionExample();
             MasterSlave();//Read-write separation 
             CustomAttribute(); 
         }
@@ -237,7 +237,7 @@ namespace OrmTest
 
             //use db2
             db.ChangeDatabase("2");
-            db.DbMaintenance.CreateDatabase();//Create Database2
+            //db.DbMaintenance.CreateDatabase();//Create Database2
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
