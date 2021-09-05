@@ -47,7 +47,7 @@ namespace SqlSugar
         {
             if (propertyName.Contains(SqlTranslationLeft)) return propertyName;
             else
-                return SqlTranslationLeft + propertyName.ToLower(isAutoToLower) + SqlTranslationRight;
+                return SqlTranslationLeft + propertyName.ToUpper() + SqlTranslationRight;
         }
 
         //public override string GetNoTranslationColumnName(string name)
@@ -64,7 +64,7 @@ namespace SqlSugar
                  .FirstOrDefault(it =>
                  it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase) &&
                  it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToLower(isAutoToLower) + SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToLower(isAutoToLower) + SqlTranslationRight);
+            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToUpper() + SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToUpper() + SqlTranslationRight);
         }
 
         public override string GetTranslationTableName(string name)
@@ -78,7 +78,7 @@ namespace SqlSugar
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
             if (name.Contains(".")&& !name.Contains("("))
             {
-                return string.Join(".", name.ToLower(isAutoToLower).Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
+                return string.Join(".", name.ToUpper().Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
             }
             else if (name.Contains("("))
             {
@@ -90,7 +90,7 @@ namespace SqlSugar
             }
             else
             {
-                return SqlTranslationLeft + name.ToLower(isAutoToLower).TrimEnd('"').TrimStart('"') + SqlTranslationRight;
+                return SqlTranslationLeft + name.ToUpper().TrimEnd('"').TrimStart('"') + SqlTranslationRight;
             }
         }
     }

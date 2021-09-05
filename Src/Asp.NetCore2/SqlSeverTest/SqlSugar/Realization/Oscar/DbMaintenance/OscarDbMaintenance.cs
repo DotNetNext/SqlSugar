@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT datname FROM pg_database";
+                return "SELECT datname FROM sys_database";
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -32,18 +32,18 @@ namespace SqlSugar
                                 then true else false end as IsIdentity,
                                 case when pcolumn.is_nullable = 'YES'
                                 then true else false end as IsNullable
-                                 from (select * from pg_tables where tablename = '{0}' and schemaname='public') ptables inner join pg_class pclass
+                                 from (select * from sys_tables where tablename = '{0}' and schemaname='public') ptables inner join sys_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM information_schema.columns
+                                FROM INFO_SCHEM.ALL_TAB_COLUMNS
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
                                 left join (
-	                                select  pg_class.relname,pg_attribute.attname as colname from 
-	                                pg_constraint  inner join pg_class 
-	                                on pg_constraint.conrelid = pg_class.oid 
-	                                inner join pg_attribute on pg_attribute.attrelid = pg_class.oid 
-	                                and  pg_attribute.attnum = pg_constraint.conkey[1]
-	                                inner join pg_type on pg_type.oid = pg_attribute.atttypid
-	                                where pg_constraint.contype='p'
+	                                select  sys_class.relname,sys_attribute.attname as colname from 
+	                                sys_constraint  inner join sys_class 
+	                                on sys_constraint.conrelid = sys_class.oid 
+	                                inner join sys_attribute on sys_attribute.attrelid = sys_class.oid 
+	                                and  sys_attribute.attnum = sys_constraint.conkey[1]
+	                                inner join sys_type on sys_type.oid = sys_attribute.atttypid
+	                                where sys_constraint.contype='p'
                                 ) pkey on pcolumn.table_name = pkey.relname
                                 order by ptables.tablename";
                 return sql;
@@ -53,18 +53,25 @@ namespace SqlSugar
         {
             get
             {
-                return @"select cast(relname as varchar) as Name,
-                        cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
-                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' order by relname";
+                return @"select cast(relname as varchar(500)) as Name ,
+                        '' AS Description
+                        from sys_class c 
+                        where  relkind = 'r' 
+                        and relname not like 'SYS_%'
+                        and relname not like 'V_SYS_%' 
+                        and relname not like 'sql_%' 
+                        and relname not like 'AQ$%' 
+                        AND relname NOT IN('LOGIN_FORBIDDEN_RULE','DBMS_LOCK_ALLOCATED','DUAL'，'_OBJ_BINLOG_SHOW_EVENTS_','USER_LOGIN_HISTORY','LOGIN_ALLOW_IPLIST')
+                        order by relname";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
-                         join pg_class on pg_description.objoid = pg_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
+                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from sys_description
+                         join sys_class on sys_description.objoid = sys_class.oid
+                         where objsubid = 0 and relname in (SELECT viewname from sys_views  
                          WHERE schemaname ='public')";
             }
         }
@@ -205,7 +212,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select 1 from information_schema.columns limit 1 offset 0";
+                return "select 1 from INFO_SCHEM.ALL_TAB_COLUMNS limit 1 offset 0";
             }
         }
         #endregion
@@ -277,27 +284,7 @@ namespace SqlSugar
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            if (databaseDirectory != null)
-            {
-                if (!FileHelper.IsExistDirectory(databaseDirectory))
-                {
-                    FileHelper.CreateDirectory(databaseDirectory);
-                }
-            }
-            var oldDatabaseName = this.Context.Ado.Connection.Database;
-            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "postgres");
-            var newDb = new SqlSugarClient(new ConnectionConfig()
-            {
-                DbType = this.Context.CurrentConnectionConfig.DbType,
-                IsAutoCloseConnection = true,
-                ConnectionString = connection
-            });
-            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
-            }
-            return true;
+            throw new NotSupportedException("Not Supported CreateDatabase");
         }
         public override bool AddRemark(EntityInfo entity)
         {

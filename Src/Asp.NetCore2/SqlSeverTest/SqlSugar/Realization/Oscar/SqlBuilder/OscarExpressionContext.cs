@@ -25,15 +25,9 @@ namespace SqlSugar
         }
         public override string GetTranslationText(string name)
         {
-            return SqlTranslationLeft + name.ToLower(isAutoToLower) + SqlTranslationRight;
+            return SqlTranslationLeft + name.ToUpper() + SqlTranslationRight;
         }
-        public bool isAutoToLower
-        {
-            get
-            {
-                return base.PgSqlIsAutoToLower;
-            }
-        }
+
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
         {
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
@@ -61,7 +55,7 @@ namespace SqlSugar
                     return tableName;
                 }
 
-                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToLower(isAutoToLower) + SqlTranslationRight;
+                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToUpper() + SqlTranslationRight;
             }
             else if (isComplex)
             {
@@ -94,11 +88,11 @@ namespace SqlSugar
             if (this.MappingColumns.HasValue())
             {
                 var mappingInfo = this.MappingColumns.SingleOrDefault(it => it.EntityName == entityName && it.PropertyName == propertyName);
-                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToLower(isAutoToLower);
+                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToUpper();
             }
             else
             {
-                return propertyName.ToLower(isAutoToLower);
+                return propertyName.ToUpper();
             }
         }
     }
