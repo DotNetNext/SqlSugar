@@ -206,7 +206,7 @@ namespace OrmTest
             Console.WriteLine("#### Singleton Pattern end ####");
         }
 
-        static SqlSugarClient singleDb = new SqlSugarClient(
+        static SqlSugarScope singleDb = new SqlSugarScope(
             new ConnectionConfig()
             {
                 ConfigId = 1,
