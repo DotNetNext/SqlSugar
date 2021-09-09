@@ -70,9 +70,28 @@ namespace OrmTest
               .Where(it => it.a)
       .ExecuteCommand();
 
+            // Db.CodeFirst.InitTables<UnitPk00121>();
+            //Db.CodeFirst.InitTables<UnitPk001212>();
+            //Db.Deleteable<UnitPk00121>().Where(new UnitPk00121() { Id=1, CreateTime=DateTime.Now, Name="a" }).ExecuteCommand();
+            //Db.Deleteable<UnitPk001212>().Where(new List<UnitPk001212> { new UnitPk001212() { Id = 1, CreateTime = DateTime.Now, Name = "a" } , new UnitPk001212() { Id = 2, CreateTime = DateTime.Now, Name = "11a" } }).ExecuteCommand();
         }
     }
-
+    public class UnitPk00121 
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public DateTime? CreateTime { get; set; }
+        public string Name { get; set; }
+    }
+    public class UnitPk001212
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public DateTime? CreateTime { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Name { get; set; }
+    }
     public class BoolTest1
     {
         public bool a { get; set; } 

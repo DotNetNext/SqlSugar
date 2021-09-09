@@ -101,6 +101,35 @@ namespace SqlSugar
                 return propertyName.ToLower(isAutoToLower);
             }
         }
+
+        public  string GetValue(object entityValue)
+        {
+            if (entityValue == null)
+                return null;
+            var type = UtilMethods.GetUnderType(entityValue.GetType());
+            if (UtilConstants.NumericalTypes.Contains(type))
+            {
+                return entityValue.ToString();
+            }
+            else if (type == UtilConstants.DateType)
+            {
+                return this.DbMehtods.ToDate(new MethodCallExpressionModel()
+                {
+                    Args = new System.Collections.Generic.List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ MemberName=$"'{entityValue}'" }
+                }
+                });
+            }
+            else 
+            {
+                return this.DbMehtods.ToString(new MethodCallExpressionModel()
+                {
+                    Args = new System.Collections.Generic.List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ MemberName=$"'{entityValue}'" }
+                }
+                });
+            }
+        }
     }
     public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
     {
