@@ -27,6 +27,10 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T> Where(Expression exp)
+        {
+            return this;
+        }
         public Subqueryable<T> Where(Func<T, bool> expression)
         {
             return this;

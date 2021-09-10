@@ -55,7 +55,7 @@ namespace SqlSugar
             }
             if (Regex.IsMatch(result, regex))
             {
-                result = "AND " + this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value).Value;
+                result = "AND " + GetValue(result, regex);
                 return result;
             }
 
@@ -63,6 +63,11 @@ namespace SqlSugar
             if (this.Context.JoinIndex == 0)
                 result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
+        }
+
+        private object GetValue(string result, string regex)
+        {
+            return this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value).Value;
         }
     }
 }
