@@ -31,6 +31,10 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T> Having(Func<T, bool> expression)
+        {
+            return this;
+        }
         public Subqueryable<T> Where<Main, Join1>(Func<Main, Join1, bool> expression)
         {
             return this;

@@ -32,7 +32,8 @@ namespace SqlSugar
                                                     new SubOrderBy(){ Context=Context },
                                                     new SubOrderByDesc(){ Context=Context },
                                                     new SubGroupBy(){ Context=Context},
-                                                    new SubAs(){Context=Context}
+                                                    new SubAs(){Context=Context},
+                                                    new SubHaving(){  Context=Context}
                                                 };
         }
 

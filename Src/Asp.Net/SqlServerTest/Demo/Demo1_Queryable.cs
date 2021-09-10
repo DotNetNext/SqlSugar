@@ -153,6 +153,7 @@ namespace OrmTest
               JoinType.Left, o.Name == SqlFunc.ToString(SqlFunc.MergeString(",", i.Name, ","))
             ))
             .Select<ViewOrder>().ToList();
+            var test16 = db.Queryable<Order>().Select(it => SqlFunc.SqlServer_DateDiff("day", DateTime.Now.AddDays(-1), DateTime.Now)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -242,8 +243,11 @@ namespace OrmTest
              .Where(i=>i.ItemId==1)
               .Any()
             ).ToList();
-
-            var list3=db.Queryable<Order>().Select(it => SqlFunc.SqlServer_DateDiff("day", DateTime.Now.AddDays(-1), DateTime.Now)).ToList();
+;
+            var list3 = db.Queryable<Order>().Select(it => new
+            {
+                customName = SqlFunc.Subqueryable<Custom>().Where(s=>s.Id==it.CustomId).GroupBy(s=>s.Name).Having(s=>SqlFunc.AggregateCount(s.Id)>0).Select(s => s.Name) 
+            }).ToList();
 
             Console.WriteLine("#### Subquery End ####");
         }
