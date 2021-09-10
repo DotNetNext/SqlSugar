@@ -56,8 +56,18 @@ namespace SqlSugar
             if (Regex.IsMatch(result, regex))
             {
                 var value = GetValue(result, regex);
-                result = "AND " + value;
-                return result;
+                if (value is Expression)
+                {
+                    var p = this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value);
+                    result = "AND " + SubTools.GetMethodValue(Context, value as Expression, ResolveExpressType.WhereMultiple);
+                    argExp = value as Expression;
+                    p.Value = argExp.ToString();
+                }
+                else
+                {
+                    result = "AND " + value;
+                    return result;
+                }
             }
 
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
