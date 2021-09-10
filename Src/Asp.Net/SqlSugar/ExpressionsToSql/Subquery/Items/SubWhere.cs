@@ -55,7 +55,8 @@ namespace SqlSugar
             }
             if (Regex.IsMatch(result, regex))
             {
-                result = "WHERE " + GetValue(result, regex);
+                var value = GetValue(result, regex);
+                result = "WHERE " + value;
                 return result;
             }
 
