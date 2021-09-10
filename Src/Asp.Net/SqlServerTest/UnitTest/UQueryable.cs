@@ -147,6 +147,12 @@ namespace OrmTest
                 name="a"
             }).ToList();
 
+            var bytes2 = db.Queryable<UnitBytes11>().Select(it => new
+            {
+                b = it 
+            }).ToList();
+
+
             db.CodeFirst.InitTables<BoolTest1>();
             db.CodeFirst.InitTables<BoolTest2>();
             db.Queryable<BoolTest1>().Where(it => !it.a).ToList();
