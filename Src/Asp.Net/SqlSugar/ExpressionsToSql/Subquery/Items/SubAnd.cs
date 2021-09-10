@@ -61,7 +61,7 @@ namespace SqlSugar
                     var p = this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value);
                     result = "AND " + SubTools.GetMethodValue(Context, value as Expression, ResolveExpressType.WhereMultiple);
                     argExp = value as Expression;
-                    p.Value = argExp.ToString();
+                    this.Context.Parameters.Remove(p);
                 }
                 else
                 {

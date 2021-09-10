@@ -253,7 +253,7 @@ namespace OrmTest
             var exp = Expressionable.Create<Custom>().And(s => s.Id==1).ToExpression();
             var list4 = db.Queryable<Order>().Select(it => new
             {
-                customName = SqlFunc.Subqueryable<Custom>().Where(exp).GroupBy(s => s.Name).Having(s => SqlFunc.AggregateCount(s.Id) > 0).Select(s => s.Name)
+                customName = SqlFunc.Subqueryable<Custom>().Where(exp).Where(exp).GroupBy(s => s.Name).Having(s => SqlFunc.AggregateCount(s.Id) > 0).Select(s => s.Name)
             }).ToList();
 
             Console.WriteLine("#### Subquery End ####");
