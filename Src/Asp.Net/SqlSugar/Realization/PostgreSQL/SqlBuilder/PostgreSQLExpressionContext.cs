@@ -169,7 +169,7 @@ namespace SqlSugar
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
             {
-                format = "mm";
+                format = "mi";
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Second.ToString())
             {
@@ -177,7 +177,7 @@ namespace SqlSugar
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Millisecond.ToString())
             {
-                format = "ss";
+                format = "ms";
             }
             return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
         }
