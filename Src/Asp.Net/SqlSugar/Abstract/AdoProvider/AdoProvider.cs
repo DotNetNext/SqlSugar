@@ -863,6 +863,10 @@ namespace SqlSugar
                 {
                     result = GetData<T>(typeof(T), dataReader);
                 }
+                else 
+                {
+                    dataReader.Read();
+                }
                 List<T2> result2 = null;
                 if (NextResult(dataReader))
                 {
