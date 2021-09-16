@@ -212,6 +212,8 @@ namespace OrmTest
                 x2 = o2,
                 x3 = o3
             }).ToList();
+
+           var list16=Db.Queryable<Order>().OrderBy(it => it.CreateTime.ToString("yyyy-MM-dd")).Select(it=> new { x = it.CreateTime.ToString("yyyy-MM-dd") }).ToList();
         }
 
         public class UnitEnumTest 
