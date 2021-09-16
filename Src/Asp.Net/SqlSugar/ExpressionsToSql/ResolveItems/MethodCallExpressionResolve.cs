@@ -292,6 +292,14 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
+                    if (express.Method.Name == "ToString" && express.Object!=null&&express.Object?.Type == UtilConstants.DateType) 
+                    {
+                        var format = (args[0] as ConstantExpression).Value+"";
+                        var value = GetNewExpressionValue(express.Object);
+                        var dateString = GeDateFormat(format, value);
+                        base.AppendValue(parameter, isLeft, dateString);
+                    }
+                    break;
                 default:
                     break;
             }
