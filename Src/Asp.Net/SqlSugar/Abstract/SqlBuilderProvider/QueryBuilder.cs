@@ -336,6 +336,10 @@ namespace SqlSugar
             var exp=field.GetValue(item,null) as Expression;
             var isMain = ChildType == this.EntityType;
             var isSingle = IsSingle();
+            if (ChildType != this.EntityType&&isSingle)
+            {
+                return;
+            }
             var expValue = GetExpressionValue(exp, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
             var sql = expValue.GetResultString();
             var itName = (exp as LambdaExpression).Parameters[0].Name;
@@ -350,10 +354,7 @@ namespace SqlSugar
             }
             if (isSingle)
             {
-                if (ChildType != this.EntityType)
-                {
-                    return;
-                }
+
             }
             else if (isMain)
             {
