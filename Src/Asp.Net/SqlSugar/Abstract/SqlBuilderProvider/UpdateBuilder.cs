@@ -257,11 +257,14 @@ namespace SqlSugar
             }
             else if (PrimaryKeys.HasValue())
             {
-                foreach (var item in PrimaryKeys)
+                if (IsWhereColumns == false)
                 {
-                    var isFirst = whereString == null;
-                    whereString += (isFirst ? " WHERE " : " AND ");
-                    whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
+                    foreach (var item in PrimaryKeys)
+                    {
+                        var isFirst = whereString == null;
+                        whereString += (isFirst ? " WHERE " : " AND ");
+                        whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
+                    }
                 }
             }
             if (PrimaryKeys.HasValue()&&IsWhereColumns)
