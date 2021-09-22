@@ -104,6 +104,7 @@ namespace OrmTest
 
             Db.CodeFirst.InitTables<Unitbluecopy>();
             Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBulkCopy();
+            Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBulkCopy();
             Db.CodeFirst.InitTables<BoolTest1>();
             Db.Updateable<BoolTest1>()
                 .SetColumns(it =>it.a== !it.a)
@@ -114,6 +115,9 @@ namespace OrmTest
               .SetColumns(it=>new BoolTest1() { a = !it.a })
               .Where(it => it.a)
       .ExecuteCommand();
+
+            Db.Updateable<Unitbluecopy>(new Unitbluecopy() { }).WhereColumns(it => it.Id).ExecuteCommand();
+            Db.Updateable<Unitbluecopy>(Db.Queryable<Unitbluecopy>().ToList()).WhereColumns(it => it.Id).ExecuteCommand();
         }
     }
 
