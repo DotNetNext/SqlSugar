@@ -66,7 +66,7 @@ namespace SqlSugar
         }
         private  string ToCountSqlString()
         {
-            base.AppendFilter();
+            //base.AppendFilter();
             string oldOrderValue = this.OrderByValue;
             string result = null;
             sql = new StringBuilder();
