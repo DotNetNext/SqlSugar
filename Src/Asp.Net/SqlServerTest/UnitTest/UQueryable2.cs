@@ -214,6 +214,39 @@ namespace OrmTest
             }).ToList();
 
            var list16=Db.Queryable<Order>().OrderBy(it => it.CreateTime.ToString("yyyy-MM-dd")).Select(it=> new { x = it.CreateTime.ToString("yyyy-MM-dd") }).ToList();
+
+            Db.CodeFirst.InitTables<TB_ClientConfig, TB_AdminUser>();
+            Db.Insertable(new TB_ClientConfig()
+            {
+                AlipayAppID = "aa",
+                 AlipayPaymentOpen=true,
+                  AlipayPrivateKey="a",
+                   AlipayPublicKey="",
+                    AlipayWithdrawOpen=true,
+                     CreateAdminUserID=1 ,
+                      CreateDateTime=11,
+                       Extension="a",
+                        ModifyAdminUserID=1,
+                         ModifyDateTime=1,
+                          Name="a",
+                           WechatPayMchID="a",
+                            OpenWechatAppID="a",
+                             OpenWechatAppSecret="a",
+                              WechatMiniOriginalID="b",
+                               WechatPayApiKey="a",
+                                WechatPayApiKeyV3="z"
+                        
+            }).ExecuteReturnSnowflakeId();
+          var list17= Db.Queryable<TB_ClientConfig, TB_AdminUser, TB_AdminUser>((f, c, m) => new JoinQueryInfos(
+                    JoinType.Left, f.CreateAdminUserID == c.ID,
+                    JoinType.Left, f.ModifyAdminUserID == m.ID))
+                .OrderBy(f => f.CreateDateTime, OrderByType.Desc)
+                .Select((f, c, m) => new
+                {
+                    f,
+                    CreateAdminUserName = c.Name,
+                    ModifyAdminUserName = m.Name
+                }).ToList();
         }
 
         public class UnitEnumTest 
