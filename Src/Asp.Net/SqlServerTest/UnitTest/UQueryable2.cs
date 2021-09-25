@@ -247,8 +247,24 @@ namespace OrmTest
                     CreateAdminUserName = c.Name,
                     ModifyAdminUserName = m.Name
                 }).ToList();
+       
+            var listxxxxxxxxxxx = Db.Queryable<Tree2, Tree2>((a, b) => new JoinQueryInfos(JoinType.Inner, a.ParentId == b.Id))
+                .Select((a, b) => new {
+                user = a,
+                parentUser = b
+                })
+                .ToList();
         }
-
+        [SugarTable("tree ")]
+        public class Tree2
+        {
+            [SugarColumn(ColumnName = "id", IsPrimaryKey = true)]
+            public int Id { get; set; }
+            [SugarColumn(ColumnName = "ParentId")]
+            public int ParentId { get; set; }
+            [SugarColumn(ColumnName = "name")]
+            public string  Name { get; set; }
+        }
         public class UnitEnumTest 
         {
             [SqlSugar.SugarColumn(IsNullable =true)]
