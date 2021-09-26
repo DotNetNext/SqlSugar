@@ -25,13 +25,13 @@ namespace SqlSugar
             this.Builder = builder;
             this.Entitys = entitys;
         }
-        public bool ExecuteBlukCopy(string characterSet) 
+        public bool ExecuteBulkCopy(string characterSet) 
         {
             this.Chara = characterSet;
-            return ExecuteBlukCopy();
+            return ExecuteBulkCopy();
         }
 
-        public bool ExecuteBlukCopy()
+        public bool ExecuteBulkCopy()
         {
             var IsBulkLoad = false;
             if (Entitys == null || Entitys.Length <= 0)
@@ -42,6 +42,10 @@ namespace SqlSugar
             Type type = typeof(T);
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             dt.TableName = this.Builder.GetTranslationColumnName(entity.DbTableName);
+            if (this.Context.MappingTables != null && this.Context.MappingTables.Any(it => it.EntityName == it.EntityName)) 
+            {
+                dt.TableName = this.Builder.GetTranslationColumnName(this.Context.MappingTables.First(it => it.EntityName == it.EntityName).DbTableName);
+            }
             //创建属性的集合    
             List<PropertyInfo> pList = new List<PropertyInfo>();
             //把所有的public属性加入到集合 并添加DataTable的列    
@@ -111,15 +115,15 @@ namespace SqlSugar
             return IsBulkLoad; ;
         }
 
-        public Task<bool> ExecuteBlukCopyAsync()
+        public Task<bool> ExecuteBulkCopyAsync()
         {
-            return Task.FromResult(ExecuteBlukCopy());
+            return Task.FromResult(ExecuteBulkCopy());
         }
 
-        public Task<bool> ExecuteBlukCopyAsync(string characterSet)
+        public Task<bool> ExecuteBulkCopyAsync(string characterSet)
         {
             this.Chara = characterSet;
-            return Task.FromResult(ExecuteBlukCopy());
+            return Task.FromResult(ExecuteBulkCopy());
         }
 
         #region  Helper

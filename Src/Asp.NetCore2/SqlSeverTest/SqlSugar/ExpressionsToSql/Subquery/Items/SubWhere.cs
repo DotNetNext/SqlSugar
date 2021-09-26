@@ -55,14 +55,30 @@ namespace SqlSugar
             }
             if (Regex.IsMatch(result, regex))
             {
-                result = "WHERE " + this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value).Value;
-                return result;
+                var value = GetValue(result, regex);
+                if (value is Expression)
+                {
+                    var p = this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value);
+                    result = "WHERE " + SubTools.GetMethodValue(Context, value as Expression, ResolveExpressType.WhereMultiple);
+                    argExp = value as Expression;
+                    this.Context.Parameters.Remove(p);
+                }
+                else
+                {
+                    result = "WHERE " + value;
+                    return result;
+                }
             }
 
             var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             if (this.Context.JoinIndex == 0)
                 result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
+        }
+
+        private object GetValue(string result, string regex)
+        {
+            return this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value).Value;
         }
     }
 }

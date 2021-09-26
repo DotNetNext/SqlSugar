@@ -101,6 +101,35 @@ namespace SqlSugar
                 return propertyName.ToLower(isAutoToLower);
             }
         }
+
+        public  string GetValue(object entityValue)
+        {
+            if (entityValue == null)
+                return null;
+            var type = UtilMethods.GetUnderType(entityValue.GetType());
+            if (UtilConstants.NumericalTypes.Contains(type))
+            {
+                return entityValue.ToString();
+            }
+            else if (type == UtilConstants.DateType)
+            {
+                return this.DbMehtods.ToDate(new MethodCallExpressionModel()
+                {
+                    Args = new System.Collections.Generic.List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ MemberName=$"'{entityValue}'" }
+                }
+                });
+            }
+            else 
+            {
+                return this.DbMehtods.ToString(new MethodCallExpressionModel()
+                {
+                    Args = new System.Collections.Generic.List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ MemberName=$"'{entityValue}'" }
+                }
+                });
+            }
+        }
     }
     public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
     {
@@ -140,7 +169,7 @@ namespace SqlSugar
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
             {
-                format = "mm";
+                format = "mi";
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Second.ToString())
             {
@@ -148,7 +177,7 @@ namespace SqlSugar
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Millisecond.ToString())
             {
-                format = "ss";
+                format = "ms";
             }
             return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
         }

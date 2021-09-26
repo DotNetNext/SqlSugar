@@ -14,6 +14,6 @@ namespace SqlSugar
         PostgreSQL,
         Dm,
         Kdbndp,
-        Oscar 
+        Oscar
     }
 }

@@ -542,7 +542,7 @@ namespace SqlSugar
                     }
                 }
             }
-            if (types.Count == i) 
+            if (types.Count == i&&(types.Count==types.Distinct().Count())) 
             {
                 return result;
             }
