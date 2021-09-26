@@ -83,6 +83,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@int),
                   new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@short),
+                  new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
                   new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
                   new KeyValuePair<string, CSharpDataType>("interval year to  month",CSharpDataType.@int),
                   new KeyValuePair<string, CSharpDataType>("interval day to  second",CSharpDataType.@int),
