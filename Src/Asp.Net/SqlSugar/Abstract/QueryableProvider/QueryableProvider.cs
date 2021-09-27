@@ -199,7 +199,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> Mapper(Action<T, MapperCache<T>> mapperAction)
         {
-            this.MapperActionWithCache = mapperAction;
+            this.MapperActionWithCache += mapperAction;
             return this;
         }
         public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
