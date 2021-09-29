@@ -166,7 +166,35 @@ namespace OrmTest
             {
                 throw new Exception("unit query error");
             }
+
             db.Queryable<Order>().Where(it => SqlFunc.Round(it.Id, 2) == SqlFunc.Abs(it.Id)).ToList();
+            db.Insertable(new Order() { CreateTime = Convert.ToDateTime("2021-1-1"), CustomId = 1, Name = "a", Price = 0 }).ExecuteCommand();
+            db.Insertable(new Order() { CreateTime = Convert.ToDateTime("2021-1-9"), CustomId = 1, Name = "a", Price = 0 }).ExecuteCommand();
+            db.Insertable(new Order() { CreateTime = Convert.ToDateTime("2021-9-11"), CustomId = 1, Name = "a", Price = 0 }).ExecuteCommand();
+            db.Insertable(new Order() { CreateTime = Convert.ToDateTime("2021-11-30"), CustomId = 1, Name = "a", Price = 0 }).ExecuteCommand();
+            var d1 = db.Queryable<Order>()
+                            .Where(it=>it.CreateTime.Day==1)
+                            .Select(it => it.CreateTime.ToString("yyyy-MM-dd")).ToList();
+            Check.Exception(d1.First() != "2021-01-01", "unit error");
+            var d11 = db.Queryable<Order>()
+                .Where(it => it.CreateTime.Day == 9)
+                .Select(it => it.CreateTime.ToString("yyyy-MM-dd")).ToList();
+            Check.Exception(d11.First() != "2021-01-09", "unit error");
+            var d111 = db.Queryable<Order>()
+                .Where(it => it.CreateTime.Day == 11)
+                .Select(it => it.CreateTime.ToString("yyyy-MM-dd")).ToList();
+            Check.Exception(d111.First() != "2021-09-11", "unit error");
+            var d1111 = db.Queryable<Order>()
+                .Where(it => it.CreateTime.Day == 30)
+                .Select(it => it.CreateTime.ToString("yyyy-MM-dd")).ToList();
+            Check.Exception(d1111.First() != "2021-11-30", "unit error");
+
+
+            var d11111 = db.Queryable<Order>()
+               .Where(it => it.CreateTime.ToString("yyyy-MM-dd") == "2021-11-30")
+               .Select(it => it.CreateTime.ToString("yyyy-MM-dd")).ToList();
+
+            Check.Exception(d11111.First() != "2021-11-30", "unit error");
         }
 
 
