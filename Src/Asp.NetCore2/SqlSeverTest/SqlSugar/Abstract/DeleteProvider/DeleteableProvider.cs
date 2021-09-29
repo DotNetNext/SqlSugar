@@ -250,6 +250,14 @@ namespace SqlSugar
             };
             return this;
         }
+        public IDeleteable<T> EnableQueryFilter()
+        {
+            var queryable = this.Context.Queryable<T>();
+            queryable.QueryBuilder.LambdaExpressions.ParameterIndex= 1000;
+            var sqlable= queryable.ToSql();
+            this.Where(Regex.Split(sqlable.Key," Where ",RegexOptions.IgnoreCase).Last(), sqlable.Value);
+            return this;
+        }
         public IDeleteable<T> RemoveDataCache(string likeString)
         {
             this.RemoveCacheFunc = () =>

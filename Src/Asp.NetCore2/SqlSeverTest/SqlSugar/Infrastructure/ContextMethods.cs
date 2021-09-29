@@ -272,6 +272,10 @@ namespace SqlSugar
         {
             var readerValues = DataReaderToDictionary(reader, tType);
             var mappingKeys = CallContextThread<Dictionary<string, string>>.GetData("Exp_Select_Mapping_Key");
+            if (mappingKeys == null) 
+            {
+                mappingKeys = CallContextAsync<Dictionary<string, string>>.GetData("Exp_Select_Mapping_Key");
+            }
             var result = new Dictionary<string, object>();
             foreach (var item in classProperties)
             {
